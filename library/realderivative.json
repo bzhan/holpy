@@ -413,6 +413,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "image_stretch_real_interval",
             "prop": [
                 "image (λx. m * x) (real_closed_interval a b) = ",
@@ -432,6 +435,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_closed_interval_translation",
             "prop": [
                 "real_closed_interval (c + a) (c + b) = ",
@@ -445,6 +451,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_open_interval_translation",
             "prop": "real_open_interval (c + a) (c + b) = image (λx. c + x) (real_open_interval a b)",
             "ty": "thm",
@@ -455,6 +464,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_differentiable_imp_continuous_withinreal",
             "prop": [
                 "real_differentiable f (within (atreal x) s) ",
@@ -462,21 +475,29 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_differentiable_imp_continuous_atreal",
             "prop": "real_differentiable f (atreal x) ⟶ real_continuous f (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_imp_continuous_withinreal",
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
@@ -484,28 +505,36 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_imp_continuous_atreal",
             "prop": "has_real_derivative f f1 (atreal x) ⟶ real_continuous f (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_imp_real_continuous_on",
             "prop": "real_differentiable_on f s ⟶ real_continuous_on f s",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
@@ -7796,6 +7825,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_on_const",
             "num_gaps": 0,
             "proof": [
@@ -7883,6 +7915,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_on_id",
             "num_gaps": 0,
             "proof": [
@@ -8262,118 +8297,1526 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_on_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f t ⊢ real_differentiable_on f t"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f t ⊢ ∀x. x ∈ t ⟶ real_differentiable f (within (atreal x) t)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f t ⊢ ∀x. x ∈ t ⟶ real_differentiable (λx1. -(f x1)) (within (atreal x) t)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "x",
+                    "id": "2.2",
+                    "prevs": [
+                        "1",
+                        "2.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f t, x ∈ t ⊢ real_differentiable f (within (atreal x) t)"
+                },
+                {
+                    "args": "real_differentiable_neg",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f t, x ∈ t ⊢ real_differentiable (λx1. -(f x1)) (within (atreal x) t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f t ⊢ ∀x. x ∈ t ⟶ real_differentiable (λx1. -(f x1)) (within (atreal x) t)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (λx. -(f x)) t",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f t ⊢ real_differentiable_on (λx. -(f x)) t"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f t ⟶ real_differentiable_on (λx. -(f x)) t"
+                }
+            ],
             "prop": "real_differentiable_on f t ⟶ real_differentiable_on (λx. -(f x)) t",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f t ⊢ real_differentiable_on f t"
+                },
+                {
+                    "args": "real_differentiable_on g t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on g t ⊢ real_differentiable_on g t"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f t ⊢ ∀x. x ∈ t ⟶ real_differentiable f (within (atreal x) t)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on g t ⊢ ∀x. x ∈ t ⟶ real_differentiable g (within (atreal x) t)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t ⊢ ∀x. x ∈ t ⟶ real_differentiable (λx1. f x1 + g x1) (within (atreal x) t)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "x",
+                    "id": "4.2",
+                    "prevs": [
+                        "2",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t, x ∈ t ⊢ real_differentiable f (within (atreal x) t)"
+                },
+                {
+                    "args": "x",
+                    "id": "4.3",
+                    "prevs": [
+                        "3",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on g t, real_differentiable_on f t, x ∈ t ⊢ real_differentiable g (within (atreal x) t)"
+                },
+                {
+                    "args": "real_differentiable_add",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.2",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t, x ∈ t ⊢ real_differentiable (λx1. f x1 + g x1) (within (atreal x) t)"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t ⊢ ∀x. x ∈ t ⟶ real_differentiable (λx1. f x1 + g x1) (within (atreal x) t)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (λx. f x + g x) t",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t ⊢ real_differentiable_on (λx. f x + g x) t"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f t ⟶ real_differentiable_on g t ⟶ real_differentiable_on (λx. f x + g x) t"
+                }
+            ],
             "prop": [
-                "real_differentiable_on f t ∧ real_differentiable_on g t ",
+                "real_differentiable_on f t ⟶ real_differentiable_on g t ",
                 "⟶ real_differentiable_on (λx. f x + g x) t"
             ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_add"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_sub",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f t ⊢ real_differentiable_on f t"
+                },
+                {
+                    "args": "real_differentiable_on g t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on g t ⊢ real_differentiable_on g t"
+                },
+                {
+                    "args": "real_differentiable_on_neg",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t ⊢ real_differentiable_on (λx. -(g x)) t"
+                },
+                {
+                    "args": "real_differentiable_on_add",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t ⊢ real_differentiable_on (λx. f x + -(g x)) t"
+                },
+                {
+                    "args": "real_minus_def, real_differentiable_on (λx. f x - g x) t",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f t, real_differentiable_on g t ⊢ real_differentiable_on (λx. f x - g x) t"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f t ⟶ real_differentiable_on g t ⟶ real_differentiable_on (λx. f x - g x) t"
+                }
+            ],
             "prop": [
-                "real_differentiable_on f t ∧ real_differentiable_on g t ",
+                "real_differentiable_on f t ⟶ real_differentiable_on g t ",
                 "⟶ real_differentiable_on (λx. f x - g x) t"
             ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_add"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_neg"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_mul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on g s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on g s ⊢ real_differentiable_on g s"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on g s ⊢ ∀x. x ∈ s ⟶ real_differentiable g (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. f x1 * g x1) (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "4.2",
+                    "prevs": [
+                        "2",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, x ∈ s ⊢ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "x",
+                    "id": "4.3",
+                    "prevs": [
+                        "3",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on g s, real_differentiable_on f s, x ∈ s ⊢ real_differentiable g (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_mul_within",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.2",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, x ∈ s ⊢ real_differentiable (λx1. f x1 * g x1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. f x1 * g x1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (λx. f x * g x) s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s ⊢ real_differentiable_on (λx. f x * g x) s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on g s ⟶ real_differentiable_on (λx. f x * g x) s"
+                }
+            ],
             "prop": [
-                "real_differentiable_on f s ∧ real_differentiable_on g s ",
+                "real_differentiable_on f s ⟶ real_differentiable_on g s ",
                 "⟶ real_differentiable_on (λx. f x * g x) s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_mul_within"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_pow",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. f x1 ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "2.2",
+                    "prevs": [
+                        "1",
+                        "2.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f s, x ∈ s ⊢ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_pow_within, {}, {f: f, n: n, s: s, x: x}",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_differentiable_on f s, x ∈ s ⊢ real_differentiable (λx1. f x1 ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. f x1 ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (λx. f x ^ n) s",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on (λx. f x ^ n) s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on (λx. f x ^ n) s"
+                }
+            ],
             "prop": "real_differentiable_on f s ⟶ real_differentiable_on (λx. f x ^ n) s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_pow_within"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "n": "nat",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_inv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ ¬(f x = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ ¬(f x = 0) ⊢ ∀x. x ∈ s ⟶ ¬(f x = 0)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f s, ∀x. x ∈ s ⟶ ¬(f x = 0) ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. real_inverse (f x1)) (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "3.2",
+                    "prevs": [
+                        "2",
+                        "3.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f s, ∀x. x ∈ s ⟶ ¬(f x = 0), x ∈ s ⊢ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "x",
+                    "id": "3.3",
+                    "prevs": [
+                        "1",
+                        "3.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ⟶ ¬(f x = 0), real_differentiable_on f s, x ∈ s ⊢ ¬(f x = 0)"
+                },
+                {
+                    "args": "real_differentiable_inv_within",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.2",
+                        "3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s, ∀x. x ∈ s ⟶ ¬(f x = 0), x ∈ s ⊢ real_differentiable (λx1. real_inverse (f x1)) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f s, ∀x. x ∈ s ⟶ ¬(f x = 0) ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. real_inverse (f x1)) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (λx. real_inverse (f x)) s",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f s, ∀x. x ∈ s ⟶ ¬(f x = 0) ⊢ real_differentiable_on (λx. real_inverse (f x)) s"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ (∀x. x ∈ s ⟶ ¬(f x = 0)) ⟶ real_differentiable_on (λx. real_inverse (f x)) s"
+                }
+            ],
             "prop": [
-                "real_differentiable_on f s ∧ (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
+                "real_differentiable_on f s ⟶ (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
                 "⟶ real_differentiable_on (λx. real_inverse (f x)) s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_inv_within"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "apply_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_div",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on g s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on g s ⊢ real_differentiable_on g s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ ¬(g x = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ ¬(g x = 0) ⊢ ∀x. x ∈ s ⟶ ¬(g x = 0)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on g s ⊢ ∀x. x ∈ s ⟶ real_differentiable g (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, ∀x. x ∈ s ⟶ ¬(g x = 0) ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. f x1 / g x1) (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "5.2",
+                    "prevs": [
+                        "3",
+                        "5.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, ∀x. x ∈ s ⟶ ¬(g x = 0), x ∈ s ⊢ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "x",
+                    "id": "5.3",
+                    "prevs": [
+                        "4",
+                        "5.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on g s, real_differentiable_on f s, ∀x. x ∈ s ⟶ ¬(g x = 0), x ∈ s ⊢ real_differentiable g (within (atreal x) s)"
+                },
+                {
+                    "args": "x",
+                    "id": "5.4",
+                    "prevs": [
+                        "2",
+                        "5.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ⟶ ¬(g x = 0), real_differentiable_on f s, real_differentiable_on g s, x ∈ s ⊢ ¬(g x = 0)"
+                },
+                {
+                    "args": "real_differentiable_div_within",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.2",
+                        "5.3",
+                        "5.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, ∀x. x ∈ s ⟶ ¬(g x = 0), x ∈ s ⊢ real_differentiable (λx1. f x1 / g x1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.5"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, ∀x. x ∈ s ⟶ ¬(g x = 0) ⊢ ∀x. x ∈ s ⟶ real_differentiable (λx1. f x1 / g x1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (λx. f x / g x) s",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f s, real_differentiable_on g s, ∀x. x ∈ s ⟶ ¬(g x = 0) ⊢ real_differentiable_on (λx. f x / g x) s"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on g s ⟶ (∀x. x ∈ s ⟶ ¬(g x = 0)) ⟶ real_differentiable_on (λx. f x / g x) s"
+                }
+            ],
             "prop": [
-                "real_differentiable_on f s ∧ ",
-                "real_differentiable_on g s ∧ (∀x. x ∈ s ⟶ ¬(g x = 0)) ",
+                "real_differentiable_on f s ⟶ ",
+                "real_differentiable_on g s ⟶ (∀x. x ∈ s ⟶ ¬(g x = 0)) ",
                 "⟶ real_differentiable_on (λx. f x / g x) s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_div_within"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "5.4",
+                    "method_name": "apply_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_compose",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on g (image f s)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on g (image f s) ⊢ real_differentiable_on g (image f s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_differentiable_on g (image f s) ⊢ ∀x. x ∈ image f s ⟶ real_differentiable g (within (atreal x) (image f s))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "4.2",
+                    "prevs": [
+                        "2",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ real_differentiable f (within (atreal x) s)"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: f x}",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ f x = f x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3",
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ f x = f x ∧ x ∈ s"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx1. f x = f x1 ∧ x1 ∈ s, a: x}",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ ∃a1. f x = f a1 ∧ a1 ∈ s"
+                },
+                {
+                    "args": "in_image, f x ∈ image f s",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ f x ∈ image f s"
+                },
+                {
+                    "args": "f x",
+                    "id": "4.7",
+                    "prevs": [
+                        "3",
+                        "4.6"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_differentiable_on g (image f s), real_differentiable_on f s, x ∈ s ⊢ real_differentiable g (within (atreal (f x)) (image f s))"
+                },
+                {
+                    "args": "real_differentiable_compose_within",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.2",
+                        "4.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ real_differentiable (g ∘ f) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.8"
+                    ],
+                    "rule": "intros",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on (g ∘ f) s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ real_differentiable_on (g ∘ f) s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (g ∘ f) s"
+                }
+            ],
             "prop": [
-                "real_differentiable_on f s ∧ real_differentiable_on g (image f s) ",
+                "real_differentiable_on f s ⟶ real_differentiable_on g (image f s) ",
                 "⟶ real_differentiable_on (g ∘ f) s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_compose_within"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_differentiable_on_sum",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀a. a ∈ s ⟶ real_differentiable_on (f a) t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. a ∈ s ⟶ real_differentiable_on (f a) t ⊢ ∀a. a ∈ s ⟶ real_differentiable_on (f a) t"
+                },
+                {
+                    "args": "real_differentiable_on_const, {}, {c: (0::real), s: t}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable_on (λx. 0) t"
+                },
+                {
+                    "args": "sum_empty, real_differentiable_on (λx. sum ∅ (λa. f a x)) t",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ∀a. a ∈ s ⟶ real_differentiable_on (f a) t ⊢ real_differentiable_on (λx. sum ∅ (λa. f a x)) t"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ∀a. a ∈ s ⟶ real_differentiable_on (f a) t ⊢ ∀x. ∀s1. real_differentiable_on (λx1. sum s1 (λa. f a x1)) t ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ real_differentiable_on (λx1. sum (insert x s1) (λa. f a x1)) t"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s1, 'a set",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "real_differentiable_on (λx1. sum s1 (λa. f a x1)) t",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on (λx1. sum s1 (λa. f a x1)) t ⊢ real_differentiable_on (λx1. sum s1 (λa. f a x1)) t"
+                },
+                {
+                    "args": "¬(x ∈ s1)",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s1) ⊢ ¬(x ∈ s1)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ⊢ finite s1"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s, ∀a. a ∈ s ⟶ real_differentiable_on (f a) t, real_differentiable_on (λx1. sum s1 (λa. f a x1)) t, ¬(x ∈ s1), finite s1 ⊢ real_differentiable_on (λx1. sum (insert x s1) (λa. f a x1)) t"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.4",
+                        "4.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ∀a. a ∈ s ⟶ real_differentiable_on (f a) t ⊢ ∀x. ∀s1. real_differentiable_on (λx1. sum s1 (λa. f a x1)) t ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ real_differentiable_on (λx1. sum (insert x s1) (λa. f a x1)) t"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀a. a ∈ s ⟶ real_differentiable_on (f a) t ⊢ real_differentiable_on (λx. sum s (λa. f a x)) t"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀a. a ∈ s ⟶ real_differentiable_on (f a) t) ⟶ real_differentiable_on (λx. sum s (λa. f a x)) t"
+                }
+            ],
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_differentiable_on (f a) t) ",
+                "finite s ⟶ (∀a. a ∈ s ⟶ real_differentiable_on (f a) t) ",
                 "⟶ real_differentiable_on (λx. sum s (λa. f a x)) t"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_empty"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_const"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x, s1"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real ⇒ real",
-                "f1": "'a ⇒ real",
+                "f": "'a => real => real",
+                "f1": "'a => real",
                 "s": "'a set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_exp",
             "prop": "has_real_derivative exp (exp x) (atreal x)",
             "ty": "thm",
@@ -8382,8 +9825,51 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_exp_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative_exp, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative exp (exp x) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_atreal_within, {}, {f: exp, f1: exp x, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative exp (exp x) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative exp (exp x) (within (atreal x) s)"
+                }
+            ],
             "prop": "has_real_derivative exp (exp x) (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atreal_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_exp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8391,16 +9877,117 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative_exp, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative exp (exp x) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative exp f1 (atreal x), a: exp x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. has_real_derivative exp a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable exp (atreal x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_differentiable exp (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable exp (atreal x)"
+                }
+            ],
             "prop": "real_differentiable exp (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "exp x"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_exp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_exp, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable exp (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: exp, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable exp (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable exp (within (atreal x) s)"
+                }
+            ],
             "prop": "real_differentiable exp (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_exp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8408,16 +9995,102 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_exp, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable exp (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_continuous exp (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous exp (atreal x)"
+                }
+            ],
             "prop": "real_continuous exp (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_exp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_within_exp, {}, {s: s, x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable exp (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_withinreal",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_continuous exp (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous exp (within (atreal x) s)"
+                }
+            ],
             "prop": "real_continuous exp (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_withinreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_within_exp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8426,13 +10099,94 @@
         },
         {
             "name": "real_continuous_on_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous exp (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_continuous_within_exp, {}, {s: s, x: x}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous exp (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous exp (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on exp s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_continuous_on exp s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous_on exp s"
+                }
+            ],
             "prop": "real_continuous_on exp s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_exp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_sin",
             "prop": "has_real_derivative sin (cos x) (atreal x)",
             "ty": "thm",
@@ -8450,8 +10204,66 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_sin",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative_sin, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative sin (cos x) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative sin f1 (atreal x), a: cos x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. has_real_derivative sin a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable sin (atreal x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_differentiable sin (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable sin (atreal x)"
+                }
+            ],
             "prop": "real_differentiable sin (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "cos x"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_sin"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8459,7 +10271,47 @@
         },
         {
             "name": "real_differentiable_within_sin",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_sin, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable sin (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: sin, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable sin (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable sin (within (atreal x) s)"
+                }
+            ],
             "prop": "real_differentiable sin (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_sin"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8467,16 +10319,102 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_sin",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_sin, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable sin (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_continuous sin (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous sin (atreal x)"
+                }
+            ],
             "prop": "real_continuous sin (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_sin"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_sin",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_continuous_at_sin, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous sin (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: sin, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous sin (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous sin (within (atreal x) s)"
+                }
+            ],
             "prop": "real_continuous sin (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_sin"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8484,14 +10422,98 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_sin",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous sin (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_continuous_within_sin, {}, {s: s, x: x}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous sin (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous sin (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on sin s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_continuous_on sin s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous_on sin s"
+                }
+            ],
             "prop": "real_continuous_on sin s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_sin"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_cos",
             "prop": "has_real_derivative cos (-(sin x)) (atreal x)",
             "ty": "thm",
@@ -8500,8 +10522,51 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_cos_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative_cos, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative cos (-(sin x)) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_atreal_within, {}, {f: cos, f1: -(sin x), s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative cos (-(sin x)) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative cos (-(sin x)) (within (atreal x) s)"
+                }
+            ],
             "prop": "has_real_derivative cos (-(sin x)) (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atreal_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_cos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8509,8 +10574,66 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative_cos, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative cos (-(sin x)) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative cos f1 (atreal x), a: -(sin x)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. has_real_derivative cos a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable cos (atreal x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_differentiable cos (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable cos (atreal x)"
+                }
+            ],
             "prop": "real_differentiable cos (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "-sin x"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_cos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8518,7 +10641,47 @@
         },
         {
             "name": "real_differentiable_within_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_cos, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable cos (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: cos, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable cos (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable cos (within (atreal x) s)"
+                }
+            ],
             "prop": "real_differentiable cos (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_cos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8526,16 +10689,102 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_cos, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable cos (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_continuous cos (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous cos (atreal x)"
+                }
+            ],
             "prop": "real_continuous cos (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_cos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_continuous_at_cos, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous cos (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: cos, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous cos (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous cos (within (atreal x) s)"
+                }
+            ],
             "prop": "real_continuous cos (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_cos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8544,13 +10793,94 @@
         },
         {
             "name": "real_continuous_on_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous cos (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_continuous_within_cos, {}, {s: s, x: x}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous cos (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous cos (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on cos s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_continuous_on cos s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous_on cos s"
+                }
+            ],
             "prop": "real_continuous_on cos s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_cos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_tan",
             "prop": [
                 "¬(cos x = 0) ",
@@ -8562,16 +10892,137 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "has_real_derivative_tan",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0) ⊢ has_real_derivative tan (real_inverse (cos x ^ (2::nat))) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative tan f1 (atreal x), a: real_inverse (cos x ^ (2::nat))}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(cos x = 0) ⊢ ∃a1. has_real_derivative tan a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable tan (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ real_differentiable tan (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ real_differentiable tan (atreal x)"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ real_differentiable tan (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(real_inverse (cos x ^ (2::nat)))"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_tan"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_differentiable_at_tan",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0) ⊢ real_differentiable tan (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: tan, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(cos x = 0) ⊢ real_differentiable tan (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ real_differentiable tan (within (atreal x) s)"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ real_differentiable tan (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_tan"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8579,16 +11030,122 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_differentiable_at_tan",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0) ⊢ real_differentiable tan (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0) ⊢ real_continuous tan (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ real_continuous tan (atreal x)"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ real_continuous tan (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_tan"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_continuous_at_tan",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0) ⊢ real_continuous tan (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: tan, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(cos x = 0) ⊢ real_continuous tan (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ real_continuous tan (within (atreal x) s)"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ real_continuous tan (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_tan"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8596,14 +11153,125 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ ¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ ¬(cos x = 0) ⊢ ∀x. x ∈ s ⟶ ¬(cos x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ ¬(cos x = 0) ⊢ ∀x. x ∈ s ⟶ real_continuous tan (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "1.2",
+                    "prevs": [
+                        "0",
+                        "1.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ⟶ ¬(cos x = 0), x ∈ s ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_continuous_within_tan, {}, {s: s, x: x}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. x ∈ s ⟶ ¬(cos x = 0), x ∈ s ⊢ real_continuous tan (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ ¬(cos x = 0) ⊢ ∀x. x ∈ s ⟶ real_continuous tan (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on tan s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ ¬(cos x = 0) ⊢ real_continuous_on tan s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ ¬(cos x = 0)) ⟶ real_continuous_on tan s"
+                }
+            ],
             "prop": "(∀x. x ∈ s ⟶ ¬(cos x = 0)) ⟶ real_continuous_on tan s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_tan"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_log",
             "prop": "0 < x ⟶ has_real_derivative log (real_inverse x) (atreal x)",
             "ty": "thm",
@@ -8612,16 +11280,137 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_log",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "has_real_derivative_log",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ has_real_derivative log (real_inverse x) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative log f1 (atreal x), a: real_inverse x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ ∃a1. has_real_derivative log a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable log (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ real_differentiable log (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_differentiable log (atreal x)"
+                }
+            ],
             "prop": "0 < x ⟶ real_differentiable log (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(real_inverse x)"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_log"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_log",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_differentiable_at_log",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_differentiable log (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: log, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ real_differentiable log (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_differentiable log (within (atreal x) s)"
+                }
+            ],
             "prop": "0 < x ⟶ real_differentiable log (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_log"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8629,16 +11418,122 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_log",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_differentiable_at_log",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_differentiable log (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_continuous log (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_continuous log (atreal x)"
+                }
+            ],
             "prop": "0 < x ⟶ real_continuous log (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_log"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_log",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_continuous_at_log",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_continuous log (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: log, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ real_continuous log (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_continuous log (within (atreal x) s)"
+                }
+            ],
             "prop": "0 < x ⟶ real_continuous log (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_log"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8647,13 +11542,135 @@
         },
         {
             "name": "real_continuous_on_log",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ 0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ ∀x. x ∈ s ⟶ 0 < x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ ∀x. x ∈ s ⟶ real_differentiable log (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "1.2",
+                    "prevs": [
+                        "0",
+                        "1.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ⟶ 0 < x, x ∈ s ⊢ 0 < x"
+                },
+                {
+                    "args": "real_differentiable_within_log, {}, {s: s, x: x}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. x ∈ s ⟶ 0 < x, x ∈ s ⊢ real_differentiable log (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ ∀x. x ∈ s ⟶ real_differentiable log (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_on_differentiable, real_differentiable_on log s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ real_differentiable_on log s"
+                },
+                {
+                    "args": "real_differentiable_on_imp_real_continuous_on",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ real_continuous_on log s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ 0 < x) ⟶ real_continuous_on log s"
+                }
+            ],
             "prop": "(∀x. x ∈ s ⟶ 0 < x) ⟶ real_continuous_on log s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_imp_real_continuous_on"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_on_differentiable"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_within_log"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_sqrt",
             "prop": "0 < x ⟶ has_real_derivative sqrt (real_inverse (2 * sqrt x)) (atreal x)",
             "ty": "thm",
@@ -8662,16 +11679,137 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_sqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "has_real_derivative_sqrt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ has_real_derivative sqrt (real_inverse (2 * sqrt x)) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative sqrt f1 (atreal x), a: real_inverse (2 * sqrt x)}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ ∃a1. has_real_derivative sqrt a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable sqrt (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ real_differentiable sqrt (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_differentiable sqrt (atreal x)"
+                }
+            ],
             "prop": "0 < x ⟶ real_differentiable sqrt (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(real_inverse (2 * sqrt x))"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_sqrt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_sqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_differentiable_at_sqrt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_differentiable sqrt (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: sqrt, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ real_differentiable sqrt (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_differentiable sqrt (within (atreal x) s)"
+                }
+            ],
             "prop": "0 < x ⟶ real_differentiable sqrt (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_sqrt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8679,16 +11817,122 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_sqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_differentiable_at_sqrt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_differentiable sqrt (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_continuous sqrt (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_continuous sqrt (atreal x)"
+                }
+            ],
             "prop": "0 < x ⟶ real_continuous sqrt (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_sqrt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_sqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_continuous_at_sqrt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ real_continuous sqrt (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: sqrt, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ real_continuous sqrt (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ real_continuous sqrt (within (atreal x) s)"
+                }
+            ],
             "prop": "0 < x ⟶ real_continuous sqrt (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_sqrt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8696,6 +11940,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_withinreal_sqrt_compose",
             "prop": [
                 "real_continuous f (within (atreal x) s) ",
@@ -8703,30 +11950,144 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_atreal_sqrt_compose",
             "prop": "real_continuous f (atreal x) ⟶ real_continuous (λx1. sqrt (f x1)) (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_sqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ 0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ ∀x. x ∈ s ⟶ 0 < x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ ∀x. x ∈ s ⟶ real_continuous sqrt (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "1.2",
+                    "prevs": [
+                        "0",
+                        "1.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ⟶ 0 < x, x ∈ s ⊢ 0 < x"
+                },
+                {
+                    "args": "real_continuous_within_sqrt, {}, {s: s, x: x}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. x ∈ s ⟶ 0 < x, x ∈ s ⊢ real_continuous sqrt (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ ∀x. x ∈ s ⟶ real_continuous sqrt (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on sqrt s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 < x ⊢ real_continuous_on sqrt s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ 0 < x) ⟶ real_continuous_on sqrt s"
+                }
+            ],
             "prop": "(∀x. x ∈ s ⟶ 0 < x) ⟶ real_continuous_on sqrt s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_sqrt"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_atn",
             "prop": "has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)",
             "ty": "thm",
@@ -8735,16 +12096,117 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_atn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative_atn, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative atn f1 (atreal x), a: real_inverse (1 + x ^ (2::nat))}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. has_real_derivative atn a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable atn (atreal x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_differentiable atn (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable atn (atreal x)"
+                }
+            ],
             "prop": "real_differentiable atn (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(real_inverse (1 + x ^ (2::nat)))"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_atn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_atn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_atn, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable atn (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: atn, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable atn (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable atn (within (atreal x) s)"
+                }
+            ],
             "prop": "real_differentiable atn (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_atn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8752,16 +12214,102 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_atn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_at_atn, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable atn (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_continuous atn (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous atn (atreal x)"
+                }
+            ],
             "prop": "real_continuous atn (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_atn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_atn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_within_atn, {}, {s: s, x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable atn (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_withinreal",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_continuous atn (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous atn (within (atreal x) s)"
+                }
+            ],
             "prop": "real_continuous atn (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_withinreal"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_within_atn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8769,14 +12317,99 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_atn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous atn (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_continuous_within_atn, {}, {s: s, x: x}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous atn (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ⟶ real_continuous atn (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on atn s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_continuous_on atn s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous_on atn s"
+                }
+            ],
             "prop": "real_continuous_on atn s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_atn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_asn_cos",
             "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (cos (asn x))) (atreal x)",
             "ty": "thm",
@@ -8785,24 +12418,260 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_asn",
-            "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (1 - x ^ (2::nat))) (atreal x)",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "has_real_derivative_asn_cos, {}, {x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ has_real_derivative asn (real_inverse (cos (asn x))) (atreal x)"
+                },
+                {
+                    "args": "-1 ≤ x",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < 1 ⊢ -1 ≤ x"
+                },
+                {
+                    "args": "x ≤ 1",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < 1 ⊢ x ≤ 1"
+                },
+                {
+                    "args": "cos_asn",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ cos (asn x) = sqrt (1 - x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs x < 1 ⊢ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)"
+                }
+            ],
+            "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "has_real_derivative_asn_cos"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal": "cos (asn x) = sqrt (1 - x ^ (2::nat))",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_asn"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "1"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_asn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "has_real_derivative_asn",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ has_real_derivative asn (real_inverse (1 - x ^ (2::nat))) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative asn f1 (atreal x), a: real_inverse (1 - x ^ (2::nat))}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ ∃a1. has_real_derivative asn a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable asn (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_differentiable asn (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_differentiable asn (atreal x)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_differentiable asn (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(real_inverse (1 - x ^ (2::nat)))"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_asn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_asn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_differentiable_at_asn",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_differentiable asn (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: asn, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ real_differentiable asn (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_differentiable asn (within (atreal x) s)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_differentiable asn (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_asn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8810,16 +12679,122 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_asn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_differentiable_at_asn",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_differentiable asn (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_continuous asn (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_continuous asn (atreal x)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_continuous asn (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_asn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_asn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_continuous_at_asn",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_continuous asn (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: asn, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ real_continuous asn (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_continuous asn (within (atreal x) s)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_continuous asn (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_asn"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8827,6 +12802,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_acs_sin",
             "prop": "abs x < 1 ⟶ has_real_derivative acs (-(real_inverse (sin (acs x)))) (atreal x)",
             "ty": "thm",
@@ -8835,10 +12814,122 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "has_real_derivative_acs_sin, {}, {x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ has_real_derivative acs (-(real_inverse (sin (acs x)))) (atreal x)"
+                },
+                {
+                    "args": "-1 ≤ x",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < 1 ⊢ -1 ≤ x"
+                },
+                {
+                    "args": "x ≤ 1",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "abs x < 1 ⊢ x ≤ 1"
+                },
+                {
+                    "args": "sin_acs",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ sin (acs x) = sqrt (1 - x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs x < 1 ⊢ has_real_derivative acs (-(real_inverse (sqrt (1 - x ^ (2::nat))))) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ has_real_derivative acs (-(real_inverse (sqrt (1 - x ^ (2::nat))))) (atreal x)"
+                }
+            ],
             "prop": [
                 "abs x < 1 ",
-                "⟶ has_real_derivative acs (-(real_inverse (1 - x ^ (2::nat)))) (atreal x)"
+                "⟶ has_real_derivative acs (-(real_inverse (sqrt (1 - x ^ (2::nat))))) (atreal x)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "has_real_derivative_acs_sin"
+                },
+                {
+                    "goal": "sin (acs x) = sqrt (1 - x ^ (2::nat))",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_acs"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "1"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact_with_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -8846,16 +12937,137 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "has_real_derivative_acs",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ has_real_derivative acs (-(real_inverse (sqrt (1 - x ^ (2::nat))))) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative acs f1 (atreal x), a: -(real_inverse (sqrt (1 - x ^ (2::nat))))}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ ∃a1. has_real_derivative acs a1 (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_def, real_differentiable acs (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < 1 ⊢ real_differentiable acs (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_differentiable acs (atreal x)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_differentiable acs (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(-(real_inverse (sqrt (1 - x ^ (2::nat)))))"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_acs"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_within_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_differentiable_at_acs",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_differentiable acs (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_atreal_within, {}, {f: acs, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ real_differentiable acs (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_differentiable acs (within (atreal x) s)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_differentiable acs (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_atreal_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_acs"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8863,16 +13075,122 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_differentiable_at_acs",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_differentiable acs (atreal x)"
+                },
+                {
+                    "args": "real_differentiable_imp_continuous_atreal",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_continuous acs (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_continuous acs (atreal x)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_continuous acs (atreal x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_at_acs"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "real_continuous_at_acs",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < 1 ⊢ real_continuous acs (atreal x)"
+                },
+                {
+                    "args": "real_continuous_atreal_withinreal, {}, {f: acs, s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < 1 ⊢ real_continuous acs (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < 1 ⟶ real_continuous acs (within (atreal x) s)"
+                }
+            ],
             "prop": "abs x < 1 ⟶ real_continuous acs (within (atreal x) s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_acs"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8880,16 +13198,142 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_asn_strong",
-            "prop": "real_continuous asn (within (atreal x) ({t. abs t ≤ 1}))",
+            "prop": "real_continuous asn (within (atreal x) ({t::real. abs t ≤ 1}))",
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_asn",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ abs x ≤ 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ abs x ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ real_continuous asn (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_continuous_within_asn_strong, {}, {x: x}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous asn (within (atreal x) ({t. abs t ≤ 1}))"
+                },
+                {
+                    "args": "s ⊆ {t. abs t ≤ 1}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ s ⊆ {t. abs t ≤ 1}"
+                },
+                {
+                    "args": "real_continuous_withinreal_subset",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1, x ∈ s ⊢ real_continuous asn (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ real_continuous asn (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on asn s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ real_continuous_on asn s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ abs x ≤ 1) ⟶ real_continuous_on asn s"
+                }
+            ],
             "prop": "(∀x. x ∈ s ⟶ abs x ≤ 1) ⟶ real_continuous_on asn s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "{t::real. abs t ≤ 1}",
+                    "theorem": "real_continuous_withinreal_subset"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_asn_strong"
+                },
+                {
+                    "fact_ids": [
+                        "1.1",
+                        "0"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"

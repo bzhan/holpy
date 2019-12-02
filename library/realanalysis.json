@@ -4825,11 +4825,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_continuous_atreal_withinreal",
             "prop": "real_continuous f (atreal x) ⟶ real_continuous f (within (atreal x) s)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
