@@ -16,6 +16,9 @@ class TypeInferenceException(Exception):
         self.err = err
 
 
+def is_internal_type(T):
+    return T.is_stvar() and T.name.startswith('_t')
+
 def type_infer(ctxt, t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
@@ -43,7 +46,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     # Create and return a new type variable.
     def new_type():
         nonlocal num_internal
-        T = STVar("t" + str(num_internal))
+        T = STVar('_t' + str(num_internal))
         uf[num_internal] = T
         reach[num_internal] = set()
         num_internal += 1
@@ -52,13 +55,14 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     def union(T1, T2):
         """Join temporary type variable T1 with T2."""
         # Compute the set of temporary type variables reachable from T2.
-        if T2.is_stvar():
-            new_reach = reach[int(T2.name[1:])]
+        if is_internal_type(T2):
+            new_reach = reach[int(T2.name[2:])]
         else:
             new_reach = set()
             for T in T2.get_stvars():
-                new_reach.add(int(T.name[1:]))
-                new_reach.update(reach[int(T.name[1:])])
+                if is_internal_type(T):
+                    new_reach.add(int(T.name[2:]))
+                    new_reach.update(reach[int(T.name[2:])])
 
         # Update uf and reach, check for cycles in reach.
         for k, v in uf.items():
@@ -71,10 +75,10 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     def unify(T1, T2):
         """Unification of two types."""
         # First, find representatives of T1 and T2
-        if T1.is_stvar():
-            T1 = uf[int(T1.name[1:])]
-        if T2.is_stvar():
-            T2 = uf[int(T2.name[1:])]
+        if is_internal_type(T1):
+            T1 = uf[int(T1.name[2:])]
+        if is_internal_type(T2):
+            T2 = uf[int(T2.name[2:])]
 
         # Type constructors, recursively unify each argument
         if T1.is_type() and T2.is_type() and T1.name == T2.name:
@@ -89,9 +93,9 @@ def type_infer(ctxt, t, *, forbid_internal=True):
             return
 
         # Internal (unifiable) type variables
-        elif T1.is_stvar():
+        elif is_internal_type(T1):
             union(T1, T2)
-        elif T2.is_stvar():
+        elif is_internal_type(T2):
             union(T2, T1)
         else:
             raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
@@ -133,9 +137,8 @@ def type_infer(ctxt, t, *, forbid_internal=True):
                         T = ctxt.defs[t.name]
                     else:
                         raise e
-                STvars = T.get_stvars()
                 tyinst = dict()
-                for STv in STvars:
+                for STv in T.get_stvars():
                     tyinst[STv.name] = new_type()
                 t.T = T.subst(tyinst)
             return t.T
@@ -146,7 +149,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
             funT = infer(t.fun, bd_vars)
             argT = infer(t.arg, bd_vars)
             try:
-                if not funT.is_fun() and not funT.is_stvar():
+                if not funT.is_fun() and not is_internal_type(funT):
                     raise TypeInferenceException(str(funT) + ' is not of function type')
                 if funT.is_fun():
                     unify(funT.domain_type(), argT)
@@ -188,7 +191,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     # Replace vars and constants with the appropriate type.
     tyinst = dict()
     for i in range(num_internal):
-        tyinst['t' + str(i)] = uf[i]
+        tyinst['_t' + str(i)] = uf[i]
 
     unspecified = []
     for k, v in tyinst.items():
@@ -202,10 +205,10 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     while has_repl:
         has_repl = False
         for i in range(num_internal):
-            T = tyinst['t' + str(i)]
-            stvars = T.get_stvars()
+            T = tyinst['_t' + str(i)]
+            stvars = [subT for subT in T.get_stvars() if is_internal_type(subT)]
             if any(v.name not in unspecified for v in stvars):
-                tyinst['t' + str(i)] = T.subst(tyinst)
+                tyinst['_t' + str(i)] = T.subst(tyinst)
                 has_repl = True
 
     t.subst_type_inplace(tyinst)
@@ -253,7 +256,7 @@ def infer_printed_type(thy, t):
         type_infer(Context(thy), t, forbid_internal=False)
 
         def has_internalT(T):
-            return any(subT.is_stvar() for subT in T.get_tsubs())
+            return any(is_internal_type(subT) for subT in T.get_tsubs())
 
         to_replace, to_replaceT = None, None
         def find_to_replace(t):

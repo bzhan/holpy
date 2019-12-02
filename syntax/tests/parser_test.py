@@ -21,6 +21,7 @@ class ParserTest(unittest.TestCase):
     def testParseType(self):
         test_data = [
             "'b",
+            "'?b",
             "nat",
             "'a list",
             "nat list",
@@ -32,6 +33,7 @@ class ParserTest(unittest.TestCase):
             "('a => 'b) => 'c",
             "('a => 'b) => 'c => 'd",
             "(('a => 'b) => 'c) => 'd",
+            "'?a => '?b",
             "'a => 'b list",
             "('a => 'b) list",
             "'a list list",
