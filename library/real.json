@@ -447,10 +447,11 @@
         {
             "attributes": [
                 "hint_forward",
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "real_le_mul",
-            "prop": "0 ≤ x ∧ 0 ≤ y ⟶ 0 ≤ x * y",
+            "prop": "0 ≤ x --> 0 ≤ y ⟶ 0 ≤ x * y",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -516,7 +517,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "real_of_nat_add",
             "prop": "(of_nat::nat ⇒ real) m + of_nat n = of_nat (m + n)",
@@ -2436,6 +2438,344 @@
             "vars": {
                 "x": "real",
                 "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_le_negtotal",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_total, {}, {x: (0::real), y: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ x ∨ x ≤ 0"
+                },
+                {
+                    "args": "real_add_lid, 0 ≤ x ∨ 0 + x ≤ 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 ≤ x ∨ 0 + x ≤ 0"
+                },
+                {
+                    "args": "real_le_rneg, 0 ≤ x ∨ 0 ≤ -x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 ≤ x ∨ 0 ≤ -x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ∨ 0 ≤ -x"
+                }
+            ],
+            "prop": "0 <= x | 0 <= -x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_rneg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_total"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_le_square",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_negtotal, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ x ∨ 0 ≤ -x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ x ⟶ 0 ≤ x * x"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "real_le_mul",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x ⊢ 0 ≤ x * x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ 0 ≤ x * x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ -x ⟶ 0 ≤ x * x"
+                },
+                {
+                    "args": "0 ≤ -x",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ -x ⊢ 0 ≤ -x"
+                },
+                {
+                    "args": "real_le_mul, {}, {x: -x, y: -x}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ -x ⊢ 0 ≤ -x ⟶ 0 ≤ -x * -x"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1",
+                        "2.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 ≤ -x ⊢ 0 ≤ -x * -x"
+                },
+                {
+                    "args": "real_mul_rneg",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ -x ⊢ 0 ≤ -(-x * x)"
+                },
+                {
+                    "args": "real_mul_lneg",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ -x ⊢ 0 ≤ --(x * x)"
+                },
+                {
+                    "args": "real_neg_neg",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ -x ⊢ 0 ≤ x * x"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ -x ⟶ 0 ≤ x * x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 ≤ x * x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x * x"
+                }
+            ],
+            "prop": "0 <= x * x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "real_le_negtotal"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "param_y": "-x",
+                    "theorem": "real_le_mul"
+                },
+                {
+                    "fact_ids": [
+                        "2.1",
+                        "2.0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rneg"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_neg_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_mul_rid",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_mul_lid, 1 * x = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 * x = x"
+                },
+                {
+                    "args": "real_mult_comm, x * 1 = x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x * 1 = x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x * 1 = x"
+                }
+            ],
+            "prop": "x * 1 = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
             }
         },
         {
