@@ -155,10 +155,10 @@ class HOLTransformer(Transformer):
         pass
 
     def tvar(self, s):
-        return TVar(s)
+        return TVar(str(s))
 
     def stvar(self, s):
-        return STVar(s)
+        return STVar(str(s))
 
     def type(self, *args):
         return Type(str(args[-1]), *args[:-1])
