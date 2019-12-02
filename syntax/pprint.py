@@ -359,6 +359,9 @@ def get_ast_term(thy, t):
             body_ast = helper(t.arg.body, [bind_var] + bd_vars)
             var_names.remove(nm)
 
+            if hasattr(t.arg, "print_type"):
+                bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+
             return Collect(bind_var, body_ast, t.get_type())
 
         elif logic.is_if(t):

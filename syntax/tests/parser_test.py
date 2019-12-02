@@ -251,6 +251,7 @@ class ParserTest(unittest.TestCase):
             ("[(2::real), 3]", "real list"),
             ("{(2::real), 3}", "real set"),
             ("{(2::real), 3} Un {4, 5}", "real set"),
+            ("{t::real. abs t <= 1}", "real set"),
         ]
 
         vars = {'x': 'real', 'y': 'real', 'n': 'nat'}
