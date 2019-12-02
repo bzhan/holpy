@@ -5445,10 +5445,12 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
             ],
             "name": "finite_subset",
-            "prop": "finite t ∧ s ⊆ t ⟶ finite s",
+            "prop": "finite t ⟶ s ⊆ t ⟶ finite s",
             "ty": "thm",
             "vars": {
                 "s": "'a set",

@@ -62,10 +62,34 @@
             "type": "real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "cos_asn",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ cos (asn x) = sqrt (1 - x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "acs",
             "prop": "acs y = (THE x. 0 ≤ x ∧ x ≤ pi ∧ cos x = y)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "sin_acs",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ sin (acs x) = sqrt (1 - x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         },
         {
             "name": "power",
