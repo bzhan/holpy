@@ -13606,7 +13606,39 @@
                     "args": "",
                     "id": "0",
                     "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. 1 ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "1 ≤ n",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 ≤ n ⊢ 1 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
                     "rule": "sorry",
+                    "th": "1 ≤ n ⊢ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ ∀n. 1 ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
                 },
                 {
@@ -13616,7 +13648,7 @@
                         "0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ ∃a1. ∀n. a1 ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
+                    "th": "⊢ ∃N. ∀n. N ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
                 },
                 {
                     "args": "eventually_sequentially, eventually (λx. exp (log (of_nat x) / of_nat x) = root x (of_nat x)) sequentially",
@@ -13642,7 +13674,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ tendsto_real (λx. root x (of_nat x)) 1 sequentially"
+                    "th": "⊢ tendsto_real (λn. root n (of_nat n)) 1 sequentially"
                 },
                 {
                     "args": "",
@@ -13651,7 +13683,7 @@
                         "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ tendsto_real (λx. root x (of_nat x)) 1 sequentially"
+                    "th": "⊢ tendsto_real (λn. root n (of_nat n)) 1 sequentially"
                 }
             ],
             "prop": "tendsto_real (λn. root n (of_nat n)) 1 sequentially",
@@ -13672,21 +13704,31 @@
                     "goal_id": "0",
                     "method_name": "inst_exists_goal",
                     "s": "(1::nat)"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "n"
                 }
             ],
             "ty": "thm",
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_rpow_compose",
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ∧ 0 < l ",
+                "tendsto_real f l net ⟶ tendsto_real g m net ⟶ 0 < l ",
                 "⟶ tendsto_real (λx. f x ^ g x) (l ^ m) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
