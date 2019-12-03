@@ -32,11 +32,11 @@ def has_real_derivativeI(thy, f, x, S):
             pt1 = has_real_derivativeI(thy, t1, x, S)
             pt2 = has_real_derivativeI(thy, t2, x, S)
             if real.is_plus(t):
-                return apply_theorem(thy, 'has_real_derivative_add', conj_thms(thy, pt1, pt2))
+                return apply_theorem(thy, 'has_real_derivative_add', pt1, pt2)
             elif real.is_minus(t):
-                return apply_theorem(thy, 'has_real_derivative_sub', conj_thms(thy, pt1, pt2))
+                return apply_theorem(thy, 'has_real_derivative_sub', pt1, pt2)
             elif real.is_times(t):
-                return apply_theorem(thy, 'has_real_derivative_mul_within', conj_thms(thy, pt1, pt2))
+                return apply_theorem(thy, 'has_real_derivative_mul_within', pt1, pt2)
             else:
                 raise NotImplementedError
         elif real.is_nat_power(t) and nat.is_binary_nat(t.arg) and nat.from_binary_nat(t.arg) > 0:
@@ -58,7 +58,7 @@ def has_real_derivativeI(thy, f, x, S):
                 f = Term.mk_abs(v, t.arg)
                 pt1 = has_real_derivativeI(thy, f, x, S)
                 pt2 = apply_theorem(thy, th_name, inst={'x': f(x), 's': set.mk_image(f, S)})
-                return apply_theorem(thy, 'real_diff_chain_within', conj_thms(thy, pt1, pt2), inst={'f': f})
+                return apply_theorem(thy, 'real_diff_chain_within', pt1, pt2, inst={'f': f})
             else:
                 raise NotImplementedError
         elif t == v:

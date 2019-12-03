@@ -14,7 +14,13 @@ from kernel import term
 from util import name
 
 class MatchException(Exception):
-    pass
+    def __init__(self, trace):
+        self.trace = trace
+
+    def __str__(self):
+        pat, t = self.trace[-1]
+        trace = '\n'.join("%s --- %s" % (pat, t) for pat, t in self.trace)
+        return "When matching %s with %s\nTrace:\n%s" % (pat, t, trace)
 
 
 def is_pattern(t, matched_vars, bd_vars=None):
@@ -67,10 +73,12 @@ def first_order_match_incr(pat, t, instsp):
            "first_order_match_incr: pat and t must be terms."
     assert len(term.get_svars(t)) == 0, "first_order_match_incr: t should not contain patterns."
 
-    # print("First order match", pat, "with", t)
+    # Trace of pattern and term, for debugging
+    trace = []
+
     def match(pat, t, instsp, bd_vars):
+        trace.append((pat, t))
         tyinst, inst = instsp
-        # print("Match", str(pat), "with", str(t), "inst", inst)
         if pat.head.is_svar():
             # Case where the head of the function is a variable.
             if pat.head.name not in inst:
@@ -100,16 +108,16 @@ def first_order_match_incr(pat, t, instsp):
                     # Heuristic matching: just assign pat.fun to t.fun.
                     if pat.is_svar():
                         # t contains bound variables, so match fails
-                        raise MatchException
+                        raise MatchException(trace)
                     elif t.is_comb():
                         try:
                             pat.head.T.match_incr(t.fun.get_type(), tyinst)
                         except TypeMatchException:
-                            raise MatchException
+                            raise MatchException(trace)
                         inst[pat.head.name] = t.fun
                         match(pat.arg, t.arg, instsp, bd_vars)
                     else:
-                        raise MatchException
+                        raise MatchException(trace)
                 else:
                     # First, obtain and match the expected type of pat_T.
                     Tlist = []
@@ -122,7 +130,7 @@ def first_order_match_incr(pat, t, instsp):
                     try:
                         pat.head.T.match_incr(TFun(*Tlist), tyinst)
                     except TypeMatchException:
-                        raise MatchException
+                        raise MatchException(trace)
 
                     # The instantiation of the head variable is computed by starting
                     # with t, then abstract each of the arguments.
@@ -144,7 +152,7 @@ def first_order_match_incr(pat, t, instsp):
                             elif inst_v.is_var():
                                 inst_t = Term.mk_abs(inst_v, inst_t)
                             else:
-                                raise MatchException
+                                raise MatchException(trace)
                     inst[pat.head.name] = inst_t
             else:
                 # If the head variable is already instantiated, apply the
@@ -155,17 +163,17 @@ def first_order_match_incr(pat, t, instsp):
         elif pat.ty != t.ty:
             # In all other cases, top-level structure of the term
             # must agree.
-            raise MatchException
+            raise MatchException(trace)
         elif pat.is_var() or pat.is_const():
             # The case where pat is a free variable, constant, or comes
             # from a bound variable.
             if pat.name != t.name:
-                raise MatchException
+                raise MatchException(trace)
             else:
                 try:
                     pat.T.match_incr(t.T, tyinst)
                 except TypeMatchException:
-                    raise MatchException
+                    raise MatchException(trace)
         elif pat.is_comb():
             # In the combination case (where the head is not a variable),
             # match fun and arg.
@@ -181,7 +189,7 @@ def first_order_match_incr(pat, t, instsp):
             try:
                 pat.var_T.match_incr(t.var_T, tyinst)
             except TypeMatchException:
-                raise MatchException
+                raise MatchException(trace)
             T = pat.var_T.subst(tyinst)
             var_names = [v.name for v in term.get_vars(pat.body) + term.get_vars(t.body)]
             nm = name.get_variant_name(pat.var_name, var_names)
@@ -190,9 +198,11 @@ def first_order_match_incr(pat, t, instsp):
             t_body = t.subst_bound(v)
             match(pat_body, t_body, instsp, bd_vars + [v])
         elif pat.is_bound():
-            raise MatchException
+            raise MatchException(trace)
         else:
             raise TypeError
+
+        trace.pop()
 
     match(pat, t, instsp, [])
 
