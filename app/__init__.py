@@ -828,6 +828,35 @@ def integral_common_integral():
         'reason': "Common integrals"
     })
 
+@app.route("/api/integral-trig-transformation", methods=['POST'])
+def integral_trig_transformation():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.TrigSubstitution()
+    del integral.expr.trig_identity[:]
+    problem = integral.parser.parse_expr(data['problem'])
+    e = integral.parser.parse_expr(data['exp'])
+    if e.normalize() == problem.body.normalize():
+        e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
+        possible_new_problem = rule.eval(e)
+        for i in possible_new_problem:
+            print(i)
+        n = []
+        index = 1
+        for p in possible_new_problem:
+            n.append({ 
+                'text': str(p),
+                'latex': integral.latex.convert_expr(p),
+                'reason': "Trig Identity"
+            })
+            index += 1
+        return json.dumps(n)
+    else:
+        return jsonify({
+            'text': str(problem),
+            'latex': integral.latex.convert_expr(problem),
+            'reason': "The expression you write is not equal to the initial one."
+        })
+
 @app.route("/api/integral-substitution", methods=['POST'])
 def integral_substitution():
     data = json.loads(request.get_data().decode('utf-8'))

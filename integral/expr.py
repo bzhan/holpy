@@ -7,12 +7,19 @@ from integral.poly import *
 import functools, operator
 from integral import parser
 import sympy
+from sympy.simplify.fu import *
+from sympy.parsing import sympy_parser
+import copy
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
 }
+
+trig_identity = []
+trigFun = [TR1, TR2, TR3, TR4, TR5, TR6, TR7, TR8, TR9, TR10,\
+     TR10i, TR11, TR12, TR12i, TR13, TRmorrie, TR14, TR15, TR16, TR22, TR111]
 
 class Expr:
     """Expressions."""
@@ -328,6 +335,54 @@ class Expr:
         """Normalizes an expression."""
         return from_poly(self.to_poly())
 
+    def to_one(self):
+        self = 1
+
+    def replace_trig(self, trig_old, trig_new):
+        """Replace the old trig to its identity trig in e."""
+        assert isinstance(trig_new, Expr)
+        if self == trig_old:
+            return trig_new
+        else:
+            """Note: The old trig must exist in self.
+            """
+            if self.ty == OP:
+                self.args = list(self.args)
+                if len(self.args) == 1:
+                    self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
+                    self.args = tuple(self.args)
+                    return self
+                elif len(self.args) == 2:
+                    self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
+                    self.args[1] = self.args[1].replace_trig(trig_old, trig_new)
+                    self.args = tuple(self.args)
+                    return self
+                else:
+                    return self
+            else:
+                return self
+
+    def identity_trig_expr(self, trigs):
+        """Input: the trig expected to transform in trig_identity.
+        Output: A set contains all possible transformation occurs in self.
+        """
+        n = []
+        for t in trigs:
+            s = trig_transform(t) #transformation set
+            for item in s:
+                c = copy.deepcopy(self)
+                c = c.replace_trig(t, parser.parse_expr(str(item).replace("**", "^")))
+                n.append(c)
+        return n
+
+
+def trig_transform(trig):
+    """Compute all possible trig function equal to trig"""
+    poss = set()
+    for f in trigFun:
+        poss.add(f(sympy_parser.parse_expr(str(trig).replace("^", "**"))))
+    return poss
+
 def from_mono(m):
     """Convert a monomial to an expression."""
     factors = []
@@ -573,6 +628,7 @@ class Op(Expr):
         elif len(self.args) == 2:
             a, b = self.args
             s1, s2 = str(a), str(b)
+            #print("$$$$",s1, s2)
             if a.priority() < op_priority[self.op]:
                 s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op]:
@@ -710,4 +766,3 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
-

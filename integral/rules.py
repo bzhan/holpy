@@ -2,8 +2,7 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr
-from integral import parser
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity
 import functools, operator
 class Rule:
     """Represents a rule for integration. It takes an integral
@@ -206,7 +205,7 @@ class Substitution(Rule):
         return expr.Integral(self.var_name, lower2, upper2, body2)
 
 class Equation(Rule):
-    """Apply substictution for equal expressions"""
+    """Apply substitution for equal expressions"""
     def __init__(self, old_expr, new_expr):
         assert isinstance(old_expr, Expr) and isinstance(new_expr, Expr)
         self.old_expr = old_expr
@@ -218,6 +217,13 @@ class Equation(Rule):
         else:
             return Integral(e.var, e.lower, e.upper, self.new_expr)
 
+class TrigSubstitution(Rule):
+    """Apply trig identities transformation on expression."""
+    def eval(self, e):
+        exprs =  e.body.identity_trig_expr(trig_identity)        
+        for i in range(len(exprs)):
+            exprs[i] = Integral(e.var, e.lower, e.upper, exprs[i])
+        return exprs
         
 
 class IntegrationByParts(Rule):
@@ -273,8 +279,3 @@ class PolynomialDivision(Rule):
             k = k + poly.Polynomial([dividend.monomials[-k.degree]])
             k = poly.Polynomial(tuple(k.monomials[1:]))
         return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))
-
-
-equation_table = {
-    "1": "sin(x) ^ 2 + cos(x) ^ 2"
-}

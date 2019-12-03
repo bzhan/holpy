@@ -4,7 +4,7 @@ import unittest
 from fractions import Fraction
 from decimal import Decimal
 
-from integral.expr import Var, Const, Op, Fun
+from integral.expr import Var, Const, Op, Fun, trig_identity
 from integral.parser import parse_expr
 
 
@@ -41,6 +41,15 @@ class ParserTest(unittest.TestCase):
 
         for s, e, in test_data:
             self.assertEqual(parse_expr(s), e)
+
+    def testParseTerm3(self):
+        test_data = [
+            ("$sin(x)^2$*sin(x)", Op("*", Op("^",Fun("sin",Var("x")),Const(2)), Fun("sin",Var("x"))))
+        ]
+        
+        for s, e in test_data:
+            self.assertEqual(parse_expr(s), e)
+            self.assertTrue(Op("^",Fun("sin",Var("x")),Const(2)) in trig_identity)
 
 
 if __name__ == "__main__":

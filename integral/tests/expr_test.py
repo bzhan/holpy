@@ -3,6 +3,7 @@
 import unittest
 from decimal import Decimal
 from fractions import Fraction
+import copy
 
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt
@@ -142,7 +143,19 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             s2 = parse_expr(s2)
             self.assertEqual(expr.deriv("x", s), s2)
+    
+    def test_trig(self):
+        test_data = [
+            ("$sin(x)^2$*sin(x)", {"sin(x) ^ 2 * sin(x)","(1 - cos(x) ^ 2) * sin(x)", \
+                "(1/2 - cos(2 * x) / 2) * sin(x)"}),
+        ]
 
+        for t, s in test_data:
+            t = parse_expr(t)
+            n = t.identity_trig_expr(expr.trig_identity)
+            for i in range(len(n)):
+                n[i] = str(n[i])
+            self.assertEqual(set(n), s)
 
 if __name__ == "__main__":
     unittest.main()

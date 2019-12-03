@@ -20,6 +20,7 @@
           <b-dropdown-item href="#" v-on:click='integrateByParts'>Integrate by parts</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Substitution</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -53,6 +54,24 @@
         </div>
         <div style="margin-top:10px">
           <button v-on:click="doSubstitution">OK</button>
+        </div>
+      </div>
+      <div v-if="query_mode === 'trig'">
+        <div>
+          <label>Write the expression equal to initial ones and make the trig you want to transform surrounded by '$'</label>
+          <input v-model="trig_identities_data.old_expr" style="margin:0px 5px;width:200px">
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="doTrigSubstitution">OK</button>
+        </div>
+      </div>
+      <div v-if="query_mode === 'display_trig'">
+        <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
+          <span>{{index+1}}:</span>
+          <MathEquation
+            v-on:click.native="transform(step)"
+            v-bind:data="'\\(' + step.latex + '\\)'"
+            style="cursor:pointer"/>
         </div>
       </div>
       <div v-if="query_mode === 'byparts'">
@@ -120,7 +139,12 @@ export default {
       equation_data: {
         old_expr: undefined, //old expression
         new_expr: ''  //new expression
+      },
+      trig_identities_data: {
+        old_expr: undefined, //the equation you need to transform
+        new_expr: []
       }
+
     }
   },
 
@@ -212,6 +236,33 @@ export default {
       if (this.allow_click_latex != 0){
         this.equation_data.old_expr = step
       }
+    },
+
+    trigtransform: function(){
+      if (this.cur_calc.length === 0)
+        return;
+
+        this.query_mode = 'trig'
+    },
+
+    doTrigSubstitution: async function(){
+      const data = {
+        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        exp: this.trig_identities_data.old_expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-trig-transformation", JSON.stringify(data))
+      //this.trig_identities_data.new_expr.push(response.data)
+      for(var i=0; i < response.data.length; ++i){
+        this.trig_identities_data.new_expr.push(response.data[i])
+      }
+      this.query_mode = 'display_trig'
+    },
+
+    transform: function(item){
+      this.cur_calc.push(item)
+      this.query_mode = undefined
+      this.trig_identities_data.old_expr = ''
+      this.trig_identities_data.new_expr = []
     },
 
     substitution: function () {
