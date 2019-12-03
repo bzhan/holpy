@@ -102,6 +102,10 @@ def first_order_match_incr(pat, t, instsp):
                         # t contains bound variables, so match fails
                         raise MatchException
                     elif t.is_comb():
+                        try:
+                            pat.head.T.match_incr(t.fun.get_type(), tyinst)
+                        except TypeMatchException:
+                            raise MatchException
                         inst[pat.head.name] = t.fun
                         match(pat.arg, t.arg, instsp, bd_vars)
                     else:

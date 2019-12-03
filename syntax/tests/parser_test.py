@@ -21,6 +21,7 @@ class ParserTest(unittest.TestCase):
     def testParseType(self):
         test_data = [
             "'b",
+            "'?b",
             "nat",
             "'a list",
             "nat list",
@@ -32,6 +33,7 @@ class ParserTest(unittest.TestCase):
             "('a => 'b) => 'c",
             "('a => 'b) => 'c => 'd",
             "(('a => 'b) => 'c) => 'd",
+            "'?a => '?b",
             "'a => 'b list",
             "('a => 'b) list",
             "'a list list",
@@ -251,6 +253,7 @@ class ParserTest(unittest.TestCase):
             ("[(2::real), 3]", "real list"),
             ("{(2::real), 3}", "real set"),
             ("{(2::real), 3} Un {4, 5}", "real set"),
+            ("{t::real. abs t <= 1}", "real set"),
         ]
 
         vars = {'x': 'real', 'y': 'real', 'n': 'nat'}

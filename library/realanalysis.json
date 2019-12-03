@@ -11,6 +11,17 @@
             "type": "nat net"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eventually_sequentially",
+            "prop": "eventually p sequentially <--> ?N. !n. N<=n -->p n",
+            "ty": "thm",
+            "vars": {
+                "p": "nat => bool"
+            }
+        },
+        {
             "name": "netlimit",
             "ty": "def.ax",
             "type": "'a net ⇒ 'a"
@@ -1421,7 +1432,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "l": "real",
                 "net": "'a net"
             }
@@ -4484,7 +4495,7 @@
             "prop": [
                 "tendsto_real f l (atreal a) ⟷ ",
                 "(∀e. 0 < e ",
-                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s --> 0 < abs (x - a) --> abs (x - a) < d ⟶ abs (f x - l) < e)))"
+                "   ⟶ (∃d. 0 < d ∧ (∀x. 0 < abs (x - a) ⟶ abs (x - a) < d ⟶ abs (f x - l) < e)))"
             ],
             "ty": "thm",
             "vars": {
@@ -4519,12 +4530,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_atreal_withinreal",
             "prop": "tendsto_real f l (atreal a) ⟶ tendsto_real f l (within (atreal a) s)",
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set"
             }
@@ -4623,16 +4637,21 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_compose_at",
             "prop": [
-                "tendsto_real f y net ∧ ",
-                "eventually (λw. f w = y ⟶ g y = z) net ∧ tendsto_real g z (atreal y) ",
+                "tendsto_real f y net ⟶ ",
+                "eventually (λw. f w = y ⟶ g y = z) net ⟶ tendsto_real g z (atreal y) ",
                 "⟶ tendsto_real (g ∘ f) z net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "real ⇒ real",
+                "f": "'a => real",
+                "g": "real => real",
                 "net": "'a net",
                 "y": "real",
                 "z": "real"
@@ -4798,12 +4817,13 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_rewrite"
             ],
             "name": "real_continuous_withinreal1",
             "prop": [
                 "real_continuous f (within (atreal x) s) ⟷ ",
-                "(∀e. 0 < e ⟶ (∃d. 0 < d ∧ (∀x1. x1 ∈ s --> abs (x1 - x) < d ⟶ abs (f x1 - f x) < e)))"
+                "(∀e. 0 < e ⟶ (∃d. 0 < d ∧ (∀x1. x1 ∈ s ⟶ abs (x1 - x) < d ⟶ abs (f x1 - f x) < e)))"
             ],
             "ty": "thm",
             "vars": {
@@ -4825,11 +4845,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_continuous_atreal_withinreal",
             "prop": "real_continuous f (atreal x) ⟶ real_continuous f (within (atreal x) s)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }

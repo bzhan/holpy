@@ -122,12 +122,23 @@ class MatcherTest(unittest.TestCase):
         """Heuristic matching for variables in function position."""
         test_data = [
             ("%x. ?f (?m x + ?c)", "%x. g (r x + 0)", {"f": "g", "m": "r", "c": "(0::nat)"}),
+            ("%x. ?f (?m x)", "%x. g (r x)", {"f": "g", "m": "r"}),
         ]
 
         svars = {"f": "nat => nat", "m": "nat => nat", "c": "nat"}
         vars = {"g": "nat => nat", "r": "nat => nat"}
         for pat, t, inst in test_data:
             self.run_test('nat', pat, t, vars=vars, svars=svars, inst=inst)
+
+    def testFirstOrderMatchFun4(self):
+        test_data = [
+            ("%x. ?f (?g x)", "%y. g (f y)", {'a': 'nat', 'b': 'nat', 'c': 'nat'}, {"f": "g", "g": "f"}),
+        ]
+
+        svars = {'f': "'?b => '?c", 'g': "'?a => '?b"}
+        vars = {'g': 'nat => nat', 'f': 'nat => nat'}
+        for pat, t, tyinst, inst in test_data:
+            self.run_test('nat', pat, t, vars=vars, svars=svars, tyinst=tyinst, inst=inst)
 
     def testFirstOrderMatchType(self):
         """Tests involving type variables."""
