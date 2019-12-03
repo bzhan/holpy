@@ -2149,7 +2149,389 @@
                 "hint_rewrite"
             ],
             "name": "root_2",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat 2}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < exp (log (abs x) / of_nat 2)"
+                },
+                {
+                    "args": "real_sgn_eq_1, real_sgn (exp (log (abs x) / of_nat 2)) = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (exp (log (abs x) / of_nat 2)) = 1"
+                },
+                {
+                    "args": "real_mul_rid, real_sgn x * 1 = real_sgn x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn x * 1 = real_sgn x"
+                },
+                {
+                    "args": "real_sgn x * real_sgn (exp (log (abs x) / of_nat 2)) = real_sgn x",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ real_sgn x * real_sgn (exp (log (abs x) / of_nat 2)) = real_sgn x"
+                },
+                {
+                    "args": "real_sgn_real_sgn, real_sgn (real_sgn x) * real_sgn (exp (log (abs x) / of_nat 2)) = real_sgn x",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (real_sgn x) * real_sgn (exp (log (abs x) / of_nat 2)) = real_sgn x"
+                },
+                {
+                    "args": "real_sgn_mul, real_sgn (real_sgn x * exp (log (abs x) / of_nat 2)) = real_sgn x",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (real_sgn x * exp (log (abs x) / of_nat 2)) = real_sgn x"
+                },
+                {
+                    "args": "root_def, real_sgn (root 2 x) = real_sgn x",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (root 2 x) = real_sgn x"
+                },
+                {
+                    "args": "real_abs_pos, {}, {x: x}",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ abs x"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ 0 < abs x ∨ 0 = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 < abs x ⟶ real_sgn (abs x) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "0 < abs x",
+                    "id": "9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < abs x ⊢ 0 < abs x"
+                },
+                {
+                    "args": "real_sgn_eq_1, real_sgn (abs x) = 1",
+                    "id": "9.1",
+                    "prevs": [
+                        "9.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < abs x ⊢ real_sgn (abs x) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "9.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < abs x ⊢ ∀x. of_nat 2 * x / of_nat 2 = x"
+                },
+                {
+                    "args": "",
+                    "id": "9.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < abs x ⊢ exp (of_nat 2 * (log (abs x) / of_nat 2)) = abs x"
+                },
+                {
+                    "args": "real_exp_n, exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x",
+                    "id": "9.4",
+                    "prevs": [
+                        "9.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 < abs x ⊢ exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "real_mul_lid, 1 * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x",
+                    "id": "9.5",
+                    "prevs": [
+                        "9.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < abs x ⊢ 1 * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "real_sgn (abs x) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x",
+                    "id": "9.6",
+                    "prevs": [
+                        "9.1",
+                        "9.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < abs x ⊢ real_sgn (abs x) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "9.7",
+                    "prevs": [
+                        "9.0",
+                        "9.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < abs x ⟶ real_sgn (abs x) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ 0 = abs x ⟶ real_sgn (abs x) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "11",
+                    "prevs": [
+                        "8",
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_sgn (abs x) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "real_sgn_pow_2, real_sgn (x ^ (2::nat)) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (x ^ (2::nat)) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "real_sgn_pow, real_sgn x ^ (2::nat) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ real_sgn x ^ (2::nat) * exp (log (abs x) / of_nat 2) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "real_pow_mul, (real_sgn x * exp (log (abs x) / of_nat 2)) ^ (2::nat) = abs x",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (real_sgn x * exp (log (abs x) / of_nat 2)) ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "root_def, root 2 x ^ (2::nat) = abs x",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root 2 x ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "sqrt_unique_gen",
+                    "id": "16",
+                    "prevs": [
+                        "6",
+                        "15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sqrt x = root 2 x"
+                },
+                {
+                    "args": "eq_sym_eq, root 2 x = sqrt x",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root 2 x = sqrt x"
+                },
+                {
+                    "args": "",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ root 2 x = sqrt x"
+                }
+            ],
             "prop": "root 2 x = sqrt x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_unique_gen"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_real_sgn"
+                },
+                {
+                    "goal": "real_sgn (exp (log (abs x) / of_nat 2)) = 1",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_eq_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_exp_pos_lt"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_mul"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_sgn_pow"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_pow_2"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "real_abs_pos"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "real_sgn (abs x) = 1",
+                    "goal_id": "9.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_eq_1"
+                },
+                {
+                    "fact_ids": [
+                        "9.1"
+                    ],
+                    "goal_id": "9.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "9.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_n"
+                },
+                {
+                    "goal": "!x::real. of_nat 2 * x / of_nat 2 = x",
+                    "goal_id": "9.2",
+                    "method_name": "cut"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
