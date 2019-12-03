@@ -6,7 +6,8 @@ from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
 from data import nat
-from logic.proofterm import ProofTermMacro
+from logic.conv import Conv
+from logic.proofterm import refl, ProofTermMacro, ProofTermDeriv
 from syntax import pprint, settings
 from server.tactic import MacroTactic
 from util import poly
@@ -106,6 +107,8 @@ def convert_to_poly(t):
         return poly.singleton(t)
     elif is_binary_real(t):
         return poly.constant(from_binary_real(t))
+    elif t.is_comb() and t.fun.is_const_name('of_nat'):
+        return nat.convert_to_poly(t.arg)
     elif is_plus(t):
         t1, t2 = t.args
         return convert_to_poly(t1) + convert_to_poly(t2)
@@ -117,8 +120,36 @@ def convert_to_poly(t):
     elif is_times(t):
         t1, t2 = t.args
         return convert_to_poly(t1) * convert_to_poly(t2)
+    elif is_nat_power(t):
+        power = nat.convert_to_poly(t.arg)
+        if power.is_constant():
+            return convert_to_poly(t.arg1) ** power.get_constant()
+        else:
+            return poly.singleton(t)
     else:
         return poly.singleton(t)
+
+def from_mono(m):
+    """Convert a monomial to a term."""
+    assert isinstance(m, poly.Monomial), "from_mono: input is not a monomial"
+    factors = []
+    for base, power in m.factors:
+        assert isinstance(base, Term), "from_mono: base is not a Term"
+        baseT = base.get_type()
+        if baseT != realT:
+            base = Const('of_nat', TFun(baseT, realT))(base)
+        if power == 1:
+            factors.append(base)
+        else:
+            factors.append(nat_power(base, nat.to_binary_nat(power)))
+    if m.coeff != 1:
+        factors = [to_binary_real(m.coeff)] + factors
+    return mk_times(*factors)
+
+def from_poly(p):
+    """Convert a polynomial to a term t."""
+    return mk_plus(*(from_mono(m) for m in p.monomials))
+
 
 class real_norm_macro(ProofTermMacro):
     """Attempt to prove goal by normalization."""
@@ -144,6 +175,16 @@ class real_norm_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, goal, pts):
         raise NotImplementedError
+
+
+class real_norm_conv(Conv):
+    """Conversion for real_norm."""
+    def get_proof_term(self, thy, t):
+        t2 = from_poly(convert_to_poly(t))
+        if t2 == t:
+            return refl(t)
+        else:
+            return ProofTermDeriv('real_norm', thy, Term.mk_equals(t, t2))
 
 
 class real_norm_method(Method):

@@ -1,19 +1,28 @@
 """Proofs for differentiation and integration."""
 
 from kernel import term
-from kernel.term import Term, Var
-from logic.conv import top_conv
+from kernel.type import TFun, boolT
+from kernel.term import Term, Var, Const
+from logic.conv import top_conv, argn_conv, rewr_conv
 from logic.logic import apply_theorem, conj_thms
+from logic.proofterm import ProofTermDeriv
 from data import set
 from data import nat
 from data import real
-from data.integral import within, atreal
+from data.real import realT
+from data.integral import netT, within, atreal
 from util import name
 from syntax import printer
 
 
+def mk_has_real_derivative(f, g, x, S):
+    """Construct the term has_real_derivative f g (within (atreal x) S)."""
+    T = TFun(TFun(realT, realT), realT, netT(realT), boolT)
+    return Const('has_real_derivative', T)(f, g, within(atreal(x), S))
+
+
 def has_real_derivativeI(thy, f, x, S):
-    """Prove a theorem of the form has_real_derivative f f' (within (atreal x) s).
+    """Prove a theorem of the form has_real_derivative f f' (within (atreal x) S).
     
     Here f is a function real => real of the form %x. f x, x is
     of type real, and S is of type real set.
@@ -69,3 +78,27 @@ def has_real_derivativeI(thy, f, x, S):
             raise NotImplementedError
     else:
         raise NotImplementedError
+
+
+def has_real_derivative(thy, goal):
+    """Prove goal of the form has_real_derivative f f' (within (atreal x) S).
+
+    This is achieved by first using has_real_derivativeI to compute
+    some g such that has_real_derivative f g (within (atreal x) S) holds,
+    then attempts to derive equation f' = g.
+
+    """
+    assert goal.head.is_const_name('has_real_derivative')
+    f, f2, net = goal.args
+    assert net.head.is_const_name('within')
+    atreal_x, S = net.args
+    assert atreal_x.head.is_const_name('atreal')
+    x = atreal_x.arg
+
+    pt = has_real_derivativeI(thy, f, x, S)
+    g = pt.prop.args[1]
+    eq_goal = Term.mk_equals(g, f2)
+    assert real.real_norm_macro().can_eval(thy, eq_goal), "has_real_derivative"
+
+    eq_pt = ProofTermDeriv('real_norm', thy, eq_goal)
+    return pt.on_prop(thy, argn_conv(1, rewr_conv(eq_pt)))

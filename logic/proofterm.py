@@ -247,9 +247,11 @@ class ProofTermDeriv(ProofTerm):
     prevs -- proof terms that the current one depends on.
 
     """
-    def __init__(self, rule, thy, args, prevs, th=None):
+    def __init__(self, rule, thy, args, prevs=None, th=None):
         self.ty = ProofTerm.DERIV
         self.rule = rule
+        if prevs is None:
+            prevs = []
         prev_ths = [prev.th for prev in prevs]
         if rule == 'sorry':
             assert th is not None, "ProofTermDeriv: must provide th for sorry."

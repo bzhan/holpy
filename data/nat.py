@@ -14,6 +14,8 @@ from logic import logic
 from logic import term_ord
 from server.tactic import MacroTactic
 from syntax import pprint, settings
+from util import poly
+
 
 """Utility functions for natural number arithmetic."""
 
@@ -55,6 +57,9 @@ def mk_times(*args):
 
 def is_plus(t):
     return t.is_binop() and t.head == plus
+
+def is_minus(t):
+    return t.is_binop() and t.head == minus
 
 def is_times(t):
     return t.is_binop() and t.head == times
@@ -133,6 +138,33 @@ def from_binary_nat(t):
     else:
         return from_binary(t.arg)
 
+def convert_to_poly(t):
+    """Convert natural number expression to polynomial."""
+    if t.is_var():
+        return poly.singleton(t)
+    elif is_binary_nat(t):
+        return poly.constant(from_binary_nat(t))
+    elif is_plus(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) + convert_to_poly(t2)
+    elif is_times(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) * convert_to_poly(t2)
+    elif is_minus(t):
+        t1, t2 = t.args
+        p1, p2 = convert_to_poly(t1), convert_to_poly(t2)
+        if p1.is_constant() and p2.is_constant():
+            n1 = p1.get_constant()
+            n2 = p2.get_constant()
+            if n1 <= n2:
+                return poly.constant(0)
+            else:
+                return poly.constant(n1 - n2)
+        else:
+            return poly.singleton(t)
+    else:
+        return poly.singleton(t)
+
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
     def eval(self, thy, t):
@@ -154,10 +186,6 @@ class add_conv(Conv):
     """Computes the sum of two binary numbers."""
     def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
-
-# t = f x --> f = t.head, x = t.arg
-# t = f x y --> f = t.head, x = t.arg1, y = t.arg
-# t = f x y z --> f = t.head, [x, y, z] = t.args
 
     def get_proof_term(self, thy, t):
         if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
