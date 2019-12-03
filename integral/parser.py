@@ -15,6 +15,7 @@ grammar = r"""
         | "pi" -> pi_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
+        | "$" expr "$" -> trig_expr
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
 
@@ -95,6 +96,11 @@ class ExprTransformer(Transformer):
 
     def eval_at_expr(self, body, var, lower, upper):
         return expr.EvalAt(var, lower, upper, body)
+    
+    def trig_expr(self, e):
+        expr.trig_identity.append(e)
+        return e
+        
 
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 
