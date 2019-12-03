@@ -2143,6 +2143,17 @@
             "vars": {
                 "n": "nat"
             }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "root_2",
+            "prop": "root 2 x = sqrt x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         }
     ],
     "description": "Real transcendentals.",

@@ -17193,10 +17193,984 @@
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sgn_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(if 0 < -x then (1::real) else if -x < 0 then -1 else 0) = -(if 0 < x then 1 else if x < 0 then -1 else 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (if 0 < -x then (1::real) else if -x < 0 then -1 else 0) = -(if 0 < x then 1 else if x < 0 then -1 else 0)"
+                },
+                {
+                    "args": "real_sgn_def, real_sgn (-x) = -(real_sgn x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (-x) = -(real_sgn x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn (-x) = -(real_sgn x)"
+                }
+            ],
+            "prop": "real_sgn (-x) = -real_sgn x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sgn_abs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(if 0 < x then 1 else if x < 0 then -1 else 0) * abs x = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (if 0 < x then 1 else if x < 0 then -1 else 0) * abs x = x"
+                },
+                {
+                    "args": "real_sgn_def, real_sgn x * abs x = x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn x * abs x = x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn x * abs x = x"
+                }
+            ],
+            "prop": "real_sgn x * abs x = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sgn_abs_alt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(if 0 < x then 1 else if x < 0 then -1 else 0) * x = abs x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (if 0 < x then 1 else if x < 0 then -1 else 0) * x = abs x"
+                },
+                {
+                    "args": "real_sgn_def, real_sgn x * x = abs x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn x * x = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn x * x = abs x"
+                }
+            ],
+            "prop": "real_sgn x * x = abs x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "sqrt",
             "prop": "sqrt x = (THE y. real_sgn y = real_sgn x ∧ y ^ (2::nat) = abs x)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sqrt_unique",
+            "prop": "0 <= y --> y ^ (2::nat) = x --> sqrt x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "pow_2_sqrt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: x ^ (2::nat)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_unique",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x ⊢ sqrt (x ^ (2::nat)) = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ sqrt (x ^ (2::nat)) = x"
+                }
+            ],
+            "prop": "0 <= x--> sqrt (x ^(2::nat))= x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sqrt_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_refl, {}, {x: (0::real)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_mul_lzero, (0::real) * 0 = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) * 0 = 0"
+                },
+                {
+                    "args": "real_pow_2, (0::real) ^ (2::nat) = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) ^ (2::nat) = 0"
+                },
+                {
+                    "args": "sqrt_unique",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sqrt 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sqrt 0 = 0"
+                }
+            ],
+            "prop": "sqrt 0 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sqrt_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(0::real) ≤ 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) ≤ 1"
+                },
+                {
+                    "args": "real_pow_one, (1::real) ^ (2::nat) = 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (1::real) ^ (2::nat) = 1"
+                },
+                {
+                    "args": "sqrt_unique",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sqrt 1 = 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sqrt 1 = 1"
+                }
+            ],
+            "prop": "sqrt 1 = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "pow_2_sqrt_abs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ abs x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 0 ≤ abs x"
+                },
+                {
+                    "args": "real_pow2_abs, abs x ^ (2::nat) = x ^ (2::nat)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs x ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_unique",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sqrt (x ^ (2::nat)) = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sqrt (x ^ (2::nat)) = abs x"
+                }
+            ],
+            "prop": "sqrt (x ^ (2::nat)) = abs x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow2_abs"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sqrt_works_gen_1",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = 0 ⟶ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "sqrt_0, real_sgn (sqrt 0) = real_sgn 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (sqrt 0) = real_sgn 0"
+                },
+                {
+                    "args": "real_sgn (sqrt x) = real_sgn x",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0 ⊢ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = 0 ⟶ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(x = 0) ⟶ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(x = 0) ⊢ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = 0) ⟶ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn (sqrt x) = real_sgn x"
+                }
+            ],
+            "prop": "real_sgn (sqrt x) = real_sgn x",
+            "steps": [
+                {
+                    "case": "x= 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sqrt_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sqrt_works_gen_2",
+            "prop": "(sqrt x) ^ (2::nat) = abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sqrt_unique_gen",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_sgn y = real_sgn x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_sgn y = real_sgn x ⊢ real_sgn y = real_sgn x"
+                },
+                {
+                    "args": "y ^ (2::nat) = abs x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ^ (2::nat) = abs x ⊢ y ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "sqrt_works_gen_1, {}, {x: x}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_sgn (sqrt x) = real_sgn x"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_sgn x = real_sgn (sqrt x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "real_sgn y = real_sgn x ⊢ real_sgn y = real_sgn (sqrt x)"
+                },
+                {
+                    "args": "sqrt_works_gen_2, {}, {x: x}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sqrt x ^ (2::nat) = abs x"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ abs x = sqrt x ^ (2::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "y ^ (2::nat) = abs x ⊢ y ^ (2::nat) = sqrt x ^ (2::nat)"
+                },
+                {
+                    "args": "real_pow_2",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y ^ (2::nat) = abs x ⊢ y * y = sqrt x * sqrt x"
+                },
+                {
+                    "args": "∀x::real. ∀y. x * x = y * y ⟷ (x - y) * (x - -y) = 0",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀y. x * x = y * y ⟷ (x - y) * (x - -y) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "9",
+                        "8"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "y ^ (2::nat) = abs x ⊢ (y - sqrt x) * (y - -(sqrt x)) = 0"
+                },
+                {
+                    "args": "real_entire",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y ^ (2::nat) = abs x ⊢ y - sqrt x = 0 ∨ y - -(sqrt x) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x ⊢ y - sqrt x = 0 ⟶ sqrt x = y"
+                },
+                {
+                    "args": "y - sqrt x = 0",
+                    "id": "12.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y - sqrt x = 0 ⊢ y - sqrt x = 0"
+                },
+                {
+                    "args": "real_sub_0",
+                    "id": "12.1",
+                    "prevs": [
+                        "12.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y - sqrt x = 0 ⊢ y = sqrt x"
+                },
+                {
+                    "args": "eq_sym_eq, sqrt x = y",
+                    "id": "12.2",
+                    "prevs": [
+                        "12.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x, y - sqrt x = 0 ⊢ sqrt x = y"
+                },
+                {
+                    "args": "",
+                    "id": "12.3",
+                    "prevs": [
+                        "12.0",
+                        "12.2"
+                    ],
+                    "rule": "intros",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x ⊢ y - sqrt x = 0 ⟶ sqrt x = y"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x ⊢ y - -(sqrt x) = 0 ⟶ sqrt x = y"
+                },
+                {
+                    "args": "y - -(sqrt x) = 0",
+                    "id": "13.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y - -(sqrt x) = 0 ⊢ y - -(sqrt x) = 0"
+                },
+                {
+                    "args": "real_sub_0",
+                    "id": "13.1",
+                    "prevs": [
+                        "13.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y - -(sqrt x) = 0 ⊢ y = -(sqrt x)"
+                },
+                {
+                    "args": "∀x::real. x = -x ⟷ x = 0",
+                    "id": "13.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. x = -x ⟷ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "13.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x, y - -(sqrt x) = 0 ⊢ sqrt x = 0"
+                },
+                {
+                    "args": "sqrt x = -(sqrt x)",
+                    "id": "13.4",
+                    "prevs": [
+                        "13.2",
+                        "13.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x, y - -(sqrt x) = 0 ⊢ sqrt x = -(sqrt x)"
+                },
+                {
+                    "args": "sqrt x = y",
+                    "id": "13.5",
+                    "prevs": [
+                        "13.1",
+                        "13.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "y - -(sqrt x) = 0, real_sgn y = real_sgn x, y ^ (2::nat) = abs x ⊢ sqrt x = y"
+                },
+                {
+                    "args": "",
+                    "id": "13.6",
+                    "prevs": [
+                        "13.0",
+                        "13.5"
+                    ],
+                    "rule": "intros",
+                    "th": "real_sgn y = real_sgn x, y ^ (2::nat) = abs x ⊢ y - -(sqrt x) = 0 ⟶ sqrt x = y"
+                },
+                {
+                    "args": "disjE",
+                    "id": "14",
+                    "prevs": [
+                        "11",
+                        "12",
+                        "13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ^ (2::nat) = abs x, real_sgn y = real_sgn x ⊢ sqrt x = y"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn y = real_sgn x ⟶ y ^ (2::nat) = abs x ⟶ sqrt x = y"
+                }
+            ],
+            "prop": "real_sgn y = real_sgn x --> y ^ (2::nat) = abs x --> sqrt x = y",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sqrt_works_gen_1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sqrt_works_gen_2"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "6",
+                        "1"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal": "!x::real. !y. x * x = y * y <--> (x - y) * ( x - (-y)) = 0",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "8"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "12.0"
+                    ],
+                    "goal_id": "12.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "goal_id": "12.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "13.0"
+                    ],
+                    "goal_id": "13.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "fact_ids": [
+                        "13.1"
+                    ],
+                    "goal_id": "13.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "∀x::real. x = -x ⟷ x = 0",
+                    "goal_id": "13.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "13.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "13.2"
+                    ],
+                    "goal_id": "13.3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
         }
     ],
     "description": "real numbers",
