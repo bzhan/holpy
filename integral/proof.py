@@ -3,7 +3,7 @@
 from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
-from logic.conv import Conv, top_conv, argn_conv, arg_conv, arg1_conv, rewr_conv, binop_conv
+from logic.conv import Conv, top_conv, beta_conv, argn_conv, arg_conv, arg1_conv, rewr_conv, binop_conv
 from logic.logic import apply_theorem, conj_thms
 from logic.proofterm import ProofTermDeriv, refl
 from data import set
@@ -258,3 +258,13 @@ class common_integral(Conv):
                 return pt
         else:
             return pt
+
+
+class simplify(Conv):
+    """Simplify evalat as well as arithmetic."""
+    def get_proof_term(self, thy, t):
+        return refl(t).on_rhs(
+            thy,
+            top_conv(rewr_conv('evalat_def')),
+            top_conv(beta_conv()),
+            real.real_norm_conv())

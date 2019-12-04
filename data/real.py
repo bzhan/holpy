@@ -1,5 +1,7 @@
 # Author: Bohua Zhan
 
+from fractions import Fraction
+
 from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Const
 from kernel.thm import Thm
@@ -24,6 +26,7 @@ plus = Const("plus", TFun(realT, realT, realT))
 minus = Const("minus", TFun(realT, realT, realT))
 uminus = Const("uminus", TFun(realT, realT))
 times = Const("times", TFun(realT, realT, realT))
+divides = Const("real_divide", TFun(realT, realT, realT))
 less_eq = Const("less_eq", TFun(realT, realT, boolT))
 less = Const("less", TFun(realT, realT, boolT))
 nat_power = Const("power", TFun(realT, nat.natT, realT))
@@ -71,6 +74,9 @@ def is_uminus(t):
 def is_times(t):
     return t.is_binop() and t.head == times
 
+def is_divides(t):
+    return t.is_binop() and t.head == divides
+
 def is_nat_power(t):
     return t.is_binop() and t.head == nat_power
 
@@ -81,6 +87,12 @@ def is_less(t):
     return t.is_binop() and t.head == less
 
 def to_binary_real(n):
+    if n < 0:
+        return uminus(to_binary_real(-n))
+
+    if isinstance(n, Fraction):
+        return divides(to_binary_real(n.numerator), to_binary_real(n.denominator))
+        
     if n == 0:
         return zero
     elif n == 1:
@@ -126,6 +138,13 @@ def convert_to_poly(t):
     elif is_times(t):
         t1, t2 = t.args
         return convert_to_poly(t1) * convert_to_poly(t2)
+    elif is_divides(t):
+        num, denom = t.args
+        p_denom = convert_to_poly(denom)
+        if p_denom.is_nonzero_constant():
+            return convert_to_poly(num).scale(Fraction(1, p_denom.get_constant()))
+        else:
+            return poly.singleton(t)
     elif is_nat_power(t):
         power = nat.convert_to_poly(t.arg)
         if power.is_constant():

@@ -144,9 +144,23 @@ class ProofTest(unittest.TestCase):
              "evalat (%x. sin x) 1 2"),
         ]
 
-        vars = {'a': 'real', 'b': 'real', 'c': 'real'}
+        vars = {'c': 'real'}
         for expr, res in test_data:
             test_conv(self, 'realintegral', proof.common_integral(), vars=vars, t=expr, t_res=res)
+
+    def testSimplify(self):
+        test_data = [
+            ("evalat (%x. c * x) 1 2", "c"),
+            ("evalat (%x. x ^ (2::nat) / 2) 1 2", "(3::real) / 2"),
+            ("evalat (%x. x ^ ((2::nat) + 1) / (of_nat 2 + 1)) 1 2", "(7::real) / 3"),
+            ("evalat (%x. exp x) 1 2", "-1 * exp 1 + exp 2"),
+            ("evalat (%x. -cos x) 1 2", "cos 1 + -1 * cos 2"),
+            ("evalat (%x. sin x) 1 2", "-1 * sin 1 + sin 2"),
+        ]
+
+        vars = {'c': 'real'}
+        for expr, res in test_data:
+            test_conv(self, 'realintegral', proof.simplify(), vars=vars, t=expr, t_res=res)
 
 
 if __name__ == "__main__":
