@@ -495,10 +495,11 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "real_of_nat_id",
-            "prop": "(of_nat::nat=>real) ((of_nat::nat=>nat) n) = of_nat n",
+            "name": "real_of_nat_eq",
+            "prop": "(of_nat::nat ⇒ real) m = of_nat n ⟷ m = n",
             "ty": "thm",
             "vars": {
+                "m": "nat",
                 "n": "nat"
             }
         },
@@ -506,11 +507,52 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "real_of_nat_eq",
-            "prop": "(of_nat::nat ⇒ real) m = of_nat n ⟷ m = n",
+            "name": "real_of_nat_id",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nat_of_nat_def, of_nat n = n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ of_nat n = n"
+                },
+                {
+                    "args": "real_of_nat_eq, (of_nat::nat ⇒ real) (of_nat n) = of_nat n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (of_nat::nat ⇒ real) (of_nat n) = of_nat n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (of_nat::nat ⇒ real) (of_nat n) = of_nat n"
+                }
+            ],
+            "prop": "(of_nat::nat=>real) ((of_nat::nat=>nat) n) = of_nat n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "nat_of_nat_def"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "m": "nat",
                 "n": "nat"
             }
         },
