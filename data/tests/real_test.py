@@ -39,6 +39,7 @@ class RealTest(unittest.TestCase):
             ("x ^ (1::nat)", "x"),
             ("(x + y) ^ (2::nat)", "2 * x * y + x ^ (2::nat) + y ^ (2::nat)"),
             ("x ^ ((2::nat) - 1)", "x"),
+            ("x ^ (0::nat) + y", "1 + y"),
         ]
 
         vars = {'x': 'real', 'y': 'real', 'z': 'real', 'm': 'nat', 'n': 'nat'}

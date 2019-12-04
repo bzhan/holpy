@@ -123,7 +123,10 @@ class Polynomial:
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
 
     def __pow__(self, other):
-        assert isinstance(other, int) and other >= 1
+        assert isinstance(other, int) and other >= 0
+        if other == 0:
+            return Polynomial([Monomial(1, [])])
+
         res = self
         for i in range(other-1):
             res *= self
