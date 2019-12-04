@@ -5188,9 +5188,9 @@
             ],
             "name": "real_continuous_withinreal_compose",
             "prop": [
-                "real_continuous f (within (atreal x) s) --> ",
-                "real_continuous g (within (atreal (f x)) (image f s)) ",
-                "⟶ real_continuous (g ∘ f) (within (atreal x) s)"
+                "real_continuous f (within (atreal x) s) ",
+                "⟶ real_continuous g (within (atreal (f x)) (image f s)) ",
+                "   ⟶ real_continuous (%x. g (f x)) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
@@ -5201,15 +5201,16 @@
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_atreal_compose",
             "prop": [
-                "real_continuous f (atreal x) ∧ real_continuous g (atreal (f x)) ",
-                "⟶ real_continuous (g ∘ f) (atreal x)"
+                "real_continuous f (atreal x) --> real_continuous g (atreal (f x)) ",
+                "⟶ real_continuous (λx1. g (f x1)) (atreal x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "x": "real"
             }
         },
@@ -5258,8 +5259,8 @@
             ],
             "name": "real_continuous_on_compose",
             "prop": [
-                "real_continuous_on f s --> real_continuous_on g (image f s) ",
-                "⟶ real_continuous_on (g ∘ f) s"
+                "real_continuous_on f s ",
+                "⟶ real_continuous_on g (image f s) ⟶ real_continuous_on (%x. g (f x)) s"
             ],
             "ty": "thm",
             "vars": {
