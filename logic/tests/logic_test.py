@@ -255,6 +255,22 @@ class LogicTest(unittest.TestCase):
             res="Q s"
         )
 
+    def testApplyFactMacro2(self):
+        test_macro(
+            self, 'logic_base', 'apply_fact',
+            vars={'P': "'a => bool", 'R': "'a => 'a => bool", 's': "'a"},
+            assms=['!x. !y. P x --> R x y', 'P s'],
+            res="!y. R s y"
+        )
+
+    def testApplyFactMacro3(self):
+        test_macro(
+            self, 'logic_base', 'apply_fact',
+            vars={'P': "'a => bool", 'R': "'a => 'a => bool", 's': "'a"},
+            assms=['!x. !y. P y --> R x y', 'P s'],
+            res="!x. R x s"
+        )
+
     def testImpConjMacro(self):
         test_data = [
             ('A & (D & B) & C --> (A & D & C) & (A & B)', True),
