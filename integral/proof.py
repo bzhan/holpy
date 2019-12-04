@@ -3,7 +3,8 @@
 from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
-from logic.conv import Conv, top_conv, beta_conv, argn_conv, arg_conv, arg1_conv, rewr_conv, binop_conv
+from logic.conv import Conv, ConvException, top_conv, beta_conv, argn_conv, \
+    arg_conv, arg1_conv, rewr_conv, binop_conv
 from logic.logic import apply_theorem, conj_thms
 from logic.proofterm import ProofTermDeriv, refl
 from data import set
@@ -186,14 +187,18 @@ def real_integrable_onI(thy, f, a, b):
 class linearity(Conv):
     """Apply linearity to an integral."""
     def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral')
+        if not expr.head.is_const_name('real_integral'):
+            raise ConvException
+
         S, f = expr.args
-        assert S.head.is_const_name('real_closed_interval')
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+
         a, b = S.args
         pt = refl(expr)
 
         if not f.is_abs():
-            raise NotImplementedError
+            raise ConvException
 
         var_names = [v.name for v in term.get_vars(f)]
         nm = name.get_variant_name(f.var_name, var_names)
@@ -226,15 +231,18 @@ class linearity(Conv):
 class common_integral(Conv):
     """Apply common integrals."""
     def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral')
+        if not expr.head.is_const_name('real_integral'):
+            raise ConvException
+
         S, f = expr.args
-        assert S.head.is_const_name('real_closed_interval')
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
         a, b = S.args
         pt = refl(expr)
 
         le_pt = real.real_less_eq(thy, a, b)
         if not f.is_abs():
-            raise NotImplementedError
+            raise ConvException
 
         var_names = [v.name for v in term.get_vars(f)]
         nm = name.get_variant_name(f.var_name, var_names)

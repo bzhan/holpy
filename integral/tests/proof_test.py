@@ -3,11 +3,14 @@
 import unittest
 
 from kernel.term import Term, Var
+from kernel.thm import Thm
 from data.real import realT
 from data.set import setT
 from data.integral import within, atreal
 from integral import proof
 from logic.context import Context
+from logic.proofterm import refl
+from logic.conv import top_conv
 from syntax import parser
 from syntax import printer
 from logic.tests.conv_test import test_conv
@@ -161,6 +164,30 @@ class ProofTest(unittest.TestCase):
         vars = {'c': 'real'}
         for expr, res in test_data:
             test_conv(self, 'realintegral', proof.simplify(), vars=vars, t=expr, t_res=res)
+
+    def run_test(self, t, res, cvs):
+        ctxt = Context('realintegral')
+        thy = ctxt.thy
+        t = parser.parse_term(ctxt, t)
+        res = parser.parse_term(ctxt, res)
+        pt = refl(t)
+
+        for cv in cvs:
+            pt = pt.on_rhs(thy, cv)
+
+        th = thy.check_proof(pt.export())
+        self.assertEqual(th, Thm.mk_equals(t, res))
+
+    def testIntegral1(self):
+        self.run_test(
+            "real_integral (real_closed_interval 2 3) (%x. 2 * x + x ^ (2::nat))",
+            "(34::real) / 3",
+            [
+                proof.linearity(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
 
 
 if __name__ == "__main__":
