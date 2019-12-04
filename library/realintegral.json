@@ -4728,101 +4728,6 @@
             }
         },
         {
-            "attributes": [],
-            "name": "has_real_integral_const_evalat",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "a ≤ b",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "a ≤ b ⊢ a ≤ b"
-                },
-                {
-                    "args": "c * b - c * a = c * (b - a)",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "real_norm",
-                    "th": "⊢ c * b - c * a = c * (b - a)"
-                },
-                {
-                    "args": "has_real_integral_const, {}, {a: a, b: b, c: c}",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "a ≤ b ⊢ has_real_integral (λx. c) (c * (b - a)) (real_closed_interval a b)"
-                },
-                {
-                    "args": "has_real_integral (λx. c) (c * b - c * a) (real_closed_interval a b)",
-                    "id": "3",
-                    "prevs": [
-                        "1",
-                        "2"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "a ≤ b ⊢ has_real_integral (λx. c) (c * b - c * a) (real_closed_interval a b)"
-                },
-                {
-                    "args": "evalat_def, has_real_integral (λx. c) (evalat (λx. c * x) a b) (real_closed_interval a b)",
-                    "id": "4",
-                    "prevs": [
-                        "3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "a ≤ b ⊢ has_real_integral (λx. c) (evalat (λx. c * x) a b) (real_closed_interval a b)"
-                },
-                {
-                    "args": "",
-                    "id": "5",
-                    "prevs": [
-                        "0",
-                        "4"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ a ≤ b ⟶ has_real_integral (λx. c) (evalat (λx. c * x) a b) (real_closed_interval a b)"
-                }
-            ],
-            "prop": "a ≤ b ⟶ has_real_integral (λx. c) (evalat (%x. c * x) a b) (real_closed_interval a b)",
-            "steps": [
-                {
-                    "goal_id": "1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "evalat_def"
-                },
-                {
-                    "goal": "c * b - c * a = c * (b - a)",
-                    "goal_id": "1",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "real_norm"
-                },
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "has_real_integral_const"
-                }
-            ],
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "c": "real"
-            }
-        },
-        {
             "attributes": [
                 "hint_backward"
             ],
@@ -5004,8 +4909,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_rewrite"
             ],
             "name": "real_integral_const",
             "num_gaps": 0,
@@ -5057,6 +4961,87 @@
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_const"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_integral_const_evalat",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "a ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "c * (b - a) = c * b - c * a",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ c * (b - a) = c * b - c * a"
+                },
+                {
+                    "args": "evalat_def, c * (b - a) = evalat (λx. c * x) a b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ c * (b - a) = evalat (λx. c * x) a b"
+                },
+                {
+                    "args": "real_integral_const, real_integral (real_closed_interval a b) (λx. c) = evalat (λx. c * x) a b",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ real_integral (real_closed_interval a b) (λx. c) = evalat (λx. c * x) a b"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ b ⟶ real_integral (real_closed_interval a b) (λx. c) = evalat (λx. c * x) a b"
+                }
+            ],
+            "prop": [
+                "a ≤ b ",
+                "⟶ real_integral (real_closed_interval a b) (λx. c) = evalat (λx. c * x) a b"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_integral_const"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "evalat_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "real_norm"
                 }
             ],
             "ty": "thm",
@@ -11024,17 +11009,64 @@
         },
         {
             "attributes": [],
-            "name": "has_real_integral_pow",
+            "name": "real_integral_id_evalat",
             "prop": [
-                "a <= b -->",
-                "~n = -1 -->",
-                "has_real_integral (%x. x ^ n) (evalat (%x. x ^ (n + 1) / (of_nat n + 1)) a b) (real_closed_interval a b)"
+                "a ≤ b ",
+                "⟶ real_integral (real_closed_interval a b) (λx. x) = ",
+                "   evalat (λx. x ^ (2::nat) / 2) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_integral_pow_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ real_integral (real_closed_interval a b) (λx. x ^ n) = ",
+                "   evalat (λx. x ^ (n + 1) / (of_nat n + 1)) a b"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
                 "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_integral_sin_evalat",
+            "prop": [
+                "real_integral (real_closed_interval a b) (%x. sin x) =",
+                "  evalat (%x. -cos x) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_integral_cos_evalat",
+            "prop": "real_integral (real_closed_interval a b) (%x. cos x) = evalat (%x. sin x) a b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_integral_exp_evalat",
+            "prop": "real_integral (real_closed_interval a b) (%x. exp x) = evalat (%x. exp x) a b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
             }
         },
         {
