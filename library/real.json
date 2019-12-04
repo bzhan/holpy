@@ -5402,6 +5402,62 @@
         },
         {
             "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "real_add_rdistrib",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_ldistrib, z * (x + y) = z * x + z * y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ z * (x + y) = z * x + z * y"
+                },
+                {
+                    "args": "real_mult_comm, (x + y) * z = x * z + y * z",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (x + y) * z = x * z + y * z"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (x + y) * z = x * z + y * z"
+                }
+            ],
+            "prop": "(x + y) * z = x * z + y * z",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_ldistrib"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_abs_zero",
