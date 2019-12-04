@@ -110,6 +110,23 @@ class ProofTest(unittest.TestCase):
             th2 = thy.check_proof(pt2.export())
             self.assertEqual(pt2.prop, proof.mk_real_integrable_on(f, a, b))
 
+    def testRealIncreasingOn(self):
+        test_data =[
+            "6 * x"
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real'})
+        thy = ctxt.thy
+        x = Var('x', realT)
+        a = Var('a', realT)
+        b = Var('b', realT)
+        for s in test_data:
+            s = parser.parse_term(ctxt, s)
+            f = Term.mk_abs(x, s)
+            pt = proof.real_increasing_onI(thy, f, a, b)
+            th = thy.check_proof(pt.export())
+            self.assertEqual(th.prop, proof.mk_real_increasing_on(f, a, b))
+
     def testLinearityConv(self):
         test_data = [
             ("real_integral (real_closed_interval a b) (%x. 2 * x)",
@@ -179,6 +196,20 @@ class ProofTest(unittest.TestCase):
             v = parser.parse_term(ctxt, v)
             test_conv(self, 'realintegral', proof.integrate_by_parts(u, v), t=expr, t_res=res)
 
+    def testSubstitution(self):
+        test_data = [
+            ("real_integral (real_closed_interval 0 1) (%x. exp (6 * x))",
+             "%x::real. (1/6) * exp x",
+             "%x::real. 6 * x",
+             "real_integral (real_closed_interval 0 6) (%x. 1 / 6 * exp x)"),
+        ]
+
+        ctxt = Context('realintegral')
+        for expr, f, g, res in test_data:
+            f = parser.parse_term(ctxt, f)
+            g = parser.parse_term(ctxt, g)
+            test_conv(self, 'realintegral', proof.substitution(f, g), t=expr, t_res=res)
+
     def run_test(self, t, res, cvs, debug=False):
         ctxt = Context('realintegral')
         thy = ctxt.thy
@@ -202,6 +233,21 @@ class ProofTest(unittest.TestCase):
             "real_integral (real_closed_interval 2 3) (%x. 2 * x + x ^ (2::nat))",
             "(34::real) / 3",
             [
+                proof.linearity(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
+    def testIntegral3(self):
+        ctxt = Context('realintegral')
+        f = parser.parse_term(ctxt, "%x::real. (1/6) * exp x")
+        g = parser.parse_term(ctxt, "%x::real. 6 * x")
+        self.run_test(
+            "real_integral (real_closed_interval 0 1) (%x. exp (6 * x))",
+            "- (1 / 6) + 1 / 6 * exp 6",
+            [
+                proof.substitution(f, g),
                 proof.linearity(),
                 top_conv(proof.common_integral()),
                 proof.simplify()

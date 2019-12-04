@@ -5405,6 +5405,20 @@
             }
         },
         {
+            "attributes": [],
+            "name": "real_continuous_on_div_const",
+            "prop": [
+                "real_continuous_on f s",
+                "⟶ ¬c = 0 ⟶ real_continuous_on (λx. f x / c) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
             "name": "real_continuous_on_pow",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. f x ^ n) s",
             "ty": "thm",

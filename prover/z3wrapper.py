@@ -16,6 +16,7 @@ from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
 from logic import conv
+from logic.proofterm import ProofTermDeriv
 from data import nat, int
 from data.real import realT
 from data import set as hol_set
@@ -184,7 +185,10 @@ norm_thms = [
     ('real_of_nat_add', True),
     ('real_of_nat_mul', True),
     'real_of_nat_minus',
-    'real_inverse_divide'
+    'real_inverse_divide',
+    'real_increasing_on_def',
+    'real_open_interval_def',
+    'real_closed_interval_def',
 ]
 
 def norm_term(thy, t):
@@ -259,6 +263,10 @@ class Z3Macro(ProofMacro):
 
     def expand(self, prefix, thy, args, prevs):
         raise NotImplementedError
+
+def apply_z3(thy, t):
+    return ProofTermDeriv('z3', thy, args=t)
+
 
 class Z3Method(Method):
     """Method invoking SMT solver Z3."""

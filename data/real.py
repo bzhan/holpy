@@ -9,6 +9,7 @@ from kernel.theory import Method, global_methods
 from kernel import macro
 from data import nat
 from data.set import setT
+from logic import logic
 from logic.conv import Conv
 from logic.proofterm import refl, ProofTermMacro, ProofTermDeriv
 from syntax import pprint, settings
@@ -191,19 +192,22 @@ class real_ineq_macro(ProofTermMacro):
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "real_ineq_macro"
-        if not (is_less_eq(goal) or is_less(goal)) and goal.arg.get_type() == realT:
-            return False
-
-        t1, t2 = goal.args
-        if not (is_binary_real(t1) and is_binary_real(t2)):
-            return False
-
-        r1 = from_binary_real(t1)
-        r2 = from_binary_real(t2)
+ 
         if is_less_eq(goal):
-            return r1 <= r2
+            t1, t2 = goal.args
+            if not (is_binary_real(t1) and is_binary_real(t2)):
+                return False
+            return from_binary_real(t1) <= from_binary_real(t2)
         elif is_less(goal):
-            return r1 < r2
+            t1, t2 = goal.args
+            if not (is_binary_real(t1) and is_binary_real(t2)):
+                return False
+            return from_binary_real(t1) < from_binary_real(t2)
+        elif logic.is_neg(goal) and goal.arg.is_equals():
+            t1, t2 = goal.arg.args
+            if not (is_binary_real(t1) and is_binary_real(t2)):
+                return False
+            return from_binary_real(t1) != from_binary_real(t2)
         else:
             raise NotImplementedError
 
@@ -218,10 +222,15 @@ def real_less_eq(thy, t1, t2):
 
 def real_less(thy, t1, t2):
     assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) < from_binary_real(t2), \
-        "real_less_eq"
+        "real_less"
 
-    return ProofTermDeriv("real_less", thy, less(t1, t2))
+    return ProofTermDeriv("real_ineq", thy, less(t1, t2))
 
+def real_ineq(thy, t1, t2):
+    assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) != from_binary_real(t2), \
+        "real_ineq"
+
+    return ProofTermDeriv("real_ineq", thy, logic.neg(Term.mk_equals(t1, t2)))
 
 class real_norm_macro(ProofTermMacro):
     """Attempt to prove goal by normalization."""

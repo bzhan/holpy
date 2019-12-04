@@ -4,7 +4,7 @@ from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from logic.conv import Conv, ConvException, top_conv, beta_conv, argn_conv, \
-    arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv
+    arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv
 from logic.logic import apply_theorem, conj_thms
 from logic.proofterm import ProofTerm, ProofTermDeriv, refl
 from data import set
@@ -13,6 +13,7 @@ from data import real
 from data.real import realT
 from data.integral import netT, within, atreal
 from util import name
+from prover import z3wrapper
 from syntax import printer
 
 
@@ -35,6 +36,12 @@ def mk_real_integrable_on(f, a, b):
     """Construct the term real_integrable_on f (real_closed_interval a b)."""
     T = TFun(TFun(realT, realT), set.setT(realT), boolT)
     return Const('real_integrable_on', T)(f, real.closed_interval(a, b))
+
+def mk_real_increasing_on(f, a, b):
+    """Construct the term real_increasing_on f (real_closed_interval a b)."""
+    T = TFun(TFun(realT, realT), set.setT(realT), boolT)
+    return Const('real_increasing_on', T)(f, real.closed_interval(a, b))
+    
 
 def has_real_derivativeI(thy, f, x, S):
     """Prove a theorem of the form has_real_derivative f f' (within (atreal x) S).
@@ -145,6 +152,8 @@ def real_continuous_onI(thy, f, a, b):
             return apply_theorem(thy, 'real_continuous_on_sub', pt1, pt2)
         elif real.is_times(t):
             return apply_theorem(thy, 'real_continuous_on_mul', pt1, pt2)
+        elif real.is_divides(t) and not t2.occurs_var(v):
+            return apply_theorem(thy, 'real_continuous_on_div_const', pt1, real.real_ineq(thy, t.arg, real.zero))
         else:
             raise NotImplementedError
     elif real.is_nat_power(t) and not t.arg.occurs_var(v):
@@ -183,6 +192,14 @@ def real_integrable_onI(thy, f, a, b):
     """
     pt = real_continuous_onI(thy, f, a, b)
     return apply_theorem(thy, 'real_integrable_continuous', pt)
+
+def real_increasing_onI(thy, f, a, b):
+    """Prove a theorem of the form real_increasing_on f (real_closed_interval a b).
+
+    Currently invokes the SMT solver.
+
+    """
+    return z3wrapper.apply_z3(thy, mk_real_increasing_on(f, a, b))
 
 class linearity(Conv):
     """Apply linearity to an integral."""
@@ -268,13 +285,19 @@ class common_integral(Conv):
             return pt
 
 
+simplify_list = [
+    'real_exp_0'
+]
+
 class simplify(Conv):
     """Simplify evalat as well as arithmetic."""
     def get_proof_term(self, thy, t):
+        cvs = [rewr_conv(s) for s in simplify_list]
         return refl(t).on_rhs(
             thy,
             top_conv(rewr_conv('evalat_def')),
             top_conv(beta_conv()),
+            top_conv(every_conv(*cvs)),
             real.real_norm_conv())
 
 
@@ -305,7 +328,7 @@ class integrate_by_parts(Conv):
         if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
             raise NotImplementedError
 
-        # Form the assumption
+        # Form the assumption: derivatives of u and v
         var_names = [v.name for v in term.get_vars(expr)]
         nm = name.get_variant_name(f.var_name, var_names)
         x = Var(nm, f.var_T)
@@ -321,6 +344,62 @@ class integrate_by_parts(Conv):
         eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat', le_pt, cond_pt)
         eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
         eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(real.real_norm_conv()))))
+
+        pt = refl(expr)
+        pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+        return pt
+
+
+class substitution(Conv):
+    """Evaluate using substitution.
+
+    expr is of the form real_integral (real_closed_interval a b) (%x. f (g x) * dg x)
+
+    Conditions include:
+
+    -- f is continuous on [g(a), g(b)]
+    -- g is an increasing function (so that a <= b implies g(a) <= g(b))
+
+    The result is real_integral (real_closed_interval (g a) (g b)) (%u. f u).
+
+    """
+    def __init__(self, f, g):
+        self.f = f
+        self.g = g
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral')
+        S, h = expr.args
+        assert S.head.is_const_name('real_closed_interval')
+        a, b = S.args
+
+        le_pt = real.real_less_eq(thy, a, b)
+
+        if not (h.is_abs() and self.f.is_abs() and self.g.is_abs()):
+            raise NotImplementedError
+
+        # Form the assumption: f is continuous on [g(a), g(b)]
+        cont_f_pt = real_continuous_onI(thy, self.f, self.g(a).beta_conv(), self.g(b).beta_conv())
+
+        # Form the assumption: derivative of g
+        var_names = [v.name for v in term.get_vars(expr)]
+        nm = name.get_variant_name(h.var_name, var_names)
+        x = Var(nm, h.var_T)
+
+        S = real.closed_interval(a, b)
+        g_deriv = has_real_derivativeI(thy, self.g, x, S)
+        x_mem = set.mk_mem(x, S)
+        dg_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, g_deriv))
+
+        # Form the assumption: g is increasing on [a, b]
+        incr_pt = real_increasing_onI(thy, self.g, a, b)
+
+        # Apply the theorem
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr', cont_f_pt, dg_pt, le_pt, incr_pt)
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())),
+                                  arg1_conv(binop_conv(real.real_norm_conv())))
 
         pt = refl(expr)
         pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))

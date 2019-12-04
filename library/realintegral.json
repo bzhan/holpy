@@ -27112,6 +27112,34 @@
                 "g": "real => real",
                 "g1": "real => real"
             }
+        },
+        {
+            "attributes": [],
+            "name": "real_increasing_on",
+            "prop": "real_increasing_on f S <--> (!x. !y. x ∈ S ⟶ y ∈ S ⟶ x ≤ y ⟶ f x ≤ f y)",
+            "ty": "def",
+            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
+        },
+        {
+            "attributes": [],
+            "name": "real_integral_substitution_simple_incr",
+            "prop": [
+                "real_continuous_on f (real_closed_interval (g a) (g b)) ",
+                "⟶ (∀x. x ∈ real_closed_interval a b ",
+                "      ⟶ has_real_derivative g (dg x) (within (atreal x) (real_closed_interval a b))) ",
+                "   ⟶ a ≤ b ",
+                "      ⟶ (real_increasing_on g (real_closed_interval a b) )",
+                "         ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * dg x) = ",
+                "            real_integral (real_closed_interval (g a) (g b)) f"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "dg": "real => real",
+                "f": "real => real",
+                "g": "real => real"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",

@@ -46,6 +46,25 @@ class RealTest(unittest.TestCase):
         for expr, res in test_data:
             test_conv(self, 'real', real.real_norm_conv(), vars=vars, t=expr, t_res=res)
 
+    def testRealIneq(self):
+        test_data = [
+            ("(1::real) <= 2", True),
+            ("(2::real) <= 1", False),
+            ("(1::real) <= 1", True),
+            ("(1::real) < 2", True),
+            ("(2::real) < 1", False),
+            ("(1::real) < 1", False),
+            ("~(1::real) = 2", True),
+            ("~(2::real) = 1", True),
+            ("~(1::real) = 1", False),
+        ]
+
+        for expr, res in test_data:
+            if res:
+                test_macro(self, 'real', 'real_ineq', args=expr, res=expr, eval_only=True)
+            else:
+                test_macro(self, 'real', 'real_ineq', args=expr, failed=AssertionError, eval_only=True)
+
 
 if __name__ == "__main__":
     unittest.main()
