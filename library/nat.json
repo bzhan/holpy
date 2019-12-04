@@ -6549,6 +6549,834 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "even_exists_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ true ⟶ (∃m::nat. 0 = 2 * m)"
+                },
+                {
+                    "args": "true",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "mult_0_right, (0::nat) = 2 * 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::nat) = 2 * 0"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λm::nat. 0 = 2 * m, a: (0::nat)}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "true ⊢ ∃a1::nat. 0 = 2 * a1"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ true ⟶ (∃m::nat. 0 = 2 * m)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬true ⟶ (∃m. 0 = Suc (2 * m))"
+                },
+                {
+                    "args": "¬true",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬true ⊢ ¬true"
+                },
+                {
+                    "args": "∃m. 0 = Suc (2 * m)",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬true ⊢ ∃m. 0 = Suc (2 * m)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬true ⟶ (∃m. 0 = Suc (2 * m))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (true ⟶ (∃m::nat. 0 = 2 * m)) ∧ (¬true ⟶ (∃m. 0 = Suc (2 * m)))"
+                },
+                {
+                    "args": "even_def_1, (even 0 ⟶ (∃m::nat. 0 = 2 * m)) ∧ (¬(even 0) ⟶ (∃m. 0 = Suc (2 * m)))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (even 0 ⟶ (∃m::nat. 0 = 2 * m)) ∧ (¬(even 0) ⟶ (∃m. 0 = Suc (2 * m)))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⟶ (even (Suc n) ⟶ (∃m. Suc n = 2 * m)) ∧ (¬(even (Suc n)) ⟶ (∃m. Suc n = Suc (2 * m)))"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
+                },
+                {
+                    "args": "conjD1, {}, {A: even n ⟶ (∃m. n = 2 * m), B: ¬(even n) ⟶ (∃m. n = Suc (2 * m))}",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ even n ⟶ (∃m. n = 2 * m)"
+                },
+                {
+                    "args": "conjD2, {}, {A: even n ⟶ (∃m. n = 2 * m), B: ¬(even n) ⟶ (∃m. n = Suc (2 * m))}",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ ¬(even n) ⟶ (∃m. n = Suc (2 * m))"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ ¬(even n) ⟶ (∃m. Suc n = 2 * m)"
+                },
+                {
+                    "args": "¬(even n)",
+                    "id": "4.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even n) ⊢ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "4.4.1",
+                    "prevs": [
+                        "4.3",
+                        "4.4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), ¬(even n) ⊢ ∃m. n = Suc (2 * m)"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "4.4.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n = Suc (2 * m)",
+                    "id": "4.4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = Suc (2 * m) ⊢ n = Suc (2 * m)"
+                },
+                {
+                    "args": "Suc (Suc (2 * m)) = 2 * Suc m",
+                    "id": "4.4.4",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ Suc (Suc (2 * m)) = 2 * Suc m"
+                },
+                {
+                    "args": "Suc n = 2 * Suc m",
+                    "id": "4.4.5",
+                    "prevs": [
+                        "4.4.3",
+                        "4.4.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = Suc (2 * m), (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), ¬(even n) ⊢ Suc n = 2 * Suc m"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λm. Suc n = 2 * m, a: Suc m}",
+                    "id": "4.4.6",
+                    "prevs": [
+                        "4.4.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), ¬(even n), n = Suc (2 * m) ⊢ ∃a1. Suc n = 2 * a1"
+                },
+                {
+                    "args": "∃m. n = Suc (2 * m)",
+                    "id": "4.4.7",
+                    "prevs": [
+                        "4.4.0",
+                        "4.4.1",
+                        "4.4.2",
+                        "4.4.3",
+                        "4.4.6"
+                    ],
+                    "rule": "intros",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ ¬(even n) ⟶ (∃m. Suc n = 2 * m)"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ ¬¬(even n) ⟶ (∃m. Suc n = Suc (2 * m))"
+                },
+                {
+                    "args": "¬¬(even n)",
+                    "id": "4.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(even n) ⊢ ¬¬(even n)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "4.5.1",
+                    "prevs": [
+                        "4.5.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(even n) ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.2",
+                    "prevs": [
+                        "4.2",
+                        "4.5.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), ¬¬(even n) ⊢ ∃m. n = 2 * m"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "4.5.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n = 2 * m",
+                    "id": "4.5.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 2 * m ⊢ n = 2 * m"
+                },
+                {
+                    "args": "Suc n = Suc (2 * m)",
+                    "id": "4.5.5",
+                    "prevs": [
+                        "4.5.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 2 * m ⊢ Suc n = Suc (2 * m)"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λm. Suc n = Suc (2 * m), a: m}",
+                    "id": "4.5.6",
+                    "prevs": [
+                        "4.5.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), ¬¬(even n), n = 2 * m ⊢ ∃a1. Suc n = Suc (2 * a1)"
+                },
+                {
+                    "args": "∃m. n = 2 * m",
+                    "id": "4.5.7",
+                    "prevs": [
+                        "4.5.0",
+                        "4.5.2",
+                        "4.5.3",
+                        "4.5.4",
+                        "4.5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ ¬¬(even n) ⟶ (∃m. Suc n = Suc (2 * m))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.4",
+                        "4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ (¬(even n) ⟶ (∃m. Suc n = 2 * m)) ∧ (¬¬(even n) ⟶ (∃m. Suc n = Suc (2 * m)))"
+                },
+                {
+                    "args": "even_def_2, (even (Suc n) ⟶ (∃m. Suc n = 2 * m)) ∧ (¬(even (Suc n)) ⟶ (∃m. Suc n = Suc (2 * m)))",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ (even (Suc n) ⟶ (∃m. Suc n = 2 * m)) ∧ (¬(even (Suc n)) ⟶ (∃m. Suc n = Suc (2 * m)))"
+                },
+                {
+                    "args": "",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⟶ (even (Suc n) ⟶ (∃m. Suc n = 2 * m)) ∧ (¬(even (Suc n)) ⟶ (∃m. Suc n = Suc (2 * m)))"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), x: n}",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
+                }
+            ],
+            "prop": [
+                "(even n --> (∃m. n = 2 * m)) &",
+                "(~even n --> (∃m. n = Suc (2 * m)))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.3",
+                        "4.4.0"
+                    ],
+                    "goal_id": "4.4.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.4.1"
+                    ],
+                    "goal_id": "4.4.2",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "4.4.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "Suc m"
+                },
+                {
+                    "fact_ids": [
+                        "4.4.3"
+                    ],
+                    "goal_id": "4.4.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.4.4",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.0"
+                    ],
+                    "goal_id": "4.5.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "4.2",
+                        "4.5.1"
+                    ],
+                    "goal_id": "4.5.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.2"
+                    ],
+                    "goal_id": "4.5.3",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "4.5.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "m"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.4"
+                    ],
+                    "goal_id": "4.5.5",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "even_exists",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "even_exists_lemma, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ even n ⟶ (∃m. n = 2 * m)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃m. n = 2 * m) ⟶ even n"
+                },
+                {
+                    "args": "∃m. n = 2 * m",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃m. n = 2 * m ⊢ ∃m. n = 2 * m"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n = 2 * m",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 2 * m ⊢ n = 2 * m"
+                },
+                {
+                    "args": "even_double, {}, {n: m}",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (2 * m)"
+                },
+                {
+                    "args": "even n",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.2",
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 2 * m, ∃m. n = 2 * m ⊢ even n"
+                },
+                {
+                    "args": "∃m. n = 2 * m",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃m. n = 2 * m) ⟶ even n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ even n ⟷ (∃m. n = 2 * m)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even n ⟷ (∃m. n = 2 * m)"
+                }
+            ],
+            "prop": "even n <--> ?m. n = 2 * m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "even_exists_lemma"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "even_double"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "odd_exists",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "even_exists_lemma, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
+                },
+                {
+                    "args": "not_even",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (odd n ⟶ (∃m. n = Suc (2 * m)))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ odd n ⟶ (∃m. n = Suc (2 * m))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃m. n = Suc (2 * m)) ⟶ odd n"
+                },
+                {
+                    "args": "∃m. n = Suc (2 * m)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃m. n = Suc (2 * m) ⊢ ∃m. n = Suc (2 * m)"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n = Suc (2 * m)",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = Suc (2 * m) ⊢ n = Suc (2 * m)"
+                },
+                {
+                    "args": "odd_double, {}, {n: m}",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ odd (Suc (2 * m))"
+                },
+                {
+                    "args": "odd n",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.2",
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = Suc (2 * m), ∃m. n = Suc (2 * m) ⊢ odd n"
+                },
+                {
+                    "args": "∃m. n = Suc (2 * m)",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃m. n = Suc (2 * m)) ⟶ odd n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ odd n ⟷ (∃m. n = Suc (2 * m))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ odd n ⟷ (∃m. n = Suc (2 * m))"
+                }
+            ],
+            "prop": "odd n ⟷ (∃m. n = Suc (2 * m))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "even_exists_lemma"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_even"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "odd_double"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
             "name": "nat_divide",
             "ty": "def.ax",
             "type": "nat ⇒ nat ⇒ nat"

@@ -11933,7 +11933,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "real_pow_pow",
             "num_gaps": 0,
