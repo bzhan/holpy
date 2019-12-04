@@ -6,6 +6,7 @@ from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
 from data import nat
+from data.set import setT
 from logic.conv import Conv
 from logic.proofterm import refl, ProofTermMacro, ProofTermDeriv
 from syntax import pprint, settings
@@ -32,6 +33,11 @@ nat_power = Const("power", TFun(realT, nat.natT, realT))
 exp = Const("exp", TFun(realT, realT))
 sin = Const("sin", TFun(realT, realT))
 cos = Const("cos", TFun(realT, realT))
+
+# Intervals
+
+closed_interval = Const("real_closed_interval", TFun(realT, realT, setT(realT)))
+open_interval = Const("real_open_interval", TFun(realT, realT, setT(realT)))
 
 
 def mk_plus(*args):
@@ -151,6 +157,53 @@ def from_poly(p):
     return mk_plus(*(from_mono(m) for m in p.monomials))
 
 
+class real_ineq_macro(ProofTermMacro):
+    """Attempt to prove a <= b, where a and b are real constants."""
+    def __init__(self):
+        self.level = 0  # proof term not implemented
+        self.sig = Term
+        self.limit = 'real_neg_0'
+
+    def eval(self, thy, goal, pts):
+        assert len(pts) == 0, "real_ineq_macro"
+        assert self.can_eval(thy, goal), "real_ineq_macro"
+
+        return Thm([], goal)
+
+    def can_eval(self, thy, goal):
+        assert isinstance(goal, Term), "real_ineq_macro"
+        if not (is_less_eq(goal) or is_less(goal)) and goal.arg.get_type() == realT:
+            return False
+
+        t1, t2 = goal.args
+        if not (is_binary_real(t1) and is_binary_real(t2)):
+            return False
+
+        r1 = from_binary_real(t1)
+        r2 = from_binary_real(t2)
+        if is_less_eq(goal):
+            return r1 <= r2
+        elif is_less(goal):
+            return r1 < r2
+        else:
+            raise NotImplementedError
+
+    def get_proof_term(self, thy, goal, pts):
+        raise NotImplementedError
+
+def real_less_eq(thy, t1, t2):
+    assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) <= from_binary_real(t2), \
+        "real_less_eq"
+
+    return ProofTermDeriv("real_ineq", thy, less_eq(t1, t2))
+
+def real_less(thy, t1, t2):
+    assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) < from_binary_real(t2), \
+        "real_less_eq"
+
+    return ProofTermDeriv("real_less", thy, less(t1, t2))
+
+
 class real_norm_macro(ProofTermMacro):
     """Attempt to prove goal by normalization."""
 
@@ -216,6 +269,7 @@ class real_norm_method(Method):
 
 
 macro.global_macros.update({
+    "real_ineq": real_ineq_macro(),
     "real_norm": real_norm_macro()
 })
 

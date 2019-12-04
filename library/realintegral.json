@@ -11039,10 +11039,7 @@
         {
             "attributes": [],
             "name": "real_integral_sin_evalat",
-            "prop": [
-                "real_integral (real_closed_interval a b) (%x. sin x) =",
-                "  evalat (%x. -cos x) a b"
-            ],
+            "prop": "a <= b --> real_integral (real_closed_interval a b) (λx. sin x) = evalat (λx. -(cos x)) a b",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -11052,7 +11049,7 @@
         {
             "attributes": [],
             "name": "real_integral_cos_evalat",
-            "prop": "real_integral (real_closed_interval a b) (%x. cos x) = evalat (%x. sin x) a b",
+            "prop": "a <= b --> real_integral (real_closed_interval a b) (λx. cos x) = evalat (λx. sin x) a b",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -11062,7 +11059,7 @@
         {
             "attributes": [],
             "name": "real_integral_exp_evalat",
-            "prop": "real_integral (real_closed_interval a b) (%x. exp x) = evalat (%x. exp x) a b",
+            "prop": "a <= b --> real_integral (real_closed_interval a b) (λx. exp x) = evalat (λx. exp x) a b",
             "ty": "thm",
             "vars": {
                 "a": "real",
