@@ -394,12 +394,18 @@ class apply_fact_macro(ProofTermMacro):
 
         if tyinst:
             pt = ProofTerm.subst_type(tyinst, pt)
-        for new_name in new_names:
-            pt = ProofTerm.forall_elim(inst[new_name], pt)
+        for new_var in new_vars:
+            if new_var.name in inst:
+                pt = ProofTerm.forall_elim(inst[new_var.name], pt)
+            else:
+                pt = ProofTerm.forall_elim(new_var, pt)
         if pt.prop.beta_norm() != pt.prop:
             pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
         for prev_pt in pt_prevs:
             pt = ProofTerm.implies_elim(pt, prev_pt)
+        for new_var in new_vars:
+            if new_var.name not in inst:
+                pt = ProofTerm.forall_intr(new_var, pt)
 
         return pt
 
