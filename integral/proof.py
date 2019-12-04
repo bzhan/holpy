@@ -4,9 +4,9 @@ from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from logic.conv import Conv, ConvException, top_conv, beta_conv, argn_conv, \
-    arg_conv, arg1_conv, rewr_conv, binop_conv
+    arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv
 from logic.logic import apply_theorem, conj_thms
-from logic.proofterm import ProofTermDeriv, refl
+from logic.proofterm import ProofTerm, ProofTermDeriv, refl
 from data import set
 from data import nat
 from data import real
@@ -276,3 +276,53 @@ class simplify(Conv):
             top_conv(rewr_conv('evalat_def')),
             top_conv(beta_conv()),
             real.real_norm_conv())
+
+
+class integrate_by_parts(Conv):
+    """Evaluate using integration by parts.
+    
+    expr is of the form real_integral (real_closed_interval a b) (%x. u x * dv x),
+    where a and b are constant real numbers.
+
+    u and v are both real => real functions in abstraction form, such that the
+    derivative of u is du, and the derivative of v is dv.
+
+    The result is evalat (%x. u x * v x) a b - real_integral (real_closed_interval a b) (%x. u x * dv x).
+
+    """
+    def __init__(self, u, v):
+        self.u = u
+        self.v = v
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral')
+        S, f = expr.args
+        assert S.head.is_const_name('real_closed_interval')
+        a, b = S.args
+
+        le_pt = real.real_less_eq(thy, a, b)
+
+        if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
+            raise NotImplementedError
+
+        # Form the assumption
+        var_names = [v.name for v in term.get_vars(expr)]
+        nm = name.get_variant_name(f.var_name, var_names)
+        x = Var(nm, f.var_T)
+
+        u_deriv = has_real_derivativeI(thy, self.u, x, S)
+        u_deriv = u_deriv.on_prop(thy, argn_conv(1, real.real_norm_conv()))
+        v_deriv = has_real_derivativeI(thy, self.v, x, S)
+        v_deriv = v_deriv.on_prop(thy, argn_conv(1, real.real_norm_conv()))
+        x_mem = set.mk_mem(x, S)
+        cond_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, conj_thms(thy, u_deriv, v_deriv)))
+
+        # Apply the theorem
+        eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat', le_pt, cond_pt)
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(real.real_norm_conv()))))
+
+        pt = refl(expr)
+        pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+        return pt

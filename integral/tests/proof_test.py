@@ -165,15 +165,34 @@ class ProofTest(unittest.TestCase):
         for expr, res in test_data:
             test_conv(self, 'realintegral', proof.simplify(), vars=vars, t=expr, t_res=res)
 
-    def run_test(self, t, res, cvs):
+    def testIntegrateByParts(self):
+        test_data = [
+            ("real_integral (real_closed_interval (-1) 2) (%x. x * exp x)",
+             "%x::real. x",
+             "%x::real. exp x",
+             "evalat (%x. x * exp x) (-1) 2 - real_integral (real_closed_interval (-1) 2) (%x. exp x)"),
+        ]
+
+        ctxt = Context('realintegral')
+        for expr, u, v, res in test_data:
+            u = parser.parse_term(ctxt, u)
+            v = parser.parse_term(ctxt, v)
+            test_conv(self, 'realintegral', proof.integrate_by_parts(u, v), t=expr, t_res=res)
+
+    def run_test(self, t, res, cvs, debug=False):
         ctxt = Context('realintegral')
         thy = ctxt.thy
         t = parser.parse_term(ctxt, t)
         res = parser.parse_term(ctxt, res)
         pt = refl(t)
 
+        if debug:
+            print(' ', printer.print_term(thy, pt.prop.rhs))
+
         for cv in cvs:
             pt = pt.on_rhs(thy, cv)
+            if debug:
+                print('=', printer.print_term(thy, pt.prop.rhs))
 
         th = thy.check_proof(pt.export())
         self.assertEqual(th, Thm.mk_equals(t, res))
@@ -184,6 +203,20 @@ class ProofTest(unittest.TestCase):
             "(34::real) / 3",
             [
                 proof.linearity(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
+    def testIntegral4(self):
+        ctxt = Context('realintegral')
+        u = parser.parse_term(ctxt, "%x::real. x")
+        v = parser.parse_term(ctxt, "%x. exp x")
+        self.run_test(
+            "real_integral (real_closed_interval (-1) 2) (%x. x * exp x)",
+            "exp 2 + 2 * exp (-1)",
+            [
+                proof.integrate_by_parts(u, v),
                 top_conv(proof.common_integral()),
                 proof.simplify()
             ]

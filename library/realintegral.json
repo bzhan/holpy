@@ -26139,6 +26139,28 @@
             }
         },
         {
+            "attributes": [],
+            "name": "real_integration_by_parts_simple_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ (∀x. x ∈ real_closed_interval a b ",
+                "      ⟶ has_real_derivative u (du x) (within (atreal x) (real_closed_interval a b)) ∧ ",
+                "         has_real_derivative v (dv x) (within (atreal x) (real_closed_interval a b))) ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. u x * dv x) = ",
+                "      evalat (λx. u x * v x) a b - ",
+                "      real_integral (real_closed_interval a b) (λx. du x * v x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "du": "real => real",
+                "dv": "real => real",
+                "u": "real => real",
+                "v": "real => real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
