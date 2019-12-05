@@ -147,7 +147,7 @@ class ProofState():
             state.history = []
             for step in data['steps']:
                 state.history.append({
-                    'steps_output': step['method_name'],
+                    'steps_output': pprint.N(step['method_name']),
                     'proof': state.export_proof(state.prf),
                     'num_gaps': len(state.rpt.gaps)
                 })
