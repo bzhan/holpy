@@ -49,7 +49,7 @@ class Fact:
             number -1 represents no requirement.
     """
 
-    def __init__(self, pred_name, args, *, updated=False, lemma=None, cond=None, pos=None):
+    def __init__(self, pred_name, args, *, updated=False, lemma=None, cond=[], pos=[]):
         assert isinstance(pred_name, str)
         assert isinstance(args, list) and all(isinstance(arg, str) for arg in args)
         self.pred_name = pred_name
@@ -638,8 +638,6 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
     for assume, fact in zip(rule.assums, facts):  # match the arguments recursively
         new_insts = []
         new_sources = []
-        # print(insts)
-        # print(sources)
         for i in range(len(insts)):
             if sources:
                 new, source = match_expr(assume, fact, insts[i], lines=lines, circles=circles, source=sources[i])
@@ -650,7 +648,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         insts = new_insts
         sources = new_sources
 
-    for idx in range(len(insts)):  # An inst represents one applying result.
+    for idx in range(len(insts)):  # An inst represents one matching result of match_expr().
         if rule.concl.args[0].islower():
             pos = duplicate(sources[idx], divisors_for_apply[rule.concl.pred_name] / 2)
             cond = duplicate(facts_pos, divisors_for_apply[rule.concl.pred_name] / 2)
@@ -860,30 +858,37 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         return False
 
     elif fact.pred_name == 'coll':
-        fact_pts, goal_pts = set(fact.args), set(goal.args)
-        new_pts = list(goal_pts.intersection(fact_pts))
-        if len(fact_pts) + len(goal_pts) - len(new_pts) >= 2:  # Check if there are more than one identical points
-            update_recursive(new_pts)
-            return new_goal
-        else:
+        flg = False
+        i = 0  # pointer of fact
+        while i < len(fact.args):
+            t_flg = False  # If identical part is detected in this recursion. Reset here.
+            j = 0  # pointer of goal
+            while j < len(goal.args):
+                if fact.args[i] == goal.args[j]:
+                    flg = True
+                    t_flg = True
+                    break
+                j += 1
+            if not t_flg:
+                new_goal.cond.append(fact.cond[i])
+                new_goal.pos.append(fact.pos[i])
+                new_goal.args.append(fact.args[i])
+            i += 1
+        if not flg:
             return False
+        return new_goal
 
-    elif fact.pred_name == 'circle':
-        fact_circle = get_circle(circles, fact.args[1:], center=fact.args[0])
-        goal_circle = get_circle(circles, goal.args[1:], center=goal.args[0])
-        if fact_circle.is_same_circle(goal_circle):
-            new_pts = list(set(fact.args).difference(set(goal.args)))
-            update_recursive(new_pts)
-            return new_goal
-        else:
-            return False
-
-    elif fact.pred_name == 'cyclic':
-        fact_circle = get_circle(circles, list(fact.args))
-        goal_circle = get_circle(circles, list(goal.args))
-        if fact_circle.is_same_circle(goal_circle):
-            new_pts = list(set(fact.args).difference(set(goal.args)))
-            update_recursive(new_pts)
+    elif fact.pred_name in ('cyclic', 'circle'):
+        if len(set(fact.args).intersection(set(goal.args))) >= 3:
+            fact_args_lst = []
+            for i in range(len(fact.args)):
+                fact_args_lst.append((fact.args[i], i))
+            new_pts = [i for i in fact_args_lst if i[0] not in goal.args]
+            for p in range(len(new_pts)):
+                if not get_pos(new_pts[p], new_goal.args):
+                    new_goal.cond.append(fact.cond[new_pts[p][1]])
+                    new_goal.pos.append(fact.pos[new_pts[p][1]])
+                new_goal.args.append(new_pts[p][0])
             return new_goal
         else:
             return False
@@ -892,7 +897,7 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         flg = False  # if identical part is detected in global
         i = 0  # pointer of fact
         while i < len(fact.args):
-            t_flg = False  # If identical part is detected in this recursion. Reset here.
+            t_flg = False  # If identical part is detected in this recursion
             j = 0  # pointer of goal
             while j < len(goal.args):
                 if (fact.args[i] == goal.args[j] and fact.args[i + 1] == goal.args[j + 1]) or \
@@ -902,12 +907,8 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                     break
                 j += 2
             if not t_flg:  # add not identical part (4 pts) to new_goal
-                if not get_pos([fact.args[i], fact.args[i + 1]], new_goal.args):
-                    if new_goal.cond:
-                        new_goal.cond.append(fact.cond[i])
-                    else:
-                        new_goal.cond = fact.cond[i]
-                    new_goal.cond.append(fact.cond[i + 1])
+                new_goal.cond.extend([fact.cond[i], fact.cond[i + 1]])
+                new_goal.pos.extend([fact.pos[i], fact.pos[i + 1]])
                 new_goal.args.extend([fact.args[i], fact.args[i + 1]])
             i += 2
 
@@ -932,8 +933,8 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                     t_flg = True
                     break
             if not t_flg:  # add not identical part (2 pts) to new_goal
-                if not get_pos(list(fact_pts[idx]), new_goal.args):
-                    new_goal.cond.append(fact.cond[idx])
+                new_goal.cond.append(fact.cond[idx])
+                new_goal.pos.append(fact.pos[idx])
                 new_goal.args.extend(fact_pts[idx])
         if not flg:
             return False
@@ -965,13 +966,8 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                         break
                     pos += 4
                 if not flg2:
-                    if new_goal.cond:
-                        # print("fact: ", fact, " cond: ", fact.cond)
-                        # print("goal: ", new_goal, "cond: ", new_goal.cond)
-                        new_goal.cond.append(fact.cond[int(i / 2)])
-                        # print("after add: ", new_goal.cond)
-                    else:
-                        new_goal.cond = fact.cond[int(i / 2)]
+                    new_goal.cond.append(fact.cond[int(i / 2)])
+                    new_goal.pos.append(fact.pos[int(i / 2)])
                 new_goal.args.extend(fact_pts[i])
                 new_goal.args.extend(fact_pts[i + 1])
                 # print("new_goal: ", new_goal, "cond: ", new_goal.cond)
@@ -979,7 +975,6 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         if not flg:
             return False
         return new_goal
-
     else:
         if fact.args == goal.args:
             return goal

@@ -391,8 +391,6 @@ class ExprTest(unittest.TestCase):
             circles = [parser.parse_circle(circle) for circle in circles]
             r = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
             print('Final: ', hyps)
-            # goal_pos = expr.find_goal_pos(hyps, concl, lines, circles)
-            # self.assertIsNotNone(fact)
             print("--- Proof for", concl, "---")
             expr.print_search(ruleset, hyps, hyps[r])
 
