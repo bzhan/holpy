@@ -4192,6 +4192,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_pow_atreal",
             "num_gaps": 0,
             "proof": [
@@ -4268,7 +4271,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "n": "nat",
                 "x": "real"
@@ -8117,7 +8120,7 @@
                         "4.6"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ ∃a1. f x = f a1 ∧ a1 ∈ s"
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ ∃x1. f x = f x1 ∧ x1 ∈ s"
                 },
                 {
                     "args": "in_image, f x ∈ image f s",
@@ -9407,247 +9410,6 @@
                 "g": "real => real",
                 "s": "real set",
                 "x": "real"
-            }
-        },
-        {
-            "attributes": [
-                "hint_backward",
-                "hint_backward1",
-                "hint_forward"
-            ],
-            "name": "real_differentiable_on_compose",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "real_differentiable_on f s",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
-                },
-                {
-                    "args": "real_differentiable_on g (image f s)",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "real_differentiable_on g (image f s) ⊢ real_differentiable_on g (image f s)"
-                },
-                {
-                    "args": "real_differentiable_on_differentiable",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "real_differentiable_on f s ⊢ ∀x. x ∈ s ⟶ real_differentiable f (within (atreal x) s)"
-                },
-                {
-                    "args": "real_differentiable_on_differentiable",
-                    "id": "3",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "real_differentiable_on g (image f s) ⊢ ∀x. x ∈ image f s ⟶ real_differentiable g (within (atreal x) (image f s))"
-                },
-                {
-                    "args": "",
-                    "id": "4",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "4.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ s",
-                    "id": "4.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ s ⊢ x ∈ s"
-                },
-                {
-                    "args": "x",
-                    "id": "4.2",
-                    "prevs": [
-                        "2",
-                        "4.1"
-                    ],
-                    "rule": "apply_fact_for",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ real_differentiable f (within (atreal x) s)"
-                },
-                {
-                    "args": "eq_refl, {a: real}, {x: f x}",
-                    "id": "4.3",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ f x = f x"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4.4",
-                    "prevs": [
-                        "4.3",
-                        "4.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ f x = f x ∧ x ∈ s"
-                },
-                {
-                    "args": "exI, {a: real}, {P: λx1. f x = f x1 ∧ x1 ∈ s, a: x}",
-                    "id": "4.5",
-                    "prevs": [
-                        "4.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ ∃a1. f x = f a1 ∧ a1 ∈ s"
-                },
-                {
-                    "args": "in_image, f x ∈ image f s",
-                    "id": "4.6",
-                    "prevs": [
-                        "4.5"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ f x ∈ image f s"
-                },
-                {
-                    "args": "f x",
-                    "id": "4.7",
-                    "prevs": [
-                        "3",
-                        "4.6"
-                    ],
-                    "rule": "apply_fact_for",
-                    "th": "real_differentiable_on g (image f s), real_differentiable_on f s, x ∈ s ⊢ real_differentiable g (within (atreal (f x)) (image f s))"
-                },
-                {
-                    "args": "real_differentiable_compose_within",
-                    "id": "4.8",
-                    "prevs": [
-                        "4.2",
-                        "4.7"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ real_differentiable (g ∘ f) (within (atreal x) s)"
-                },
-                {
-                    "args": "",
-                    "id": "4.9",
-                    "prevs": [
-                        "4.0",
-                        "4.1",
-                        "4.8"
-                    ],
-                    "rule": "intros",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
-                },
-                {
-                    "args": "real_differentiable_on_differentiable, real_differentiable_on (g ∘ f) s",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ real_differentiable_on (g ∘ f) s"
-                },
-                {
-                    "args": "",
-                    "id": "6",
-                    "prevs": [
-                        "0",
-                        "1",
-                        "5"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (g ∘ f) s"
-                }
-            ],
-            "prop": [
-                "real_differentiable_on f s ⟶ real_differentiable_on g (image f s) ",
-                "⟶ real_differentiable_on (g ∘ f) s"
-            ],
-            "steps": [
-                {
-                    "goal_id": "2",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_differentiable_on_differentiable"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "real_differentiable_on_differentiable"
-                },
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "real_differentiable_on_differentiable"
-                },
-                {
-                    "goal_id": "4",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_differentiable_compose_within"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "4.2",
-                    "method_name": "apply_prev"
-                },
-                {
-                    "fact_ids": [
-                        "3"
-                    ],
-                    "goal_id": "4.3",
-                    "method_name": "apply_prev"
-                },
-                {
-                    "goal_id": "4.3",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "in_image"
-                },
-                {
-                    "goal_id": "4.3",
-                    "method_name": "inst_exists_goal",
-                    "s": "x"
-                },
-                {
-                    "goal_id": "4.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "4.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "eq_refl"
-                }
-            ],
-            "ty": "thm",
-            "vars": {
-                "f": "real => real",
-                "g": "real => real",
-                "s": "real set"
             }
         },
         {
@@ -12561,10 +12323,10 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "abs x < 1 ⊢ has_real_derivative asn (real_inverse (1 - x ^ (2::nat))) (atreal x)"
+                    "th": "abs x < 1 ⊢ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λf1. has_real_derivative asn f1 (atreal x), a: real_inverse (1 - x ^ (2::nat))}",
+                    "args": "exI, {a: real}, {P: λf1. has_real_derivative asn f1 (atreal x), a: real_inverse (sqrt (1 - x ^ (2::nat)))}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -12603,9 +12365,12 @@
                 {
                     "goal_id": "1",
                     "method_name": "inst_exists_goal",
-                    "s": "(real_inverse (1 - x ^ (2::nat)))"
+                    "s": "(real_inverse (sqrt (1 - x ^ (2::nat))))"
                 },
                 {
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_derivative_asn"

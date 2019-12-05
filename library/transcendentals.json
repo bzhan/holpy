@@ -487,84 +487,66 @@
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp (1 * x + of_nat n * x) = exp x * exp x ^ n"
                 },
                 {
-                    "args": "real_mult_comm, exp (x * 1 + x * of_nat n) = exp x ^ n * exp x",
+                    "args": "real_add_rdistrib, exp ((1 + of_nat n) * x) = exp x * exp x ^ n",
                     "id": "4.5",
                     "prevs": [
                         "4.4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp (x * 1 + x * of_nat n) = exp x ^ n * exp x"
-                },
-                {
-                    "args": "real_add_ldistrib, exp (x * (1 + of_nat n)) = exp x ^ n * exp x",
-                    "id": "4.6",
-                    "prevs": [
-                        "4.5"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp (x * (1 + of_nat n)) = exp x ^ n * exp x"
-                },
-                {
-                    "args": "real_mult_comm, exp ((1 + of_nat n) * x) = exp x * exp x ^ n",
-                    "id": "4.7",
-                    "prevs": [
-                        "4.6"
                     ],
                     "rule": "rewrite_goal",
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp ((1 + of_nat n) * x) = exp x * exp x ^ n"
                 },
                 {
                     "args": "real_add_comm, exp ((of_nat n + 1) * x) = exp x * exp x ^ n",
-                    "id": "4.8",
+                    "id": "4.6",
                     "prevs": [
-                        "4.7"
+                        "4.5"
                     ],
                     "rule": "rewrite_goal",
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp ((of_nat n + 1) * x) = exp x * exp x ^ n"
                 },
                 {
                     "args": "real_one_def, exp ((of_nat n + of_nat 1) * x) = exp x * exp x ^ n",
-                    "id": "4.9",
+                    "id": "4.7",
                     "prevs": [
-                        "4.8"
+                        "4.6"
                     ],
                     "rule": "rewrite_goal_sym",
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp ((of_nat n + of_nat 1) * x) = exp x * exp x ^ n"
                 },
                 {
                     "args": "real_of_nat_add, exp (of_nat (n + 1) * x) = exp x * exp x ^ n",
-                    "id": "4.10",
+                    "id": "4.8",
                     "prevs": [
-                        "4.9"
+                        "4.7"
                     ],
                     "rule": "rewrite_goal_sym",
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp (of_nat (n + 1) * x) = exp x * exp x ^ n"
                 },
                 {
                     "args": "add_1_right, exp (of_nat (Suc n) * x) = exp x * exp x ^ n",
-                    "id": "4.11",
+                    "id": "4.9",
                     "prevs": [
-                        "4.10"
+                        "4.8"
                     ],
                     "rule": "rewrite_goal_sym",
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp (of_nat (Suc n) * x) = exp x * exp x ^ n"
                 },
                 {
                     "args": "real_nat_power_def_2, exp (of_nat (Suc n) * x) = exp x ^ Suc n",
-                    "id": "4.12",
+                    "id": "4.10",
                     "prevs": [
-                        "4.11"
+                        "4.9"
                     ],
                     "rule": "rewrite_goal",
                     "th": "exp (of_nat n * x) = exp x ^ n ⊢ exp (of_nat (Suc n) * x) = exp x ^ Suc n"
                 },
                 {
                     "args": "",
-                    "id": "4.13",
+                    "id": "4.11",
                     "prevs": [
                         "4.0",
                         "4.1",
-                        "4.12"
+                        "4.10"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. exp (of_nat n * x) = exp x ^ n ⟶ exp (of_nat (Suc n) * x) = exp x ^ Suc n"
@@ -660,19 +642,7 @@
                     "goal_id": "4.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "real_mult_comm"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_add_ldistrib"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_mult_comm"
+                    "theorem": "real_add_rdistrib"
                 },
                 {
                     "goal_id": "4.2",
@@ -692,12 +662,6 @@
                     ],
                     "goal_id": "4.2",
                     "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_add_comm"
                 }
             ],
             "ty": "thm",

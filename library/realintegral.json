@@ -2956,282 +2956,50 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "has_real_integral_sum",
             "prop": [
-                "finite t ∧ (∀a. a ∈ t ⟶ has_real_integral (f a) (i a) s) ",
+                "finite t ⟶ (∀a. a ∈ t ⟶ has_real_integral (f a) (i a) s) ",
                 "⟶ has_real_integral (λx. sum t (λa. f a x)) (sum t i) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real ⇒ real",
-                "i": "'a ⇒ real",
+                "f": "'a => real => real",
+                "i": "'a => real",
                 "s": "real set",
                 "t": "'a set"
             }
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "real_integral_sum",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s)",
+                    "args": "finite t",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s)"
+                    "th": "finite t ⊢ finite t"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "∀a. a ∈ t ⟶ real_integrable_on (f a) s",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ finite t"
-                },
-                {
-                    "args": "conjD2, {}, {A: finite t, B: ∀a. a ∈ t ⟶ real_integrable_on (f a) s}",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ ∀a. a ∈ t ⟶ real_integrable_on (f a) s"
-                },
-                {
-                    "args": "",
-                    "id": "3",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
-                },
-                {
-                    "args": "a, 'a",
-                    "id": "3.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR a"
-                },
-                {
-                    "args": "a ∈ t",
-                    "id": "3.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "a ∈ t ⊢ a ∈ t"
-                },
-                {
-                    "args": "a",
-                    "id": "3.2",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ a ∈ t ⟶ real_integrable_on (f a) s"
-                },
-                {
-                    "args": "",
-                    "id": "3.3",
-                    "prevs": [
-                        "3.2",
-                        "3.1"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s), a ∈ t ⊢ real_integrable_on (f a) s"
-                },
-                {
-                    "args": "real_integrable_integral",
-                    "id": "3.4",
-                    "prevs": [
-                        "3.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s), a ∈ t ⊢ has_real_integral (f a) (real_integral s (f a)) s"
-                },
-                {
-                    "args": "has_real_integral_integrable",
-                    "id": "3.5",
-                    "prevs": [
-                        "3.4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s), a ∈ t ⊢ real_integrable_on (f a) s"
-                },
-                {
-                    "args": "real_integrable_integral",
-                    "id": "3.6",
-                    "prevs": [
-                        "3.5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s), a ∈ t ⊢ has_real_integral (f a) (real_integral s (f a)) s"
-                },
-                {
-                    "args": "",
-                    "id": "3.7",
-                    "prevs": [
-                        "3.0",
-                        "3.1",
-                        "3.6"
-                    ],
-                    "rule": "intros",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4",
-                    "prevs": [
-                        "1",
-                        "3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ finite t ∧ (∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s)"
-                },
-                {
-                    "args": "has_real_integral_sum",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ has_real_integral (λx. sum t (λa. f a x)) (sum t (λa. real_integral s (f a))) s"
-                },
-                {
-                    "args": "real_integral_unique",
-                    "id": "6",
-                    "prevs": [
-                        "5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
-                },
-                {
-                    "args": "",
-                    "id": "7",
-                    "prevs": [
-                        "0",
-                        "6"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⟶ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
-                }
-            ],
-            "prop": [
-                "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ",
-                "⟶ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
-            ],
-            "steps": [
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_integral_unique"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "has_real_integral_sum"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "introduction",
-                    "names": "a"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3.2",
-                    "method_name": "forall_elim",
-                    "s": "a"
-                },
-                {
-                    "goal_id": "3.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_integrable_integral"
-                },
-                {
-                    "goal_id": "3.3",
-                    "method_name": "apply_backward_step",
-                    "param_i": "real_integral s (f a)",
-                    "theorem": "has_real_integral_integrable"
-                },
-                {
-                    "goal_id": "3.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_integrable_integral"
-                },
-                {
-                    "fact_ids": [
-                        "3.2"
-                    ],
-                    "goal_id": "3.3",
-                    "method_name": "apply_prev"
-                }
-            ],
-            "ty": "thm",
-            "vars": {
-                "f": "'a ⇒ real ⇒ real",
-                "s": "real set",
-                "t": "'a set"
-            }
-        },
-        {
-            "attributes": [
-                "hint_backward"
-            ],
-            "name": "real_integrable_sum",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s)",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s)"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ finite t"
+                    "th": "∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ ∀a. a ∈ t ⟶ real_integrable_on (f a) s"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
                 },
                 {
                     "args": "a, 'a",
@@ -3248,111 +3016,229 @@
                     "th": "a ∈ t ⊢ a ∈ t"
                 },
                 {
-                    "args": "conjD2, {}, {A: finite t, B: ∀a. a ∈ t ⟶ real_integrable_on (f a) s}",
+                    "args": "",
                     "id": "2.2",
                     "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ ∀a. a ∈ t ⟶ real_integrable_on (f a) s"
-                },
-                {
-                    "args": "a",
-                    "id": "2.3",
-                    "prevs": [
-                        "2.2",
+                        "1",
                         "2.1"
                     ],
-                    "rule": "apply_fact_for",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s), a ∈ t ⊢ real_integrable_on (f a) s"
+                    "rule": "apply_fact",
+                    "th": "∀a. a ∈ t ⟶ real_integrable_on (f a) s, a ∈ t ⊢ real_integrable_on (f a) s"
                 },
                 {
                     "args": "real_integrable_integral",
-                    "id": "2.4",
+                    "id": "2.3",
                     "prevs": [
-                        "2.3"
+                        "2.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s), a ∈ t ⊢ has_real_integral (f a) (real_integral s (f a)) s"
+                    "th": "∀a. a ∈ t ⟶ real_integrable_on (f a) s, a ∈ t ⊢ has_real_integral (f a) (real_integral s (f a)) s"
                 },
                 {
                     "args": "",
-                    "id": "2.5",
+                    "id": "2.4",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.4"
+                        "2.3"
                     ],
                     "rule": "intros",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
-                },
-                {
-                    "args": "conjI",
-                    "id": "3",
-                    "prevs": [
-                        "1",
-                        "2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ finite t ∧ (∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s)"
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
                 },
                 {
                     "args": "has_real_integral_sum",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ has_real_integral (λx. sum t (λa. f a x)) (sum t (λa. real_integral s (f a))) s"
+                },
+                {
+                    "args": "real_integral_unique",
                     "id": "4",
                     "prevs": [
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ has_real_integral (λx. sum t (λa. f a x)) (sum t (λa. real_integral s (f a))) s"
-                },
-                {
-                    "args": "has_real_integral_integrable",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⊢ real_integrable_on (λx. sum t (λa. f a x)) s"
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "5"
+                        "1",
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⟶ real_integrable_on (λx. sum t (λa. f a x)) s"
+                    "th": "⊢ finite t ⟶ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⟶ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
                 }
             ],
             "prop": [
-                "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ",
+                "finite t ⟶ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ",
+                "⟶ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_sum"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_integral"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real => real",
+                "s": "real set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_integrable_sum",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "∀a. a ∈ t ⟶ real_integrable_on (f a) s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ ∀a. a ∈ t ⟶ real_integrable_on (f a) s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "a ∈ t",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ t ⊢ a ∈ t"
+                },
+                {
+                    "args": "a",
+                    "id": "2.2",
+                    "prevs": [
+                        "1",
+                        "2.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀a. a ∈ t ⟶ real_integrable_on (f a) s, finite t, a ∈ t ⊢ real_integrable_on (f a) s"
+                },
+                {
+                    "args": "real_integrable_integral",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s, a ∈ t ⊢ has_real_integral (f a) (real_integral s (f a)) s"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ ∀a. a ∈ t ⟶ has_real_integral (f a) (real_integral s (f a)) s"
+                },
+                {
+                    "args": "has_real_integral_sum",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ has_real_integral (λx. sum t (λa. f a x)) (sum t (λa. real_integral s (f a))) s"
+                },
+                {
+                    "args": "has_real_integral_integrable",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, ∀a. a ∈ t ⟶ real_integrable_on (f a) s ⊢ real_integrable_on (λx. sum t (λa. f a x)) s"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite t ⟶ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ⟶ real_integrable_on (λx. sum t (λa. f a x)) s"
+                }
+            ],
+            "prop": [
+                "finite t ⟶ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ",
                 "⟶ real_integrable_on (λx. sum t (λa. f a x)) s"
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "param_i": "sum t (λa. real_integral s (f a))",
                     "theorem": "has_real_integral_integrable"
                 },
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_sum"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
                 },
                 {
                     "goal_id": "2",
@@ -3366,24 +3252,15 @@
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "1"
                     ],
                     "goal_id": "2.2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "2.2",
-                        "2.1"
-                    ],
-                    "goal_id": "2.3",
                     "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real ⇒ real",
+                "f": "'a => real => real",
                 "s": "real set",
                 "t": "'a set"
             }
@@ -11010,10 +10887,463 @@
         {
             "attributes": [],
             "name": "real_integral_id_evalat",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "a ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "real_differentiable_on_id, {}, {t: real_closed_interval a b}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable_on (λx. x) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_differentiable_on_pow, {}, {f: λx::real. x, n: (2::nat), s: real_closed_interval a b}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ b ⊢ real_differentiable_on (λx. x ^ (2::nat)) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_differentiable_on_const, {}, {c: (2::real), s: real_closed_interval a b}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable_on (λx. 2) (real_closed_interval a b)"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval a b ⟶ ¬((2::real) = 0)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. x ∈ real_closed_interval a b ⟶ ¬((2::real) = 0)"
+                },
+                {
+                    "args": "real_differentiable_on_div",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b ⊢ real_differentiable_on (λb1. b1 ^ (2::nat) / 2) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_differentiable_on_imp_real_continuous_on",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b ⊢ real_continuous_on (λb1. b1 ^ (2::nat) / 2) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b ⊢ ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative (λb1. b1 ^ (2::nat) / 2) x (atreal x)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval a b",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "has_real_derivative_id, {}, {net: atreal x}",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_pow_atreal, {}, {f: λx::real. x, f1: (1::real), n: (2::nat), x: x}",
+                    "id": "7.3",
+                    "prevs": [
+                        "7.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. x1 ^ (2::nat)) (of_nat 2 * x ^ ((2::nat) - 1) * 1) (atreal x)"
+                },
+                {
+                    "args": "real_of_nat_id",
+                    "id": "7.4",
+                    "prevs": [
+                        "7.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. x1 ^ (2::nat)) (2 * x ^ ((2::nat) - 1) * 1) (atreal x)"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "7.5",
+                    "prevs": [
+                        "7.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. x1 ^ (2::nat)) (2 * x ^ ((2::nat) - 1)) (atreal x)"
+                },
+                {
+                    "args": "(2::nat) - 1 = 1",
+                    "id": "7.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (2::nat) - 1 = 1"
+                },
+                {
+                    "args": "",
+                    "id": "7.7",
+                    "prevs": [
+                        "7.6",
+                        "7.5"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. x1 ^ (2::nat)) (2 * x ^ (1::nat)) (atreal x)"
+                },
+                {
+                    "args": "real_pow_1",
+                    "id": "7.8",
+                    "prevs": [
+                        "7.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. x1 ^ (2::nat)) (2 * x) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_rmul_atreal, {}, {c: real_inverse 2, f: λx1::real. x1 ^ (2::nat), f1: 2 * x, x: x}",
+                    "id": "7.9",
+                    "prevs": [
+                        "7.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb1. b1 ^ (2::nat) * real_inverse 2) (2 * x * real_inverse 2) (atreal x)"
+                },
+                {
+                    "args": "real_mult_comm",
+                    "id": "7.10",
+                    "prevs": [
+                        "7.9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb1. real_inverse 2 * b1 ^ (2::nat)) (real_inverse 2 * (2 * x)) (atreal x)"
+                },
+                {
+                    "args": "real_mult_assoc",
+                    "id": "7.11",
+                    "prevs": [
+                        "7.10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb1. real_inverse 2 * b1 ^ (2::nat)) (real_inverse 2 * 2 * x) (atreal x)"
+                },
+                {
+                    "args": "¬((2::real) = 0)",
+                    "id": "7.12",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬((2::real) = 0)"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "7.13",
+                    "prevs": [
+                        "7.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ real_inverse 2 * 2 = 1"
+                },
+                {
+                    "args": "",
+                    "id": "7.14",
+                    "prevs": [
+                        "7.13",
+                        "7.11"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb1. real_inverse 2 * b1 ^ (2::nat)) (1 * x) (atreal x)"
+                },
+                {
+                    "args": "real_mul_lid",
+                    "id": "7.15",
+                    "prevs": [
+                        "7.14"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb1. real_inverse 2 * b1 ^ (2::nat)) x (atreal x)"
+                },
+                {
+                    "args": "real_mult_comm, has_real_derivative (λb. b ^ (2::nat) * real_inverse 2) x (atreal x)",
+                    "id": "7.16",
+                    "prevs": [
+                        "7.15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb. b ^ (2::nat) * real_inverse 2) x (atreal x)"
+                },
+                {
+                    "args": "real_divide_def, has_real_derivative (λb. b ^ (2::nat) / 2) x (atreal x)",
+                    "id": "7.17",
+                    "prevs": [
+                        "7.16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, x ∈ real_closed_interval a b ⊢ has_real_derivative (λb. b ^ (2::nat) / 2) x (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "7.18",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.17"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b ⊢ ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative (λb1. b1 ^ (2::nat) / 2) x (atreal x)"
+                },
+                {
+                    "args": "real_fundamental_theorem_of_calculus_interior",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b ⊢ has_real_integral (λx. x) (b ^ (2::nat) / 2 - a ^ (2::nat) / 2) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b ⊢ real_integral (real_closed_interval a b) (λx. x) = b ^ (2::nat) / 2 - a ^ (2::nat) / 2"
+                },
+                {
+                    "args": "evalat_def, real_integral (real_closed_interval a b) (λx. x) = evalat (λx. x ^ (2::nat) / 2) a b",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ real_integral (real_closed_interval a b) (λx. x) = evalat (λx. x ^ (2::nat) / 2) a b"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ b ⟶ real_integral (real_closed_interval a b) (λx. x) = evalat (λx. x ^ (2::nat) / 2) a b"
+                }
+            ],
             "prop": [
                 "a ≤ b ",
                 "⟶ real_integral (real_closed_interval a b) (λx. x) = ",
                 "   evalat (λx. x ^ (2::nat) / 2) a b"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "evalat_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_fundamental_theorem_of_calculus_interior"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_imp_real_continuous_on"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_div"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_pow"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_id"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_const"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal": "has_real_derivative (λb1. b1 ^ (2::nat) * real_inverse 2) (2*x* real_inverse 2) (atreal x)",
+                    "goal_id": "7.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_rmul_atreal"
+                },
+                {
+                    "goal": "has_real_derivative (λx1. x1 ^ (2::nat)) (of_nat 2 * x ^ ((2::nat) - 1) * 1) (atreal x)",
+                    "goal_id": "7.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_pow_atreal"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_id"
+                },
+                {
+                    "fact_ids": [
+                        "7.3"
+                    ],
+                    "goal_id": "7.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_of_nat_id"
+                },
+                {
+                    "fact_ids": [
+                        "7.4"
+                    ],
+                    "goal_id": "7.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "goal": "2-1=(1::nat)",
+                    "goal_id": "7.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7.6",
+                        "7.5"
+                    ],
+                    "goal_id": "7.7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7.7"
+                    ],
+                    "goal_id": "7.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_1"
+                },
+                {
+                    "fact_ids": [
+                        "7.9"
+                    ],
+                    "goal_id": "7.10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "7.10"
+                    ],
+                    "goal_id": "7.11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal": "real_inverse 2 * 2 =1",
+                    "goal_id": "7.12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "goal_id": "7.12",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7.13",
+                        "7.11"
+                    ],
+                    "goal_id": "7.14",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7.14"
+                    ],
+                    "goal_id": "7.15",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "7.16",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                }
             ],
             "ty": "thm",
             "vars": {
