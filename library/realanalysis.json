@@ -4917,6 +4917,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_const",
             "prop": "real_continuous (λx. c) net",
             "ty": "thm",
@@ -4926,31 +4929,40 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_lmul",
             "prop": "real_continuous f net ⟶ real_continuous (λx. c * f x) net",
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_rmul",
             "prop": "real_continuous f net ⟶ real_continuous (λx. f x * c) net",
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_neg",
             "prop": "real_continuous f net ⟶ real_continuous (λx. -(f x)) net",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "net": "'a net"
             }
         },
@@ -5039,21 +5051,27 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_pow",
             "prop": "real_continuous f net ⟶ real_continuous (λx. f x ^ n) net",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "n": "nat",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_abs",
             "prop": "real_continuous f net ⟶ real_continuous (λx. abs (f x)) net",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "net": "'a net"
             }
         },
@@ -5094,6 +5112,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_id",
             "prop": "real_continuous (λx1. x1) (within (atreal x) s)",
             "ty": "thm",
@@ -5103,6 +5124,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_id",
             "prop": "real_continuous (λx1. x1) (atreal x)",
             "ty": "thm",
@@ -5201,11 +5225,15 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_atreal_compose",
             "prop": [
-                "real_continuous f (atreal x) --> real_continuous g (atreal (f x)) ",
-                "⟶ real_continuous (λx1. g (f x1)) (atreal x)"
+                "real_continuous f (atreal x) ",
+                "⟶ real_continuous g (atreal (f x)) ⟶ real_continuous (λx1. g (f x1)) (atreal x)"
             ],
             "ty": "thm",
             "vars": {
@@ -5270,6 +5298,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_const",
             "prop": "real_continuous_on (λx. c) s",
             "ty": "thm",
@@ -5279,6 +5310,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_id",
             "prop": "real_continuous_on (λx. x) s",
             "ty": "thm",
@@ -5287,31 +5321,40 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_lmul",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. c * f x) s",
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_rmul",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. f x * c) s",
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_neg",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. -(f x)) s",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
@@ -5405,12 +5448,12 @@
             }
         },
         {
-            "attributes": [],
-            "name": "real_continuous_on_div_const",
-            "prop": [
-                "real_continuous_on f s",
-                "⟶ ¬c = 0 ⟶ real_continuous_on (λx. f x / c) s"
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
             ],
+            "name": "real_continuous_on_div_const",
+            "prop": "real_continuous_on f s ⟶ ¬(c = 0) ⟶ real_continuous_on (λx. f x / c) s",
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -5419,11 +5462,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_pow",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. f x ^ n) s",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "n": "nat",
                 "s": "real set"
             }
@@ -5781,11 +5827,15 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_uniformly_continuous_on_sub",
             "prop": [
-                "real_uniformly_continuous_on f s ⟶ real_uniformly_continuous_on g s ",
-                "⟶ real_uniformly_continuous_on (λx. f x - g x) s"
+                "real_uniformly_continuous_on f s ",
+                "⟶ real_uniformly_continuous_on g s ",
+                "   ⟶ real_uniformly_continuous_on (λx. f x - g x) s"
             ],
             "ty": "thm",
             "vars": {
@@ -5809,7 +5859,10 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_compact_uniformly_continuous",
             "prop": "real_continuous_on f s ⟶ real_compact s ⟶ real_uniformly_continuous_on f s",
             "ty": "thm",
@@ -5819,7 +5872,10 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_compact_continuous_image",
             "prop": "real_continuous_on f s ⟶ real_compact s ⟶ real_compact (image f s)",
             "ty": "thm",
