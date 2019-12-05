@@ -274,8 +274,8 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
                 fixed.append(same_arg)
             else:
                 flag = True
-        for_comb = sorted(list(c.args - set(inst.values())))
-        if not flag:
+        if not flag:  # start matching
+            for_comb = sorted(list(c.args - set(inst.values())))
             if len(f.args) - len(fixed) > 0:
                 # Order is not considered.
                 comb = list(itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed)))
@@ -291,7 +291,8 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
                     new_source = copy.copy(prev_source)
                     new_source.append(c_nums)
                     new_sources.append(new_source)
-            else:
+            else:  # remain previous insts and sources
+                new_sources.append(prev_source)
                 new_insts.append(inst)
 
 
@@ -405,13 +406,15 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
                         ts.append(t)
                         flg = True
 
-                    if (f_not_in_inst(pat_a, c[i][1]) or same_value(pat_a, c[i][1])) and \
+                    elif (f_not_in_inst(pat_a, c[i][1]) or same_value(pat_a, c[i][1])) and \
                             (f_not_in_inst(pat_b, c[i][0]) or same_value(pat_b, c[i][0])):
                         t = copy.copy(t_inst)
                         t[pat_a] = c[i][1]
                         t[pat_b] = c[i][0]
                         ts.append(t)
                         flg = True
+                    else:
+                        flg = False
                 i += 1
                 j += 2
                 t_insts = ts
@@ -510,7 +513,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
         raise NotImplementedError
 
     if len(new_insts) != len(new_sources):
-        print(new_insts, new_sources, "     ", arg_ty)
+        print(new_insts, new_sources, prev_source, "     ", arg_ty)
     # print(len(new_insts), len(new_sources))
     return new_insts, new_sources
 
@@ -647,12 +650,6 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         insts = new_insts
         sources = new_sources
 
-    if insts and rule.concl.pred_name == "cyclic":
-        print('=======')
-        print(insts)
-        print(sources)
-    #     print('----------------------------')
-
     for idx in range(len(insts)):  # An inst represents one applying result.
         if rule.concl.args[0].islower():
             pos = duplicate(sources[idx], divisors_for_apply[rule.concl.pred_name] / 2)
@@ -668,9 +665,6 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         if record:
             if rule_name:
                 new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=cond, pos=pos)
-                if rule.concl.pred_name == "cyclic":
-                    print(cond)
-                    print(new)
         else:
             new = Fact(rule.concl.pred_name, concl_args)
 
@@ -794,7 +788,6 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
         prev_lines = copy.copy(lines)
         prev_circles = copy.copy(circles)
         search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
-        print("-------")
         r = find_goal_pos(hyps, concl, lines, circles)
         if r:
             return r
