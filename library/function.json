@@ -10,9 +10,9 @@
                 "hint_rewrite"
             ],
             "name": "fun_upd",
-            "prop": "fun_upd f a b x = (if x = a then b else f x)",
+            "prop": "(f)(a := b) x = (if x = a then b else f x)",
             "ty": "def",
-            "type": "('a => 'b) => 'a => 'b => 'a => 'b"
+            "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b ⇒ 'a ⇒ 'b"
         },
         {
             "attributes": [
@@ -47,7 +47,7 @@
                     "th": "⊢ (f)(a := b) a = b"
                 }
             ],
-            "prop": "fun_upd f a b a = b",
+            "prop": "(f)(a := b) a = b",
             "steps": [
                 {
                     "goal_id": "0",
@@ -55,21 +55,30 @@
                     "theorem": "fun_upd_def"
                 },
                 {
+                    "goal": "a = a",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
+                    "method_name": "cut"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "a": "'a",
                 "b": "'b",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -80,11 +89,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬c = a",
+                    "args": "¬(c = a)",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬c = a ⊢ ¬c = a"
+                    "th": "¬(c = a) ⊢ ¬(c = a)"
                 },
                 {
                     "args": "if_not_P, (if c = a then b else f c) = f c",
@@ -93,7 +102,7 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬c = a ⊢ (if c = a then b else f c) = f c"
+                    "th": "¬(c = a) ⊢ (if c = a then b else f c) = f c"
                 },
                 {
                     "args": "fun_upd_def, (f)(a := b) c = f c",
@@ -102,7 +111,7 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬c = a ⊢ (f)(a := b) c = f c"
+                    "th": "¬(c = a) ⊢ (f)(a := b) c = f c"
                 },
                 {
                     "args": "",
@@ -112,10 +121,10 @@
                         "2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬c = a ⟶ (f)(a := b) c = f c"
+                    "th": "⊢ ¬(c = a) ⟶ (f)(a := b) c = f c"
                 }
             ],
-            "prop": "~(c = a) --> fun_upd f a b c = f c",
+            "prop": "¬(c = a) ⟶ (f)(a := b) c = f c",
             "steps": [
                 {
                     "goal_id": "1",
@@ -123,8 +132,12 @@
                     "theorem": "fun_upd_def"
                 },
                 {
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "if_not_P"
                 }
             ],
@@ -133,7 +146,7 @@
                 "a": "'a",
                 "b": "'b",
                 "c": "'a",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -159,7 +172,7 @@
                     "id": "0.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ x = a ⟶ (f)(a := f a) x = f x"
+                    "th": "⊢ x = a ⟶ (if x = a then f a else f x) = f x"
                 },
                 {
                     "args": "x = a",
@@ -169,21 +182,23 @@
                     "th": "x = a ⊢ x = a"
                 },
                 {
-                    "args": "fun_upd_same, (f)(a := f a) a = f a",
+                    "args": "f a = f x",
                     "id": "0.1.1",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ (f)(a := f a) a = f a"
-                },
-                {
-                    "args": "(f)(a := f a) x = f x",
-                    "id": "0.1.2",
                     "prevs": [
-                        "0.1.0",
-                        "0.1.1"
+                        "0.1.0"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "x = a ⊢ (f)(a := f a) x = f x"
+                    "th": "x = a ⊢ f a = f x"
+                },
+                {
+                    "args": "if_P, (if x = a then f a else f x) = f x",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = a ⊢ (if x = a then f a else f x) = f x"
                 },
                 {
                     "args": "",
@@ -193,14 +208,14 @@
                         "0.1.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ x = a ⟶ (f)(a := f a) x = f x"
+                    "th": "⊢ x = a ⟶ (if x = a then f a else f x) = f x"
                 },
                 {
                     "args": "",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ¬x = a ⟶ (f)(a := f a) x = f x"
+                    "th": "⊢ ¬x = a ⟶ (if x = a then f a else f x) = f x"
                 },
                 {
                     "args": "¬x = a",
@@ -210,13 +225,13 @@
                     "th": "¬x = a ⊢ ¬x = a"
                 },
                 {
-                    "args": "fun_upd_other, (f)(a := f a) x = f x",
+                    "args": "if_not_P, (if x = a then f a else f x) = f x",
                     "id": "0.2.1",
                     "prevs": [
                         "0.2.0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬x = a ⊢ (f)(a := f a) x = f x"
+                    "th": "¬x = a ⊢ (if x = a then f a else f x) = f x"
                 },
                 {
                     "args": "",
@@ -226,7 +241,7 @@
                         "0.2.1"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬x = a ⟶ (f)(a := f a) x = f x"
+                    "th": "⊢ ¬x = a ⟶ (if x = a then f a else f x) = f x"
                 },
                 {
                     "args": "classical_cases",
@@ -236,14 +251,23 @@
                         "0.2"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "fun_upd_def, (f)(a := f a) x = f x",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "⊢ (f)(a := f a) x = f x"
                 },
                 {
                     "args": "",
-                    "id": "0.4",
+                    "id": "0.5",
                     "prevs": [
                         "0.0",
-                        "0.3"
+                        "0.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀x. (f)(a := f a) x = f x"
@@ -258,7 +282,7 @@
                     "th": "⊢ (f)(a := f a) = f"
                 }
             ],
-            "prop": "fun_upd f a (f a) = f",
+            "prop": "(f)(a := f a) = f",
             "steps": [
                 {
                     "goal_id": "0",
@@ -271,14 +295,26 @@
                     "names": "x"
                 },
                 {
-                    "case": "x = a",
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_def"
+                },
+                {
+                    "case": "x= a",
                     "goal_id": "0.1",
                     "method_name": "cases"
                 },
                 {
                     "goal_id": "0.1",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
                 },
                 {
                     "fact_ids": [
@@ -288,25 +324,22 @@
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
-                    "goal_id": "0.1.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_same"
-                },
-                {
                     "goal_id": "0.2",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
                     "goal_id": "0.2.1",
                     "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_other"
+                    "theorem": "if_not_P"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "a": "'a",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -441,7 +474,7 @@
                     "th": "⊢ (f)(a := b, a := c) = (f)(a := c)"
                 }
             ],
-            "prop": "fun_upd (fun_upd f a b) a c = fun_upd f a c",
+            "prop": "(f)(a := b, a := c) = (f)(a := c)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -460,8 +493,7 @@
                 },
                 {
                     "goal_id": "0.1",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
@@ -477,15 +509,20 @@
                 },
                 {
                     "goal_id": "0.2",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
                     "goal_id": "0.2.1",
                     "method_name": "rewrite_goal",
                     "theorem": "fun_upd_other"
                 },
                 {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
                     "goal_id": "0.2.1",
                     "method_name": "rewrite_goal",
                     "theorem": "fun_upd_other"
@@ -496,7 +533,7 @@
                 "a": "'a",
                 "b": "'b",
                 "c": "'b",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -539,27 +576,27 @@
                     "th": "x = a ⊢ x = a"
                 },
                 {
-                    "args": "fun_upd_same, (f)(a := b) a = b",
+                    "args": "ineq_sym",
                     "id": "1.1.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬c = a ⊢ ¬a = c"
+                },
+                {
+                    "args": "fun_upd_same, (f)(a := b) a = b",
+                    "id": "1.1.2",
                     "prevs": [],
                     "rule": "rewrite_goal",
                     "th": "⊢ (f)(a := b) a = b"
                 },
                 {
-                    "args": "ineq_sym",
-                    "id": "1.1.2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬c = a, x = a ⊢ ¬a = c"
-                },
-                {
                     "args": "fun_upd_other, (f)(a := b, c := d) a = b",
                     "id": "1.1.3",
                     "prevs": [
-                        "1.1.1",
-                        "1.1.2"
+                        "1.1.2",
+                        "1.1.1"
                     ],
                     "rule": "rewrite_goal",
                     "th": "¬c = a, x = a ⊢ (f)(a := b, c := d) a = b"
@@ -636,7 +673,7 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬x = a, x = c, ¬c = a ⊢ d = (f)(c := d, a := b) c"
+                    "th": "¬c = a, ¬x = a, x = c ⊢ d = (f)(c := d, a := b) c"
                 },
                 {
                     "args": "fun_upd_same, (f)(a := b, c := d) c = (f)(c := d, a := b) c",
@@ -682,32 +719,40 @@
                     "th": "¬x = c ⊢ ¬x = c"
                 },
                 {
-                    "args": "fun_upd_other, (f)(a := b) x = (f)(c := d) x",
+                    "args": "fun_upd_other, (f)(a := b) x = f x",
                     "id": "1.2.2.1",
                     "prevs": [
-                        "1.2.0",
-                        "1.2.2.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬c = a, ¬x = a, ¬x = c ⊢ (f)(a := b) x = (f)(c := d) x"
-                },
-                {
-                    "args": "fun_upd_other, (f)(a := b, c := d) x = (f)(c := d, a := b) x",
-                    "id": "1.2.2.2",
-                    "prevs": [
-                        "1.2.2.1",
-                        "1.2.2.0",
                         "1.2.0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬c = a, ¬x = c, ¬x = a ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                    "th": "¬x = a ⊢ (f)(a := b) x = f x"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b, c := d) x = (f)(c := d) x",
+                    "id": "1.2.2.2",
+                    "prevs": [
+                        "1.2.2.1",
+                        "1.2.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x = c, ¬c = a, ¬x = a ⊢ (f)(a := b, c := d) x = (f)(c := d) x"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b, c := d) x = (f)(c := d, a := b) x",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.2",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x = a, ¬c = a, ¬x = c ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.3",
+                    "id": "1.2.2.4",
                     "prevs": [
                         "1.2.2.0",
-                        "1.2.2.2"
+                        "1.2.2.3"
                     ],
                     "rule": "intros",
                     "th": "¬c = a, ¬x = a ⊢ ¬x = c ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
@@ -772,7 +817,7 @@
                     "th": "⊢ ¬c = a ⟶ (f)(a := b, c := d) = (f)(c := d, a := b)"
                 }
             ],
-            "prop": "~c = a --> fun_upd (fun_upd f a b) c d = fun_upd (fun_upd f c d) a b",
+            "prop": "¬(c = a) ⟶ (f)(a := b, c := d) = (f)(c := d, a := b)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -791,8 +836,7 @@
                 },
                 {
                     "goal_id": "1.1",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
@@ -807,24 +851,34 @@
                     "theorem": "fun_upd_same"
                 },
                 {
+                    "goal": "~a = c",
                     "goal_id": "1.1.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_other"
+                    "method_name": "cut"
                 },
                 {
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1.1.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_same"
-                },
-                {
-                    "goal_id": "1.1.2",
                     "method_name": "apply_backward_step",
                     "theorem": "ineq_sym"
                 },
                 {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_same"
+                },
+                {
                     "goal_id": "1.2",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
                     "case": "x = c",
@@ -833,8 +887,7 @@
                 },
                 {
                     "goal_id": "1.2.1",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
@@ -849,6 +902,9 @@
                     "theorem": "fun_upd_same"
                 },
                 {
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1.2.1.1",
                     "method_name": "rewrite_goal",
                     "theorem": "fun_upd_other"
@@ -860,15 +916,28 @@
                 },
                 {
                     "goal_id": "1.2.2",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
                     "goal_id": "1.2.2.1",
                     "method_name": "rewrite_goal",
                     "theorem": "fun_upd_other"
                 },
                 {
+                    "fact_ids": [
+                        "1.2.2.0"
+                    ],
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
                     "goal_id": "1.2.2.1",
                     "method_name": "rewrite_goal",
                     "theorem": "fun_upd_other"
@@ -880,44 +949,49 @@
                 "b": "'b",
                 "c": "'a",
                 "d": "'b",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
-        },
-        {
-            "name": "fun_upd_eval",
-            "ty": "macro"
         },
         {
             "name": "fun_upd_eval_test1",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬0 = 1",
+                    "args": "¬((0::nat) = 1)",
                     "id": "0",
                     "prevs": [],
                     "rule": "nat_const_ineq",
-                    "th": "⊢ ¬0 = 1"
+                    "th": "⊢ ¬((0::nat) = 1)"
                 },
                 {
-                    "args": "fun_upd_other, (λx. 0)(1 := 5) 0 = 0",
+                    "args": "fun_upd_other, (λx::nat. (0::nat))(1 := 5) 0 = 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (λx. 0)(1 := 5) 0 = 0"
+                    "th": "⊢ (λx::nat. (0::nat))(1 := 5) 0 = 0"
                 }
             ],
-            "prop": "fun_upd (%x::nat. (0::nat)) 1 5 0 = 0",
+            "prop": "(λx::nat. (0::nat))(1 := 5) 0 = 0",
             "steps": [
                 {
+                    "goal": "~((0::nat) = 1)",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_other"
+                    "method_name": "cut"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "nat_const_ineq"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fun_upd_other"
                 }
             ],
             "ty": "thm",
@@ -935,7 +1009,7 @@
                     "th": "⊢ (λx. 0)(1 := 5) 1 = 5"
                 }
             ],
-            "prop": "fun_upd (%x::nat. (0::nat)) 1 5 1 = 5",
+            "prop": "(λx::nat. (0::nat))(1 := 5) 1 = 5",
             "steps": [
                 {
                     "goal_id": "0",
@@ -953,13 +1027,16 @@
             "name": "id_fun",
             "prop": "id_fun = (λx::'a. x)",
             "ty": "def",
-            "type": "'a => 'a"
+            "type": "'a ⇒ 'a"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "comp_fun",
-            "prop": "comp_fun f g = (%x. f (g x))",
+            "prop": "f ∘ g = (λx. f (g x))",
             "ty": "def",
-            "type": "('b => 'c) => ('a => 'b) => 'a => 'c"
+            "type": "('b ⇒ 'c) ⇒ ('a ⇒ 'b) ⇒ 'a ⇒ 'c"
         },
         {
             "attributes": [
@@ -976,7 +1053,7 @@
                     "th": "⊢ comp_fun f g x = f (g x)"
                 }
             ],
-            "prop": "comp_fun f g x = f (g x)",
+            "prop": "(f ∘ g) x = f (g x)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -986,13 +1063,12 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'c",
-                "g": "'a => 'b",
+                "f": "'b ⇒ 'c",
+                "g": "'a ⇒ 'b",
                 "x": "'a"
             }
         },
         {
-            "attributes": [],
             "name": "comp_fun_assoc",
             "num_gaps": 0,
             "proof": [
@@ -1046,7 +1122,7 @@
                     "th": "⊢ (f ∘ g) ∘ h = f ∘ g ∘ h"
                 }
             ],
-            "prop": "comp_fun (comp_fun f g) h = comp_fun f (comp_fun g h)",
+            "prop": "(f ∘ g) ∘ h = f ∘ g ∘ h",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1071,16 +1147,16 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'c => 'd",
-                "g": "'b => 'c",
-                "h": "'a => 'b"
+                "f": "'c ⇒ 'd",
+                "g": "'b ⇒ 'c",
+                "h": "'a ⇒ 'b"
             }
         },
         {
             "name": "injective",
-            "prop": "injective f = (!x. !y. f x = f y --> x = y)",
+            "prop": "injective f ⟷ (∀x. ∀y. f x = f y ⟶ x = y)",
             "ty": "def",
-            "type": "('a => 'b) => bool"
+            "type": "('a ⇒ 'b) ⇒ bool"
         },
         {
             "attributes": [
@@ -1116,7 +1192,7 @@
                     "th": "⊢ (∀x. ∀y. f x = f y ⟶ x = y) ⟶ injective f"
                 }
             ],
-            "prop": "(!x. !y. f x = f y --> x = y) --> injective f",
+            "prop": "(∀x. ∀y. f x = f y ⟶ x = y) ⟶ injective f",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1126,7 +1202,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -1181,7 +1257,7 @@
                     "th": "⊢ injective f ⟶ f x = f y ⟶ x = y"
                 }
             ],
-            "prop": "injective f --> f x = f y --> x = y",
+            "prop": "injective f ⟶ f x = f y ⟶ x = y",
             "steps": [
                 {
                     "fact_ids": [
@@ -1202,16 +1278,16 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "x": "'a",
                 "y": "'a"
             }
         },
         {
             "name": "surjective",
-            "prop": "surjective f = (!y. ?x. f x = y)",
+            "prop": "surjective f ⟷ (∀y. ∃x. f x = y)",
             "ty": "def",
-            "type": "('a => 'b) => bool"
+            "type": "('a ⇒ 'b) ⇒ bool"
         },
         {
             "attributes": [
@@ -1247,7 +1323,7 @@
                     "th": "⊢ (∀y. ∃x. f x = y) ⟶ surjective f"
                 }
             ],
-            "prop": "(!y. ?x. f x = y) --> surjective f",
+            "prop": "(∀y. ∃x. f x = y) ⟶ surjective f",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1257,7 +1333,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -1303,7 +1379,7 @@
                     "th": "⊢ surjective f ⟶ (∃x. f x = y)"
                 }
             ],
-            "prop": "surjective f --> ?x. f x = y",
+            "prop": "surjective f ⟶ (∃x. f x = y)",
             "steps": [
                 {
                     "fact_ids": [
@@ -1323,7 +1399,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "y": "'b"
             }
         },
@@ -1332,43 +1408,10 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "∀x::'a. ∀y. x = y ⟶ x = y",
                     "id": "0",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ ∀x::'a. ∀y. x = y ⟶ x = y"
-                },
-                {
-                    "args": "x, 'a",
-                    "id": "0.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "y, 'a",
-                    "id": "0.1",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR y"
-                },
-                {
-                    "args": "x = y",
-                    "id": "0.2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x = y ⊢ x = y"
-                },
-                {
-                    "args": "",
-                    "id": "0.3",
-                    "prevs": [
-                        "0.0",
-                        "0.1",
-                        "0.2",
-                        "0.2"
-                    ],
-                    "rule": "intros",
+                    "rule": "trivial",
                     "th": "⊢ ∀x::'a. ∀y. x = y ⟶ x = y"
                 },
                 {
@@ -1378,7 +1421,7 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ injective (λy::'a. y)"
+                    "th": "⊢ injective (λx::'a. x)"
                 },
                 {
                     "args": "id_fun_def, injective (id_fun::'a ⇒ 'a)",
@@ -1388,9 +1431,18 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ injective (id_fun::'a ⇒ 'a)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ injective (id_fun::'a ⇒ 'a)"
                 }
             ],
-            "prop": "injective (id_fun::'a => 'a)",
+            "prop": "injective (id_fun::'a ⇒ 'a)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1401,11 +1453,6 @@
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "injectiveI"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "introduction",
-                    "names": "x,y"
                 }
             ],
             "ty": "thm",
@@ -1474,7 +1521,7 @@
                     "th": "⊢ surjective (id_fun::'a ⇒ 'a)"
                 }
             ],
-            "prop": "surjective (id_fun::'a => 'a)",
+            "prop": "surjective (id_fun::'a ⇒ 'a)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1613,7 +1660,7 @@
                     "th": "⊢ injective f ⟶ injective g ⟶ injective (g ∘ f)"
                 }
             ],
-            "prop": "injective f --> injective g --> injective (comp_fun g f)",
+            "prop": "injective f ⟶ injective g ⟶ injective (g ∘ f)",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1654,8 +1701,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
-                "g": "'b => 'c"
+                "f": "'a ⇒ 'b",
+                "g": "'b ⇒ 'c"
             }
         },
         {
@@ -1801,7 +1848,7 @@
                     "th": "⊢ surjective f ⟶ surjective g ⟶ surjective (comp_fun g f)"
                 }
             ],
-            "prop": "surjective f --> surjective g --> surjective (comp_fun g f)",
+            "prop": "surjective f ⟶ surjective g ⟶ surjective (g ∘ f)",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1872,8 +1919,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
-                "g": "'b => 'c"
+                "f": "'a ⇒ 'b",
+                "g": "'b ⇒ 'c"
             }
         }
     ],

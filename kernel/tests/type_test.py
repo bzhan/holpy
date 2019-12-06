@@ -2,11 +2,14 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, boolT, TypeMatchException
+from kernel.type import STVar, TVar, Type, TFun, boolT, TypeMatchException
 
 Ta = TVar("a")
 Tb = TVar("b")
 Tc = TVar("c")
+STa = STVar("a")
+STb = STVar("b")
+STc = STVar("c")
 
 class TypeTest(unittest.TestCase):
     def testReprType(self):
@@ -55,11 +58,11 @@ class TypeTest(unittest.TestCase):
 
     def testSubst(self):
         test_data = [
-            (Ta, {"a" : Tb}, Tb),
-            (Ta, {"b" : Tb}, Ta),
-            (TFun(Ta, Tb), {"a" : Tb}, TFun(Tb, Tb)),
-            (TFun(Ta, Tb), {"a" : Tb, "b" : Ta}, TFun(Tb, Ta)),
-            (Type("list", Ta), {"a" : Tb}, Type("list", Tb)),
+            (STa, {"a" : Tb}, Tb),
+            (STa, {"b" : Tb}, STa),
+            (TFun(STa, Tb), {"a" : Tb}, TFun(Tb, Tb)),
+            (TFun(STa, STb), {"a" : Tb, "b" : Ta}, TFun(Tb, Ta)),
+            (Type("list", STa), {"a" : Tb}, Type("list", Tb)),
         ]
 
         for T, tyinst, res in test_data:
@@ -67,10 +70,10 @@ class TypeTest(unittest.TestCase):
 
     def testMatch(self):
         test_data = [
-            (Ta, Tb, {"a" : Tb}),
-            (TFun(Ta,Tb), TFun(Tb,Ta), {"a" : Tb, "b" : Ta}),
-            (Ta, boolT, {"a" : boolT}),
-            (TFun(Ta,boolT), TFun(boolT,boolT), {"a" : boolT}),
+            (STa, Tb, {"a" : Tb}),
+            (TFun(STa, STb), TFun(Tb,Ta), {"a" : Tb, "b" : Ta}),
+            (STa, boolT, {"a" : boolT}),
+            (TFun(STa, boolT), TFun(boolT, boolT), {"a" : boolT}),
         ]
 
         for pat, T, tyinst in test_data:
@@ -78,7 +81,7 @@ class TypeTest(unittest.TestCase):
 
     def testMatchFail(self):
         test_data = [
-            (TFun(Ta,Ta), TFun(Ta,Tb)),
+            (TFun(STa, STa), TFun(Ta,Tb)),
             (boolT, Ta),
         ]
         

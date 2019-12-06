@@ -52,6 +52,14 @@ class Thm():
     def concl(self):
         return self.prop.strip_implies()[1]
 
+    @property
+    def lhs(self):
+        return self.prop.lhs
+
+    @property
+    def rhs(self):
+        return self.prop.rhs
+
     def __str__(self):
         """Print the given theorem."""
         if self.hyps:
@@ -86,6 +94,7 @@ class Thm():
     @staticmethod
     def mk_implies(*args):
         """Returns the theorem s1 --> ... --> sn --> t."""
+        assert all(isinstance(arg, Term) for arg in args)
         return Thm([], Term.mk_implies(*args))
 
     @staticmethod
@@ -315,7 +324,7 @@ class Thm():
         """
         if any(hyp.occurs_var(x) for hyp in th.hyps):
             raise InvalidDerivationException("forall_intr")
-        elif x.ty != term.VAR:
+        elif not (x.is_var() or x.is_svar()):
             raise InvalidDerivationException("forall_intr")
         else:
             return Thm(th.hyps, Term.mk_all(x, th.prop))
@@ -342,6 +351,13 @@ class Thm():
         if not v.is_var():
             raise InvalidDerivationException("mk_VAR")
         return Thm([], Const("_VAR", TFun(v.T, boolT))(v))
+
+    @staticmethod
+    def convert_svar(th):
+        """Obtain the version of theorem with SVar."""
+        if len(th.hyps) > 0:
+            raise InvalidDerivationException("convert_svar")
+        return Thm([], th.prop.convert_svar())
 
 
 # Table of primitive derivations

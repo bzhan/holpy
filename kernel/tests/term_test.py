@@ -2,13 +2,15 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun
+from kernel.type import STVar, TVar, Type, TFun
 from kernel import term
-from kernel.term import Var, Const, Comb, Abs, Bound
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound
 from kernel.term import TermSubstitutionException, TypeCheckException
 
 Ta = TVar("a")
 Tb = TVar("b")
+STa = STVar("a")
+STb = STVar("b")
 Taa = TFun(Ta, Ta)        # 'a => 'a
 Tab = TFun(Ta, Tb)        # 'a => 'b
 Taab = TFun(Ta, Ta, Tb)   # 'a => 'a => 'b
@@ -31,9 +33,9 @@ class TermTest(unittest.TestCase):
             (f2(a,a), "Comb(Comb(Var(f2,'a => 'a => 'b),Var(a,'a)),Var(a,'a))"),
             (f(g(a)), "Comb(Var(f,'a => 'b),Comb(Var(g,'a => 'a),Var(a,'a)))"),
             (Abs("x", Ta, b), "Abs(x,'a,Var(b,'b))"),
-            (Abs("x", Ta, B0), "Abs(x,'a,Bound 0)"),
-            (Abs("x", Ta, "y", Ta, B0), "Abs(x,'a,Abs(y,'a,Bound 0))"),
-            (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound 1))"),
+            (Abs("x", Ta, B0), "Abs(x,'a,Bound(0))"),
+            (Abs("x", Ta, "y", Ta, B0), "Abs(x,'a,Abs(y,'a,Bound(0)))"),
+            (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound(1)))"),
         ]
 
         for t, repr_t in test_data:
@@ -104,11 +106,11 @@ class TermTest(unittest.TestCase):
 
     def testSubstType(self):
         test_data = [
-            (a, {"a" : Tb}, Var("a", Tb)),
-            (c, {"a" : Tb}, Const("c", Tb)),
-            (f(a), {"a" : Tb}, Comb(Var("f", TFun(Tb,Tb)), Var("a", Tb))),
-            (Abs("x", Ta, B0), {"a" : Tb}, Abs("x", Tb, B0)),
-            (Abs("x", Ta, a), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
+            (Var('a', STa), {"a" : Tb}, Var("a", Tb)),
+            (Const("c", STa), {"a" : Tb}, Const("c", Tb)),
+            (Var("f", TFun(STa,Tb))(Var("a", STa)), {"a" : Tb}, Var("f", TFun(Tb,Tb))(Var("a", Tb))),
+            (Abs("x", STa, B0), {"a" : Tb}, Abs("x", Tb, B0)),
+            (Abs("x", STa, Var('a', STa)), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
         ]
 
         for t, tyinst, res in test_data:
@@ -116,18 +118,18 @@ class TermTest(unittest.TestCase):
 
     def testSubst(self):
         test_data = [
-            (a, {"a" : c}, c),
+            (SVar('a', Ta), {"a" : c}, c),
             (c, {"a" : c}, c),
-            (f(a), {"a" : c}, f(c)),
+            (f(SVar('a', Ta)), {"a" : c}, f(c)),
             (Abs("x", Ta, B0), {"a" : c}, Abs("x", Ta, B0)),
-            (Abs("x", Ta, a), {"a" : c}, Abs("x", Ta, c)),
+            (Abs("x", Ta, SVar('a', Ta)), {"a" : c}, Abs("x", Ta, c)),
         ]
 
         for t, inst, res in test_data:
             self.assertEqual(t.subst(inst), res)
 
     def testSubstFail(self):
-        self.assertRaises(TermSubstitutionException, a.subst, {"a" : b})
+        self.assertRaises(TermSubstitutionException, SVar('a', TVar('a')).subst, {"a" : b})
 
     def testSubstBound(self):
         test_data = [

@@ -167,6 +167,16 @@ async function do_integrate_by_parts() {
     display_problem();
 }
 
+async function polynomial_division(){
+    if (cur_calc.length == 0)
+        return;
+
+    const problem = cur_calc[cur_calc.length - 1].text;
+    const response = await axios.post("/polynomial-division", JSON.stringify({ problem: problem }))
+    cur_calc.push(response.data);
+    display_problem();
+}
+
 async function save_calc() {
     if (cur_file_name === undefined)
         return;

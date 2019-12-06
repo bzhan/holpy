@@ -8,31 +8,31 @@
         {
             "name": "of_nat",
             "ty": "def.ax",
-            "type": "nat => rat"
+            "type": "nat ⇒ rat"
         },
         {
             "name": "plus",
             "ty": "def.ax",
-            "type": "rat => rat => rat"
+            "type": "rat ⇒ rat ⇒ rat"
         },
         {
             "name": "uminus",
             "ty": "def.ax",
-            "type": "rat => rat"
+            "type": "rat ⇒ rat"
         },
         {
             "name": "minus",
             "ty": "def.ax",
-            "type": "rat => rat => rat"
+            "type": "rat ⇒ rat ⇒ rat"
         },
         {
             "name": "times",
             "ty": "def.ax",
-            "type": "rat => rat => rat"
+            "type": "rat ⇒ rat ⇒ rat"
         },
         {
             "name": "rat_add_assoc",
-            "prop": "x + (y + z) = (x + y) + z",
+            "prop": "x + (y + z) = x + y + z",
             "ty": "thm",
             "vars": {
                 "x": "rat",
@@ -51,7 +51,7 @@
         },
         {
             "name": "rat_mult_assoc",
-            "prop": "x * (y * z) = (x * y) * z",
+            "prop": "x * (y * z) = x * y * z",
             "ty": "thm",
             "vars": {
                 "x": "rat",

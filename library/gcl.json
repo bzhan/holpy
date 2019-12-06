@@ -44,35 +44,33 @@
             "ty": "type.ind"
         },
         {
-            "ty": "def.ind",
             "name": "scalar_is_nat",
-            "type": "scalarValue => bool",
             "rules": [
                 {
-                    "prop": "scalar_is_nat (NatV n) = true"
+                    "prop": "scalar_is_nat (NatV n) ⟷ true"
                 },
                 {
-                    "prop": "scalar_is_nat (BoolV b) = false"
+                    "prop": "scalar_is_nat (BoolV b) ⟷ false"
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "scalarValue ⇒ bool"
         },
         {
-            "ty": "def.ind",
             "name": "scalar_is_bool",
-            "type": "scalarValue => bool",
             "rules": [
                 {
-                    "prop": "scalar_is_bool (NatV n) = false"
+                    "prop": "scalar_is_bool (NatV n) ⟷ false"
                 },
                 {
-                    "prop": "scalar_is_bool (BoolV b) = true"
+                    "prop": "scalar_is_bool (BoolV b) ⟷ true"
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "scalarValue ⇒ bool"
         },
         {
-            "ty": "def.ind",
             "name": "scalar_of_nat",
-            "type": "scalarValue => nat",
             "rules": [
                 {
                     "prop": "scalar_of_nat (NatV n) = n"
@@ -80,33 +78,35 @@
                 {
                     "prop": "scalar_of_nat (BoolV b) = 0"
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "scalarValue ⇒ nat"
         },
         {
-            "ty": "def.ind",
             "name": "scalar_of_bool",
-            "type": "scalarValue => bool",
             "rules": [
                 {
-                    "prop": "scalar_of_bool (NatV n) = false"
+                    "prop": "scalar_of_bool (NatV n) ⟷ false"
                 },
                 {
-                    "prop": "scalar_of_bool (BoolV b) = b"
+                    "prop": "scalar_of_bool (BoolV b) ⟷ b"
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "scalarValue ⇒ bool"
         },
         {
-            "ty": "thm",
             "name": "scalar_of_nat_id",
-            "prop": "scalar_is_nat s --> NatV (scalar_of_nat s) = s",
+            "prop": "scalar_is_nat s ⟶ NatV (scalar_of_nat s) = s",
+            "ty": "thm",
             "vars": {
                 "s": "scalarValue"
             }
         },
         {
-            "ty": "thm",
             "name": "scalar_of_bool_id",
-            "prop": "scalar_is_bool s --> BoolV (scalar_of_bool s) = s",
+            "prop": "scalar_is_bool s ⟶ BoolV (scalar_of_bool s) = s",
+            "ty": "thm",
             "vars": {
                 "s": "scalarValue"
             }

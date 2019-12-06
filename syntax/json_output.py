@@ -7,6 +7,7 @@ import json
 from kernel.term import get_vars
 from kernel import proof
 from logic import basic
+from server import items
 from syntax import printer
 
 class JSONTheory():
@@ -21,11 +22,11 @@ class JSONTheory():
         str_th = printer.print_thm(self.thy, item.th) if item.th else ""
         str_args = printer.print_str_args(self.thy, item.rule, item.args, item.th)
         res = {
-            'id': proof.print_id(item.id),
+            'id': str(item.id),
             'th': str_th,
             'rule': item.rule,
             'args': str_args,
-            'prevs': [proof.print_id(prev) for prev in item.prevs]
+            'prevs': [str(prev) for prev in item.prevs]
         }
         if item.subproof:
             return [res] + sum([self.export_proof_json(i) for i in item.subproof.items], [])
@@ -40,7 +41,7 @@ class JSONTheory():
         data = {
             "name": name,
             "ty": "thm",
-            "prop": printer.print_term(self.thy, th.prop),
+            "prop": items.export_term(self.thy, th.prop),
             "vars": vars,
             "num_gaps": 0,
             "proof": sum([self.export_proof_json(item) for item in prf.items], []),

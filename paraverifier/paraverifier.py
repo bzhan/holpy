@@ -17,6 +17,7 @@ from logic.proofterm import ProofTerm, ProofTermDeriv
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
+from logic.context import Context
 from paraverifier import gcl
 
 
@@ -159,7 +160,7 @@ class ParaSystem():
         goal = self.get_subgoal(inv_id, rule_id, case_id, hint)
         goal = self.replace_states(goal)
         if z3wrapper.z3_loaded:
-            ans = z3wrapper.solve(goal)
+            ans = z3wrapper.solve(self.thy, goal)
         else:
             ans = True
         return goal, ans
@@ -171,9 +172,10 @@ class ParaSystem():
         inv_rhs = logic.mk_conj(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
         prop = Term.mk_equals(invC(s), inv_rhs)
 
-        exts = extension.TheoryExtension()
-        exts.add_extension(extension.Constant("inv", TFun(gcl.stateT, boolT)))
-        exts.add_extension(extension.Theorem("inv_def", Thm([], prop)))
+        exts = [
+            extension.Constant("inv", TFun(gcl.stateT, boolT)),
+            extension.Theorem("inv_def", Thm([], prop))
+        ]
         self.thy.unchecked_extend(exts)
         # print(printer.print_extensions(self.thy, exts))
 
@@ -202,7 +204,7 @@ class ParaSystem():
         trans_pt = ProofTerm.assume(transC(s1,s2))
         # print(printer.print_thm(self.thy, trans_pt.th))
         P = Term.mk_implies(invC(s1), invC(s2))
-        ind_pt = apply_theorem(self.thy, "trans_cases", inst={"_a1": s1, "_a2": s2, "P": P})
+        ind_pt = apply_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
         # print(printer.print_thm(self.thy, ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
@@ -248,22 +250,22 @@ def load_system(filename):
     for rule in data['rules']:
         if isinstance(rule['var'], str):
             rule_var = Var(rule['var'], natT)
-            ctxt = {'vars': {v.name: v.T for v in vars + [rule_var]}}
+            ctxt = Context(thy, vars={v.name: v.T for v in vars + [rule_var]})
         else:
             assert isinstance(rule['var'], list)
             rule_var = [Var(nm, natT) for nm in rule['var']]
-            ctxt = {'vars': {v.name: v.T for v in vars + rule_var}}
-        guard = parser.parse_term(thy, ctxt, rule['guard'])
+            ctxt = Context(thy, vars={v.name: v.T for v in vars + rule_var})
+        guard = parser.parse_term(ctxt, rule['guard'])
         assign = dict()
         for k, v in rule['assign'].items():
-            assign[parser.parse_term(thy, ctxt, k)] = parser.parse_term(thy, ctxt, v)
+            assign[parser.parse_term(ctxt, k)] = parser.parse_term(ctxt, v)
         rules.append((rule_var, guard, assign))
 
     invs = []
     for inv in data['invs']:
         inv_vars = [Var(nm, natT) for nm in inv['vars']]
-        ctxt = {'vars': {v.name: v.T for v in vars + inv_vars}}
-        prop = parser.parse_term(thy, ctxt, inv['prop'])
+        ctxt = Context(thy, vars={v.name: v.T for v in vars + inv_vars})
+        prop = parser.parse_term(ctxt, inv['prop'])
         invs.append((inv_vars, prop))
 
     return ParaSystem(thy, name, vars, states, rules, invs)

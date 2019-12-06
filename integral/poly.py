@@ -20,7 +20,24 @@ def collect_pairs(ps):
             res[v] += c
         else:
             res[v] = c
-    return tuple(sorted((k, v) for k, v in res.items() if v != 0))
+    return tuple(sorted(((k, v) for k, v in res.items()),reverse=True))
+
+def collect_pairs1(ps):
+    """Reduce a list of pairs by collecting into groups according to
+    first components, and adding the second component for each group.
+
+    It is assumed that the first components are hashable.
+
+    e.g. [("x", 1), ("y", 2), ("x", 3)] => [("x", 4), ("y", 2)]
+
+    """
+    res = {}
+    for v, c in ps:
+        if v in res:
+            res[v] += c
+        else:
+            res[v] = c
+    return tuple(sorted(((k, v) for k, v in res.items())))
 
 class Monomial:
     """Represents a monomial."""
@@ -35,10 +52,12 @@ class Monomial:
         """
         assert isinstance(coeff, (int, Fraction, Decimal))
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
-            isinstance(factor[1], int) for factor in factors), \
+            isinstance(factor[1], (int, Fraction)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
-        self.factors = collect_pairs(factors)
+        self.factors = collect_pairs1(factors)
+        self.var = None if self.is_constant() else factors[0][0]
+        self.degree = 0 if self.is_constant() else self.factors[0][1]
 
     def __eq__(self, other):
         return isinstance(other, Monomial) and self.coeff == other.coeff and \
@@ -52,8 +71,15 @@ class Monomial:
             s = str(var)
             if len(s) != 1:
                 s = "(" + s + ")"
-            if p != 1:
-                s = s + "^" + str(p)
+            if str(p) != "1":
+                if isinstance(p, Fraction):
+                    assert p.denominator != 0
+                    if p.denominator == 1:
+                        s = s + "^" + str(p.numerator)
+                    else:
+                        s = s + " ^ " + str(p)
+                else:
+                    s = s + "^" + str(p)
             res += s
 
         if res == "":
@@ -72,6 +98,22 @@ class Monomial:
     def __mul__(self, other):
         return Monomial(self.coeff * other.coeff, self.factors + other.factors)
 
+    def __truediv__(self, other):
+        assert other.coeff != 0
+        c = Fraction(self.coeff, other.coeff)
+        if self.is_constant(): 
+            if other.is_constant():
+                return Monomial(c, tuple())
+            else:
+                return Monomial(c, ((self.var, -other.degree),))
+        else:
+            if other.is_constant():
+                return Monomial(c, ((self.var, self.degree),))
+            else:
+                if self.degree - other.degree != 0:
+                    return Monomial(c, ((self.var, self.degree-other.degree),))
+                else:
+                    return Monomial(c, tuple())
     def scale(self, c):
         if c == 1:
             return self
@@ -81,6 +123,15 @@ class Monomial:
     def __neg__(self):
         return self.scale(-1)
 
+    def is_constant(self):
+        return len(self.factors) == 0
+
+    def get_constant(self):
+        if len(self.factors) == 0:
+            return self.coeff
+        else:
+            raise AssertionError
+
 class Polynomial:
     """Represents a polynomial."""
     def __init__(self, monomials):
@@ -88,6 +139,10 @@ class Polynomial:
         assert all(isinstance(mono, Monomial) for mono in monomials)
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
         self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts)
+        self.var = None
+        if not self.is_nonzero_constant():
+            self.var = self.monomials[0].var
+        self.degree = 0 if self.is_nonzero_constant() else self.monomials[0].degree
 
     def __eq__(self, other):
         return isinstance(other, Polynomial) and self.monomials == other.monomials
@@ -116,6 +171,57 @@ class Polynomial:
     def __mul__(self, other):
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
 
+    def is_nonzero_constant(self):
+        return len(self.monomials) == 1 and self.monomials[0].is_constant() and self.monomials[0].coeff != 0
+
+    def is_zero_constant(self):
+        return len(self.monomials) == 1 and self.monomials[0].is_constant() and self.monomials[0].coeff == 0 \
+            or all(m.coeff == 0 for m in self.monomials)
+
+    def del_zero_mono(self):
+        np = []
+        for m in self.monomials:
+            if m.coeff != 0:
+                np.append(m)
+        return Polynomial(np)
+
+    def get_constant(self):
+        """If self is a constant, return the constant. Otherwise raise an exception."""
+        if len(self.monomials) == 0:
+            return 0
+        elif len(self.monomials) == 1 and self.monomials[0].is_constant():
+            return self.monomials[0].get_constant()
+        else:
+            raise AssertionError
+
+    def standardize(self):
+        """Sort the polynomial by the power value by descending order
+
+        5*x^2 + 3*x^4 + 2 => 3*x^4 + 0*x^3 + 5*x^2 + 0*x^1 + 2
+
+        """
+        if self.is_nonzero_constant():
+            return Polynomial(self.monomials)
+        if self.monomials[-1].is_constant():
+            np = list(self.monomials[:-1])
+        else:
+            np = list(self.monomials)
+        de = self.degree
+        for m in self.monomials:
+            if not m.is_constant():
+                while de != m.degree:
+                    np.append(Monomial(0, ((self.var, de),)))
+                    de -= 1
+                de -= 1
+        while de != 0:
+            np.append(Monomial(0, ((self.var, de),)))
+            de -= 1
+        if self.monomials[-1].is_constant():
+            np.append(self.monomials[-1])
+        else:
+            np.append(Monomial(0, tuple()))
+        return Polynomial(np)
+
 
 def singleton(s):
     """Polynomial for 1*s^1."""
@@ -138,6 +244,7 @@ grammar = r"""
     ?polynomial: monomial ("+" monomial)* -> polynomial
 
     %import common.LETTER
+    
     %import common.INT
     %import common.DECIMAL
     %import common.WS

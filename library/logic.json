@@ -1,75 +1,181 @@
 {
     "content": [
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "conj_comm",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "A ∧ B",
+                    "args": "",
                     "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A ∧ B ⟶ B ∧ A"
+                },
+                {
+                    "args": "A ∧ B",
+                    "id": "0.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
                     "args": "conjD2",
-                    "id": "1",
+                    "id": "0.1",
                     "prevs": [
-                        "0"
+                        "0.0"
                     ],
                     "rule": "apply_theorem",
                     "th": "A ∧ B ⊢ B"
                 },
                 {
                     "args": "conjD1",
-                    "id": "2",
+                    "id": "0.2",
                     "prevs": [
-                        "0"
+                        "0.0"
                     ],
                     "rule": "apply_theorem",
                     "th": "A ∧ B ⊢ A"
                 },
                 {
                     "args": "conjI",
-                    "id": "3",
+                    "id": "0.3",
                     "prevs": [
-                        "1",
-                        "2"
+                        "0.1",
+                        "0.2"
                     ],
                     "rule": "apply_theorem",
                     "th": "A ∧ B ⊢ B ∧ A"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "0.4",
                     "prevs": [
-                        "0",
-                        "3"
+                        "0.0",
+                        "0.3"
                     ],
                     "rule": "intros",
                     "th": "⊢ A ∧ B ⟶ B ∧ A"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ B ∧ A ⟶ A ∧ B"
+                },
+                {
+                    "args": "B ∧ A",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ∧ A ⊢ B ∧ A"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∧ A ⊢ A"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∧ A ⊢ B"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∧ A ⊢ A ∧ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ B ∧ A ⟶ A ∧ B"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ A ∧ B ⟷ B ∧ A"
                 }
             ],
-            "prop": "A ∧ B ⟶ B ∧ A",
+            "prop": "A ∧ B ⟷ B ∧ A",
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
                     "method_name": "apply_backward_step",
                     "theorem": "conjI"
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "0.0"
                     ],
-                    "goal_id": "1",
+                    "goal_id": "0.1",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "0.0"
                     ],
-                    "goal_id": "2",
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD1"
                 }
@@ -81,119 +187,265 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "disj_comm",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "A ∨ B",
+                    "args": "",
                     "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A ∨ B ⟶ B ∨ A"
+                },
+                {
+                    "args": "A ∨ B",
+                    "id": "0.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "A ∨ B ⊢ A ∨ B"
                 },
                 {
                     "args": "",
-                    "id": "1",
+                    "id": "0.1",
                     "prevs": [],
                     "rule": "subproof",
                     "th": "A ∨ B ⊢ A ⟶ B ∨ A"
                 },
                 {
                     "args": "A",
-                    "id": "1.0",
+                    "id": "0.1.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "A ⊢ A"
                 },
                 {
                     "args": "disjI2, {}, {A: B, B: A}",
-                    "id": "1.1",
+                    "id": "0.1.1",
                     "prevs": [
-                        "1.0"
+                        "0.1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "A ⊢ B ∨ A"
+                    "th": "A ∨ B, A ⊢ B ∨ A"
                 },
                 {
                     "args": "",
-                    "id": "1.2",
+                    "id": "0.1.2",
                     "prevs": [
-                        "1.0",
-                        "1.1"
+                        "0.1.0",
+                        "0.1.1"
                     ],
                     "rule": "intros",
                     "th": "A ∨ B ⊢ A ⟶ B ∨ A"
                 },
                 {
                     "args": "",
-                    "id": "2",
+                    "id": "0.2",
                     "prevs": [],
                     "rule": "subproof",
                     "th": "A ∨ B ⊢ B ⟶ B ∨ A"
                 },
                 {
                     "args": "B",
-                    "id": "2.0",
+                    "id": "0.2.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "B ⊢ B"
                 },
                 {
                     "args": "disjI1, {}, {A: B, B: A}",
-                    "id": "2.1",
+                    "id": "0.2.1",
                     "prevs": [
-                        "2.0"
+                        "0.2.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "B ⊢ B ∨ A"
+                    "th": "A ∨ B, B ⊢ B ∨ A"
                 },
                 {
                     "args": "",
-                    "id": "2.2",
+                    "id": "0.2.2",
                     "prevs": [
-                        "2.0",
-                        "2.1"
+                        "0.2.0",
+                        "0.2.1"
                     ],
                     "rule": "intros",
                     "th": "A ∨ B ⊢ B ⟶ B ∨ A"
                 },
                 {
                     "args": "disjE",
-                    "id": "3",
+                    "id": "0.3",
                     "prevs": [
-                        "0",
-                        "1",
-                        "2"
+                        "0.0",
+                        "0.1",
+                        "0.2"
                     ],
                     "rule": "apply_theorem",
                     "th": "A ∨ B ⊢ B ∨ A"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "0.4",
                     "prevs": [
-                        "0",
-                        "3"
+                        "0.0",
+                        "0.3"
                     ],
                     "rule": "intros",
                     "th": "⊢ A ∨ B ⟶ B ∨ A"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ B ∨ A ⟶ A ∨ B"
+                },
+                {
+                    "args": "B ∨ A",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ∨ A ⊢ B ∨ A"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "B ∨ A ⊢ B ⟶ A ∨ B"
+                },
+                {
+                    "args": "B",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "disjI2, {}, {A: A, B: B}",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "B ∨ A, B ⊢ A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "B ∨ A ⊢ B ⟶ A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "B ∨ A ⊢ A ⟶ A ∨ B"
+                },
+                {
+                    "args": "A",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "disjI1, {}, {A: A, B: B}",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "B ∨ A, A ⊢ A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "B ∨ A ⊢ A ⟶ A ∨ B"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∨ A ⊢ A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ B ∨ A ⟶ A ∨ B"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ A ∨ B ⟷ B ∨ A"
                 }
             ],
-            "prop": "A ∨ B ⟶ B | A",
+            "prop": "A ∨ B ⟷ B ∨ A",
             "steps": [
                 {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
                     "fact_ids": [
-                        "0"
+                        "0.0"
                     ],
-                    "goal_id": "1",
+                    "goal_id": "0.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjE"
                 },
                 {
-                    "fact_ids": [],
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
                     "goal_id": "1",
-                    "method_name": "introduction",
-                    "names": ""
+                    "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
@@ -201,19 +453,23 @@
                     ],
                     "goal_id": "1.1",
                     "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
                     "theorem": "disjI2"
                 },
                 {
-                    "fact_ids": [],
-                    "goal_id": "2",
-                    "method_name": "introduction",
-                    "names": ""
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
                 },
                 {
-                    "fact_ids": [
-                        "2.0"
-                    ],
-                    "goal_id": "2.1",
+                    "goal_id": "1.2.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI1"
                 }
@@ -225,6 +481,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "conj_assoc",
             "num_gaps": 0,
             "proof": [
@@ -399,7 +658,7 @@
                     "th": "⊢ A ∧ B ∧ C ⟷ (A ∧ B) ∧ C"
                 }
             ],
-            "prop": "(A & B & C) = ((A & B) & C)",
+            "prop": "A ∧ B ∧ C ⟷ (A ∧ B) ∧ C",
             "steps": [
                 {
                     "goal_id": "0",
@@ -693,7 +952,7 @@
                     "th": "⊢ A ∨ B ∨ C ⟶ (A ∨ B) ∨ C"
                 }
             ],
-            "prop": "(A | B | C) --> ((A | B) | C)",
+            "prop": "A ∨ B ∨ C ⟶ (A ∨ B) ∨ C",
             "steps": [
                 {
                     "fact_ids": [
@@ -774,6 +1033,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
             "name": "double_neg",
             "num_gaps": 0,
             "proof": [
@@ -930,7 +1193,7 @@
                     "th": "⊢ (¬¬A) = A"
                 }
             ],
-            "prop": "(~~A) = A",
+            "prop": "¬¬A ⟷ A",
             "steps": [
                 {
                     "fact_ids": [],
@@ -1205,7 +1468,7 @@
                     "th": "⊢ ¬A ∨ B ⟷ A ⟶ B"
                 }
             ],
-            "prop": "(~A | B) = (A --> B)",
+            "prop": "¬A ∨ B ⟷ (A ⟶ B)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1370,7 +1633,7 @@
                     "th": "⊢ (∃x. A x ∧ B x) ⟶ (∃x. A x) ∧ (∃x. B x)"
                 }
             ],
-            "prop": "(?x. A x & B x) --> (?x. A x) & (?x. B x)",
+            "prop": "(∃x. A x ∧ B x) ⟶ (∃x. A x) ∧ (∃x. B x)",
             "steps": [
                 {
                     "fact_ids": [
@@ -1420,8 +1683,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "A": "'a => bool",
-                "B": "'a => bool"
+                "A": "'a ⇒ bool",
+                "B": "'a ⇒ bool"
             }
         },
         {
@@ -1540,7 +1803,7 @@
                     "th": "⊢ (∀x. A x ∧ B x) ⟶ (∀x. A x) ∧ (∀x. B x)"
                 }
             ],
-            "prop": "(!x. A x & B x) --> (!x. A x) & (!x. B x)",
+            "prop": "(∀x. A x ∧ B x) ⟶ (∀x. A x) ∧ (∀x. B x)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1592,8 +1855,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "A": "'a => bool",
-                "B": "'a => bool",
+                "A": "'a ⇒ bool",
+                "B": "'a ⇒ bool",
                 "x": "'a"
             }
         },
@@ -2067,8 +2330,32 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "de_morgan_thm1",
+            "prop": "¬(A ∧ B) ⟷ ¬A ∨ ¬B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "de_morgan_thm2",
+            "prop": "¬(A ∨ B) ⟷ ¬A ∧ ¬B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
             "name": "eq_true",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -2092,14 +2379,11 @@
                     "th": "A ⊢ A ⟶ true"
                 },
                 {
-                    "args": "",
+                    "args": "trueI",
                     "id": "0.1.0",
-                    "prevs": [
-                        "0.1",
-                        "0.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "A ⊢ true"
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
                 },
                 {
                     "args": "",
@@ -2170,19 +2454,18 @@
                     "th": "A ⟷ true ⊢ A ⟷ true"
                 },
                 {
-                    "args": "",
+                    "args": "trueI",
                     "id": "1.1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "A ⟷ true ⊢ true"
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
                 },
                 {
                     "args": "A",
                     "id": "1.2",
                     "prevs": [
                         "1.0",
-                        "1.1",
-                        "1.0"
+                        "1.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "A ⟷ true ⊢ A"
@@ -2208,7 +2491,7 @@
                     "th": "⊢ A ⟷ A ⟷ true"
                 }
             ],
-            "prop": "A = (A = true)",
+            "prop": "A ⟷ A ⟷ true",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2229,11 +2512,9 @@
                     "method_name": "introduction"
                 },
                 {
-                    "fact_ids": [
-                        "0.1"
-                    ],
                     "goal_id": "0.1.0",
-                    "method_name": "apply_prev"
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
                 },
                 {
                     "goal_id": "0.2",
@@ -2249,6 +2530,11 @@
                     ],
                     "goal_id": "1.1",
                     "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
                 }
             ],
             "ty": "thm",
@@ -2258,7 +2544,7 @@
         },
         {
             "name": "eq_false",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -2323,11 +2609,13 @@
                     "th": "false ⊢ false"
                 },
                 {
-                    "args": "",
+                    "args": "not_false_res, A",
                     "id": "0.2.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "¬A, false ⊢ A"
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "false ⊢ A"
                 },
                 {
                     "args": "",
@@ -2363,7 +2651,67 @@
                     "args": "",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ A ⟷ false ⟶ ¬A"
+                },
+                {
+                    "args": "A ⟷ false",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⟷ false ⊢ A ⟷ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A ⟷ false ⊢ A ⟶ false"
+                },
+                {
+                    "args": "A",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "A ⟷ false, A ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "A ⟷ false ⊢ A ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A ⟷ false ⊢ ¬A"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ A ⟷ false ⟶ ¬A"
                 },
                 {
@@ -2377,7 +2725,7 @@
                     "th": "⊢ ¬A ⟷ A ⟷ false"
                 }
             ],
-            "prop": "(~A) = (A = false)",
+            "prop": "¬A ⟷ A ⟷ false",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2406,6 +2754,35 @@
                 {
                     "goal_id": "0.2",
                     "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_fact_with_prev"
                 }
             ],
             "ty": "thm",
@@ -2500,7 +2877,7 @@
                     "th": "⊢ (¬true) = false"
                 }
             ],
-            "prop": "(~true) = false",
+            "prop": "¬true ⟷ false",
             "ty": "thm",
             "vars": {}
         },
@@ -2604,7 +2981,7 @@
                     "th": "⊢ (¬false) = true"
                 }
             ],
-            "prop": "(~false) = true",
+            "prop": "¬false ⟷ true",
             "ty": "thm",
             "vars": {}
         },
@@ -2715,7 +3092,7 @@
                     "th": "⊢ ((A ⟶ B) ⟶ A) ⟶ A"
                 }
             ],
-            "prop": "((A --> B) --> A) --> A",
+            "prop": "((A ⟶ B) ⟶ A) ⟶ A",
             "steps": [
                 {
                     "case": "A",
@@ -2898,10 +3275,10 @@
                     "th": "⊢ ¬(∀x. P x) ⟶ (∃x. ¬P x)"
                 }
             ],
-            "prop": "¬(∀x. P x) ⟶ (∃x. ¬P x)",
+            "prop": "¬(∀x. P x) ⟶ (∃x. ¬(P x))",
             "ty": "thm",
             "vars": {
-                "P": "'a => bool"
+                "P": "'a ⇒ bool"
             }
         },
         {
@@ -3076,7 +3453,7 @@
                     "th": "⊢ ∃x. P x ⟶ (∀x. P x)"
                 }
             ],
-            "prop": "∃x. P x ⟶ (∀x. P x)",
+            "prop": "∃x. P x ⟶ (∀x1. P x1)",
             "steps": [
                 {
                     "case": "!x. P x",
@@ -3146,11 +3523,10 @@
             ],
             "ty": "thm",
             "vars": {
-                "P": "'a => bool"
+                "P": "'a ⇒ bool"
             }
         },
         {
-            "attributes": [],
             "name": "test",
             "num_gaps": 0,
             "proof": [
@@ -3267,7 +3643,7 @@
                     "th": "⊢ p a ∨ q b ⟶ (∀x. p x ⟶ q x) ⟶ (∃x. q x)"
                 }
             ],
-            "prop": "p(a) ∨ q(b) ⟶ (∀x. p(x) ⟶ q(x)) ⟶ (∃x. q x)",
+            "prop": "p a ∨ q b ⟶ (∀x. p x ⟶ q x) ⟶ (∃x. q x)",
             "steps": [
                 {
                     "fact_ids": [
@@ -3314,8 +3690,8 @@
             "vars": {
                 "a": "'a",
                 "b": "'a",
-                "p": "'a => bool",
-                "q": "'a => bool"
+                "p": "'a ⇒ bool",
+                "q": "'a ⇒ bool"
             }
         }
     ],

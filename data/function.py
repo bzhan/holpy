@@ -53,7 +53,7 @@ class fun_upd_eval_conv(Conv):
     """Evaluate the function (f)(a1 := b1, a2 := b2, ...) on an input."""
 
     def get_proof_term(self, thy, t):
-        if t.ty != term.COMB:
+        if not t.is_comb():
             return refl(t)
 
         f, c = t.fun, t.arg
@@ -76,6 +76,7 @@ class fun_upd_eval_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'fun_upd_twist'
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "fun_upd_eval_macro"

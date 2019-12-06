@@ -93,7 +93,7 @@ def get_encode_proof(th):
             pts.append(ptA.on_prop(thy, rewr_conv("encode_not")))
 
     # Obtain the rewrite of the original formula.
-    cvs = [top_conv(rewr_conv(ProofTerm.symmetric(ptA), match_vars=False)) for ptA in ptAs]
+    cvs = [top_conv(rewr_conv(ProofTerm.symmetric(ptA))) for ptA in ptAs]
     cv = every_conv(*cvs)
 
     pts.append(ptF.on_prop(thy, cv))

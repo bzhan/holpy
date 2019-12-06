@@ -391,9 +391,9 @@ class CongClosureHOL:
         if t in self.rev_index:
             return self.rev_index[t]
 
-        if t.ty == term.VAR or t.ty == term.CONST:
+        if t.is_var() or t.is_const():
             return self.add_const(t)
-        elif t.ty == term.COMB:
+        elif t.is_comb():
             fun_var = self.add_term(t.fun)
             arg_var = self.add_term(t.arg)
             if fun_var and arg_var:
@@ -402,10 +402,10 @@ class CongClosureHOL:
                 return t_var
             else:
                 return None
-        elif t.ty == term.ABS:
+        elif t.is_abs():
             self.add_term(t.body)
             return self.add_const(t)
-        elif t.ty == term.BOUND:
+        elif t.is_bound():
             return None
         else:
             raise TypeError
@@ -492,9 +492,9 @@ class CongClosureHOL:
             else:
                 raise ConvertPatternException
         
-        if pat.ty == term.VAR:
+        if pat.is_var():
             return '?' + pat.name
-        elif pat.ty == term.COMB:
+        elif pat.is_comb():
             return (self._convert_pat(pat.fun), self._convert_pat(pat.arg))
         else:
             raise ConvertPatternException

@@ -2,101 +2,214 @@
 
 import unittest
 
-from kernel.type import boolT, TVar, TFun
+from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import ProofItem
+from kernel.proof import Proof, ProofItem, ItemID
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
-from logic.logic import conj, disj, mk_if
 from data.nat import natT, plus, zero
 from server import tactic
+from syntax import parser
 from syntax import printer
+from logic.context import Context
 
-thy = basic.load_theory('nat')
 
 class TacticTest(unittest.TestCase):
+    def run_test(self, thy, tactic, *, vars=None, prevs=None, goal, args=None, new_goals=None, failed=None):
+        """Test a single invocation of a tactic."""
+        ctxt = Context(thy, vars=vars)
+        thy = ctxt.thy
+
+        assms = [parser.parse_term(ctxt, prev) for prev in prevs] if prevs is not None else []
+        prf = Proof(*assms)
+        prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
+        goal = parser.parse_term(ctxt, goal)
+        goal_pt = ProofTerm.sorry(Thm(assms, goal))
+
+        # Invoke the tactic to get the proof term
+        if failed is not None:
+            self.assertRaises(failed, tactic.get_proof_term, thy, goal_pt, prevs=prevs, args=args)
+            return
+
+        pt = tactic.get_proof_term(thy, goal_pt, prevs=prevs, args=args)
+
+        # Export and check proof
+        prefix = ItemID(len(prevs)-1) if len(prevs) > 0 else ItemID(len(prevs))
+        prf = pt.export(prefix=prefix, prf=prf, subproof=False)
+        self.assertEqual(thy.check_proof(prf), Thm(assms, goal))
+
+        # Test agreement of new goals
+        new_goals = [parser.parse_term(ctxt, new_goal)
+                     for new_goal in new_goals] if new_goals is not None else []
+        concls = [goal.prop for goal in prf.get_sorrys()]
+        self.assertEqual(new_goals, concls)
+
     def testRule(self):
-        A = Var('A', boolT)
-        B = Var('B', boolT)
-        goal = Thm([], conj(B, A))
-        pt = tactic.rule().get_proof_term(thy, ProofTerm.sorry(goal), args='conjI')
-        prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), goal)
+        self.run_test(
+            'logic_base', tactic.rule(),
+            vars={"A": "bool", "B": "bool"},
+            goal="B & A",
+            args="conjI",
+            new_goals=["B", "A"]
+        )
 
     def testRule2(self):
-        A = Var('A', boolT)
-        B = Var('B', boolT)
-        goal = Thm([], disj(B, A))
-        prev = ProofTermAtom(0, Thm.assume(disj(A, B)))
-        pt = tactic.rule().get_proof_term(thy, ProofTerm.sorry(goal), args='disjE', prevs=[prev])
-        prf = pt.export(prefix=(1,), subproof=False)
-        self.assertEqual(prf.items[2], ProofItem(3, 'apply_theorem', args='disjE', prevs=[0, 1, 2]))
+        self.run_test(
+            'logic_base', tactic.rule(),
+            vars={"A": "bool", "B": "bool"},
+            prevs=["A | B"],
+            goal="B | A",
+            args="disjE",
+            new_goals=["A --> B | A", "B --> B | A"]
+        )
 
     def testRule3(self):
-        A = Var('A', boolT)
-        B = Var('B', boolT)
-        goal = Thm([], disj(B, A))
-        prev = ProofTermAtom(0, Thm.assume(B))
-        pt = tactic.rule().get_proof_term(thy, ProofTerm.sorry(goal), args='disjI1', prevs=[prev])
-        prf = pt.export(prefix=(1,), subproof=False)
-        self.assertEqual(prf.items[0], ProofItem(1, 'apply_theorem_for', args=('disjI1', {}, {'A': B, 'B': A}), prevs=[0]))
+        self.run_test(
+            'logic_base', tactic.rule(),
+            vars={"A": "bool", "B": "bool"},
+            prevs=["B"],
+            goal="B | A",
+            args="disjI1"
+        )
 
     def testRule4(self):
-        n = Var('n', natT)
-        goal = Thm([], Term.mk_equals(plus(n, zero), n))
-        inst = {'P': Term.mk_abs(n, goal.prop), 'x': n}
-        pt = tactic.rule().get_proof_term(thy, ProofTerm.sorry(goal), args=('nat_induct', ({}, inst)))
-        prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), goal)
+        n = Var("n", natT)
+        self.run_test(
+            'nat', tactic.rule(),
+            vars={"n": "nat"},
+            goal="n + 0 = n",
+            args=("nat_induct", ({}, {'P': Term.mk_abs(n, Term.mk_equals(plus(n, zero), n)), 'x': n})),
+            new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
+        )
+
+    def testRule5(self):
+        self.run_test(
+            'set', tactic.rule(),
+            goal="finite (empty_set::nat set)",
+            args="finite_empty"
+        )
 
     def testIntros(self):
-        Ta = TVar('a')
-        x = Var('x', Ta)
-        P = Var('P', TFun(Ta, boolT))
-        Q = Var('Q', TFun(Ta, boolT))
-        goal = Thm([], Term.mk_all(x, Term.mk_implies(P(x), Q(x))))
-        intros_tac = tactic.intros()
-        pt = intros_tac.get_proof_term(thy, ProofTerm.sorry(goal), args=['x'])
-        prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), goal)
+        self.run_test(
+            'logic_base', tactic.intros(),
+            vars={"x": "'a", "P": "'a => bool", "Q": "'a => bool"},
+            goal="!x. P x --> Q x",
+            args=["x"],
+            new_goals=["Q x"]
+        )
+
+    def testIntros2(self):
+        self.run_test(
+            'logic_base', tactic.intros(),
+            vars={"x": "'a", "y": "'b", "R": "'a => 'b => bool"},
+            goal="!x. !y. R x y",
+            args=["x", "y"],
+            new_goals=["R x y"]
+        )
 
     def testInduct(self):
-        n = Var('n', natT)
-        goal = Thm([], Term.mk_equals(plus(n, zero), n))
-        induct_tac = tactic.var_induct()
-        pt = induct_tac.get_proof_term(thy, ProofTerm.sorry(goal), args=('nat_induct', n))
-        prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), goal)
+        n = Var("n", natT)
+        self.run_test(
+            'nat', tactic.var_induct(),
+            vars={"n": "nat"},
+            goal="n + 0 = n",
+            args=("nat_induct", n),
+            new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
+        )
+
+    def testInduct2(self):
+        thy = basic.load_theory('list')
+        xs = Var("xs", parser.parse_type(thy, "'a list"))
+        self.run_test(
+            'list', tactic.var_induct(),
+            vars={"xs": "'a list"},
+            goal="xs @ [] = xs",
+            args=("list_induct", xs),
+            new_goals=["([]::'a list) @ [] = []", "!x::'a. !xs. xs @ [] = xs --> (x # xs) @ [] = x # xs"]
+        )
 
     def testRewrite(self):
-        n = Var('n', natT)
-        goal = Thm.mk_equals(plus(zero, n), n)
-        rewrite_tac = tactic.rewrite()
-        pt = rewrite_tac.get_proof_term(thy, ProofTerm.sorry(goal), args='nat_plus_def_1')
-        prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), goal)
+        self.run_test(
+            'nat', tactic.rewrite_goal(),
+            vars={"n": "nat"},
+            goal="0 + n = n",
+            args="nat_plus_def_1"
+        )
 
     def testRewrite2(self):
-        Ta = TVar("a")
-        a = Var("a", Ta)
-        b = Var("b", Ta)
-        eq_a = Term.mk_equals(a, a)
-        goal = Thm.mk_equals(mk_if(eq_a, b, a), b)
-        rewrite_tac = tactic.rewrite()
-        pt = rewrite_tac.get_proof_term(thy, ProofTerm.sorry(goal), args='if_P')
-        prf = pt.export()
-        self.assertEqual(prf.items[0], ProofItem(0, 'sorry', th=Thm.mk_equals(a, a)))
-        self.assertEqual(thy.check_proof(prf), goal)
+        self.run_test(
+            'logic_base', tactic.rewrite_goal(),
+            vars={"a": "'a", "b": "'a"},
+            goal="(if a = a then b else a) = b",
+            args="if_P",
+            failed=AssertionError
+        )
+
+    def testRewrite3(self):
+        self.run_test(
+            'logic_base', tactic.rewrite_goal(),
+            vars={'P': 'bool', 'a': "'a", 'b': "'a"},
+            prevs=["P"],
+            goal="(if P then a else b) = a",
+            args="if_P"
+        )
+
+    def testRewrite4(self):
+        self.run_test(
+            'logic_base', tactic.rewrite_goal(),
+            vars={'P': 'bool', 'Q': 'bool', 'a': "'a", 'b': "'a"},
+            prevs=["Q"],
+            goal="(if P then a else b) = a",
+            args="if_P",
+            failed=AssertionError
+        )
+
+    def testRewriteGoal3(self):
+        self.run_test(
+            'real', tactic.rewrite_goal(),
+            vars={'n': 'nat', 's': 'real set', 'x': 'real', 'f': 'real => real'},
+            goal='∃A. A ∈ {t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}} ∧ x ∈ A',
+            args='exists_in_gspec1',
+            new_goals=['∃x1. x ∈ {x. x ∈ s & abs (f x) >= 1 / (of_nat x1 + 1)}']
+        )
+
+    def testRewriteGoalWithPrev(self):
+        self.run_test(
+            'nat', tactic.rewrite_goal_with_prev(),
+            vars={'m': 'nat', 'n': 'nat', 'q': 'nat'},
+            prevs=['p = m + n'],
+            goal='p = q',
+            new_goals=['m + n = q']
+        )
+
+    def testRewriteGoalWithPrev2(self):
+        self.run_test(
+            'nat', tactic.rewrite_goal_with_prev(),
+            vars={'a': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'},
+            prevs=['!n. f n = g n'],
+            goal='f n = a',
+            new_goals=['g n = a']
+        )
+
+    def testRewriteGoalWithPrev3(self):
+        self.run_test(
+            'nat', tactic.rewrite_goal_with_prev(),
+            vars={'a': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'},
+            prevs=['!n. f n = g n'],
+            goal='?x. f x = a',
+            new_goals=['?x. g x = a']
+        )
 
     def testCases(self):
         A = Var('A', boolT)
-        B = Var('B', boolT)
-        C = Var('C', boolT)
-        cases_tac = tactic.cases()
-        pt = cases_tac.get_proof_term(thy, ProofTerm.sorry(Thm([B], C)), args=A)
-        prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), Thm([B], C))
+        self.run_test(
+            'logic_base', tactic.cases(),
+            vars={'A': 'bool', 'B': 'bool', 'C': 'bool'},
+            goal='C',
+            args=A,
+            new_goals=["A --> C", "~A --> C"]
+        )
 
 
 if __name__ == "__main__":

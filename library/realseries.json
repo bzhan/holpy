@@ -1,184 +1,168 @@
 {
     "content": [
         {
-            "attributes": [],
+            "name": "has_inf",
+            "ty": "def.ax",
+            "type": "real set ⇒ real ⇒ bool"
+        },
+        {
             "name": "has_limsup",
             "prop": [
-                "has_limsup f l net ⟷ (trivial_limit net ∨ ",
-                "has_inf ({b. eventually (λx. f x ≤ b) net}) l)"
+                "has_limsup f l net ⟷ ",
+                "trivial_limit net ∨ has_inf ({b. eventually (λx. f x ≤ b) net}) l"
             ],
             "ty": "def",
             "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
         },
         {
-            "attributes": [],
             "name": "has_liminf",
             "prop": [
                 "has_liminf f l net ⟷ ",
-                "trivial_limit net ∨ has_inf ({b. eventually (λx. b <= f x) net}) l"
+                "trivial_limit net ∨ has_inf ({b. eventually (λx. b ≤ f x) net}) l"
             ],
             "ty": "def",
             "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
         },
         {
-            "attributes": [],
             "name": "has_limsup_transform",
-            "prop": [
-                "eventually (%x::'a. f x = g x) net & has_limsup f l net",
-                "               --> has_limsup g l net"
-            ],
+            "prop": "eventually (λx. f x = g x) net ∧ has_limsup f l net ⟶ has_limsup g l net",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_eventually_ubound",
-            "prop": "~(trivial_limit net) & has_limsup f l net & l < b ⟶ eventually (λx. f x < b) net",
+            "prop": "¬(trivial_limit net) ∧ has_limsup f l net ∧ l < b ⟶ eventually (λx. f x < b) net",
             "ty": "thm",
             "vars": {
                 "b": "real",
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "reallim_imp_has_limsup",
-            "prop": "tendsto_real f l net --> has_limsup f l net",
+            "prop": "tendsto_real f l net ⟶ has_limsup f l net",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_imp_ubound_le",
-            "prop": "has_limsup f l net --> ?b. eventually (λx. f x ≤ b) net",
+            "prop": "has_limsup f l net ⟶ (∃b. eventually (λx. f x ≤ b) net)",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_not_ubound",
-            "prop": "¬trivial_limit net ∧ has_limsup f l net ∧ c < l ⟶ ~eventually (λx. f x <= c) net",
-            "ty": "thm",
-            "vars": {
-                "c": "real",
-                "f": "'a => real",
-                "l": "real",
-                "net": "'a net"
-            }
-        },
-        {
-            "attributes": [],
-            "name": "has_limsup",
             "prop": [
-                "has_limsup f l net =",
-                "(trivial_limit net |",
-                "(!c. l < c ⟶ eventually (λx. f x <= c) net) &",
-                "(!c. c < l ⟶ ~eventually (λx. f x <= c) net))"
+                "¬(trivial_limit net) ∧ has_limsup f l net ∧ c < l ",
+                "⟶ ¬(eventually (λx. f x ≤ c) net)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "c": "real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
+            "name": "has_limsup",
+            "prop": [
+                "has_limsup f l net ⟷ ",
+                "trivial_limit net ∨ ",
+                "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ ",
+                "(∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
             "name": "limsup_exists",
             "prop": [
                 "(∃l. has_limsup f l net) ⟷ ",
                 "trivial_limit net ∨ ",
-                "(∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬eventually (λx. f x ≤ c) net)"
+                "(∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_le",
             "prop": [
-                "has_limsup f l net &",
-                "has_limsup g m net &",
-                "¬trivial_limit net ∧",
-                "eventually (λx. f x ≤ g x) net",
-                "--> l <= m"
+                "has_limsup f l net ∧ ",
+                "has_limsup g m net ∧ ¬(trivial_limit net) ∧ eventually (λx. f x ≤ g x) net ",
+                "⟶ l ≤ m"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_ubound",
-            "prop": [
-                "eventually (λx. f x ≤ b) net &",
-                "has_limsup f l net &",
-                "¬trivial_limit net",
-                "--> l <= b"
-            ],
+            "prop": "eventually (λx. f x ≤ b) net ∧ has_limsup f l net ∧ ¬(trivial_limit net) ⟶ l ≤ b",
             "ty": "thm",
             "vars": {
                 "b": "real",
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
-            "name": " has_limsup_sequentially",
+            "name": "has_limsup_sequentially",
             "prop": [
-                "has_limsup a l sequentially =",
-                "((!c. l <= c --> ?N. !n. N <= n --> a n <= c) &",
-                "(!c. c < l --> !N. ?n. N <= n & c < a n))"
+                "has_limsup a l sequentially ⟷ ",
+                "(∀c. l ≤ c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)) ∧ ",
+                "(∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_sequentially_within",
             "prop": [
                 "has_limsup a l (within sequentially k) ⟷ ",
-                "(finite k |",
-                "(∀c. l < c ⟶ (∃N. ∀n. n ∈ k & N ≤ n ⟶ a n ≤ c)) ∧ ",
-                "(∀c. c < l ⟶ (∀N. ∃n. n ∈ k & N ≤ n ∧ c < a n)))"
+                "finite k ∨ ",
+                "(∀c. l < c ⟶ (∃N. ∀n. n ∈ k ∧ N ≤ n ⟶ a n ≤ c)) ∧ ",
+                "(∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "k": "nat set",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_sequentially_imp_reallim_sup",
             "prop": [
                 "has_limsup a l sequentially ",
@@ -186,48 +170,27 @@
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_sequentially_reallim_sup",
             "prop": [
-                "has_limsup a l sequentially = ",
-                "((?b. !n. a n <= b) & tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially)"
+                "has_limsup a l sequentially ⟷ ",
+                "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_limsup_mul_reallim_right",
             "prop": [
-                "has_limsup f a net &",
-                "tendsto_real g b net &",
-                "eventually (%x. 0 <= f x) net &",
-                "eventually (%x. 0 <= g x) net",
-                "--> has_limsup (%x. f x * g x) (a * b) net "
-            ],
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "f": "'a => real",
-                "g": "'a => real",
-                "net": "'a net"
-            }
-        },
-        {
-            "attributes": [],
-            "name": "has_limsup_mul_reallim_left",
-            "prop": [
-                "tendsto_real f a net ∧ ",
-                "has_limsup g b net ∧ ",
+                "has_limsup f a net ∧ ",
+                "tendsto_real g b net ∧ ",
                 "eventually (λx. 0 ≤ f x) net ∧ eventually (λx. 0 ≤ g x) net ",
                 "⟶ has_limsup (λx. f x * g x) (a * b) net"
             ],
@@ -235,185 +198,177 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
-            "name": "has_limsup_sequentially_within_lbound_zero",
+            "name": "has_limsup_mul_reallim_left",
             "prop": [
-                "has_limsup f b (within sequentially k) ∧",
-                "(!x. 0 <= f x) & ~(finite k)",
-                "--> 0 <= b"
+                "tendsto_real f a net ∧ ",
+                "has_limsup g b net ∧ eventually (λx. 0 ≤ f x) net ∧ eventually (λx. 0 ≤ g x) net ",
+                "⟶ has_limsup (λx. f x * g x) (a * b) net"
             ],
             "ty": "thm",
             "vars": {
+                "a": "real",
                 "b": "real",
-                "f": "nat => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
+                "net": "'a net"
+            }
+        },
+        {
+            "name": "has_limsup_sequentially_within_lbound_zero",
+            "prop": "has_limsup f b (within sequentially k) ∧ (∀x. 0 ≤ f x) ∧ ¬(finite k) ⟶ 0 ≤ b",
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "f": "nat ⇒ real",
                 "k": "nat set"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_transform",
-            "prop": [
-                "eventually (%x::'a. f x = g x) net & has_liminf f l net",
-                "               --> has_liminf g l net"
-            ],
+            "prop": "eventually (λx. f x = g x) net ∧ has_liminf f l net ⟶ has_liminf g l net",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_eventually_lbound",
-            "prop": "~(trivial_limit net) & has_liminf f l net & b < l ⟶ eventually (λx. b < f x) net",
+            "prop": "¬(trivial_limit net) ∧ has_liminf f l net ∧ b < l ⟶ eventually (λx. b < f x) net",
             "ty": "thm",
             "vars": {
                 "b": "real",
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "reallim_imp_has_liminf",
-            "prop": "tendsto_real f l net --> has_liminf f l net",
+            "prop": "tendsto_real f l net ⟶ has_liminf f l net",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_imp_lbound_le",
-            "prop": "has_liminf f l net --> ?b. eventually (λx. b <= f x) net",
+            "prop": "has_liminf f l net ⟶ (∃b. eventually (λx. b ≤ f x) net)",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_not_lbound",
-            "prop": "¬trivial_limit net ∧ has_liminf f l net ∧ l < c ⟶ ~eventually (λx. c <= f x) net",
-            "ty": "thm",
-            "vars": {
-                "c": "real",
-                "f": "'a => real",
-                "l": "real",
-                "net": "'a net"
-            }
-        },
-        {
-            "attributes": [],
-            "name": "has_liminf",
             "prop": [
-                "has_liminf f l net =",
-                "(trivial_limit net |",
-                "(!c. c < l ⟶ eventually (λx. c <= f x) net) &",
-                "(!c. l < c ⟶ ~eventually (λx. c <= f x) net))"
+                "¬(trivial_limit net) ∧ has_liminf f l net ∧ l < c ",
+                "⟶ ¬(eventually (λx. c ≤ f x) net)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "c": "real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
+            "name": "has_liminf",
+            "prop": [
+                "has_liminf f l net ⟷ ",
+                "trivial_limit net ∨ ",
+                "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ ",
+                "(∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
             "name": "liminf_exists",
             "prop": [
                 "(∃l. has_liminf f l net) ⟷ ",
                 "trivial_limit net ∨ ",
-                "(∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬eventually (λx. c <= f x) net)"
+                "(∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_le",
             "prop": [
-                "has_liminf f l net &",
-                "has_liminf g m net &",
-                "¬trivial_limit net ∧",
-                "eventually (λx. f x ≤ g x) net",
-                "--> l <= m"
+                "has_liminf f l net ∧ ",
+                "has_liminf g m net ∧ ¬(trivial_limit net) ∧ eventually (λx. f x ≤ g x) net ",
+                "⟶ l ≤ m"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_lbound",
-            "prop": [
-                "eventually (λx. b <= f x) net &",
-                "has_liminf f l net &",
-                "¬trivial_limit net",
-                "--> b <= l"
-            ],
+            "prop": "eventually (λx. b ≤ f x) net ∧ has_liminf f l net ∧ ¬(trivial_limit net) ⟶ b ≤ l",
             "ty": "thm",
             "vars": {
                 "b": "real",
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "net": "'a net"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_sequentially",
             "prop": [
-                "has_liminf a l sequentially =",
-                "((!c. c < l --> ?N. !n. N <= n --> c <= a n) &",
-                "(!c. l < c --> !N. ?n. N <= n & a n < c))"
+                "has_liminf a l sequentially ⟷ ",
+                "(∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ ",
+                "(∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_sequentially_within",
             "prop": [
                 "has_liminf a l (within sequentially k) ⟷ ",
-                "(finite k |",
-                "(∀c. c < l ⟶ (∃N. ∀n. n ∈ k & N ≤ n ⟶ c <= a n)) ∧ ",
-                "(∀c. l < c ⟶ (∀N. ∃n. n ∈ k & N ≤ n ∧ a n < c)))"
+                "finite k ∨ ",
+                "(∀c. c < l ⟶ (∃N. ∀n. n ∈ k ∧ N ≤ n ⟶ c ≤ a n)) ∧ ",
+                "(∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "k": "nat set",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_sequentially_imp_reallim_inf",
             "prop": [
                 "has_liminf a l sequentially ",
@@ -421,56 +376,51 @@
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "has_liminf_sequentially_reallim_inf",
             "prop": [
-                "has_liminf a l sequentially = ",
-                "((?b. !n. b <= a n) & tendsto_real (λn. inf (image a ({m. m ≥ n}))) l sequentially)"
+                "has_liminf a l sequentially ⟷ ",
+                "(∃b. ∀n. b ≤ a n) ∧ tendsto_real (λn. inf (image a ({m. m ≥ n}))) l sequentially"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_series_root_test",
             "prop": [
-                "(!n. n ∈k --> 0 <= a n) & b <1 &",
-                "has_limsup (%n. root n (a n)) b (within sequentially k)",
-                "--> real_summable k a"
+                "(∀n. n ∈ k ⟶ 0 ≤ a n) ∧ ",
+                "b < 1 ∧ has_limsup (λn. root n (a n)) b (within sequentially k) ",
+                "⟶ real_summable k a"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "b": "real",
                 "k": "nat set"
             }
         },
         {
-            "attributes": [],
             "name": "real_cauchy_hadamard_radius",
             "prop": [
-                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) &",
-                "b * abs x < 1",
-                "--> real_summable k (λn. a n * x ^ n)"
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
+                "⟶ real_summable k (λn. a n * x ^ n)"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "b": "real",
                 "k": "nat set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_cauchy_hadamard_radius_absconv_derivative",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
@@ -478,14 +428,13 @@
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "b": "real",
                 "k": "nat set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_cauchy_hadamard_radius_derivative",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
@@ -493,50 +442,46 @@
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "b": "real",
                 "k": "nat set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
-            "name": "  real_cauchy_hadamard_radius_uniform",
+            "name": "real_cauchy_hadamard_radius_uniform",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
-                "real_compact s & ",
-                "(!x. member x s --> b * abs x < 1) ",
-                "⟶ ?l. !e. 0 < e",
-                "--> ?N. !n. !x. N <= n & member x s",
-                "--> abs (sum (inter k {0..n}) (λi. a i * x ^ i) - l x) < e"
+                "real_compact s ∧ (∀x. x ∈ s ⟶ b * abs x < 1) ",
+                "⟶ (∃l. ∀e. 0 < e ",
+                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "b": "real",
                 "k": "nat set",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_cauchy_hadamard_radius_uniform_derivative",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
                 "real_compact s ∧ (∀x. x ∈ s ⟶ b * abs x < 1) ",
                 "⟶ (∃l. ∀e. 0 < e ",
-                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - l x) < e))"
+                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ",
+                "                  ⟶ abs (sum (k ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - l x) < e))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat => real",
+                "a": "nat ⇒ real",
                 "b": "real",
                 "k": "nat set",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_derivative_sequence",
             "prop": [
                 "is_realinterval s ∧ ",
@@ -549,19 +494,19 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
-                "f1": "nat => real => real",
-                "g1": "real => real",
+                "f": "nat ⇒ real ⇒ real",
+                "f1": "nat ⇒ real ⇒ real",
+                "g1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_derivative_series",
             "prop": [
                 "is_realinterval s ∧ ",
                 "(∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ∧ ",
-                "(∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ∧ ",
+                "(∀e. 0 < e ",
+                "   ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ∧ ",
                 "(∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ",
                 "⟶ (∃g. ∀x. x ∈ s ",
                 "        ⟶ real_sums (λn. f n x) (g x) k ∧ ",
@@ -569,50 +514,49 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
-                "f1": "nat => real => real",
-                "g1": "real => real",
+                "f": "nat ⇒ real ⇒ real",
+                "f1": "nat ⇒ real ⇒ real",
+                "g1": "real ⇒ real",
                 "k": "nat set",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_differentiable_bound",
             "prop": [
                 "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s) ∧",
-                "abs (f1 x) <= B)",
-                "--> !x. !y. x ∈ s & y ∈ s --> abs (f x - f y) <= B * abs (x - y)"
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s) ∧ abs (f1 x) ≤ B) ",
+                "⟶ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ abs (f x - f y) ≤ B * abs (x - y))"
             ],
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_taylor_mvt_pos",
             "prop": [
-                "a < x &",
-                "(!i. !t. t ∈ (real_closed_interval a x) & i <= n",
-                "--> has_real_derivative (f i) (f (i + 1) t) (within (atreal t) (real_closed_interval a x)))",
-                "--> ?t. t ∈ (real_closed_interval a x) &",
-                "f 0 x = sum {0..n} (%i. f i a * (x - a) ^ i / (of_nat (fact i))) + f (n + 1) t * (x - a) ^ (n + 1) / (of_nat (fact (n + 1)))"
+                "a < x ∧ ",
+                "(∀i. ∀t. t ∈ real_closed_interval a x ∧ i ≤ n ",
+                "     ⟶ has_real_derivative (f i) (f (i + 1) t) ",
+                "          (within (atreal t) (real_closed_interval a x))) ",
+                "⟶ (∃t. t ∈ real_closed_interval a x ∧ ",
+                "      f 0 x = ",
+                "      sum ({0..n}) (λi. f i a * (x - a) ^ i / of_nat (fact i)) + ",
+                "      f (n + 1) t * (x - a) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "n": "nat",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_taylor_mvt_neg",
             "prop": [
                 "x < a ∧ ",
@@ -627,53 +571,48 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "n": "nat",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_taylor",
             "prop": [
                 "is_realinterval s ∧ ",
-                "(∀i. ∀x. x ∈ s ∧ i ≤ n ",
-                "     ⟶ has_real_derivative (f i) (f (i + 1) x) ",
-                "          (within (atreal x) s)) &",
-                "(∀x. x ∈ s --> abs (f (n + 1) x) ≤ B)",
+                "(∀i. ∀x. x ∈ s ∧ i ≤ n ⟶ has_real_derivative (f i) (f (i + 1) x) (within (atreal x) s)) ∧ ",
+                "(∀x. x ∈ s ⟶ abs (f (n + 1) x) ≤ B) ",
                 "⟶ (∀w. ∀z. w ∈ s ∧ z ∈ s ",
-                "⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / of_nat (fact i))) ",
-                "≤ B * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
+                "        ⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / of_nat (fact i))) ≤ ",
+                "           B * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "n": "nat",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_sum_integral_ubound_increasing",
             "prop": [
-                "m <= n &",
-                "(!x. x ∈ (real_closed_interval (of_nat m) (of_nat n + 1))",
-                "--> has_real_derivative g (f x) ",
-                "(within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) &",
-                " (!x. !y. (of_nat m) <= x & x <= y & y <= (of_nat n + 1) --> f x <= f y)",
-                "--> sum ({m..n}) (%k. f (of_nat k)) <= g (of_nat n + 1) - g (of_nat m)"
+                "m ≤ n ∧ ",
+                "(∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ",
+                "   ⟶ has_real_derivative g (f x) ",
+                "        (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. of_nat m ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ",
+                "⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
-            "attributes": [],
             "name": "real_sum_integral_ubound_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
@@ -685,14 +624,13 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
-            "attributes": [],
             "name": "real_sum_integral_lbound_increasing",
             "prop": [
                 "m ≤ n ∧ ",
@@ -700,18 +638,17 @@
                 "   ⟶ has_real_derivative g (f x) ",
                 "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ∧ ",
                 "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n ⟶ f x ≤ f y) ",
-                "⟶ g (of_nat n) - g (of_nat m - 1) <= sum ({m..n}) (λk. f (of_nat k))"
+                "⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
-            "attributes": [],
             "name": "real_sum_integral_lbound_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
@@ -723,35 +660,33 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
-            "attributes": [],
             "name": "real_sum_integral_bounds_increasing",
             "prop": [
                 "m ≤ n ∧ ",
                 "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
                 "   ⟶ has_real_derivative g (f x) ",
                 "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ (of_nat n + 1) ⟶ f x ≤ f y) ",
-                "⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) &",
-                "sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ",
+                "⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ ",
+                "   sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
-            "attributes": [],
-            "name": " real_sum_integral_bounds_decreasing",
+            "name": "real_sum_integral_bounds_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
                 "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
@@ -763,56 +698,48 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
-            "attributes": [],
             "name": "reallim_posinfinity_sequentially",
-            "prop": "tendsto_real f l at_posinfinity = tendsto_real (%n. f (of_nat n)) l sequentially",
+            "prop": "tendsto_real f l at_posinfinity ⟷ tendsto_real (λn. f (of_nat n)) l sequentially",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "reallim_zero_posinfinity",
-            "prop": [
-                "tendsto_real (%x. f (1 / x)) l (atreal 0)",
-                "-->tendsto_real f l at_posinfinity"
-            ],
+            "prop": "tendsto_real (λx. f (1 / x)) l (atreal 0) ⟶ tendsto_real f l at_posinfinity",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "reallim_zero_neginfinity",
             "prop": "tendsto_real (λx. f (1 / x)) l (atreal 0) ⟶ tendsto_real f l at_neginfinity",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "l": "real"
             }
         },
         {
-            "attributes": [],
             "name": "closed_real_segment",
-            "prop": "closed_real_segment a b = {x. x = (1 - u) * a + u * b & 0 <= u & u <= 1}",
+            "prop": "closed_real_segment a b = {x. ∃u. x = (1 - u) * a + u * b ∧ 0 ≤ u ∧ u ≤ 1}",
             "ty": "def",
             "type": "real ⇒ real ⇒ real set"
         },
         {
-            "attributes": [],
             "name": "open_real_segment",
-            "prop": "open_real_segment a b = diff (closed_real_segment a b) {a,b}",
+            "prop": "open_real_segment a b = diff (closed_real_segment a b) ({a, b})",
             "ty": "def",
             "type": "real ⇒ real ⇒ real set"
         },
@@ -847,7 +774,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "closed_real_interval_subset_real_segment",
             "num_gaps": 2,
             "proof": [
@@ -897,21 +823,21 @@
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ¬a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                    "th": "⊢ ¬(a ≤ b) ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
-                    "args": "¬a ≤ b",
+                    "args": "¬(a ≤ b)",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬a ≤ b ⊢ ¬a ≤ b"
+                    "th": "¬(a ≤ b) ⊢ ¬(a ≤ b)"
                 },
                 {
                     "args": "",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "¬a ≤ b ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b) ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "x, real",
@@ -959,14 +885,14 @@
                     "id": "1.1.5",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "¬a ≤ b, x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ b"
+                    "th": "¬(a ≤ b), x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ b"
                 },
                 {
                     "args": "",
                     "id": "1.1.6",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "¬a ≤ b, x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b), x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ∈ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "",
@@ -977,7 +903,7 @@
                         "1.1.6"
                     ],
                     "rule": "intros",
-                    "th": "¬a ≤ b ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b) ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "subsetI",
@@ -986,7 +912,7 @@
                         "1.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "¬a ≤ b ⊢ {p. a ≤ p ∧ p ≤ b} ⊆ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b) ⊢ {p. a ≤ p ∧ p ≤ b} ⊆ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "real_closed_interval_def, real_closed_interval a b ⊆ real_closed_interval b a",
@@ -995,7 +921,7 @@
                         "1.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬a ≤ b ⊢ real_closed_interval a b ⊆ real_closed_interval b a"
+                    "th": "¬(a ≤ b) ⊢ real_closed_interval a b ⊆ real_closed_interval b a"
                 },
                 {
                     "args": "if_not_P, real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
@@ -1005,7 +931,7 @@
                         "1.0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬a ≤ b ⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                    "th": "¬(a ≤ b) ⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
                     "args": "",
@@ -1015,7 +941,7 @@
                         "1.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                    "th": "⊢ ¬(a ≤ b) ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
                     "args": "classical_cases",
@@ -1034,6 +960,15 @@
                         "2"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ real_closed_interval a b ⊆ closed_real_segment a b"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ real_closed_interval a b ⊆ closed_real_segment a b"
                 }
             ],
@@ -1054,8 +989,12 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "0.0"
+                    ],
                     "goal_id": "0.1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "if_P"
                 },
                 {
@@ -1068,8 +1007,12 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "1.0"
+                    ],
                     "goal_id": "1.1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "if_not_P"
                 },
                 {
@@ -1124,7 +1067,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "open_real_interval_subset_real_segment",
             "prop": "real_open_interval a b ⊆ open_real_segment a b",
             "ty": "thm",
@@ -1134,7 +1076,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_continuous_injective_iff_monotonic",
             "prop": [
                 "real_continuous_on f s ∧ is_realinterval s ",
@@ -1144,7 +1085,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1586,7 +1527,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "is_realinterval_contains_segment_imp",
             "prop": "is_realinterval s ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)",
             "ty": "thm",
@@ -1595,7 +1535,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "is_realinterval_closed_segment",
             "num_gaps": 2,
             "proof": [
@@ -1603,42 +1542,85 @@
                     "args": "",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ∧ b1 ∈ real_closed_interval a b ∧ a1 ≤ c ∧ c ≤ b1 ⟶ c ∈ real_closed_interval a b"
+                    "rule": "subproof",
+                    "th": "⊢ a ≤ b ⟶ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
-                    "args": "is_realinterval_def, is_realinterval (real_closed_interval a b)",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ is_realinterval (real_closed_interval a b)"
+                    "args": "a ≤ b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
                 },
                 {
                     "args": "",
-                    "id": "2",
+                    "id": "0.1",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "⊢ a ≤ b"
+                    "th": "a ≤ b ⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ∧ b1 ∈ real_closed_interval a b ∧ a1 ≤ c ∧ c ≤ b1 ⟶ c ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval (real_closed_interval a b)",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ is_realinterval (real_closed_interval a b)"
                 },
                 {
                     "args": "if_P, is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
-                    "id": "3",
+                    "id": "0.3",
                     "prevs": [
-                        "1",
-                        "2"
+                        "0.2",
+                        "0.0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ b ⟶ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬(a ≤ b) ⟶ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "⊢ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
                     "args": "closed_real_segment_interval, is_realinterval (closed_real_segment a b)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (closed_real_segment a b)"
+                },
+                {
+                    "args": "",
                     "id": "4",
                     "prevs": [
                         "3"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "intros",
                     "th": "⊢ is_realinterval (closed_real_segment a b)"
                 }
             ],
@@ -1650,13 +1632,27 @@
                     "theorem": "closed_real_segment_interval"
                 },
                 {
+                    "case": "a ≤ b",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
+                    "method_name": "cases"
                 },
                 {
                     "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "is_realinterval_def"
                 }
             ],
@@ -1667,7 +1663,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "is_realinterval_open_segment",
             "prop": "is_realinterval (open_real_segment a b)",
             "ty": "thm",
@@ -1693,7 +1688,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "is_closed_real_segment",
+            "name": "is_open_real_segment",
             "prop": "x ∈ open_real_segment a b ⟷ a < x ∧ x < b ∨ b < x ∧ x < a",
             "ty": "thm",
             "vars": {
@@ -1703,18 +1698,17 @@
             }
         },
         {
-            "attributes": [],
             "name": "floor_continuous_monotone_floor",
             "prop": [
-                "is_realinterval s &",
-                "real_continuous_on f s &",
-                "(!x. !y. x ∈ s & y ∈ s & x <= y --> f x <= f y) &",
-                "(!x. x ∈ s & integer (f x) --> integer x)",
-                "--> !x. (floor x) ∈ s & x ∈ s --> floor (f (floor x)) = floor (f x)"
+                "is_realinterval s ∧ ",
+                "real_continuous_on f s ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x ≤ y ⟶ f x ≤ f y) ∧ ",
+                "(∀x. x ∈ s ∧ integer (f x) ⟶ integer x) ",
+                "⟶ (∀x. floor x ∈ s ∧ x ∈ s ⟶ floor (f (floor x)) = floor (f x))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1724,15 +1718,14 @@
             ],
             "name": "real_convex_on",
             "prop": [
-                "real_convex_on f s <-->",
-                "        !x. !y. !u. !v. x ∈ s & y ∈ s & 0 <= u & 0 <= v & (u + v = 1)",
-                "                  --> f(u * x + v * y) <= u * f(x) + v * f(y)"
+                "real_convex_on f s ⟷ ",
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
+                "         ⟶ f (u * x + v * y) ≤ u * f x + v * f y)"
             ],
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
-            "attributes": [],
             "name": "real_convex_on_empty",
             "num_gaps": 0,
             "proof": [
@@ -1820,7 +1813,7 @@
                     "th": "⊢ real_convex_on f ∅"
                 }
             ],
-            "prop": "real_convex_on f empty_set",
+            "prop": "real_convex_on f ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1851,48 +1844,44 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_eq",
             "prop": [
-                "is_realinterval s & (!x. x ∈ s --> f x = g x) & real_convex_on f s",
-                "         --> real_convex_on g s"
+                "is_realinterval s ∧ (∀x. x ∈ s ⟶ f x = g x) ∧ real_convex_on f s ",
+                "⟶ real_convex_on g s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_sing",
-            "prop": "real_convex_on f {a}",
+            "prop": "real_convex_on f ({a})",
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_subset",
-            "prop": "real_convex_on f t & subset s t --> real_convex_on f s",
+            "prop": "real_convex_on f t ∧ s ⊆ t ⟶ real_convex_on f s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_const",
-            "prop": "real_convex_on (%x. c) s",
+            "prop": "real_convex_on (λx. c) s",
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -1900,16 +1889,12 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_add",
-            "prop": [
-                "real_convex_on f s & real_convex_on g s",
-                "--> real_convex_on (%x. f x + g x) s"
-            ],
+            "prop": "real_convex_on f s ∧ real_convex_on g s ⟶ real_convex_on (λx. f x + g x) s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1917,17 +1902,16 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " real_convex_lmul",
+            "name": "real_convex_lmul",
             "prop": "0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. c * f x) s",
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_rmul",
             "num_gaps": 0,
             "proof": [
@@ -1977,58 +1961,55 @@
                 {
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
-                    "theorem": " real_convex_lmul"
+                    "theorem": "real_convex_lmul"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_sum",
             "prop": [
-                "finite s & (!a. a ∈ s --> real_convex_on (f a) t)",
-                "--> real_convex_on (%x. sum s (%a. f a x)) t"
+                "finite s ∧ (∀a. a ∈ s ⟶ real_convex_on (f a) t) ",
+                "⟶ real_convex_on (λx. sum s (λa. f a x)) t"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
+                "f": "'a ⇒ real ⇒ real",
                 "s": "'a set",
                 "t": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_compose",
             "prop": [
-                "real_convex_on f s & real_convex_on g t &",
-                "is_realinterval s & is_realinterval t & subset (image f s) t &",
-                "(!x. !y.  x ∈ t & y ∈ t & x <= y --> g x <= g y)",
-                "--> real_convex_on (g O f) s"
+                "real_convex_on f s ∧ ",
+                "real_convex_on g t ∧ ",
+                "is_realinterval s ∧ ",
+                "is_realinterval t ∧ image f s ⊆ t ∧ (∀x. ∀y. x ∈ t ∧ y ∈ t ∧ x ≤ y ⟶ g x ≤ g y) ",
+                "⟶ real_convex_on (g ∘ f) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_lower",
             "prop": [
-                "real_convex_on f s ∧ x ∈ s ∧ y ∈ s ∧",
-                "0 <= u & 0 <= v & u + v = 1",
-                "--> f (u * x + v * y) <= max (f x) (f y)"
+                "real_convex_on f s ∧ x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
+                "⟶ f (u * x + v * y) ≤ max (f x) (f y)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "u": "real",
                 "v": "real",
@@ -2040,7 +2021,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " real_convex_lower_real_segment",
+            "name": "real_convex_lower_real_segment",
             "prop": [
                 "real_convex_on f s ∧ a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
                 "⟶ f x ≤ max (f a) (f b)"
@@ -2049,13 +2030,12 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_lower_real_interval",
             "prop": [
                 "real_convex_on f (real_closed_interval a b) ∧ x ∈ closed_real_segment a b ",
@@ -2065,30 +2045,27 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_local_global_minimum",
             "prop": [
-                "real_convex_on f s ∧ x ∈ t & real_open t & subset t s &",
-                "(!y. y ∈ t --> f x <= f y)",
-                "--> !y. y ∈ s --> f x <= f y"
+                "real_convex_on f s ∧ x ∈ t ∧ real_open t ∧ t ⊆ s ∧ (∀y. y ∈ t ⟶ f x ≤ f y) ",
+                "⟶ (∀y. y ∈ s ⟶ f x ≤ f y)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_distance",
-            "prop": "real_convex_on (%x. abs (a - x)) s",
+            "prop": "real_convex_on (λx. abs (a - x)) s",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -2096,50 +2073,45 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_jensen",
             "prop": [
-                "is_realinterval s",
-                "--> (real_convex_on f s <-->",
-                "!k. !u. !x. (!i. 1 <= i & i <= k --> 0 < u i & x i ∈ s) &",
-                "(sum {1..k} u = 1)",
-                "--> f (sum {1..k} (%i. u i * x i)) <= sum {1..k} (%i. u i * f (x i)))"
+                "is_realinterval s ",
+                "⟶ real_convex_on f s ⟷ ",
+                "   (∀k. ∀u. ∀x. (∀i. 1 ≤ i ∧ i ≤ k ⟶ 0 < u i ∧ x i ∈ s) ∧ sum ({1..k}) u = 1 ",
+                "          ⟶ f (sum ({1..k}) (λi. u i * x i)) ≤ sum ({1..k}) (λi. u i * f (x i)))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_imp_jensen",
             "prop": [
-                "real_convex_on f s  & is_realinterval s & finite k &",
-                "  (∀i. i ∈ k ⟶ 0 <= u i ∧ x i ∈ s) ∧ sum k u = 1 ",
-                "          ⟶ f (sum k (λi. u i * x i)) ≤ sum k (λi. u i * f (x i))"
+                "real_convex_on f s ∧ ",
+                "is_realinterval s ∧ finite k ∧ (∀i. i ∈ k ⟶ 0 ≤ u i ∧ x i ∈ s) ∧ sum k u = 1 ",
+                "⟶ f (sum k (λi. u i * x i)) ≤ sum k (λi. u i * f (x i))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "k": "'a set",
                 "s": "real set",
-                "u": "'a => real",
-                "x": "'a => real"
+                "u": "'a ⇒ real",
+                "x": "'a ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_continuous",
-            "prop": "real_open s & real_convex_on f s --> real_continuous_on f s",
+            "prop": "real_open s ∧ real_convex_on f s ⟶ real_continuous_on f s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_left_secant_mul",
             "prop": [
                 "real_convex_on f s ⟷ ",
@@ -2148,12 +2120,11 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_right_secant_mul",
             "prop": [
                 "real_convex_on f s ⟷ ",
@@ -2162,12 +2133,11 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_left_secant",
             "prop": [
                 "real_convex_on f s ⟷ ",
@@ -2176,12 +2146,11 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_right_secant",
             "prop": [
                 "real_convex_on f s ⟷ ",
@@ -2190,21 +2159,20 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_derivative_secant_imp",
             "prop": [
-                "real_convex_on f s & subset (closed_real_segment x y) s &",
-                "has_real_derivative f f1 (within (atreal x) s)",
-                "--> f1 * (y - x) <= f y - f x"
+                "real_convex_on f s ∧ ",
+                "closed_real_segment x y ⊆ s ∧ has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ f1 * (y - x) ≤ f y - f x"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real",
@@ -2212,7 +2180,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_secant_derivative_imp",
             "prop": [
                 "real_convex_on f s ∧ ",
@@ -2221,7 +2188,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real",
@@ -2229,17 +2196,17 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_derivative_imp",
             "prop": [
                 "real_convex_on f s ∧ ",
-                "closed_real_segment x y ⊆ s ∧ has_real_derivative f f1x (within (atreal x) s) &",
-                "has_real_derivative f f1y (within (atreal y) s)",
+                "closed_real_segment x y ⊆ s ∧ ",
+                "has_real_derivative f f1x (within (atreal x) s) ∧ ",
+                "has_real_derivative f f1y (within (atreal y) s) ",
                 "⟶ f1x * (y - x) ≤ f1y * (y - x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1x": "real",
                 "f1y": "real",
                 "s": "real set",
@@ -2248,19 +2215,17 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_derivative_increasing_imp",
             "prop": [
                 "real_convex_on f s ∧ ",
                 "real_closed_interval x y ⊆ s ∧ ",
                 "has_real_derivative f f1x (within (atreal x) s) ∧ ",
-                "has_real_derivative f f1y (within (atreal y) s) &",
-                "x < y",
+                "has_real_derivative f f1y (within (atreal y) s) ∧ x < y ",
                 "⟶ f1x ≤ f1y"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1x": "real",
                 "f1y": "real",
                 "s": "real set",
@@ -2269,23 +2234,20 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_derivative_secant",
             "prop": [
-                "is_realinterval s & ",
-                "(!x. x ∈ s --> has_real_derivative f (f1 x) (within (atreal x) s))",
-                "--> (real_convex_on f s <-->",
-                "!x. !y. x ∈ s & y ∈ s --> f1 x * (y - x) ≤ f y - f x)"
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f1 x * (y - x) ≤ f y - f x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_secant_derivative",
             "prop": [
                 "is_realinterval s ∧ ",
@@ -2294,13 +2256,12 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_derivatives",
             "prop": [
                 "is_realinterval s ∧ ",
@@ -2309,109 +2270,104 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_derivatives_increasing",
             "prop": [
                 "is_realinterval s ∧ ",
                 "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
-                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s & x <= y ⟶ f1 x ≤ f1 y)"
+                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x ≤ y ⟶ f1 x ≤ f1 y)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_derivative_increasing_imp",
             "prop": [
                 "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) &",
-                "(∀x. x ∈ s ⟶ 0 <= f1 x) &",
-                "a ∈ s ∧ b ∈ s ∧ a ≤ b ⟶ f a ≤ f b"
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ∧ ",
+                "(∀x. x ∈ s ⟶ 0 ≤ f1 x) ∧ a ∈ s ∧ b ∈ s ∧ a ≤ b ",
+                "⟶ f a ≤ f b"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_derivative_increasing",
             "prop": [
-                "is_realinterval s ∧ ~(?a. s = {a}) &",
+                "is_realinterval s ∧ ",
+                "¬(∃a. s = {a}) ∧ ",
                 "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
-                "--> ((∀x. x ∈ s ⟶ 0 ≤ f1 x) <--> (!x. !y. x ∈ s ∧ y ∈ s ∧ x ≤ y ",
-                "⟶ f x ≤ f y))"
+                "⟶ (∀x. x ∈ s ⟶ 0 ≤ f1 x) ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x ≤ y ⟶ f x ≤ f y)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_derivative_strictly_increasing_imp",
             "prop": [
-                "(∀x. x ∈ (real_closed_interval a b) ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
-                "(∀x. x ∈ (real_closed_interval a b) ⟶ 0 ≤ f1 x) ∧ a < b ",
+                "(∀x. x ∈ real_closed_interval a b ",
+                "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
+                "(∀x. x ∈ real_closed_interval a b ⟶ 0 ≤ f1 x) ∧ a < b ",
                 "⟶ f a < f b"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_second_derivative",
             "prop": [
-                "is_realinterval s ∧ ¬(∃a. s = {a}) ∧",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) &",
-                "(∀x. x ∈ s ⟶ has_real_derivative f1 (f2 x) (within (atreal x) s))",
-                "--> (real_convex_on f s <--> !x. x ∈ s ⟶  0 ≤ f2 x)"
+                "is_realinterval s ∧ ",
+                "¬(∃a. s = {a}) ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f1 (f2 x) (within (atreal x) s)) ",
+                "⟶ real_convex_on f s ⟷ (∀x. x ∈ s ⟶ 0 ≤ f2 x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "f1": "real => real",
-                "f2": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "f2": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_asym",
             "prop": [
-                "real_convex_on f s ⟷",
-                "!x. !y. !u. !v. x ∈ s ∧ y ∈ s ∧ x < y & 0 <= u & 0 <= v & u + v = 1",
-                "--> f (u * x + v * y) <= u * f x + v * f y"
+                "real_convex_on f s ⟷ ",
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ x < y ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
+                "         ⟶ f (u * x + v * y) ≤ u * f x + v * f y)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_exp",
             "prop": "real_convex_on exp s",
             "ty": "thm",
@@ -2420,12 +2376,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_rpow",
-            "prop": [
-                "subset s {x. 0 <= x} & 1 <= t",
-                "--> real_convex_on (%x. x ^ t) s"
-            ],
+            "prop": "s ⊆ {x. 0 ≤ x} ∧ 1 ≤ t ⟶ real_convex_on (λx. x ^ t) s",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -2433,7 +2385,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_rpow_neg",
             "prop": "s ⊆ {x. x < 0} ∧ t ≤ 0 ⟶ real_convex_on (λx. x ^ t) s",
             "ty": "thm",
@@ -2443,7 +2394,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_rpow_integer",
             "prop": "s ⊆ {x. 0 < x} ∧ integer t ⟶ real_convex_on (λx. x ^ t) s",
             "ty": "thm",
@@ -2453,7 +2403,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_real_inv",
             "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on real_inverse s",
             "ty": "thm",
@@ -2462,88 +2411,81 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_real_",
             "prop": [
-                "real_convex_on f s & is_realinterval s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x)",
-                "--> real_convex_on (λx. (f x) ^ n) s"
+                "real_convex_on f s ∧ is_realinterval s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ",
+                "⟶ real_convex_on (λx. f x ^ n) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "n": "nat",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_convex_on_log",
-            "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on (%x. - (log x)) s",
+            "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on (λx. -(log x)) s",
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_continuous_midpoint_convex",
             "prop": [
-                "real_continuous_on f s & is_realinterval s &",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) /2) ≤ (f x + f y) / 2)",
-                "--> real_convex_on f s"
+                "real_continuous_on f s ∧ ",
+                "is_realinterval s ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) / 2) ≤ (f x + f y) / 2) ",
+                "⟶ real_convex_on f s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "agm_gen",
             "prop": [
-                "finite k & sum k a = 1 & (!i. i ∈ k --> 0 <= a i & 0 <= x i)",
-                "--> product k (%i. x i ^ a i) <= sum k (%i. a i * x i)"
+                "finite k ∧ sum k a = 1 ∧ (∀i. i ∈ k ⟶ 0 ≤ a i ∧ 0 ≤ x i) ",
+                "⟶ product k (λi. x i ^ a i) ≤ sum k (λi. a i * x i)"
             ],
             "ty": "thm",
             "vars": {
-                "a": "'a => real",
+                "a": "'a ⇒ real",
                 "k": "'a set",
-                "x": "'a => real"
+                "x": "'a ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "agm_rpow",
             "prop": [
-                "has_size k n & ~(n = 0) & (!i. i ∈ k --> 0 <= x i)",
-                "--> product k (λi. x i ^ (1 / (of_nat n))) ≤ sum k (λi. x i / (of_nat n))"
+                "has_size k n ∧ ¬(n = 0) ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
+                "⟶ product k (λi. x i ^ (1 / of_nat n)) ≤ sum k (λi. x i / of_nat n)"
             ],
             "ty": "thm",
             "vars": {
                 "k": "'a set",
                 "n": "nat",
-                "x": "'a => real"
+                "x": "'a ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "agm_boot",
             "prop": [
-                "has_size k n ∧ ¬n = 0 ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
-                "⟶ root n (product k x) ≤ sum k x / (of_nat n)"
+                "has_size k n ∧ ¬(n = 0) ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
+                "⟶ root n (product k x) ≤ sum k x / of_nat n"
             ],
             "ty": "thm",
             "vars": {
                 "k": "'a set",
                 "n": "nat",
-                "x": "'a => real"
+                "x": "'a ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "agm_sqrt",
-            "prop": "0 <= x & 0 <= y --> sqrt (x + y) <= (x + y) / 2",
+            "prop": "0 ≤ x ∧ 0 ≤ y ⟶ sqrt (x + y) ≤ (x + y) / 2",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -2551,26 +2493,21 @@
             }
         },
         {
-            "attributes": [],
             "name": "agm",
             "prop": [
-                "has_size k n ∧ ¬n = 0 ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
+                "has_size k n ∧ ¬(n = 0) ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
                 "⟶ product k x ≤ (sum k x / of_nat n) ^ n"
             ],
             "ty": "thm",
             "vars": {
                 "k": "'a set",
                 "n": "nat",
-                "x": "'a => real"
+                "x": "'a ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "agm_2",
-            "prop": [
-                "0 ≤ x ∧ 0 ≤ y & 0 ≤ u ∧ 0 ≤ v & u + v = 1",
-                "--> x ^ u * y ^ v <= u * x + v * y"
-            ],
+            "prop": "0 ≤ x ∧ 0 ≤ y ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ x ^ u * y ^ v ≤ u * x + v * y",
             "ty": "thm",
             "vars": {
                 "u": "real",
@@ -2580,11 +2517,10 @@
             }
         },
         {
-            "attributes": [],
             "name": "young_inequality",
             "prop": [
-                "0 ≤ x ∧ 0 ≤ y ∧ 0 < u ∧ 0 < v ∧ real_inverse u + real_inverse v = 1",
-                "--> x * y <= x ^ u / u + y ^ v / v"
+                "0 ≤ x ∧ 0 ≤ y ∧ 0 < u ∧ 0 < v ∧ real_inverse u + real_inverse v = 1 ",
+                "⟶ x * y ≤ x ^ u / u + y ^ v / v"
             ],
             "ty": "thm",
             "vars": {
@@ -2595,29 +2531,23 @@
             }
         },
         {
-            "attributes": [],
             "name": "hoelder",
             "prop": [
-                "finite k & sum k a = 1 &",
-                "(!i. i ∈ k --> 0 <= a i & 0 <= x i & 0 <= y i)",
-                "--> product k (λi. x i ^ a i) + product k (λi. y i ^ a i)",
-                "<= product k (λi. (x i + y i) ^ a i)"
+                "finite k ∧ sum k a = 1 ∧ (∀i. i ∈ k ⟶ 0 ≤ a i ∧ 0 ≤ x i ∧ 0 ≤ y i) ",
+                "⟶ product k (λi. x i ^ a i) + product k (λi. y i ^ a i) ≤ ",
+                "   product k (λi. (x i + y i) ^ a i)"
             ],
             "ty": "thm",
             "vars": {
-                "a": "'a => real",
+                "a": "'a ⇒ real",
                 "k": "'a set",
-                "x": "'a => real",
-                "y": "'a => real"
+                "x": "'a ⇒ real",
+                "y": "'a ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "rpow_minus1_quotient_lt",
-            "prop": [
-                "0 < a & ~(a = 1) & 0 < x & x < y",
-                "--> (a ^ x - 1) / x < (a ^ y - 1) / y "
-            ],
+            "prop": "0 < a ∧ ¬(a = 1) ∧ 0 < x ∧ x < y ⟶ (a ^ x - 1) / x < (a ^ y - 1) / y",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -2626,9 +2556,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "rpow_minus1_quotient_le",
-            "prop": "0 < a ∧ ¬a = 1 ∧ 0 < x ∧ x <= y ⟶ (a ^ x - 1) / x <= (a ^ y - 1) / y",
+            "prop": "0 < a ∧ ¬(a = 1) ∧ 0 < x ∧ x ≤ y ⟶ (a ^ x - 1) / x ≤ (a ^ y - 1) / y",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -2637,12 +2566,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_exp_limit_rpow_lt",
-            "prop": [
-                "0 < r & r < s & ~(x = 0) & x < r",
-                "--> (1 - x / r) ^ r < (1 - x / s) ^ s"
-            ],
+            "prop": "0 < r ∧ r < s ∧ ¬(x = 0) ∧ x < r ⟶ (1 - x / r) ^ r < (1 - x / s) ^ s",
             "ty": "thm",
             "vars": {
                 "r": "real",
@@ -2651,9 +2576,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_exp_limit_rpow_le",
-            "prop": "0 <= r ∧ r <= s ∧ ¬x = 0 ∧ x <= r ⟶ (1 - x / r) ^ r <= (1 - x / s) ^ s",
+            "prop": "0 ≤ r ∧ r ≤ s ∧ ¬(x = 0) ∧ x ≤ r ⟶ (1 - x / r) ^ r ≤ (1 - x / s) ^ s",
             "ty": "thm",
             "vars": {
                 "r": "real",
@@ -2662,18 +2586,16 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_le_x_sinh",
-            "prop": "0 <= x --> x <= (exp x - real_inverse (exp x)) / 2",
+            "prop": "0 ≤ x ⟶ x ≤ (exp x - real_inverse (exp x)) / 2",
             "ty": "thm",
             "vars": {
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_le_abs_sinh",
-            "prop": "abs x ≤  abs ((exp x - real_inverse (exp x)) / 2)",
+            "prop": "abs x ≤ abs ((exp x - real_inverse (exp x)) / 2)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -2685,15 +2607,14 @@
             ],
             "name": "real_log_convex_on",
             "prop": [
-                "real_log_convex_on f s =",
-                "(!x. !y. !u. !v. x ∈ s & y ∈ s & 0 <= u & 0 <= v & u + v = 1 --> 0 <= f (u * x + v * y) & ",
-                "f (u * x + v * y) <= (f x) ^ u * (f y) ^ v)"
+                "real_log_convex_on f s ⟷ ",
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
+                "         ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
             ],
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
-            "attributes": [],
             "name": "real_log_convex_on_empty",
             "num_gaps": 0,
             "proof": [
@@ -2740,13 +2661,12 @@
                     "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
                 },
                 {
-                    "args": "",
+                    "args": "0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v",
                     "id": "0.5",
                     "prevs": [
-                        "0",
                         "0.4"
                     ],
-                    "rule": "apply_fact",
+                    "rule": "z3",
                     "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
@@ -2771,9 +2691,18 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ real_log_convex_on f ∅"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_log_convex_on f ∅"
                 }
             ],
-            "prop": "real_log_convex_on f empty_set",
+            "prop": "real_log_convex_on f ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2787,20 +2716,18 @@
                 },
                 {
                     "fact_ids": [
-                        "0",
                         "0.4"
                     ],
                     "goal_id": "0.5",
-                    "method_name": "apply_prev"
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_on_subset",
             "num_gaps": 1,
             "proof": [
@@ -2931,10 +2858,7 @@
                     "th": "⊢ real_log_convex_on f t ∧ s ⊆ t ⟶ real_log_convex_on f s"
                 }
             ],
-            "prop": [
-                "real_log_convex_on f t & subset s t",
-                "--> real_log_convex_on f s"
-            ],
+            "prop": "real_log_convex_on f t ∧ s ⊆ t ⟶ real_log_convex_on f s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2980,102 +2904,93 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_on_eq",
             "prop": [
-                "is_realinterval s & (!x. x ∈ s --> f x = g x) &",
-                "real_log_convex_on f s",
-                "--> real_log_convex_on g s"
+                "is_realinterval s ∧ (∀x. x ∈ s ⟶ f x = g x) ∧ real_log_convex_on f s ",
+                "⟶ real_log_convex_on g s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_on_sing",
-            "prop": "real_log_convex_on f {a} <--> 0 <= f a",
+            "prop": "real_log_convex_on f ({a}) ⟷ 0 ≤ f a",
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_imp_pos",
-            "prop": "real_log_convex_on f s & x ∈ s --> 0 ≤ f x",
+            "prop": "real_log_convex_on f s ∧ x ∈ s ⟶ 0 ≤ f x",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_on_convex",
             "prop": [
-                "is_realinterval s",
-                "--> (real_log_convex_on f s <-->",
-                "(!x. x ∈ s --> 0 ≤ f x) &",
-                " ∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "         ⟶ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
+                "is_realinterval s ",
+                "⟶ real_log_convex_on f s ⟷ ",
+                "   (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ ",
+                "   (∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
+                "            ⟶ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_on",
             "prop": [
-                "is_realinterval s & (!x. x ∈ s --> 0 < f x)",
-                "--> (real_log_convex_on f s <--> real_log_convex_on (log O f) s)"
+                "is_realinterval s ∧ (∀x. x ∈ s ⟶ 0 < f x) ",
+                "⟶ real_log_convex_on f s ⟷ real_log_convex_on (log ∘ f) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_imp_convex",
-            "prop": "real_log_convex_on f s --> real_convex_on f s",
+            "prop": "real_log_convex_on f s ⟶ real_convex_on f s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_add",
             "prop": [
-                "real_log_convex_on f s & real_log_convex_on g s",
-                "--> real_log_convex_on (%x. f x + g x) s"
+                "real_log_convex_on f s ∧ real_log_convex_on g s ",
+                "⟶ real_log_convex_on (λx. f x + g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_mul",
             "prop": [
                 "real_log_convex_on f s ∧ real_log_convex_on g s ",
@@ -3083,30 +2998,29 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "midpoint_real_log_convex",
             "prop": [
-                "real_continuous_on f s & is_realinterval s &",
-                "(∀x. x ∈ s ⟶ 0 < f x) &",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) / 2) ^ (2::nat) ≤ (f x * f y))",
-                "--> real_log_convex_on f s"
+                "real_continuous_on f s ∧ ",
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ 0 < f x) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) / 2) ^ (2::nat) ≤ f x * f y) ",
+                "⟶ real_log_convex_on f s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_const",
-            "prop": "0 <= a --> real_log_convex_on (%x. a) s",
+            "prop": "0 ≤ a ⟶ real_log_convex_on (λx. a) s",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -3114,23 +3028,21 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_product",
             "prop": [
-                "finite k & (!i. i ∈ k --> real_log_convex_on (%x. f x i) s)",
-                "--> real_log_convex_on (%x. product k (f x)) s"
+                "finite k ∧ (∀i. i ∈ k ⟶ real_log_convex_on (λx. f x i) s) ",
+                "⟶ real_log_convex_on (λx. product k (f x)) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => 'a => real",
+                "f": "real ⇒ 'a ⇒ real",
                 "k": "'a set",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_rpow_right",
-            "prop": "0 < a --> real_log_convex_on (%x. a ^ x) s",
+            "prop": "0 < a ⟶ real_log_convex_on (λx. a ^ x) s",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -3138,19 +3050,18 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_log_convex_lim",
             "prop": [
-                "~(trivial_limit net) &",
-                "(!x. !y. !u. !v. x ∈ s & y ∈ s & 0 <= u & 0 <= v & u + v = 1",
-                "--> tendsto_real (%i. f i (u * x + v * y)) (g (u * x + v * y)) net) &",
-                "eventually (%i. real_log_convex_on (f i) s) net",
-                "--> real_log_convex_on g s"
+                "¬(trivial_limit net) ∧ ",
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
+                "         ⟶ tendsto_real (λi. f i (u * x + v * y)) (g (u * x + v * y)) net) ∧ ",
+                "eventually (λi. real_log_convex_on (f i) s) net ",
+                "⟶ real_log_convex_on g s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
-                "g": "real => real",
+                "f": "'a ⇒ real ⇒ real",
+                "g": "real ⇒ real",
                 "net": "'a net",
                 "s": "real set"
             }

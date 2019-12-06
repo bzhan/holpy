@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, boolT
-from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -48,6 +48,10 @@ mk_if = logic.mk_if
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
         test_data = [
+            # Variables
+            (SVar("P", boolT), "?P"),
+            (a, "a"),
+
             # Equality and implies
             (eq(a, b), "a = b"),
             (imp(A, B), "A --> B"),
@@ -100,9 +104,9 @@ class PrinterTest(unittest.TestCase):
             (all(a, P(a)), "!a. P a"),
             (all(a, all(b, conj(P(a),P(b)))), "!a. !b. P a & P b"),
             (all(a, conj(P(a), Q(a))), "!a. P a & Q a"),
-            (conj(all(a, P(a)), Q(a)), "(!a. P a) & Q a"),
+            (conj(all(a, P(a)), Q(a)), "(!a1. P a1) & Q a"),
             (all(a, imp(P(a), Q(a))), "!a. P a --> Q a"),
-            (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
+            (imp(all(a, P(a)), Q(a)), "(!a1. P a1) --> Q a"),
             (imp(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
             (imp(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
             (eq(A, all(a, P(a))), "A <--> (!a. P a)"),
@@ -149,6 +153,8 @@ class PrinterTest(unittest.TestCase):
             (nat.plus(m, n), "m + n"),
             (nat.plus(nat.plus(m, n), p), "m + n + p"),
             (nat.plus(m, nat.plus(n, p)), "m + (n + p)"),
+            (nat.plus(nat.minus(m, n), p), "m - n + p"),
+            (nat.minus(m, nat.plus(n, p)), "m - (n + p)"),
             (nat.times(m, n), "m * n"),
             (nat.times(nat.times(m, n), p), "m * n * p"),
             (nat.times(m, nat.times(n, p)), "m * (n * p)"),
@@ -169,6 +175,7 @@ class PrinterTest(unittest.TestCase):
         thy = basic.load_theory('real')
         x = Var('x', real.realT)
         y = Var('y', real.realT)
+        n = Var('n', nat.natT)
         test_data = [
             (real.plus(x, y), "x + y"),
             (real.times(x, y), "x * y"),
@@ -177,6 +184,9 @@ class PrinterTest(unittest.TestCase):
             (real.minus(x, real.uminus(y)), "x - -y"),
             (real.uminus(real.uminus(x)), "--x"),
             (real.uminus(real.minus(x, y)), "-(x - y)"),
+            (real.uminus(real.nat_power(x, n)), "-(x ^ n)"),
+            (real.nat_power(real.uminus(x), n), "-x ^ n"),
+            (real.plus(x, real.of_nat(nat.to_binary_nat(2))), "x + of_nat 2"),
         ]
 
         for t, s in test_data:

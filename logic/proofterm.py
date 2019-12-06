@@ -3,8 +3,8 @@
 from kernel.term import Term, Var
 from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
-from kernel.proof import Proof, id_force_tuple
-from kernel.macro import ProofMacro
+from kernel.proof import Proof, ItemID
+from kernel.macro import ProofMacro, get_macro
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.
@@ -166,9 +166,9 @@ class ProofTerm():
                 raise TypeError
         
         if subproof:
-            id = prefix + (len(prf.items),)
+            id = ItemID(prefix.id + (len(prf.items),))
         else:
-            id = prefix[:-1] + (prefix[-1] + len(prf.items),)
+            id = ItemID(prefix.id[:-1] + (prefix.id[-1] + len(prf.items),))
 
         seq_to_id[self.th] = id
         if self.rule == 'sorry':
@@ -180,7 +180,7 @@ class ProofTerm():
     def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""
         if prefix is None:
-            prefix = tuple()
+            prefix = ItemID()
         if prf is None:
             prf = Proof()
         return self._export(prefix, dict(), prf, subproof)
@@ -195,15 +195,24 @@ class ProofTerm():
 
     def on_arg(self, thy, *cvs):
         """Apply the given conversion to the argument of the proposition."""
-        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        assert isinstance(thy, Theory), "on_arg: first argument must be Theory object."
         pt = self
         for cv in cvs:
             pt = cv.apply_to_pt(thy, pt, pos="arg")
         return pt
 
+    def on_lhs(self, thy, *cvs):
+        """Apply the given expression to the lhs of the proposition."""
+        assert isinstance(thy, Theory), "on_lhs: first argument must be Theory object."
+        assert self.prop.is_equals(), "on_lhs: theorem is not an equality."
+        pt = self
+        for cv in cvs:
+            pt = cv.apply_to_pt(thy, pt, pos="lhs")
+        return pt
+
     def on_rhs(self, thy, *cvs):
         """Same as on_arg, except check the current theorem is an equality."""
-        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        assert isinstance(thy, Theory), "on_rhs: first argument must be Theory object."
         assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
         pt = self
         for cv in cvs:
@@ -226,7 +235,7 @@ class ProofTermAtom(ProofTerm):
     def __init__(self, id, th):
         assert isinstance(th, Thm), "ProofTermAtom: th must be a Thm object."
         self.ty = ProofTerm.ATOM
-        self.id = id_force_tuple(id)
+        self.id = ItemID(id)
         self.th = th
 
 class ProofTermDeriv(ProofTerm):
@@ -238,9 +247,11 @@ class ProofTermDeriv(ProofTerm):
     prevs -- proof terms that the current one depends on.
 
     """
-    def __init__(self, rule, thy, args, prevs, th=None):
+    def __init__(self, rule, thy, args, prevs=None, th=None):
         self.ty = ProofTerm.DERIV
         self.rule = rule
+        if prevs is None:
+            prevs = []
         prev_ths = [prev.th for prev in prevs]
         if rule == 'sorry':
             assert th is not None, "ProofTermDeriv: must provide th for sorry."
@@ -249,12 +260,12 @@ class ProofTermDeriv(ProofTerm):
             nm, T = args
             self.th = Thm.mk_VAR(Var(nm, T))
         elif rule == 'theorem':
-            self.th = thy.get_theorem(args)
+            self.th = thy.get_theorem(args, svar=True)
         elif rule in primitive_deriv:
             rule_fun, _ = primitive_deriv[rule]
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
-            macro = thy.get_proof_macro(rule)
+            macro = get_macro(thy, rule)
             self.th = macro.eval(thy, args, prev_ths)
         self.args = args
         self.prevs = prevs

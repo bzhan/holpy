@@ -4,12 +4,12 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import HOLType, TVar, Type, TFun, boolT
-from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.type import HOLType, STVar, TVar, Type, TFun, boolT
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
-from kernel.proof import ProofItem, id_force_tuple
+from kernel.proof import ProofItem
 from kernel import extension
 from logic import induct
 from syntax import infertype
@@ -23,6 +23,7 @@ class ParserException(Exception):
 
 grammar = r"""
     ?type: "'" CNAME  -> tvar              // Type variable
+        | "'?" CNAME  -> stvar             // Schematic type variable
         | type ("=>"|"⇒") type -> funtype       // Function types
         | CNAME -> type                   // Type constants
         | type CNAME                      // Type constructor with one argument
@@ -30,6 +31,7 @@ grammar = r"""
         | "(" type ")"                    // Parenthesis
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
+        | "?" CNAME -> sname              // Schematic variable
         | INT -> number                   // Numbers
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
         | ("%"|"λ") CNAME ". " term           -> abs_notype
@@ -45,7 +47,7 @@ grammar = r"""
         | "[" term ("," term)* "]" -> literal_list  // List
         | ("{}"|"∅")               -> literal_set   // Empty set
         | "{" term ("," term)* "}" -> literal_set   // Set
-        | "{" CNAME "::" type "." term "}" -> collect_set
+        | "{" CNAME "::" type ". " term "}" -> collect_set
         | "{" CNAME ". " term "}"          -> collect_set_notype
         | "'" ("_"|LETTER|DIGIT) "'"  -> char
         | "\"" CNAME "\""               -> string
@@ -61,25 +63,23 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?power: power "^" big_union | big_union   // Power: priority 81
+    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
 
-    ?uminus: "-" uminus -> uminus | power   // Unary minus: priority 80
+    ?power: power "^" uminus | uminus   // Power: priority 81
 
-    ?times: times "*" uminus | uminus        // Multiplication: priority 70
+    ?times_expr: times_expr "*" power -> times     // Multiplication: priority 70
+        | times_expr "/" power -> real_divide      // Division: priority 70
+        | times_expr "DIV" power -> nat_divide     // Division: priority 70
+        | times_expr "MOD" power -> nat_modulus    // Modulus: priority 70
+        | power
 
-    ?real_divide: real_divide "/" times | times        // Division: priority 70
+    ?inter: inter ("Int"|"∩") times_expr | times_expr     // Intersection: priority 70
 
-    ?nat_divide: nat_divide "DIV" real_divide | real_divide        // Division: priority 70
+    ?plus_expr: plus_expr "+" inter  -> plus     // Addition: priority 65
+        | plus_expr "-" inter -> minus           // Subtraction: priority 65
+        | inter                   
 
-    ?nat_modulus: nat_modulus "MOD" nat_divide | nat_divide        // Modulus: priority 70
-
-    ?inter: inter ("Int"|"∩") nat_modulus | nat_modulus     // Intersection: priority 70
-
-    ?plus: plus "+" inter | inter       // Addition: priority 65
-
-    ?minus: minus "-" plus | plus       // Subtraction: priority 65
-
-    ?append: minus "@" append | minus     // Append: priority 65
+    ?append: plus_expr "@" append | plus_expr    // Append: priority 65
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
@@ -155,7 +155,10 @@ class HOLTransformer(Transformer):
         pass
 
     def tvar(self, s):
-        return TVar(s)
+        return TVar(str(s))
+
+    def stvar(self, s):
+        return STVar(str(s))
 
     def type(self, *args):
         return Type(str(args[-1]), *args[:-1])
@@ -163,11 +166,15 @@ class HOLTransformer(Transformer):
     def funtype(self, t1, t2):
         return TFun(t1, t2)
 
+    def sname(self, s):
+        s = str(s)
+        return SVar(s, None)
+
     def vname(self, s):
         thy = parser_setting['thy']
         ctxt = parser_setting['ctxt']
         s = str(s)
-        if thy.has_term_sig(s) or ('consts' in ctxt and s in ctxt['consts']):
+        if thy.has_term_sig(s) or s in ctxt.defs:
             # s is the name of a constant in the theory
             return Const(s, None)
         else:
@@ -416,36 +423,40 @@ def parse_type(thy, s):
     parser_setting['thy'] = thy
     return type_parser.parse(s)
 
-def parse_term(thy, ctxt, s):
+def parse_term(ctxt, s):
     """Parse a term."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     # Permit parsing a list of strings by concatenating them.
     if isinstance(s, list):
         s = " ".join(s)
     try:
         t = term_parser.parse(s)
-        return infertype.type_infer(thy, ctxt, t)
+        return infertype.type_infer(ctxt, t)
     except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 
-def parse_thm(thy, ctxt, s):
+def parse_thm(ctxt, s):
     """Parse a theorem (sequent)."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
-    th = thm_parser.parse(s)
-    th.hyps = tuple(infertype.type_infer(thy, ctxt, hyp) for hyp in th.hyps)
-    th.prop = infertype.type_infer(thy, ctxt, th.prop)
+    try:
+        th = thm_parser.parse(s)
+        th.hyps = tuple(infertype.type_infer(ctxt, hyp) for hyp in th.hyps)
+        th.prop = infertype.type_infer(ctxt, th.prop)
+    except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+        print("When parsing:", s)
+        raise e
     return th
 
-def parse_inst(thy, ctxt, s):
+def parse_inst(ctxt, s):
     """Parse a term instantiation."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     inst = inst_parser.parse(s)
     for k in inst:
-        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+        inst[k] = infertype.type_infer(ctxt, inst[k])
     return inst
 
 def parse_tyinst(thy, s):
@@ -453,21 +464,21 @@ def parse_tyinst(thy, s):
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
 
-def parse_named_thm(thy, ctxt, s):
+def parse_named_thm(ctxt, s):
     """Parse a named theorem."""
     res = named_thm_parser.parse(s)
     if len(res) == 1:
-        return (None, infertype.type_infer(thy, ctxt, res[0]))
+        return (None, infertype.type_infer(ctxt, res[0]))
     else:
-        return (str(res[0]), infertype.type_infer(thy, ctxt, res[1]))
+        return (str(res[0]), infertype.type_infer(ctxt, res[1]))
 
-def parse_instsp(thy, ctxt, s):
+def parse_instsp(ctxt, s):
     """Parse type and term instantiations."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     tyinst, inst = instsp_parser.parse(s)
     for k in inst:
-        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+        inst[k] = infertype.type_infer(ctxt, inst[k])
     return tyinst, inst
 
 def parse_ind_constr(thy, s):
@@ -480,19 +491,20 @@ def parse_var_decl(thy, s):
     parser_setting['thy'] = thy
     return var_decl_parser.parse(s)
 
-def parse_term_list(thy, ctxt, s):
+def parse_term_list(ctxt, s):
     """Parse a list of terms."""
     if s == "":
         return []
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     ts = term_list_parser.parse(s)
     for i in range(len(ts)):
-        ts[i] = infertype.type_infer(thy, ctxt, ts[i])
+        ts[i] = infertype.type_infer(ctxt, ts[i])
     return ts
 
-def parse_args(thy, ctxt, sig, args):
+def parse_args(ctxt, sig, args):
     """Parse the argument according to the signature."""
+    thy = ctxt.thy
     try:
         if sig == None:
             assert args == "", "rule expects no argument."
@@ -500,9 +512,9 @@ def parse_args(thy, ctxt, sig, args):
         elif sig == str:
             return args
         elif sig == Term:
-            return parse_term(thy, ctxt, args)
+            return parse_term(ctxt, args)
         elif sig == macro.Inst:
-            return parse_inst(thy, ctxt, args)
+            return parse_inst(ctxt, args)
         elif sig == macro.TyInst:
             return parse_tyinst(thy, args)
         elif sig == Tuple[str, HOLType]:
@@ -510,20 +522,20 @@ def parse_args(thy, ctxt, sig, args):
             return s1, parse_type(thy, s2)
         elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
-            return s1, parse_term(thy, ctxt, s2)
+            return s1, parse_term(ctxt, s2)
         elif sig == Tuple[str, macro.TyInst, macro.Inst]:
             s1, s2 = args.split(",", 1)
-            tyinst, inst = parse_instsp(thy, ctxt, s2)
+            tyinst, inst = parse_instsp(ctxt, s2)
             return s1, tyinst, inst
         elif sig == List[Term]:
-            return parse_term_list(thy, ctxt, args)
+            return parse_term_list(ctxt, args)
         else:
             raise TypeError
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
 
-def parse_proof_rule(thy, ctxt, data):
+def parse_proof_rule(ctxt, data):
     """Parse a proof rule.
 
     data is a dictionary containing id, rule, args, prevs, and th.
@@ -533,6 +545,7 @@ def parse_proof_rule(thy, ctxt, data):
     require different parsing of the arguments.
 
     """
+    thy = ctxt.thy
     id, rule = data['id'], data['rule']
 
     if rule == "":
@@ -541,122 +554,8 @@ def parse_proof_rule(thy, ctxt, data):
     if data['th'] == "":
         th = None
     else:
-        th = parse_thm(thy, ctxt, data['th'])
+        th = parse_thm(ctxt, data['th'])
 
     sig = thy.get_proof_rule_sig(rule)
-    args = parse_args(thy, ctxt, sig, data['args'])
+    args = parse_args(ctxt, sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
-
-def parse_vars(thy, vars_data):
-    ctxt = {'vars': {}}
-    for k, v in vars_data.items():
-        ctxt['vars'][k] = parse_type(thy, v)
-    return ctxt
-
-def parse_item(thy, data):
-    """Parse the string elements in the item, replacing it by
-    objects of the appropriate type (HOLType, Term, etc).
-    
-    """
-    data = copy.deepcopy(data)  # Avoid modifying input
-
-    if data['ty'] == 'def.ax':
-        data['type'] = parse_type(thy, data['type'])
-
-    elif data['ty'] == 'def':
-        data['type'] = parse_type(thy, data['type'])
-        ctxt = {'vars': {}, 'consts': {data['name']: data['type']}}
-        data['prop'] = parse_term(thy, ctxt, data['prop'])
-
-    elif data['ty'] in ('thm', 'thm.ax'):
-        ctxt = parse_vars(thy, data['vars'])
-        for nm in data['vars']:
-            data['vars'][nm] = parse_type(thy, data['vars'][nm])
-        data['prop'] = parse_term(thy, ctxt, data['prop'])
-        prop_vars = set(v.name for v in term.get_vars(data['prop']))
-        assert prop_vars.issubset(set(data['vars'].keys())), \
-            "parse_item on %s: extra variables in prop: %s" % (
-                data['name'], ", ".join(v for v in prop_vars - set(data['vars'].keys())))
-
-    elif data['ty'] == 'type.ind':
-        for constr in data['constrs']:
-            constr['type'] = parse_type(thy, constr['type'])
-
-    elif data['ty'] in ('def.ind', 'def.pred'):
-        data['type'] = parse_type(thy, data['type'])
-        for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {data['name']: data['type']}}
-            rule['prop'] = parse_term(thy, ctxt, rule['prop'])
-
-    else:
-        pass
-
-    return data
-
-def get_extension(thy, data):
-    """Given a parsed item, return the resulting extension."""
-
-    ext = extension.TheoryExtension()
-
-    if data['ty'] == 'type.ax':
-        ext.add_extension(extension.Type(data['name'], len(data['args'])))
-
-    elif data['ty'] == 'def.ax':
-        if 'overloaded' in data:
-            ext.add_extension(extension.Constant(data['name'], data['type']))
-            ext.add_extension(extension.Overload(data['name']))
-        else:
-            cname = thy.get_overload_const_name(data['name'], data['type'])
-            ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
-
-    elif data['ty'] == 'def':
-        cname = thy.get_overload_const_name(data['name'], data['type'])
-        ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
-        ext.add_extension(extension.Theorem(cname + "_def", Thm([], data['prop'])))
-        if 'attributes' in data:
-            for attr in data['attributes']:
-                ext.add_extension(extension.Attribute(cname + "_def", attr))
-
-    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        ext.add_extension(extension.Theorem(data['name'], Thm([], data['prop'])))
-        if 'attributes' in data:
-            for attr in data['attributes']:
-                ext.add_extension(extension.Attribute(data['name'], attr))
-
-    elif data['ty'] == 'type.ind':
-        constrs = []
-        for constr in data['constrs']:
-            constrs.append((constr['name'], constr['type'], constr['args']))
-        ext = induct.add_induct_type(thy, data['name'], data['args'], constrs)
-
-    elif data['ty'] == 'def.ind':
-        rules = []
-        for rule in data['rules']:
-            rules.append(rule['prop'])
-        ext = induct.add_induct_def(thy, data['name'], data['type'], rules)
-
-    elif data['ty'] == 'def.pred':
-        rules = []
-        for rule in data['rules']:
-            rules.append((rule['name'], rule['prop']))
-        ext = induct.add_induct_predicate(thy, data['name'], data['type'], rules)
-
-    elif data['ty'] == 'macro':
-        ext = extension.TheoryExtension()
-        ext.add_extension(extension.Macro(data['name']))
-
-    elif data['ty'] == 'method':
-        ext = extension.TheoryExtension()
-        ext.add_extension(extension.Method(data['name']))
-
-    return ext
-
-def parse_extensions(thy, data):
-    """Parse a list of extensions to thy in sequence."""
-    for item in data:
-        try:
-            item = parse_item(thy, item)
-            ext = get_extension(thy, item)
-            thy.unchecked_extend(ext)
-        except Exception:
-            pass

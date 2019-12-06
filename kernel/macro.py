@@ -19,6 +19,17 @@ extension adding it by name.
 """
 global_macros = dict()
 
+def has_macro(thy, name):
+    if name in global_macros:
+        macro = global_macros[name]
+        return macro.limit is None or thy.has_theorem(macro.limit)
+    else:
+        return False
+
+def get_macro(thy, name):
+    assert has_macro(thy, name), "get_macro: %s is not available." % name
+    return global_macros[name]
+
 
 class ProofMacro():
     """A proof macro represents a derived proof method.

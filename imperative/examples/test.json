@@ -75,7 +75,7 @@
                     "th": "⊢ if 0 ≤ a then a = (if 0 ≤ a then a else -a) else -a = (if 0 ≤ a then a else -a)"
                 },
                 {
-                    "args": "int_abs_def, if 0 ≤ a then a = abs a else -a = abs a",
+                    "args": "abs_def, if 0 ≤ a then a = abs a else -a = abs a",
                     "id": "1",
                     "prevs": [
                         "0"

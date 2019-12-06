@@ -8,7 +8,6 @@
           <b-dropdown-item href="#" v-on:click='open_file_prompt'>Open file</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
-          <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cut'>Insert goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
@@ -100,8 +99,7 @@ export default {
         index: this.cur_index,
         proof: proof
       }
-      const response = await axios.post('http://127.0.0.1:5000/api/save-program-proof', JSON.stringify(data))
-      console.log(response)
+      await axios.post('http://127.0.0.1:5000/api/save-program-proof', JSON.stringify(data))
     },
 
     handle_query: function (query) {
@@ -129,10 +127,6 @@ export default {
       }
       var response = await axios.post('http://127.0.0.1:5000/api/get-program-file', JSON.stringify(data))
       this.file_data = response.data.file_data
-    },
-
-    undo_move: function() {
-      this.ref_proof.undo_move()
     },
 
     apply_cut: function () {

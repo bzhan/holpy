@@ -3,16 +3,41 @@
 from copy import copy
 from typing import Tuple
 
-from kernel import type as hol_type
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofException
-from kernel.macro import ProofMacro, global_macros
+from kernel.macro import ProofMacro, global_macros, has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
 global_methods = dict()
+
+def has_method(thy, name):
+    if name in global_methods:
+        method = global_methods[name]
+        return method.limit is None or thy.has_theorem(method.limit)
+    else:
+        return False
+
+def get_method(thy, name):
+    assert has_method(thy, name), "get_method: %s is not available" % name
+    return global_methods[name]
+
+def get_all_methods(thy):
+    res = dict()
+    for name in global_methods:
+        if has_method(thy, name):
+            res[name] = global_methods[name]
+    return res
+
+def get_method_sig(thy):
+    sig = dict()
+    for name in global_methods:
+        if has_method(thy, name):
+            sig[name] = global_methods[name].sig
+    return sig
+
 
 class Method:
     """Methods represent potential actions on the state."""
@@ -21,6 +46,7 @@ class Method:
 
     def apply(self, state, id, args, prevs):
         pass
+
 
 class TheoryException(Exception):
     """General exception for theory operations."""
@@ -53,8 +79,6 @@ class Theory():
     term_sig: term signature. The most general type of each term constant.
 
     theorems: list of currently proved theorems.
-
-    proof_macro: list of macros for abbreviating proofs.
 
     One can also define new kinds of data to be kept in the theory.
 
@@ -154,14 +178,14 @@ class Theory():
         if self.is_overload_const(name):
             # Assert the given type is an instance of the overloaded type,
             # and all instantiations are concrete types.
-            aT = self.get_term_sig(name)
+            aT = self.get_term_sig(name, stvar=True)
             try:
                 inst = aT.match(T)
             except TypeMatchException:
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
 
             for _, v in sorted(inst.items()):
-                if v.ty != hol_type.TYPE:
+                if not v.is_type():
                     raise TheoryException("When overloading %s with %s: cannot instantiate to type variables" % (aT, T))
         else:
             # Make sure this name does not already occur in the theory
@@ -173,13 +197,16 @@ class Theory():
     def has_term_sig(self, name):
         return name in self.get_data("term_sig")
 
-    def get_term_sig(self, name):
+    def get_term_sig(self, name, stvar=False):
         """Returns the most general type of the term."""
         data = self.get_data("term_sig")
         if name not in data:
             raise TheoryException("Const " + name + " not found")
 
-        return data[name]
+        if stvar:
+            return data[name].convert_stvar()
+        else:
+            return data[name]
 
     def add_theorem(self, name, th):
         """Add the given theorem under the given name."""
@@ -193,13 +220,19 @@ class Theory():
         data = self.get_data("theorems")
         return name in data
     
-    def get_theorem(self, name):
+    def get_theorem(self, name, svar=False):
         """Returns the theorem under that name."""
         data = self.get_data("theorems")
         if name not in data:
             raise TheoryException("Theorem " + name + " not found")
 
-        return data[name]
+        if svar:
+            data_svar = self.get_data("theorems_svar")
+            if name not in data_svar:
+                data_svar[name] = Thm.convert_svar(data[name])
+            return data_svar[name]
+        else:
+            return data[name]
 
     def add_attribute(self, name, attribute):
         """Add an attribute for the given theorem."""
@@ -214,60 +247,6 @@ class Theory():
             return self.data['attributes'][name]
         else:
             return tuple()
-
-    def add_proof_macro(self, name, macro):
-        """Add the given proof macro."""
-        if not isinstance(macro, ProofMacro):
-            raise TypeError
-
-        self.add_data("proof_macro", name, macro)
-
-    def add_global_proof_macro(self, name):
-        """Add a macro from global_macros."""
-        if name not in global_macros:
-            raise TheoryException("Macro " + name + " not found")
-
-        self.add_proof_macro(name, global_macros[name])
-
-    def has_proof_macro(self, name):
-        """Whether the given name corresponds to a proof macro."""
-        data = self.get_data("proof_macro")
-        return name in data
-
-    def get_proof_macro(self, name):
-        """Returns the proof macro with that name."""
-        data = self.get_data("proof_macro")
-        if name not in data:
-            raise TheoryException("Macro " + name + " not found")
-        
-        return data[name]
-
-    def add_method(self, name, method):
-        """Add a given method."""
-        if not isinstance(method, Method):
-            raise TypeError
-
-        self.add_data("method", name, method)
-
-    def add_global_method(self, name):
-        """Add a method from global_methods."""
-        if name not in global_methods:
-            raise TheoryException("Method " + name + " not found")
-
-        self.add_method(name, global_methods[name])
-
-    def has_method(self, name):
-        """Whether the given name corresponds to a method."""
-        data = self.get_data("method")
-        return name in data
-
-    def get_method(self, name):
-        """Returns the method with that name."""
-        data = self.get_data("method")
-        if name not in data:
-            raise TheoryException("Method " + name + " not found")
-        
-        return data[name]
 
     def add_overload_const(self, name):
         """Add a constant as an overloaded constant."""
@@ -292,7 +271,7 @@ class Theory():
 
         """
         if self.is_overload_const(name):
-            aT = self.get_term_sig(name)
+            aT = self.get_term_sig(name, stvar=True)
             try:
                 inst = aT.match(T)
             except TypeMatchException:
@@ -300,8 +279,8 @@ class Theory():
 
             baseT = []
             for _, v in sorted(inst.items()):
-                assert v.ty == hol_type.TYPE
-                baseT.append(v)
+                if v.is_type():
+                    baseT.append(v)
 
             T_name = "_".join(T.name for T in baseT)
             return T_name + "_" + name
@@ -317,8 +296,7 @@ class Theory():
         thy.add_data_type("type_sig")
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
-        thy.add_data_type("proof_macro")
-        thy.add_data_type("method")
+        thy.add_data_type("theorems_svar")  # cache of version of theorem with SVar.
         thy.add_data_type("attributes")
         thy.add_data_type("overload")
 
@@ -339,9 +317,9 @@ class Theory():
         arity.
 
         """
-        if T.ty == hol_type.TVAR:
+        if T.is_stvar() or T.is_tvar():
             return None
-        elif T.ty == hol_type.TYPE:
+        elif T.is_type():
             if self.get_type_sig(T.name) != len(T.args):
                 raise TheoryException("Check type: " + repr(T))
             else:
@@ -360,7 +338,7 @@ class Theory():
             return None
         elif t.is_const():
             try:
-                self.get_term_sig(t.name).match(t.T)
+                self.get_term_sig(t.name, stvar=True).match(t.T)
             except TypeMatchException:
                 raise TheoryException("Check term: " + repr(t))
         elif t.is_comb():
@@ -409,7 +387,7 @@ class Theory():
         if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
-                res_th = self.get_theorem(seq.args)
+                res_th = self.get_theorem(seq.args, svar=True)
                 if rpt is not None:
                     rpt.apply_theorem(seq.args)
             except TheoryException:
@@ -428,10 +406,16 @@ class Theory():
             prev_ths = []
             assert isinstance(seq.prevs, list), "prevs should be a list"
             for prev in seq.prevs:
+                if not seq.id.can_depend_on(prev):
+                    raise CheckProofException("id %s cannot depend on %s" % (seq.id, prev))
                 try:
                     prev_ths.append(prf.find_item(prev).th)
                 except ProofException:
                     raise CheckProofException("previous item not found")
+            
+            for prev, prev_th in zip(seq.prevs, prev_ths):
+                if prev_th is None:
+                    raise CheckProofException("previous theorem %s is None" % prev)
 
             if seq.rule in primitive_deriv:
                 # If the method is one of the primitive derivations, obtain and
@@ -446,12 +430,12 @@ class Theory():
                 except TypeError:
                     raise CheckProofException("invalid input to derivation " + seq.rule)
 
-            elif self.has_proof_macro(seq.rule):
+            elif has_macro(self, seq.rule):
                 # Otherwise, the proof method corresponds to a macro. If
                 # the level of the macro is less than or equal to the current
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
-                macro = self.get_proof_macro(seq.rule)
+                macro = get_macro(self, seq.rule)
                 assert macro.level is None or (isinstance(macro.level, int) and macro.level >= 0), \
                     ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level is not None and macro.level <= check_level:
@@ -511,7 +495,7 @@ class Theory():
             _, sig = primitive_deriv[name]
             return sig
         else:
-            macro = self.get_proof_macro(name)
+            macro = get_macro(self, name)
             return macro.sig
 
     def extend_type(self, ext):
@@ -532,9 +516,9 @@ class Theory():
 
         self.add_attribute(ext.name, ext.attribute)
 
-    def unchecked_extend(self, thy_ext):
+    def unchecked_extend(self, exts):
         """Perform the given theory extension without proof checking."""
-        for ext in thy_ext.get_extensions():
+        for ext in exts:
             if ext.ty == extension.TYPE:
                 self.extend_type(ext)
             elif ext.ty == extension.CONSTANT:
@@ -543,20 +527,16 @@ class Theory():
                 self.add_theorem(ext.name, ext.th)
             elif ext.ty == extension.ATTRIBUTE:
                 self.extend_attribute(ext)
-            elif ext.ty == extension.MACRO:
-                self.add_global_proof_macro(ext.name)
-            elif ext.ty == extension.METHOD:
-                self.add_global_method(ext.name)
             elif ext.ty == extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError
 
-    def checked_extend(self, thy_ext):
+    def checked_extend(self, exts):
         """Perform the given theory extension with proof checking."""
         ext_report = ExtensionReport()
 
-        for ext in thy_ext.get_extensions():
+        for ext in exts:
             if ext.ty == extension.TYPE:
                 self.extend_type(ext)
             elif ext.ty == extension.CONSTANT:
@@ -570,10 +550,6 @@ class Theory():
                 self.add_theorem(ext.name, ext.th)
             elif ext.ty == extension.ATTRIBUTE:
                 self.extend_attribute(ext)
-            elif ext.ty == extension.MACRO:
-                self.add_global_proof_macro(ext.name)
-            elif ext.ty == extension.METHOD:
-                self.add_global_method(ext.name)
             elif ext.ty == extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:

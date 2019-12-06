@@ -2,7 +2,6 @@
 
 from copy import copy
 
-from kernel import type as hol_type
 from kernel.type import HOLType
 from kernel import term
 from kernel import extension
@@ -31,6 +30,15 @@ class ShowType(AST):
 
     def __repr__(self):
         return "ShowType(%s,%s)" % (repr(self.body), repr(self.ast_T))
+
+class SVarName(AST):
+    def __init__(self, name, T):
+        self.ty = "svar_name"
+        self.name = name
+        self.T = T
+
+    def __repr__(self):
+        return "SVarName(%s,%s)" % (self.name, self.T)
 
 class VarName(AST):
     def __init__(self, name, T):
@@ -118,12 +126,11 @@ class Binder(AST):
         return "Binder(%s)" % self.symbol
 
 class BinderAppl(AST):
-    def __init__(self, op, bind_var, body, T):
+    def __init__(self, op, bind_var, body):
         self.ty = "binder_appl"
         self.op = op
         self.bind_var = bind_var
         self.body = body
-        self.T = T
 
     def __repr__(self):
         return "Binder(%s,%s,%s,%s)" % (self.op, self.bind_var, self.body, self.T)
@@ -185,6 +192,11 @@ class Collect(AST):
         self.body = body
         self.T = T
 
+class STVarName(AST):
+    def __init__(self, name):
+        self.ty = 'stvar_name'
+        self.name = name
+
 class TVarName(AST):
     def __init__(self, name):
         self.ty = 'tvar_name'
@@ -210,23 +222,25 @@ def get_ast_type(thy, T):
     assert isinstance(T, HOLType), "get_ast_type: input is not a type."
 
     def helper(T):
-        if T.ty == hol_type.TVAR:
+        if T.is_stvar():
+            return STVarName(T.name)
+        elif T.is_tvar():
             return TVarName(T.name)
-        elif T.ty == hol_type.TYPE:
+        elif T.is_type():
             if len(T.args) == 0:
                 return TypeConstr(T.name, [])
             elif len(T.args) == 1:
                 arg_ast = helper(T.args[0])
                 # Insert parenthesis if the single argument is a function.
-                if HOLType.is_fun(T.args[0]):
+                if T.args[0].is_fun():
                     arg_ast = Bracket(arg_ast)
                 return TypeConstr(T.name, [arg_ast])
-            elif HOLType.is_fun(T):
+            elif T.is_fun():
                 # 'a => 'b => 'c associates to the right. So parenthesis is
                 # needed to express ('a => 'b) => 'c.
                 fun_op = " ⇒ " if settings.unicode() else " => "
                 arg1_ast = helper(T.args[0])
-                if HOLType.is_fun(T.args[0]):
+                if T.args[0].is_fun():
                     arg1_ast = Bracket(arg1_ast)
                 arg2_ast = helper(T.args[1])
                 return FunType(arg1_ast, fun_op, arg2_ast)
@@ -237,10 +251,19 @@ def get_ast_type(thy, T):
 
     return helper(T)
 
+# Hash table for ASTs.
+term_ast = dict()
+
+ATOM, FUN_APPL, UNARY, BINARY, BINDER = range(5)
+
 @settings.with_settings
 def get_ast_term(thy, t):
     """Obtain the abstract syntax tree for a term."""
+    if (thy, t, settings.unicode()) in term_ast:
+        return term_ast[(thy, t, settings.unicode())]
+
     assert isinstance(t, term.Term), "get_ast_term: input is not a term."
+    var_names = [v.name for v in term.get_vars(t)]
 
     # Import modules for custom parsed data
     from logic import logic
@@ -251,24 +274,30 @@ def get_ast_term(thy, t):
     from data import interval
     from data import string
 
-    def get_priority(t):
+    def get_priority_pair(t):
         """Obtain the binding priority of the top-most operation of t."""
-        if nat.is_binary(t) or list.is_literal_list(t):
-            return 100  # Nat atom case
+        if nat.is_binary_nat(t) or list.is_literal_list(t):
+            return 100, ATOM  # Nat atom case
         elif t.is_comb():
-            op_data = operator.get_info_for_fun(thy, t.head)
-            binder_data = operator.get_binder_info_for_fun(thy, t.head)
+            op_data = operator.get_info_for_fun(t.head)
+            binder_data = operator.get_binder_info_for_fun(t.head)
 
             if op_data is not None:
-                return op_data.priority
+                if op_data.arity == operator.UNARY:
+                    return op_data.priority, UNARY
+                else:
+                    return op_data.priority, BINARY
             elif binder_data is not None or logic.is_if(t):
-                return 10
+                return 10, BINDER
             else:
-                return 95  # Function application
+                return 95, FUN_APPL  # Function application
         elif t.is_abs():
-            return 10
+            return 10, BINDER
         else:
-            return 100  # Atom case
+            return 100, ATOM  # Atom case
+
+    def get_priority(t):
+        return get_priority_pair(t)[0]
 
     def helper(t, bd_vars):
         """Main recursive function. Here bd_vars is the list of bound
@@ -323,17 +352,24 @@ def get_ast_term(thy, t):
             return Interval(helper(t.arg1, bd_vars), helper(t.arg, bd_vars), t.get_type())
 
         elif t.is_comb() and t.fun.is_const_name('collect') and t.arg.is_abs():
-            var_names = [v.name for v in term.get_vars(t.arg.body)]
             nm = name.get_variant_name(t.arg.var_name, var_names)
+            var_names.append(nm)
 
             bind_var = Bound(nm, t.arg.var_T)
             body_ast = helper(t.arg.body, [bind_var] + bd_vars)
+            var_names.remove(nm)
+
+            if hasattr(t.arg, "print_type"):
+                bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
 
             return Collect(bind_var, body_ast, t.get_type())
 
         elif logic.is_if(t):
             P, x, y = t.args
             return ITE(helper(P, bd_vars), helper(x, bd_vars), helper(y, bd_vars), t.get_type())
+
+        elif t.is_svar():
+            return SVarName(t.name, t.T)
 
         elif t.is_var():
             return VarName(t.name, t.T)
@@ -346,8 +382,8 @@ def get_ast_term(thy, t):
             return res
 
         elif t.is_comb():
-            op_data = operator.get_info_for_fun(thy, t.head)
-            binder_data = operator.get_binder_info_for_fun(thy, t.head)
+            op_data = operator.get_info_for_fun(t.head)
+            binder_data = operator.get_binder_info_for_fun(t.head)
 
             # First, we take care of the case of operators
             if op_data and op_data.arity == operator.BINARY and t.is_binop():
@@ -380,7 +416,8 @@ def get_ast_term(thy, t):
                 op_ast = Operator(op_str, t.head.get_type(), op_name)
 
                 arg_ast = helper(t.arg, bd_vars)
-                if get_priority(t.arg) < op_data.priority:
+                arg_prior, arg_type = get_priority_pair(t.arg)
+                if arg_prior < op_data.priority or arg_type == FUN_APPL:
                     arg_ast = Bracket(arg_ast)
 
                 return UnaryOp(op_ast, arg_ast, t.get_type())
@@ -390,15 +427,16 @@ def get_ast_term(thy, t):
                 binder_str = binder_data.unicode_op if settings.unicode() else binder_data.ascii_op
                 op_ast = Binder(binder_str)
 
-                var_names = [v.name for v in term.get_vars(t.arg.body)]
                 nm = name.get_variant_name(t.arg.var_name, var_names)
+                var_names.append(nm)
 
                 bind_var = Bound(nm, t.arg.var_T)
                 body_ast = helper(t.arg.body, [bind_var] + bd_vars)
                 if hasattr(t.arg, "print_type"):
                     bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+                var_names.remove(nm)
 
-                return BinderAppl(op_ast, bind_var, body_ast, t.get_type())
+                return BinderAppl(op_ast, bind_var, body_ast)
 
             # Function update
             elif function.is_fun_upd(t):
@@ -410,7 +448,8 @@ def get_ast_term(thy, t):
             # Finally, usual function application
             else:
                 fun_ast = helper(t.fun, bd_vars)
-                if get_priority(t.fun) < 95:
+                fun_prior, fun_type = get_priority_pair(t.fun)
+                if fun_prior < 95 or fun_type == UNARY:
                     fun_ast = Bracket(fun_ast)
 
                 arg_ast = helper(t.arg, bd_vars)
@@ -422,15 +461,16 @@ def get_ast_term(thy, t):
         elif t.is_abs():
             op_ast = Binder("λ") if settings.unicode() else Binder("%")
 
-            var_names = [v.name for v in term.get_vars(t.body)]
             nm = name.get_variant_name(t.var_name, var_names)
+            var_names.append(nm)
 
             bind_var = Bound(nm, t.var_T)
             body_ast = helper(t.body, [bind_var] + bd_vars)
             if hasattr(t, "print_type"):
                 bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+            var_names.remove(nm)
 
-            return BinderAppl(op_ast, bind_var, body_ast, t.get_type())
+            return BinderAppl(op_ast, bind_var, body_ast)
 
         elif t.is_bound():
             if t.n >= len(bd_vars):
@@ -440,10 +480,12 @@ def get_ast_term(thy, t):
         else:
             raise TypeError
 
-    t = copy(t)  # make copy here, because infer_printed_type may change t.
-    infertype.infer_printed_type(thy, t)
+    copy_t = copy(t)  # make copy here, because infer_printed_type may change t.
+    infertype.infer_printed_type(thy, copy_t)
 
-    return helper(t, [])
+    ast = helper(copy_t, [])
+    term_ast[(thy, t, settings.unicode())] = ast
+    return ast
 
 def print_length(res):
     if settings.highlight():
@@ -468,6 +510,7 @@ def N(s, *, link=None):
 
 @settings.with_settings
 def B(s):
+    """Bound variable"""
     if settings.highlight():
         return [{'text': s, 'color': 1}]
     else:
@@ -475,6 +518,7 @@ def B(s):
 
 @settings.with_settings
 def V(s):
+    """Free variable"""
     if settings.highlight():
         return [{'text': s, 'color': 2}]
     else:
@@ -482,6 +526,7 @@ def V(s):
 
 @settings.with_settings
 def TV(s):
+    """Type variable"""
     if settings.highlight():
         return [{'text': s, 'color': 3}]
     else:
@@ -489,8 +534,25 @@ def TV(s):
 
 @settings.with_settings
 def Gray(s):
+    """Grey output"""
     if settings.highlight():
         return [{'text': s, 'color': 4}]
+    else:
+        return s
+
+@settings.with_settings
+def KWRed(s):
+    """Red keyword"""
+    if settings.highlight():
+        return [{'text': s, 'color': 5}]
+    else:
+        return s
+
+@settings.with_settings
+def KWGreen(s):
+    """Green keyword"""
+    if settings.highlight():
+        return [{'text': s, 'color': 6}]
     else:
         return s
 
@@ -532,6 +594,8 @@ def print_ast(thy, ast, *, line_length=None):
             rec(ast.body)
             add_normal('::')
             rec(ast.ast_T)
+        elif ast.ty == "svar_name":
+            add_var("?" + ast.name)
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
@@ -658,6 +722,8 @@ def print_ast(thy, ast, *, line_length=None):
             add_normal('. ')
             rec(ast.body)
             add_normal('}')
+        elif ast.ty == 'stvar_name':
+            add_tvar("'?" + ast.name)
         elif ast.ty == 'tvar_name':
             add_tvar("'" + ast.name)
         elif ast.ty == 'type_constr':

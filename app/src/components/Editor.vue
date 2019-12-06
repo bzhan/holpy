@@ -15,16 +15,19 @@
           <b-dropdown-item href="#" style="width:170px" v-on:click='item_move_down'>Move down<span style="float:right;color:dimgrey">Ctrl+↓</span></b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
-          <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cut'>Insert goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='introduction'>Introduction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='revert_intro'>Revert intro</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='new_var'>New variable</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_backward_step'>Apply backward step</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_forward_step'>Apply forward step</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='rewrite_goal'>Rewrite goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='rewrite_fact'>Rewrite fact</b-dropdown-item>          
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Setting" left>
+          <b-dropdown-item href='#' v-on:click='toggle_profile'>{{profile ? 'Profile on' : 'Profile off'}}</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-form>
           <b-button style="margin-left:10px" variant="primary" v-on:click="add_item">New</b-button>
@@ -45,7 +48,7 @@
                ref="content"/>
     </div>
     <div id="proof-context" v-show="ref_proof !== undefined">
-      <ProofContext ref="context"/>
+      <ProofContext v-bind:ref_proof="ref_proof" ref="context"/>
     </div>
     <div id="theory-content">
       <Theory v-bind:theory="theory"
@@ -136,7 +139,10 @@ export default {
         {value: 'end', text: "at end"},
         {value: 'before', text: 'before'},
         {value: 'after', text: 'after'}
-      ]
+      ],
+
+      // Settings
+      profile: false,
     }
   },
 
@@ -172,6 +178,10 @@ export default {
       if (index !== undefined) {
         this.$refs.theory.handle_select(index)
       }
+    },
+
+    toggle_profile: function () {
+      this.profile = !this.profile
     },
 
     load_filelist: async function () {
@@ -226,6 +236,7 @@ export default {
       const data = JSON.stringify({
         username: this.$state.user,
         filename: this.filename,
+        profile: this.profile,
         line_length: 80,
       })
       this.message = {
@@ -264,10 +275,6 @@ export default {
       this.$refs.theory.add_item(this.add_type, this.add_pos)
     },
 
-    undo_move: function() {
-      this.ref_proof.undo_move()
-    },
-
     apply_cut: function () {
       this.ref_proof.apply_method('cut')
     },
@@ -282,6 +289,10 @@ export default {
 
     introduction: function () {
       this.ref_proof.apply_method('introduction')
+    },
+
+    revert_intro: function () {
+      this.ref_proof.apply_method('revert_intro')
     },
 
     new_var: function () {

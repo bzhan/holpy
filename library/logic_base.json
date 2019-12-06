@@ -6,25 +6,19 @@
             "ty": "header"
         },
         {
-            "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool ⇒ bool ⇒ bool",
-            "unicode_op": "∧"
+            "type": "bool ⇒ bool ⇒ bool"
         },
         {
-            "ascii_op": "|",
             "name": "disj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
-            "unicode_op": "∨"
+            "type": "bool ⇒ bool ⇒ bool"
         },
         {
-            "ascii_op": "~",
             "name": "neg",
             "ty": "def.ax",
-            "type": "bool => bool",
-            "unicode_op": "¬"
+            "type": "bool ⇒ bool"
         },
         {
             "name": "true",
@@ -39,22 +33,21 @@
         {
             "name": "exists",
             "ty": "def.ax",
-            "type": "('a => bool) => bool"
+            "type": "('a ⇒ bool) ⇒ bool"
         },
         {
             "name": "IF",
             "ty": "def.ax",
-            "type": "bool => 'a => 'a => 'a"
+            "type": "bool ⇒ 'a ⇒ 'a ⇒ 'a"
         },
         {
             "name": "The",
             "ty": "def.ax",
-            "type": "('a => bool) => 'a"
+            "type": "('a ⇒ bool) ⇒ 'a"
         },
         {
-            "attributes": [],
             "name": "exists1",
-            "prop": "exists1 P <--> ((∃x. P x) ∧ (∀y. P y ⟶ y = x))",
+            "prop": "(exists1 P) ⟷ (∃x. P x ∧ (∀y. P y ⟶ y = x))",
             "ty": "def",
             "type": "('a ⇒ bool) ⇒ bool"
         },
@@ -89,7 +82,7 @@
                 "hint_forward"
             ],
             "name": "conjD2",
-            "prop": "A & B --> B",
+            "prop": "A ∧ B ⟶ B",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -101,7 +94,7 @@
                 "hint_backward"
             ],
             "name": "disjI1",
-            "prop": "A --> A | B",
+            "prop": "A ⟶ A ∨ B",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -113,7 +106,7 @@
                 "hint_backward"
             ],
             "name": "disjI2",
-            "prop": "B --> A | B",
+            "prop": "B ⟶ A ∨ B",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -125,7 +118,7 @@
                 "hint_backward1"
             ],
             "name": "disjE",
-            "prop": "A | B --> (A --> C) --> (B --> C) --> C",
+            "prop": "A ∨ B ⟶ (A ⟶ C) ⟶ (B ⟶ C) ⟶ C",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -138,7 +131,7 @@
                 "hint_backward"
             ],
             "name": "negI",
-            "prop": "(A --> false) --> ~A",
+            "prop": "(A ⟶ false) ⟶ ¬A",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -149,7 +142,7 @@
                 "hint_backward"
             ],
             "name": "negE",
-            "prop": "~A --> A --> false",
+            "prop": "¬A ⟶ A ⟶ false",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -167,7 +160,7 @@
         },
         {
             "name": "falseE",
-            "prop": "false --> A",
+            "prop": "false ⟶ A",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -178,27 +171,26 @@
                 "hint_backward"
             ],
             "name": "exI",
-            "prop": "P a --> ?a. P a",
+            "prop": "P a ⟶ (∃a1. P a1)",
             "ty": "thm.ax",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
         {
-            "attributes": [],
             "name": "exE",
-            "prop": "(?a. P a) --> (!a. P a --> C) --> C",
+            "prop": "(∃a. P a) ⟶ (∀a. P a ⟶ C) ⟶ C",
             "ty": "thm.ax",
             "vars": {
                 "C": "bool",
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
         {
             "name": "classical",
-            "prop": "A | ~A",
+            "prop": "A ∨ ¬A",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -209,11 +201,11 @@
                 "hint_backward"
             ],
             "name": "extension",
-            "prop": "(!x. f x = g x) --> f = g",
+            "prop": "(∀x. f x = g x) ⟶ f = g",
             "ty": "thm.ax",
             "vars": {
-                "f": "'a => 'b",
-                "g": "'a => 'b"
+                "f": "'a ⇒ 'b",
+                "g": "'a ⇒ 'b"
             }
         },
         {
@@ -221,7 +213,7 @@
                 "hint_rewrite"
             ],
             "name": "if_P",
-            "prop": "P --> (if P then x else y) = x",
+            "prop": "P ⟶ (if P then x else y) = x",
             "ty": "thm.ax",
             "vars": {
                 "P": "bool",
@@ -234,7 +226,7 @@
                 "hint_rewrite"
             ],
             "name": "if_not_P",
-            "prop": "~P --> (if P then x else y) = y",
+            "prop": "¬P ⟶ (if P then x else y) = y",
             "ty": "thm.ax",
             "vars": {
                 "P": "bool",
@@ -243,12 +235,11 @@
             }
         },
         {
-            "attributes": [],
             "name": "the_equality",
-            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ The (λx. P x) = a",
+            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ (THE x. P x) = a",
             "ty": "thm.ax",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
@@ -260,136 +251,55 @@
         {
             "name": "_VAR",
             "ty": "def.ax",
-            "type": "'a => bool"
-        },
-        {
-            "name": "beta_norm",
-            "ty": "macro"
-        },
-        {
-            "name": "intros",
-            "ty": "macro"
-        },
-        {
-            "name": "apply_theorem",
-            "ty": "macro"
-        },
-        {
-            "name": "apply_theorem_for",
-            "ty": "macro"
-        },
-        {
-            "name": "resolve_theorem",
-            "ty": "macro"
-        },
-        {
-            "name": "apply_fact",
-            "ty": "macro"
-        },
-        {
-            "name": "apply_fact_for",
-            "ty": "macro"
-        },
-        {
-            "name": "rewrite_goal",
-            "ty": "macro"
-        },
-        {
-            "name": "rewrite_back_goal",
-            "ty": "macro"
-        },
-        {
-            "name": "rewrite_goal_with_prev",
-            "ty": "macro"
-        },
-        {
-            "name": "rewrite_back_goal_with_prev",
-            "ty": "macro"
-        },
-        {
-            "name": "rewrite_fact",
-            "ty": "macro"
-        },
-        {
-            "name": "rewrite_fact_with_prev",
-            "ty": "macro"
-        },
-        {
-            "name": "trivial",
-            "ty": "macro"
-        },
-        {
-            "name": "cut",
-            "ty": "method"
-        },
-        {
-            "name": "cases",
-            "ty": "method"
-        },
-        {
-            "name": "apply_prev",
-            "ty": "method"
-        },
-        {
-            "name": "rewrite_goal_with_prev",
-            "ty": "method"
-        },
-        {
-            "name": "rewrite_goal",
-            "ty": "method"
-        },
-        {
-            "name": "rewrite_fact",
-            "ty": "method"
-        },
-        {
-            "name": "rewrite_fact_with_prev",
-            "ty": "method"
-        },
-        {
-            "name": "apply_forward_step",
-            "ty": "method"
-        },
-        {
-            "name": "apply_backward_step",
-            "ty": "method"
-        },
-        {
-            "name": "apply_resolve_step",
-            "ty": "method"
-        },
-        {
-            "name": "apply_fact",
-            "ty": "method"
-        },
-        {
-            "name": "introduction",
-            "ty": "method"
-        },
-        {
-            "name": "forall_elim",
-            "ty": "method"
-        },
-        {
-            "name": "inst_exists_goal",
-            "ty": "method"
-        },
-        {
-            "name": "exists_elim",
-            "ty": "method"
-        },
-        {
-            "name": "induction",
-            "ty": "method"
-        },
-        {
-            "name": "new_var",
-            "ty": "method"
+            "type": "'a ⇒ bool"
         },
         {
             "depth": 0,
             "name": "Some simple results",
             "ty": "header"
+        },
+        {
+            "name": "trivial",
+            "prop": "A ⟶ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_resolve"
+            ],
+            "name": "not_false_res",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "false ⟶ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬false"
+                }
+            ],
+            "prop": "¬false",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
         },
         {
             "attributes": [
@@ -407,7 +317,6 @@
                 }
             ],
             "prop": "x = x",
-            "steps": [],
             "ty": "thm",
             "vars": {
                 "x": "'a"
@@ -432,10 +341,10 @@
                     "th": "¬A ⟶ C ⊢ ¬A ⟶ C"
                 },
                 {
-                    "args": "classical",
+                    "args": "classical, {}, {A: A}",
                     "id": "2",
                     "prevs": [],
-                    "rule": "theorem",
+                    "rule": "apply_theorem_for",
                     "th": "⊢ A ∨ ¬A"
                 },
                 {
@@ -461,7 +370,23 @@
                     "th": "⊢ (A ⟶ C) ⟶ (¬A ⟶ C) ⟶ C"
                 }
             ],
-            "prop": "(A --> C) --> (~A --> C) --> C",
+            "prop": "(A ⟶ C) ⟶ (¬A ⟶ C) ⟶ C",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_A": "A",
+                    "theorem": "classical"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -520,11 +445,191 @@
                     "th": "⊢ ¬A ⟶ A ⟶ C"
                 }
             ],
-            "prop": "~A --> A --> C",
+            "prop": "¬A ⟶ A ⟶ C",
             "ty": "thm",
             "vars": {
                 "A": "bool",
                 "C": "bool"
+            }
+        },
+        {
+            "name": "contradiction",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬P ⟶ P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬P ⟶ P ⊢ ¬P ⟶ P"
+                },
+                {
+                    "args": "P ⟶ P",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ P ⟶ P"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬P ⟶ P ⊢ P"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (¬P ⟶ P) ⟶ P"
+                }
+            ],
+            "prop": "(¬P ⟶ P) ⟶ P",
+            "steps": [
+                {
+                    "case": "P",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward1"
+            ],
+            "name": "contrapositive",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ⊢ P"
+                },
+                {
+                    "args": "¬Q ⟶ ¬P",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬Q ⟶ ¬P ⊢ ¬Q ⟶ ¬P"
+                },
+                {
+                    "args": "Q ⟶ Q",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ Q ⟶ Q"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P, ¬Q ⟶ ¬P ⊢ ¬Q ⟶ Q"
+                },
+                {
+                    "args": "¬Q",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬Q ⊢ ¬Q"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [
+                        "1",
+                        "3.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬Q ⟶ ¬P, ¬Q ⊢ ¬P"
+                },
+                {
+                    "args": "negE_gen, {}, {A: P, C: Q}",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬Q ⟶ ¬P, ¬Q, P ⊢ Q"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "P, ¬Q ⟶ ¬P ⊢ ¬Q ⟶ Q"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P, ¬Q ⟶ ¬P ⊢ Q"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P ⟶ (¬Q ⟶ ¬P) ⟶ Q"
+                }
+            ],
+            "prop": "P ⟶ (¬Q ⟶ ¬P) ⟶ Q",
+            "steps": [
+                {
+                    "case": "Q",
+                    "goal_id": "2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "bool"
             }
         },
         {
@@ -570,7 +675,7 @@
                     "th": "⊢ (A ⟶ B) ⟶ (B ⟶ A) ⟶ A = B"
                 }
             ],
-            "prop": "(A --> B) --> (B --> A) --> (A = B)",
+            "prop": "(A ⟶ B) ⟶ (B ⟶ A) ⟶ A ⟷ B",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -662,7 +767,7 @@
                     "th": "⊢ ¬x = y ⟶ ¬y = x"
                 }
             ],
-            "prop": "~(x = y) --> ~(y = x)",
+            "prop": "¬(x = y) ⟶ ¬(y = x)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -703,7 +808,126 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eq_sym_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = y ⟶ y = x"
+                },
+                {
+                    "args": "x = y",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y ⊢ x = y"
+                },
+                {
+                    "args": "y = x",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y ⊢ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = y ⟶ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ y = x ⟶ x = y"
+                },
+                {
+                    "args": "y = x",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y = x ⊢ y = x"
+                },
+                {
+                    "args": "x = y",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "y = x ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ y = x ⟶ x = y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x = y ⟷ y = x"
+                }
+            ],
+            "prop": "x = y ⟷ y = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
             "name": "theI",
             "num_gaps": 0,
             "proof": [
@@ -755,7 +979,7 @@
                     "th": "⊢ P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (THE x. P x)"
                 }
             ],
-            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (The (λx. P x))",
+            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (THE x. P x)",
             "steps": [
                 {
                     "goal": "(THE x. P x) = a",
@@ -777,17 +1001,280 @@
             ],
             "ty": "thm",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
         {
-            "attributes": [],
             "name": "theI'",
             "prop": "(∃!x. P x) ⟶ P (THE x. P x)",
             "ty": "thm",
             "vars": {
-                "P": "'a => bool"
+                "P": "'a ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eta_conversion",
+            "prop": "(λx. f x) = f",
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "if_true",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "trueI",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "if_P, (if true then a else b) = a",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if true then a else b) = a"
+                }
+            ],
+            "prop": "(if true then a else b) = a",
+            "steps": [
+                {
+                    "goal": "true",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "if_false",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "false ⟶ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬false"
+                },
+                {
+                    "args": "if_not_P, (if false then a else b) = b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if false then a else b) = b"
+                }
+            ],
+            "prop": "(if false then a else b) = b",
+            "steps": [
+                {
+                    "goal": "~false",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "if_not_P2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ⊢ P"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ⊢ ¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "¬P",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬P ⊢ ¬P"
+                },
+                {
+                    "args": "negE_gen, {}, {A: P, C: (if ¬P then a else b) = b}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬P, P ⊢ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P ⊢ ¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ⊢ ¬¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "¬¬P",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬P ⊢ ¬¬P"
+                },
+                {
+                    "args": "if_not_P, (if ¬P then a else b) = b",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬¬P ⊢ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P ⊢ ¬¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ⊢ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P ⟶ (if ¬P then a else b) = b"
+                }
+            ],
+            "prop": "P ⟶ (if ¬P then a else b) = b",
+            "steps": [
+                {
+                    "case": "¬P",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "a": "'a",
+                "b": "'a"
             }
         }
     ],

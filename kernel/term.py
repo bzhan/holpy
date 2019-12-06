@@ -17,14 +17,12 @@ class TypeCheckException(Exception):
     pass
 
 
-"""ty values for distinguishing between Term objects."""
-VAR, CONST, COMB, ABS, BOUND = range(5)
-
-
 class Term():
     """Represents a term in higher-order logic.
     
-    There are five term constructors:
+    There are six term constructors:
+    
+    SVar(name, T): schematic variable with given name and type.
 
     Var(name, T): variable with given name and type.
 
@@ -62,20 +60,26 @@ class Term():
     Abs("x", S, Abs("y", T, Q(Bound(1), Bound(0)))) is %x::S. %y::T. Q x y.
 
     """
+    # ty values for distinguishing between Term objects.
+    SVAR, VAR, CONST, COMB, ABS, BOUND = range(6)
+
+    def is_svar(self):
+        return self.ty == Term.SVAR
+
     def is_var(self):
-        return self.ty == VAR
+        return self.ty == Term.VAR
 
     def is_const(self):
-        return self.ty == CONST
+        return self.ty == Term.CONST
 
     def is_comb(self):
-        return self.ty == COMB
+        return self.ty == Term.COMB
 
     def is_abs(self):
-        return self.ty == ABS
+        return self.ty == Term.ABS
 
     def is_bound(self):
-        return self.ty == BOUND
+        return self.ty == Term.BOUND
 
     def __str__(self):
         """Printing function for terms. Note we do not yet handle collision
@@ -84,7 +88,9 @@ class Term():
         """
         def helper(t, bd_vars):
             """bd_vars is the list of names of bound variables."""
-            if t.is_var() or t.is_const():
+            if t.is_svar():
+                return "?" + t.name
+            elif t.is_var() or t.is_const():
                 return t.name
             elif t.is_comb():
                 # a b c associates to the left. So parenthesis is needed to express
@@ -103,7 +109,7 @@ class Term():
                 return "%" + t.var_name + ". " + body_repr
             elif t.is_bound():
                 if t.n >= len(bd_vars):
-                    raise OpenTermException
+                    return ":B" + str(t.n)
                 else:
                     return bd_vars[t.n]
             else:
@@ -112,34 +118,37 @@ class Term():
         return helper(self, [])
 
     def __repr__(self):
-        if self.is_var():
-            return "Var(" + self.name + "," + str(self.T) + ")"
+        if self.is_svar():
+            return "SVar(%s,%s)" % (self.name, self.T)
+        elif self.is_var():
+            return "Var(%s,%s)" % (self.name, self.T)
         elif self.is_const():
-            return "Const(" + self.name + "," + str(self.T) + ")"
+            return "Const(%s,%s)" % (self.name, self.T)
         elif self.is_comb():
-            return "Comb(" + repr(self.fun) + "," + repr(self.arg) + ")"
+            return "Comb(%s,%s)" % (repr(self.fun), repr(self.arg))
         elif self.is_abs():
-            return "Abs(" + self.var_name + "," + str(self.var_T) + "," + repr(self.body) + ")"
+            return "Abs(%s,%s,%s)" % (self.var_name, self.var_T, repr(self.body))
         elif self.is_bound():
-            return "Bound " + str(self.n)
+            return "Bound(%s)" % self.n
         else:
             raise TypeError
 
     def __hash__(self):
-        if hasattr(self, "_hash_val"):
-            return self._hash_val
-        if self.is_var():
-            self._hash_val = hash(("VAR", self.name, hash(self.T)))
-        elif self.is_const():
-            self._hash_val = hash(("CONST", self.name, hash(self.T)))
-        elif self.is_comb():
-            self._hash_val = hash(("COMB", hash(self.fun), hash(self.arg)))
-        elif self.is_abs():
-            self._hash_val = hash(("ABS", hash(self.var_T), hash(self.body)))
-        elif self.is_bound():
-            self._hash_val = hash(("BOUND", self.n))
-        else:
-            raise TypeError
+        if not hasattr(self, "_hash_val"):
+            if self.is_svar():
+                self._hash_val = hash(("SVAR", self.name, hash(self.T)))
+            elif self.is_var():
+                self._hash_val = hash(("VAR", self.name, hash(self.T)))
+            elif self.is_const():
+                self._hash_val = hash(("CONST", self.name, hash(self.T)))
+            elif self.is_comb():
+                self._hash_val = hash(("COMB", hash(self.fun), hash(self.arg)))
+            elif self.is_abs():
+                self._hash_val = hash(("ABS", hash(self.var_T), hash(self.body)))
+            elif self.is_bound():
+                self._hash_val = hash(("BOUND", self.n))
+            else:
+                raise TypeError
         return self._hash_val
 
     def __eq__(self, other):
@@ -151,7 +160,7 @@ class Term():
 
         if self.ty != other.ty:
             return False
-        elif self.is_var() or self.is_const():
+        elif self.is_svar() or self.is_var() or self.is_const():
             return self.name == other.name and self.T == other.T
         elif self.is_comb():
             return self.fun == other.fun and self.arg == other.arg
@@ -163,12 +172,43 @@ class Term():
         else:
             raise TypeError
 
+    def __le__(self, other):
+        """Fast version of comparison."""
+        if self.ty != other.ty:
+            return self.ty <= other.ty
+        elif self.is_svar() or self.is_var() or self.is_const():
+            return (self.name, self.T) <= (other.name, other.T)
+        elif self.is_comb():
+            return (self.fun, self.arg) <= (other.fun, other.arg)
+        elif self.is_abs():
+            return (self.var_T, self.body) <= (other.var_T, other.body)
+        elif self.is_bound():
+            return self.n <= other.n
+        else:
+            raise TypeError
+
+    def __lt__(self, other):
+        if self.ty != other.ty:
+            return self.ty < other.ty
+        elif self.is_svar() or self.is_var() or self.is_const():
+            return (self.name, self.T) < (other.name, other.T)
+        elif self.is_comb():
+            return (self.fun, self.arg) < (other.fun, other.arg)
+        elif self.is_abs():
+            return (self.var_T, self.body) < (other.var_T, other.body)
+        elif self.is_bound():
+            return self.n < other.n
+        else:
+            raise TypeError        
+
     def __copy__(self):
         """Returns a copy of self. Types are shared, the rest of
         the information are copied.
 
         """
-        if self.is_var():
+        if self.is_svar():
+            return SVar(self.name, self.T)
+        elif self.is_var():
             return Var(self.name, self.T)
         elif self.is_const():
             return Const(self.name, self.T)
@@ -193,7 +233,7 @@ class Term():
         the bound variables.
 
         """
-        if self.is_var() or self.is_const():
+        if self.is_svar() or self.is_var() or self.is_const():
             return self.T
         elif self.is_comb():
             type_fun = self.fun._get_type(bd_vars)
@@ -215,26 +255,26 @@ class Term():
         """Returns type of the term with minimal type-checking."""
         return self._get_type([])
 
-    def _is_open(self, n):
-        """Helper function for is_open."""
-        if self.is_var() or self.is_const():
-            return False
-        elif self.is_comb():
-            return self.fun._is_open(n) or self.arg._is_open(n)
-        elif self.is_abs():
-            return self.body._is_open(n+1)
-        elif self.is_bound():
-            return self.n >= n
-        else:
-            raise TypeError
-
     def is_open(self):
         """Whether t is an open term."""
-        return self._is_open(0)
+        def rec(t, n):
+            if t.is_svar() or t.is_var() or t.is_const():
+                return False
+            elif t.is_comb():
+                return rec(t.fun, n) or rec(t.arg, n)
+            elif t.is_abs():
+                return rec(t.body, n+1)
+            elif t.is_bound():
+                return t.n >= n
+            else:
+                raise TypeError
+        return rec(self, 0)
 
     def subst_type(self, tyinst):
         """Perform substitution on type variables."""
-        if self.is_var():
+        if self.is_svar():
+            return SVar(self.name, self.T.subst(tyinst))
+        elif self.is_var():
             return Var(self.name, self.T.subst(tyinst))
         elif self.is_const():
             return Const(self.name, self.T.subst(tyinst))
@@ -251,9 +291,7 @@ class Term():
         """Perform substitution on type variables."""
         if hasattr(self, "_hash_val"):
             del self._hash_val
-        if self.is_var():
-            self.T = self.T.subst(tyinst)
-        elif self.is_const():
+        if self.is_svar() or self.is_var() or self.is_const():
             self.T = self.T.subst(tyinst)
         elif self.is_comb():
             self.fun.subst_type_inplace(tyinst)
@@ -276,7 +314,7 @@ class Term():
 
         """
         assert isinstance(inst, dict), "inst must be a dictionary"
-        if self.is_var():
+        if self.is_svar():
             if self.name in inst:
                 t = inst[self.name]
                 if t.get_type() == self.T:
@@ -285,7 +323,7 @@ class Term():
                     raise TermSubstitutionException("Type " + str(t.get_type()) + " != " + str(self.T))
             else:
                 return self
-        elif self.is_const():
+        elif self.is_var() or self.is_const():
             return self
         elif self.is_comb():
             return Comb(self.fun.subst(inst), self.arg.subst(inst))
@@ -298,16 +336,20 @@ class Term():
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
-        if self.is_comb():
-            (f, args) = self.fun.strip_comb()
-            return (f, args + [self.arg])
-        else:
-            return (self, [])
+        t = self
+        args = []
+        while t.is_comb():
+            args.append(t.arg)
+            t = t.fun
+        return (t, list(reversed(args)))
 
     @property
     def head(self):
         """Given a term f t1 t2 ... tn, returns f."""
-        return self.strip_comb()[0]
+        t = self
+        while t.is_comb():
+            t = t.fun
+        return t
 
     @property
     def args(self):
@@ -316,7 +358,7 @@ class Term():
 
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
-        return len(self.args) == 2
+        return self.is_comb() and self.fun.is_comb() and not self.fun.fun.is_comb()
 
     @property
     def arg1(self):
@@ -325,8 +367,7 @@ class Term():
 
     def is_implies(self):
         """Whether self is of the form A --> B."""
-        implies = Const("implies", TFun(boolT, boolT, boolT))
-        return self.is_binop() and self.head == implies
+        return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name('implies')
 
     @staticmethod
     def mk_implies(*args):
@@ -354,6 +395,7 @@ class Term():
         """
         return self.is_comb() and self.fun.is_const_name("all") and self.arg.is_abs()
 
+    @staticmethod
     def mk_all(x, body):
         """Given a variable x and a term t possibly depending on x, return
         the term !x. t. Optional arguments var_name and T specify the
@@ -374,10 +416,7 @@ class Term():
 
     def is_equals(self):
         """Whether self is of the form A = B."""
-        if self.is_binop():
-            return self.head.is_const_name("equals")
-        else:
-            return False
+        return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name("equals")
 
     def is_reflexive(self):
         """Whether self is of the form A = A."""
@@ -403,35 +442,53 @@ class Term():
         eq_t = Term.equals(s.get_type())
         return eq_t(s, t)
 
-    def _subst_bound(self, t, n):
-        """Helper function for subst_bound. Here self is an open term. Replace
-        Bound n by t outside any Abs. When entering into an Abs, increment n.
-
-        """
-        if self.is_var() or self.is_const():
-            return self
-        elif self.is_comb():
-            return Comb(self.fun._subst_bound(t,n), self.arg._subst_bound(t,n))
-        elif self.is_abs():
-            return Abs(self.var_name, self.var_T, self.body._subst_bound(t, n+1))
-        elif self.is_bound():
-            if self.n == n:
+    def incr_boundvars(self, inc):
+        """Increase loose bound variables in self by inc."""
+        def rec(t, lev):
+            if t.is_svar() or t.is_var() or t.is_const():
                 return t
+            elif t.is_comb():
+                return Comb(rec(t.fun, lev), rec(t.arg, lev))
+            elif t.is_abs():
+                return Abs(t.var_name, t.var_T, rec(t.body, lev+1))
+            elif t.is_bound():
+                if t.n >= lev:
+                    return Bound(t.n + inc)
+                else:
+                    return t
             else:
-                return self
-        else:
-            raise TypeError
+                raise TypeError
+
+        return rec(self, 0)
 
     def subst_bound(self, t):
         """Given an Abs(x,T,body), substitute x for t in the body. t should
         have type T.
 
         """
+
+        def rec(s, n):
+            if s.is_svar() or s.is_var() or s.is_const():
+                return s
+            elif s.is_comb():
+                return Comb(rec(s.fun, n), rec(s.arg, n))
+            elif s.is_abs():
+                return Abs(s.var_name, s.var_T, rec(s.body, n+1))
+            elif s.is_bound():
+                if s.n == n:
+                    return t.incr_boundvars(n)
+                elif s.n > n:  # Bound outside
+                    return Bound(s.n - 1)
+                else:  # Locally bound
+                    return s
+            else:
+                raise TypeError
+
         if self.is_abs():
             # Perform the substitution. Note t may be a bound variable itself.
-            return self.body._subst_bound(t, 0)
+            return rec(self.body, 0)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("subst_bound: input is not an abstraction.")
 
     def beta_conv(self):
         """Beta-conversion: given a term of the form (%x. t1) t2, return the
@@ -441,11 +498,11 @@ class Term():
         if self.is_comb():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("beta_conv: input is not a combination.")
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
-        if self.is_var() or self.is_const() or self.is_bound():
+        if self.is_svar() or self.is_var() or self.is_const() or self.is_bound():
             return self
         elif self.is_comb():
             f = self.fun.beta_norm()
@@ -461,6 +518,8 @@ class Term():
 
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""
+        if self.is_svar():
+            return False
         if self.is_var():
             return self == t
         elif self.is_const():
@@ -474,96 +533,118 @@ class Term():
         else:
             raise TypeError    
 
-    def _abstract_over(self, t, n):
-        """Helper function for abstract_over. Here self is an open term.
-        t should be replaced by Bound n.
-
-        """
-        if self.is_var():
-            if self.name == t.name:
-                if self.T != t.T:
-                    raise TermSubstitutionException
-                else:
-                    return Bound(n)
-            else:
-                return self
-        elif self.is_const():
-            return self
-        elif self.is_comb():
-            return Comb(self.fun._abstract_over(t,n), self.arg._abstract_over(t,n))
-        elif self.is_abs():
-            return Abs(self.var_name, self.var_T, self.body._abstract_over(t, n+1))
-        elif self.is_bound():
-            return self
-        else:
-            raise TypeError
-
     def abstract_over(self, t):
         """Abstract over the variable t. The result is ready to become
         the body of an Abs term.
         
         """
-        if t.is_var():
-            return self._abstract_over(t,0)
+        def rec(s, n):
+            if s.is_svar():
+                if t.is_svar() and s.name == t.name:
+                    if s.T != t.T:
+                        raise TermSubstitutionException("abstract_over: wrong type")
+                    else:
+                        return Bound(n)
+                else:
+                    return s
+            elif s.is_var():
+                if t.is_var() and s.name == t.name:
+                    if s.T != t.T:
+                        raise TermSubstitutionException("abstract_over: wrong type")
+                    else:
+                        return Bound(n)
+                else:
+                    return s
+            elif s.is_const():
+                return s
+            elif s.is_comb():
+                return Comb(rec(s.fun, n), rec(s.arg, n))
+            elif s.is_abs():
+                return Abs(s.var_name, s.var_T, rec(s.body, n+1))
+            elif s.is_bound():
+                return s
+            else:
+                raise TypeError
+
+        if t.is_var() or t.is_svar():
+            return rec(self, 0)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("abstract_over: t is not a variable.")
 
     @staticmethod
     def mk_abs(t, body):
         """Given body in terms of t, return the term %t. body. """
-        if t.ty != VAR:
-            raise TermSubstitutionException
+        if not (t.is_var() or t.is_svar()):
+            raise TermSubstitutionException("mk_abs: t is not a variable.")
         res = Abs(t.name, t.T, body.abstract_over(t))
         return res
 
-    def _checked_get_type(self, bd_vars):
-        """Helper function for checked_get_type. bd_vars is the list of
-        types of the bound variables.
+    def checked_get_type(self):
+        """Perform type-checking and return the type of self."""
+        def rec(t, bd_vars):
+            if t.is_svar() or t.is_var() or t.is_const():
+                return t.T
+            elif t.is_comb():
+                funT = rec(t.fun, bd_vars)
+                argT = rec(t.arg, bd_vars)
+                if funT.is_fun() and funT.domain_type() == argT:
+                    return funT.range_type()
+                else:
+                    raise TypeCheckException
+            elif t.is_abs():
+                bodyT = rec(t.body, [t.var_T] + bd_vars)
+                return TFun(t.var_T, bodyT)
+            elif t.is_bound():
+                if t.n >= len(bd_vars):
+                    raise OpenTermException
+                else:
+                    return bd_vars[t.n]
+            else:
+                raise TypeError
+        return rec(self, [])
 
-        """
-        if self.is_var() or self.is_const():
-            return self.T
+    def convert_svar(self):
+        if self.is_svar():
+            raise TermSubstitutionException("convert_svar: term already contains SVar.")
+        elif self.is_var():
+            return SVar(self.name, self.T.convert_stvar())
+        elif self.is_const():
+            return Const(self.name, self.T.convert_stvar())
         elif self.is_comb():
-            funT = self.fun._checked_get_type(bd_vars)
-            argT = self.arg._checked_get_type(bd_vars)
-            if funT.is_fun() and funT.domain_type() == argT:
-                return funT.range_type()
-            else:
-                raise TypeCheckException
+            return self.fun.convert_svar()(self.arg.convert_svar())
         elif self.is_abs():
-            bodyT = self.body._checked_get_type([self.var_T] + bd_vars)
-            return TFun(self.var_T, bodyT)
+            return Abs(self.var_name, self.var_T.convert_stvar(), self.body.convert_svar())
         elif self.is_bound():
-            if self.n >= len(bd_vars):
-                raise OpenTermException
-            else:
-                return bd_vars[self.n]
+            return self
         else:
             raise TypeError
 
-    def checked_get_type(self):
-        """Perform type-checking and return the type of self."""
-        return self._checked_get_type([])
 
+class SVar(Term):
+    """Schematic variable, specified by name and type."""
+    def __init__(self, name, T):
+        self.ty = Term.SVAR
+        self.name = name
+        self.T = T
 
 class Var(Term):
     """Variable, specified by name and type."""
     def __init__(self, name, T):
-        self.ty = VAR
+        self.ty = Term.VAR
         self.name = name
         self.T = T
 
 class Const(Term):
     """Constant, specified by name and type."""
     def __init__(self, name, T):
-        self.ty = CONST
+        self.ty = Term.CONST
         self.name = name
         self.T = T
 
 class Comb(Term):
     """Combination."""
     def __init__(self, fun, arg):
-        self.ty = COMB
+        self.ty = Term.COMB
         self.fun = fun
         self.arg = arg
 
@@ -576,7 +657,7 @@ class Abs(Term):
         if len(args) < 3:
             raise TypeError
         else:
-            self.ty = ABS
+            self.ty = Term.ABS
             self.var_name = args[0]
             self.var_T = args[1]
             if len(args) == 3:
@@ -587,8 +668,30 @@ class Abs(Term):
 class Bound(Term):
     """Bound variable, with de Bruijn index n."""
     def __init__(self, n):
-        self.ty = BOUND
+        self.ty = Term.BOUND
         self.n = n
+
+def all_t(T):
+    return Const("all", TFun(TFun(T, boolT), boolT))
+
+def get_svars(t):
+    """Returns list of vschematic ariables in a term or a list of terms."""
+    def helper(t):
+        if t.is_svar():
+            return [t]
+        elif t.is_comb():
+            return helper(t.fun) + helper(t.arg)
+        elif t.is_abs():
+            return helper(t.body)
+        else:
+            return []
+
+    if isinstance(t, Term):
+        return list(OrderedDict.fromkeys(helper(t)))
+    elif isinstance(t, list):
+        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+    else:
+        raise TypeError
 
 def get_vars(t):
     """Returns list of variables in a term or a list of terms."""
@@ -624,15 +727,15 @@ def has_var(t):
 
     return helper(t)
 
-def get_tvars(t):
+def get_stvars(t):
     """Get the list of type variables for a term."""
     def helper(t):
         if t.is_var() or t.is_const():
-            return t.T.get_tvars()
+            return t.T.get_stvars()
         elif t.is_comb():
             return helper(t.fun) + helper(t.arg)
         elif t.is_abs():
-            return t.var_T.get_tvars() + helper(t.body)
+            return t.var_T.get_stvars() + helper(t.body)
         else:
             return []
 

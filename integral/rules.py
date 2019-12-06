@@ -2,8 +2,8 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt
-
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity
+import functools, operator
 class Rule:
     """Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
@@ -23,14 +23,36 @@ class Simplify(Rule):
 
     """
     def eval(self, e):
-        return e.normalize()
+        e = e.normalize()
+        if e.ty == expr.INTEGRAL and e.body.ty == expr.OP and e.body.op == "/":
+            old = e
+            up_monos, up_common     = expr.extract(e.body.args[0].to_poly())
+            down_monos, down_common = expr.extract(e.body.args[1].to_poly())
+            common_item = up_common.keys() & down_common.keys()
+            min_value = {}
+            for key in common_item:
+                min_value[key]    = up_common[key] if up_common[key] < down_common[key] else down_common[key]
+                up_common[key]   -= min_value[key]
+                down_common[key] -= min_value[key]
+            if len(min_value) != 0:
+                #numerartor and denominator have same element.
+                upp   = [(k ^ Const(v)).normalize() for k, v in up_common.items()]
+                dpp   = [(k ^ Const(v)).normalize() for k, v in down_common.items()]
+                upp_1 = functools.reduce(operator.mul, upp[1:], upp[0])
+                dpp_1 = functools.reduce(operator.mul, dpp[1:], dpp[0])
+                simp  = (sum(up_monos[1:], up_monos[0]) * upp_1).normalize() / (sum(down_monos[1:], down_monos[0]) * dpp_1).normalize()
+                return Integral(old.var, old.lower, old.upper, simp.normalize())
+            else:
+                return Integral(old.var, old.lower, old.upper, old.body.args[0].normalize()/old.body.args[1].normalize())
+        else:
+            return e.normalize()
 
 class Linearity(Rule):
     """Applies linearity rules:
     
     INT (a + b) = INT a + INT b,
     INT (c * a) = c * INT a  (where c is a constant).
-
+    INT (c / a) = c * INT 1 / a (where c is a contant)
     """
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -53,11 +75,14 @@ class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
-    INT x^n = x^(n+1) / (n+1),  (where n != -1)
+    INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1, c is a constant)
+    INT (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
+    INT 1 / x ^ n = (-n) / x ^ (n + 1), (where n != 1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
-    INT 1/x = log(x),  (where the range is positive)
-
+    INT 1 / (x + c) = log(x + c),  (where the range is positive, c is a constant)
+    INT e^x = e^x
+    INT 1 / (x^2 + 1) = arctan(x)
     """
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -77,17 +102,45 @@ class CommonIntegral(Rule):
         elif e.body.ty == expr.OP:
             if e.body.op == "^":
                 a, b = e.body.args
-                if a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
-                    # Integral of x^n is x^(n+1)/(n+1)
-                    integral = (Var(e.var) ^ Const(b.val + 1)) / Const(b.val + 1)
+                if (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
+                        a.args[1].ty == expr.CONST) and b.ty == expr.CONST and \
+                            b.val != -1:
+                    # Integral of x ^ n is x ^ (n + 1)/(n + 1)
+                    # Intgeral of (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
+                    integral = (a ^ Const(b.val + 1)) / Const(b.val + 1)
                     return EvalAt(e.var, e.lower, e.upper, integral)
-                elif a == Var(e.var) and b.ty == expr.CONST and b.val == -1:
-                    # Integral of x^-1 is log(x)
-                    return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
+                elif (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
+                        a.args[1].ty == expr.CONST) and b.ty == expr.CONST and b.val == -1:
+                    # Integral of x ^ -1 is log(x)
+                    # Integral of (x + c) ^ -1 is log(x)
+                    return EvalAt(e.var, e.lower, e.upper, expr.log(a))
                 else:
                     return e
+            elif e.body.op == "/":
+                a, b = e.body.args
+                if b.ty == expr.OP and a.ty == expr.CONST:
+                    c, d = b.args
+                    if b.op == "^":
+                        if (c == Var(e.var) or c.op in ("+", "-") and c.args[0] == Var(e.var) and \
+                                c.args[1].ty == expr.CONST) and d.ty == expr.CONST and d.val != 1:
+                            #Integral of 1 / x ^ n is (-n) / x ^ (n + 1)
+                            #Integral of 1 / (x + c) ^ n is (-1) / (n - 1) * x ^ (n - 1)
+                            integral = a * Const(-1) / (Const(d.val - 1) * (c ^ Const(d.val - 1)))
+                            return EvalAt(e.var, e.lower, e.upper, integral)
+                    elif b.op in ("+", "-"):
+                        if c == Var(e.var) and d.ty == expr.CONST:
+                            #Integral of 1 / (x + c) is log(x + c)
+                            return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
+                        elif b.op == "+" and c.ty == expr.OP and c.op == "^" and \
+                                c.args[0] == Var(e.var) and c.args[1] == Const(2) and \
+                                d == expr.Const(1):
+                            #Integral of 1 / x ^ 2 + 1 is arctan(x)
+                            return EvalAt(e.var, e.lower, e.upper, a * expr.arctan(Var(e.var)))
+                elif b == Var(e.var):
+                    return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
             else:
                 return e
+
         elif e.body.ty == expr.FUN:
             if e.body.func_name == "sin" and e.body.args[0] == Var(e.var):
                 return EvalAt(e.var, e.lower, e.upper, -expr.cos(Var(e.var)))
@@ -151,6 +204,28 @@ class Substitution(Rule):
         upper2 = self.var_subst.subst(e.var, e.upper).normalize()
         return expr.Integral(self.var_name, lower2, upper2, body2)
 
+class Equation(Rule):
+    """Apply substitution for equal expressions"""
+    def __init__(self, old_expr, new_expr):
+        assert isinstance(old_expr, Expr) and isinstance(new_expr, Expr)
+        self.old_expr = old_expr
+        self.new_expr = new_expr
+    
+    def eval(self, e):
+        if self.old_expr.normalize() != self.new_expr.normalize():
+            return e
+        else:
+            return Integral(e.var, e.lower, e.upper, self.new_expr)
+
+class TrigSubstitution(Rule):
+    """Apply trig identities transformation on expression."""
+    def eval(self, e):
+        exprs =  e.body.identity_trig_expr(trig_identity)        
+        for i in range(len(exprs)):
+            exprs[i] = Integral(e.var, e.lower, e.upper, exprs[i])
+        return exprs
+        
+
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
     def __init__(self, u, v):
@@ -161,7 +236,7 @@ class IntegrationByParts(Rule):
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-
+        e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
         udv = (self.u * dv).normalize()
@@ -171,3 +246,36 @@ class IntegrationByParts(Rule):
         else:
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError
+
+class PolynomialDivision(Rule):
+    """Simplify the representation of polynomial divided by polinomial.
+    """
+    def eval(self, e):
+        assert isinstance(e.body, expr.Op) and e.body.op == "/"
+        dividend = e.body.args[0].normalize().to_poly().standardize()
+        divisor = e.body.args[1].normalize().to_poly().standardize()
+        if dividend.degree < divisor.degree:
+            return e
+        jieguo = []
+        quotinent = dividend.monomials[0] / divisor.monomials[0]
+        jieguo.append(quotinent)
+        s = poly.Polynomial([quotinent]) * divisor
+        #k is the remainder
+        k = poly.Polynomial(tuple(dividend.monomials[0:divisor.degree+1])) - s
+        if k.is_zero_constant():
+            return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(dividend.monomials[-k.monomials[-1].degree:]).del_zero_mono()) \
+                        /expr.from_poly(divisor.del_zero_mono()))
+        k = poly.Polynomial(tuple(k.monomials[1:]))
+        k = k + poly.Polynomial([dividend.monomials[-k.degree]])
+        #every time delete the first item which coffe has been 0 after sub
+        while not k.degree < divisor.degree and not k.is_nonzero_constant():
+            quotinent = k.monomials[0] / divisor.monomials[0]
+            jieguo.append(quotinent)
+            s = poly.Polynomial([quotinent]) * divisor
+            k = k - s
+            if k.is_zero_constant():
+                return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(dividend.monomials[-k.monomials[-1].degree:]).del_zero_mono()) \
+                        /expr.from_poly(divisor.del_zero_mono()))
+            k = k + poly.Polynomial([dividend.monomials[-k.degree]])
+            k = poly.Polynomial(tuple(k.monomials[1:]))
+        return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))

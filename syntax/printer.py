@@ -26,7 +26,7 @@ def commas_join(strs):
             res = strs[0]
             for s in strs[1:]:
                 res.extend(pprint.N(', '))
-                res = res + s
+                res.extend(s)
             return res
         else:
             return []
@@ -35,7 +35,7 @@ def commas_join(strs):
 
 @settings.with_settings
 def print_type(thy, T):
-    """Pretty-print the given type."""
+    """Pretty-printing for types."""
     assert isinstance(T, HOLType), "print_type: input is not a type."
 
     ast = pprint.get_ast_type(thy, T)
@@ -43,10 +43,7 @@ def print_type(thy, T):
 
 @settings.with_settings
 def print_term(thy, t, *, line_length=None):
-    """More sophisticated printing function for terms. Handles printing
-    of operators.
-
-    """
+    """Pretty-printing for terms."""
     assert isinstance(t, Term), "print_term: input is not a term."
 
     ast = pprint.get_ast_term(thy, t)
@@ -75,14 +72,12 @@ def print_extension(thy, ext):
         return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
     elif ext.ty == extension.ATTRIBUTE:
         return "Attribute " + ext.name + " [" + ext.attribute + "]"
-    elif ext.ty == extension.MACRO:
-        return "Macro " + ext.name
     else:
         raise TypeError
 
 @settings.with_settings
 def print_extensions(thy, exts):
-    return "\n".join(print_extension(thy, ext) for ext in exts.data)
+    return "\n".join(print_extension(thy, ext) for ext in exts)
 
 @settings.with_settings
 def print_type_constr(thy, constr):
@@ -127,8 +122,8 @@ def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
     str_th = print_thm(thy, item.th, highlight=False) if item.th else ""
     str_args = print_str_args(thy, item.rule, item.args, item.th, highlight=False)
-    res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
-           'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
+    res = {'id': str(item.id), 'th': str_th, 'rule': item.rule,
+           'args': str_args, 'prevs': [str(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_hl'] = print_term(thy, item.th.prop) if item.th else ""
         res['args_hl'] = print_str_args(thy, item.rule, item.args, item.th)
@@ -140,9 +135,9 @@ def export_proof_item(thy, item):
 @settings.with_settings
 def print_proof_item(thy, item):
     """Print the given proof item."""
-    str_id = proof.print_id(item.id)
+    str_id = str(item.id)
     str_args = " " + print_str_args(thy, item.rule, item.args, item.th) if item.args else ""
-    str_prevs = " from " + ", ".join(proof.print_id(prev) for prev in item.prevs) if item.prevs else ""
+    str_prevs = " from " + ", ".join(str(prev) for prev in item.prevs) if item.prevs else ""
     str_th = print_thm(thy, item.th) + " by " if item.th else ""
     cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs
     if item.subproof:

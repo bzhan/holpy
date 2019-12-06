@@ -2,6 +2,8 @@
 
 import unittest
 from decimal import Decimal
+from fractions import Fraction
+import copy
 
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt
@@ -30,6 +32,7 @@ class ExprTest(unittest.TestCase):
             (x * (y ^ Const(2)), "x * y ^ 2"),
             ((x * y) ^ Const(2), "(x * y) ^ 2"),
             (-(x + y), "-(x + y)"),
+            (x ^ Const(Fraction("1/2")), "x ^ (1/2)"),
             (-x + y, "-x + y"),
             (sin(x), "sin(x)"),
             (cos(x), "cos(x)"),
@@ -73,16 +76,28 @@ class ExprTest(unittest.TestCase):
     def testNormalize(self):
         test_data = [
             ("2 + 3", "5"),
+            ("x + 0", "x"),
             ("2 * 3", "6"),
-            ("2 + 3 * x + 4", "6 + 3 * x"),
-            ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * (x / y)"),
+            ("2 + 3 * x + 4", "3 * x + 6"),
+            ("2 + x / y + 2 * (x / y) + 3", "3 * (x / y) + 5"),
             ("(x + y) ^ 2", "(x + y) ^ 2"),
-            ("(x + y) * (x - y)", "x ^ 2 + -1 * y ^ 2"),
-            ("[x]_x=a,b", "-1 * a + b"),
-            ("[x ^ 2 * y]_x=a,b", "-1 * y * a ^ 2 + y * b ^ 2"),
+            ("(x + y) * (x - y)", "-1 * y ^ 2 + x ^ 2"),
+            ("[x]_x=a,b", "b + -1 * a"),
+            ("[x ^ 2 * y]_x=a,b", "b ^ 2 * y + -1 * a ^ 2 * y"),
             ("[x ^ 2]_x=3,4", "7"),
+            ("cos(pi/4)", "1/2 * sqrt(2)"),
+            ("cos(0) - cos(pi/4)", "-1/2 * sqrt(2) + 1"),
+            ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
-             "-1 * a + b + -1 * a ^ 2 + -1/3 * a ^ 3 + b ^ 2 + 1/3 * b ^ 3"),
+             "1/3 * b ^ 3 + b ^ 2 + b + -1/3 * a ^ 3 + -1 * a ^ 2 + -1 * a"),
+            ("x ^ (1/2) * x ^ (1/2) ", "x"),
+            ("2 * (1 + 3)", "8"),
+            ("arctan(1)", "1/4 * pi"),
+            ("arctan(sqrt(3)/3)", "1/6 * pi"),
+            ("arctan(sqrt(3))", "1/3 * pi"),
+            ("sin(3/4 * pi)", "1/2 * sqrt(2)"),
+            ("pi + pi / 3", "4/3 * pi"),
+            ("1 - cos(x) ^ 2", "-1 * cos(x) ^ 2 + 1")
         ]
 
         for s, res in test_data:
@@ -112,12 +127,14 @@ class ExprTest(unittest.TestCase):
             ("x * y", "y"),
             ("1 / x", "- 1 / x ^ 2"),
             ("3 * x + 1", "3"),
+            ("x + pi / 3", "1"),
+            ("2 * x + pi / 3", "2"),
             ("sin(x)", "cos(x)"),
             ("sin(x^2)", "2 * x * cos(x^2)"),
             ("cos(x)", "-1 * sin(x)"),
             ("cos(x^2)", "-2 * x * sin(x^2)"),
             ("log(x)", "1 / x"),
-            ("x * log(x)", "x * (1 / x) + log(x)"),
+            ("x * log(x)", "log(x) + x * (1 / x)"),
             ("exp(x)", "exp(x)"),
             ("exp(x^2)", "2 * x * exp(x^2)"),
         ]
@@ -126,7 +143,19 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             s2 = parse_expr(s2)
             self.assertEqual(expr.deriv("x", s), s2)
+    
+    def test_trig(self):
+        test_data = [
+            ("$sin(x)^2$*sin(x)", {"sin(x) ^ 2 * sin(x)","(1 - cos(x) ^ 2) * sin(x)", \
+                "(1/2 - cos(2 * x) / 2) * sin(x)"}),
+        ]
 
+        for t, s in test_data:
+            t = parse_expr(t)
+            n = t.identity_trig_expr(expr.trig_identity)
+            for i in range(len(n)):
+                n[i] = str(n[i])
+            self.assertEqual(set(n), s)
 
 if __name__ == "__main__":
     unittest.main()

@@ -31,54 +31,53 @@
             "name": "length",
             "rules": [
                 {
-                    "prop": "length (nil::'a list) = 0"
+                    "prop": "length ([]::'a list) = 0"
                 },
                 {
-                    "prop": "length (cons x xs) = Suc (length xs)"
+                    "prop": "length (x # xs) = Suc (length xs)"
                 }
             ],
             "ty": "def.ind",
-            "type": "'a list => nat"
+            "type": "'a list ⇒ nat"
         },
         {
             "name": "nth",
             "rules": [
                 {
-                    "prop": "nth (cons x xs) 0 = x"
+                    "prop": "nth (x # xs) 0 = x"
                 },
                 {
-                    "prop": "nth (cons x xs) (Suc n) = nth xs n"
+                    "prop": "nth (x # xs) (Suc n) = nth xs n"
                 }
             ],
             "ty": "def.ind",
-            "type": "'a list => nat => 'a"
+            "type": "'a list ⇒ nat ⇒ 'a"
         },
         {
-            "ascii_op": "@",
             "name": "append",
             "rules": [
                 {
-                    "prop": "nil @ xs = xs"
+                    "prop": "[] @ xs = xs"
                 },
                 {
-                    "prop": "cons x xs @ ys = cons x (xs @ ys)"
+                    "prop": "(x # xs) @ ys = x # xs @ ys"
                 }
             ],
             "ty": "def.ind",
-            "type": "'a list => 'a list => 'a list"
+            "type": "'a list ⇒ 'a list ⇒ 'a list"
         },
         {
             "name": "rev",
             "rules": [
                 {
-                    "prop": "rev (nil::'a list) = nil"
+                    "prop": "rev ([]::'a list) = []"
                 },
                 {
-                    "prop": "rev (cons x xs) = rev xs @ cons x nil"
+                    "prop": "rev (x # xs) = rev xs @ [x]"
                 }
             ],
             "ty": "def.ind",
-            "type": "'a list => 'a list"
+            "type": "'a list ⇒ 'a list"
         },
         {
             "attributes": [
@@ -164,7 +163,7 @@
                     "th": "⊢ xs @ [] = xs"
                 }
             ],
-            "prop": "xs @ nil = xs",
+            "prop": "xs @ [] = xs",
             "steps": [
                 {
                     "goal_id": "0",

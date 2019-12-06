@@ -1,67 +1,42 @@
 # Author: Bohua Zhan
 
-import io
+import itertools
+import traceback2
 
 from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import ProofItem, Proof, id_force_tuple
+from kernel.proof import ProofItem, Proof, ItemID
 from kernel import report
+from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
-from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer, pprint
+from logic.context import Context
 from server import tactic
 from server import method
-from server.method import incr_id
+
 
 class TacticException(Exception):
     pass
 
 # Helper functions
 
-def incr_id_after(id, start, n):
-    """Perform the id adjustment necessary for adding n lines before
-    start id. The exact logic is as follows:
-    
-    Suppose start has length k. Find all ids with length at least k,
-    where the first k-1 numbers agree with start, and the k'th number
-    is greater than or equal to start. Increment the k'th number by n
-    and leave the rest unchanged.
-
-    """
-    k = len(start)
-    if len(id) >= k and id[:k-1] == start[:k-1] and id[k-1] >= start[k-1]:
-        return id[:k-1] + (id[k-1] + n,) + id[k:]
-    else:
-        return id
-
 def incr_proof_item(item, start, n):
     """Increment all ids in the given proof item. Recursively increment
     ids in subproofs.
     
     """
-    item.id = incr_id_after(item.id, start, n)
-    item.prevs = [incr_id_after(id, start, n) for id in item.prevs]
+    item.id = item.id.incr_id_after(start, n)
+    item.prevs = [id.incr_id_after(start, n) for id in item.prevs]
     if item.subproof:
         for subitem in item.subproof.items:
             incr_proof_item(subitem, start, n)
 
-def decr_id(id, id_remove):
-    """Decrement a single id, with the aim of closing the gap at
-    id_remove. The logic used is similar to that incr_id_after.
-    
-    """
-    k = len(id_remove)
-    if len(id) >= k and id[:k-1] == id_remove[:k-1] and id[k-1] > id_remove[k-1]:
-        return id[:k-1] + (id[k-1] - 1,) + id[k:]
-    else:
-        return id
-
 def decr_proof_item(item, id_remove):
     """Decrement all ids in the given proof item."""
-    item.id = decr_id(item.id, id_remove)
-    item.prevs = [decr_id(id, id_remove) for id in item.prevs]
+    item.id = item.id.decr_id(id_remove)
+    item.prevs = [id.decr_id(id_remove) for id in item.prevs]
     if item.subproof:
         for subitem in item.subproof.items:
             decr_proof_item(subitem, id_remove)
@@ -78,18 +53,18 @@ class ProofState():
 
     def get_ctxt(self, id):
         """Obtain the context at the given id."""
-        id = id_force_tuple(id)
-        ctxt = {'vars': {}}
+        id = ItemID(id)
+        ctxt = Context(self.thy)
         for v in self.vars:
-            ctxt['vars'][v.name] = v.T
+            ctxt.vars[v.name] = v.T
 
         prf = self.prf
         try:
-            for n in id:
+            for n in id.id:
                 for item in prf.items[:n+1]:
                     if item.rule == "variable":
                         nm, T = item.args
-                        ctxt['vars'][nm] = T
+                        ctxt.vars[nm] = T
                 prf = prf.items[n].subproof
             return ctxt
         except (AttributeError, IndexError):
@@ -126,8 +101,7 @@ class ProofState():
         state.prf = Proof(*assums)
         n = len(assums)
         state.prf.add_item(n, "sorry", th=Thm(assums, concl))
-        if len(assums) > 0:
-            state.prf.add_item(n + 1, "intros", prevs=range(n+1))
+        state.prf.add_item(n + 1, "intros", prevs=range(n+1))
         state.check_proof(compute_only=True)
         return state
 
@@ -139,19 +113,11 @@ class ProofState():
         data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
 
         """
-        ctxt = parser.parse_vars(thy, data['vars'])
-        vars = [Var(name, T) for name, T in ctxt['vars'].items()]
-        prop = parser.parse_term(thy, ctxt, data['prop'])
+        ctxt = Context(thy, vars=data['vars'])
+        prop = parser.parse_term(ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
-        return ProofState.init_state(thy, vars, assums, concl)
-
-    def get_method_sig(self):
-        """Obtain signature of all methods in the theory."""
-        sig = {}
-        for name, method in self.thy.get_data('method').items():
-            sig[name] = method.sig
-        return sig
+        return ProofState.init_state(thy, ctxt.get_vars(), assums, concl)
 
     def export_proof(self, prf):
         return sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
@@ -159,12 +125,11 @@ class ProofState():
 
     def json_data(self):
         """Export proof in json format."""
-        self.check_proof()
         res = {
             "vars": {v.name: str(v.T) for v in self.vars},
             "proof": self.export_proof(self.prf),
-            "report": self.rpt.json_data(),
-            "method_sig": self.get_method_sig(),
+            "num_gaps": len(self.rpt.gaps),
+            "method_sig": theory.get_method_sig(self.thy),
         }
         if hasattr(self, 'steps'):
             res['steps'] = self.steps
@@ -182,29 +147,46 @@ class ProofState():
             state.history = []
             for step in data['steps']:
                 state.history.append({
-                    'steps_output': method.display_method(state, step, unicode=True, highlight=True),
+                    'steps_output': pprint.N(step['method_name']),
                     'proof': state.export_proof(state.prf),
-                    'report': state.rpt.json_data()
+                    'num_gaps': len(state.rpt.gaps)
                 })
-                method.apply_method(state, step)
+                try:
+                    steps_output = method.output_step(state, step, unicode=True, highlight=True)
+                    state.history[-1]['steps_output'] = steps_output
+                    method.apply_method(state, step)
+                    state.check_proof(compute_only=True)
+                except Exception as e:
+                    state.history[-1]['error'] = {
+                        'err_type': e.__class__.__name__,
+                        'err_str': str(e),
+                        'trace': traceback2.format_exc()
+                    }
             state.history.append({
-                'steps_output': pprint.N('Current state', highlight=True),
                 'proof': state.export_proof(state.prf),
-                'report': state.rpt.json_data()
+                'num_gaps': len(state.rpt.gaps)
             })
+            try:    
+                state.check_proof()
+            except Exception as e:
+                state.history[-1]['error'] = {
+                    'err_type': e.__class__.__name__,
+                    'err_str': str(e),
+                    'trace': traceback2.format_exc()
+                }
         else:
-            ctxt = parser.parse_vars(thy, data['vars'])
+            ctxt = Context(thy, vars=data['vars'])
             state = ProofState(thy)
-            state.vars = [Var(name, T) for name, T in ctxt['vars'].items()]
+            state.vars = ctxt.get_vars()
             state.prf = Proof()
             for line in data['proof']:
                 if line['rule'] == "variable":
                     nm, str_T = line['args'].split(',', 1)
-                    ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
-                item = parser.parse_proof_rule(thy, ctxt, line)
+                    ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
+                item = parser.parse_proof_rule(ctxt, line)
                 state.prf.insert_item(item)
+            state.check_proof()
 
-        state.check_proof(compute_only=True)
         return state
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
@@ -214,10 +196,10 @@ class ProofState():
 
     def add_line_before(self, id, n):
         """Add n lines before the given id."""
-        id = id_force_tuple(id)
+        id = ItemID(id)
         prf = self.prf.get_parent_proof(id)
-        split = id[-1]
-        new_items = [ProofItem(incr_id(id, i), "") for i in range(n)]
+        split = id.last()
+        new_items = [ProofItem(id.incr_id(i), "") for i in range(n)]
         prf.items = prf.items[:split] + new_items + prf.items[split:]
         for item in prf.items[split+n:]:
             incr_proof_item(item, id, n)
@@ -226,9 +208,9 @@ class ProofState():
 
     def remove_line(self, id):
         """Remove line with the given id."""
-        id = id_force_tuple(id)
+        id = ItemID(id)
         prf = self.prf.get_parent_proof(id)
-        split = id[-1]
+        split = id.last()
         prf.items = prf.items[:split] + prf.items[split+1:]
         for item in prf.items[split:]:
             decr_proof_item(item, id)
@@ -237,14 +219,14 @@ class ProofState():
 
     def set_line(self, id, rule, *, args=None, prevs=None, th=None):
         """Set the item with the given id to the following data."""
-        id = id_force_tuple(id)
+        id = ItemID(id)
         prf = self.prf.get_parent_proof(id)
-        prf.items[id[-1]] = ProofItem(id, rule, args=args, prevs=prevs, th=th)
+        prf.items[id.last()] = ProofItem(id, rule, args=args, prevs=prevs, th=th)
         self.check_proof(compute_only=True)
 
     def get_proof_item(self, id):
         """Obtain the proof item with the given id."""
-        return self.prf.find_item(id)
+        return self.prf.find_item(ItemID(id))
 
     def replace_id(self, old_id, new_id):
         """Replace old_id with new_id in prevs."""
@@ -271,7 +253,7 @@ class ProofState():
         """
         prf = self.prf
         try:
-            for n in goal_id:
+            for n in goal_id.id:
                 for item in prf.items[:n]:
                     if item.th is not None and item.th.can_prove(concl):
                         return item.id
@@ -280,22 +262,31 @@ class ProofState():
             raise TacticException
 
     def apply_search(self, id, method, prevs=None):
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        id = ItemID(id)
+        prevs = [ItemID(prev) for prev in prevs] if prevs else []
         return method.search(self, id, prevs)
     
     def search_method(self, id, prevs):
         """Perform search for each method."""
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        id = ItemID(id)
+        prevs = [ItemID(prev) for prev in prevs] if prevs else []
         results = []
-        method_data = self.thy.get_data("method")
-        for name, method in method_data.items():
-            res = method.search(self, id, prevs)
-            for r in res:
-                r['_method_name'] = name
-                r['display'] = method.display_step(self, id, r, prevs, highlight=True, unicode=True)
-            results.extend(res)
+        all_methods = theory.get_all_methods(self.thy)
+        for name in all_methods:
+            cur_method = all_methods[name]
+            if hasattr(cur_method, 'no_order'):
+                test_prevs = [prevs]
+            else:
+                test_prevs = itertools.permutations(prevs)
+            for perm_prevs in test_prevs:
+                res = cur_method.search(self, id, perm_prevs)
+                for r in res:
+                    r['method_name'] = name
+                    r['goal_id'] = str(id)
+                    if prevs:
+                        r['fact_ids'] = list(str(id) for id in perm_prevs)
+                    r['display'] = method.output_hint(self, r, highlight=True, unicode=True)
+                results.extend(res)
 
         # If there is an element in results that solves the goal,
         # output only results that solves.
@@ -304,8 +295,8 @@ class ProofState():
         return results
 
     def apply_tactic(self, id, tactic, args=None, prevs=None):
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        id = ItemID(id)
+        prevs = [ItemID(prev) for prev in prevs] if prevs else []
         prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
         
         cur_item = self.get_proof_item(id)
@@ -318,7 +309,7 @@ class ProofState():
         for i, item in enumerate(new_prf.items):
             cur_id = item.id
             prf = self.prf.get_parent_proof(cur_id)
-            prf.items[cur_id[-1]] = item
+            prf.items[cur_id.last()] = item
         self.check_proof(compute_only=True)
 
         # Test if the goals are already proved:
@@ -333,60 +324,3 @@ class ProofState():
             if item.rule == 'sorry':
                 if logic.trivial_macro().can_eval(self.thy, item.th.prop):
                     self.set_line(item.id, 'trivial', args=item.th.prop)
-
-    def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
-        """Apply backward step using the given theorem.
-        
-        prevs - list of previous proved facts to use.
-        inst - existing instantiation.
-
-        """
-        self.apply_tactic(id, tactic.rule(), args=(th_name, instsp), prevs=prevs)
-
-    def apply_forward_step(self, id, th_name, prevs=None):
-        """Apply forward step using the given theorem."""
-        method.apply_method(self, {
-            'method_name': 'apply_forward_step',
-            'goal_id': id, 'fact_ids': prevs, 'theorem': th_name
-        })
-
-    def introduction(self, id, names=None):
-        """Introduce variables and assumptions."""
-        if names is None:
-            names = ""
-        elif isinstance(names, list):
-            names = ",".join(names)
-        method.apply_method(self, {
-            'method_name': 'introduction',
-            'goal_id': id, 'fact_ids': [], 'names': names
-        })
-
-    def apply_forall_elim(self, id, prev, s):
-        """Elimination of forall statement."""
-        method.apply_method(self, {
-            'method_name': 'forall_elim',
-            'goal_id': id, 'fact_ids': [prev], 's': s
-        })
-
-    def apply_induction(self, id, th_name, var):
-        """Apply induction using the given theorem and variable."""
-        method.apply_method(self, {
-            'method_name': 'induction',
-            'goal_id': id, 'fact_ids': [], 'theorem': th_name, 'var': var
-        })
-
-    def rewrite_goal(self, id, th_name, *, backward=False):
-        """Apply an existing equality theorem to the given goal."""
-        self.apply_tactic(id, tactic.rewrite(), args=th_name)
-
-    def rewrite_goal_with_prev(self, id, prev):
-        """Apply existence fact to the given goal."""
-        self.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=[prev])
-
-    def apply_cases(self, id, A):
-        """Apply case analysis on A."""
-        self.apply_tactic(id, tactic.cases(), args=A)
-
-    def apply_prev(self, id, prev):
-        """Apply previously proved rule."""
-        self.apply_tactic(id, tactic.apply_prev(), prevs=[prev])

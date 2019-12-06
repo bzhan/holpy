@@ -12,14 +12,18 @@ grammar = r"""
         | INT -> int_expr
         | DECIMAL -> decimal_expr
         | "D" CNAME "." expr -> deriv_expr
+        | "pi" -> pi_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
+        | "$" expr "$" -> trig_expr
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
 
     ?uminus: "-" uminus -> uminus_expr | atom
 
-    ?pow: pow "^" uminus -> pow_expr | uminus
+    ?pow: atom "^" uminus -> pow_expr 
+        | "-" atom "^" uminus -> uminus_pow_expr
+        | uminus
 
     ?times: times "*" pow -> times_expr
         | times "/" pow -> divides_expr | pow
@@ -74,6 +78,12 @@ class ExprTransformer(Transformer):
             return expr.Const(-a.val)
         else:
             return -a
+    
+    def uminus_pow_expr(self, a, b):
+        return -(a ^ b)
+
+    def pi_expr(self):
+        return expr.pi
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)
@@ -86,6 +96,11 @@ class ExprTransformer(Transformer):
 
     def eval_at_expr(self, body, var, lower, upper):
         return expr.EvalAt(var, lower, upper, body)
+    
+    def trig_expr(self, e):
+        expr.trig_identity.append(e)
+        return e
+        
 
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 

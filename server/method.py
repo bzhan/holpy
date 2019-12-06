@@ -3,10 +3,9 @@
 from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import id_force_tuple, print_id, Proof, ProofException
-from kernel.theory import Method
+from kernel.proof import ItemID, Proof, ProofException
+from kernel.theory import Method, get_method
 from kernel import theory
-from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
@@ -14,33 +13,11 @@ from syntax import parser, printer, pprint, settings
 from server import tactic
 
 
-def incr_id(id, n):
-    """Increment the last number in id by n."""
-    return id[:-1] + (id[-1] + n,)
-
-def display_goals(state, data):
-    """Return list of goals in string form. If there is no goals
-    remaining, return '(solves)'.
-
-    """
-    assert '_goal' in data, "display_goals"
-    if data['_goal']:
-        goals = [printer.print_term(state.thy, t) for t in data['_goal']]
-        return printer.commas_join(goals)
-    else:
-        return pprint.N("(solves)")
-
-def display_facts(state, data):
-    """Return list of new facts in string form."""
-    assert '_fact' in data and len(data['_fact']) > 0, "display_facts"
-    facts = [printer.print_term(state.thy, t) for t in data['_fact']]
-    return pprint.N("have ") + printer.commas_join(facts)
-
-
 class cut_method(Method):
     """Insert intermediate goal."""
     def __init__(self):
         self.sig = ['goal']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -49,23 +26,28 @@ class cut_method(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        goal = parser.parse_term(state.thy, state.get_ctxt(id), data['goal'])
+    def display_step(self, state, data):
+        goal = parser.parse_term(state.get_ctxt(data['goal_id']), data['goal'])
         return pprint.N("have ") + printer.print_term(state.thy, goal)
 
     def apply(self, state, id, data, prevs):
         cur_item = state.get_proof_item(id)
         hyps = cur_item.th.hyps
 
-        goal = parser.parse_term(state.thy, state.get_ctxt(id), data['goal'])
+        ctxt = state.get_ctxt(id)
+        C = parser.parse_term(ctxt, data['goal'])
+        for v in term.get_vars(C):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Insert goal: extra variable %s' % v.name)
 
         state.add_line_before(id, 1)
-        state.set_line(id, 'sorry', th=Thm(hyps, goal))
+        state.set_line(id, 'sorry', th=Thm(hyps, C))
 
 class cases_method(Method):
     """Case analysis."""
     def __init__(self):
         self.sig = ['case']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -74,18 +56,24 @@ class cases_method(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
+    def display_step(self, state, data):
+        A = parser.parse_term(state.get_ctxt(data['goal_id']), data['case'])
         return pprint.N("case ") + printer.print_term(state.thy, A)
 
     def apply(self, state, id, data, prevs):
-        A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
+        ctxt = state.get_ctxt(id)
+        A = parser.parse_term(ctxt, data['case'])
+        for v in term.get_vars(A):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Apply case: extra variable %s' % v.name)
+
         state.apply_tactic(id, tactic.cases(), args=A)
 
 class apply_prev_method(Method):
     """Apply previous fact."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -97,8 +85,8 @@ class apply_prev_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("Apply fact (b): ") + display_goals(state, data)
+    def display_step(self, state, data):
+        return pprint.N("Apply fact (b)")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
@@ -107,6 +95,7 @@ class rewrite_goal_with_prev_method(Method):
     """Rewrite using previous fact."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         try:
@@ -119,8 +108,8 @@ class rewrite_goal_with_prev_method(Method):
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]        
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("rewrite with fact: ") + display_goals(state, data)
+    def display_step(self, state, data):
+        return pprint.N("rewrite with fact")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
@@ -128,41 +117,8 @@ class rewrite_goal_with_prev_method(Method):
 class rewrite_goal(Method):
     """Rewrite using a theorem."""
     def __init__(self):
-        self.sig = ['theorem']
-
-    def search(self, state, id, prevs, data=None):
-        cur_item = state.get_proof_item(id)
-
-        thy = state.thy
-        results = []
-
-        def search_thm(th_name, th):
-            try:
-                pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=[])
-                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
-            except (AssertionError, matcher.MatchException):
-                pass
-
-        if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
-        else:
-            for th_name, th in thy.get_data("theorems").items():
-                if 'hint_rewrite' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
-
-        return sorted(results, key=lambda d: d['theorem'])
-
-    @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N(data['theorem'] + " (r): ") + display_goals(state, data)
-
-    def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.rewrite(), args=data['theorem'])
-
-class rewrite_fact(Method):
-    """Rewrite fact using a theorem."""
-    def __init__(self):
-        self.sig = ['theorem']
+        self.sig = ['theorem', 'sym']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -171,34 +127,99 @@ class rewrite_fact(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name, sym):
             try:
-                pt = logic.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
-                results.append({"theorem": th_name, "_fact": [pt.prop]})
-            except (AssertionError, matcher.MatchException):
+                sym_b = True if sym == 'true' else False
+                pt = tactic.rewrite_goal(sym=sym_b).get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                results.append({"theorem": th_name, "sym": sym, "_goal": [gap.prop for gap in pt.get_gaps()]})
+            except (AssertionError, matcher.MatchException) as e:
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            sym = 'false'
+            if 'sym' in data:
+                sym = data['sym']
+            search_thm(data['theorem'], sym)
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_rewrite' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name, 'false')
+                if 'hint_rewrite_sym' in thy.get_attributes(th_name):
+                    search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N(data['theorem'] + " (r): ") + display_facts(state, data)
+    def display_step(self, state, data):
+        if 'sym' in data and data['sym'] == 'true':
+            return pprint.N(data['theorem'] + " (sym, r)")
+        else:
+            return pprint.N(data['theorem'] + " (r)")
+
+    def apply(self, state, id, data, prevs):
+        if 'sym' in data and data['sym'] == 'true':
+            sym_b = True
+        else:
+            sym_b = False
+        state.apply_tactic(id, tactic.rewrite_goal(sym=sym_b), args=data['theorem'], prevs=prevs)
+
+class rewrite_fact(Method):
+    """Rewrite fact using a theorem."""
+    def __init__(self):
+        self.sig = ['theorem', 'sym']
+        self.limit = None
+
+    def search(self, state, id, prevs, data=None):
+        cur_item = state.get_proof_item(id)
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+
+        thy = state.thy
+        results = []
+
+        def search_thm(th_name, sym):
+            try:
+                sym_b = True if sym == 'true' else False
+                pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(thy, th_name, prevs)
+                results.append({"theorem": th_name, "sym": sym, "_fact": [pt.prop]})
+            except (AssertionError, matcher.MatchException) as e:
+                # print(e)
+                pass
+
+        if data:
+            search_thm(data['theorem'], data['sym'])
+        else:
+            for th_name in thy.get_data("theorems"):
+                if 'hint_rewrite' in thy.get_attributes(th_name):
+                    search_thm(th_name, 'false')
+                if 'hint_rewrite_sym' in thy.get_attributes(th_name):
+                    search_thm(th_name, 'true')
+
+        return sorted(results, key=lambda d: d['theorem'])
+
+    @settings.with_settings
+    def display_step(self, state, data):
+        if 'sym' in data and data['sym'] == 'true':
+            return pprint.N(data['theorem'] + " (sym, r)")
+        else:
+            return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
-        state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
+        if 'sym' in data and data['sym'] == 'true':
+            state.set_line(id, 'rewrite_fact_sym', args=data['theorem'], prevs=prevs)
+        else:
+            state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
+
+        id2 = id.incr_id(1)
+        new_id = state.find_goal(state.get_proof_item(id2).th, id2)
+        if new_id is not None:
+            state.replace_id(id2, new_id)
 
 class rewrite_fact_with_prev(Method):
     """Rewrite fact using a previous equality."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
@@ -210,17 +231,23 @@ class rewrite_fact_with_prev(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("rewrite fact with fact")
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
         state.set_line(id, 'rewrite_fact_with_prev', prevs=prevs)
 
+        id2 = id.incr_id(1)
+        new_id = state.find_goal(state.get_proof_item(id2).th, id2)
+        if new_id is not None:
+            state.replace_id(id2, new_id)
+
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
         self.sig = ['theorem']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
@@ -228,7 +255,10 @@ class apply_forward_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name, min_prevs):
+            if len(prevs) < min_prevs:
+                return
+
             try:
                 macro = logic.apply_theorem_macro()
                 res_th = macro.eval(thy, th_name, prev_ths)
@@ -239,48 +269,49 @@ class apply_forward_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'], min_prevs=0)
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_forward' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name, min_prevs=1)
 
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        if "_fact" in data:
-            return pprint.N(data['theorem'] + " (f): ") + display_facts(state, data)
-        else:
-            return pprint.N(data['theorem'] + " (f)")
+    def display_step(self, state, data):
+        return pprint.N(data['theorem'] + " (f)")
 
     def apply(self, state, id, data, prevs):
         inst = dict()
+        thy = state.thy
         ctxt = state.get_ctxt(id)
         for key, val in data.items():
             if key.startswith("param_"):
-                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+                if val != '':
+                    inst[key[6:]] = parser.parse_term(ctxt, val)
+
+        th = thy.get_theorem(data['theorem'], svar=True)
+
+        # Check whether to ask for parameters
+        As, C = th.prop.strip_implies()
+        match_svars = term.get_svars(As[:len(prevs)])
+        all_svars = term.get_svars(th.prop)
+        param_svars = [v for v in all_svars if v not in match_svars and 'param_' + v.name not in data]
+        if param_svars:
+            raise theory.ParameterQueryException(list("param_" + v.name for v in param_svars))
 
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         macro = logic.apply_theorem_macro(with_inst=True)
         res_th = macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
 
-        As, C = res_th.prop.strip_implies()
-        cur_item = state.get_proof_item(id)
-        cur_hyps = cur_item.th.hyps
-        state.add_line_before(id, len(As) + 1)
-        for i in range(len(As)):
-            state.set_line(incr_id(id, i), 'sorry', th=Thm(cur_hyps, As[i]))
-            prevs.append(incr_id(id, i))
+        state.add_line_before(id, 1)
         if inst:
-            state.set_line(incr_id(id, len(As)), 'apply_theorem_for',
-                           args=(data['theorem'], dict(), inst), prevs=prevs)
+            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], dict(), inst), prevs=prevs)
         else:
-            state.set_line(incr_id(id, len(As)), 'apply_theorem', args=data['theorem'],
-                           prevs=prevs)
+            state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
-        id2 = incr_id(id, len(As)+1)
+        id2 = id.incr_id(1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
         if new_id is not None:
             state.replace_id(id2, new_id)
@@ -289,6 +320,7 @@ class apply_backward_step(Method):
     """Apply theorem in the backward direction."""
     def __init__(self):
         self.sig = ['theorem']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -297,7 +329,7 @@ class apply_backward_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name):
             try:
                 pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
@@ -308,28 +340,25 @@ class apply_backward_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'])
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_backward' in thy.get_attributes(th_name) or \
-                ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
-                    search_thm(th_name, th)
+                   ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
+                    search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        if "_goal" in data:
-            return pprint.N(data['theorem'] + " (b): ") + display_goals(state, data)
-        else:
-            return pprint.N(data['theorem'] + " (b)")
+    def display_step(self, state, data):
+        return pprint.N(data['theorem'] + " (b)")
 
     def apply(self, state, id, data, prevs):
         inst = dict()
         ctxt = state.get_ctxt(id)
         for key, val in data.items():
             if key.startswith("param_"):
-                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+                inst[key[6:]] = parser.parse_term(ctxt, val)
         if inst:
             state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
         else:
@@ -339,6 +368,7 @@ class apply_resolve_step(Method):
     """Resolve using a theorem ~A and a fact A."""
     def __init__(self):
         self.sig = ["theorem"]
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -347,7 +377,7 @@ class apply_resolve_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name):
             try:
                 pt = tactic.resolve().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
@@ -355,16 +385,16 @@ class apply_resolve_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'])
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_resolve' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Resolve using " + data['theorem'])
 
     def apply(self, state, id, data, prevs):
@@ -374,10 +404,15 @@ class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
         self.sig = []
+        self.limit = None
+        self.no_order = True
 
     def search(self, state, id, prevs, data=None):
         if data:
             return [data]
+
+        if len(prevs) > 0:
+            return []
 
         goal_th = state.get_proof_item(id).th
         if goal_th.prop.is_all():
@@ -388,8 +423,8 @@ class introduction(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        res = "introduction on " + print_id(id)
+    def display_step(self, state, data):
+        res = "introduction"
         if 'names' in data and data['names'] != "":
             names = [name.strip() for name in data['names'].split(',')]
             if len(names) > 1:
@@ -425,10 +460,43 @@ class introduction(Method):
             if new_id is not None:
                 state.replace_id(item.id, new_id)
 
+
+class revert_intro(Method):
+    """Reverse an introduction."""
+    def __init__(self):
+        self.sig = []
+        self.limit = None
+
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
+        return []
+
+    @settings.with_settings
+    def display_step(self, state, data):
+        return pprint.N("revert intro")
+
+    def apply(self, state, id, data, prevs):
+        cur_item = state.get_proof_item(id)
+        assert cur_item.rule == "sorry", "revert intro: id is not a gap"
+
+        assert len(prevs) == 1, "revert intro: prevs must have length one"
+
+        pt = state.get_proof_item(prevs[0])
+        assert pt.rule == 'assume', "revert_intro: prev is not assume"
+        state.set_line(id, 'sorry', th=Thm.implies_intr(pt.th.prop, cur_item.th))
+        item = state.get_proof_item(id.incr_id(1))
+        state.set_line(id.incr_id(1), item.rule, args=item.args,
+                       prevs=[p for p in item.prevs if p != prevs[0]], th=item.th)
+        state.remove_line(prevs[0])
+
+
 class exists_elim(Method):
     """Make use of an exists fact."""
     def __init__(self):
         self.sig = ['names']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -442,13 +510,18 @@ class exists_elim(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Instantiate exists fact")
 
     def apply(self, state, id, data, prevs):
-        # Parse the list of variable names
-        names = [name.strip() for name in data['names'].split(',')]
         assert len(prevs) == 1, "exists_elim"
+
+        # Parse the list of variable names
+        ctxt = state.get_ctxt(id)
+        names = [name.strip() for name in data['names'].split(',')]
+        for name in names:
+            if name in ctxt.vars:
+                raise AssertionError("Instantiate exists: duplicate name %s" % name)
 
         exists_item = state.get_proof_item(prevs[0])
         exists_prop = exists_item.th.prop
@@ -459,16 +532,16 @@ class exists_elim(Method):
         # Add one line for each variable, and one line for body of exists
         state.add_line_before(id, len(vars) + 1)
         for i, var in enumerate(vars):
-            state.set_line(incr_id(id, i), 'variable', args=(var.name, var.T), prevs=[])
-        state.set_line(incr_id(id, len(vars)), 'assume', args=body, prevs=[])
+            state.set_line(id.incr_id(i), 'variable', args=(var.name, var.T), prevs=[])
+        state.set_line(id.incr_id(len(vars)), 'assume', args=body, prevs=[])
 
         # Find the intros at the end, append exists fact and new variables
         # and assumptions to prevs.
-        new_intros = [prevs[0]] + [incr_id(id, i) for i in range(len(vars)+1)]
+        new_intros = [prevs[0]] + [id.incr_id(i) for i in range(len(vars)+1)]
         i = len(vars) + 1
         while True:
             try:
-                item = state.get_proof_item(incr_id(id, i))
+                item = state.get_proof_item(id.incr_id(i))
             except ProofException:
                 raise AssertionError("exists_elim: cannot find intros at the end")
             else:
@@ -480,7 +553,7 @@ class exists_elim(Method):
                     item.prevs = item.prevs[:-1] + new_intros + [item.prevs[-1]]
                     break
                 else:
-                    state.set_line(incr_id(id, i), item.rule, args=item.args, prevs=item.prevs, \
+                    state.set_line(id.incr_id(i), item.rule, args=item.args, prevs=item.prevs, \
                                    th=Thm(list(item.th.hyps) + [body], item.th.prop))
             i += 1
 
@@ -489,6 +562,7 @@ class forall_elim(Method):
     """Elimination of forall statement."""
     def __init__(self):
         self.sig = ['s']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -502,11 +576,17 @@ class forall_elim(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("forall elimination")
+    def display_step(self, state, data):
+        return pprint.N("Forall elimination")
 
     def apply(self, state, id, data, prevs):
-        t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
+        ctxt = state.get_ctxt(id)
+        t = parser.parse_term(ctxt, data['s'])
+
+        for v in term.get_vars(t):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Forall elimination: extra variable %s' % v.name)
+
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim', args=t, prevs=prevs)
 
@@ -514,6 +594,7 @@ class inst_exists_goal(Method):
     """Instantiate an exists goal."""
     def __init__(self):
         self.sig = ['s']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -529,25 +610,32 @@ class inst_exists_goal(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("instantiate exists goal")
+    def display_step(self, state, data):
+        return pprint.N("Instantiate exists goal")
 
     def apply(self, state, id, data, prevs):
-        t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
+        ctxt = state.get_ctxt(id)
+        t = parser.parse_term(ctxt, data['s'])
+
+        for v in term.get_vars(t):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Instantiate exists: extra variable %s' % v.name)
+
         state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
 class induction(Method):
     """Apply induction."""
     def __init__(self):
         self.sig = ['theorem', 'var']
-
+        self.limit = None
+        self.no_order = True
     def search(self, state, id, prevs, data=None):
         if data:
             return [data]
 
         cur_th = state.get_proof_item(id).th
-        if len(cur_th.hyps) > 0:
-            return []
+#        if len(cur_th.hyps) > 0:
+#            return []
 
         results = []
         for name, th in state.thy.get_data("theorems").items():
@@ -563,17 +651,17 @@ class induction(Method):
         return results
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         if 'var' in data:
-            return pprint.N("induction " + data['theorem'] + " var: " + data['var'])
+            return pprint.N("Induction " + data['theorem'] + " var: " + data['var'])
         else:
-            return pprint.N("induction " + data['theorem'])
+            return pprint.N("Induction " + data['theorem'])
 
     def apply(self, state, id, data, prevs):
         # Find variable
         ctxt = state.get_ctxt(id)
-        assert data['var'] in ctxt['vars'], "induction: cannot find variable."
-        var = Var(data['var'], ctxt['vars'][data['var']])
+        assert data['var'] in ctxt.vars, "induction: cannot find variable."
+        var = Var(data['var'], ctxt.vars[data['var']])
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
 
@@ -581,6 +669,7 @@ class new_var(Method):
     """Create new variable."""
     def __init__(self):
         self.sig = ['name', 'type']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -589,8 +678,9 @@ class new_var(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("variable " + data['name'] + " :: ") + data['type']
+    def display_step(self, state, data):
+        T = parser.parse_type(state.thy, data['type'])
+        return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(state.thy, T)
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -604,6 +694,7 @@ class apply_fact(Method):
     """
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
@@ -617,9 +708,8 @@ class apply_fact(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("Apply fact (f) " + print_id(prevs[0]) + " onto " + \
-                         ", ".join(print_id(id) for id in prevs[1:]))
+    def display_step(self, state, data):
+        return pprint.N("Apply fact (f) %s onto %s" % (data['fact_ids'][0], ", ".join(data['fact_ids'][1:])))
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -631,23 +721,40 @@ def apply_method(state, step):
     all necessary information.
 
     """
-    method = state.thy.get_method(step['method_name'])
-    goal_id = id_force_tuple(step['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
+    method = get_method(state.thy, step['method_name'])
+    goal_id = ItemID(step['goal_id'])
+    fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []
+    assert all(goal_id.can_depend_on(fact_id) for fact_id in fact_ids), \
+        "apply_method: illegal dependence."
     return method.apply(state, goal_id, step, fact_ids)
 
 @settings.with_settings
-def display_method(state, step):
+def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
     method = theory.global_methods[step['method_name']]
-    goal_id = id_force_tuple(step['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
-                if 'fact_ids' in step and step['fact_ids'] else []
-    search_res = method.search(state, goal_id, fact_ids, data=step)
-    assert len(search_res) == 1, "display_method: %s, %d result found." % (
-        step['method_name'], len(search_res))
-    return method.display_step(state, goal_id, search_res[0], fact_ids)
+    res = method.display_step(state, step)
+    res += pprint.N(' on ' + step['goal_id'])
+    if 'fact_ids' in step and len(step['fact_ids']) > 0:
+        res += pprint.N(' using ' + ','.join(step['fact_ids']))
+    return res
+
+@settings.with_settings
+def output_hint(state, step):
+    method = theory.global_methods[step['method_name']]
+    res = method.display_step(state, step)
+    if '_goal' in step:
+        if step['_goal']:
+            goals = [printer.print_term(state.thy, t) for t in step['_goal']]
+            res += pprint.KWRed(" goal ") + printer.commas_join(goals)
+        else:
+            res += pprint.KWGreen(" (solves)")
+
+    if '_fact' in step and len(step['_fact']) > 0:
+        facts = [printer.print_term(state.thy, t) for t in step['_fact']]
+        res += pprint.KWGreen(" fact ") + printer.commas_join(facts)
+
+    return res
 
 
 theory.global_methods.update({
@@ -663,6 +770,7 @@ theory.global_methods.update({
     "apply_resolve_step": apply_resolve_step(),
     "apply_fact": apply_fact(),
     "introduction": introduction(),
+    "revert_intro": revert_intro(),
     "forall_elim": forall_elim(),
     "exists_elim": exists_elim(),
     "inst_exists_goal": inst_exists_goal(),

@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TVar, TFun, boolT
 from kernel import term
 from kernel.term import Term, Var, Abs, Bound
+from kernel.macro import global_macros
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
@@ -12,7 +13,10 @@ from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic import logic
 from logic import basic
 from logic import matcher
+from logic.tests.conv_test import test_conv
 from data import nat
+from syntax import parser
+from logic.context import Context
 
 Ta = TVar("a")
 a = Var("a", boolT)
@@ -22,8 +26,34 @@ d = Var("d", boolT)
 x = Var("x", Ta)
 y = Var("y", Ta)
 
-thy = basic.load_theory('logic')
+def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", failed=None,
+               limit=None, eval_only=False):
+    ctxt = Context(thy, vars=vars, limit=limit)
+    thy = ctxt.thy
 
+    macro = global_macros[macro]
+    assms = [parser.parse_term(ctxt, assm)
+             for assm in assms] if assms is not None else []
+    prev_ths = [Thm([assm], assm) for assm in assms]
+    prevs = [ProofTerm.assume(assm) for assm in assms]
+    args = parser.parse_args(ctxt, macro.sig, args)
+
+    if failed is not None:
+        self.assertRaises(failed, macro.eval, thy, args, prev_ths)
+        if not eval_only:
+            self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
+        return
+
+    res = parser.parse_term(ctxt, res)
+
+    # Check the eval function
+    self.assertEqual(macro.eval(thy, args, prev_ths), Thm(assms, res))
+
+    # Check the proof term
+    if not eval_only:
+        pt = macro.get_proof_term(thy, args, prevs)
+        prf = pt.export()
+        self.assertEqual(thy.check_proof(prf), Thm(assms, res))
 
 class LogicTest(unittest.TestCase):
     def testConj(self):
@@ -78,80 +108,66 @@ class LogicTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            self.assertEqual(logic.get_forall_names(t, []), res)
+            self.assertEqual(logic.get_forall_names(t), res)
 
     def testNormBoolExpr(self):
-        neg, true, false = logic.neg, logic.true, logic.false
         test_data = [
-            (true, true),
-            (false, false),
-            (neg(true), false),
-            (neg(false), true),
+            ("true", "true"),
+            ("false", "false"),
+            ("~true", "false"),
+            ("~false", "true"),
         ]
 
-        thy = basic.load_theory('logic')
-        for t, res in test_data:
-            cv = logic.norm_bool_expr()
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+        for t, t_res in test_data:
+            test_conv(self, 'logic', logic.norm_bool_expr(), t=t, t_res=t_res)
 
     def testNormConjAssoc(self):
-        conj = logic.mk_conj
         test_data = [
-            (a, a),
-            (conj(a, b), conj(a, b)),
-            (conj(conj(a, b), conj(c, d)), conj(a, b, c, d)),
-            (conj(conj(conj(a, b), c), d), conj(a, b, c, d)),
+            ("A", "A"),
+            ("A & B", "A & B"),
+            ("(A & B) & (C & D)", "A & B & C & D"),
+            ("((A & B) & C) & D", "A & B & C & D"),
         ]
 
-        thy = basic.load_theory('logic')
-        for t, res in test_data:
-            cv = logic.norm_conj_assoc()
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+        vars = {'A': 'bool', 'B': 'bool'}
+        for t, t_res in test_data:
+            test_conv(self, 'logic', logic.norm_conj_assoc(), vars=vars, t=t, t_res=t_res)
 
     def testBetaNorm(self):
-        Ta = TVar("a")
-        x = Var("x", Ta)
-        y = Var("y", Ta)
-        f = Var("f", TFun(Ta,Ta))
-
-        t = Term.mk_abs(x, f(x))
-        prf = Proof(Term.mk_equals(t(x), y))
-        prf.add_item(1, "beta_norm", prevs=[0])
-        prf.add_item(2, "implies_intr", args=Term.mk_equals(t(x), y), prevs=[1])
-
-        th = Thm.mk_implies(Term.mk_equals(t(x), y), Term.mk_equals(f(x), y))
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 8)
-
-        rpt2 = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
-        self.assertEqual(rpt2.prim_steps, 2)
-        self.assertEqual(rpt2.macro_steps, 1)
+        test_macro(
+            self, 'logic_base', "beta_norm",
+            vars={'f': "'a => 'b", 'x': "'a", 'y': "'b"},
+            assms=["(%x. f x) x = y"],
+            res="f x = y")
 
     def testApplyTheorem(self):
-        A = Var("A", boolT)
-        B = Var("B", boolT)
+        test_macro(
+            self, 'logic_base', "apply_theorem",
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=["A & B"],
+            args="conjD1",
+            res="A"
+        )
 
-        th = Thm([logic.mk_conj(A, B)], A)
+    def testApplyTheorem2(self):
+        test_macro(
+            self, 'set', 'apply_theorem',
+            vars={'A': "'a set", 'B': "'a set", 'C': "'a set"},
+            assms=["A Sub B"],
+            args="subset_trans",
+            res="!C. B Sub C --> A Sub C"
+        )
 
-        prf = Proof(logic.mk_conj(A, B))
-        prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 3)
-
-        # Reset data for the next check
-        prf = Proof(logic.mk_conj(A, B))
-        prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt, check_level=1), th)
-        self.assertEqual(rpt.prim_steps, 1)
-        self.assertEqual(rpt.macro_steps, 1)
+    def testApplyTheorem3(self):
+        test_macro(
+            self, 'set', 'apply_theorem_for',
+            vars={'A': 'nat set'},
+            args="subset_trans, {a: nat}, {A: A}",
+            res="!B. !C. A Sub B --> B Sub C --> A Sub C"
+        )
 
     def testIntro(self):
+        thy = basic.load_theory('logic_base')
         macro = logic.intros_macro()
 
         Ta = TVar('a')
@@ -168,97 +184,107 @@ class LogicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), Thm([ex_P], C))
 
     def testRewriteGoal(self):
-        thy = basic.load_theory('nat')
+        test_macro(
+            self, 'nat', "rewrite_goal",
+            args=("nat_plus_def_1, (0::nat) + 0 = 0"),
+            res="(0::nat) + 0 = 0"
+        )
 
-        n = Var("n", nat.natT)
-        eq = Term.mk_equals
-        zero = nat.zero
-        plus = nat.mk_plus
-        prf = Proof()
-        prf.add_item(0, "rewrite_goal", args=("nat_plus_def_1", eq(plus(zero,zero),zero)))
+    def testRewriteGoal2(self):
+        test_macro(
+            self, 'set', 'rewrite_goal_sym',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set"},
+            args=("image_combine, image f (image g s) = t"),
+            assms=["image (f O g) s = t"],
+            res="image f (image g s) = t"
+        )
 
-        th = Thm([], eq(plus(zero,zero),zero))
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 8)
+    def testRewriteFactWithPrev(self):
+        test_macro(
+            self, 'nat', 'rewrite_fact_with_prev',
+            vars={'m': 'nat', 'n': 'nat', 'p': 'nat', 'q': 'nat'},
+            assms=['p = m + n', 'p = q'],
+            res='m + n = q'
+        )
 
-        rpt2 = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
-        self.assertEqual(rpt2.prim_steps, 0)
-        self.assertEqual(rpt2.macro_steps, 1)
+    def testRewriteFactWithPrev2(self):
+        test_macro(
+            self, 'nat', 'rewrite_fact_with_prev',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n', 'f x = a'],
+            res='g x = a'
+        )
+
+    def testRewriteFactWithPrev3(self):
+        test_macro(
+            self, 'nat', 'rewrite_fact_with_prev',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n', '?x. f x = a'],
+            res='?x. g x = a'
+        )
 
     def testTrivialMacro(self):
-        macro = logic.trivial_macro()
-        A = Var("A", boolT)
-        B = Var("B", boolT)
-        imp = Term.mk_implies
-        test_data = [
-            imp(A, A),
-            imp(A, B, A),
-            imp(A, A, B, A),
-        ]
+        test_macro(
+            self, 'logic_base', 'trivial',
+            vars={'A': 'bool', 'B': 'bool'},
+            args='A --> B --> A',
+            res='A --> B --> A'
+        )
 
-        for t in test_data:
-            pt = macro.get_proof_term(thy, t, [])
-            prf = pt.export()
-            self.assertEqual(thy.check_proof(prf), Thm([], t))
+    def testTrivialMacro2(self):
+        test_macro(
+            self, 'logic_base', 'trivial',
+            vars={'A': 'bool', 'B': 'bool'},
+            args='A --> A --> B --> A',
+            res='A --> A --> B --> A'
+        )
+
+    def testTrivialMacro3(self):
+        test_macro(
+            self, 'logic_base', 'trivial',
+            vars={'P': "'a => bool", 'Q': "'a => bool"},
+            args='!x. P x --> Q x --> P x',
+            res='!x. P x --> Q x --> P x'
+        )
 
     def testApplyFactMacro(self):
-        macro = logic.apply_fact_macro()
-        Ta = TVar("a")
-        P = Var("P", TFun(Ta, boolT))
-        Q = Var("Q", TFun(Ta, boolT))
-        s = Var("s", Ta)
-        pt = ProofTerm.assume(Term.mk_all(s, Term.mk_implies(P(s), Q(s))))
-        pt2 = ProofTerm.assume(P(s))
-        pt3 = macro.get_proof_term(thy, None, [pt, pt2])
-        prf = pt3.export()
-        self.assertEqual(thy.check_proof(prf).prop, Q(s))
+        test_macro(
+            self, 'logic_base', 'apply_fact',
+            vars={"P": "'a => bool", "Q": "'a => bool", "s": "'a"},
+            assms=["!s. P s --> Q s", "P s"],
+            res="Q s"
+        )
+
+    def testApplyFactMacro2(self):
+        test_macro(
+            self, 'logic_base', 'apply_fact',
+            vars={'P': "'a => bool", 'R': "'a => 'a => bool", 's': "'a"},
+            assms=['!x. !y. P x --> R x y', 'P s'],
+            res="!y. R s y"
+        )
+
+    def testApplyFactMacro3(self):
+        test_macro(
+            self, 'logic_base', 'apply_fact',
+            vars={'P': "'a => bool", 'R': "'a => 'a => bool", 's': "'a"},
+            assms=['!x. !y. P y --> R x y', 'P s'],
+            res="!x. R x s"
+        )
 
     def testImpConjMacro(self):
-        macro = logic.imp_conj_macro()
-        A = Var("A", boolT)
-        B = Var("B", boolT)
-        C = Var("C", boolT)
-        D = Var("D", boolT)
-        imp = Term.mk_implies
-        conj = logic.mk_conj
         test_data = [
-            (imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(A, B))), True),
-            (imp(conj(C, D), A), False),
-            (imp(conj(A, B), conj(A, conj(B, C))), False),
-            (imp(conj(A, conj(B, C)), conj(A, B)), True),
+            ('A & (D & B) & C --> (A & D & C) & (A & B)', True),
+            ('C & D --> A', False),
+            ('A & B --> A & B & C', False),
+            ('A & B & C --> A & B', True)
         ]
 
-        for t, res in test_data:
-            if res:
-                pt = macro.get_proof_term(thy, t, [])
-                self.assertEqual(pt.th, Thm([], t))
-                prf = pt.export()
-                thy.check_proof(prf)
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
+        for t, success in test_data:
+            if success:
+                test_macro(self, 'logic_base', 'imp_conj', vars=vars, args=t, res=t)
             else:
-                self.assertRaises(AssertionError, macro.get_proof_term, thy, t, [])
-
-    def testImpConjMacroEval(self):
-        macro = logic.imp_conj_macro()
-        A = Var("A", boolT)
-        B = Var("B", boolT)
-        C = Var("C", boolT)
-        D = Var("D", boolT)
-        imp = Term.mk_implies
-        conj = logic.mk_conj
-        test_data = [
-            (imp(conj(conj(A, conj(D, B))), conj(conj(A, D), conj(B, A))), True),
-            (imp(B, C), False),
-            (imp(conj(A, B), conj(A, conj(B, C))), False),
-            (imp(conj(A, conj(B, C)), conj(A, B)), True),
-        ]
-
-        for t, res in test_data:
-            if res:
-                self.assertEqual(macro.eval(thy, t, []), Thm([], t))
-            else:
-                self.assertRaises(AssertionError, macro.eval, thy, t, [])
+                test_macro(self, 'logic_base', 'imp_conj', vars=vars, args=t, failed=AssertionError)
 
 
 if __name__ == "__main__":

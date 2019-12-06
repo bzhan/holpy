@@ -3,9 +3,10 @@
     <div v-if="proof !== undefined">
       <ProofLine v-for="(line, index) in proof"
                  v-bind:key="index" v-bind:line="line"
-                 v-bind:is_last_id="is_last_id(proof, index)"
+                 v-bind:is_last_id="is_last_id(index)"
                  v-bind:is_goal="goal === index"
                  v-bind:is_fact="facts.indexOf(index) !== -1"
+                 v-bind:can_select="can_select(goal, index)"
                  v-on:select="mark_text(index)"/>
     </div>
   </div>
@@ -49,7 +50,8 @@ export default {
 
     // Area for displaying status and context
     'ref_status',
-    'ref_context'
+    'ref_context',
+    'editor'
   ],
 
   data: function () {
@@ -64,21 +66,22 @@ export default {
       goal: -1,
       facts: new Set(),
       proof: undefined,
+
+      // Maximum index in history that is read.
+      max_loaded: -1,
     }
   },
 
   methods: {
     step_backward: function () {
       if (this.index > 0) {
-        this.index--;
-        this.display_instructions();
+        this.gotoStep(this.index - 1);
       }
     },
 
     step_forward: function () {
       if (this.index < this.history.length-1) {
-        this.index++;
-        this.display_instructions();
+        this.gotoStep(this.index + 1);
       }
     },
 
@@ -92,47 +95,29 @@ export default {
       this.ref_status.trace = trace
     },
 
-    display_checked_proof: function (result) {
-      if ('err_type' in result) {
-        this.display_error(result.err_type, result.err_str, result.trace)
+    compute_new_goal: function (start) {
+      // Start search from the current goal, or the beginning
+      // if there is no current goal.
+      var pre_line_no = start
+      var new_line_no = undefined
+      for (var i = pre_line_no; i < this.proof.length; i++) {
+        if (this.proof[i].rule === 'sorry') {
+          new_line_no = i
+          break
+        }
+      }
+      if (new_line_no === undefined) {  // Past the last goal
+        return -1
       } else {
-        this.proof = result.proof
-        var numGaps = result.report.num_gaps
-        this.num_gaps = numGaps
-        if (numGaps > 0) {
-          this.display_status('OK. ' + numGaps + ' gap(s) remaining.')
-        } else {
-          this.display_status('OK. Proof complete!')
-        }
+        return new_line_no
+      }
+    },
 
-        if ('goal' in result) {
-          // Looking at a previous step, already has goal_id and fact_id
-          this.goal = result.goal
-          this.facts = []
-          if ('facts' in result) {
-            this.facts = result.facts
-          }
-        } else {
-          var newLineNo = -1
-          var preLineNo = 0
-          if (this.goal !== -1) {
-            preLineNo = this.goal
-          }
-          for (var i = preLineNo; i < this.proof.length; i++) {
-            if (this.proof[i].rule === 'sorry') {
-              newLineNo = i
-              break
-            }
-          }
-          if (newLineNo === -1) {
-            this.facts = []
-            this.goal = -1
-          } else {
-            this.facts = []
-            this.goal = newLineNo
-          }
-        }
-        this.match_thm()
+    display_num_gaps: function () {
+      if (this.num_gaps > 0) {
+        this.display_status('OK. ' + this.num_gaps + ' gap(s) remaining.')
+      } else {
+        this.display_status('OK. Proof complete!')
       }
     },
 
@@ -146,25 +131,36 @@ export default {
     },
 
     display_instructions: function () {
-      var hId = this.index
-      this.ref_status.instr = this.history[hId].steps_output
-      this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
-
-      var proof_info = {
-        proof: this.history[hId].proof,
-        report: this.history[hId].report
-      }
-      if (hId < this.steps.length) {
-        // Find line number corresponding to ids
-        proof_info.goal = this.get_line_no_from_id(this.steps[hId].goal_id)
-        proof_info.facts = []
-        if (this.steps[hId].fact_ids !== undefined) {
-          this.steps[hId].fact_ids.forEach(
-            v => proof_info.facts.push(this.get_line_no_from_id(v))
-          )
+      if (this.history[this.index] !== undefined) {
+        if (this.index === this.history.length - 1) {
+          this.ref_status.instr = [{text: "Current state", color: 0}]
+        } else {
+          this.ref_status.instr = this.history[this.index].steps_output
         }
+        this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
+      } else {
+        this.ref_status.instr = ''
+        this.ref_status.instr_no = ''
       }
-      this.display_checked_proof(proof_info)
+    },
+
+    display_history: function () {
+      // Display history in ref_context
+      var steps = []
+      var h_len = this.history.length
+      for (let i = 0; i < h_len-1; i++) {
+        steps.push({
+          error: this.history[i].error,
+          steps_output: this.history[i].steps_output,
+          is_read: this.max_loaded >= i
+        })
+      }
+      steps.push({
+        error: this.history[h_len-1].error,
+        steps_output: [{text: "Current state", color: 0}],
+        is_read: this.max_loaded >= h_len-1
+      })
+      this.ref_context.steps = steps
     },
 
     current_state: function () {
@@ -179,6 +175,7 @@ export default {
 
       return {
         username: this.$state.user,
+        profile: this.editor.profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         proof: {
@@ -224,7 +221,7 @@ export default {
       if (res === undefined)
           return;
 
-      this.apply_method(res._method_name, res);
+      this.apply_method(res.method_name, res);
     },
 
     // Apply method with the given method name, on the given
@@ -233,7 +230,15 @@ export default {
       var sigs = this.method_sig[method_name]
       var input = this.current_state()
       input.step.method_name = method_name
-      if (args === undefined) {
+
+      if (args !== undefined) {
+        // Use information from args, as the order between
+        // fact_ids may be important.
+        input.step.goal_id = args.goal_id
+        if (args.fact_ids !== undefined)
+          input.step.fact_ids = args.fact_ids
+      } else {
+        // Case for choosing from the menu.
         args = {}
       }
 
@@ -267,6 +272,83 @@ export default {
         this.display_status('Running')
         this.apply_method_ajax(input)
       }
+    },
+
+    loadSteps: async function () {
+      var result = undefined
+      const at_end = (this.index === this.history.length-1)
+      const input = {
+        username: this.$state.user,
+        theory_name: this.theory_name,
+        thm_name: this.thm_name,
+        proof: {
+          vars: this.vars,
+          proof: this.history[this.max_loaded+1].proof
+        },
+        steps: this.steps.slice(this.max_loaded+1, at_end ? this.index : this.index+1)
+      }
+      try {
+        result = await axios.post('http://127.0.0.1:5000/api/apply-steps', JSON.stringify(input))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
+      if (result === undefined) {
+        this.display_status('Server error')
+        return
+      }
+
+      const history = result.data.history
+      const h_len = history.length
+      for (let i = 0; i < h_len-1; i++) {
+        this.history[this.max_loaded+i+1] = history[i]
+      }
+      const history_last = this.history[this.max_loaded+h_len]
+      history_last.proof = history[h_len-1].proof
+      history_last.num_gaps = history[h_len-1].num_gaps
+      history_last.error = history[h_len-1].error
+      this.max_loaded = this.index
+    },
+
+    // Go to the step given by index
+    gotoStep: async function (index) {
+      this.index = index
+      if (this.index > this.max_loaded) {
+        await this.loadSteps()
+      }
+      this.proof = this.history[index].proof
+      this.num_gaps = this.history[index].num_gaps
+      this.facts = []
+      if (index === this.steps.length) {
+        this.goal = this.compute_new_goal(0)
+      } else {
+        this.goal = this.get_line_no_from_id(this.steps[index].goal_id)
+        const fact_ids = this.steps[index].fact_ids
+        if (fact_ids !== undefined) {
+          for (let i = 0; i < fact_ids.length; i++) {
+            let fact_no = this.get_line_no_from_id(fact_ids[i])
+            if (this.can_select(this.goal, fact_no)) {
+              this.facts.push(fact_no)
+            }
+          }
+        }
+      }
+      this.ref_context.selected_step = this.index
+      this.display_history()
+      this.display_num_gaps()
+      this.display_instructions()
+      this.match_thm()
+    },
+
+    // Delete the step given by index
+    deleteStep: function (index) {
+      this.history[index+1].proof = this.history[index].proof
+      this.history.splice(index, 1)
+      this.steps.splice(index, 1)
+      this.max_loaded = index-1
+      this.gotoStep(index)
     },
 
     apply_method_ajax: async function (input) {
@@ -309,28 +391,52 @@ export default {
       } else {
         // Success
         var hId = this.index
-        this.steps[hId] = input.step
-        this.steps.length = hId + 1
+        this.steps.splice(hId, 0, input.step)
         if (this.steps[hId].fact_ids.length === 0) {
           delete this.steps[hId].fact_ids
         }
-        this.history[hId].steps_output = result.data.steps_output
-        this.history[hId + 1] = {
-          steps_output: [{text: "Current state", color: 0}],
-          proof: result.data.proof,
-          report: result.data.report
+        if (this.index == this.history.length-1) {
+          // At end
+          this.history.splice(hId+1, 0, {
+            proof: result.data.proof,
+            num_gaps: result.data.num_gaps
+          })
+          this.history[hId].steps_output = result.data.steps_output
+        } else {
+          // In the middle
+          this.history.splice(hId, 0, {
+            steps_output: result.data.steps_output,
+            proof: this.history[hId].proof,
+            num_gaps: this.history[hId].num_gaps
+          })
+          this.history[hId + 1].proof = result.data.proof
+          this.history[hId + 1].num_gaps = result.data.num_gaps
         }
-        this.history.length = hId + 2
-        this.index += 1
-        this.display_instructions()
+        this.max_loaded = hId
+        this.gotoStep(hId + 1)
       }
     },
 
-    is_last_id: function (proof, lineNo) {
-      if (proof.length - 1 === lineNo) {
+    is_last_id: function (line_no) {
+      if (this.proof.length - 1 === line_no) {
         return true
       }
-      return proof[lineNo + 1].rule === 'intros'
+      return this.proof[line_no + 1].rule === 'intros'
+    },
+
+    can_select: function (goal, line_no) {
+      if (goal === -1)
+        return false
+
+      const goal_id = this.proof[goal].id.split('.')
+      const fact_id = this.proof[line_no].id.split('.')
+      const len = fact_id.length
+      if (len > goal_id.length)
+        return false
+      for (let i = 0; i < len-1; i++)
+        if (fact_id[i] !== goal_id[i])
+          return false
+      return Number(fact_id[len-1]) < Number(goal_id[len-1])
     },
 
     // Select goal or fact
@@ -340,6 +446,10 @@ export default {
         this.goal = line_no;
       }
       else if (this.goal !== -1) {
+        if (!this.can_select(this.goal, line_no)) {
+          // Goal cannot depend on this fact
+          return
+        }
         // Choose or unchoose a fact
         let i = this.facts.indexOf(line_no);
         if (i === -1)
@@ -380,18 +490,17 @@ export default {
       this.method_sig = response.data.method_sig
       this.steps = []
       this.history = [{
-        steps_output: [{text: "Current state", color: 0}],
         proof: response.data.proof,
-        report: response.data.report
+        num_gaps: response.data.num_gaps
       }]
-      this.index = 0
-      this.display_instructions()
+      this.gotoStep(0)
     },
 
     init_saved_proof: async function () {
       // Has existing proof
       const data = {
         username: this.$state.user,
+        profile: this.editor !== undefined && this.editor.profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         proof: {
@@ -419,44 +528,33 @@ export default {
       if ('err_type' in response.data) {
         this.display_error(response.data.err_type, response.data.err_str, response.data.trace)
       } else {
-        this.goal = -1
         this.method_sig = response.data.method_sig
-        this.steps = response.data.steps
-        if (response.data.history !== undefined) {
+        if (response.data.steps !== undefined) {
+          // Case with history
+          this.steps = response.data.steps
           this.history = response.data.history
-          this.index = response.data.history.length - 1
-          this.display_instructions()
+          this.max_loaded = this.history.length-1
+          this.gotoStep(this.history.length-1)
         } else {
+          // Case without history
+          this.num_gaps = response.data.num_gaps
+          this.goal = -1
+          this.facts = []
           this.proof = response.data.proof
-          this.display_checked_proof(response.data)
+          this.display_num_gaps()
+          this.display_instructions()
+          this.match_thm()
         }
       }
     },
 
     init_proof: async function () {
-      if (this.old_steps === undefined) {
+      if (this.old_proof === undefined) {
         this.init_empty_proof()
       } else {
         this.init_saved_proof()
       }
     },
-
-    undo_move: function () {
-      var h_id = this.index;
-      if (h_id < this.steps.length) {
-          // Perform undo only when at end
-          return;
-      }
-
-      this.history.length -= 1;
-      this.history[h_id-1].steps_output = [{text: "Current state", color: 0}]
-      this.index = h_id - 1;
-      this.display_instructions();
-
-      // Remove last step after display_instructions, so goal and fact_no can
-      // be used during display.
-      this.steps.length -= 1;
-    }
   },
 
   async mounted() {

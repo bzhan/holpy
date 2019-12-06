@@ -7,15 +7,13 @@ import json
 from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from kernel.proof import Proof
 from kernel import theory
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
-from data import nat
-from data import list
-from data import function
+from syntax import parser
 from syntax import printer
+from logic.context import Context
 from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
@@ -26,12 +24,66 @@ A = Var("A", boolT)
 B = Var("B", boolT)
 conj = logic.mk_conj
 disj = logic.mk_disj
-imp = Term.mk_implies
-neg = logic.neg
-exists = logic.mk_exists
 
-def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
-                print_stat=False, print_search=False, print_steps=False):
+def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
+                gaps=None, lines=None, query=None, failed=None):
+    """Test run a method.
+
+    gaps -- expected gaps remaining.
+    query -- expected query for variables.
+    failed -- if None, expected Exception.
+
+    """
+    # Build context
+    ctxt = Context(thy, vars=vars)
+    thy = ctxt.thy
+
+    # Build starting state
+    vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
+    if assms is not None:
+        assert isinstance(assms, list), "test_method: assms need to be a list"
+        assms = [parser.parse_term(ctxt, t) for t in assms]
+    else:
+        assms = []
+    concl = parser.parse_term(ctxt, concl)
+    state = ProofState.init_state(thy, vars, assms, concl)
+
+    # Obtain and run method
+    if args is None:
+        args = dict()
+    args['method_name'] = method_name
+    args['goal_id'] = len(assms)
+    args['fact_ids'] = prevs
+
+    if failed is not None:
+        self.assertRaises(failed, method.apply_method, state, args)
+        return
+
+    if query is not None:
+        self.assertRaises(theory.ParameterQueryException, method.apply_method, state, args)
+        return
+
+    method.apply_method(state, args)
+    self.assertEqual(state.check_proof(), Thm.mk_implies(*(assms + [concl])))
+    
+    # Compare list of gaps
+    if gaps is None:
+        gaps = [concl]  # gaps unchanged
+    elif gaps == False:
+        gaps = []  # assert no gaps
+    else:
+        assert isinstance(gaps, list), "test_method: gaps need to be a list"
+        gaps = [parser.parse_term(ctxt, gap) for gap in gaps]
+    self.assertEqual([gap.prop for gap in state.rpt.gaps], gaps)
+
+    # Compare list of lines
+    if lines:
+        for id, t in lines.items():
+            t = parser.parse_term(ctxt, t)
+            self.assertEqual(state.get_proof_item(id).th.prop, t)
+
+def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
+              print_stat=False, print_search=False, print_steps=False):
     """Test list of steps for the given theorem."""
     def test_val(thy, val):
         state = ProofState.parse_init_state(thy, val)
@@ -46,7 +98,7 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 if 'fact_ids' not in step:
                     step['fact_ids'] = []
                 if print_steps:
-                    print(method.display_method(state, step))
+                    print(method.output_step(state, step))
                 if print_search:
                     select_ids = "goal " + step['goal_id']
                     if step['fact_ids']:
@@ -55,20 +107,20 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 search_res = state.search_method(step['goal_id'], step['fact_ids'])
                 found = 0
                 for res in search_res:
-                    m = theory.global_methods[res['_method_name']]
-                    if res['_method_name'] == step['method_name'] and \
-                       all(sig not in res or res[sig] == step[sig] for sig in m.sig):
+                    m = theory.global_methods[res['method_name']]
+                    if res['method_name'] == step['method_name'] and \
+                       all(sig not in res or sig not in step or res[sig] == step[sig] for sig in m.sig):
                         if print_search:
-                            print('* ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                            print('* ' + m.display_step(state, res))
                         found += 1
                     else:
                         if print_search:
-                            print('  ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                            print('  ' + m.display_step(state, res))
                 assert found <= 1, "test_val: multiple found"
                 if found == 0:
                     if print_search:
                         m = theory.global_methods[step['method_name']]
-                        print('- ' + m.display_step(state, step['goal_id'], step, step['fact_ids']))
+                        print('- ' + m.display_step(state, step))
                 else:
                     num_found += 1
             method.apply_method(state, step)
@@ -87,31 +139,21 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
             if val['ty'] == 'thm' and val['name'] == thm_name:
                 test_val(thy, val)
 
-
 class ServerTest(unittest.TestCase):
-    def testIncrIdAfter(self):
-        test_data = [
-            (((0,), (0,), 1), (1,),),
-            (((0, 1), (0,), 1), (1, 1)),
-            (((1,), (2, 2), 1), (1,)),
-            (((2, 1), (2, 2), 1), (2, 1)),
-            (((2, 2), (2, 2), 1), (2, 3)),
-            (((2, 3, 2), (2, 2), 1), (2, 4, 2)),
-            (((3,), (2, 2), 1), (3,)),
-        ]
-
-        for (id, start, n), res in test_data:
-            self.assertEqual(server.incr_id_after(id, start, n), res)
-
-    def testInitProof(self):
+    def testInitState(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
-    def testInitProof2(self):
+    def testInitState2(self):
         state = ProofState.init_state(thy, [A, B], [A, B], conj(A, B))
         self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
+
+    def testInitState3(self):
+        state = ProofState.init_state(thy, [A], [], disj(A, logic.neg(A)))
+        self.assertEqual(len(state.prf.items), 2)
+        self.assertEqual(state.check_proof(), Thm([], disj(A, logic.neg(A))))
 
     def testParseInitState(self):
         state = ProofState.parse_init_state(
@@ -125,7 +167,7 @@ class ServerTest(unittest.TestCase):
         json_data = state.json_data()
         self.assertEqual(len(json_data['vars']), 2)
         self.assertEqual(len(json_data['proof']), 3)
-        self.assertIn('report', json_data)
+        self.assertEqual(json_data['num_gaps'], 1)
 
     def testParseProof(self):
         data = {
@@ -152,7 +194,7 @@ class ServerTest(unittest.TestCase):
 
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(0), {'vars': {'A': boolT, 'B': boolT}})
+        self.assertEqual(state.get_ctxt(0), Context(thy, vars={'A': 'bool', 'B': 'bool'}))
 
     def testAddLineBefore(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
@@ -179,222 +221,612 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
+    def run_search_thm(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, res):
+        # Build context
+        ctxt = Context(thy, vars=vars)
+        thy = ctxt.thy
+
+        # Build starting state
+        vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
+        assms = [parser.parse_term(ctxt, t) for t in assms] if assms is not None else []
+        concl = parser.parse_term(ctxt, concl)
+        state = ProofState.init_state(thy, vars, assms, concl)
+
+        # Obtain method and run its search function
+        method = theory.global_methods[method_name]
+        search_res = state.apply_search(len(assms), method, prevs=prevs)
+        self.assertEqual([res['theorem'] for res in search_res], res)
+
+    def testCases(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B | C',
+            method_name='cases',
+            args={'case': 'B'},
+            gaps=['B --> B | C', '~B --> B | C']
+        )
+
+    def testCasesFail(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B | C',
+            method_name='cases',
+            args={'case': '(A::bool)'},
+            failed=AssertionError
+        )
+
+    def testGoal(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B & C',
+            method_name='cut',
+            args={'goal': 'B'},
+            gaps=['B', 'B & C']
+        )
+
+    def testGoalFail(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B & C',
+            method_name='cut',
+            args={'goal': '(A::bool)'},
+            failed=AssertionError
+        )
+
     def testApplyBackwardStepThms(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        search_res = state.apply_search(1, method.apply_backward_step())
-        self.assertEqual([res['theorem'] for res in search_res], ["conjI"])
+        self.run_search_thm(
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='apply_backward_step',
+            res=['conjI']
+        )
 
     def testApplyBackwardStepThms2(self):
-        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        search_res = state.apply_search(1, method.apply_backward_step(), prevs=[0])
-        self.assertEqual([res['theorem'] for res in search_res], ["disjE"])
+        self.run_search_thm(
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A | B'],
+            concl='B | A',
+            method_name='apply_backward_step',
+            prevs=[0],
+            res=['contrapositive', 'disjE']
+        )
 
     def testApplyBackwardStepThms3(self):
         """Example of two results."""
-        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        search_res = state.apply_search(1, method.apply_backward_step())
-        self.assertEqual([res['theorem'] for res in search_res], ["disjI1", "disjI2"])
+        self.run_search_thm(
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A | B'],
+            concl='B | A',
+            method_name='apply_backward_step',
+            res=['disjI1', 'disjI2']
+        )
+
+    def testApplyBackwardStepThms4(self):
+        """Example with no variables."""
+        self.run_search_thm(
+            'logic_base',
+            concl='true',
+            method_name='apply_backward_step',
+            res=['trueI']
+        )
 
     def testApplyBackwardStep(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.apply_backward_step(1, "conjI")
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        self.assertEqual(len(state.rpt.gaps), 2)
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='apply_backward_step',
+            args={'theorem': 'conjI'},
+            gaps=['B', 'A']
+        )
 
     def testApplyBackwardStep2(self):
         """Case where one or more assumption also needs to be matched."""
-        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        state.apply_backward_step(1, "disjE", prevs=[0])
-        self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
-        self.assertEqual(len(state.rpt.gaps), 2)
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A | B'],
+            concl='B | A',
+            method_name='apply_backward_step',
+            args={'theorem': 'disjE'},
+            prevs=[0],
+            gaps=['A --> B | A', 'B --> B | A']
+        )
 
     def testApplyBackwardStep3(self):
-        """Test handling of additional instantiations."""
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
-        state.apply_backward_step(1, "conjD1", instsp=(dict(), {'B': B}))
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(conj(A, B), A))
+        """Test when additional instantiation is not provided."""
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='A',
+            method_name='apply_backward_step',
+            args={'theorem': 'conjD1'},
+            query=['B']
+        )
 
     def testApplyBackwardStep4(self):
         """Test when additional instantiation is not provided."""
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
-        self.assertRaises(theory.ParameterQueryException, state.apply_backward_step, 1, "conjD1")
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='A',
+            method_name='apply_backward_step',
+            args={'theorem': 'conjD1', 'param_B': 'B'},
+            gaps=False
+        )
+
+    def testApplyBackwardStep5(self):
+        """Test case with type variable only."""
+        test_method(self,
+            'set',
+            concl='finite (empty_set::nat set)',
+            method_name='apply_backward_step',
+            args={'theorem': 'finite_empty'},
+            gaps=False
+        )
+
+    def testApplyForwardStepThms(self):
+        self.run_search_thm(
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='apply_forward_step',
+            prevs=[0],
+            res=['conjD1', 'conjD2']
+        )
 
     def testApplyForwardStep1(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.apply_forward_step(1, "conjD1", prevs=[0])
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        item = state.get_proof_item((1,))
-        self.assertEqual(item.th.concl, A)
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='apply_forward_step',
+            args={'theorem': 'conjD1'},
+            prevs=[0],
+            lines={'1': 'A'}
+        )
 
     def testApplyForwardStep2(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.apply_forward_step(1, "conjD2", prevs=[0])
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        item = state.get_proof_item((1,))
-        self.assertEqual(item.th.concl, B)
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A'],
+            concl='A | B',
+            method_name='apply_forward_step',
+            args={'theorem': 'disjI1'},
+            prevs=[0],
+            query=['B']
+        )
 
     def testApplyForwardStep3(self):
-        state = ProofState.init_state(thy, [A, B], [A], disj(A, B))
-        method.apply_method(state, {
-            'method_name': 'apply_forward_step',
-            'goal_id': "1", 'fact_ids': ["0"], 'theorem': 'disjI1',
-            'param_B': "B"})
-        self.assertEqual(state.check_proof(), Thm.mk_implies(A, disj(A, B)))
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A'],
+            concl='A | B',
+            method_name='apply_forward_step',
+            args={'theorem': 'disjI1', 'param_B': 'B'},
+            prevs=[0],
+            gaps=False
+        )
 
     def testApplyForwardStep4(self):
-        state = ProofState.init_state(thy, [A, B], [A], disj(A, B))
-        self.assertRaises(theory.ParameterQueryException, method.apply_method,
-            state, {'method_name': 'apply_forward_step',
-                    'goal_id': "1", 'fact_ids': ["0"], 'theorem': 'disjI1'})
+        test_method(self,
+            'set',
+            vars={'A': 'nat set', 'B': 'nat set'},
+            assms=['A Sub B'],
+            concl='false',
+            method_name='apply_forward_step',
+            args={'theorem': 'subset_trans', 'param_C': ''},
+            prevs=[0],
+            lines={'1': '!C. B Sub C --> A Sub C'}
+        )
 
-    def testApplyForwardStepThms1(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        search_res = state.apply_search(1, method.apply_forward_step(), prevs=[0])
-        self.assertEqual([res['theorem'] for res in search_res], ['conjD1', 'conjD2'])
+    def testApplyForwardStep5(self):
+        test_method(self,
+            'set',
+            vars={'A': 'nat set', 'B': 'nat set', 'C': 'nat set'},
+            assms=['A Sub B'],
+            concl='B Sub C',
+            method_name='apply_forward_step',
+            args={'theorem': 'subset_trans', 'param_C': 'C'},
+            prevs=[0],
+            lines={'1': 'B Sub C --> A Sub C'}
+        )
 
-    def testApplyForwardStepThms2(self):
-        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        search_res = state.apply_search(1, method.apply_forward_step(), prevs=[0])
-        self.assertEqual([res['theorem'] for res in search_res], [])
+    def testApplyResolveStepThms(self):
+        self.run_search_thm(
+            'set',
+            vars={'x': "'a"},
+            assms=['x Mem empty_set'],
+            concl=['false'],
+            method_name='apply_resolve_step',
+            prevs=[0],
+            res=['member_empty']
+        )
+
+    def testApplyResolveStepThms2(self):
+        self.run_search_thm(
+            'logic_base',
+            assms=['false'],
+            concl=['false'],
+            method_name='apply_resolve_step',
+            prevs=[0],
+            res=['not_false_res']
+        )
 
     def testIntroduction(self):
-        state = ProofState.init_state(thy, [A, B], [], imp(disj(A, B), disj(B, A)))
-        state.introduction(0)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            concl="A | B --> B | A",
+            method_name='introduction',
+            gaps=['B | A']
+        )
 
     def testIntroduction2(self):
-        state = ProofState.init_state(thy, [A, B], [], imp(A, B, conj(A, B)))
-        state.introduction(0)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            concl='A --> B --> A & B',
+            method_name='introduction',
+            gaps=['A & B'],
+        )
 
     def testIntroduction3(self):
-        Ta = TVar("a")
-        A = Var("A", TFun(Ta, boolT))
-        B = Var("B", TFun(Ta, boolT))
-        x = Var("x", Ta)
-        state = ProofState.init_state(thy, [A, B], [], Term.mk_all(x, imp(A(x), B(x))))
-        state.introduction(0, ["x"])
-        self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
-        self.assertEqual(len(state.prf.items), 1)
-        self.assertEqual(len(state.prf.items[0].subproof.items), 4)
+        test_method(self,
+            'logic_base',
+            vars={'A': "'a => bool", 'B': "'a => bool"},
+            concl='!x. A x --> B x',
+            method_name='introduction',
+            args={'names': 'x'},
+            gaps=['B x']
+        )
+
+    def testRevertIntro(self):
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='revert_intro',
+            prevs=[0],
+            gaps=['A & B --> B & A']
+        )
 
     def testApplyInduction(self):
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
-        state.apply_induction(0, "nat_induct", "n")
-        self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(nat.plus(n, nat.zero), n)))
-        self.assertEqual(len(state.prf.items), 3)
+        test_method(self,
+            'nat',
+            vars={'n': 'nat'},
+            concl='n + 0 = n',
+            method_name='induction',
+            args={'theorem': 'nat_induct', 'var': 'n'},
+            gaps=['(0::nat) + 0 = 0', '!n. n + 0 = n --> Suc n + 0 = Suc n']
+        )
 
     def testRewriteGoalThms(self):
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
-        search_res = state.apply_search(0, method.rewrite_goal())
-        self.assertEqual([res['theorem'] for res in search_res], ["nat_plus_def_1"])
+        self.run_search_thm(
+            'nat',
+            vars={'n': 'nat'},
+            concl='0 + n = 0',
+            method_name='rewrite_goal',
+            res=['add_comm', 'double_neg', 'eq_sym_eq', 'nat_plus_def_1']
+        )
 
-    def testRewriteGoalWithAssum(self):
-        Ta = TVar("a")
-        a = Var("a", Ta)
-        b = Var("b", Ta)
-        eq_a = Term.mk_equals(a, a)
-        if_t = logic.mk_if(eq_a, b, a)
-        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
-        state.rewrite_goal(0, "if_P")
-        state.set_line(0, "reflexive", args=a)
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
+    def testRewriteGoalThms2(self):
+        self.run_search_thm(
+            'set',
+            vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
+            concl='image f (image f S) = T',
+            method_name='rewrite_goal',
+            res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
+        )
+
+    def testRewriteGoal(self):
+        test_method(self,
+            'logic_base',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a"},
+            assms=['P'],
+            concl='(if P then a else b) = b',
+            method_name='rewrite_goal',
+            args={'theorem': 'if_P'},
+            prevs=[0],
+            gaps=['a = b']
+        )
+
+    def testRewriteGoal2(self):
+        test_method(self,
+            'logic_base',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a"},
+            assms=['P'],
+            concl='(if P then a else b) = a',
+            method_name='rewrite_goal',
+            args={'theorem': 'if_P'},
+            prevs=[0],
+            gaps=False
+        )
+
+    def testRewriteGoal3(self):
+        test_method(self,
+            'set',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 't': "'c set"},
+            concl='image f (image g s) = t',
+            method_name='rewrite_goal',
+            args={'theorem': 'image_combine', 'sym': 'true'},
+            gaps=["image (f O g) s = t"]
+        )
+
+    def testRewriteGoalWithPrev(self):
+        test_method(self,
+            'nat',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n'],
+            concl='?x. f x = a',
+            method_name='rewrite_goal_with_prev',
+            prevs=[0],
+            gaps=['?x. g x = a']
+        )
+
+    def testRewriteGoalWithPrev2(self):
+        test_method(self,
+            'nat',
+            vars={'f': 'nat => nat => nat', 'g': 'nat => nat => nat'},
+            assms=['!m. !n. f m n = g m n'],
+            concl='?x. f x x = a',
+            method_name='rewrite_goal_with_prev',
+            prevs=[0],
+            gaps=['?x. g x x = a']
+        )
+
+    def testRewriteFactThms(self):
+        self.run_search_thm(
+            'nat',
+            vars={'n': 'nat'},
+            assms=['0 + n = 0'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0],
+            res=['add_comm', 'double_neg', 'eq_sym_eq', 'nat_plus_def_1']
+        )
+
+    def testRewriteFactThms2(self):
+        self.run_search_thm(
+            'set',
+            vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
+            assms=['image f (image f S) = T'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0],
+            res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
+        )
+
+    def testRewriteFactThms3(self):
+        self.run_search_thm(
+            'set',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a", 'c': "'a"},
+            assms=['(if P then a else b) = c', 'P'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0, 1],
+            res=['if_P']
+        )
+
+    def testRewriteFact(self):
+        test_method(self,
+            'set',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 't': "'c set"},
+            assms=['image f (image g s) = t'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0],
+            args={'theorem': 'image_combine', 'sym': 'true'},
+            lines={'1': "image (f O g) s = t"}
+        )
+
+    def testRewriteFact2(self):
+        test_method(self,
+            'logic_base',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a", 'c': "'a"},
+            assms=['(if P then a else b) = c', 'P'],
+            concl='false',
+            method_name='rewrite_fact',
+            args={'theorem': 'if_P'},
+            prevs=[0, 1],
+            lines={'2': 'a = c'}
+        )
+
+    def testRewriteFactWithPrev(self):
+        test_method(self,
+            'nat',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n', '?x. f x = a'],
+            concl='false',
+            method_name='rewrite_fact_with_prev',
+            prevs=[0, 1],
+            lines={'2': '?x. g x = a'}
+        )
+
+    def testForallElim(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['!x. P x --> Q x'],
+            concl='Q n',
+            method_name='forall_elim',
+            args={'s': 'n'},
+            prevs=[0],
+            lines={'1': 'P n --> Q n'}
+        )
+
+    def testForallElimFail(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['!x. P x --> Q x'],
+            concl='Q n',
+            method_name='forall_elim',
+            args={'s': '(m::nat)'},
+            prevs=[0],
+            failed=AssertionError
+        )
+
+    def testInstExistsGoal(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['P n'],
+            concl='?x. P x --> Q x',
+            method_name='inst_exists_goal',
+            args={'s': 'n'},
+            gaps=['P n --> Q n']
+        )
+
+    def testInstExistsGoalFail(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['P n'],
+            concl='?x. P x --> Q x',
+            method_name='inst_exists_goal',
+            args={'s': '(m::nat)'},
+            failed=AssertionError
+        )
+
+    def testInstExistsFact(self):
+        test_method(self,
+            'nat',
+            assms=['?n::nat. n + 1 = 2'],
+            concl='false',
+            method_name='exists_elim',
+            args={'names': 'n'},
+            prevs=[0],
+            lines={'1': '_VAR (n::nat)', '2': '(n::nat) + 1 = 2'}
+        )
+
+    def testInstExistsFactFail(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat'},
+            assms=['?n::nat. n + 1 = 2'],
+            concl='n = 1',
+            method_name='exists_elim',
+            args={'names': 'n'},
+            prevs=[0],
+            failed=AssertionError
+        )
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""
-        testMethods(self, 'logic', 'conj_comm')
+        testSteps(self, 'logic', 'conj_comm')
 
     def testDisjComm(self):
         """Proof of A | B --> B | A."""
-        testMethods(self, 'logic', 'disj_comm')
+        testSteps(self, 'logic', 'disj_comm')
 
     def testDoubleNegInv(self):
         """Proof of ~~A = A."""
-        testMethods(self, 'logic', 'double_neg')
+        testSteps(self, 'logic', 'double_neg')
 
     def testExistsConj(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
-        testMethods(self, 'logic', 'ex_conj_distrib')
+        testSteps(self, 'logic', 'ex_conj_distrib')
 
     def testForallConj(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
-        testMethods(self, 'logic', 'all_conj_distrib')
+        testSteps(self, 'logic', 'all_conj_distrib')
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        testMethods(self, 'nat', 'add_0_right')
+        testSteps(self, 'nat', 'add_0_right')
+
+    def testAddComm(self):
+        """Proof of n + m = m + n."""
+        testSteps(self, 'nat', 'add_comm')
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        testMethods(self, 'nat', 'mult_0_right')
+        testSteps(self, 'nat', 'mult_0_right')
 
     def testAppendNil(self):
         """Proof of xs @ [] = xs by induction."""
-        testMethods(self, 'list', 'append_right_neutral')
+        testSteps(self, 'list', 'append_right_neutral')
 
     def testFunUpdTriv(self):
         """Proof of (f)(a := f a) = f."""
-        testMethods(self, 'function', 'fun_upd_triv')
+        testSteps(self, 'function', 'fun_upd_triv')
 
     def testAVal1(self):
         """Proof of aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12."""
-        testMethods(self, 'expr', 'aval_test1')
+        testSteps(self, 'expr', 'aval_test1')
 
     def testAVal2(self):
         """Proof of aval (Plus (V 0) (N 5)) ((%x. 0)(1 := 7)) = 5."""
-        testMethods(self, 'expr', 'aval_test2')
+        testSteps(self, 'expr', 'aval_test2')
 
     def testPierce(self):
         """Proof of ((A --> B) --> A) --> A."""
-        testMethods(self, 'logic', 'pierce')
+        testSteps(self, 'logic', 'pierce')
 
     def testHoarePreRule(self):
         """Proof of Entail P Q --> Valid Q c R --> Valid P c R."""
-        testMethods(self, 'hoare', 'pre_rule')
+        testSteps(self, 'hoare', 'pre_rule')
 
     def testNatLessEqTrans(self):
         """Proof of k <= m --> m <= n --> k <= n."""
-        testMethods(self, 'nat', 'less_eq_trans')
+        testSteps(self, 'nat', 'less_eq_trans')
 
     def testDrinker(self):
         """Proof of ?x. P x --> (!x. P x)."""
-        testMethods(self, 'logic', 'drinker')
+        testSteps(self, 'logic', 'drinker')
 
     def testCantor(self):
         """Proof of ?a. !x. ~f x = a."""
-        testMethods(self, 'set', 'cantor')
+        testSteps(self, 'set', 'cantor')
 
     def testSubsetEmpty(self):
         """Proof of subset empty A."""
-        testMethods(self, 'set', 'subset_empty')
+        testSteps(self, 'set', 'subset_empty')
 
     def testUnionUnion(self):
         """Proof of UN (A Un B) = (UN A) Un (UN B)."""
-        testMethods(self, 'set', 'Union_union')
+        testSteps(self, 'set', 'Union_union')
 
     def testFixpoint(self):
         """Proof of bnd_mono h --> h (lfp h) = lfp h."""
-        testMethods(self, 'set', 'lfp_unfold')
+        testSteps(self, 'set', 'lfp_unfold')
 
     def testInjectiveCompFun(self):
         """Proof of injective f --> injective g --> injective (g o f)."""
-        testMethods(self, 'function', 'injective_comp_fun')
+        testSteps(self, 'function', 'injective_comp_fun')
+
+    def testSurjectiveCompFun(self):
+        """Proof of surjective f --> surjective g --> surjective (g o f)."""
+        testSteps(self, 'function', 'surjective_comp_fun')
 
     def testSurjectiveD(self):
         """Proof of surjective f --> (?x. f x = y)."""
-        testMethods(self, 'function', 'surjectiveD')
+        testSteps(self, 'function', 'surjectiveD')
 
     def testHasLimitUnique(self):
         """Proof of has_limit f x --> has_limit f y --> x = y."""
-        testMethods(self, 'limits', 'has_limit_unique', no_gaps=False)
+        testSteps(self, 'limits', 'has_limit_unique', no_gaps=False)
 
     def testTheI(self):
         """Proof of P a --> (!x. P x --> x = a) --> P (THE x. P x)."""
-        testMethods(self, 'logic_base', 'theI')
+        testSteps(self, 'logic_base', 'theI')
 
 
 if __name__ == "__main__":

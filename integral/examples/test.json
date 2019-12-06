@@ -1,7 +1,7 @@
 {
     "content": [
         {
-            "_problem_latex": "\\int_{x=2}^{3} 2 x + x ^ 2 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{2}^{3} 2 x + x ^ 2 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=2}^{3} 2 x + x ^ 2 \\,\\mathrm{dx}",
@@ -12,13 +12,23 @@
                     "latex": "2 \\int_{x=2}^{3} x \\,\\mathrm{dx} + (\\int_{x=2}^{3} x ^ 2 \\,\\mathrm{dx})",
                     "reason": "Linearity",
                     "text": "2 * (INT x:[2,3]. x) + (INT x:[2,3]. x ^ 2)"
+                },
+                {
+                    "latex": "2 * (\\left. \\frac{x ^ 2}{2} \\right\\vert_{x=2}^{3}) + (\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=2}^{3})",
+                    "reason": "Common integrals",
+                    "text": "2 * ([x ^ 2 / 2]_x=2,3) + ([x ^ 3 / 3]_x=2,3)"
+                },
+                {
+                    "latex": "\\frac{34}{3}",
+                    "reason": "Simplification",
+                    "text": "34/3"
                 }
             ],
             "name": "Exercise 1",
             "problem": "INT x:[2,3]. 2 * x + x ^ 2"
         },
         {
-            "_problem_latex": "\\int_{x=0}^{1} (3 x + 1) ^ {-2} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} (3 x + 1) ^ {-2} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=0}^{1} (3 x + 1) ^ {-2} \\,\\mathrm{dx}",
@@ -55,12 +65,44 @@
             "problem": "INT x:[0,1]. (3 * x + 1) ^ (-2)"
         },
         {
-            "_problem_latex": "\\int_{x=0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. exp(6 * x)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(6 x\\)",
+                    "latex": "\\int_{0}^{6} \\frac{\\exp{u}}{6} \\,\\mathrm{du}",
+                    "params": {
+                        "expr": "6*x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[0,6]. exp(u) / 6"
+                },
+                {
+                    "latex": "\\frac{1}{6} * (\\int_{0}^{6} \\exp{u} \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "1/6 * (INT u:[0,6]. exp(u))"
+                },
+                {
+                    "latex": "\\frac{1}{6} * (\\left. \\exp{u} \\right\\vert_{u=0}^{6})",
+                    "reason": "Common integrals",
+                    "text": "1/6 * ([exp(u)]_u=0,6)"
+                },
+                {
+                    "latex": "\\frac{1}{6} \\exp{6} - \\frac{1}{6}",
+                    "reason": "Simplification",
+                    "text": "1/6 * exp(6) + -1/6"
+                }
+            ],
             "name": "Exercise 3",
             "problem": "INT x:[0,1]. exp(6*x)"
         },
         {
-            "_problem_latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{2} x * \\exp{x} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
@@ -76,10 +118,254 @@
                     },
                     "reason": "Integrate by parts",
                     "text": "([x * exp(x)]_x=-1,2) - (INT x:[-1,2]. exp(x))"
+                },
+                {
+                    "latex": "-1 * (\\int_{-1}^{2} \\exp{x} \\,\\mathrm{dx}) + 2 \\exp{2} + \\exp{(-1)}",
+                    "reason": "Simplification",
+                    "text": "-1 * (INT x:[-1,2]. exp(x)) + 2 * exp(2) + exp(-1)"
+                },
+                {
+                    "latex": "-1 * (\\left. \\exp{x} \\right\\vert_{x=-1}^{2}) + 2 \\exp{2} + \\exp{(-1)}",
+                    "reason": "Common integrals",
+                    "text": "-1 * ([exp(x)]_x=-1,2) + 2 * exp(2) + exp(-1)"
+                },
+                {
+                    "latex": "\\exp{2} + 2 \\exp{(-1)}",
+                    "reason": "Simplification",
+                    "text": "exp(2) + 2 * exp(-1)"
                 }
             ],
             "name": "Exercise 4",
             "problem": "INT x:[-1,2]. x * exp(x)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/4} \\sin{x} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} \\sin{x} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. sin(x)"
+                },
+                {
+                    "latex": "\\left. -\\cos{x} \\right\\vert_{x=0}^{\\pi/4}",
+                    "reason": "Common integrals",
+                    "text": "[-cos(x)]_x=0,pi / 4"
+                },
+                {
+                    "latex": "1 + \\frac{-1}{2} \\sqrt{2}",
+                    "reason": "Simplification",
+                    "text": "1 + -1/2 * sqrt(2)"
+                }
+            ],
+            "name": "Exercise 5",
+            "problem": "INT x:[0,pi/4]. sin(x)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{a} 3 x ^ 2 - x + 1 \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{a} 3 * x ^ 2 - x + 1 \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,a]. 3 * x ^ 2 - x + 1"
+                },
+                {
+                    "latex": "\\int_{0}^{a} 1 \\,\\mathrm{dx} - \\int_{0}^{a} x \\,\\mathrm{dx} + 3 * (\\int_{0}^{a} x ^ 2 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "(INT x:[0,a]. 1) + -1 * (INT x:[0,a]. x) + 3 * (INT x:[0,a]. x ^ 2)"
+                },
+                {
+                    "latex": "\\left. x \\right\\vert_{x=0}^{a} - \\left. \\frac{x ^ 2}{2} \\right\\vert_{x=0}^{a} + 3 * (\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=0}^{a})",
+                    "reason": "Common integrals",
+                    "text": "([x]_x=0,a) + -1 * ([x ^ 2 / 2]_x=0,a) + 3 * ([x ^ 3 / 3]_x=0,a)"
+                },
+                {
+                    "latex": "a - \\frac{1}{2} * a ^ 2 + a ^ 3",
+                    "reason": "Simplification",
+                    "text": "a + -1/2 * a ^ 2 + a ^ 3"
+                }
+            ],
+            "name": "Exercise 6",
+            "problem": "INT x:[0,a]. 3*x^2 - x + 1"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{2} x ^ 2 + \\frac{1}{x ^ 4} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{2} x ^ 2 + \\frac{1}{x ^ 4} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,2]. x ^ 2 + 1 / x ^ 4"
+                },
+                {
+                    "latex": "(\\int_{1}^{2} x ^ 2 \\,\\mathrm{dx}) + (\\int_{1}^{2} \\frac{1}{x ^ 4} \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "(INT x:[1,2]. x ^ 2) + (INT x:[1,2]. 1 / x ^ 4)"
+                },
+                {
+                    "latex": "(\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=1}^{2}) + (\\left. \\frac{1}{-3 x ^ 3} \\right\\vert_{x=1}^{2})",
+                    "reason": "Common integrals",
+                    "text": "([x ^ 3 / 3]_x=1,2) + ([1 / (-3 * x ^ 3)]_x=1,2)"
+                },
+                {
+                    "latex": "\\frac{21}{8}",
+                    "reason": "Simplification",
+                    "text": "21/8"
+                }
+            ],
+            "name": "Exercise 7",
+            "problem": "INT x:[1,2]. x^2 + 1/x^4"
+        },
+        {
+            "_problem_latex": "\\int_{\\pi/3}^{\\pi} \\sin{(2 x + \\frac{\\pi}{3})} \\,\\mathrm{dx}",
+            "name": "Exercise 8",
+            "problem": "INT x:[pi/3, pi]. sin(2*x+pi/3)"
+        },
+        {
+            "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{4}^{9} \\sqrt{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[4,9]. x ^ (1/2) * (x ^ (1/2) + 1)"
+                },
+                {
+                    "latex": "\\int_{4}^{9} \\sqrt{x} + x \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[4,9]. x ^ (1/2) + x"
+                },
+                {
+                    "latex": "(\\int_{4}^{9} \\sqrt{x} \\,\\mathrm{dx}) + (\\int_{4}^{9} x \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "(INT x:[4,9]. x ^ (1/2)) + (INT x:[4,9]. x)"
+                },
+                {
+                    "latex": "(\\left. \\frac{x ^ {(\\frac{3}{2})}}{\\frac{3}{2}} \\right\\vert_{x=4}^{9}) + (\\left. \\frac{x ^ 2}{2} \\right\\vert_{x=4}^{9})",
+                    "reason": "Common integrals",
+                    "text": "([x ^ (3/2) / (3/2)]_x=4,9) + ([x ^ 2 / 2]_x=4,9)"
+                },
+                {
+                    "latex": "\\frac{271}{6}",
+                    "reason": "Simplification",
+                    "text": "271/6"
+                }
+            ],
+            "name": "Exercise 9",
+            "problem": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)"
+        },
+        {
+            "_problem_latex": "\\int_{-1}^{0} \\frac{3 x ^ 4 + 3 x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-1}^{0} \\frac{3 x ^ 4 + 3 x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[-1,0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)"
+                },
+                {
+                    "latex": "\\int_{-1}^{0} 3 x ^ 2 + \\frac{1}{x ^ 2 + 1} \\,\\mathrm{dx}",
+                    "reason": "Polynomial division",
+                    "text": "INT x:[-1,0]. 3 * x ^ 2 + 1 / (x ^ 2 + 1)"
+                },
+                {
+                    "latex": "(\\int_{-1}^{0} \\frac{1}{x ^ 2 + 1} \\,\\mathrm{dx}) + 3 * (\\int_{-1}^{0} x ^ 2 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "(INT x:[-1,0]. 1 / (x ^ 2 + 1)) + 3 * (INT x:[-1,0]. x ^ 2)"
+                },
+                {
+                    "latex": "(\\left. \\arctan{x} \\right\\vert_{x=-1}^{0}) + 3 * (\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=-1}^{0})",
+                    "reason": "Common integrals",
+                    "text": "([arctan(x)]_x=-1,0) + 3 * ([x ^ 3 / 3]_x=-1,0)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\pi + 1",
+                    "reason": "Simplification",
+                    "text": "1/4 * pi + 1"
+                }
+            ],
+            "name": "Exercise 10",
+            "problem": "INT x:[-1, 0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)"
+        },
+        {
+            "_problem_latex": "\\int_{4}^{\\exp + 3} \\frac{x ^ 3 - 12 x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{4}^{\\exp + 3} \\frac{x ^ 3 - 12 x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[4,exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)"
+                },
+                {
+                    "latex": "\\int_{4}^{\\exp + 3} x ^ 2 - 9 x - 27 - \\frac{123}{x - 3} \\,\\mathrm{dx}",
+                    "reason": "Polynomial division",
+                    "text": "INT x:[4,exp(1) + 3]. x ^ 2 + -9 * x + -27 + -123 / (x + -3)"
+                },
+                {
+                    "latex": "-123 * (\\int_{4}^{\\exp + 3} \\frac{1}{x - 3} \\,\\mathrm{dx}) + (\\int_{4}^{\\exp + 3} x ^ 2 \\,\\mathrm{dx}) - 9 * (\\int_{4}^{\\exp + 3} x \\,\\mathrm{dx}) - 27 * (\\int_{4}^{\\exp + 3} 1 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "-123 * (INT x:[4,exp(1) + 3]. 1 / (x + -3)) + (INT x:[4,exp(1) + 3]. x ^ 2) + -9 * (INT x:[4,exp(1) + 3]. x) + -27 * (INT x:[4,exp(1) + 3]. 1)"
+                },
+                {
+                    "latex": "-123 * (\\left. \\log{(x - 3)} \\right\\vert_{x=4}^{\\exp + 3}) + (\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=4}^{\\exp + 3}) - 9 * (\\left. \\frac{x ^ 2}{2} \\right\\vert_{x=4}^{\\exp + 3}) - 27 * (\\left. x \\right\\vert_{x=4}^{\\exp + 3})",
+                    "reason": "Common integrals",
+                    "text": "-123 * ([log(x + -3)]_x=4,exp(1) + 3) + ([x ^ 3 / 3]_x=4,exp(1) + 3) + -9 * ([x ^ 2 / 2]_x=4,exp(1) + 3) + -27 * ([x]_x=4,exp(1) + 3)"
+                },
+                {
+                    "latex": "\\frac{1}{3} (\\exp + 3) ^ 3 - \\frac{9}{2} (\\exp + 3) ^ 2 - 27 \\exp - \\frac{136}{3}",
+                    "reason": "Simplification",
+                    "text": "1/3 * (exp(1) + 3) ^ 3 + -9/2 * (exp(1) + 3) ^ 2 + -27 * exp(1) + -136/3"
+                }
+            ],
+            "name": "Exercise 11",
+            "problem": "INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/2} \\sin{x} * \\cos^{3}x \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/2} \\sin{x} * \\cos^{3}x \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 2]. sin(x) * cos(x) ^ 3"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{x}\\)",
+                    "latex": "\\int_{1}^{0} \\frac{\\sin{x} * u ^ 3}{-1 \\sin{x}} \\,\\mathrm{du}",
+                    "params": {
+                        "expr": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[1,0]. sin(x) * u ^ 3 / (-1 * sin(x))"
+                },
+                {
+                    "latex": "\\int_{1}^{0} -1 u ^ 3 \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[1,0]. -1 * u ^ 3"
+                },
+                {
+                    "latex": "-1 * (\\int_{1}^{0} u ^ 3 \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "-1 * (INT u:[1,0]. u ^ 3)"
+                },
+                {
+                    "latex": "-1 * (\\left. \\frac{u ^ 4}{4} \\right\\vert_{u=1}^{0})",
+                    "reason": "Common integrals",
+                    "text": "-1 * ([u ^ 4 / 4]_u=1,0)"
+                },
+                {
+                    "latex": "\\frac{1}{4}",
+                    "reason": "Simplification",
+                    "text": "1/4"
+                }
+            ],
+            "name": "Exercise 12",
+            "problem": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi} 1 - \\sin^{3}x \\,\\mathrm{dx}",
+            "name": "Exercise 13",
+            "problem": "INT x:[0, pi]. (1 - sin(x)^3)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi} \\sin^{3}x \\,\\mathrm{dx}",
+            "name": "Exercise 14",
+            "problem": "INT x:[0, pi]. sin(x)^3"
         }
     ]
 }

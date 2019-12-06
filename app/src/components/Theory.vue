@@ -37,7 +37,7 @@
       </div>
       <div v-if="item.ty === 'type.ax'">
         <span class="keyword">type</span>&nbsp;
-        <span class="item-text">{{item.name}}</span>
+        <Expression v-bind:line="item.type_hl" :editor="editor"/>
       </div>
       <div v-if="item.ty === 'def.ax'">
         <Constant v-if="on_edit !== index" v-bind:item="item"
@@ -117,6 +117,7 @@
                      v-bind:vars="item.vars" v-bind:prop="item.prop"
                      v-bind:old_steps="item.steps" v-bind:old_proof="item.proof"
                      v-bind:ref_status="ref_status" v-bind:ref_context="ref_context"
+                     v-bind:editor="editor"
                      ref="proof"
                      v-on:query="handle_query"/>
           <button style="margin:5px" v-on:click="save_proof">Save</button>
@@ -542,7 +543,7 @@ export default {
       delete data.err_type
       delete data.err_str
       delete data.trace
-      if (data.ty === 'def.ax') {
+      if (data.ty === 'def.ax' || data.ty === 'type.ax') {
         delete data.type_hl;
       } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
         delete data.prop_hl;
@@ -631,7 +632,7 @@ export default {
         if ($proof.history !== undefined) {
           const len = $proof.history.length
           cur_proof = $proof.history[len-1].proof
-          item.num_gaps = $proof.history[len-1].report.num_gaps
+          item.num_gaps = $proof.history[len-1].num_gaps
         } else {
           cur_proof = $proof.proof
           item.num_gaps = $proof.num_gaps

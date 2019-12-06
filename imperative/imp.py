@@ -13,7 +13,7 @@ from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import pprint, settings
-from server.tactic import Tactic
+from server.tactic import Tactic, MacroTactic
 from prover import z3wrapper
 
 
@@ -108,6 +108,16 @@ class eval_Sem_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'Sem_Assign'
+
+    def can_eval(self, thy, goal):
+        assert isinstance(goal, Term), "eval_Sem_macro"
+        f, (com, st, st2) = goal.strip_comb()
+        try:
+            pt = eval_Sem(thy, com, st)
+        except NotImplementedError:
+            return False
+        return st2 == pt.prop.arg        
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
@@ -115,6 +125,33 @@ class eval_Sem_macro(ProofTermMacro):
         pt = eval_Sem(thy, com, st)
         assert st2 == pt.prop.arg, "eval_Sem_macro: wrong result."
         return pt
+
+class eval_Sem_method(Method):
+    """Apply eval_Sem macro."""
+    def __init__(self):
+        self.sig = []
+        self.limit = 'Sem_Assign'
+
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
+        if len(prevs) != 0:
+            return []
+
+        cur_th = state.get_proof_item(id).th
+        if eval_Sem_macro().can_eval(state.thy, cur_th.prop):
+            return [{}]
+        else:
+            return []
+
+    @settings.with_settings
+    def display_step(self, state, data):
+        return pprint.N("eval_Sem: (solves)")
+
+    def apply(self, state, id, data, prevs):
+        assert len(prevs) == 0, "eval_Sem_method"
+        state.apply_tactic(id, MacroTactic('eval_Sem'))
 
 
 def compute_wp(thy, T, c, Q):
@@ -190,6 +227,7 @@ class vcg_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'while_rule'
 
     def get_proof_term(self, thy, goal, pts):
         f, (P, c, Q) = goal.strip_comb()
@@ -234,6 +272,7 @@ class vcg_method(Method):
     """Method corresponding to VCG."""
     def __init__(self):
         self.sig = []
+        self.limit = 'while_rule'
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -246,7 +285,7 @@ class vcg_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Apply VCG")
 
     def apply(self, state, id, data, prevs):
@@ -259,5 +298,6 @@ global_macros.update({
 })
 
 global_methods.update({
+    "eval_Sem": eval_Sem_method(),
     "vcg": vcg_method(),
 })

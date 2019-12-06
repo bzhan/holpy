@@ -10,28 +10,28 @@
         {
             "name": "member",
             "ty": "def.ax",
-            "type": "'a => 'a set => bool"
+            "type": "'a ⇒ 'a set ⇒ bool"
         },
         {
             "name": "collect",
             "ty": "def.ax",
-            "type": "('a => bool) => 'a set"
+            "type": "('a ⇒ bool) ⇒ 'a set"
         },
         {
             "attributes": [
                 "hint_rewrite"
             ],
             "name": "member_collect",
-            "prop": "member x (collect P) = P x",
+            "prop": "x ∈ collect P ⟷ P x",
             "ty": "thm.ax",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "x": "'a"
             }
         },
         {
             "name": "empty_set",
-            "prop": "empty_set = {x. false}",
+            "prop": "∅ = {x. false}",
             "ty": "def",
             "type": "'a set"
         },
@@ -84,7 +84,7 @@
                     "th": "⊢ ¬x ∈ ∅"
                 }
             ],
-            "prop": "~(member x empty_set)",
+            "prop": "¬(x ∈ ∅)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -109,7 +109,129 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_rewrite"
+            ],
+            "name": "member_empty_simp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ ∅ ⟶ false"
+                },
+                {
+                    "args": "x ∈ ∅",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty, false",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ ∅ ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ false ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "false",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ⊢ false"
+                },
+                {
+                    "args": "not_false_res, x ∈ ∅",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "false ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ false ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x ∈ ∅ ⟷ false"
+                }
+            ],
+            "prop": "x ∈ ∅ ⟷ false",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_resolve"
             ],
             "name": "member_univ",
             "num_gaps": 0,
@@ -140,7 +262,7 @@
                     "th": "⊢ x ∈ univ"
                 }
             ],
-            "prop": "member x univ",
+            "prop": "x ∈ univ",
             "steps": [
                 {
                     "goal_id": "0",
@@ -164,11 +286,119 @@
             }
         },
         {
+            "name": "member_univ_simp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ univ ⟶ true"
+                },
+                {
+                    "args": "x ∈ univ",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ univ ⊢ x ∈ univ"
+                },
+                {
+                    "args": "trueI",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ univ ⟶ true"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ true ⟶ x ∈ univ"
+                },
+                {
+                    "args": "true",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "member_univ, {a: 'a}, {x: x}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ true ⟶ x ∈ univ"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x ∈ univ ⟷ true"
+                }
+            ],
+            "prop": "x ∈ univ ⟷ true",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
             "name": "member_ext",
-            "prop": "(!x. member x A = member x B) --> A = B",
+            "prop": "(∀x. x ∈ A ⟷ x ∈ B) ⟶ A = B",
             "ty": "thm.ax",
             "vars": {
                 "A": "'a set",
@@ -176,8 +406,158 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "set_equal_iff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A = B ⟶ (∀x. x ∈ A ⟷ x ∈ B)"
+                },
+                {
+                    "args": "A = B",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A = B ⊢ A = B"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A = B ⊢ ∀x. x ∈ A ⟷ x ∈ B"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ A ⟷ x ∈ B",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "A = B ⊢ x ∈ A ⟷ x ∈ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "A = B ⊢ ∀x. x ∈ A ⟷ x ∈ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A = B ⟶ (∀x. x ∈ A ⟷ x ∈ B)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀x. x ∈ A ⟷ x ∈ B) ⟶ A = B"
+                },
+                {
+                    "args": "∀x. x ∈ A ⟷ x ∈ B",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ A ⟷ x ∈ B ⊢ ∀x. x ∈ A ⟷ x ∈ B"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ A ⟷ x ∈ B ⊢ A = B"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ A ⟷ x ∈ B) ⟶ A = B"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ A = B ⟷ (∀x. x ∈ A ⟷ x ∈ B)"
+                }
+            ],
+            "prop": "A = B ⟷ (∀x. x ∈ A ⟷ x ∈ B)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
             "name": "subset",
-            "prop": "subset A B = (!x. member x A --> member x B)",
+            "prop": "A ⊆ B ⟷ (∀x. x ∈ A ⟶ x ∈ B)",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ bool"
         },
@@ -215,7 +595,7 @@
                     "th": "⊢ (∀x. x ∈ A ⟶ x ∈ B) ⟶ A ⊆ B"
                 }
             ],
-            "prop": "(!x. member x A --> member x B) --> subset A B",
+            "prop": "(∀x. x ∈ A ⟶ x ∈ B) ⟶ A ⊆ B",
             "steps": [
                 {
                     "goal_id": "1",
@@ -282,7 +662,7 @@
                     "th": "⊢ A ⊆ B ⟶ x ∈ A ⟶ x ∈ B"
                 }
             ],
-            "prop": "subset A B --> member x A --> member x B",
+            "prop": "A ⊆ B ⟶ x ∈ A ⟶ x ∈ B",
             "steps": [
                 {
                     "fact_ids": [
@@ -309,6 +689,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "subset_empty",
             "num_gaps": 0,
             "proof": [
@@ -363,7 +746,7 @@
                     "th": "⊢ ∅ ⊆ A"
                 }
             ],
-            "prop": "subset empty_set A",
+            "prop": "∅ ⊆ A",
             "steps": [
                 {
                     "goal_id": "0",
@@ -390,6 +773,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "subset_univ",
             "num_gaps": 0,
             "proof": [
@@ -398,7 +784,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. member x A ⟶ member x univ"
+                    "th": "⊢ ∀x. x ∈ A ⟶ x ∈ univ"
                 },
                 {
                     "args": "x, 'a",
@@ -408,18 +794,18 @@
                     "th": "⊢ _VAR x"
                 },
                 {
-                    "args": "member x A",
+                    "args": "x ∈ A",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x A ⊢ member x A"
+                    "th": "x ∈ A ⊢ x ∈ A"
                 },
                 {
                     "args": "member_univ, {a: 'a}, {x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ member x univ"
+                    "th": "⊢ x ∈ univ"
                 },
                 {
                     "args": "",
@@ -430,7 +816,7 @@
                         "0.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. member x A ⟶ member x univ"
+                    "th": "⊢ ∀x. x ∈ A ⟶ x ∈ univ"
                 },
                 {
                     "args": "subsetI",
@@ -439,10 +825,27 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ subset A univ"
+                    "th": "⊢ A ⊆ univ"
                 }
             ],
-            "prop": "subset A univ",
+            "prop": "A ⊆ univ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a set"
@@ -648,7 +1051,7 @@
                     "th": "⊢ A ⊆ B ⟶ B ⊆ A ⟶ A = B"
                 }
             ],
-            "prop": "subset A B --> subset B A --> A = B",
+            "prop": "A ⊆ B ⟶ B ⊆ A ⟶ A = B",
             "steps": [
                 {
                     "goal_id": "2",
@@ -793,7 +1196,7 @@
                     "th": "⊢ A ⊆ B ⟶ B ⊆ C ⟶ A ⊆ C"
                 }
             ],
-            "prop": "subset A B --> subset B C --> subset A C",
+            "prop": "A ⊆ B ⟶ B ⊆ C ⟶ A ⊆ C",
             "steps": [
                 {
                     "goal_id": "2",
@@ -831,13 +1234,13 @@
         },
         {
             "name": "inter",
-            "prop": "inter A B = {x. (member x A) & (member x B)}",
+            "prop": "A ∩ B = {x. x ∈ A ∧ x ∈ B}",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
             "name": "union",
-            "prop": "union A B = {x. (member x A) | (member x B)}",
+            "prop": "A ∪ B = {x. x ∈ A ∨ x ∈ B}",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
@@ -865,7 +1268,7 @@
                     "th": "⊢ x ∈ A ∩ B = (x ∈ A ∧ x ∈ B)"
                 }
             ],
-            "prop": "member x (inter A B) = ((member x A) & (member x B))",
+            "prop": "x ∈ A ∩ B ⟷ x ∈ A ∧ x ∈ B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -909,7 +1312,7 @@
                     "th": "⊢ x ∈ A ∪ B = (x ∈ A ∨ x ∈ B)"
                 }
             ],
-            "prop": "member x (union A B) = ((member x A) | (member x B))",
+            "prop": "x ∈ A ∪ B ⟷ x ∈ A ∨ x ∈ B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -930,6 +1333,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "subset_union_id",
             "num_gaps": 0,
             "proof": [
@@ -993,7 +1399,7 @@
                     "th": "⊢ subset A (union A B)"
                 }
             ],
-            "prop": "subset A (union A B)",
+            "prop": "A ⊆ A ∪ B",
             "ty": "thm",
             "vars": {
                 "A": "'a set",
@@ -1001,6 +1407,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "inter_subset_id",
             "num_gaps": 0,
             "proof": [
@@ -1064,7 +1473,7 @@
                     "th": "⊢ A ∩ B ⊆ A"
                 }
             ],
-            "prop": "subset (inter A B) A",
+            "prop": "A ∩ B ⊆ A",
             "ty": "thm",
             "vars": {
                 "A": "'a set",
@@ -1258,7 +1667,7 @@
                     "th": "⊢ ∃a. ∀x. ¬f x = a"
                 }
             ],
-            "prop": "∃S. ∀x. ~ f x  = S",
+            "prop": "∃S. ∀x. ¬(f x = S)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1346,12 +1755,21 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'a set"
+                "f": "'a ⇒ 'a set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "diff",
+            "prop": "diff s t = {x. x ∈ s ∧ ¬(x ∈ t)}",
+            "ty": "def",
+            "type": "'a set ⇒ 'a set ⇒ 'a set"
+        },
+        {
             "name": "insert",
-            "prop": "insert x A = {y. y = x | member y A}",
+            "prop": "insert x A = {y. y = x ∨ y ∈ A}",
             "ty": "def",
             "type": "'a ⇒ 'a set ⇒ 'a set"
         },
@@ -1379,7 +1797,7 @@
                     "th": "⊢ y ∈ insert x A = (y = x ∨ y ∈ A)"
                 }
             ],
-            "prop": "(y ∈ (insert x A)) = (y = x | (y ∈ A))",
+            "prop": "y ∈ insert x A ⟷ y = x ∨ y ∈ A",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1400,7 +1818,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "member_singleton",
             "num_gaps": 0,
             "proof": [
@@ -1541,7 +1958,7 @@
                     "th": "⊢ y ∈ {x} ⟷ y = x"
                 }
             ],
-            "prop": "member y {x} <--> y = x",
+            "prop": "y ∈ {x} ⟷ y = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1609,7 +2026,7 @@
         },
         {
             "name": "Union",
-            "prop": "Union S = {x. ?A. member x A & member A S}",
+            "prop": "⋃S = {x. ∃A. x ∈ A ∧ A ∈ S}",
             "ty": "def",
             "type": "'a set set ⇒ 'a set"
         },
@@ -1637,7 +2054,7 @@
                     "th": "⊢ x ∈ Union S ⟷ (∃A. x ∈ A ∧ A ∈ S)"
                 }
             ],
-            "prop": "member x (Union S) <--> (?A. member x A & member A S)",
+            "prop": "x ∈ ⋃S ⟷ (∃A. x ∈ A ∧ A ∈ S)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1658,7 +2075,7 @@
         },
         {
             "name": "Inter",
-            "prop": "Inter S = {x. !A. member A S --> member x A}",
+            "prop": "⋂S = {x. ∀A. A ∈ S ⟶ x ∈ A}",
             "ty": "def",
             "type": "'a set set ⇒ 'a set"
         },
@@ -1686,7 +2103,7 @@
                     "th": "⊢ x ∈ Inter S ⟷ (∀A. A ∈ S ⟶ x ∈ A)"
                 }
             ],
-            "prop": "member x (Inter S) <--> (!A. member A S --> member x A)",
+            "prop": "x ∈ ⋂S ⟷ (∀A. A ∈ S ⟶ x ∈ A)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1854,7 +2271,7 @@
                     "th": "⊢ ⋃∅ = (∅::'a set)"
                 }
             ],
-            "prop": "Union (empty_set::'a set set) = empty_set",
+            "prop": "⋃∅ = (∅::'a set)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2075,7 +2492,7 @@
                     "th": "⊢ ⋂∅ = (univ::'a set)"
                 }
             ],
-            "prop": "Inter (empty_set::'a set set) = univ",
+            "prop": "⋂∅ = (univ::'a set)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2223,7 +2640,7 @@
                     "th": "⊢ A ∈ S ⟶ A ⊆ ⋃S"
                 }
             ],
-            "prop": "member A S --> subset A (Union S)",
+            "prop": "A ∈ S ⟶ A ⊆ ⋃S",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2345,7 +2762,7 @@
                     "th": "⊢ A ∈ S ⟶ ⋂S ⊆ A"
                 }
             ],
-            "prop": "member A S --> subset (Inter S) A",
+            "prop": "A ∈ S ⟶ ⋂S ⊆ A",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2507,7 +2924,7 @@
                     "th": "⊢ (∀C. C ∈ S ⟶ A ⊆ C) ⟶ A ⊆ ⋂S"
                 }
             ],
-            "prop": "(!C. member C S --> subset A C) --> subset A (Inter S)",
+            "prop": "(∀C. C ∈ S ⟶ A ⊆ C) ⟶ A ⊆ ⋂S",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3083,7 +3500,7 @@
                     "th": "⊢ ⋃(A ∪ B) = ⋃A ∪ ⋃B"
                 }
             ],
-            "prop": "Union (union A B) = union (Union A) (Union B)",
+            "prop": "⋃(A ∪ B) = ⋃A ∪ ⋃B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3376,7 +3793,7 @@
                 "hint_rewrite"
             ],
             "name": "lfp",
-            "prop": "lfp h = ⋂{X. h X ⊆ X}",
+            "prop": "lfp h = ⋂({X. h X ⊆ X})",
             "ty": "def",
             "type": "('a set ⇒ 'a set) ⇒ 'a set"
         },
@@ -3432,7 +3849,7 @@
                     "th": "⊢ h A ⊆ A ⟶ lfp h ⊆ A"
                 }
             ],
-            "prop": "subset (h A) A --> subset (lfp h) A",
+            "prop": "h A ⊆ A ⟶ lfp h ⊆ A",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3453,7 +3870,7 @@
             "ty": "thm",
             "vars": {
                 "A": "'a set",
-                "h": "'a set => 'a set"
+                "h": "'a set ⇒ 'a set"
             }
         },
         {
@@ -3550,7 +3967,7 @@
                     "th": "⊢ (∀X. h X ⊆ X ⟶ A ⊆ X) ⟶ A ⊆ lfp h"
                 }
             ],
-            "prop": "(!X. subset (h X) X --> subset A X) --> subset A (lfp h)",
+            "prop": "(∀X. h X ⊆ X ⟶ A ⊆ X) ⟶ A ⊆ lfp h",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3587,7 +4004,7 @@
             "ty": "thm",
             "vars": {
                 "A": "'a set",
-                "h": "'a set => 'a set"
+                "h": "'a set ⇒ 'a set"
             }
         },
         {
@@ -3720,7 +4137,7 @@
                     "th": "⊢ bnd_mono h ⟶ h (lfp h) = lfp h"
                 }
             ],
-            "prop": "bnd_mono h --> h (lfp h) = lfp h",
+            "prop": "bnd_mono h ⟶ h (lfp h) = lfp h",
             "steps": [
                 {
                     "fact_ids": [
@@ -3789,42 +4206,1251 @@
             ],
             "ty": "thm",
             "vars": {
-                "h": "'a set => 'a set"
+                "h": "'a set ⇒ 'a set"
             }
         },
         {
-            "name": "diff",
-            "prop": "diff s t = {x. member x s & neg(member x t)}",
-            "ty": "def",
-            "type": "'a set ⇒ 'a set ⇒ 'a set"
-        },
-        {
-            "name": "finite",
-            "ty": "def.ax",
-            "type": "'a set => bool"
-        },
-        {
-            "attributes": [],
-            "name": "finite_empty",
-            "prop": "finite (empty_set::'a set)",
-            "ty": "thm.ax",
-            "vars": {}
-        },
-        {
-            "name": "finite_insert",
-            "prop": "finite A --> finite (insert x A)",
-            "ty": "thm.ax",
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "inter_comm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ∩ t ⟷ x ∈ t ∩ s"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ s ∧ x ∈ t ⟶ x ∈ t ∧ x ∈ s"
+                },
+                {
+                    "args": "x ∈ s ∧ x ∈ t",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ x ∈ t ⊢ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ x ∈ t ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ x ∈ t ⊢ x ∈ t ∧ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ s ∧ x ∈ t ⟶ x ∈ t ∧ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ t ∧ x ∈ s ⟶ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "x ∈ t ∧ x ∈ s",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ∧ x ∈ s ⊢ x ∈ t ∧ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ t ∧ x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ t ∧ x ∈ s ⊢ x ∈ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.1",
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ t ∧ x ∈ s ⊢ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ t ∧ x ∈ s ⟶ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x ∈ s ∧ x ∈ t ⟷ x ∈ t ∧ x ∈ s"
+                },
+                {
+                    "args": "member_inter_iff, x ∈ s ∩ t ⟷ x ∈ t ∩ s",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ s ∩ t ⟷ x ∈ t ∩ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ∩ t ⟷ x ∈ t ∩ s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ s ∩ t = t ∩ s"
+                }
+            ],
+            "prop": "s ∩ t = t ∩ s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
             "vars": {
-                "A": "'a set",
-                "x": "'a"
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "union_comm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ s ∪ t ⟷ x ∈ t ∪ s"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ s ∨ x ∈ t ⟶ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "x ∈ s ∨ x ∈ t",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∨ x ∈ t ⊢ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ s ∨ x ∈ t ⊢ x ∈ s ⟶ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "disjI2, {}, {A: x ∈ t, B: x ∈ s}",
+                    "id": "0.1.1.1",
+                    "prevs": [
+                        "0.1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ⊢ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ s ∨ x ∈ t ⊢ x ∈ s ⟶ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ s ∨ x ∈ t ⊢ x ∈ t ⟶ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "0.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "disjI1, {}, {A: x ∈ t, B: x ∈ s}",
+                    "id": "0.1.2.1",
+                    "prevs": [
+                        "0.1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ t ⊢ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.2",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ s ∨ x ∈ t ⊢ x ∈ t ⟶ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∨ x ∈ t ⊢ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ s ∨ x ∈ t ⟶ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ t ∨ x ∈ s ⟶ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "x ∈ t ∨ x ∈ s",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ∨ x ∈ s ⊢ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ t ∨ x ∈ s ⊢ x ∈ t ⟶ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "disjI2, {}, {A: x ∈ s, B: x ∈ t}",
+                    "id": "0.2.1.1",
+                    "prevs": [
+                        "0.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ t ⊢ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.2",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ t ∨ x ∈ s ⊢ x ∈ t ⟶ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ t ∨ x ∈ s ⊢ x ∈ s ⟶ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "disjI1, {}, {A: x ∈ s, B: x ∈ t}",
+                    "id": "0.2.2.1",
+                    "prevs": [
+                        "0.2.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ⊢ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2.2",
+                    "prevs": [
+                        "0.2.2.0",
+                        "0.2.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ t ∨ x ∈ s ⊢ x ∈ s ⟶ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ t ∨ x ∈ s ⊢ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ t ∨ x ∈ s ⟶ x ∈ s ∨ x ∈ t"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x ∈ s ∨ x ∈ t ⟷ x ∈ t ∨ x ∈ s"
+                },
+                {
+                    "args": "member_union_iff, x ∈ s ∪ t ⟷ x ∈ t ∪ s",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ s ∪ t ⟷ x ∈ t ∪ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ s ∪ t ⟷ x ∈ t ∪ s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ s ∪ t = t ∪ s"
+                }
+            ],
+            "prop": "s ∪ t = t ∪ s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_union_iff"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.0"
+                    ],
+                    "goal_id": "0.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2.0"
+                    ],
+                    "goal_id": "0.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.0"
+                    ],
+                    "goal_id": "0.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.0"
+                    ],
+                    "goal_id": "0.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
             }
         },
         {
             "attributes": [
                 "hint_backward"
             ],
+            "name": "subset_diff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ diff s t ⟶ x ∈ s"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ diff s t",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ diff s t ⊢ x ∈ diff s t"
+                },
+                {
+                    "args": "diff_def",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ diff s t ⊢ x ∈ {x. x ∈ s ∧ ¬x ∈ t}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ diff s t ⊢ x ∈ s ∧ ¬x ∈ t"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ diff s t ⊢ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ diff s t ⟶ x ∈ s"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ diff s t ⊆ s"
+                }
+            ],
+            "prop": "diff s t ⊆ s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "diff_def"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "disjoint",
+            "prop": "disjoint s t ⟷ s ∩ t = ∅",
+            "ty": "def",
+            "type": "'a set ⇒ 'a set ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "in_disjoint",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ s ∩ t = ∅ ⟶ ¬(∃x. x ∈ s ∧ x ∈ t)"
+                },
+                {
+                    "args": "s ∩ t = ∅",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ∩ t = ∅ ⊢ s ∩ t = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "s ∩ t = ∅ ⊢ (∃x. x ∈ s ∧ x ∈ t) ⟶ false"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ x ∈ t",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. x ∈ s ∧ x ∈ t ⊢ ∃x. x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s ∧ x ∈ t",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ x ∈ t ⊢ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t, x ∈ s ∧ x ∈ t ⊢ x ∈ s ∧ x ∈ t ⟶ x ∈ s ∩ t"
+                },
+                {
+                    "args": "member_inter_iff, x ∈ s ∩ t",
+                    "id": "0.1.3.0",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t, x ∈ s ∧ x ∈ t ⊢ x ∈ s ∩ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3.1",
+                    "prevs": [
+                        "0.1.2",
+                        "0.1.3.0"
+                    ],
+                    "rule": "intros",
+                    "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t ⊢ x ∈ s ∧ x ∈ t ⟶ x ∈ s ∩ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.3",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t, x ∈ s ∧ x ∈ t ⊢ x ∈ s ∩ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.0",
+                        "0.1.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t, x ∈ s ∧ x ∈ t ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty, {a: 'a}, {x: x}",
+                    "id": "0.1.6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(x ∈ ∅)"
+                },
+                {
+                    "args": "negE",
+                    "id": "0.1.7",
+                    "prevs": [
+                        "0.1.6",
+                        "0.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t, x ∈ s ∧ x ∈ t ⊢ false"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ x ∈ t",
+                    "id": "0.1.8",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "s ∩ t = ∅ ⊢ (∃x. x ∈ s ∧ x ∈ t) ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "s ∩ t = ∅ ⊢ ¬(∃x. x ∈ s ∧ x ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ s ∩ t = ∅ ⟶ ¬(∃x. x ∈ s ∧ x ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(∃x. x ∈ s ∧ x ∈ t) ⟶ s ∩ t = ∅"
+                },
+                {
+                    "args": "¬(∃x. x ∈ s ∧ x ∈ t)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ ¬(∃x. x ∈ s ∧ x ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ ∀x. x ∈ s ∩ t ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ x ∈ s ∩ t ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "x ∈ s ∩ t",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∩ t ⊢ x ∈ s ∩ t"
+                },
+                {
+                    "args": "member_inter_iff",
+                    "id": "1.1.1.1",
+                    "prevs": [
+                        "1.1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ s ∩ t ⊢ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx. x ∈ s ∧ x ∈ t, a: x}",
+                    "id": "1.1.1.2",
+                    "prevs": [
+                        "1.1.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t), x ∈ s ∩ t ⊢ ∃x. x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "negE_gen, {}, {A: ∃x. x ∈ s ∧ x ∈ t, C: x ∈ ∅}",
+                    "id": "1.1.1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t), x ∈ s ∩ t ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.4",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ x ∈ s ∩ t ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ x ∈ ∅ ⟶ x ∈ s ∩ t"
+                },
+                {
+                    "args": "x ∈ ∅",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty_simp",
+                    "id": "1.1.2.1",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ ∅ ⊢ false"
+                },
+                {
+                    "args": "member_empty, x ∈ s ∩ t",
+                    "id": "1.1.2.2",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ x ∈ s ∩ t"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.3",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ x ∈ ∅ ⟶ x ∈ s ∩ t"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ x ∈ s ∩ t ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ ∀x. x ∈ s ∩ t ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(∃x. x ∈ s ∧ x ∈ t) ⊢ s ∩ t = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(∃x. x ∈ s ∧ x ∈ t) ⟶ s ∩ t = ∅"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ s ∩ t = ∅ ⟷ ¬(∃x. x ∈ s ∧ x ∈ t)"
+                },
+                {
+                    "args": "disjoint_def, disjoint s t ⟷ ¬(∃x. x ∈ s ∧ x ∈ t)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ disjoint s t ⟷ ¬(∃x. x ∈ s ∧ x ∈ t)"
+                }
+            ],
+            "prop": "disjoint s t ⟷ ¬(∃x. x ∈ s ∧ x ∈ t)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "disjoint_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal": "x ∈ s ∧ x ∈ t --> x ∈ s ∩ t",
+                    "goal_id": "0.1.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.3.0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3",
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "0.0",
+                        "0.1.4"
+                    ],
+                    "goal_id": "0.1.5",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "0.1.6",
+                    "method_name": "apply_backward_step",
+                    "param_A": "x ∈ ∅",
+                    "theorem": "negE"
+                },
+                {
+                    "goal_id": "0.1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.1.1.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "name": "finite",
+            "rules": [
+                {
+                    "name": "finite_empty",
+                    "prop": "finite (∅::'a set)"
+                },
+                {
+                    "name": "finite_insert",
+                    "prop": "finite A ⟶ finite (insert x A)"
+                }
+            ],
+            "ty": "def.pred",
+            "type": "'a set ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_backward1"
+            ],
+            "name": "finite_induct_strong",
+            "prop": "finite s ⟶ P ∅ ⟶ (∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1)) ⟶ P s",
+            "ty": "thm",
+            "vars": {
+                "P": "'a set ⇒ bool",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "finite_subset",
-            "prop": "finite t & subset s t --> finite s",
+            "prop": "finite t ⟶ s ⊆ t ⟶ finite s",
             "ty": "thm",
             "vars": {
                 "s": "'a set",
@@ -3833,90 +5459,2505 @@
         },
         {
             "name": "finite_restrict",
-            "prop": "finite s --> finite {x. (member x s) & P x}",
+            "prop": "finite s ⟶ finite ({x. x ∈ s ∧ P x})",
             "ty": "thm",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "s": "'a set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "image",
-            "prop": "image f s = {y. ?x. member x s & y = f x}",
+            "prop": "image f s = {y. ∃x. x ∈ s ∧ y = f x}",
             "ty": "def",
             "type": "('a ⇒ 'b) ⇒ 'a set ⇒ 'b set"
         },
         {
-            "attributes": [],
-            "name": "sup",
-            "prop": [
-                "sup s = THE a. (!x. x ∈ s --> x <= a) &",
-                "!b. (!x. x ∈ s --> x <= b) --> a <= b"
+            "attributes": [
+                "hint_rewrite"
             ],
-            "ty": "def",
-            "type": "real set ⇒ real"
+            "name": "in_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, y ∈ {y. ∃x. x ∈ s ∧ y = f x} ⟷ (∃x. x ∈ s ∧ y = f x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ {y. ∃x. x ∈ s ∧ y = f x} ⟷ (∃x. x ∈ s ∧ y = f x)"
+                },
+                {
+                    "args": "image_def, y ∈ image f s ⟷ (∃x. x ∈ s ∧ y = f x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ image f s ⟷ (∃x. x ∈ s ∧ y = f x)"
+                },
+                {
+                    "args": "conj_comm, y ∈ image f s ⟷ (∃x. y = f x ∧ x ∈ s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ image f s ⟷ (∃x. y = f x ∧ x ∈ s)"
+                }
+            ],
+            "prop": "y ∈ image f s ⟷ (∃x. y = f x ∧ x ∈ s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "image_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set",
+                "y": "'b"
+            }
         },
         {
-            "attributes": [],
-            "name": "inf",
-            "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
-            "ty": "def",
-            "type": "real set ⇒ real"
-        },
-        {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "itset",
             "prop": [
-                "itset f s b = (THE g. (g empty_set = b) &",
-                "!x. !s. finite s --> (g (insert x s) = if x ∈ s then g s else f x (g s))) s"
+                "itset f s b = ",
+                "((THE g. g ∅ = b ∧ ",
+                "    (∀x. ∀s1. finite s1 ⟶ g (insert x s1) = (if x ∈ s1 then g s1 else f x (g s1)))) ",
+                "   s)"
             ],
             "ty": "def",
             "type": "('a ⇒ 'b ⇒ 'b) ⇒ 'a set ⇒ 'b ⇒ 'b"
         },
         {
-            "attributes": [],
             "name": "card",
-            "prop": "card s = itset (%x. %n. Suc n) s 0",
+            "prop": "card s = itset (λx. λn. Suc n) s 0",
             "ty": "def",
             "type": "'a set ⇒ nat"
         },
         {
-            "attributes": [],
             "name": "has_size",
             "prop": "has_size s n ⟷ finite s ∧ card s = n",
             "ty": "def",
             "type": "'a set ⇒ nat ⇒ bool"
         },
         {
-            "attributes": [],
-            "name": "finite2",
-            "rules": [
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "image_empty",
+            "num_gaps": 0,
+            "proof": [
                 {
-                    "name": "finite2_empty",
-                    "prop": "finite2 (∅::'a set)"
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ {y. ∃x. x ∈ ∅ ∧ y = f x} ⟷ x ∈ ∅"
                 },
                 {
-                    "name": "finite2_insert",
-                    "prop": "finite2 A ⟶ finite2 (insert x A)"
+                    "args": "x, 'b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. false ∧ x = f x1) ⟶ false"
+                },
+                {
+                    "args": "∃x1. false ∧ x = f x1",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. false ∧ x = f x1 ⊢ ∃x1. false ∧ x = f x1"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "false ∧ x = f x1",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ∧ x = f x1 ⊢ false ∧ x = f x1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "false ∧ x = f x1 ⊢ false"
+                },
+                {
+                    "args": "∃x1. false ∧ x = f x1",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. false ∧ x = f x1) ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ false ⟶ (∃x1. false ∧ x = f x1)"
+                },
+                {
+                    "args": "false",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ⊢ false"
+                },
+                {
+                    "args": "not_false_res, ∃x1. false ∧ x = f x1",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "false ⊢ ∃x1. false ∧ x = f x1"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ false ⟶ (∃x1. false ∧ x = f x1)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x1. false ∧ x = f x1) ⟷ false"
+                },
+                {
+                    "args": "member_empty_simp, (∃x1. x1 ∈ ∅ ∧ x = f x1) ⟷ x ∈ ∅",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x1. x1 ∈ ∅ ∧ x = f x1) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_collect, x ∈ {y. ∃x. x ∈ ∅ ∧ y = f x} ⟷ x ∈ ∅",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {y. ∃x. x ∈ ∅ ∧ y = f x} ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ {y. ∃x. x ∈ ∅ ∧ y = f x} ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ {y. ∃x. x ∈ ∅ ∧ y = f x} = ∅"
+                },
+                {
+                    "args": "image_def, image f ∅ = ∅",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ image f ∅ = ∅"
                 }
             ],
-            "ty": "def.pred",
-            "type": "'a set => bool"
-        },
-        {
-            "attributes": [],
-            "name": "test",
-            "prop": "finite2 {x, y}",
+            "prop": "image f ∅ = ∅",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "image_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "x": "'a",
-                "y": "'a"
+                "f": "'a ⇒ 'b"
             }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "image_insert",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x1. x1 ∈ image f (insert x s) ⟷ x1 ∈ insert (f x) (image f s)"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11) ⟶ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11"
+                },
+                {
+                    "args": "x11, 'a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x11"
+                },
+                {
+                    "args": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11"
+                },
+                {
+                    "args": "conjD1, {}, {A: x11 = x ∨ x11 ∈ s, B: x1 = f x11}",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 = x ∨ x11 ∈ s"
+                },
+                {
+                    "args": "conjD2, {}, {A: x11 = x ∨ x11 ∈ s, B: x1 = f x11}",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x1 = f x11"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 = x ⟶ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "x11 = x",
+                    "id": "0.1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x11 = x ⊢ x11 = x"
+                },
+                {
+                    "args": "f x11 = f x",
+                    "id": "0.1.5.1",
+                    "prevs": [
+                        "0.1.5.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x11 = x ⊢ f x11 = f x"
+                },
+                {
+                    "args": "x1 = f x",
+                    "id": "0.1.5.2",
+                    "prevs": [
+                        "0.1.4",
+                        "0.1.5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, x11 = x ⊢ x1 = f x"
+                },
+                {
+                    "args": "disjI1, {}, {A: x1 = f x, B: ∃x. x ∈ s ∧ x1 = f x}",
+                    "id": "0.1.5.3",
+                    "prevs": [
+                        "0.1.5.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, x11 = x ⊢ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5.4",
+                    "prevs": [
+                        "0.1.5.0",
+                        "0.1.5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 = x ⟶ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 ∈ s ⟶ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "x11 ∈ s",
+                    "id": "0.1.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x11 ∈ s ⊢ x11 ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.6.1",
+                    "prevs": [
+                        "0.1.6.0",
+                        "0.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x11 ∈ s, ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 ∈ s ∧ x1 = f x11"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx. x ∈ s ∧ x1 = f x, a: x11}",
+                    "id": "0.1.6.2",
+                    "prevs": [
+                        "0.1.6.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, x11 ∈ s ⊢ ∃x. x ∈ s ∧ x1 = f x"
+                },
+                {
+                    "args": "disjI2, {}, {A: x1 = f x, B: ∃x. x ∈ s ∧ x1 = f x}",
+                    "id": "0.1.6.3",
+                    "prevs": [
+                        "0.1.6.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, x11 ∈ s ⊢ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.6.4",
+                    "prevs": [
+                        "0.1.6.0",
+                        "0.1.6.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 ∈ s ⟶ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.1.7",
+                    "prevs": [
+                        "0.1.3",
+                        "0.1.5",
+                        "0.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11",
+                    "id": "0.1.8",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11) ⟶ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⟶ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11)"
+                },
+                {
+                    "args": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⊢ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⊢ x1 = f x ⟶ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11)"
+                },
+                {
+                    "args": "x1 = f x",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 = f x ⊢ x1 = f x"
+                },
+                {
+                    "args": "eq_refl, {a: 'a}, {x: x}",
+                    "id": "0.2.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "disjI1, {}, {A: x = x, B: x ∈ s}",
+                    "id": "0.2.1.2",
+                    "prevs": [
+                        "0.2.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x), x1 = f x ⊢ x = x ∨ x ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.1.3",
+                    "prevs": [
+                        "0.2.1.2",
+                        "0.2.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x), x1 = f x ⊢ (x = x ∨ x ∈ s) ∧ x1 = f x"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, a: x}",
+                    "id": "0.2.1.4",
+                    "prevs": [
+                        "0.2.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x), x1 = f x ⊢ ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.5",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⊢ x1 = f x ⟶ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⊢ (∃x. x ∈ s ∧ x1 = f x) ⟶ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11)"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ x1 = f x",
+                    "id": "0.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. x ∈ s ∧ x1 = f x ⊢ ∃x. x ∈ s ∧ x1 = f x"
+                },
+                {
+                    "args": "x2, 'a",
+                    "id": "0.2.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x2"
+                },
+                {
+                    "args": "x2 ∈ s ∧ x1 = f x2",
+                    "id": "0.2.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x2 ∈ s ∧ x1 = f x2 ⊢ x2 ∈ s ∧ x1 = f x2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.2.3",
+                    "prevs": [
+                        "0.2.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x2 ∈ s ∧ x1 = f x2 ⊢ x2 ∈ s"
+                },
+                {
+                    "args": "disjI2, {}, {A: x2 = x, B: x2 ∈ s}",
+                    "id": "0.2.2.4",
+                    "prevs": [
+                        "0.2.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x), ∃x. x ∈ s ∧ x1 = f x, x2 ∈ s ∧ x1 = f x2 ⊢ x2 = x ∨ x2 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.2.5",
+                    "prevs": [
+                        "0.2.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x2 ∈ s ∧ x1 = f x2 ⊢ x1 = f x2"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.2.6",
+                    "prevs": [
+                        "0.2.2.4",
+                        "0.2.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x), ∃x. x ∈ s ∧ x1 = f x, x2 ∈ s ∧ x1 = f x2 ⊢ (x2 = x ∨ x2 ∈ s) ∧ x1 = f x2"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, a: x2}",
+                    "id": "0.2.2.7",
+                    "prevs": [
+                        "0.2.2.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x), ∃x. x ∈ s ∧ x1 = f x, x2 ∈ s ∧ x1 = f x2 ⊢ ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ x1 = f x",
+                    "id": "0.2.2.8",
+                    "prevs": [
+                        "0.2.2.0",
+                        "0.2.2.0",
+                        "0.2.2.1",
+                        "0.2.2.2",
+                        "0.2.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⊢ (∃x. x ∈ s ∧ x1 = f x) ⟶ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⊢ ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x) ⟶ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11) ⟷ x1 = f x ∨ (∃x. x ∈ s ∧ x1 = f x)"
+                },
+                {
+                    "args": "member_collect, x1 ∈ {y. ∃x1. (x1 = x ∨ x1 ∈ s) ∧ y = f x1} ⟷ x1 = f x ∨ x1 ∈ {y. ∃x. x ∈ s ∧ y = f x}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x1 ∈ {y. ∃x1. (x1 = x ∨ x1 ∈ s) ∧ y = f x1} ⟷ x1 = f x ∨ x1 ∈ {y. ∃x. x ∈ s ∧ y = f x}"
+                },
+                {
+                    "args": "member_insert, x1 ∈ {y. ∃x1. x1 ∈ insert x s ∧ y = f x1} ⟷ x1 ∈ insert (f x) ({y. ∃x. x ∈ s ∧ y = f x})",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x1 ∈ {y. ∃x1. x1 ∈ insert x s ∧ y = f x1} ⟷ x1 ∈ insert (f x) ({y. ∃x. x ∈ s ∧ y = f x})"
+                },
+                {
+                    "args": "image_def, x1 ∈ image f (insert x s) ⟷ x1 ∈ insert (f x) (image f s)",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x1 ∈ image f (insert x s) ⟷ x1 ∈ insert (f x) (image f s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x1. x1 ∈ image f (insert x s) ⟷ x1 ∈ insert (f x) (image f s)"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ image f (insert x s) = insert (f x) (image f s)"
+                }
+            ],
+            "prop": "image f (insert x s) = insert (f x) (image f s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "image_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "x11"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3"
+                    ],
+                    "goal_id": "0.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.4"
+                    ],
+                    "goal_id": "0.1.5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.5.0"
+                    ],
+                    "goal_id": "0.1.5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.1.6.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x11"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.6.0"
+                    ],
+                    "goal_id": "0.1.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "0.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.0"
+                    ],
+                    "goal_id": "0.2.2.1",
+                    "method_name": "exists_elim",
+                    "names": "x2"
+                },
+                {
+                    "goal_id": "0.2.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "x2"
+                },
+                {
+                    "goal_id": "0.2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.2"
+                    ],
+                    "goal_id": "0.2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.2"
+                    ],
+                    "goal_id": "0.2.2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "image_union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ image f (s ∪ t) ⟷ x ∈ image f s ∪ image f t"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ ∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ s ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "x = f x1 ∧ x1 ∈ s",
+                    "id": "0.1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f x1 ∧ x1 ∈ s ⊢ x = f x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ s, a: x1}",
+                    "id": "0.1.3.1",
+                    "prevs": [
+                        "0.1.3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ⊢ ∃a. x = f a ∧ a ∈ s"
+                },
+                {
+                    "args": "disjI1, {}, {A: ∃a. x = f a ∧ a ∈ s, B: ∃x1. x = f x1 ∧ x1 ∈ t}",
+                    "id": "0.1.3.2",
+                    "prevs": [
+                        "0.1.3.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3.3",
+                    "prevs": [
+                        "0.1.3.0",
+                        "0.1.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ s ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ t ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "x = f x1 ∧ x1 ∈ t",
+                    "id": "0.1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ t, a: x1}",
+                    "id": "0.1.4.1",
+                    "prevs": [
+                        "0.1.4.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ t ⊢ ∃x1. x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "disjI2, {}, {A: ∃a. x = f a ∧ a ∈ s, B: ∃x1. x = f x1 ∧ x1 ∈ t}",
+                    "id": "0.1.4.2",
+                    "prevs": [
+                        "0.1.4.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ t ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4.3",
+                    "prevs": [
+                        "0.1.4.0",
+                        "0.1.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ t ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.2",
+                        "0.1.3",
+                        "0.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, ∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "∃a. x = f a ∧ a ∈ s",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a. x = f a ∧ a ∈ s ⊢ ∃a. x = f a ∧ a ∈ s"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "0.2.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "x = f a ∧ a ∈ s",
+                    "id": "0.2.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f a ∧ a ∈ s ⊢ x = f a ∧ a ∈ s"
+                },
+                {
+                    "args": "disjI1, {}, {A: x = f a ∧ a ∈ s, B: x = f a ∧ a ∈ t}",
+                    "id": "0.2.1.3",
+                    "prevs": [
+                        "0.2.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = f a ∧ a ∈ s ⊢ x = f a ∧ a ∈ s ∨ x = f a ∧ a ∈ t"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, a: a}",
+                    "id": "0.2.1.4",
+                    "prevs": [
+                        "0.2.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t), ∃a. x = f a ∧ a ∈ s, x = f a ∧ a ∈ s ⊢ ∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "∃a. x = f a ∧ a ∈ s",
+                    "id": "0.2.1.5",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.0",
+                        "0.2.1.1",
+                        "0.2.1.2",
+                        "0.2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⊢ (∃x1. x = f x1 ∧ x1 ∈ t) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ t",
+                    "id": "0.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ t ⊢ ∃x1. x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "b, 'a",
+                    "id": "0.2.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "x = f b ∧ b ∈ t",
+                    "id": "0.2.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f b ∧ b ∈ t ⊢ x = f b ∧ b ∈ t"
+                },
+                {
+                    "args": "disjI2, {}, {A: x = f b ∧ b ∈ s, B: x = f b ∧ b ∈ t}",
+                    "id": "0.2.2.3",
+                    "prevs": [
+                        "0.2.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = f b ∧ b ∈ t ⊢ x = f b ∧ b ∈ s ∨ x = f b ∧ b ∈ t"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, a: b}",
+                    "id": "0.2.2.4",
+                    "prevs": [
+                        "0.2.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t), ∃x1. x = f x1 ∧ x1 ∈ t, x = f b ∧ b ∈ t ⊢ ∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ t",
+                    "id": "0.2.2.5",
+                    "prevs": [
+                        "0.2.2.0",
+                        "0.2.2.0",
+                        "0.2.2.1",
+                        "0.2.2.2",
+                        "0.2.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⊢ (∃x1. x = f x1 ∧ x1 ∈ t) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⊢ ∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "conj_disj_distribL1, (∃x1. x = f x1 ∧ (x1 ∈ s ∨ x1 ∈ t)) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x1. x = f x1 ∧ (x1 ∈ s ∨ x1 ∈ t)) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s) ∨ (∃x1. x = f x1 ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "in_image, (∃x1. x = f x1 ∧ (x1 ∈ s ∨ x1 ∈ t)) ⟷ x ∈ image f s ∨ x ∈ image f t",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x1. x = f x1 ∧ (x1 ∈ s ∨ x1 ∈ t)) ⟷ x ∈ image f s ∨ x ∈ image f t"
+                },
+                {
+                    "args": "member_union_iff, (∃x1. x = f x1 ∧ x1 ∈ s ∪ t) ⟷ x ∈ image f s ∪ image f t",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s ∪ t) ⟷ x ∈ image f s ∪ image f t"
+                },
+                {
+                    "args": "in_image, x ∈ image f (s ∪ t) ⟷ x ∈ image f s ∪ image f t",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ image f (s ∪ t) ⟷ x ∈ image f s ∪ image f t"
+                },
+                {
+                    "args": "",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ image f (s ∪ t) ⟷ x ∈ image f s ∪ image f t"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ image f (s ∪ t) = image f s ∪ image f t"
+                }
+            ],
+            "prop": "image f (s ∪ t) = image f s ∪ image f t",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_union_iff"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_disj_distribL1"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.1.3.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "goal_id": "0.1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.1.4.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.0"
+                    ],
+                    "goal_id": "0.2.1.1",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "goal_id": "0.2.1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "a"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.2"
+                    ],
+                    "goal_id": "0.2.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.0"
+                    ],
+                    "goal_id": "0.2.2.1",
+                    "method_name": "exists_elim",
+                    "names": "b"
+                },
+                {
+                    "goal_id": "0.2.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.2"
+                    ],
+                    "goal_id": "0.2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "image_id",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ image (λx. x) s ⟷ x ∈ s"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = x1 ∧ x1 ∈ s) ⟶ x ∈ s"
+                },
+                {
+                    "args": "∃x1. x = x1 ∧ x1 ∈ s",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = x1 ∧ x1 ∈ s ⊢ ∃x1. x = x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = x1 ∧ x1 ∈ s",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = x1 ∧ x1 ∈ s ⊢ x = x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1, {}, {A: x = x1, B: x1 ∈ s}",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = x1 ∧ x1 ∈ s ⊢ x = x1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = x1 ∧ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.3",
+                        "0.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = x1 ∧ x1 ∈ s, ∃x1. x = x1 ∧ x1 ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "∃x1. x = x1 ∧ x1 ∈ s",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = x1 ∧ x1 ∈ s) ⟶ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ s ⟶ (∃x1. x = x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "eq_refl, {a: 'a}, {x: x}",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.1",
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ⊢ x = x ∧ x ∈ s"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = x1 ∧ x1 ∈ s, a: x}",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ⊢ ∃x1. x = x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ s ⟶ (∃x1. x = x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x1. x = x1 ∧ x1 ∈ s) ⟷ x ∈ s"
+                },
+                {
+                    "args": "in_image, x ∈ image (λx. x) s ⟷ x ∈ s",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ image (λx. x) s ⟷ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ image (λx. x) s ⟷ x ∈ s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ image (λx. x) s = s"
+                }
+            ],
+            "prop": "image (λx. x) s = s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3"
+                    ],
+                    "goal_id": "0.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "image_combine",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ image (λx. f (g x)) s ⟷ x ∈ image f (image g s)"
+                },
+                {
+                    "args": "x, 'c",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = f (g x1) ∧ x1 ∈ s) ⟶ (∃x1. x = f x1 ∧ (∃x. x1 = g x ∧ x ∈ s))"
+                },
+                {
+                    "args": "∃x1. x = f (g x1) ∧ x1 ∈ s",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = f (g x1) ∧ x1 ∈ s ⊢ ∃x1. x = f (g x1) ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = f (g x1) ∧ x1 ∈ s",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f (g x1) ∧ x1 ∈ s ⊢ x = f (g x1) ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f (g x1) ∧ x1 ∈ s ⊢ x = f (g x1)"
+                },
+                {
+                    "args": "eq_refl, {a: 'b}, {x: g x1}",
+                    "id": "0.1.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ g x1 = g x1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f (g x1) ∧ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.4",
+                        "0.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃x1. x = f (g x1) ∧ x1 ∈ s, x = f (g x1) ∧ x1 ∈ s ⊢ g x1 = g x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx. g x1 = g x ∧ x ∈ s, a: x1}",
+                    "id": "0.1.7",
+                    "prevs": [
+                        "0.1.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x1. x = f (g x1) ∧ x1 ∈ s, x = f (g x1) ∧ x1 ∈ s ⊢ ∃a. g x1 = g a ∧ a ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.8",
+                    "prevs": [
+                        "0.1.3",
+                        "0.1.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃x1. x = f (g x1) ∧ x1 ∈ s, x = f (g x1) ∧ x1 ∈ s ⊢ x = f (g x1) ∧ (∃x. g x1 = g x ∧ x ∈ s)"
+                },
+                {
+                    "args": "exI, {a: 'b}, {P: λx1. x = f x1 ∧ (∃x. x1 = g x ∧ x ∈ s), a: g x1}",
+                    "id": "0.1.9",
+                    "prevs": [
+                        "0.1.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x1. x = f (g x1) ∧ x1 ∈ s, x = f (g x1) ∧ x1 ∈ s ⊢ ∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s)"
+                },
+                {
+                    "args": "∃x1. x = f (g x1) ∧ x1 ∈ s",
+                    "id": "0.1.10",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = f (g x1) ∧ x1 ∈ s) ⟶ (∃x1. x = f x1 ∧ (∃x. x1 = g x ∧ x ∈ s))"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = f x1 ∧ (∃x. x1 = g x ∧ x ∈ s)) ⟶ (∃x1. x = f (g x1) ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s) ⊢ ∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s)"
+                },
+                {
+                    "args": "a, 'b",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "x = f a ∧ (∃x. a = g x ∧ x ∈ s)",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f a ∧ (∃x. a = g x ∧ x ∈ s) ⊢ x = f a ∧ (∃x. a = g x ∧ x ∈ s)"
+                },
+                {
+                    "args": "conjD1, {}, {A: x = f a, B: ∃x. a = g x ∧ x ∈ s}",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = f a ∧ (∃x. a = g x ∧ x ∈ s) ⊢ x = f a"
+                },
+                {
+                    "args": "conjD2, {}, {A: x = f a, B: ∃x. a = g x ∧ x ∈ s}",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = f a ∧ (∃x. a = g x ∧ x ∈ s) ⊢ ∃x. a = g x ∧ x ∈ s"
+                },
+                {
+                    "args": "b, 'a",
+                    "id": "0.2.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "a = g b ∧ b ∈ s",
+                    "id": "0.2.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = g b ∧ b ∈ s ⊢ a = g b ∧ b ∈ s"
+                },
+                {
+                    "args": "conjD1, {}, {A: a = g b, B: b ∈ s}",
+                    "id": "0.2.7",
+                    "prevs": [
+                        "0.2.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a = g b ∧ b ∈ s ⊢ a = g b"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.8",
+                    "prevs": [
+                        "0.2.7",
+                        "0.2.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a = g b ∧ b ∈ s, x = f a ∧ (∃x. a = g x ∧ x ∈ s) ⊢ x = f (g b)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.9",
+                    "prevs": [
+                        "0.2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a = g b ∧ b ∈ s ⊢ b ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.10",
+                    "prevs": [
+                        "0.2.8",
+                        "0.2.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a = g b ∧ b ∈ s, x = f a ∧ (∃x. a = g x ∧ x ∈ s), ∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s) ⊢ x = f (g b) ∧ b ∈ s"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = f (g x1) ∧ x1 ∈ s, a: b}",
+                    "id": "0.2.11",
+                    "prevs": [
+                        "0.2.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s), x = f a ∧ (∃x. a = g x ∧ x ∈ s), a = g b ∧ b ∈ s ⊢ ∃x1. x = f (g x1) ∧ x1 ∈ s"
+                },
+                {
+                    "args": "∃x. a = g x ∧ x ∈ s, ∃a. x = f a ∧ (∃x. a = g x ∧ x ∈ s)",
+                    "id": "0.2.12",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2",
+                        "0.2.4",
+                        "0.2.5",
+                        "0.2.6",
+                        "0.2.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = f x1 ∧ (∃x. x1 = g x ∧ x ∈ s)) ⟶ (∃x1. x = f (g x1) ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x1. x = f (g x1) ∧ x1 ∈ s) ⟷ (∃x1. x = f x1 ∧ (∃x. x1 = g x ∧ x ∈ s))"
+                },
+                {
+                    "args": "in_image, (∃x1. x = f (g x1) ∧ x1 ∈ s) ⟷ (∃x1. x = f x1 ∧ x1 ∈ image g s)",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃x1. x = f (g x1) ∧ x1 ∈ s) ⟷ (∃x1. x = f x1 ∧ x1 ∈ image g s)"
+                },
+                {
+                    "args": "in_image, x ∈ image (λx. f (g x)) s ⟷ x ∈ image f (image g s)",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ image (λx. f (g x)) s ⟷ x ∈ image f (image g s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ image (λx. f (g x)) s ⟷ x ∈ image f (image g s)"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ image (λx. f (g x)) s = image f (image g s)"
+                },
+                {
+                    "args": "comp_fun_def, image (f ∘ g) s = image f (image g s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ image (f ∘ g) s = image f (image g s)"
+                }
+            ],
+            "prop": "image (f ∘ g) s = image f (image g s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "g x1"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "0.1.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.4"
+                    ],
+                    "goal_id": "0.2.5",
+                    "method_name": "exists_elim",
+                    "names": "b"
+                },
+                {
+                    "goal_id": "0.2.7",
+                    "method_name": "inst_exists_goal",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.6"
+                    ],
+                    "goal_id": "0.2.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.7",
+                        "0.2.3"
+                    ],
+                    "goal_id": "0.2.8",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.8"
+                    ],
+                    "goal_id": "0.2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.6"
+                    ],
+                    "goal_id": "0.2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'c",
+                "g": "'a ⇒ 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "image_subset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "s ⊆ t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ⊆ t ⊢ s ⊆ t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "s ⊆ t ⊢ ∀x. x ∈ image f s ⟶ x ∈ image f t"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ image f s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ image f s ⊢ x ∈ image f s"
+                },
+                {
+                    "args": "in_image",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ image f s ⊢ ∃x1. x = f x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = f x1 ∧ x1 ∈ s",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f x1 ∧ x1 ∈ s ⊢ x = f x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ⊢ x = f x1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "1.7",
+                    "prevs": [
+                        "0",
+                        "1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "s ⊆ t, x ∈ image f s, x = f x1 ∧ x1 ∈ s ⊢ x1 ∈ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.5",
+                        "1.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "s ⊆ t, x ∈ image f s, x = f x1 ∧ x1 ∈ s ⊢ x = f x1 ∧ x1 ∈ t"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ t, a: x1}",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "s ⊆ t, x ∈ image f s, x = f x1 ∧ x1 ∈ s ⊢ ∃a. x = f a ∧ a ∈ t"
+                },
+                {
+                    "args": "in_image, x ∈ image f t",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "s ⊆ t, x ∈ image f s, x = f x1 ∧ x1 ∈ s ⊢ x ∈ image f t"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ s",
+                    "id": "1.11",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3",
+                        "1.4",
+                        "1.10"
+                    ],
+                    "rule": "intros",
+                    "th": "s ⊆ t ⊢ ∀x. x ∈ image f s ⟶ x ∈ image f t"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "s ⊆ t ⊢ image f s ⊆ image f t"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ s ⊆ t ⟶ image f s ⊆ image f t"
+                }
+            ],
+            "prop": "s ⊆ t ⟶ image f s ⊆ image f t",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "in_image"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "in_image"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1.6",
+                    "method_name": "apply_backward_step",
+                    "param_A": "s",
+                    "theorem": "subsetE"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "exists_in_gspec1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))"
+                }
+            ],
+            "prop": "(∃z. z ∈ {y. ∃x. y = f x} ∧ Q z) ⟷ (∃x. Q (f x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "Q": "'b ⇒ bool",
+                "f": "'a ⇒ 'b"
+            }
+        },
+        {
+            "name": "countable",
+            "ty": "def.ax",
+            "type": "'a set ⇒ bool"
+        },
+        {
+            "name": "sup",
+            "prop": "sup s = (THE a. (∀x. x ∈ s ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ b))",
+            "ty": "def",
+            "type": "real set ⇒ real"
+        },
+        {
+            "name": "inf",
+            "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
+            "ty": "def",
+            "type": "real set ⇒ real"
         }
     ],
     "description": "Basic results about sets.",
     "imports": [
-        "nat"
+        "function"
     ],
     "name": "set"
 }

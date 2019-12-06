@@ -14,6 +14,8 @@ from logic import logic
 from logic import term_ord
 from server.tactic import MacroTactic
 from syntax import pprint, settings
+from util import poly
+
 
 """Utility functions for natural number arithmetic."""
 
@@ -55,6 +57,9 @@ def mk_times(*args):
 
 def is_plus(t):
     return t.is_binop() and t.head == plus
+
+def is_minus(t):
+    return t.is_binop() and t.head == minus
 
 def is_times(t):
     return t.is_binop() and t.head == times
@@ -99,7 +104,7 @@ def is_binary(t):
     assert isinstance(t, Term), "is_binary"
     if t == zero or t == one or t.is_const_name("zero") or t.is_const_name("one"):
         return True
-    elif t.ty != term.COMB:
+    elif not t.is_comb():
         return False
     elif t.head == bit0 or t.head == bit1:
         return is_binary(t.arg)
@@ -133,6 +138,33 @@ def from_binary_nat(t):
     else:
         return from_binary(t.arg)
 
+def convert_to_poly(t):
+    """Convert natural number expression to polynomial."""
+    if t.is_var():
+        return poly.singleton(t)
+    elif is_binary_nat(t):
+        return poly.constant(from_binary_nat(t))
+    elif is_plus(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) + convert_to_poly(t2)
+    elif is_times(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) * convert_to_poly(t2)
+    elif is_minus(t):
+        t1, t2 = t.args
+        p1, p2 = convert_to_poly(t1), convert_to_poly(t2)
+        if p1.is_constant() and p2.is_constant():
+            n1 = p1.get_constant()
+            n2 = p2.get_constant()
+            if n1 <= n2:
+                return poly.constant(0)
+            else:
+                return poly.constant(n1 - n2)
+        else:
+            return poly.singleton(t)
+    else:
+        return poly.singleton(t)
+
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
     def eval(self, thy, t):
@@ -154,10 +186,6 @@ class add_conv(Conv):
     """Computes the sum of two binary numbers."""
     def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
-
-# t = f x --> f = t.head, x = t.arg
-# t = f x y --> f = t.head, x = t.arg1, y = t.arg
-# t = f x y z --> f = t.head, [x, y, z] = t.args
 
     def get_proof_term(self, thy, t):
         if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
@@ -530,6 +558,7 @@ class nat_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'nat_nat_power_def_1'
 
     def eval(self, thy, goal, pts):
         # Simply produce the goal.
@@ -538,7 +567,7 @@ class nat_norm_macro(ProofTermMacro):
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_norm_macro"
-        if not goal.is_equals():
+        if not (goal.is_equals() and goal.lhs.get_type() == natT):
             return False
 
         t1, t2 = goal.args
@@ -561,6 +590,7 @@ class nat_norm_method(Method):
     """Apply nat_norm macro."""
     def __init__(self):
         self.sig = []
+        self.limit = 'nat_nat_power_def_1'
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -576,7 +606,7 @@ class nat_norm_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("nat_norm: (solves)")
 
     def apply(self, state, id, data, prevs):
@@ -630,6 +660,7 @@ class nat_const_ineq_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'bit1_neq_one'
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_const_ineq_macro"
@@ -661,6 +692,7 @@ class nat_const_ineq_method(Method):
     """Apply nat_const_ineq macro."""
     def __init__(self):
         self.sig = []
+        self.limit = 'bit1_neq_one'
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -676,7 +708,7 @@ class nat_const_ineq_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("nat_const_ineq: (solves)")
 
     def apply(self, state, id, data, prevs):
@@ -688,6 +720,7 @@ class nat_const_less_eq_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'bit1_neq_one'
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_const_less_eq_macro"
@@ -719,6 +752,7 @@ class nat_const_less_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'bit1_neq_one'
 
     def get_proof_term(self, thy, goal, pts):
         assert isinstance(goal, Term)
@@ -750,6 +784,8 @@ class nat_eq_conv(Conv):
 macro.global_macros.update({
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
+    "nat_const_less_eq": nat_const_less_eq_macro(),
+    "nat_const_less": nat_const_less_macro(),
 })
 
 global_methods.update({

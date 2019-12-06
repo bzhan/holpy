@@ -44,6 +44,14 @@ def subset(T):
 def mk_subset(A, B):
     return subset(A.get_type().args[0])(A, B)
 
+def image(T1, T2):
+    return Const("image", TFun(TFun(T1, T2), setT(T1), setT(T2)))
+
+def mk_image(f, S):
+    T1 = f.get_type().domain_type()
+    T2 = f.get_type().range_type()
+    return image(T1, T2)(f, S)
+
 def mk_inter(A, B):
     return inter(A.get_type().args[0])(A, B)
 

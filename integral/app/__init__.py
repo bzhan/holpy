@@ -116,6 +116,18 @@ def integrate_by_parts():
         )
     })
 
+@app.route("/polynomial-division", methods=['POST'])
+def polynomial_division():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = rules.PolynomialDivision()
+    problem = parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': latex.convert_expr(new_problem),
+        'reason': "Polynomial division"
+    })
+
 @app.route("/save-file", methods=['POST'])
 def save_file():
     data = json.loads(request.get_data().decode('utf-8'))

@@ -8,6 +8,7 @@ from logic import basic
 from logic import logic
 from data import nat
 from data import list
+from logic.context import Context
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
 thy = basic.load_theory('list')
@@ -15,25 +16,12 @@ thy = basic.load_theory('list')
 Ta = TVar("a")
 listT = list.listT
 
-ctxt = {'vars': {
+ctxt = Context(thy, vars={
     "A" : boolT,
-    "B" : boolT,
-    "C" : boolT,
     "P" : TFun(Ta, boolT),
-    "Q" : TFun(Ta, boolT),
-    "R" : TFun(Ta, Ta, boolT),
     "a" : Ta,
     "b" : Ta,
-    "c" : Ta,
-    "f" : TFun(Ta, Ta),
-    "nn" : TFun(boolT, boolT),
-    "m" : nat.natT,
-    "n" : nat.natT,
-    "p" : nat.natT,
-    "xs" : listT(Ta),
-    "ys" : listT(Ta),
-    "zs" : listT(Ta),
-}}
+})
 
 class InferTypeTest(unittest.TestCase):
     def testInferType(self):
@@ -59,7 +47,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            self.assertEqual(type_infer(thy, ctxt, t), res)
+            self.assertEqual(type_infer(ctxt, t), res)
 
     def testInferTypeFail(self):
         test_data = [
@@ -68,7 +56,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "When infering type", type_infer, thy, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "Unable to unify", type_infer, ctxt, t)
 
     def testInferTypeFail2(self):
         test_data = [
@@ -77,7 +65,15 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, thy, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, ctxt, t)
+
+    def testInferTypeFail3(self):
+        test_data = [
+            Var('s', None)(Var('s', None)),
+        ]
+
+        for t in test_data:
+            self.assertRaisesRegex(TypeInferenceException, "Infinite loop", type_infer, ctxt, t)
 
     def testInferPrintedType(self):
         t = Const("nil", listT(Ta))
