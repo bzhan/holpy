@@ -32,7 +32,7 @@ def get_arg_type_by_fact(fact):
 
 divisors = {
     "para": 2, "perp": 2, "eqangle": 4, "coll": 1, "midp": 1,
-    "eqratio": 4, "cong": 4, "cyclic": 0, "circle": 0, "simtri": 3}
+    "eqratio": 4, "cong": 2, "cyclic": 0, "circle": 0, "simtri": 3}
 
 divisors_for_apply = {
     "para": 2, "perp": 2, "eqangle": 4, "coll": 1, "midp": 1,
@@ -58,11 +58,15 @@ class Fact:
         self.args = args
         self.updated = updated
         self.lemma = lemma
-        self.pos = pos
+        if pos == "default":
+            self.pos = self.get_default()
+        else:
+            self.pos = pos
         if cond == "default":
-            self.cond = self.get_default_cond()
+            self.cond = self.get_default()
         else:
             self.cond = cond
+
 
     def __hash__(self):
         return hash(("Fact", self.pred_name, tuple(self.args)))
@@ -77,12 +81,12 @@ class Fact:
     def __repr__(self):
         return str(self)
 
-    def get_default_cond(self):
+    def get_default(self):
         d = divisors[self.pred_name]
         if d == 0:
-            return [-1]
+            return [-1] * len(self.args)
         else:
-            assert (len(self.args) % d == 0 or len(self.args) == 0)
+            # assert (len(self.args) % d == 0 or len(self.args) == 0)
             return [[-1] for _ in range(int(len(self.args) / d))]
 
 
@@ -396,7 +400,6 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
                 t_insts = [copy.copy(inst)]
             i = 0
             j = 0
-            flg = False
             while j < len(pat.args):
                 ts = []
                 for t_inst in t_insts:
@@ -407,21 +410,16 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
                         t[pat_a] = c[i][0]
                         t[pat_b] = c[i][1]
                         ts.append(t)
-                        flg = True
-
-                    elif (f_not_in_inst(pat_a, c[i][1]) or same_value(pat_a, c[i][1])) and \
+                    if (f_not_in_inst(pat_a, c[i][1]) or same_value(pat_a, c[i][1])) and \
                             (f_not_in_inst(pat_b, c[i][0]) or same_value(pat_b, c[i][0])):
                         t = copy.copy(t_inst)
                         t[pat_a] = c[i][1]
                         t[pat_b] = c[i][0]
                         ts.append(t)
-                        flg = True
-                    else:
-                        flg = False
                 i += 1
                 j += 2
                 t_insts = ts
-            if flg:
+            if t_insts:  # If have at least one new element generated
                 new_source = copy.copy(prev_source)
                 new_source.append(c_nums)
                 new_sources.append(new_source)
@@ -515,8 +513,8 @@ def match_expr(pat, f, inst, *, lines=None, circles=None, source=[]):
     else:
         raise NotImplementedError
 
-    if len(new_insts) != len(new_sources):
-        print(new_insts, new_sources, prev_source, "     ", arg_ty)
+    # if len(new_insts) != len(new_sources):
+    #     print(new_insts, new_sources, prev_source, "     ", arg_ty)
     # print(len(new_insts), len(new_sources))
     return new_insts, new_sources
 
@@ -688,12 +686,10 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
 
     """
     # print('In apply_rule_hyps: ', hyps)
-    rule_name = ''
-    if ruleset:
-        assert isinstance(ruleset, dict)
-        assert isinstance(rule, str)
-        rule_name = copy.copy(rule)
-        rule = ruleset[rule]
+    assert isinstance(ruleset, dict)
+    assert isinstance(rule, str)
+    rule_name = copy.copy(rule)
+    rule = ruleset[rule]
     assert isinstance(rule, Rule)
     assert isinstance(hyps, list)
     assert all(isinstance(fact, Fact) for fact in hyps)
@@ -711,7 +707,7 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
             if rule_name:
                 apply_rule(rule_name, list(seq), lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
             else:
-                apply_rule(rule, list(seq), lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
+                apply_rule(rule, list(seq), lines=lines, circles=circles, record=True, hyps=hyps)
 
 
 def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=None):
@@ -901,9 +897,9 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                     break
                 j += 2
             if not t_flg:  # add not identical part (4 pts) to new_goal
-                new_goal.cond.extend([fact.cond[i], fact.cond[i + 1]])
-                new_goal.pos.extend([fact.pos[i], fact.pos[i + 1]])
-                new_goal.args.extend([fact.args[i], fact.args[i + 1]])
+                new_goal.cond.append(fact.cond[int(i / 2)])
+                new_goal.pos.append(fact.pos[int(i / 2)])
+                new_goal.args.extend((fact.args[i], fact.args[i + 1]))
             i += 2
 
         if not flg:  # return False if no identical part at all
@@ -919,6 +915,7 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         goal_lines = [get_line(lines, pair) for pair in goal_pts]
 
         flg = False
+        # print(len(fact_lines))
         for idx, fact_line in enumerate(fact_lines):
             t_flg = False
             for goal_line in goal_lines:
@@ -928,6 +925,7 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                     break
             if not t_flg:  # add not identical part (2 pts) to new_goal
                 new_goal.cond.append(fact.cond[idx])
+                # print(fact.pos)
                 new_goal.pos.append(fact.pos[idx])
                 new_goal.args.extend(fact_pts[idx])
         if not flg:

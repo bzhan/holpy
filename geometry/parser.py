@@ -26,7 +26,7 @@ class GeometryTransformer(Transformer):
     def fact(self, pred_name, *args):
         pred_name = str(pred_name)
         args = list(str(arg) for arg in args)
-        return Fact(pred_name, args, cond="default")
+        return Fact(pred_name, args, cond="default", pos="default")
 
     def rule(self, concl, *assums):
         return Rule(list(assums), concl)
