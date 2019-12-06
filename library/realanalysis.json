@@ -5651,11 +5651,14 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_real_continuous_function",
             "prop": [
-                "real_continuous f (atreal l) ⟶ tendsto_real g l net ",
-                "⟶ tendsto_real (λx. f (g x)) (f l) net"
+                "real_continuous f (atreal l) ",
+                "⟶ tendsto_real g l net ⟶ tendsto_real (λx. f (g x)) (f l) net"
             ],
             "ty": "thm",
             "vars": {

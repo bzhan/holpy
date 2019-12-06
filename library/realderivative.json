@@ -13365,7 +13365,7 @@
                 "hint_backward"
             ],
             "name": "reallim_root_refl",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -13389,19 +13389,101 @@
                     "th": "1 ≤ n ⊢ 1 ≤ n"
                 },
                 {
-                    "args": "",
+                    "args": "¬(n = 0)",
                     "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "z3",
+                    "th": "1 ≤ n ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "nat_less_eq_def_1, ¬(n ≤ 0)",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ ¬(n ≤ 0)"
+                },
+                {
+                    "args": "real_of_nat_le, ¬((of_nat::nat ⇒ real) n ≤ of_nat 0)",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ ¬((of_nat::nat ⇒ real) n ≤ of_nat 0)"
+                },
+                {
+                    "args": "real_zero_def, ¬(of_nat n ≤ (0::real))",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ ¬(of_nat n ≤ (0::real))"
+                },
+                {
+                    "args": "real_less_def, (0::real) < of_nat n",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ (0::real) < of_nat n"
+                },
+                {
+                    "args": "real_mul_lid, exp (log (of_nat n) / of_nat n) = 1 * exp (log (of_nat n) / of_nat n)",
+                    "id": "0.7",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp (log (of_nat n) / of_nat n) = 1 * exp (log (of_nat n) / of_nat n)"
+                },
+                {
+                    "args": "real_abs_nat, exp (log (of_nat n) / of_nat n) = 1 * exp (log (abs (of_nat n)) / of_nat n)",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ exp (log (of_nat n) / of_nat n) = 1 * exp (log (abs (of_nat n)) / of_nat n)"
+                },
+                {
+                    "args": "if_P, exp (log (of_nat n) / of_nat n) = (if (0::real) < of_nat n then 1 else if of_nat n < (0::real) then -1 else 0) * exp (log (abs (of_nat n)) / of_nat n)",
+                    "id": "0.9",
+                    "prevs": [
+                        "0.8",
+                        "0.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ exp (log (of_nat n) / of_nat n) = (if (0::real) < of_nat n then 1 else if of_nat n < (0::real) then -1 else 0) * exp (log (abs (of_nat n)) / of_nat n)"
+                },
+                {
+                    "args": "real_sgn_def, exp (log (of_nat n) / of_nat n) = real_sgn (of_nat n) * exp (log (abs (of_nat n)) / of_nat n)",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 ≤ n ⊢ exp (log (of_nat n) / of_nat n) = real_sgn (of_nat n) * exp (log (abs (of_nat n)) / of_nat n)"
+                },
+                {
+                    "args": "root_def, exp (log (of_nat n) / of_nat n) = root n (of_nat n)",
+                    "id": "0.11",
+                    "prevs": [
+                        "0.10"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "1 ≤ n ⊢ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
                 },
                 {
                     "args": "",
-                    "id": "0.3",
+                    "id": "0.12",
                     "prevs": [
                         "0.0",
                         "0.1",
-                        "0.2"
+                        "0.11"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. 1 ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
@@ -13425,27 +13507,53 @@
                     "th": "⊢ eventually (λx. exp (log (of_nat x) / of_nat x) = root x (of_nat x)) sequentially"
                 },
                 {
-                    "args": "",
+                    "args": "real_continuous_at_exp, {}, {x: (0::real)}",
                     "id": "3",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous exp (atreal 0)"
+                },
+                {
+                    "args": "reallim_log_over_n",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ tendsto_real (λn. log (of_nat n) / of_nat n) 0 sequentially"
+                },
+                {
+                    "args": "reallim_real_continuous_function",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ tendsto_real (λx. exp (log (of_nat x) / of_nat x)) (exp 0) sequentially"
+                },
+                {
+                    "args": "real_exp_0, tendsto_real (λn. exp (log (of_nat n) / of_nat n)) 1 sequentially",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_sym",
                     "th": "⊢ tendsto_real (λn. exp (log (of_nat n) / of_nat n)) 1 sequentially"
                 },
                 {
                     "args": "reallim_transform_eventually",
-                    "id": "4",
+                    "id": "7",
                     "prevs": [
                         "2",
-                        "3"
+                        "6"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ tendsto_real (λn. root n (of_nat n)) 1 sequentially"
                 },
                 {
                     "args": "",
-                    "id": "5",
+                    "id": "8",
                     "prevs": [
-                        "4"
+                        "7"
                     ],
                     "rule": "intros",
                     "th": "⊢ tendsto_real (λn. root n (of_nat n)) 1 sequentially"
@@ -13474,6 +13582,96 @@
                     "goal_id": "0",
                     "method_name": "introduction",
                     "names": "n"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "goal": "(0::real) < of_nat n",
+                    "goal_id": "0.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_le"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.6"
+                    ],
+                    "goal_id": "0.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_0"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_real_continuous_function"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_exp"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_log_over_n"
                 }
             ],
             "ty": "thm",
@@ -13486,9 +13684,77 @@
                 "hint_forward"
             ],
             "name": "reallim_rpow_compose",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "tendsto_real g m net",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real g m net ⊢ tendsto_real g m net"
+                },
+                {
+                    "args": "0 < l",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < l ⊢ 0 < l"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f l net, tendsto_real g m net, 0 < l ⊢ eventually (λx. exp (g x * log (f x)) = f x ^ g x) net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f l net, tendsto_real g m net, 0 < l ⊢ tendsto_real (λx. exp (g x * log (f x))) (l ^ m) net"
+                },
+                {
+                    "args": "reallim_transform_eventually",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real g m net, 0 < l ⊢ tendsto_real (λx. f x ^ g x) (l ^ m) net"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real g m net ⟶ 0 < l ⟶ tendsto_real (λx. f x ^ g x) (l ^ m) net"
+                }
+            ],
             "prop": [
                 "tendsto_real f l net ⟶ tendsto_real g m net ⟶ 0 < l ",
                 "⟶ tendsto_real (λx. f x ^ g x) (l ^ m) net"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%x::'a. exp (g x * log (f x)))",
+                    "theorem": "reallim_transform_eventually"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -13500,16 +13766,21 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_rpow_compose_within",
             "prop": [
-                "real_continuous f (within (atreal x) s) ∧ ",
-                "real_continuous g (within (atreal x) s) ∧ 0 < f x ",
+                "real_continuous f (within (atreal x) s) ⟶ ",
+                "real_continuous g (within (atreal x) s) ⟶ 0 < f x ",
                 "⟶ real_continuous (λx1. f x1 ^ g x1) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set",
                 "x": "real"
             }
