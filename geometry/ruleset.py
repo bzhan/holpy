@@ -35,7 +35,7 @@ ruleset_raw = {
     "D76": "eqangle(k, l, m, n) :- perp(k, l), perp(m ,n)",
     # (This one is also written by myself)
     "D77": "perp(m, n) :-  eqangle(k, l, m, n), perp(k, l)",
-    # "D78": "eqangle(l, k, m, n) :- perp(k, l), perp(m, n)",
+    "D78": "eqangle(l, k, m, n) :- perp(k, l), perp(m, n)",
 }
 
 ruleset = dict()
