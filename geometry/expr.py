@@ -561,8 +561,8 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps=None
         return [e] * (len(rule.concl.args) // length)
 
     assert isinstance(facts, list)
-    assert all(isinstance(fact, Fact) for fact in facts) or \
-        (all(isinstance(fact, int) for fact in facts) and all(isinstance(fact, Fact) for fact in hyps))
+    assert all(isinstance(fact, int) for fact in facts)
+    assert all(isinstance(fact, Fact) for fact in hyps)
     assert isinstance(ruleset, dict)
     assert isinstance(rule, str)
 
@@ -653,9 +653,9 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
         prev_lines = copy.copy(lines)
         prev_circles = copy.copy(circles)
         search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
-        r = find_goal_pos(hyps, concl, lines, circles)
-        if r:
-            return r
+        for i, fact in enumerate(hyps):
+            if check_same(fact, concl, lines, circles):
+                return i
     return hyps
 
 
@@ -831,69 +831,54 @@ def combine_facts(fact, goal, lines, circles):
 
 
 def check_same(fact, goal, lines, circles):
-    """Check if the given fact refers to a same fact as goal. """
+    """Check if the given fact refers to a same fact as goal."""
+    if fact.pred_name != goal.pred_name:
+        return False
+
     if fact.pred_name == "perp":
+        # Check the two lines are the same
         fact_lines = [get_line(lines, (fact.args[0], fact.args[1])), get_line(lines, (fact.args[2], fact.args[3]))]
         goal_lines = [get_line(lines, (goal.args[0], goal.args[1])), get_line(lines, (goal.args[2], goal.args[3]))]
-        if fact_lines == goal_lines:
-            return True
-        return False
+        return fact_lines == goal_lines
     elif fact.pred_name == 'coll':
+        # Whether they are the same line
         fact_pts, goal_pts = set(fact.args), set(goal.args)
         return len(fact_pts) + len(goal_pts) - len(goal_pts.intersection(fact_pts)) >= 2
     elif fact.pred_name == 'circle':
+        # Whether they are the same circle (with center)
         fact_circle = get_circle(circles, fact.args[1:], center=fact.args[0])
         goal_circle = get_circle(circles, goal.args[1:], center=goal.args[0])
         return fact_circle.is_same_circle(goal_circle)
     elif fact.pred_name == 'cyclic':
+        # Whether they are the same circle
         fact_circle = get_circle(circles, list(fact.args))
         goal_circle = get_circle(circles, list(goal.args))
         return fact_circle.is_same_circle(goal_circle)
     elif fact.pred_name in ('eqratio', 'cong'):
-        i = 0  # pointer of fact
-        while i < len(fact.args):
-            j = 0  # pointer of goal
-            while j < len(goal.args):
-                if (fact.args[i] == goal.args[j] and fact.args[i + 1] == goal.args[j + 1]) or \
-                        (fact.args[i] == goal.args[j + 1] and fact.args[i + 1] == goal.args[j]):  # exchange available
+        # Check whether fact and goal share a pair of points (exchange possible)
+        for i in range(len(fact.args) // 2):
+            for j in range(len(goal.args) // 2):
+                if (fact.args[2*i] == goal.args[2*j] and fact.args[2*i+1] == goal.args[2*j+1]) or \
+                   (fact.args[2*i] == goal.args[2*j+1] and fact.args[2*i+1] == goal.args[2*j]):
                     return True
-                j += 2
-            i += 2
         return False
     elif fact.pred_name == 'para':
+        # Check whether fact and goal share a line
         fact_pts, goal_pts = make_pairs(fact.args), make_pairs(goal.args)
         fact_lines = [get_line(lines, pair) for pair in fact_pts]
         goal_lines = [get_line(lines, pair) for pair in goal_pts]
-        for fact_line in fact_lines:
-            for goal_line in goal_lines:
-                if fact_line.is_same_line(goal_line):
-                    return True
-        return False
+        return any(l1.is_same_line(l2) for l1 in fact_lines for l2 in goal_lines)
     elif fact.pred_name == "eqangle":
+        # Check whether fact and goal share a pair of lines
         fact_pts, goal_pts = make_pairs(fact.args), make_pairs(goal.args)
         fact_lines = [get_line(lines, pair) for pair in fact_pts]
         goal_lines = [get_line(lines, pair) for pair in goal_pts]
-        i = 0
-        while i < len(fact_lines):
-            j = 0
-            while j < len(goal_lines):
-                if fact_lines[i].is_same_line(goal_lines[j]) and fact_lines[i + 1].is_same_line(goal_lines[j + 1]):
+        for i in range(len(fact_lines) // 2):
+            for j in range(len(goal_lines) // 2):
+                if fact_lines[2*i].is_same_line(goal_lines[2*j]) and fact_lines[2*i+1].is_same_line(goal_lines[2*j+1]):
                     return True
-                j += 2
-            i += 2
         return False
 
-
-def find_goal_pos(facts, goal, lines, circles):
-    """Tries to find the goal among a list of facts. Return the
-    fact if it is found. Otherwise return None.
-    """
-    name = goal.pred_name
-    for i in range(len(facts)):
-        if facts[i].pred_name == name:
-            if check_same(facts[i], goal, lines, circles):
-                return i
-    return False
 
 separators = {
     "eqangle": " = ",
@@ -925,8 +910,7 @@ def print_search(ruleset, facts, concl):
             return s
         else:
             return name + "(" + s + ")"
-    # for idx, fact in enumerate(facts):
-    #     print(idx, fact, fact.cond, fact.pos)
+
     def print_step(fact, sub_pos):
         sep = separators[fact.pred_name] if fact.pred_name in separators.keys() else separators["default"]
         d = divisors_for_apply[fact.pred_name] if divisors_for_apply[fact.pred_name] != 0 else len(fact.args)
