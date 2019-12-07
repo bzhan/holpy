@@ -92,8 +92,8 @@ class Fact:
         if d == 0:
             return [-1] * len(self.args)
         else:
-            # assert (len(self.args) % d == 0 or len(self.args) == 0)
-            return [[-1] for _ in range(int(len(self.args) / d))]
+            assert len(self.args) % d == 0
+            return [[-1] for _ in range(len(self.args) // d)]
 
 
 class Line:
@@ -532,7 +532,7 @@ def make_new_circles(facts, circles):
             circles.append(new_circle)
 
 
-def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=None, hyps=None):
+def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps=None):
     """Apply given rule to the list of facts.
 
     If param facts is a list of integers: these integers represents the positions in hyps. In this case,
@@ -540,8 +540,6 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
     automatically. Function returns nothing.
 
     If param facts is a list of facts: New facts will be returned.
-
-    record: whether to record application of the rule in the new fact.
 
     Example:
     apply_rule(
@@ -562,7 +560,6 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         """
         return [e] * (len(rule.concl.args) // length)
 
-    assert hyps
     assert isinstance(facts, list)
     assert all(isinstance(fact, Fact) for fact in facts) or \
         (all(isinstance(fact, int) for fact in facts) and all(isinstance(fact, Fact) for fact in hyps))
@@ -573,11 +570,8 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
     rule = ruleset[rule]
     assert len(facts) == len(rule.assums)
 
-    if type(facts[0]) == int:  # Get the list of facts according to the given hyps and the positions of facts in hyps.
-        facts_pos = copy.copy(facts)
-        facts = [hyps[i] for i in facts]
-    else:
-        facts_pos = None
+    facts_pos = copy.copy(facts)
+    facts = [hyps[i] for i in facts]
 
     insts = [dict()]
     sources = [[]]
@@ -605,46 +599,8 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
                 cond = duplicate(facts_pos, divisors_for_apply[rule.concl.pred_name])
             concl_args = [insts[idx][i] for i in rule.concl.args]
 
-        if record:
-            if rule_name:
-                new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=cond, pos=pos)
-        else:
-            new = Fact(rule.concl.pred_name, concl_args)
-
-        if hyps:
-            combine_facts_list(new, hyps, lines, circles)
-        else:
-            return [new]
-
-
-def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ruleset=None):
-    """Try to apply given rule to one or more facts in a list, generate
-    new facts (as many new facts as possible), return a list of new facts.
-
-    Repetitive facts as hypotheses apply to one rule is not allowed.
-    Example:
-
-        apply_rule_hyps(
-            Rule([coll(A, B, C)], coll(A, C, B)),
-            [coll(D, E, F), coll(P, Q, R), para(A, B, D, C)]
-        ) -> [coll(D, F, E), coll(P, R, Q)].
-
-    """
-    assert isinstance(ruleset, dict)
-    assert isinstance(rule, str)
-    rule_name = copy.copy(rule)
-    rule = ruleset[rule]
-    assert isinstance(rule, Rule)
-    assert isinstance(hyps, list)
-    assert all(isinstance(fact, Fact) for fact in hyps)
-
-    for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
-        if not only_updated or any(hyps[i].updated for i in seq):
-            assert rule_name
-            if rule_name:
-                apply_rule(rule_name, list(seq), lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
-            else:
-                apply_rule(rule, list(seq), lines=lines, circles=circles, record=True, hyps=hyps)
+        new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=cond, pos=pos)
+        combine_facts_list(new, hyps, lines, circles)
 
 
 def combine_facts_list(fact, target, lines, circles):
@@ -676,8 +632,10 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
     make_new_lines(hyps, lines)
     make_new_circles(hyps, circles)
 
-    for key in ruleset:
-        apply_rule_hyps(key, hyps, only_updated=only_updated, lines=lines, circles=circles, ruleset=ruleset)
+    for rule_name, rule in ruleset.items():
+        for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
+            if not only_updated or any(hyps[i].updated for i in seq):
+                apply_rule(rule_name, list(seq), lines=lines, circles=circles, ruleset=ruleset, hyps=hyps)
 
 
 def search_fixpoint(ruleset, hyps, lines, circles, concl):
@@ -994,4 +952,4 @@ def print_search(ruleset, facts, concl):
         print(msg[:-2])
 
     # Get started from all sub-parts of the concl.
-    print_step(concl, range(int(len(concl.args) / divisors_for_apply[concl.pred_name])))
+    print_step(concl, range(len(concl.args) // divisors_for_apply[concl.pred_name]))
