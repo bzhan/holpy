@@ -13786,6 +13786,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_rpow",
             "prop": "0 < x ⟶ has_real_derivative (λx1. x1 ^ y) (y * x ^ (y - 1)) (atreal x)",
             "ty": "thm",
@@ -13795,6 +13798,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_rpow_right",
             "prop": "0 < a ⟶ has_real_derivative (λx1. a ^ x1) (log a * a ^ x) (atreal x)",
             "ty": "thm",
@@ -13804,6 +13810,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_at_rpow",
             "prop": "0 < x ⟶ real_differentiable (λx1. x1 ^ y) (atreal x)",
             "ty": "thm",
@@ -13822,6 +13831,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_rpow",
             "prop": "(x = 0 ⟶ 0 ≤ y) ⟶ real_continuous (λx1. x1 ^ y) (atreal x)",
             "ty": "thm",
@@ -13831,6 +13843,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_rpow",
             "prop": "(x = 0 ⟶ 0 ≤ y) ⟶ real_continuous (λx1. x1 ^ y) (within (atreal x) s)",
             "ty": "thm",
@@ -13841,6 +13856,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_rpow",
             "prop": "(0 ∈ s ⟶ 0 ≤ y) ⟶ real_continuous_on (λx. x ^ y) s",
             "ty": "thm",
@@ -13850,6 +13868,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_at_rpow_right",
             "prop": "0 < a ⟶ real_continuous (λx1. a ^ x1) (atreal x)",
             "ty": "thm",
@@ -13859,27 +13880,38 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_rpow",
-            "prop": "tendsto_real f l net ∧ (l = 0 ⟶ 0 ≤ n) ⟶ tendsto_real (λx. f x ^ n) (l ^ n) net",
+            "prop": "tendsto_real f l net ⟶ (l = 0 ⟶ 0 ≤ n) ⟶ tendsto_real (λx. f x ^ n) (l ^ n) net",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "l": "real",
                 "n": "real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_null_pow_eq",
             "prop": "¬(n = 0) ⟶ tendsto_real (λx. f x ^ n) 0 net ⟷ tendsto_real f 0 net",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "n": "nat",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_frac",
             "prop": "¬(integer x) ⟶ has_real_derivative frac 1 (atreal x)",
             "ty": "thm",
@@ -13888,6 +13920,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_frac",
             "prop": "¬(integer x) ⟶ real_differentiable frac (atreal x)",
             "ty": "thm",
@@ -13896,11 +13931,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_differentiable_polynomial_function_atreal",
             "prop": "polynomial_function p ⟶ real_differentiable p (atreal x)",
             "ty": "thm",
             "vars": {
-                "p": "real ⇒ real",
+                "p": "real => real",
                 "x": "real"
             }
         },
@@ -13952,48 +13990,64 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_ivt_increasing",
             "prop": [
-                "a ≤ b ∧ real_continuous_on f (real_closed_interval a b) ∧ f a ≤ y ∧ y ≤ f b ",
+                "a ≤ b ⟶ real_continuous_on f (real_closed_interval a b) ⟶ f a ≤ y ⟶ y ≤ f b ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f x = y)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "y": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_ivt_decreasing",
             "prop": [
-                "a ≤ b ∧ real_continuous_on f (real_closed_interval a b) ∧ f b ≤ y ∧ y ≤ f a ",
+                "a ≤ b ⟶ real_continuous_on f (real_closed_interval a b) ⟶ f b ≤ y ⟶ y ≤ f a ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f x = y)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "y": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "is_realinterval_continuous_image",
-            "prop": "real_continuous_on f s ∧ is_realinterval s ⟶ is_realinterval (image f s)",
+            "prop": "real_continuous_on f s ⟶ is_realinterval s ⟶ is_realinterval (image f s)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_pos_left_minimum",
             "prop": [
-                "a < b ∧ ",
-                "0 < e ∧ ",
-                "has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ∧ ",
+                "a < b ⟶ ",
+                "0 < e ⟶ ",
+                "has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ∧ abs (x - a) < e ⟶ f a ≤ f x) ",
                 "⟶ 0 ≤ f1"
             ],
@@ -14002,16 +14056,20 @@
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_neg_left_maximum",
             "prop": [
-                "a < b ∧ ",
-                "0 < e ∧ ",
-                "has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ∧ ",
+                "a < b ⟶ ",
+                "0 < e ⟶ ",
+                "has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ∧ abs (x - a) < e ⟶ f x ≤ f a) ",
                 "⟶ f1 ≤ 0"
             ],
@@ -14020,16 +14078,20 @@
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_pos_right_maximum",
             "prop": [
-                "a < b ∧ ",
-                "0 < e ∧ ",
-                "has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ∧ ",
+                "a < b ⟶ ",
+                "0 < e ⟶ ",
+                "has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ∧ abs (x - b) < e ⟶ f x ≤ f b) ",
                 "⟶ 0 ≤ f1"
             ],
@@ -14038,16 +14100,20 @@
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_neg_right_minimum",
             "prop": [
-                "a < b ∧ ",
-                "0 < e ∧ ",
-                "has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ∧ ",
+                "a < b ⟶ ",
+                "0 < e ⟶ ",
+                "has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ∧ abs (x - b) < e ⟶ f b ≤ f x) ",
                 "⟶ f1 ≤ 0"
             ],
@@ -14056,33 +14122,41 @@
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_zero_maxmin",
             "prop": [
-                "x ∈ s ∧ ",
-                "real_open s ∧ ",
-                "has_real_derivative f f1 (atreal x) ∧ ",
+                "x ∈ s ⟶ ",
+                "real_open s ⟶ ",
+                "has_real_derivative f f1 (atreal x) ⟶ ",
                 "((∀y. y ∈ s ⟶ f y ≤ f x) ∨ (∀y. y ∈ s ⟶ f x ≤ f y)) ",
                 "⟶ f1 = 0"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_rolle",
             "prop": [
-                "a < b ∧ ",
-                "f a = f b ∧ ",
-                "real_continuous_on f (real_closed_interval a b) ∧ ",
+                "a < b ⟶ ",
+                "f a = f b ⟶ ",
+                "real_continuous_on f (real_closed_interval a b) ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x)) ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = 0)"
             ],
@@ -14090,15 +14164,19 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
-                "f1": "real ⇒ real"
+                "f": "real => real",
+                "f1": "real => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_mvt",
             "prop": [
-                "a < b ∧ ",
-                "real_continuous_on f (real_closed_interval a b) ∧ ",
+                "a < b ⟶ ",
+                "real_continuous_on f (real_closed_interval a b) ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x)) ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a))"
             ],
@@ -14106,14 +14184,18 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
-                "f1": "real ⇒ real"
+                "f": "real => real",
+                "f1": "real => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_mvt_simple",
             "prop": [
-                "a < b ∧ ",
+                "a < b ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ",
                 "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a))"
@@ -14122,14 +14204,18 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
-                "f1": "real ⇒ real"
+                "f": "real => real",
+                "f1": "real => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_mvt_very_simple",
             "prop": [
-                "a ≤ b ∧ ",
+                "a ≤ b ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ",
                 "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a))"
@@ -14138,15 +14224,16 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
-                "f1": "real ⇒ real"
+                "f": "real => real",
+                "f1": "real => real"
             }
         },
         {
+            "attributes": [],
             "name": "real_rolle_simple",
             "prop": [
-                "a < b ∧ ",
-                "f a = f b ∧ ",
+                "a < b ⟶ ",
+                "f a = f b ⟶ ",
                 "(∀x. x ∈ real_closed_interval a b ",
                 "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
                 "⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = 0)"
@@ -14155,8 +14242,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real ⇒ real",
-                "f1": "real ⇒ real"
+                "f": "real => real",
+                "f1": "real => real"
             }
         },
         {
