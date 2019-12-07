@@ -4,6 +4,9 @@ from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity
 import functools, operator
+import sympy
+from sympy.parsing import sympy_parser
+from integral import parser
 class Rule:
     """Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
@@ -55,21 +58,27 @@ class Linearity(Rule):
     INT (c / a) = c * INT 1 / a (where c is a contant)
     """
     def eval(self, e):
-        if e.ty != expr.INTEGRAL:
-            return e
-
-        p = e.body.to_poly()
-        ts = []
-        for mono in p.monomials:
-            t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(1, mono.factors)))
-            if mono.coeff != 1:
-                t = Const(mono.coeff) * t
-            ts.append(t)
-
-        if len(ts) == 0:
-            return Const(0)
-        else:
-            return sum(ts[1:], ts[0])
+        def eval1(e):
+            if e.ty != expr.INTEGRAL:
+                return e           
+            p = e.body.to_poly()
+            ts = []
+            for mono in p.monomials:
+                t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(1, mono.factors)))
+                if mono.coeff != 1:
+                    t = Const(mono.coeff) * t
+                ts.append(t)
+            if len(ts) == 0:
+                return Const(0)
+            else:
+                return sum(ts[1:], ts[0])
+        integrals = e.separate_integral()
+        result = []
+        for i in integrals:
+            result.append(eval1(i))
+        for i in range(len(integrals)):
+            e = e.replace_trig(integrals[i], result[i])
+        return e
 
 class CommonIntegral(Rule):
     """Applies common integrals:
@@ -200,6 +209,7 @@ class Substitution(Rule):
 
         d_subst = expr.deriv(e.var, self.var_subst)
         body2 = e.body.replace(self.var_subst, expr.Var(self.var_name)) / d_subst
+        body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
         lower2 = self.var_subst.subst(e.var, e.lower).normalize()
         upper2 = self.var_subst.subst(e.var, e.upper).normalize()
         return expr.Integral(self.var_name, lower2, upper2, body2)
@@ -220,10 +230,11 @@ class Equation(Rule):
 class TrigSubstitution(Rule):
     """Apply trig identities transformation on expression."""
     def eval(self, e):
-        exprs =  e.body.identity_trig_expr(trig_identity)        
+        exprs =  e.body.identity_trig_expr(trig_identity)
+        n_expr = [] #exprs in a tuple        
         for i in range(len(exprs)):
-            exprs[i] = Integral(e.var, e.lower, e.upper, exprs[i])
-        return exprs
+            n_expr.append((Integral(e.var, e.lower, e.upper, exprs[i][0]),exprs[i][1]))
+        return n_expr
         
 
 class IntegrationByParts(Rule):
@@ -251,31 +262,5 @@ class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polinomial.
     """
     def eval(self, e):
-        assert isinstance(e.body, expr.Op) and e.body.op == "/"
-        dividend = e.body.args[0].normalize().to_poly().standardize()
-        divisor = e.body.args[1].normalize().to_poly().standardize()
-        if dividend.degree < divisor.degree:
-            return e
-        jieguo = []
-        quotinent = dividend.monomials[0] / divisor.monomials[0]
-        jieguo.append(quotinent)
-        s = poly.Polynomial([quotinent]) * divisor
-        #k is the remainder
-        k = poly.Polynomial(tuple(dividend.monomials[0:divisor.degree+1])) - s
-        if k.is_zero_constant():
-            return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(dividend.monomials[-k.monomials[-1].degree:]).del_zero_mono()) \
-                        /expr.from_poly(divisor.del_zero_mono()))
-        k = poly.Polynomial(tuple(k.monomials[1:]))
-        k = k + poly.Polynomial([dividend.monomials[-k.degree]])
-        #every time delete the first item which coffe has been 0 after sub
-        while not k.degree < divisor.degree and not k.is_nonzero_constant():
-            quotinent = k.monomials[0] / divisor.monomials[0]
-            jieguo.append(quotinent)
-            s = poly.Polynomial([quotinent]) * divisor
-            k = k - s
-            if k.is_zero_constant():
-                return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(dividend.monomials[-k.monomials[-1].degree:]).del_zero_mono()) \
-                        /expr.from_poly(divisor.del_zero_mono()))
-            k = k + poly.Polynomial([dividend.monomials[-k.degree]])
-            k = poly.Polynomial(tuple(k.monomials[1:]))
-        return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))
+        result = sympy.apart(sympy_parser.parse_expr(str(e.body).replace("^", "**")))
+        return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))

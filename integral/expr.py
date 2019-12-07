@@ -10,6 +10,7 @@ import sympy
 from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
 import copy
+from sympy.simplify.fu import *
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
@@ -18,8 +19,6 @@ op_priority = {
 }
 
 trig_identity = []
-trigFun = [TR1, TR2, TR3, TR4, TR5, TR6, TR7, TR8, TR9, TR10,\
-     TR10i, TR11, TR12, TR12i, TR13, TRmorrie, TR14, TR15, TR16, TR22, TR111]
 
 class Expr:
     """Expressions."""
@@ -160,7 +159,9 @@ class Expr:
             elif self.op == "*":
                 x, y = self.args
                 if x == Const(0) or y == Const(0):
-                    return poly.constant(0) 
+                    return poly.constant(0)
+                elif x.ty == CONST and y.ty == INTEGRAL:
+                    return Integral(y.var, y.lower, y.upper, x * y.body).to_poly() 
                 return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
@@ -173,13 +174,18 @@ class Expr:
                 xp = x.to_poly()
                 yp = y.to_poly()
                 if yp.is_nonzero_constant():
+                    # x / 6
                     return xp.scale(Fraction(1) / Fraction(yp.get_constant()))
-                elif xp.is_nonzero_constant() and xp.get_constant() != 1:
-                    #normalize assures constant always on the right
-                    return (Const(1)/y.normalize()).to_poly().scale(Fraction(xp.get_constant()))
-                elif xp.is_nonzero_constant() and xp.get_constant() == 1:
-                    #can't find a better way to normalize the denominator now
-                    return poly.singleton(self)
+                # elif xp.is_nonzero_constant() and xp.get_constant() != 1:
+                #     #normalize assures constant always on the right
+                #     return (Const(1)/y.normalize()).to_poly().scale(Fraction(xp.get_constant()))
+                elif len(yp.monomials) == 1:
+                    k = yp.monomials[0]
+                    k.coeff = Fraction(1, k.coeff)
+                    k_factor = list(k.factors)
+                    k_factor = [(f1, -f2) for (f1, f2) in k_factor]
+                    k.factors = tuple(k_factor)
+                    return poly.Polynomial([m*k for m in xp.monomials])
                 else:
                     return poly.singleton(self)
             elif self.op == "^":
@@ -335,9 +341,6 @@ class Expr:
         """Normalizes an expression."""
         return from_poly(self.to_poly())
 
-    def to_one(self):
-        self = 1
-
     def replace_trig(self, trig_old, trig_new):
         """Replace the old trig to its identity trig in e."""
         assert isinstance(trig_new, Expr)
@@ -351,36 +354,51 @@ class Expr:
                 if len(self.args) == 1:
                     self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
                     self.args = tuple(self.args)
-                    return self
+                    return Op(self.op, self.args[0])
                 elif len(self.args) == 2:
                     self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
                     self.args[1] = self.args[1].replace_trig(trig_old, trig_new)
                     self.args = tuple(self.args)
-                    return self
+                    return Op(self.op, self.args[0], self.args[1])
                 else:
-                    return self
+                    return Op(self.op, self.args)
             else:
                 return self
 
     def identity_trig_expr(self, trigs):
-        """Input: the trig expected to transform in trig_identity.
-        Output: A set contains all possible transformation occurs in self.
+        """Input: A list contains the trigs expected to transform in trig_identity.
+           Output: A list contains all possible transformation and it's rule occurs in self.
         """
         n = []
         for t in trigs:
             s = trig_transform(t) #transformation set
             for item in s:
                 c = copy.deepcopy(self)
-                c = c.replace_trig(t, parser.parse_expr(str(item).replace("**", "^")))
-                n.append(c)
+                c = c.replace_trig(t, parser.parse_expr(str(item[0]).replace("**", "^")))
+                n.append((c, item[1]))
         return n
 
+    def separate_integral(self):
+        result = []
+        def collect(expr, result):
+            if expr.ty == INTEGRAL:
+                result.append(expr)
+            elif expr.ty == OP:
+                for arg in expr.args:
+                    collect(arg, result)
+
+        collect(self, result)
+        return result
 
 def trig_transform(trig):
     """Compute all possible trig function equal to trig"""
     poss = set()
-    for f in trigFun:
-        poss.add(f(sympy_parser.parse_expr(str(trig).replace("^", "**"))))
+    i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
+    for f, rule in trigFun.items():
+        j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
+        if i != j:
+            poss.add((j, rule))
+    poss.add((i, "Unchanged"))
     return poss
 
 def from_mono(m):
@@ -480,11 +498,11 @@ def collect(m, res = {}, sub = 0, el = None):
             if m.args[0].ty == VAR and m.args[0] == el:
                 # x ^ n => x ^ (n - sub)
                 m.args[1].val -= sub
-                return m
+                return Op(m.op, m.args[0], m.args[1])
             elif m.args[0].ty == FUN and m.args[0] == el:
                 # sin(x) ^ n => sin(x) ^ (n - sub)
                 m.args[1].val -= sub
-                return m
+                return Op(m.op, m.args[0], m.args[1])
             else:
                 return m
         elif m.ty == OP and m.op == "*":
@@ -628,7 +646,6 @@ class Op(Expr):
         elif len(self.args) == 2:
             a, b = self.args
             s1, s2 = str(a), str(b)
-            #print("$$$$",s1, s2)
             if a.priority() < op_priority[self.op]:
                 s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op]:
@@ -766,3 +783,29 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+
+trigFun = {     
+    TR0: "simplify expression",
+    TR1: "sec-csc to cos-sin",
+    TR2: "tan-cot to sin-cos ratio",
+    TR2i: "sin-cos ratio to tan",
+    TR3: "angle canonicalization",
+    TR4: "functions at special angles",
+    TR5: "powers of sin to powers of cos",
+    TR6: "powers of cos to powers of sin",
+    TR7: "reduce cos power (increase angle)",
+    TR8: "expand products of sin-cos to sums",
+    TR9: "contract sums of sin-cos to products",
+    TR10: "separate sin-cos arguments",
+    TR10i: "collect sin-cos arguments",
+    TR11: "reduce double angles",
+    TR12: "separate tan arguments",
+    TR12i: "collect tan arguments",
+    TR13: "expand product of tan-cot",
+    TRmorrie: "prod(cos(x*2**i), (i, 0, k: 1)) -> sin(2**k*x)/(2**k*sin(x))",
+    TR14: "factored powers of sin or cos to cos or sin power",
+    TR15: "negative powers of sin to cot power",
+    TR16: "negative powers of cos to tan power",
+    TR22: "tan-cot powers to negative powers of sec-csc functions",
+    TR111: "negative sin-cos-tan powers to csc-sec-cot"
+}

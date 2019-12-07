@@ -45,7 +45,7 @@
       </div>
     </div>
     <div id="dialog">
-      <div v-if="query_mode === 'substitution'">
+      <div v-if="r_query_mode === 'substitution'">
         <div>
           <label>Substitute</label>
           <input v-model="subst_data.var_name" style="margin:0px 5px;width:25px">
@@ -56,7 +56,7 @@
           <button v-on:click="doSubstitution">OK</button>
         </div>
       </div>
-      <div v-if="query_mode === 'trig'">
+      <div v-if="r_query_mode === 'trig'">
         <div>
           <label>Write the expression equal to initial ones and make the trig you want to transform surrounded by '$'</label>
           <input v-model="trig_identities_data.old_expr" style="margin:0px 5px;width:200px">
@@ -65,21 +65,23 @@
           <button v-on:click="doTrigSubstitution">OK</button>
         </div>
       </div>
-      <div v-if="query_mode === 'display_trig'">
+      <div v-if="r_query_mode === 'display_trig'">
         <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
           <span>{{index+1}}:</span>
           <MathEquation
             v-on:click.native="transform(step)"
             v-bind:data="'\\(' + step.latex + '\\)'"
             style="cursor:pointer"/>
+
         </div>
       </div>
-      <div v-if="query_mode === 'byparts'">
+      <div v-if="r_query_mode === 'byparts'">
         <div>
           <MathEquation data="Choose \(u\) and \(v\) such that \(u\cdot\mathrm{d}v\) is the integrand."/>
         </div>
         <div>
           <MathEquation data="u ="/>
+          <input v-model="byparts_data.parts_u" style="margin:0px 5px;width:100px">
           <MathEquation data="v ="/>
           <input v-model="byparts_data.parts_v" style="margin:0px 5px;width:100px">
         </div>
@@ -87,7 +89,7 @@
           <button v-on:click="doIntegrateByParts">OK</button>
         </div>
       </div>
-      <div v-if="query_mode === 'eqsubst'">
+      <div v-if="r_query_mode === 'eqsubst'">
         <div>
           <MathEquation v-bind:data="'Write the expression that you think is equal to the \\(' + this.equation_data.old_expr.latex + '\\).'"/>
         </div>
@@ -98,6 +100,22 @@
         <div style="margin-top:10px">
           <button v-on:click="doEquationSubst">OK</button>
         </div>
+      </div>
+    </div>
+    <div id="select">
+      <div v-if="display_integral === 'separate'">
+        <div v-for="(step, index) in sep_int" :key="index">
+          <span>{{index+1}}:</span>
+          <MathEquation
+          v-on:click.native="operate(index)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
+          <MathEquation class="calc-reason" v-if="'_latex_reason' in step" v-bind:data="step._latex_reason"/>
+          <span class="calc-reason" v-else>{{step.reason}}</span>
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="closeIntegral">Close</button>
+        </div>  
       </div>
     </div>
   </div>
@@ -123,6 +141,10 @@ export default {
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
       query_mode: undefined,  // Currently performing which query
+      r_query_mode: undefined, //record query mode
+      display_integral: undefined, //display the separate integral
+      sep_int: [], //all separate integrals
+      integral_index: undefined, //integral on processing
 
       allow_click_latex: 0,
 
@@ -167,6 +189,7 @@ export default {
     },
 
     restart: async function () {
+        this.clear_separate_integral()
         const data = {
           problem: this.content[this.cur_id].problem
         }
@@ -199,10 +222,17 @@ export default {
       }
     },
 
+    clear_separate_integral: function(){
+      this.display_integral = undefined
+      this.sep_int = []
+      this.integral_index = undefined
+      this.r_query_mode = undefined
+    },
+
     simplify: async function () {
+      this.clear_separate_integral()
       if (this.cur_calc.length === 0)
         return;
-
       const data = {
         problem: this.cur_calc[this.cur_calc.length - 1].text
       }
@@ -211,6 +241,7 @@ export default {
     },
 
     applyLinearity: async function () {
+      this.clear_separate_integral()
       if (this.cur_calc.length === 0)
         return;
 
@@ -222,6 +253,7 @@ export default {
     },
 
     applyCommonIntegrals: async function () {
+      this.clear_separate_integral()
       if (this.cur_calc.length === 0)
         return;
 
@@ -230,6 +262,35 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-common-integral", JSON.stringify(data))
       this.cur_calc.push(response.data)
+    },
+
+    closeIntegral: async function(){
+      //this.clear_separate_integral()
+      var integrals = []
+      for(var i = 0; i < this.sep_int.length; ++i){
+        integrals.push(this.sep_int[i])
+      }
+      const data = {
+        problem: integrals,
+        cur_calc: this.cur_calc[this.cur_calc.length - 1].text
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
+      this.cur_calc.push(response.data)
+      this.clear_separate_integral()
+    },
+
+    displaySeparateIntegrals: async function(){
+      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
+      for(var i = 0; i < response.data.length; ++i){
+        this.sep_int.push(response.data[i])
+      }
+      this.display_integral = 'separate'
+    },
+
+    operate: function(index){
+      this.r_query_mode = this.query_mode
+      this.integral_index = index
     },
 
     transfer: function(step) {
@@ -243,11 +304,12 @@ export default {
         return;
 
         this.query_mode = 'trig'
+        this.displaySeparateIntegrals()
     },
 
     doTrigSubstitution: async function(){
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        problem: this.sep_int[this.integral_index].text,
         exp: this.trig_identities_data.old_expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-trig-transformation", JSON.stringify(data))
@@ -255,11 +317,12 @@ export default {
       for(var i=0; i < response.data.length; ++i){
         this.trig_identities_data.new_expr.push(response.data[i])
       }
-      this.query_mode = 'display_trig'
+      this.r_query_mode = 'display_trig'
     },
 
     transform: function(item){
-      this.cur_calc.push(item)
+      //this.cur_calc.push(item)
+      this.sep_int[this.integral_index] = item
       this.query_mode = undefined
       this.trig_identities_data.old_expr = ''
       this.trig_identities_data.new_expr = []
@@ -270,39 +333,42 @@ export default {
         return;
 
       this.query_mode = 'substitution'
+      this.displaySeparateIntegrals()
     },
 
     doSubstitution: async function () {
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        problem: this.sep_int[this.integral_index].text,
         var_name: this.subst_data.var_name,
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution", JSON.stringify(data))
-      this.cur_calc.push(response.data)
-      this.query_mode = undefined
+      this.sep_int[this.integral_index] = response.data
+      this.r_query_mode = undefined
       this.subst_data = {var_name: '', expr: ''}
+      this.integral_index = undefined
     },
-
-
 
     integrateByParts: function () {
       if (this.cur_calc.length === 0)
         return;
 
       this.query_mode = 'byparts'
+      this.displaySeparateIntegrals()
     },
 
     doIntegrateByParts: async function () {
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        //problem: this.cur_calc[this.cur_calc.length - 1].text,
+        problem: this.sep_int[this.integral_index].text,
         parts_u: this.byparts_data.parts_u,
         parts_v: this.byparts_data.parts_v
       }
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
-      this.cur_calc.push(response.data)
+      this.sep_int[this.integral_index] = response.data
       this.query_mode = undefined
+      this.integral_index = undefined
       this.byparts_data = {parts_u: '', parts_v: ''}
     },
 
@@ -322,18 +388,20 @@ export default {
         return;
       this.allow_click_latex = 1
       this.query_mode = 'eqsubst'
+      this.displaySeparateIntegrals()
     },
 
     doEquationSubst: async function() {
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        problem: this.sep_int[this.integral_index].text,
         old_expr: this.equation_data.old_expr.text,
         new_expr: this.equation_data.new_expr
       }
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-equation-substitution", JSON.stringify(data))
-      this.cur_calc.push(response.data)
+      this.sep_int[this.integral_index] = response.data
       this.query_mode = undefined
+      this.integral_index = undefined
       this.equation_data = {old_expr: undefined, new_expr: ''}
       this.allow_click_latex = 0      
     }
@@ -383,7 +451,21 @@ export default {
 
 #dialog {
   display: inline-block;
-  width: 75%;
+  width: 55%;
+  height: 30%;
+  left: 45%;
+  position: fixed;
+  top: 70%;
+  bottom: 0px;
+  padding-left: 10px;
+  padding-top: 10px;
+  border-top-style: solid;
+  overflow-y: scroll;
+}
+
+#select {
+  display: inline-block;
+  width: 20%;
   height: 30%;
   left: 25%;
   position: fixed;

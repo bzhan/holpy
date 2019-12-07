@@ -828,6 +828,44 @@ def integral_common_integral():
         'reason': "Common integrals"
     })
 
+@app.route("/api/integral-separate-integrals", methods=['POST'])
+def integral_separate_integrals():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    integrals = problem.separate_integral()
+    n = []
+    for i in integrals:
+        n.append({
+            "text": str(i),
+            "latex": integral.latex.convert_expr(i)
+        })
+    return json.dumps(n)
+
+@app.route("/api/integral-compose-integral", methods=['POST'])
+def integral_compose_integral():
+    data = json.loads(request.get_data().decode('utf-8'))
+    new_integral = []
+    reason = ""
+    for d in data['problem']:
+        new_integral.append(integral.parser.parse_expr(str(d['text'])))
+        if '_latex_reason' in d:
+            reason += d['_latex_reason']
+            reason += "."
+        elif 'reason' in d:
+            reason += d['reason']
+            reason += "."
+    curr = integral.parser.parse_expr(data['cur_calc'])
+    new_expr = curr
+    old_integral = curr.separate_integral()
+    for i in range(len(old_integral)):
+        new_expr = new_expr.replace_trig(old_integral[i], new_integral[i])
+    return jsonify({
+        'text': str(new_expr),
+        'latex': integral.latex.convert_expr(new_expr),
+        '_latex_reason': reason
+    })
+    
+
 @app.route("/api/integral-trig-transformation", methods=['POST'])
 def integral_trig_transformation():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -838,23 +876,24 @@ def integral_trig_transformation():
     if e.normalize() == problem.body.normalize():
         e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
         possible_new_problem = rule.eval(e)
-        for i in possible_new_problem:
-            print(i)
+        #need to do more
+        possible_form = list(integral.expr.trig_transform(integral.expr.trig_identity[0]))
         n = []
-        index = 1
-        for p in possible_new_problem:
+        for p in range(len(possible_new_problem)):
             n.append({ 
-                'text': str(p),
-                'latex': integral.latex.convert_expr(p),
-                'reason': "Trig Identity"
+                'text': str(possible_new_problem[p][0]),
+                'latex': integral.latex.convert_expr(possible_new_problem[p][0]),
+                '_latex_reason': "Trig identities: \(%s\) substitued to \\(%s\\), method : %s"
+                % (integral.latex.convert_expr(integral.expr.trig_identity[0]),
+                integral.latex.convert_expr(integral.parser.parse_expr(str(possible_form[p][0]).replace("**", "^"))),
+                str(possible_new_problem[p][1]))
             })
-            index += 1
         return json.dumps(n)
     else:
         return jsonify({
             'text': str(problem),
             'latex': integral.latex.convert_expr(problem),
-            'reason': "The expression you write is not equal to the initial one."
+            'reason': "Rewrite is invalid."
         })
 
 @app.route("/api/integral-substitution", methods=['POST'])
