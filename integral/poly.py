@@ -115,6 +115,7 @@ class Monomial:
                 else:
                     return Monomial(c, tuple())
     def scale(self, c):
+        assert isinstance(c, (int, Fraction, Decimal))
         if c == 1:
             return self
         else:

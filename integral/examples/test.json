@@ -359,13 +359,45 @@
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi} 1 - \\sin^{3}x \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi} 1 - \\sin^{3}x \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi]. 1 - sin(x) ^ 3"
+                },
+                {
+                    "latex": "-\\int_{0}^{\\pi} \\sin^{3}x \\,\\mathrm{dx} + (\\int_{0}^{\\pi} 1 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "-1 * (INT x:[0,pi]. sin(x) ^ 3) + (INT x:[0,pi]. 1)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\sin^{2}x\\) substitued to \\(1 - \\cos^{2}x\\), method : powers of sin to powers of cos.",
+                    "latex": "-\\int_{0}^{\\pi} (1 - \\cos^{2}x) * \\sin{x} \\,\\mathrm{dx} + (\\int_{0}^{\\pi} 1 \\,\\mathrm{dx})",
+                    "text": "-1 * (INT x:[0,pi]. (1 - cos(x) ^ 2) * sin(x)) + (INT x:[0,pi]. 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{x}\\).",
+                    "latex": "-\\int_{1}^{-1} u ^ 2 - 1 \\,\\mathrm{du} + (\\int_{0}^{\\pi} 1 \\,\\mathrm{dx})",
+                    "text": "-1 * (INT u:[1,-1]. u ^ 2 - 1) + (INT x:[0,pi]. 1)"
+                },
+                {
+                    "latex": "-1 \\int_{1}^{-1} u ^ 2 \\,\\mathrm{du} - \\int_{1}^{-1} 1 \\,\\mathrm{du} + (\\int_{0}^{\\pi} 1 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "-1 * ((INT u:[1,-1]. u ^ 2) + -1 * (INT u:[1,-1]. 1)) + (INT x:[0,pi]. 1)"
+                },
+                {
+                    "latex": "-1 \\left. \\frac{u ^ 3}{3} \\right\\vert_{u=1}^{-1} - \\left. u \\right\\vert_{u=1}^{-1} + (\\left. x \\right\\vert_{x=0}^{\\pi})",
+                    "reason": "Common integrals",
+                    "text": "-1 * (([u ^ 3 / 3]_u=1,-1) + -1 * ([u]_u=1,-1)) + ([x]_x=0,pi)"
+                },
+                {
+                    "latex": "\\pi - \\frac{4}{3}",
+                    "reason": "Simplification",
+                    "text": "pi + -4/3"
+                }
+            ],
             "name": "Exercise 13",
             "problem": "INT x:[0, pi]. (1 - sin(x)^3)"
-        },
-        {
-            "_problem_latex": "\\int_{0}^{\\pi} \\sin^{3}x \\,\\mathrm{dx}",
-            "name": "Exercise 14",
-            "problem": "INT x:[0, pi]. sin(x)^3"
         }
     ]
 }

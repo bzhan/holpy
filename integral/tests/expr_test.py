@@ -79,7 +79,7 @@ class ExprTest(unittest.TestCase):
             ("x + 0", "x"),
             ("2 * 3", "6"),
             ("2 + 3 * x + 4", "3 * x + 6"),
-            ("2 + x / y + 2 * (x / y) + 3", "3 * (x / y) + 5"),
+            ("2 + x / y + 2 * (x / y) + 3", "3 * x * y ^ -1 + 5"),
             ("(x + y) ^ 2", "(x + y) ^ 2"),
             ("(x + y) * (x - y)", "-1 * y ^ 2 + x ^ 2"),
             ("[x]_x=a,b", "b + -1 * a"),
@@ -97,7 +97,9 @@ class ExprTest(unittest.TestCase):
             ("arctan(sqrt(3))", "1/3 * pi"),
             ("sin(3/4 * pi)", "1/2 * sqrt(2)"),
             ("pi + pi / 3", "4/3 * pi"),
-            ("1 - cos(x) ^ 2", "-1 * cos(x) ^ 2 + 1")
+            ("1 - cos(x) ^ 2", "-1 * cos(x) ^ 2 + 1"),
+            ("x^2 * 6", "6 * x ^ 2"),
+            ("(-1) * INT x:[0, 2].(1 - x)", "INT x:[0,2]. x + -1")
         ]
 
         for s, res in test_data:
@@ -133,8 +135,8 @@ class ExprTest(unittest.TestCase):
             ("sin(x^2)", "2 * x * cos(x^2)"),
             ("cos(x)", "-1 * sin(x)"),
             ("cos(x^2)", "-2 * x * sin(x^2)"),
-            ("log(x)", "1 / x"),
-            ("x * log(x)", "log(x) + x * (1 / x)"),
+            ("log(x)", "x ^ -1"),
+            ("x * log(x)", "log(x) + x ^ 0"),
             ("exp(x)", "exp(x)"),
             ("exp(x^2)", "2 * x * exp(x^2)"),
         ]
@@ -144,7 +146,7 @@ class ExprTest(unittest.TestCase):
             s2 = parse_expr(s2)
             self.assertEqual(expr.deriv("x", s), s2)
     
-    def test_trig(self):
+    def testTrig(self):
         test_data = [
             ("$sin(x)^2$*sin(x)", {"sin(x) ^ 2 * sin(x)","(1 - cos(x) ^ 2) * sin(x)", \
                 "(1/2 - cos(2 * x) / 2) * sin(x)"}),
@@ -153,9 +155,23 @@ class ExprTest(unittest.TestCase):
         for t, s in test_data:
             t = parse_expr(t)
             n = t.identity_trig_expr(expr.trig_identity)
+            c = []
             for i in range(len(n)):
-                n[i] = str(n[i])
-            self.assertEqual(set(n), s)
+                c.append(str(n[i][0]))
+            self.assertEqual(set(c), s)
+
+    def testSeparateIntegral(self):
+        test_data = [
+            ("(-1)*(INT x:[a, b].x+1) + (INT x:[a, b].1) + 3",
+            {"INT x:[a,b]. x + 1", "INT x:[a,b]. 1"})
+        ]
+
+        for s, s2 in test_data:
+            t = parse_expr(s).separate_integral()
+            for i in range(len(t)):
+                t[i] = str(t[i])
+            self.assertEqual(set(t), s2)
+            
 
 if __name__ == "__main__":
     unittest.main()

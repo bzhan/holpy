@@ -78,6 +78,8 @@ def convert_expr(e, mode="large"):
                     if sx == "1":
                         return "%s" % sy
                     return "%s %s" % (sx, sy)
+                elif x.ty == expr.CONST and x.val == -1:
+                    return "-%s" % sy
                 else:
                     if x.priority() < expr.op_priority[e.op]:
                         sx = "(%s)" % sx

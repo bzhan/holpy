@@ -6,6 +6,7 @@ from fractions import Fraction
 from integral.expr import Const
 from integral.parser import parse_expr
 from integral import rules
+from sympy.parsing import sympy_parser
 
 
 class RulesTest(unittest.TestCase):
@@ -18,7 +19,7 @@ class RulesTest(unittest.TestCase):
             ("INT x:[0, pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
             "INT x:[0, pi/2]. -1 * cos(x) ^ 4 * sin(x)"),
             ("INT x:[a, b]. (x ^ 2 + 2 * x  - x ^ 3 + sin(x)*x) /  (x * y * sin(z))",
-            "INT x:[a, b]. (sin(x) + -1 * x ^ 2 + x + 2) / (y * sin(z))")
+            "INT x:[a,b]. 2 * y ^ -1 * sin(z) ^ -1 + y ^ -1 * sin(x) * sin(z) ^ -1 + -1 * x ^ 2 * y ^ -1 * sin(z) ^ -1 + x * y ^ -1 * sin(z) ^ -1")
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -30,6 +31,7 @@ class RulesTest(unittest.TestCase):
         test_data = [
             ("INT x:[a,b]. 1 + 2 * x + x ^ 2",
              "(INT x:[a,b]. x ^ 2) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. 1)"),
+            ("(INT u:[1,-1]. -1 * u ^ 2 + 1) + pi", "-1 * (INT u:[1,-1]. u ^ 2) + (INT u:[1,-1]. 1) + pi")
         ]
 
         rule = rules.Linearity()
@@ -98,6 +100,11 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         self.assertEqual(e, parse_expr("1/6 * exp(6) + -1/6"))
 
+    def testSubstitution3(self):
+        e = parse_expr("INT x:[0, pi].(1 - cos(x)^2)*sin(x)")
+        e = rules.Substitution("u",parse_expr("cos(x)")).eval(e)
+        self.assertEqual(e, parse_expr("INT u:[1,-1]. u ^ 2 - 1"))
+        
     def testEquation(self):
         test_data = [
             "sin(x) ^ 3", "sin(x)^2 * sin(x)"
@@ -123,20 +130,21 @@ class RulesTest(unittest.TestCase):
             s = parse_expr(s)
             result = rules.TrigSubstitution().eval(s)
             for i in range(len(result)):
-                result[i] = str(result[i])
+                result[i] = str(result[i][0])
             self.assertEqual(set(result), s2)
     
     def testIntegrationByParts(self):
         e = parse_expr("INT x:[-1,2]. x * exp(x)")
         e = rules.IntegrationByParts(parse_expr("x"), parse_expr("exp(x)")).eval(e)
         e = rules.Simplify().eval(e)
+        e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
         self.assertEqual(e, parse_expr("exp(2) + 2 * exp(-1)"))
 
     def testPolynomialDivision(self):
         test_data = [
-        ("INT x:[4, exp(1) + 3].(x^3 - 12 * x^2 - 42) / (x-3)", "INT x:[4, exp(1) + 3].x ^ 2 + -9 * x + -27 + -123 / (x + -3)"),
+        ("INT x:[4, exp(1) + 3].(x^3 - 12 * x^2 - 42) / (x-3)", "INT x:[4, exp(1) + 3].x ^ 2 - 9 * x - 27 - 123 / (x -3)"),
         ("INT x:[-1, 0].(3*x^4+3*x^2+1)/(x^2 + 1)", "INT x:[-1, 0].3 * x ^ 2 + 1 / (x ^ 2 + 1)")
         ]
 

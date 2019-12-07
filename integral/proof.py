@@ -123,23 +123,23 @@ def has_real_derivative(thy, goal):
     eq_pt = ProofTermDeriv('real_norm', thy, eq_goal)
     return pt.on_prop(thy, argn_conv(1, rewr_conv(eq_pt)))
 
-def real_continuous_onI(thy, f, a, b):
-    """Prove a theorem of the form real_continuous_on f (real_closed_interval a b).
+def real_continuous_onI(thy, expr, a, b):
+    """Prove a theorem of the form real_continuous_on expr (real_closed_interval a b).
     
-    Here f is a function real => real of the form %x. f x,
+    Here expr is a function real => real of the form %x. f x,
     a and b are real numbers. The function can do more if a and b are
     constants.
 
     """
-    if not f.is_abs():
+    if not expr.is_abs():
         raise NotImplementedError
 
     interval = real.closed_interval(a, b)
 
-    var_names = [v.name for v in term.get_vars(f)]
-    nm = name.get_variant_name(f.var_name, var_names)
-    v = Var(nm, f.var_T)
-    t = f.subst_bound(v)
+    var_names = [v.name for v in term.get_vars(expr)]
+    nm = name.get_variant_name(expr.var_name, var_names)
+    v = Var(nm, expr.var_T)
+    t = expr.subst_bound(v)
 
     if t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
         t1 = Term.mk_abs(v, t.arg1)
@@ -161,8 +161,8 @@ def real_continuous_onI(thy, f, a, b):
         pt1 = real_continuous_onI(thy, t1, a, b)
         return apply_theorem(thy, 'real_continuous_on_pow', pt1, inst={'n': t.arg})
     elif t.is_comb() and real.is_real(t.arg):
-        argt = Term.mk_abs(v, t.arg)
-        pt = real_continuous_onI(thy, argt, a, b)
+        f = Term.mk_abs(v, t.arg)
+        pt = real_continuous_onI(thy, f, a, b)
         if real.is_uminus(t):
             return apply_theorem(thy, 'real_continuous_on_neg', pt)
         elif t.fun in (real.exp, real.sin, real.cos):
@@ -172,9 +172,9 @@ def real_continuous_onI(thy, f, a, b):
                 th_name = 'real_continuous_on_sin'
             else:
                 th_name = 'real_continuous_on_cos'
-            pt1 = real_continuous_onI(thy, argt, a, b)
-            pt2 = apply_theorem(thy, th_name, inst={'s': set.mk_image(argt, interval)})
-            return apply_theorem(thy, 'real_continuous_on_compose', pt1, pt2, inst={'f': argt})
+            pt1 = real_continuous_onI(thy, f, a, b)
+            pt2 = apply_theorem(thy, th_name, inst={'s': set.mk_image(f, interval)})
+            return apply_theorem(thy, 'real_continuous_on_compose', pt1, pt2)
         else:
             raise NotImplementedError
     elif t == v:
