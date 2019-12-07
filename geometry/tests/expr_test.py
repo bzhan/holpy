@@ -8,6 +8,8 @@ from geometry.expr import Fact, Rule, Line
 from geometry import parser
 from geometry.ruleset import ruleset
 
+from pstats import Stats
+import cProfile
 
 class ExprTest(unittest.TestCase):
     def testPrintExpr(self):
@@ -154,7 +156,7 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             hyps = copy.copy(facts)
-            expr.apply_rule(rule, list(range(len(facts))), lines=lines, circles=circles, ruleset=rset, hyps=hyps)
+            expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=rset, hyps=hyps)
             self.assertEqual(set(hyps) - set(facts), set(concls))
 
     def testApplyRule(self):
@@ -199,7 +201,7 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             hyps = copy.copy(facts)
-            expr.apply_rule(rule, list(range(len(facts))), lines=lines, circles=circles, ruleset=ruleset, hyps=facts)
+            expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=ruleset, hyps=facts)
             self.assertEqual(set(facts) - set(hyps), set(concls))
 
     def testCombineFacts(self):
@@ -354,6 +356,8 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
                        "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
         ]
+        # pr = cProfile.Profile()
+        # pr.enable()
 
         for rules, hyps, lines, circles, concl in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
@@ -363,6 +367,11 @@ class ExprTest(unittest.TestCase):
             res = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
             print("--- Proof for", concl, "---")
             expr.print_search(ruleset, res)
+
+        # p = Stats(pr)
+        # p.strip_dirs()
+        # p.sort_stats('cumtime')
+        # p.print_stats()
 
 
 if __name__ == "__main__":

@@ -518,8 +518,8 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
              [para(A, B, D, C)])
     -> [].
     """
-    assert isinstance(facts, list)
-    assert all(isinstance(fact, int) for fact in facts)
+    assert isinstance(facts, (tuple, list))
+    assert all(isinstance(fact, Fact) for fact in facts)
     assert all(isinstance(fact, Fact) for fact in hyps)
     assert isinstance(ruleset, dict)
     assert isinstance(rule, str)
@@ -528,7 +528,6 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
     rule = ruleset[rule]
 
     assert len(facts) == len(rule.assums)
-    facts = [hyps[i] for i in facts]
 
     insts = [dict()]
     sources = [[]]
@@ -549,13 +548,17 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
 
         fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=facts)
 
-        if any(check_imply(hyp, fact, lines, circles) for hyp in hyps):
-            # fact already exists
+        exists = False
+        for hyp in hyps:
+            if not hyp.combined and check_imply(hyp, fact, lines, circles):
+                # fact already exists
+                exists = True
+        if exists:
             continue
 
         new_facts = [fact]
         for target in hyps:
-            if check_imply(fact, target, lines, circles):
+            if not target.combined and check_imply(fact, target, lines, circles):
                 target.combined = True
             
             if not target.combined:
@@ -583,14 +586,14 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
     make_new_lines(hyps, lines)
     make_new_circles(hyps, circles)
 
-    init_len = len(hyps)
+    avail_hyps = [hyp for hyp in hyps if not hyp.combined]
     for rule_name, rule in ruleset.items():
-        for seq in itertools.permutations(range(init_len), len(rule.assums)):
-            if any(hyps[i].combined for i in seq):
+        for facts in itertools.permutations(avail_hyps, len(rule.assums)):
+            if any(fact.combined for fact in facts):
                 continue
-            if only_updated and all(not hyps[i].updated for i in seq):
+            if only_updated and all(not fact.updated for fact in facts):
                 continue
-            apply_rule(rule_name, list(seq), lines=lines, circles=circles, ruleset=ruleset, hyps=hyps)
+            apply_rule(rule_name, facts, lines=lines, circles=circles, ruleset=ruleset, hyps=hyps)
 
 
 def search_fixpoint(ruleset, hyps, lines, circles, concl):
