@@ -36,7 +36,7 @@ class ExprTest(unittest.TestCase):
             ("para(A, B, C, D)", expr.PonL),
         ]
         for fact, r in test_data:
-            self.assertEqual(expr.get_arg_type_by_fact(parser.parse_fact(fact)), r)
+            self.assertEqual(parser.parse_fact(fact).get_arg_type(), r)
 
     def testGetCircle(self):
         test_data = [
@@ -47,7 +47,7 @@ class ExprTest(unittest.TestCase):
         for circles, points, center, concl in test_data:
             circles = [parser.parse_circle(circle) for circle in circles]
             concl = parser.parse_circle(concl)
-            new_circle = expr.get_circle(circles, points, center=center)
+            new_circle = expr.Prover(ruleset, circles=circles).get_circle(points, center=center)
             self.assertEqual({new_circle}, {concl})
 
     def testCombineCircles(self):
@@ -88,7 +88,7 @@ class ExprTest(unittest.TestCase):
         for pat, f, inst, res in test_data:
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
-            insts = expr.match_expr(pat, f, inst)
+            insts = expr.Prover(ruleset).match_expr(pat, f, inst)
             insts = [p[0] for p in insts]
             self.assertEqual(insts, res)
 
@@ -124,7 +124,7 @@ class ExprTest(unittest.TestCase):
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
             lines = [parser.parse_line(line) for line in lines]
-            insts = expr.match_expr(pat, f, inst, lines=lines)
+            insts = expr.Prover(ruleset, lines=lines).match_expr(pat, f, inst)
             insts = [p[0] for p in insts]
             self.assertEqual(insts, res)
 
@@ -147,23 +147,10 @@ class ExprTest(unittest.TestCase):
             insts = expr.match_expr(pat, f, inst, circles=circles)
             self.assertEqual(insts, res)
 
-    def testApplyRuleFromRuleset(self):
-        test_data = [
-            ("D44", ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [], ruleset,
-             ["para(P, Q, F, G)"]),
-            ("D56", ["cong(D, A, D, B)", "cong(E, A, E, B)"],  [], [], ruleset, ["perp(A, B, D, E)"]),
-        ]
-        for rule, facts, lines, circles, rset, concls in test_data:
-            facts = [parser.parse_fact(fact) for fact in facts]
-            concls = [parser.parse_fact(concl) for concl in concls]
-            lines = [parser.parse_line(line) for line in lines]
-            circles = [parser.parse_circle(circle) for circle in circles]
-            hyps = copy.copy(facts)
-            expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=rset, hyps=hyps)
-            self.assertEqual(set(hyps) - set(facts), set(concls))
-
     def testApplyRule(self):
         test_data = [
+            ("D44", ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [], ["para(P, Q, F, G)"]),
+            ("D56", ["cong(D, A, D, B)", "cong(E, A, E, B)"],  [], [], ["perp(A, B, D, E)"]),
             # (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], [],
             #  ["para(G, H, E, F)"]),
             # (ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [],
@@ -204,8 +191,9 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             hyps = copy.copy(facts)
-            expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=ruleset, hyps=facts)
-            self.assertEqual(set(facts) - set(hyps), set(concls))
+            prover = expr.Prover(ruleset, hyps=facts, lines=lines, circles=circles)
+            prover.apply_rule(rule, facts)
+            self.assertEqual(set(prover.hyps) - set(hyps), set(concls))
 
     def testCombineFacts(self):
         test_data = [
@@ -256,7 +244,7 @@ class ExprTest(unittest.TestCase):
             goal = parser.parse_fact(goal)
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            res = expr.combine_facts(fact, goal, lines, circles)
+            res = expr.Prover(ruleset, lines=lines, circles=circles).combine_facts(fact, goal)
             if concl:
                 concl = parser.parse_fact(concl)
                 self.assertEqual(res, concl)
@@ -275,37 +263,6 @@ class ExprTest(unittest.TestCase):
             r = expr.combine_facts_list(facts, target, lines, circles)
             concl = [parser.parse_fact(fact) for fact in concl]
             self.assertEqual(set(r), set(concl))
-
-    def testMakeNewLines(self):
-        test_data = [
-            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q, R)", "coll(R, S, T)", "coll(Q, R, S)"], [],
-             ["line(A, B, C, D)", "line(P, Q, R, S, T)"]),
-
-            (["coll(A, B, C)"], ["line(B, C, D)"], ["line(A, B, C, D)"]),
-
-            (["coll(E, F)"], ["line(F, G, H)"], ["line(E, F)", "line(F, G, H)"]),
-
-        ]
-        for facts, lines, concls in test_data:
-            facts = [parser.parse_fact(fact) for fact in facts]
-            lines = [parser.parse_line(line) for line in lines]
-            prev_lines = lines
-            expr.make_new_lines(facts, lines)
-            self.assertEqual(set(prev_lines), set(lines))
-
-    def testMakeNewCircles(self):
-        test_data = [
-            (["cyclic(A, B, C, D)"], [], ["circle(None, A, B, C, D)"]),
-            (["circle(O, A, B, C)"], [], ["circle(O, A, B, C)"]),
-            (["cyclic(A, B, C, D)"], ["circle(P, B, C, D, E)"], ["circle(P, A, B, C, D, E)"]),
-            (["circle(P, A, B, C)"], ["circle(Q, E, F, G)"], ["circle(P, A, B, C)", "circle(Q, E, F, G)"]),
-        ]
-        for facts, circles, combined in test_data:
-            facts = [parser.parse_fact(fact) for fact in facts]
-            circles = [parser.parse_circle(circle) for circle in circles]
-            combined = [parser.parse_circle(circle) for circle in combined]
-            expr.make_new_circles(facts, circles)
-            self.assertEqual(set(combined), set(circles))
 
     def testApplyRuleHyps(self):
         test_data = [
@@ -367,9 +324,10 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            res = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
+            prover = expr.Prover(ruleset, hyps, concl, lines, circles)
+            res = prover.search_fixpoint()
             print("--- Proof for", concl, "---")
-            expr.print_search(ruleset, res)
+            prover.print_search(res)
 
         # p = Stats(pr)
         # p.strip_dirs()

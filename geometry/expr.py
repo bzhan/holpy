@@ -1,38 +1,9 @@
 """Expressions in geometry prover."""
 
 import itertools, copy
+from typing import Tuple, Sequence, Optional, List, Dict
 
 POINT, LINE, PonL, SEG, TRI, CIRC, CYCL = range(7)
-
-
-def get_arg_type_by_fact(fact):
-    """Obtain the type of arguments for the given fact.
-
-    This is determined by the pred_name of the fact, as well as
-    upper/lower case of the arguments.
-
-    Return the argument type.
-
-    """
-    pred_name = fact.pred_name
-
-    if pred_name in ("para", "perp", "eqangle"):
-        if fact.args[0].isupper():
-            return PonL
-        else:
-            return LINE
-    elif pred_name in ("coll", "midp"):
-        return POINT
-    elif pred_name in ("eqratio", "cong"):
-        return SEG
-    elif pred_name == "cyclic":
-        return CYCL
-    elif pred_name == "circle":
-        return CIRC
-    elif pred_name == "simtri":
-        return TRI
-    else:
-        raise NotImplementedError
 
 
 class Fact:
@@ -48,9 +19,7 @@ class Fact:
             number -1 represents no requirement.
     """
 
-    def __init__(self, pred_name, args, *, updated=False, lemma=None, cond=None):
-        assert isinstance(pred_name, str)
-        assert isinstance(args, list) and all(isinstance(arg, str) for arg in args)
+    def __init__(self, pred_name: str, args: Sequence[str], *, updated=False, lemma=None, cond=None):
         self.pred_name = pred_name
         self.args = args
         self.updated = updated
@@ -101,15 +70,41 @@ class Fact:
         else:
             return self
 
+    def get_arg_type(self):
+        """Obtain the type of arguments for the given fact.
+
+        This is determined by the pred_name of the fact, as well as
+        upper/lower case of the arguments.
+
+        Return the argument type.
+
+        """
+        pred_name = self.pred_name
+
+        if pred_name in ("para", "perp", "eqangle"):
+            if self.args[0].isupper():
+                return PonL
+            else:
+                return LINE
+        elif pred_name in ("coll", "midp"):
+            return POINT
+        elif pred_name in ("eqratio", "cong"):
+            return SEG
+        elif pred_name == "cyclic":
+            return CYCL
+        elif pred_name == "circle":
+            return CIRC
+        elif pred_name == "simtri":
+            return TRI
+        else:
+            raise NotImplementedError
+
 
 class Line:
     """Represent a line contains more than one point."""
-    def __init__(self, args, source=None):
-        assert isinstance(args, list)
+    def __init__(self, args: Sequence[str]):
         assert len(args) > 1
-        assert all(isinstance(arg, str) for arg in args)
         self.args = set(args)
-        self.source = source
 
     def __hash__(self):
         return hash(("line", tuple(sorted(self.args))))
@@ -137,12 +132,8 @@ class Line:
 
 class Circle:
     """Represent a circle."""
-    def __init__(self, args, center=None, source=None):
-        assert isinstance(args, list)
-        assert len(args) >= 3
-        assert all(isinstance(arg, str) for arg in args)
+    def __init__(self, args: Sequence[str], center=None):
         self.args = set(args)
-        self.source = source
         self.center = center
 
     def __hash__(self):
@@ -189,9 +180,7 @@ class Rule:
     Rule([coll(A, B, C)], coll(A, C, B))
 
     """
-    def __init__(self, assums, concl):
-        assert isinstance(assums, list) and all(isinstance(assum, Fact) for assum in assums)
-        assert isinstance(concl, Fact)
+    def __init__(self, assums: Sequence[Fact], concl: Fact):
         self.assums = assums
         self.concl = concl
 
@@ -202,703 +191,621 @@ class Rule:
         return "%s :- %s" % (str(self.concl), ", ".join(str(assum) for assum in self.assums))
 
 
-class MatchException(Exception):
-    pass
-
-
-def get_line(lines, pair):
-    """Return a line from lines containing the given pair of points, if
-    it exists. Otherwise return a line containing the pair.
-    
-    Examples:
-
-    get_line([Line(P,Q,R)], (P, Q)) -> Line(P,Q,R)
-    get_line([Line(P,Q,R)], (O, P)) -> Line(O,P)
-
-    """
-    assert isinstance(lines, list) and all(isinstance(line, Line) for line in lines)
-    assert isinstance(pair, tuple) and len(pair) == 2 and all(isinstance(p, str) for p in pair)
-
-    new_line = Line(list(pair))
-    for line in lines:
-        if line.is_same_line(new_line):
-            return line
-
-    return new_line
-
-
-def get_circle(circles, points, center=None):
-    """Return a circle from circles containing the given points and center (optional),
-    if it exists. Otherwise return a circle containing the points and center (optional).
-
-    """
-    assert isinstance(circles, list) and all(isinstance(circle, Circle) for circle in circles)
-    assert isinstance(points, list) and len(points) >= 3 and all(isinstance(p, str) for p in points)
-    if center:
-        assert isinstance(center, str)
-
-    new_circle = Circle(points, center=center)
-    for circle in circles:
-        if new_circle.is_same_circle(circle):
-            return circle
-
-    return new_circle
-
-
 def make_pairs(args, pair_len=2):
     """Divide input list args into groups of length pair_len (default 2)."""
     assert len(args) % pair_len == 0
     return [tuple(args[pair_len*i : pair_len*(i+1)]) for i in range(len(args) // pair_len)]
 
 
-def match_expr(pat, f, inst, *, lines=None, circles=None):
-    """Match pattern with f, return a list of result(s).
+class Prover:
+    def __init__(self, ruleset:Dict, hyps:Optional[List[Fact]]=None, concl:Fact=None, lines=None, circles=None):
+        self.ruleset = ruleset
+        if hyps is None:
+            hyps = []
+        self.hyps = hyps
+        self.concl = concl
+        if lines is None:
+            lines = []
+        self.lines = lines
+        if circles is None:
+            circles = []
+        self.circles = circles
 
-    inst is a dictionary that assigns point variables to points,
-    and line variables to pairs of points.
+    def equal_pair(self, p1, p2) -> bool:
+        return p1 == p2 or p1 == (p2[1], p2[0])
 
-    lines: list of currently known lines.
+    def equal_line(self, p1, p2) -> bool:
+        return self.get_line(p1) == self.get_line(p2)
 
-    Multiple results will be generated if a line and two points on it
-    need to be matched simultaneously.
+    def equal_angle(self, a1, a2) -> bool:
+        p1, p2 = a1[0:2], a1[2:4]
+        q1, q2 = a2[0:2], a2[2:4]
+        return self.get_line(p1) == self.get_line(q1) and self.get_line(p2) == self.get_line(q2)
 
-    Example:
-
-    match(coll(A, B, C), coll(P, Q, R), {}) -> [{A: P, B: Q, C: R}].
-    match(coll(A, B, C), coll(P, Q, R), {A: P}) -> [{A: P, B: Q, C: R}].
-    match(coll(A, B, C), coll(P, Q, R), {A: Q}) -> [].
-    match(coll(A, B, C), para(P, Q, R, S), {}) -> [].
-
-    match(perp(l, m), perp(P, Q, R, S), {}) -> [{l: (P, Q), m: (R, S)}]
-    match(perp(l, m), perp(P, Q, R, S), {l: (Q, P)}) -> [{l: (Q, P), m: (R, S)}]
-    match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}, lines=[Line(O, P, Q)]) -> [{l: (O, P), m: (R, S)}]
-    match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}) -> [].
-
-    """
-
-    def c_process(flag):
-        """Identical part of the processing for circ and cycl cases.
+    def get_line(self, pair: Tuple[str]) -> Line:
+        """Return a line from lines containing the given pair of points, if
+        it exists. Otherwise return a line containing the pair.
         
-        flag -- whether the matching has already failed.
+        Examples:
+
+        get_line([Line(P,Q,R)], (P, Q)) -> Line(P,Q,R)
+        get_line([Line(P,Q,R)], (O, P)) -> Line(O,P)
 
         """
-        fixed = []  # arguments in pattern that are also in inst.
-        same_args = list(set(pat.args).intersection(set(inst.keys())))
-        for same_arg in same_args:
-            if inst[same_arg] in c.args:
-                fixed.append(same_arg)
-            else:
-                flag = True
-        if not flag:  # start matching
-            for_comb = sorted(list(c.args - set(inst.values())))
-            if len(f.args) - len(fixed) > 0:
-                # Order is not considered.
-                comb = itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed))
-                for c_nums in comb:
-                    item = [for_comb[num] for num in c_nums]
-                    p = 0
-                    for i in range(len(pat.args)):
-                        if pat.args[i] in fixed:
-                            continue
-                        inst[pat.args[i]] = item[p]
-                        p += 1
-                    new_insts.append((copy.copy(inst), f))
-            else:  # remain previous insts and sources
-                new_insts.append((inst, f))
+        assert len(pair) == 2
 
-    assert isinstance(pat, Fact) and isinstance(f, Fact)
-    if lines is None:
-        lines = []
-    else:
-        assert isinstance(lines, list) and all(isinstance(line, Line) for line in lines)
+        new_line = Line(list(pair))
+        for line in self.lines:
+            if line.is_same_line(new_line):
+                return line
 
-    if pat.pred_name != f.pred_name:
-        return []
+        return new_line
 
-    arg_ty = get_arg_type_by_fact(pat)
-    new_insts = []
+    def get_circle(self, points: Sequence[str], center:Optional[str]=None) -> Circle:
+        """Return a circle from circles containing the given points and center (optional),
+        if it exists. Otherwise return a circle containing the points and center (optional).
 
-    if arg_ty == POINT:
-        # coll or midp case
-        # Generating all possible combinations from long fact:
-        comb = itertools.combinations(range(len(f.args)), len(pat.args))
-        for c_nums in comb:
-            c = [f.args[num] for num in c_nums]
-            t_inst = copy.copy(inst)
-            flag = False
-            for p_arg, t_arg in zip(pat.args, c):
-                if p_arg in t_inst:
-                    if t_arg != t_inst[p_arg]:
-                        flag = True
+        """
+        new_circle = Circle(points, center=center)
+        for circle in self.circles:
+            if new_circle.is_same_circle(circle):
+                return circle
+
+        return new_circle
+
+    def match_expr(self, pat: Fact, f: Fact, inst) -> List[Tuple[Dict, Fact]]:
+        """Match pattern with f, return a list of result(s).
+
+        inst is a dictionary that assigns point variables to points,
+        and line variables to pairs of points.
+
+        lines: list of currently known lines.
+
+        Multiple results will be generated if a line and two points on it
+        need to be matched simultaneously.
+
+        Example:
+
+        match(coll(A, B, C), coll(P, Q, R), {}) -> [{A: P, B: Q, C: R}].
+        match(coll(A, B, C), coll(P, Q, R), {A: P}) -> [{A: P, B: Q, C: R}].
+        match(coll(A, B, C), coll(P, Q, R), {A: Q}) -> [].
+        match(coll(A, B, C), para(P, Q, R, S), {}) -> [].
+
+        match(perp(l, m), perp(P, Q, R, S), {}) -> [{l: (P, Q), m: (R, S)}]
+        match(perp(l, m), perp(P, Q, R, S), {l: (Q, P)}) -> [{l: (Q, P), m: (R, S)}]
+        match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}, lines=[Line(O, P, Q)]) -> [{l: (O, P), m: (R, S)}]
+        match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}) -> [].
+
+        """
+
+        def c_process(pat_args, f_args, c_args, flag):
+            """Identical part of the processing for circ and cycl cases.
+            
+            flag -- whether the matching has already failed.
+
+            """
+            fixed = []  # arguments in pattern that are also in inst.
+            same_args = list(set(pat_args).intersection(set(inst.keys())))
+            for same_arg in same_args:
+                if inst[same_arg] in c_args:
+                    fixed.append(same_arg)
                 else:
-                    t_inst[p_arg] = t_arg
-            if not flag:
-                new_insts.append((t_inst, f.get_subfact(c_nums)))
+                    flag = True
+            if not flag:  # start matching
+                for_comb = sorted(list(c_args - set(inst.values())))
+                if len(f_args) - len(fixed) > 0:
+                    # Order is not considered.
+                    comb = itertools.permutations(range(len(for_comb)), len(f_args) - len(fixed))
+                    for c_nums in comb:
+                        item = [for_comb[num] for num in c_nums]
+                        p = 0
+                        for i in range(len(pat_args)):
+                            if pat_args[i] in fixed:
+                                continue
+                            inst[pat_args[i]] = item[p]
+                            p += 1
+                        new_insts.append((copy.copy(inst), f))
+                else:  # remain previous insts and sources
+                    new_insts.append((inst, f))
 
-    elif arg_ty == LINE:
-        # para, perp, or eqangle case, matching lines
-        if f.pred_name == "eqangle":
-            groups = make_pairs(f.args, pair_len=4)
-            comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)  # all possibilities
-        else:
-            groups = make_pairs(f.args)
-            comb = itertools.permutations(range(len(groups)), len(pat.args))
+        if pat.pred_name != f.pred_name:
+            return []
 
-        for c_nums in comb:
-            if f.pred_name == "eqangle":
-                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
-            else:
-                c = [groups[num] for num in c_nums]
-            t_inst = copy.copy(inst)
-            flag = False
-            for p_arg, t_arg in zip(pat.args, c):
-                if p_arg in t_inst:
-                    l1 = get_line(lines, t_inst[p_arg])
-                    l2 = get_line(lines, t_arg)
-                    if l1 != l2:
-                        flag = True
-                else:
-                    t_inst[p_arg] = t_arg
-            if not flag:
-                new_insts.append((t_inst, f.get_subfact(c_nums)))
-
-    elif arg_ty == SEG:
-        # eqratio or cong case
-        # Possible to assign t_inst[pat] to arg
-        def can_assign(pat, arg):
-            return pat not in t_inst or t_inst[pat] == arg
-
+        arg_ty = pat.get_arg_type()
         new_insts = []
-        groups = make_pairs(f.args)
-        comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
-        for c_nums in comb:
-            c = [groups[num] for num in c_nums]
-            t_insts = [inst]
-            for i in range(len(pat.args) // 2):
-                ts = []
-                for t_inst in t_insts:
-                    pat_a, pat_b = pat.args[2*i : 2*i+2]
-                    if can_assign(pat_a, c[i][0]) and can_assign(pat_b, c[i][1]):
-                        t = copy.copy(t_inst)
-                        t[pat_a] = c[i][0]
-                        t[pat_b] = c[i][1]
-                        ts.append(t)
-                    if can_assign(pat_a, c[i][1]) and can_assign(pat_b, c[i][0]):
-                        t = copy.copy(t_inst)
-                        t[pat_a] = c[i][1]
-                        t[pat_b] = c[i][0]
-                        ts.append(t)
-                t_insts = ts
-            if t_insts:
-                subfact = f.get_subfact(c_nums)
-            for t_inst in t_insts:
-                new_insts.append((t_inst, subfact))
 
-    elif arg_ty == PonL:
-        # para, perp, or eqangle, matching points
-        # Generate possible lines selections (two lines in one selection).
-        if f.pred_name == "eqangle":
-            groups = make_pairs(f.args, pair_len=4)
-            comb = itertools.combinations(range(len(groups)), len(pat.args) // 4)
-        else:
+        if arg_ty == POINT:
+            # coll or midp case
+            # Generating all possible combinations from long fact:
+            comb = itertools.combinations(range(len(f.args)), len(pat.args))
+            for c_nums in comb:
+                c = [f.args[num] for num in c_nums]
+                t_inst = copy.copy(inst)
+                flag = False
+                for p_arg, t_arg in zip(pat.args, c):
+                    if p_arg in t_inst:
+                        if t_arg != t_inst[p_arg]:
+                            flag = True
+                    else:
+                        t_inst[p_arg] = t_arg
+                if not flag:
+                    new_insts.append((t_inst, f.get_subfact(c_nums)))
+
+        elif arg_ty == LINE:
+            # para, perp, or eqangle case, matching lines
+            if f.pred_name == "eqangle":
+                groups = make_pairs(f.args, pair_len=4)
+                comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)  # all possibilities
+            else:
+                groups = make_pairs(f.args)
+                comb = itertools.permutations(range(len(groups)), len(pat.args))
+
+            for c_nums in comb:
+                if f.pred_name == "eqangle":
+                    cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
+                else:
+                    cs = [groups[num] for num in c_nums]
+                t_inst = copy.copy(inst)
+                flag = False
+                for p_arg, t_args in zip(pat.args, cs):
+                    if p_arg in t_inst:
+                        l1 = self.get_line(t_inst[p_arg])
+                        l2 = self.get_line(t_args)
+                        if l1 != l2:
+                            flag = True
+                    else:
+                        t_inst[p_arg] = t_args
+                if not flag:
+                    new_insts.append((t_inst, f.get_subfact(c_nums)))
+
+        elif arg_ty == SEG:
+            # eqratio or cong case
+            # Possible to assign t_inst[pat] to arg
+            def can_assign(pat, arg):
+                return pat not in t_inst or t_inst[pat] == arg
+
+            new_insts = []
             groups = make_pairs(f.args)
             comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
-
-        for c_nums in comb:
-            if f.pred_name == "eqangle":
-                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
-            else:
+            for c_nums in comb:
                 c = [groups[num] for num in c_nums]
-            t_insts = [inst]
-            for i in range(len(pat.args) // 2):
-                ts = []
+                t_insts = [inst]
+                for i in range(len(pat.args) // 2):
+                    ts = []
+                    for t_inst in t_insts:
+                        pat_a, pat_b = pat.args[2*i : 2*i+2]
+                        if can_assign(pat_a, c[i][0]) and can_assign(pat_b, c[i][1]):
+                            t = copy.copy(t_inst)
+                            t[pat_a] = c[i][0]
+                            t[pat_b] = c[i][1]
+                            ts.append(t)
+                        if can_assign(pat_a, c[i][1]) and can_assign(pat_b, c[i][0]):
+                            t = copy.copy(t_inst)
+                            t[pat_a] = c[i][1]
+                            t[pat_b] = c[i][0]
+                            ts.append(t)
+                    t_insts = ts
+                if t_insts:
+                    subfact = f.get_subfact(c_nums)
                 for t_inst in t_insts:
-                    l = get_line(lines, c[i])
-                    pat_a, pat_b = pat.args[i*2 : i*2+2]
+                    new_insts.append((t_inst, subfact))
 
-                    if pat_a in t_inst:
-                        if t_inst[pat_a] in l.args:
-                            a = [t_inst[pat_a]]
+        elif arg_ty == PonL:
+            # para, perp, or eqangle, matching points
+            # Generate possible lines selections (two lines in one selection).
+            if f.pred_name == "eqangle":
+                groups = make_pairs(f.args, pair_len=4)
+                comb = itertools.combinations(range(len(groups)), len(pat.args) // 4)
+            else:
+                groups = make_pairs(f.args)
+                comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
+
+            for c_nums in comb:
+                if f.pred_name == "eqangle":
+                    cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
+                else:
+                    cs = [groups[num] for num in c_nums]
+                t_insts = [inst]
+                for i in range(len(pat.args) // 2):
+                    ts = []
+                    for t_inst in t_insts:
+                        l = self.get_line(cs[i])
+                        pat_a, pat_b = pat.args[i*2 : i*2+2]
+
+                        if pat_a in t_inst:
+                            if t_inst[pat_a] in l.args:
+                                a = [t_inst[pat_a]]
+                            else:
+                                a = []
                         else:
-                            a = []
-                    else:
-                        a = l.args
+                            a = list(l.args)
 
-                    if pat_b in t_inst:
-                        if t_inst[pat_b] in l.args:
-                            b = [t_inst[pat_b]]
+                        if pat_b in t_inst:
+                            if t_inst[pat_b] in l.args:
+                                b = [t_inst[pat_b]]
+                            else:
+                                b = []
                         else:
-                            b = []
-                    else:
-                        b = l.args
+                            b = list(l.args)
 
-                    perms = [[x, y] for x in a for y in b if x != y]
-                    for a, b in perms:
-                        t = copy.copy(t_inst)
-                        t[pat_a], t[pat_b] = a, b
-                        ts.append(t)
-                t_insts = ts
-            if t_insts:
-                subfact = f.get_subfact(c_nums)
-            for t_inst in t_insts:
-                new_insts.append((t_inst, subfact))
+                        perms = [[x, y] for x in a for y in b if x != y]
+                        for a, b in perms:
+                            t = copy.copy(t_inst)
+                            t[pat_a], t[pat_b] = a, b
+                            ts.append(t)
+                    t_insts = ts
+                if t_insts:
+                    subfact = f.get_subfact(c_nums)
+                for t_inst in t_insts:
+                    new_insts.append((t_inst, subfact))
 
-    elif arg_ty == CYCL:
-        c = get_circle(circles, list(f.args))
-        flag = False
-        c_process(flag)
+        elif arg_ty == CYCL:
+            circle = self.get_circle(list(f.args))
+            flag = False
+            c_process(pat.args, f.args, circle.args, flag)
 
-    elif arg_ty == CIRC:
-        c = get_circle(circles, f.args[1:], f.args[0])
-        flag = False
-        if pat.args[0] in inst and inst[pat.args[0]] != f.args[0]:
-            flag = True
+        elif arg_ty == CIRC:
+            circle = self.get_circle(f.args[1:], f.args[0])
+            flag = False
+            if pat.args[0] in inst and inst[pat.args[0]] != f.args[0]:
+                flag = True
+            else:
+                inst[pat.args[0]] = f.args[0]
+            c_process(pat.args[1:], f.args[1:], circle.args, flag)
+
+        # TODO: Support more types.
+        elif arg_ty == TRI:
+            raise NotImplementedError
+
         else:
-            inst[pat.args[0]] = f.args[0]
-        del f.args[0]
-        del pat.args[0]
-        c_process(flag)
+            raise NotImplementedError
 
-    # TODO: Support more types.
-    elif arg_ty == TRI:
-        raise NotImplementedError
+        return new_insts
 
-    else:
-        raise NotImplementedError
+    def apply_rule(self, rule_name:str, facts:Sequence[Fact]) -> None:
+        """Apply given rule to the list of facts.
 
-    return new_insts
+        If param facts is a list of integers: these integers represents the positions in hyps. In this case,
+        hyps must be a list of facts. The new facts generated by this function will combine to hyps
+        automatically. Function returns nothing.
 
+        If param facts is a list of facts: New facts will be returned.
 
-def make_new_lines(facts, lines):
-    """Construct new lines from a list of given facts.
+        Example:
+        apply_rule(
+            Rule([para(A, B, C, D), para(C, D, E, F)], para(A, B, E, F)),
+                [para(P, Q, R, S), para(R, S, U, V)])
+        -> para(P, Q, U, V).
 
-    The arguments of collinear facts will be used to construct new lines.
-    Points in a new line will be merged into one of given lines,
-    if the new line and the given line is the same line.
-    The given list of lines will be updated.
+        apply_rule(
+            Rule([coll(A, B, C)], coll(A, C, B)),
+                [para(A, B, D, C)])
+        -> [].
+        """
+        rule = self.ruleset[rule_name]
+        assert len(facts) == len(rule.assums)
 
-    """
-    assert isinstance(facts, list)
-    assert all(isinstance(fact, Fact) for fact in facts)
-    assert isinstance(lines, list)
-    assert all(isinstance(line, Line) for line in lines)
+        # instantiation and list of subfacts used
+        insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
+        for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
+            new_insts = []
+            for inst, subfacts in insts:
+                news = self.match_expr(assum, fact, inst)
+                for i, subfact in news:
+                    new_insts.append((i, subfacts + [subfact]))
+            insts = new_insts
 
-    for fact in facts:
-        if fact.pred_name == "coll":
-            new_line = Line(fact.args)
-            same = [l for l in lines if new_line.is_same_line(l)]
-            for l in same:
-                new_line.combine(l)
-                lines.remove(l)
-            lines.append(new_line)
+        for inst, subfacts in insts:  # An inst represents one matching result of match_expr
+            if rule.concl.args[0].islower():
+                concl_args = []  # type: List[str]
+                for i in rule.concl.args:
+                    concl_args.extend((inst[i][0], inst[i][1]))
+            else:
+                concl_args = [inst[i] for i in rule.concl.args]
 
+            fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
 
-def make_new_circles(facts, circles):
-    """
-    Construct new circles from a list of given facts.
-    The arguments of cyclic and circle facts will be used to construct new circles.
-    Points in a new line will be merged into one of given circles,
-    if the new circle and the given circle is the same circle.
-    The given list of circles will be updated.
-    """
-    assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
-    assert isinstance(circles, list) and all(isinstance(circle, Circle) for circle in circles)
+            # Check if fact is trivial
+            if self.check_trivial(fact):
+                continue
 
-    for fact in facts:
-        if fact.pred_name in ("cyclic", "circle"):
-            if fact.pred_name == "cyclic":
-                new_circle = Circle(list(fact.args))
-            if fact.pred_name == "circle":
-                new_circle = Circle(list(fact.args[1:]), center=fact.args[0])
-            same = [c for c in circles if new_circle.is_same_circle(c)]
-            for c in same:
-                new_circle.combine(c)
-                circles.remove(c)
-            circles.append(new_circle)
+            # Check if fact is redundant
+            exists = False
+            for hyp in self.hyps:
+                if not hyp.shadowed and self.check_imply(hyp, fact):
+                    exists = True
+            if exists:
+                continue
 
-
-def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
-    """Apply given rule to the list of facts.
-
-    If param facts is a list of integers: these integers represents the positions in hyps. In this case,
-    hyps must be a list of facts. The new facts generated by this function will combine to hyps
-    automatically. Function returns nothing.
-
-    If param facts is a list of facts: New facts will be returned.
-
-    Example:
-    apply_rule(
-        Rule([para(A, B, C, D), para(C, D, E, F)], para(A, B, E, F)),
-             [para(P, Q, R, S), para(R, S, U, V)])
-    -> para(P, Q, U, V).
-
-    apply_rule(
-        Rule([coll(A, B, C)], coll(A, C, B)),
-             [para(A, B, D, C)])
-    -> [].
-    """
-    assert isinstance(facts, (tuple, list))
-    assert all(isinstance(fact, Fact) for fact in facts)
-    assert all(isinstance(fact, Fact) for fact in hyps)
-    assert isinstance(ruleset, dict)
-    assert isinstance(rule, str)
-
-    rule_name = copy.copy(rule)
-    rule = ruleset[rule]
-
-    assert len(facts) == len(rule.assums)
-
-    insts = [(dict(), [])]  # instantiation and list of subfacts used
-    for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
-        new_insts = []
-        for inst, subfacts in insts:
-            news = match_expr(assum, fact, inst, lines=lines, circles=circles)
-            for i, subfact in news:
-                new_insts.append((i, subfacts + [subfact]))
-        insts = new_insts
-
-    for inst, subfacts in insts:  # An inst represents one matching result of match_expr
-        if rule.concl.args[0].islower():
-            concl_args = []
-            for i in rule.concl.args:
-                concl_args.extend((inst[i][0], inst[i][1]))
-        else:
-            concl_args = [inst[i] for i in rule.concl.args]
-
-        fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
-
-        # Check if fact is trivial
-        if check_trivial(fact, lines, circles):
-            continue
-
-        # Check if fact is redundant
-        exists = False
-        for hyp in hyps:
-            if not hyp.shadowed and check_imply(hyp, fact, lines, circles):
-                exists = True
-        if exists:
-            continue
-
-        new_facts = [fact]
-        for target in hyps:
-            if not target.shadowed and check_imply(fact, target, lines, circles):
-                target.shadowed = True
-            
-            if not target.shadowed:
-                new_fact = combine_facts(fact, target, lines, circles)
-                if new_fact:
-                    fact.shadowed = True
+            new_facts = [fact]
+            for target in self.hyps:
+                if not target.shadowed and self.check_imply(fact, target):
                     target.shadowed = True
-                    fact = new_fact
-                    new_facts.append(new_fact)
+                
+                if not target.shadowed:
+                    new_fact = self.combine_facts(fact, target)
+                    if new_fact:
+                        fact.shadowed = True
+                        target.shadowed = True
+                        fact = new_fact
+                        new_facts.append(new_fact)
 
-        # for new_fact in new_facts:
-        #     print(new_fact.lemma, new_fact)
-        hyps.extend(new_facts)
+            # for new_fact in new_facts:
+            #     print(new_fact.lemma, new_fact)
+            self.hyps.extend(new_facts)
 
+    def compute_lines(self):
+        self.lines = []
+        for hyp in self.hyps:
+            if not hyp.shadowed and hyp.pred_name == 'coll':
+                self.lines.append(Line(hyp.args))
 
-def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
-    """One step of searching fixpoint.
+    def compute_circles(self):
+        self.circles = []
+        for hyp in self.hyps:
+            if not hyp.shadowed:
+                if hyp.pred_name == 'cyclic':
+                    self.circles.append(Circle(hyp.args))
+                elif hyp.pred_name == 'circle':
+                    self.circles.append(Circle(hyp.args[1:], center=hyp.args[0]))
 
-    Apply given ruleset to a list of hypotheses to obtain new facts.
-    If collinear facts are included in hypotheses, new lines can be
-    automatically generated, these new lines might be used when
-    applying rules to hypotheses.
+    def search_step(self, only_updated=False) -> None:
+        """One step of searching fixpoint.
 
-    """
-    # Update the list of lines.
-    make_new_lines(hyps, lines)
-    make_new_circles(hyps, circles)
+        Apply given ruleset to a list of hypotheses to obtain new facts.
+        If collinear facts are included in hypotheses, new lines can be
+        automatically generated, these new lines might be used when
+        applying rules to hypotheses.
 
-    avail_hyps = [hyp for hyp in hyps if not hyp.shadowed]
-    for rule_name, rule in ruleset.items():
-        for facts in itertools.permutations(avail_hyps, len(rule.assums)):
-            if any(fact.shadowed for fact in facts):
-                continue
-            if only_updated and all(not fact.updated for fact in facts):
-                continue
-            apply_rule(rule_name, facts, lines=lines, circles=circles, ruleset=ruleset, hyps=hyps)
+        """
+        self.compute_lines()
+        self.compute_circles()
 
+        avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
+        for rule_name, rule in self.ruleset.items():
+            for facts in itertools.permutations(avail_hyps, len(rule.assums)):
+                if any(fact.shadowed for fact in facts):
+                    continue
+                if only_updated and all(not fact.updated for fact in facts):
+                    continue
+                self.apply_rule(rule_name, facts)
 
-def search_fixpoint(ruleset, hyps, lines, circles, concl):
-    """Recursively apply given ruleset to a list of hypotheses to
-    obtain new facts. Recursion exits when new fact is not able
-    to be generated, or conclusion is in the list of facts.
-    Return the list of facts.
-    """
-    search_step(ruleset, hyps, lines=lines, circles=circles)
-    prev_hyps = []
-    prev_lines = []
-    prev_circles = []
-    steps = 0
-    while hyps != prev_hyps or lines != prev_lines or circles != prev_circles:
-        steps += 1
-        print("Step", steps)
-        if steps > 10:
-            break
-        prev_hyps = copy.copy(hyps)
-        prev_lines = copy.copy(lines)
-        prev_circles = copy.copy(circles)
-        # print(list(hyp for hyp in hyps if not hyp.shadowed))
-        search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
-        for fact in hyps:
-            if check_imply(fact, concl, lines, circles):
-                return fact
+    def search_fixpoint(self) -> Optional[Fact]:
+        """Recursively apply given ruleset to a list of hypotheses to
+        obtain new facts. Recursion exits when new fact is not able
+        to be generated, or conclusion is in the list of facts.
+        Return the list of facts.
+        """
+        prev_len = len(self.hyps)
+        self.search_step()
+        steps = 0
+        while prev_len != len(self.hyps) and steps < 10:
+            steps += 1
+            print("Step", steps)
+            # print(list(hyp for hyp in hyps if not hyp.shadowed))
+            prev_len = len(self.hyps)
+            self.search_step(only_updated=True)
+            for fact in self.hyps:
+                if self.check_imply(fact, self.concl):
+                    return fact
 
-    assert False, "Fixpoint reached without proving goal."
-    return None
-
-
-def combine_facts(fact, goal, lines, circles):
-    """
-    Combine this fact to other fact.
-    Return a combined long fact if succeed.
-
-    """
-    if fact.pred_name != goal.pred_name:
+        assert False, "Fixpoint reached without proving goal."
         return None
 
-    def equal_pair(p1, p2):
-        return p1 == p2 or p1 == (p2[1], p2[0])
+    def combine_facts(self, fact, goal) -> Optional[Fact]:
+        """
+        Combine this fact to other fact.
+        Return a combined long fact if succeed.
 
-    def equal_line(p1, p2):
-        return get_line(lines, p1) == get_line(lines, p2)
-
-    def equal_angle(a1, a2):
-        p1, p2 = a1[0:2], a1[2:4]
-        q1, q2 = a2[0:2], a2[2:4]
-        return get_line(lines, p1) == get_line(lines, q1) and get_line(lines, p2) == get_line(lines, q2)
-
-    def get_indices(l, l_comb, comp=None):
-        res = dict()
-        for i, p in enumerate(l):
-            found = False
-            for j, q in enumerate(l_comb):
-                if (comp is None and p == q) or (comp is not None and comp(p, q)):
-                    res[j] = i
-                    found = True
-                    break
-            assert found
-        return res
-
-    if fact.pred_name == 'perp':
-        # No combination
-        return None
-
-    elif fact.pred_name == 'coll':
-        l1, l2 = Line(fact.args), Line(goal.args)
-        if l1.is_same_line(l2):
-            l1.combine(l2)
-            f = Fact('coll', list(l1.args), updated=True, lemma='combine', cond=[fact, goal])
-            f.left_map = get_indices(l1.args, f.args)
-            f.right_map = get_indices(l2.args, f.args)
-            return f
-        else:
+        """
+        if fact.pred_name != goal.pred_name:
             return None
 
-    elif fact.pred_name == 'circle':
-        c1, c2 = Circle(fact.args[1:], center=fact.args[0]), Circle(goal.args[1:], center=fact.args[0])
+        def get_indices(l, l_comb, comp=None):
+            res = dict()
+            for i, p in enumerate(l):
+                found = False
+                for j, q in enumerate(l_comb):
+                    if (comp is None and p == q) or (comp is not None and comp(p, q)):
+                        res[j] = i
+                        found = True
+                        break
+                assert found
+            return res
 
-        if c1.is_same_circle(c2):
-            c1.combine(c2)
-            f = Fact('circle', [c1.center] + list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
-            f.left_map = get_indices(c1.args, f.args)
-            f.right_map = get_indices(c2.args, f.args)
-            return f
-        else:
+        if fact.pred_name == 'perp':
+            # No combination
             return None
 
-    elif fact.pred_name == 'cyclic':
-        c1, c2 = Circle(fact.args), Circle(goal.args)
+        elif fact.pred_name == 'coll':
+            l1, l2 = Line(fact.args), Line(goal.args)
+            if l1.is_same_line(l2):
+                l1.combine(l2)
+                f = Fact('coll', list(l1.args), updated=True, lemma='combine', cond=[fact, goal])
+                f.left_map = get_indices(l1.args, f.args)
+                f.right_map = get_indices(l2.args, f.args)
+                return f
+            else:
+                return None
 
-        if c1.is_same_circle(c2):
-            c1.combine(c2)
-            f = Fact('cyclic', list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
-            f.left_map = get_indices(c1.args, f.args)
-            f.right_map = get_indices(c2.args, f.args)
-            return f
+        elif fact.pred_name == 'circle':
+            c1, c2 = Circle(fact.args[1:], center=fact.args[0]), Circle(goal.args[1:], center=fact.args[0])
+
+            if c1.is_same_circle(c2):
+                c1.combine(c2)
+                f = Fact('circle', [c1.center] + list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
+                f.left_map = get_indices(c1.args, f.args)
+                f.right_map = get_indices(c2.args, f.args)
+                return f
+            else:
+                return None
+
+        elif fact.pred_name == 'cyclic':
+            c1, c2 = Circle(fact.args), Circle(goal.args)
+
+            if c1.is_same_circle(c2):
+                c1.combine(c2)
+                f = Fact('cyclic', list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
+                f.left_map = get_indices(c1.args, f.args)
+                f.right_map = get_indices(c2.args, f.args)
+                return f
+            else:
+                return None
+
+        elif fact.pred_name == 'cong':
+            # Check if any pair of points in fact and goal are the same
+            # (exchange is allowed)
+            can_combine = False
+            f_pairs = make_pairs(fact.args)
+            g_pairs = make_pairs(goal.args)
+            if any(self.equal_pair(p1, p2) for p1 in f_pairs for p2 in g_pairs):
+                new_args = []  # type: List[str]
+                for p1 in f_pairs:
+                    new_args.extend(p1)
+                for p2 in g_pairs:
+                    if not any(self.equal_pair(p1, p2) for p1 in f_pairs):
+                        new_args.extend(p2)
+                f = Fact('cong', new_args, updated=True, lemma="combine", cond=[fact, goal])
+                p_comb = make_pairs(new_args)
+                f.left_map = get_indices(f_pairs, p_comb, self.equal_pair)
+                f.right_map = get_indices(g_pairs, p_comb, self.equal_pair)
+                return f
+            else:
+                return None
+
+        elif fact.pred_name == 'para':
+            # Check if any pair of points in fact and goal denote the same line
+            can_combine = False
+            f_pairs = make_pairs(fact.args)
+            g_pairs = make_pairs(goal.args)
+            if any(self.equal_line(p1, p2) for p1 in f_pairs for p2 in g_pairs):
+                new_args = []
+                for p1 in f_pairs:
+                    new_args.extend(p1)
+                for p2 in g_pairs:
+                    if not any(self.equal_line(p1, p2) for p1 in f_pairs):
+                        new_args.extend(p2)
+                f = Fact('para', new_args, updated=True, lemma="combine", cond=[fact, goal])
+                p_comb = make_pairs(new_args)
+                f.left_map = get_indices(f_pairs, p_comb, self.equal_line)
+                f.right_map = get_indices(g_pairs, p_comb, self.equal_line)
+                return f
+            else:
+                return None
+
+        elif fact.pred_name == 'eqangle':
+            # Check if any 4-tuple of points in fact and goal denote the same angle
+            can_combine = False
+            f_angles = make_pairs(fact.args, pair_len=4)
+            g_angles = make_pairs(goal.args, pair_len=4)
+            if any(self.equal_angle(a1, a2) for a1 in f_angles for a2 in g_angles):
+                new_args = []
+                for a1 in f_angles:
+                    new_args.extend(a1)
+                for a2 in g_angles:
+                    if not any(self.equal_angle(a1, a2) for a1 in f_angles):
+                        new_args.extend(a2)
+                f = Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
+                p_comb = make_pairs(new_args, pair_len=4)
+                f.left_map = get_indices(f_angles, p_comb, self.equal_angle)
+                f.right_map = get_indices(g_angles, p_comb, self.equal_angle)
+                return f
+            else:
+                return None
+
         else:
-            return None
+            raise NotImplementedError
 
-    elif fact.pred_name == 'cong':
-        # Check if any pair of points in fact and goal are the same
-        # (exchange is allowed)
-        can_combine = False
-        f_pairs = make_pairs(fact.args)
-        g_pairs = make_pairs(goal.args)
-        if any(equal_pair(p1, p2) for p1 in f_pairs for p2 in g_pairs):
-            new_args = []
-            for p1 in f_pairs:
-                new_args.extend(p1)
-            for p2 in g_pairs:
-                if not any(equal_pair(p1, p2) for p1 in f_pairs):
-                    new_args.extend(p2)
-            f = Fact('cong', new_args, updated=True, lemma="combine", cond=[fact, goal])
-            p_comb = make_pairs(new_args)
-            f.left_map = get_indices(f_pairs, p_comb, equal_pair)
-            f.right_map = get_indices(g_pairs, p_comb, equal_pair)
-            return f
-        else:
-            return None
+    def check_trivial(self, fact) -> bool:
+        """Check whether the given fact is trivial."""
+        if fact.pred_name == 'cong':
+            pairs = make_pairs(fact.args)
+            for p1, p2 in itertools.permutations(pairs, 2):
+                if self.equal_pair(p1, p2):
+                    return True
+            return False
 
-    elif fact.pred_name == 'para':
-        # Check if any pair of points in fact and goal denote the same line
-        can_combine = False
-        f_pairs = make_pairs(fact.args)
-        g_pairs = make_pairs(goal.args)
-        if any(equal_line(p1, p2) for p1 in f_pairs for p2 in g_pairs):
-            new_args = []
-            for p1 in f_pairs:
-                new_args.extend(p1)
-            for p2 in g_pairs:
-                if not any(equal_line(p1, p2) for p1 in f_pairs):
-                    new_args.extend(p2)
-            f = Fact('para', new_args, updated=True, lemma="combine", cond=[fact, goal])
-            p_comb = make_pairs(new_args)
-            f.left_map = get_indices(f_pairs, p_comb, equal_line)
-            f.right_map = get_indices(g_pairs, p_comb, equal_line)
-            return f
-        else:
-            return None
+        elif fact.pred_name == 'para':
+            pairs = make_pairs(fact.args)
+            for p1, p2 in itertools.permutations(pairs, 2):
+                if self.equal_line(p1, p2):
+                    return True
+            return False
 
-    elif fact.pred_name == 'eqangle':
-        # Check if any 4-tuple of points in fact and goal denote the same angle
-        can_combine = False
-        f_angles = make_pairs(fact.args, pair_len=4)
-        g_angles = make_pairs(goal.args, pair_len=4)
-        if any(equal_angle(a1, a2) for a1 in f_angles for a2 in g_angles):
-            new_args = []
-            for a1 in f_angles:
-                new_args.extend(a1)
-            for a2 in g_angles:
-                if not any(equal_angle(a1, a2) for a1 in f_angles):
-                    new_args.extend(a2)
-            f = Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
-            p_comb = make_pairs(new_args, pair_len=4)
-            f.left_map = get_indices(f_angles, p_comb, equal_angle)
-            f.right_map = get_indices(g_angles, p_comb, equal_angle)
-            return f
-        else:
-            return None
+        elif fact.pred_name == 'eqangle':
+            angles = make_pairs(fact.args, pair_len=4)
+            for a1, a2 in itertools.permutations(angles, 2):
+                if self.equal_angle(a1, a2):
+                    return True
+            return False
 
-    else:
-        raise NotImplementedError
-
-
-def check_trivial(fact, lines, circles):
-    """Check whether the given fact is trivial."""
-    def equal_pair(p1, p2):
-        return p1 == p2 or p1 == (p2[1], p2[0])
-
-    def equal_line(p1, p2):
-        return get_line(lines, p1) == get_line(lines, p2)
-
-    def equal_angle(a1, a2):
-        p1, p2 = a1[0:2], a1[2:4]
-        q1, q2 = a2[0:2], a2[2:4]
-        return get_line(lines, p1) == get_line(lines, q1) and get_line(lines, p2) == get_line(lines, q2)
-
-    if fact.pred_name == 'cong':
-        pairs = make_pairs(fact.args)
-        for p1, p2 in itertools.permutations(pairs, 2):
-            if equal_pair(p1, p2):
-                return True
         return False
 
-    elif fact.pred_name == 'para':
-        pairs = make_pairs(fact.args)
-        for p1, p2 in itertools.permutations(pairs, 2):
-            if equal_line(p1, p2):
-                return True
-        return False
+    def check_imply(self, fact, goal) -> bool:
+        """Check whether the given fact is able to imply the given goal."""
+        if fact.pred_name != goal.pred_name:
+            return False
 
-    elif fact.pred_name == 'eqangle':
-        angles = make_pairs(fact.args, pair_len=4)
-        for a1, a2 in itertools.permutations(angles, 2):
-            if equal_angle(a1, a2):
-                return True
-        return False
+        if fact.pred_name == "perp":
+            # Check the two lines are the same
+            f1, f2 = make_pairs(fact.args)
+            g1, g2 = make_pairs(goal.args)
+            return self.equal_line(f1, g1) and self.equal_line(f2, g2)
 
-    return False
+        elif fact.pred_name == 'coll':
+            # Whether points in goal is a subset of points in fact
+            return set(goal.args).issubset(set(fact.args))
 
+        elif fact.pred_name == 'circle':
+            # Whether the centers are the same, and other points in goal
+            # is a subset of points in fact
+            return fact.args[0] == goal.args[0] and set(goal.args[1:]).issubset(set(fact.args[1:]))
 
-def check_imply(fact, goal, lines, circles):
-    """Check whether the given fact is able to imply the given goal."""
-    if fact.pred_name != goal.pred_name:
-        return False
+        elif fact.pred_name == 'cyclic':
+            # Whether points in goal is a subset of points in fact
+            return set(goal.args).issubset(set(fact.args))
 
-    def equal_pair(p1, p2):
-        return p1 == p2 or p1 == (p2[1], p2[0])
+        elif fact.pred_name == 'cong':
+            # Check whether both segments in goal are in fact.
+            f_pairs = make_pairs(fact.args)
+            g_pairs = make_pairs(goal.args)
+            return all(any(self.equal_pair(f, g) for f in f_pairs) for g in g_pairs)
 
-    def equal_line(p1, p2):
-        return get_line(lines, p1) == get_line(lines, p2)
+        elif fact.pred_name == 'para':
+            # Check whether both lines in goal are in fact.
+            f_pairs = make_pairs(fact.args)
+            g_pairs = make_pairs(goal.args)
+            return all(any(self.equal_line(f, g) for f in f_pairs) for g in g_pairs)
 
-    def equal_angle(a1, a2):
-        p1, p2 = a1[0:2], a1[2:4]
-        q1, q2 = a2[0:2], a2[2:4]
-        return get_line(lines, p1) == get_line(lines, q1) and get_line(lines, p2) == get_line(lines, q2)
+        elif fact.pred_name == "eqangle":
+            # Check whether both angles in goal are in fact.
+            f_angles = make_pairs(fact.args, pair_len=4)
+            g_angles = make_pairs(goal.args, pair_len=4)
+            return all(any(self.equal_angle(f, g) for f in f_angles) for g in g_angles)
 
-    if fact.pred_name == "perp":
-        # Check the two lines are the same
-        f1, f2 = make_pairs(fact.args)
-        g1, g2 = make_pairs(goal.args)
-        return equal_line(f1, g1) and equal_line(f2, g2)
+        else:
+            raise NotImplementedError
 
-    elif fact.pred_name == 'coll':
-        # Whether points in goal is a subset of points in fact
-        return set(goal.args).issubset(set(fact.args))
+    def print_search(self, res) -> None:
+        """Print the process of searching fixpoint.
+        The given list of facts must contains all the deduce procedures
+        (as parameters of facts in the list). Using a given ruleset to
+        find out the name of rules used in deduce procedures.
 
-    elif fact.pred_name == 'circle':
-        # Whether the centers are the same, and other points in goal
-        # is a subset of points in fact
-        return fact.args[0] == goal.args[0] and set(goal.args[1:]).issubset(set(fact.args[1:]))
+        """
+        print_list = []  # type: List[Fact]
+        def rec(fact):
+            if fact in print_list:
+                return
 
-    elif fact.pred_name == 'cyclic':
-        # Whether points in goal is a subset of points in fact
-        return set(goal.args).issubset(set(fact.args))
+            for cond in fact.cond:
+                rec(cond)
+            print_list.append(fact)
 
-    elif fact.pred_name == 'cong':
-        # Check whether both segments in goal are in fact.
-        f_pairs = make_pairs(fact.args)
-        g_pairs = make_pairs(goal.args)
-        return all(any(equal_pair(f, g) for f in f_pairs) for g in g_pairs)
+        rec(res)
 
-    elif fact.pred_name == 'para':
-        # Check whether both lines in goal are in fact.
-        f_pairs = make_pairs(fact.args)
-        g_pairs = make_pairs(goal.args)
-        return all(any(equal_line(f, g) for f in f_pairs) for g in g_pairs)
-
-    elif fact.pred_name == "eqangle":
-        # Check whether both angles in goal are in fact.
-        f_angles = make_pairs(fact.args, pair_len=4)
-        g_angles = make_pairs(goal.args, pair_len=4)
-        return all(any(equal_angle(f, g) for f in f_angles) for g in g_angles)
-
-    else:
-        raise NotImplementedError
-
-
-def print_search(ruleset, concl):
-    """Print the process of searching fixpoint.
-    The given list of facts must contains all the deduce procedures
-    (as parameters of facts in the list). Using a given ruleset to
-    find out the name of rules used in deduce procedures.
-
-    """
-    print_list = []
-    def rec(fact):
-        if fact in print_list:
-            return
-
-        for cond in fact.cond:
-            rec(cond)
-        print_list.append(fact)
-
-    rec(concl)
-
-    for fact in print_list:
-        if fact.lemma == 'combine':
-            print('combine', fact)
-        elif fact.lemma:
-            print('(' + str(ruleset[fact.lemma]) + ')', fact, ':-', ', '.join(str(cond) for cond in fact.cond))
+        for fact in print_list:
+            if fact.lemma == 'combine':
+                print('combine', fact)
+            elif fact.lemma:
+                print('(' + str(self.ruleset[fact.lemma]) + ')', fact, ':-', ', '.join(str(cond) for cond in fact.cond))
