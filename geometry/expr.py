@@ -59,8 +59,13 @@ class Fact:
             cond = []
         self.cond = cond
 
-        # Changed during proof
-        self.combined = False
+        # Whether a fact is shadowed by another
+        self.shadowed = False
+
+        # For facts combined from other facts, mapping from indices in self
+        # to indices to the left / right condition.
+        self.left_map = None
+        self.right_map = None
 
     def __hash__(self):
         return hash(("Fact", self.pred_name, tuple(self.args)))
@@ -82,6 +87,19 @@ class Fact:
 
     def __repr__(self):
         return str(self)
+
+    def get_subfact(self, indices):
+        if self.lemma != 'combine':
+            return self
+
+        if all(i in self.left_map for i in indices):
+            new_indices = list(self.left_map[i] for i in indices)
+            return self.cond[0].get_subfact(new_indices)
+        elif all(i in self.right_map for i in indices):
+            new_indices = list(self.right_map[i] for i in indices)
+            return self.cond[1].get_subfact(new_indices)
+        else:
+            return self
 
 
 class Line:
@@ -275,7 +293,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
             for_comb = sorted(list(c.args - set(inst.values())))
             if len(f.args) - len(fixed) > 0:
                 # Order is not considered.
-                comb = list(itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed)))
+                comb = itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed))
                 for c_nums in comb:
                     item = [for_comb[num] for num in c_nums]
                     p = 0
@@ -284,9 +302,9 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                             continue
                         inst[pat.args[i]] = item[p]
                         p += 1
-                    new_insts.append(copy.copy(inst))
+                    new_insts.append((copy.copy(inst), f))
             else:  # remain previous insts and sources
-                new_insts.append(inst)
+                new_insts.append((inst, f))
 
     assert isinstance(pat, Fact) and isinstance(f, Fact)
     if lines is None:
@@ -303,7 +321,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     if arg_ty == POINT:
         # coll or midp case
         # Generating all possible combinations from long fact:
-        comb = list(itertools.combinations(range(len(f.args)), len(pat.args)))
+        comb = itertools.combinations(range(len(f.args)), len(pat.args))
         for c_nums in comb:
             c = [f.args[num] for num in c_nums]
             t_inst = copy.copy(inst)
@@ -315,21 +333,20 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                 else:
                     t_inst[p_arg] = t_arg
             if not flag:
-                new_insts.append(t_inst)
+                new_insts.append((t_inst, f.get_subfact(c_nums)))
 
     elif arg_ty == LINE:
         # para, perp, or eqangle case, matching lines
         if f.pred_name == "eqangle":
             groups = make_pairs(f.args, pair_len=4)
-            comb = list(itertools.combinations(range(len(groups)), 2))  # all possibilities
+            comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)  # all possibilities
         else:
             groups = make_pairs(f.args)
-            comb = list(itertools.permutations(range(len(groups)), len(pat.args)))
+            comb = itertools.permutations(range(len(groups)), len(pat.args))
 
         for c_nums in comb:
             if f.pred_name == "eqangle":
-                c = ((groups[c_nums[0]][0], groups[c_nums[0]][1]), (groups[c_nums[0]][2], groups[c_nums[0]][3]),
-                     (groups[c_nums[1]][0], groups[c_nums[1]][1]), (groups[c_nums[1]][2], groups[c_nums[1]][3]))
+                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
             else:
                 c = [groups[num] for num in c_nums]
             t_inst = copy.copy(inst)
@@ -343,7 +360,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                 else:
                     t_inst[p_arg] = t_arg
             if not flag:
-                new_insts.append(t_inst)
+                new_insts.append((t_inst, f.get_subfact(c_nums)))
 
     elif arg_ty == SEG:
         # eqratio or cong case
@@ -353,10 +370,10 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
         new_insts = []
         groups = make_pairs(f.args)
-        comb = list(itertools.combinations(range(len(groups)), len(pat.args) // 2))
+        comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
         for c_nums in comb:
             c = [groups[num] for num in c_nums]
-            t_insts = [copy.copy(inst)]
+            t_insts = [inst]
             for i in range(len(pat.args) // 2):
                 ts = []
                 for t_inst in t_insts:
@@ -372,32 +389,31 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         t[pat_b] = c[i][0]
                         ts.append(t)
                 t_insts = ts
-            new_insts.extend(t_insts)
+            if t_insts:
+                subfact = f.get_subfact(c_nums)
+            for t_inst in t_insts:
+                new_insts.append((t_inst, subfact))
 
     elif arg_ty == PonL:
         # para, perp, or eqangle, matching points
         # Generate possible lines selections (two lines in one selection).
         if f.pred_name == "eqangle":
             groups = make_pairs(f.args, pair_len=4)
-            comb = list(itertools.combinations(range(len(groups)), len(pat.args) // 4))
+            comb = itertools.combinations(range(len(groups)), len(pat.args) // 4)
         else:
             groups = make_pairs(f.args)
-            comb = list(itertools.combinations(range(len(groups)), len(pat.args) // 2))
-        base_inst = copy.copy(inst)
+            comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
 
         for c_nums in comb:
             if f.pred_name == "eqangle":
-                c = ((groups[c_nums[0]][0], groups[c_nums[0]][1]), (groups[c_nums[0]][2], groups[c_nums[0]][3]),
-                     (groups[c_nums[1]][0], groups[c_nums[1]][1]), (groups[c_nums[1]][2], groups[c_nums[1]][3]))
+                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
             else:
                 c = [groups[num] for num in c_nums]
-            t_insts = [copy.copy(inst)]
+            t_insts = [inst]
             for i in range(len(pat.args) // 2):
                 ts = []
                 for t_inst in t_insts:
                     l = get_line(lines, c[i])
-                    removed = copy.copy(l.args)
-                    removed = removed - set(t_inst.values())
                     pat_a, pat_b = pat.args[i*2 : i*2+2]
 
                     if pat_a in t_inst:
@@ -406,7 +422,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         else:
                             a = []
                     else:
-                        a = removed
+                        a = l.args
 
                     if pat_b in t_inst:
                         if t_inst[pat_b] in l.args:
@@ -414,7 +430,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         else:
                             b = []
                     else:
-                        b = removed
+                        b = l.args
 
                     perms = [[x, y] for x in a for y in b if x != y]
                     for a, b in perms:
@@ -422,7 +438,10 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         t[pat_a], t[pat_b] = a, b
                         ts.append(t)
                 t_insts = ts
-            new_insts.extend(t_insts)  # t_insts is a empty list if nothing new generated
+            if t_insts:
+                subfact = f.get_subfact(c_nums)
+            for t_inst in t_insts:
+                new_insts.append((t_inst, subfact))
 
     elif arg_ty == CYCL:
         c = get_circle(circles, list(f.args))
@@ -529,16 +548,16 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
 
     assert len(facts) == len(rule.assums)
 
-    insts = [dict()]
-    sources = [[]]
+    insts = [(dict(), [])]  # instantiation and list of subfacts used
     for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
         new_insts = []
-        for i in range(len(insts)):
-            news = match_expr(assum, fact, insts[i], lines=lines, circles=circles)
-            new_insts.extend(news)
+        for inst, subfacts in insts:
+            news = match_expr(assum, fact, inst, lines=lines, circles=circles)
+            for i, subfact in news:
+                new_insts.append((i, subfacts + [subfact]))
         insts = new_insts
 
-    for inst in insts:  # An inst represents one matching result of match_expr().
+    for inst, subfacts in insts:  # An inst represents one matching result of match_expr
         if rule.concl.args[0].islower():
             concl_args = []
             for i in rule.concl.args:
@@ -546,30 +565,35 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
         else:
             concl_args = [inst[i] for i in rule.concl.args]
 
-        fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=facts)
+        fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
 
+        # Check if fact is trivial
+        if check_trivial(fact, lines, circles):
+            continue
+
+        # Check if fact is redundant
         exists = False
         for hyp in hyps:
-            if not hyp.combined and check_imply(hyp, fact, lines, circles):
-                # fact already exists
+            if not hyp.shadowed and check_imply(hyp, fact, lines, circles):
                 exists = True
         if exists:
             continue
 
         new_facts = [fact]
         for target in hyps:
-            if not target.combined and check_imply(fact, target, lines, circles):
-                target.combined = True
+            if not target.shadowed and check_imply(fact, target, lines, circles):
+                target.shadowed = True
             
-            if not target.combined:
+            if not target.shadowed:
                 new_fact = combine_facts(fact, target, lines, circles)
                 if new_fact:
-                    fact.combined = True
-                    target.combined = True
+                    fact.shadowed = True
+                    target.shadowed = True
                     fact = new_fact
                     new_facts.append(new_fact)
 
-        # print(new_facts)
+        # for new_fact in new_facts:
+        #     print(new_fact.lemma, new_fact)
         hyps.extend(new_facts)
 
 
@@ -586,10 +610,10 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
     make_new_lines(hyps, lines)
     make_new_circles(hyps, circles)
 
-    avail_hyps = [hyp for hyp in hyps if not hyp.combined]
+    avail_hyps = [hyp for hyp in hyps if not hyp.shadowed]
     for rule_name, rule in ruleset.items():
         for facts in itertools.permutations(avail_hyps, len(rule.assums)):
-            if any(fact.combined for fact in facts):
+            if any(fact.shadowed for fact in facts):
                 continue
             if only_updated and all(not fact.updated for fact in facts):
                 continue
@@ -615,7 +639,7 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
         prev_hyps = copy.copy(hyps)
         prev_lines = copy.copy(lines)
         prev_circles = copy.copy(circles)
-        # print(list(hyp for hyp in hyps if hyp.combined == False))
+        # print(list(hyp for hyp in hyps if not hyp.shadowed))
         search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
         for fact in hyps:
             if check_imply(fact, concl, lines, circles):
@@ -645,6 +669,18 @@ def combine_facts(fact, goal, lines, circles):
         q1, q2 = a2[0:2], a2[2:4]
         return get_line(lines, p1) == get_line(lines, q1) and get_line(lines, p2) == get_line(lines, q2)
 
+    def get_indices(l, l_comb, comp=None):
+        res = dict()
+        for i, p in enumerate(l):
+            found = False
+            for j, q in enumerate(l_comb):
+                if (comp is None and p == q) or (comp is not None and comp(p, q)):
+                    res[j] = i
+                    found = True
+                    break
+            assert found
+        return res
+
     if fact.pred_name == 'perp':
         # No combination
         return None
@@ -653,7 +689,10 @@ def combine_facts(fact, goal, lines, circles):
         l1, l2 = Line(fact.args), Line(goal.args)
         if l1.is_same_line(l2):
             l1.combine(l2)
-            return Fact('coll', list(l1.args), updated=True, lemma='combine', cond=[fact, goal])
+            f = Fact('coll', list(l1.args), updated=True, lemma='combine', cond=[fact, goal])
+            f.left_map = get_indices(l1.args, f.args)
+            f.right_map = get_indices(l2.args, f.args)
+            return f
         else:
             return None
 
@@ -662,7 +701,10 @@ def combine_facts(fact, goal, lines, circles):
 
         if c1.is_same_circle(c2):
             c1.combine(c2)
-            return Fact('circle', [c1.center] + list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
+            f = Fact('circle', [c1.center] + list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
+            f.left_map = get_indices(c1.args, f.args)
+            f.right_map = get_indices(c2.args, f.args)
+            return f
         else:
             return None
 
@@ -671,7 +713,10 @@ def combine_facts(fact, goal, lines, circles):
 
         if c1.is_same_circle(c2):
             c1.combine(c2)
-            return Fact('cyclic', list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
+            f = Fact('cyclic', list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
+            f.left_map = get_indices(c1.args, f.args)
+            f.right_map = get_indices(c2.args, f.args)
+            return f
         else:
             return None
 
@@ -688,7 +733,11 @@ def combine_facts(fact, goal, lines, circles):
             for p2 in g_pairs:
                 if not any(equal_pair(p1, p2) for p1 in f_pairs):
                     new_args.extend(p2)
-            return Fact('cong', new_args, updated=True, lemma="combine", cond=[fact, goal])
+            f = Fact('cong', new_args, updated=True, lemma="combine", cond=[fact, goal])
+            p_comb = make_pairs(new_args)
+            f.left_map = get_indices(f_pairs, p_comb, equal_pair)
+            f.right_map = get_indices(g_pairs, p_comb, equal_pair)
+            return f
         else:
             return None
 
@@ -704,7 +753,11 @@ def combine_facts(fact, goal, lines, circles):
             for p2 in g_pairs:
                 if not any(equal_line(p1, p2) for p1 in f_pairs):
                     new_args.extend(p2)
-            return Fact('para', new_args, updated=True, lemma="combine", cond=[fact, goal])
+            f = Fact('para', new_args, updated=True, lemma="combine", cond=[fact, goal])
+            p_comb = make_pairs(new_args)
+            f.left_map = get_indices(f_pairs, p_comb, equal_line)
+            f.right_map = get_indices(g_pairs, p_comb, equal_line)
+            return f
         else:
             return None
 
@@ -720,12 +773,53 @@ def combine_facts(fact, goal, lines, circles):
             for a2 in g_angles:
                 if not any(equal_angle(a1, a2) for a1 in f_angles):
                     new_args.extend(a2)
-            return Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
+            f = Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
+            p_comb = make_pairs(new_args, pair_len=4)
+            f.left_map = get_indices(f_angles, p_comb, equal_angle)
+            f.right_map = get_indices(g_angles, p_comb, equal_angle)
+            return f
         else:
             return None
 
     else:
         raise NotImplementedError
+
+
+def check_trivial(fact, lines, circles):
+    """Check whether the given fact is trivial."""
+    def equal_pair(p1, p2):
+        return p1 == p2 or p1 == (p2[1], p2[0])
+
+    def equal_line(p1, p2):
+        return get_line(lines, p1) == get_line(lines, p2)
+
+    def equal_angle(a1, a2):
+        p1, p2 = a1[0:2], a1[2:4]
+        q1, q2 = a2[0:2], a2[2:4]
+        return get_line(lines, p1) == get_line(lines, q1) and get_line(lines, p2) == get_line(lines, q2)
+
+    if fact.pred_name == 'cong':
+        pairs = make_pairs(fact.args)
+        for p1, p2 in itertools.permutations(pairs, 2):
+            if equal_pair(p1, p2):
+                return True
+        return False
+
+    elif fact.pred_name == 'para':
+        pairs = make_pairs(fact.args)
+        for p1, p2 in itertools.permutations(pairs, 2):
+            if equal_line(p1, p2):
+                return True
+        return False
+
+    elif fact.pred_name == 'eqangle':
+        angles = make_pairs(fact.args, pair_len=4)
+        for a1, a2 in itertools.permutations(angles, 2):
+            if equal_angle(a1, a2):
+                return True
+        return False
+
+    return False
 
 
 def check_imply(fact, goal, lines, circles):
@@ -784,11 +878,6 @@ def check_imply(fact, goal, lines, circles):
     else:
         raise NotImplementedError
 
-separators = {
-    "eqangle": " = ",
-    "default": ","
-}
-
 
 def print_search(ruleset, concl):
     """Print the process of searching fixpoint.
@@ -810,6 +899,6 @@ def print_search(ruleset, concl):
 
     for fact in print_list:
         if fact.lemma == 'combine':
-            print('combine', fact, ':-', ', '.join(str(cond) for cond in fact.cond))
+            print('combine', fact)
         elif fact.lemma:
             print('(' + str(ruleset[fact.lemma]) + ')', fact, ':-', ', '.join(str(cond) for cond in fact.cond))
