@@ -11,6 +11,7 @@ from collections import OrderedDict
 from kernel.type import TVar, Type, TFun, TypeMatchException
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel import term
+from syntax import operator
 from util import name
 
 class MatchException(Exception):
@@ -137,7 +138,8 @@ def first_order_match_incr(pat, t, instsp):
                     inst_t = t
                     for v in reversed(pat.args):
                         if v in bd_vars:
-                            if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
+                            if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun) and \
+                               operator.get_info_for_fun(inst_t.head) is None:
                                 # inst_t is of the form f x, where x is the argument.
                                 # In this case, directly reduce to f.
                                 inst_t = inst_t.fun

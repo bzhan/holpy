@@ -131,6 +131,7 @@ class MatcherTest(unittest.TestCase):
             self.run_test('nat', pat, t, vars=vars, svars=svars, inst=inst)
 
     def testFirstOrderMatchFun4(self):
+        """Heuristic matching with type instantiations."""
         test_data = [
             ("%x. ?f (?g x)", "%y. g (f y)", {'a': 'nat', 'b': 'nat', 'c': 'nat'}, {"f": "g", "g": "f"}),
         ]
@@ -139,6 +140,17 @@ class MatcherTest(unittest.TestCase):
         vars = {'g': 'nat => nat', 'f': 'nat => nat'}
         for pat, t, tyinst, inst in test_data:
             self.run_test('nat', pat, t, vars=vars, svars=svars, tyinst=tyinst, inst=inst)
+
+    def testFirstOrderMatchFun5(self):
+        """No reduction when function is an operator."""
+        test_data = [
+            ("%x. ?f x - ?g x", "%x. f x - (f b - f a) / (b - a) * x", {"f": "f", "g": "%x. (f b - f a) / (b - a) * x"}),
+        ]
+
+        svars = {'f': 'real => real', 'g': 'real => real'}
+        vars = {'f': 'real => real', 'a': 'real', 'b': 'real'}
+        for pat, t, inst in test_data:
+            self.run_test('real', pat, t, vars=vars, svars=svars, inst=inst)
 
     def testFirstOrderMatchType(self):
         """Tests involving type variables."""
