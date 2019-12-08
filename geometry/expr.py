@@ -222,44 +222,6 @@ class Prover:
         q1, q2 = a2[0:2], a2[2:4]
         return self.get_line(p1) == self.get_line(q1) and self.get_line(p2) == self.get_line(q2)
 
-    def make_new_lines(self):
-        """Construct new lines from a list of given facts.
-
-        The arguments of collinear facts will be used to construct new lines.
-        Points in a new line will be merged into one of given lines,
-        if the new line and the given line is the same line.
-        The given list of lines will be updated.
-
-        """
-        for fact in self.hyps:
-            if fact.pred_name == "coll":
-                new_line = Line(fact.args)
-                same = [l for l in self.lines if new_line.is_same_line(l)]
-                for l in same:
-                    new_line.combine(l)
-                    self.lines.remove(l)
-                self.lines.append(new_line)
-
-    def make_new_circles(self):
-        """
-        Construct new circles from a list of given facts.
-        The arguments of cyclic and circle facts will be used to construct new circles.
-        Points in a new line will be merged into one of given circles,
-        if the new circle and the given circle is the same circle.
-        The given list of circles will be updated.
-        """
-        for fact in self.hyps:
-            if fact.pred_name in ("cyclic", "circle"):
-                if fact.pred_name == "cyclic":
-                    new_circle = Circle(list(fact.args))
-                if fact.pred_name == "circle":
-                    new_circle = Circle(list(fact.args[1:]), center=fact.args[0])
-                same = [c for c in self.circles if new_circle.is_same_circle(c)]
-                for c in same:
-                    new_circle.combine(c)
-                    self.circles.remove(c)
-                self.circles.append(new_circle)
-
     def get_line(self, pair: Tuple[str]) -> Line:
         """Return a line from lines containing the given pair of points, if
         it exists. Otherwise return a line containing the pair.
@@ -572,6 +534,21 @@ class Prover:
             #     print(new_fact.lemma, new_fact)
             self.hyps.extend(new_facts)
 
+    def compute_lines(self):
+        self.lines = []
+        for hyp in self.hyps:
+            if not hyp.shadowed and hyp.pred_name == 'coll':
+                self.lines.append(Line(hyp.args))
+
+    def compute_circles(self):
+        self.circles = []
+        for hyp in self.hyps:
+            if not hyp.shadowed:
+                if hyp.pred_name == 'cyclic':
+                    self.circles.append(Circle(hyp.args))
+                elif hyp.pred_name == 'circle':
+                    self.circles.append(Circle(hyp.args[1:], center=hyp.args[0]))
+
     def search_step(self, only_updated=False) -> None:
         """One step of searching fixpoint.
 
@@ -581,9 +558,8 @@ class Prover:
         applying rules to hypotheses.
 
         """
-        # Update the list of lines.
-        self.make_new_lines()
-        self.make_new_circles()
+        self.compute_lines()
+        self.compute_circles()
 
         avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
         for rule_name, rule in self.ruleset.items():

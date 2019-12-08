@@ -264,39 +264,6 @@ class ExprTest(unittest.TestCase):
             concl = [parser.parse_fact(fact) for fact in concl]
             self.assertEqual(set(r), set(concl))
 
-    def testMakeNewLines(self):
-        test_data = [
-            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q, R)", "coll(R, S, T)", "coll(Q, R, S)"], [],
-             ["line(A, B, C, D)", "line(P, Q, R, S, T)"]),
-
-            (["coll(A, B, C)"], ["line(B, C, D)"], ["line(A, B, C, D)"]),
-
-            (["coll(E, F)"], ["line(F, G, H)"], ["line(E, F)", "line(F, G, H)"]),
-
-        ]
-        for facts, lines, concls in test_data:
-            facts = [parser.parse_fact(fact) for fact in facts]
-            lines = [parser.parse_line(line) for line in lines]
-            prev_lines = lines
-            prover = expr.Prover(ruleset, facts, lines=lines)
-            prover.make_new_lines()
-            self.assertEqual(set(prev_lines), set(prover.lines))
-
-    def testMakeNewCircles(self):
-        test_data = [
-            (["cyclic(A, B, C, D)"], [], ["circle(None, A, B, C, D)"]),
-            (["circle(O, A, B, C)"], [], ["circle(O, A, B, C)"]),
-            (["cyclic(A, B, C, D)"], ["circle(P, B, C, D, E)"], ["circle(P, A, B, C, D, E)"]),
-            (["circle(P, A, B, C)"], ["circle(Q, E, F, G)"], ["circle(P, A, B, C)", "circle(Q, E, F, G)"]),
-        ]
-        for facts, circles, combined in test_data:
-            facts = [parser.parse_fact(fact) for fact in facts]
-            circles = [parser.parse_circle(circle) for circle in circles]
-            combined = [parser.parse_circle(circle) for circle in combined]
-            prover = expr.Prover(ruleset, facts, circles=circles)
-            prover.make_new_circles()
-            self.assertEqual(set(combined), set(prover.circles))
-
     def testApplyRuleHyps(self):
         test_data = [
             # ("D5", ["para(P, Q, R, S)"], [], ["para(P, Q, R, S)"]),
