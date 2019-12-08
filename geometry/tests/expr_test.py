@@ -89,6 +89,7 @@ class ExprTest(unittest.TestCase):
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
             insts = expr.match_expr(pat, f, inst)
+            insts = [p[0] for p in insts]
             self.assertEqual(insts, res)
 
     def testMatchFactLines(self):
@@ -124,6 +125,7 @@ class ExprTest(unittest.TestCase):
             f = parser.parse_fact(f)
             lines = [parser.parse_line(line) for line in lines]
             insts = expr.match_expr(pat, f, inst, lines=lines)
+            insts = [p[0] for p in insts]
             self.assertEqual(insts, res)
 
     def testMatchFactCircles(self):
