@@ -115,7 +115,8 @@ class ExprTest(unittest.TestCase):
              [{"A": "A", "B": "B", "D": "P", "E": "Q"}]),
             ("perp(m, n)", "perp(A, C, B, E)", {"m": ("A", "C"), "l": ("B", "E")}, [],
              [{"l": ("B", "E"), "m": ("A", "C"), "n": ("B", "E")}]),
-            ("eqangle(C, A, C, B, R, P, R, Q)", "eqangle(C, F, C, E, H, F, H, E)", {}, [], [])
+            ("eqangle(C, A, C, B, R, P, R, Q)", "eqangle(C, F, C, E, H, F, H, E)", {}, [],
+             [{"A": "F", "B": "E", "C": "C", "P": "F", "Q": "E", "R": "H"}])
         ]
 
         for pat, f, inst, lines, res in test_data:

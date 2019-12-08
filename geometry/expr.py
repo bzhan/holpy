@@ -275,7 +275,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
             for_comb = sorted(list(c.args - set(inst.values())))
             if len(f.args) - len(fixed) > 0:
                 # Order is not considered.
-                comb = list(itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed)))
+                comb = itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed))
                 for c_nums in comb:
                     item = [for_comb[num] for num in c_nums]
                     p = 0
@@ -303,7 +303,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     if arg_ty == POINT:
         # coll or midp case
         # Generating all possible combinations from long fact:
-        comb = list(itertools.combinations(range(len(f.args)), len(pat.args)))
+        comb = itertools.combinations(range(len(f.args)), len(pat.args))
         for c_nums in comb:
             c = [f.args[num] for num in c_nums]
             t_inst = copy.copy(inst)
@@ -321,15 +321,14 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
         # para, perp, or eqangle case, matching lines
         if f.pred_name == "eqangle":
             groups = make_pairs(f.args, pair_len=4)
-            comb = list(itertools.combinations(range(len(groups)), 2))  # all possibilities
+            comb = itertools.combinations(range(len(groups)), 2)  # all possibilities
         else:
             groups = make_pairs(f.args)
-            comb = list(itertools.permutations(range(len(groups)), len(pat.args)))
+            comb = itertools.permutations(range(len(groups)), len(pat.args))
 
         for c_nums in comb:
             if f.pred_name == "eqangle":
-                c = ((groups[c_nums[0]][0], groups[c_nums[0]][1]), (groups[c_nums[0]][2], groups[c_nums[0]][3]),
-                     (groups[c_nums[1]][0], groups[c_nums[1]][1]), (groups[c_nums[1]][2], groups[c_nums[1]][3]))
+                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
             else:
                 c = [groups[num] for num in c_nums]
             t_inst = copy.copy(inst)
@@ -353,10 +352,10 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
         new_insts = []
         groups = make_pairs(f.args)
-        comb = list(itertools.combinations(range(len(groups)), len(pat.args) // 2))
+        comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
         for c_nums in comb:
             c = [groups[num] for num in c_nums]
-            t_insts = [copy.copy(inst)]
+            t_insts = [inst]
             for i in range(len(pat.args) // 2):
                 ts = []
                 for t_inst in t_insts:
@@ -379,25 +378,21 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
         # Generate possible lines selections (two lines in one selection).
         if f.pred_name == "eqangle":
             groups = make_pairs(f.args, pair_len=4)
-            comb = list(itertools.combinations(range(len(groups)), len(pat.args) // 4))
+            comb = itertools.combinations(range(len(groups)), len(pat.args) // 4)
         else:
             groups = make_pairs(f.args)
-            comb = list(itertools.combinations(range(len(groups)), len(pat.args) // 2))
-        base_inst = copy.copy(inst)
+            comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)
 
         for c_nums in comb:
             if f.pred_name == "eqangle":
-                c = ((groups[c_nums[0]][0], groups[c_nums[0]][1]), (groups[c_nums[0]][2], groups[c_nums[0]][3]),
-                     (groups[c_nums[1]][0], groups[c_nums[1]][1]), (groups[c_nums[1]][2], groups[c_nums[1]][3]))
+                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
             else:
                 c = [groups[num] for num in c_nums]
-            t_insts = [copy.copy(inst)]
+            t_insts = [inst]
             for i in range(len(pat.args) // 2):
                 ts = []
                 for t_inst in t_insts:
                     l = get_line(lines, c[i])
-                    removed = copy.copy(l.args)
-                    removed = removed - set(t_inst.values())
                     pat_a, pat_b = pat.args[i*2 : i*2+2]
 
                     if pat_a in t_inst:
@@ -406,7 +401,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         else:
                             a = []
                     else:
-                        a = removed
+                        a = l.args
 
                     if pat_b in t_inst:
                         if t_inst[pat_b] in l.args:
@@ -414,7 +409,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         else:
                             b = []
                     else:
-                        b = removed
+                        b = l.args
 
                     perms = [[x, y] for x in a for y in b if x != y]
                     for a, b in perms:
@@ -533,8 +528,8 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
     sources = [[]]
     for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
         new_insts = []
-        for i in range(len(insts)):
-            news = match_expr(assum, fact, insts[i], lines=lines, circles=circles)
+        for inst in insts:
+            news = match_expr(assum, fact, inst, lines=lines, circles=circles)
             new_insts.extend(news)
         insts = new_insts
 
@@ -549,6 +544,9 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
         fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=facts)
 
         exists = False
+        if check_trivial(fact, lines, circles):
+            continue
+
         for hyp in hyps:
             if not hyp.combined and check_imply(hyp, fact, lines, circles):
                 # fact already exists
@@ -569,7 +567,8 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
                     fact = new_fact
                     new_facts.append(new_fact)
 
-        # print(new_facts)
+        # for new_fact in new_facts:
+        #     print(new_fact.lemma, new_fact)
         hyps.extend(new_facts)
 
 
@@ -726,6 +725,43 @@ def combine_facts(fact, goal, lines, circles):
 
     else:
         raise NotImplementedError
+
+
+def check_trivial(fact, lines, circles):
+    """Check whether the given fact is trivial."""
+    def equal_pair(p1, p2):
+        return p1 == p2 or p1 == (p2[1], p2[0])
+
+    def equal_line(p1, p2):
+        return get_line(lines, p1) == get_line(lines, p2)
+
+    def equal_angle(a1, a2):
+        p1, p2 = a1[0:2], a1[2:4]
+        q1, q2 = a2[0:2], a2[2:4]
+        return get_line(lines, p1) == get_line(lines, q1) and get_line(lines, p2) == get_line(lines, q2)
+
+    if fact.pred_name == 'cong':
+        pairs = make_pairs(fact.args)
+        for p1, p2 in itertools.permutations(pairs, 2):
+            if equal_pair(p1, p2):
+                return True
+        return False
+
+    elif fact.pred_name == 'para':
+        pairs = make_pairs(fact.args)
+        for p1, p2 in itertools.permutations(pairs, 2):
+            if equal_line(p1, p2):
+                return True
+        return False
+
+    elif fact.pred_name == 'eqangle':
+        angles = make_pairs(fact.args, pair_len=4)
+        for a1, a2 in itertools.permutations(angles, 2):
+            if equal_angle(a1, a2):
+                return True
+        return False
+
+    return False
 
 
 def check_imply(fact, goal, lines, circles):
