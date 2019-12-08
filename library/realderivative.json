@@ -14174,7 +14174,7 @@
                 "hint_backward1"
             ],
             "name": "real_mvt",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "a < b",
@@ -14249,137 +14249,128 @@
                     "th": "⊢ f a - (f b - f a) / (b - a) * a = f b - (f b - f a) / (b - a) * b"
                 },
                 {
-                    "args": "eta_conversion, times ((f b - f a) / (b - a)) = (λx. (f b - f a) / (b - a) * x)",
-                    "id": "9",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ times ((f b - f a) / (b - a)) = (λx. (f b - f a) / (b - a) * x)"
-                },
-                {
                     "args": "real_continuous_on_id, {}, {s: real_closed_interval a b}",
-                    "id": "10",
+                    "id": "9",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ real_continuous_on (λx. x) (real_closed_interval a b)"
                 },
                 {
                     "args": "real_continuous_on_lmul, {}, {c: (f b - f a) / (b - a), f: λx::real. x, s: real_closed_interval a b}",
-                    "id": "11",
+                    "id": "10",
                     "prevs": [
-                        "10"
+                        "9"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ real_continuous_on (λx. (f b - f a) / (b - a) * x) (real_closed_interval a b)"
                 },
                 {
-                    "args": "real_continuous_on (times ((f b - f a) / (b - a))) (real_closed_interval a b)",
-                    "id": "12",
-                    "prevs": [
-                        "9",
-                        "11"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ real_continuous_on (times ((f b - f a) / (b - a))) (real_closed_interval a b)"
-                },
-                {
                     "args": "real_continuous_on_sub",
-                    "id": "13",
+                    "id": "11",
                     "prevs": [
                         "1",
-                        "12"
+                        "10"
                     ],
                     "rule": "apply_theorem",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ real_continuous_on (λx. f x - (f b - f a) / (b - a) * x) (real_closed_interval a b)"
                 },
                 {
                     "args": "",
-                    "id": "14",
+                    "id": "12",
                     "prevs": [],
                     "rule": "subproof",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative (λx1. f x1 - (f b - f a) / (b - a) * x1) (f1 x - (f b - f a) / (b - a)) (atreal x)"
                 },
                 {
                     "args": "x, real",
-                    "id": "14.0",
+                    "id": "12.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR x"
                 },
                 {
                     "args": "x ∈ real_closed_interval a b",
-                    "id": "14.1",
+                    "id": "12.1",
                     "prevs": [],
                     "rule": "assume",
                     "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
                 },
                 {
                     "args": "x",
-                    "id": "14.2",
+                    "id": "12.2",
                     "prevs": [
                         "2",
-                        "14.1"
+                        "12.1"
                     ],
                     "rule": "apply_fact_for",
                     "th": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x), a < b, real_continuous_on f (real_closed_interval a b), x ∈ real_closed_interval a b ⊢ has_real_derivative f (f1 x) (atreal x)"
                 },
                 {
-                    "args": "",
-                    "id": "14.3",
+                    "args": "has_real_derivative_id, {}, {net: atreal x}",
+                    "id": "12.3",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. x1) 1 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_lmul_atreal, {}, {c: (f b - f a) / (b - a), f: λx::real. x, f1: (1::real), x: x}",
+                    "id": "12.4",
+                    "prevs": [
+                        "12.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x), x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. (f b - f a) / (b - a) * x1) ((f b - f a) / (b - a) * 1) (atreal x)"
+                },
+                {
+                    "args": "real_mul_rid",
+                    "id": "12.5",
+                    "prevs": [
+                        "12.4"
+                    ],
+                    "rule": "rewrite_fact",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x), x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. (f b - f a) / (b - a) * x1) ((f b - f a) / (b - a)) (atreal x)"
                 },
                 {
-                    "args": "has_real_derivative (times ((f b - f a) / (b - a))) ((f b - f a) / (b - a)) (atreal x)",
-                    "id": "14.4",
-                    "prevs": [
-                        "9",
-                        "14.3"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x), x ∈ real_closed_interval a b ⊢ has_real_derivative (times ((f b - f a) / (b - a))) ((f b - f a) / (b - a)) (atreal x)"
-                },
-                {
                     "args": "has_real_derivative_sub",
-                    "id": "14.5",
+                    "id": "12.6",
                     "prevs": [
-                        "14.2",
-                        "14.4"
+                        "12.2",
+                        "12.5"
                     ],
                     "rule": "apply_theorem",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x), x ∈ real_closed_interval a b ⊢ has_real_derivative (λx1. f x1 - (f b - f a) / (b - a) * x1) (f1 x - (f b - f a) / (b - a)) (atreal x)"
                 },
                 {
                     "args": "",
-                    "id": "14.6",
+                    "id": "12.7",
                     "prevs": [
-                        "14.0",
-                        "14.1",
-                        "14.5"
+                        "12.0",
+                        "12.1",
+                        "12.6"
                     ],
                     "rule": "intros",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative (λx1. f x1 - (f b - f a) / (b - a) * x1) (f1 x - (f b - f a) / (b - a)) (atreal x)"
                 },
                 {
                     "args": "",
-                    "id": "15",
+                    "id": "13",
                     "prevs": [
                         "7",
                         "8",
-                        "13",
-                        "14"
+                        "11",
+                        "12"
                     ],
                     "rule": "apply_fact",
                     "th": "a < b, real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x) ⊢ ∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a)"
                 },
                 {
                     "args": "",
-                    "id": "16",
+                    "id": "14",
                     "prevs": [
                         "0",
                         "1",
                         "2",
-                        "15"
+                        "13"
                     ],
                     "rule": "intros",
                     "th": "⊢ a < b ⟶ real_continuous_on f (real_closed_interval a b) ⟶ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x)) ⟶ (∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a))"
@@ -14454,40 +14445,22 @@
                     "theorem": "real_continuous_on_sub"
                 },
                 {
-                    "goal": "(times ((f b - f a) / (b - a))) = (%x. ((f b - f a) / (b - a)) * x)",
                     "goal_id": "9",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "9",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "eta_conversion"
-                },
-                {
-                    "fact_ids": [
-                        "9"
-                    ],
-                    "goal_id": "10",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "10",
                     "method_name": "apply_backward_step",
                     "theorem": "real_continuous_on_lmul"
                 },
                 {
-                    "goal_id": "10",
+                    "goal_id": "9",
                     "method_name": "apply_backward_step",
                     "theorem": "real_continuous_on_id"
                 },
                 {
-                    "goal_id": "14",
+                    "goal_id": "12",
                     "method_name": "introduction",
                     "names": "x"
                 },
                 {
-                    "goal_id": "14.2",
+                    "goal_id": "12.2",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_derivative_sub"
                 },
@@ -14495,15 +14468,32 @@
                     "fact_ids": [
                         "2"
                     ],
-                    "goal_id": "14.2",
+                    "goal_id": "12.2",
                     "method_name": "apply_prev"
                 },
                 {
+                    "goal": "has_real_derivative (λx1. (f b - f a) / (b - a) * x1) ((f b - f a) / (b - a) * 1) (atreal x)",
+                    "goal_id": "12.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "12.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_lmul_atreal"
+                },
+                {
+                    "goal_id": "12.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_id"
+                },
+                {
                     "fact_ids": [
-                        "9"
+                        "12.4"
                     ],
-                    "goal_id": "14.3",
-                    "method_name": "rewrite_goal_with_prev"
+                    "goal_id": "12.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
                 }
             ],
             "ty": "thm",
