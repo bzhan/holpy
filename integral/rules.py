@@ -4,9 +4,11 @@ from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity
 import functools, operator
-import sympy
+from sympy import apart
 from sympy.parsing import sympy_parser
+from sympy import solvers
 from integral import parser
+
 class Rule:
     """Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
@@ -206,13 +208,22 @@ class Substitution(Rule):
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-
+        self.var_name = parser.parse_expr(self.var_name)
+        d_subst_1 = expr.deriv(str(self.var_name.findVar()), self.var_name)
         d_subst = expr.deriv(e.var, self.var_subst)
-        body2 = e.body.replace(self.var_subst, expr.Var(self.var_name)) / d_subst
+        body2 = e.body.replace_trig(self.var_subst, self.var_name) * (d_subst_1 / d_subst)
         body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
-        lower2 = self.var_subst.subst(e.var, e.lower).normalize()
-        upper2 = self.var_subst.subst(e.var, e.upper).normalize()
-        return expr.Integral(self.var_name, lower2, upper2, body2)
+        if self.var_name.ty == expr.VAR:
+            #u subsitutes f(x)
+            lower2 = self.var_subst.subst(e.var, e.lower).normalize()
+            upper2 = self.var_subst.subst(e.var, e.upper).normalize()
+        else:
+            #x substitue g(u)
+            lower2 = solvers.solve(sympy_parser.parse_expr(str(self.var_name - e.lower).replace("^","**")), sympy_parser.parse_expr(str(self.var_name.findVar())))[0]
+            upper2 = solvers.solve(sympy_parser.parse_expr(str(self.var_name - e.upper).replace("^","**")), sympy_parser.parse_expr(str(self.var_name.findVar())))[0]
+            lower2 = parser.parse_expr(str(lower2).replace("**", "^"))
+            upper2 = parser.parse_expr(str(upper2).replace("**", "^"))
+        return expr.Integral(self.var_name.findVar().name, lower2, upper2, body2)
 
 class Equation(Rule):
     """Apply substitution for equal expressions"""
@@ -262,5 +273,5 @@ class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polinomial.
     """
     def eval(self, e):
-        result = sympy.apart(sympy_parser.parse_expr(str(e.body).replace("^", "**")))
+        result = apart(sympy_parser.parse_expr(str(e.body).replace("^", "**")))
         return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))

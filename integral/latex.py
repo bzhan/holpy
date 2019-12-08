@@ -14,7 +14,10 @@ def convert_expr(e, mode="large"):
             if e.val.denominator == 1:
                 return "%d" % e.val.numerator
             elif mode == 'large':
-                return "\\frac{%d}{%d}" % (e.val.numerator, e.val.denominator)
+                if e.val.numerator > 0:
+                    return "\\frac{%d}{%d}" % (e.val.numerator, e.val.denominator)
+                elif e.val.numerator < 0:
+                    return "-\\frac{%d}{%d}" % (-e.val.numerator, e.val.denominator)
             else:
                 return "%d/%d" % (e.val.numerator, e.val.denominator)
         else:
@@ -73,7 +76,7 @@ def convert_expr(e, mode="large"):
                     if y.op == "^" and y.args[0].ty == expr.VAR:
                         if sx == "1":
                             return "%s" % sy
-                    return "%s %s" % (sx, sy)
+                    return "%s %s %s" % (sx, e.op, sy)
                 elif x.ty == expr.CONST and y.ty == expr.FUN:
                     if sx == "1":
                         return "%s" % sy
@@ -108,6 +111,8 @@ def convert_expr(e, mode="large"):
                 sx = "(%s)" % sx
             if e.func_name == "exp" and e.args[0] == expr.Const(1):
                 return "\\%s" % e.func_name
+            elif e.func_name == "sqrt":
+                return "\\sqrt{%s}" % sx
             return "\\%s{%s}" % (e.func_name, sx)
         else:
             raise NotImplementedError

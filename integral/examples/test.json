@@ -161,7 +161,7 @@
             "problem": "INT x:[0,pi/4]. sin(x)"
         },
         {
-            "_problem_latex": "\\int_{0}^{a} 3 x ^ 2 - x + 1 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{a} 3 * x ^ 2 - x + 1 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{a} 3 * x ^ 2 - x + 1 \\,\\mathrm{dx}",
@@ -252,7 +252,7 @@
             "problem": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)"
         },
         {
-            "_problem_latex": "\\int_{-1}^{0} \\frac{3 x ^ 4 + 3 x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{0} \\frac{3 * x ^ 4 + 3 * x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{-1}^{0} \\frac{3 x ^ 4 + 3 x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
@@ -284,7 +284,7 @@
             "problem": "INT x:[-1, 0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)"
         },
         {
-            "_problem_latex": "\\int_{4}^{\\exp + 3} \\frac{x ^ 3 - 12 x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{4}^{\\exp + 3} \\frac{x ^ 3 - 12 * x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{4}^{\\exp + 3} \\frac{x ^ 3 - 12 x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
@@ -398,6 +398,182 @@
             ],
             "name": "Exercise 13",
             "problem": "INT x:[0, pi]. (1 - sin(x)^3)"
+        },
+        {
+            "_problem_latex": "\\int_{\\pi/6}^{\\pi/2} \\cos^{2}x \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{\\pi/6}^{\\pi/2} \\cos^{2}x \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[pi / 6,pi / 2]. cos(x) ^ 2"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\cos^{2}x = \\frac{\\cos{(2 x)}}{2} + \\frac{1}{2}\\); Method : reduce cos power (increase angle).",
+                    "latex": "\\int_{\\pi/6}^{\\pi/2} \\frac{\\cos{(2 x)}}{2} + \\frac{1}{2} \\,\\mathrm{dx}",
+                    "text": "INT x:[pi / 6,pi / 2]. cos(2 * x) / 2 + 1/2"
+                },
+                {
+                    "latex": "\\frac{1}{2} * (\\int_{\\pi/6}^{\\pi/2} \\cos{(2 x)} \\,\\mathrm{dx}) + \\frac{1}{2} * (\\int_{\\pi/6}^{\\pi/2} 1 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "1/2 * (INT x:[pi / 6,pi / 2]. cos(2 * x)) + 1/2 * (INT x:[pi / 6,pi / 2]. 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 x\\).",
+                    "latex": "\\frac{1}{2} * (\\int_{1/3 \\pi}^{\\pi} \\frac{\\cos{u}}{2} \\,\\mathrm{du}) + \\frac{1}{2} * (\\int_{\\pi/6}^{\\pi/2} 1 \\,\\mathrm{dx})",
+                    "text": "1/2 * (INT u:[1/3 * pi,pi]. cos(u) / 2) + 1/2 * (INT x:[pi / 6,pi / 2]. 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} * \\frac{1}{2} * (\\int_{1/3 \\pi}^{\\pi} \\cos{u} \\,\\mathrm{du}) + \\frac{1}{2} * (\\int_{\\pi/6}^{\\pi/2} 1 \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "1/2 * (1/2 * (INT u:[1/3 * pi,pi]. cos(u))) + 1/2 * (INT x:[pi / 6,pi / 2]. 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} * \\frac{1}{2} * (\\left. \\sin{u} \\right\\vert_{u=1/3 \\pi}^{\\pi}) + \\frac{1}{2} * (\\left. x \\right\\vert_{x=\\pi/6}^{\\pi/2})",
+                    "reason": "Common integrals",
+                    "text": "1/2 * (1/2 * ([sin(u)]_u=1/3 * pi,pi)) + 1/2 * ([x]_x=pi / 6,pi / 2)"
+                },
+                {
+                    "latex": "-\\frac{1}{8} \\sqrt{3} + \\frac{1}{6} \\pi",
+                    "reason": "Simplification",
+                    "text": "-1/8 * sqrt(3) + 1/6 * pi"
+                }
+            ],
+            "name": "Exercise 14",
+            "problem": "INT x:[pi/6, pi/2]. cos(x) ^ 2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\sqrt{1 - x ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\sqrt{1 - x ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. (1 - x ^ 2) ^ (1/2)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(sin(u)\\) for \\(x\\).",
+                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{(1 - \\sin^{2}u)} * \\cos{u} \\,\\mathrm{du}",
+                    "text": "INT u:[0,pi / 2]. sqrt(1 - sin(u) ^ 2) * cos(u)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(1 - \\sin^{2}u = \\cos^{2}u\\); Method : powers of sin to powers of cos.",
+                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{(\\cos^{2}u)} * \\cos{u} \\,\\mathrm{du}",
+                    "text": "INT u:[0,pi / 2]. sqrt(cos(u) ^ 2) * cos(u)"
+                },
+                {
+                    "latex": "\\int_{0}^{\\pi/2} \\cos^{2}u \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[0,pi / 2]. cos(u) ^ 2"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\cos^{2}u = \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2}\\); Method : reduce cos power (increase angle).",
+                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du}",
+                    "text": "INT u:[0,pi / 2]. cos(2 * u) / 2 + 1/2"
+                },
+                {
+                    "latex": "\\frac{1}{2} * (\\int_{0}^{\\pi/2} \\cos{(2 u)} \\,\\mathrm{du}) + \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "1/2 * (INT u:[0,pi / 2]. cos(2 * u)) + 1/2 * (INT u:[0,pi / 2]. 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(v\\) for \\(2 u\\).",
+                    "latex": "\\frac{1}{2} * (\\int_{0}^{\\pi} \\frac{\\cos{v}}{2} \\,\\mathrm{dv}) + \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "text": "1/2 * (INT v:[0,pi]. cos(v) / 2) + 1/2 * (INT u:[0,pi / 2]. 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} * \\frac{1}{2} * (\\int_{0}^{\\pi} \\cos{v} \\,\\mathrm{dv}) + \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "1/2 * (1/2 * (INT v:[0,pi]. cos(v))) + 1/2 * (INT u:[0,pi / 2]. 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} * \\frac{1}{2} * (\\left. \\sin{v} \\right\\vert_{v=0}^{\\pi}) + \\frac{1}{2} * (\\left. u \\right\\vert_{u=0}^{\\pi/2})",
+                    "reason": "Common integrals",
+                    "text": "1/2 * (1/2 * ([sin(v)]_v=0,pi)) + 1/2 * ([u]_u=0,pi / 2)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\pi",
+                    "reason": "Simplification",
+                    "text": "1/4 * pi"
+                }
+            ],
+            "name": "Exercise 15",
+            "problem": "INT x:[0, 1]. (1 - x^2) ^ (1/2)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\sqrt{2}} \\sqrt{(2 - x ^ 2)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\sqrt{2}} \\sqrt{(2 - x ^ 2)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,sqrt(2)]. sqrt(2 - x ^ 2)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(sqrt(2)*sin(u)\\) for \\(x\\).",
+                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{2} * \\sqrt{(2 - 2 * \\sin^{2}u)} * \\cos{u} \\,\\mathrm{du}",
+                    "text": "INT u:[0,pi / 2]. sqrt(2) * sqrt(2 - 2 * sin(u) ^ 2) * cos(u)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\sin^{2}u = \\sin^{2}u\\); Method : Unchanged.",
+                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{2} * \\sqrt{(2 - 2 * \\sin^{2}u)} * \\cos{u} \\,\\mathrm{du}",
+                    "text": "INT u:[0,pi / 2]. sqrt(2) * sqrt(2 - 2 * sin(u) ^ 2) * cos(u)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(2 - 2 * \\sin^{2}u = 2 * \\cos^{2}u\\); Method : powers of sin to powers of cos.",
+                    "latex": "\\int_{0}^{\\pi/2} \\sqrt{2} * \\sqrt{(2 * \\cos^{2}u)} * \\cos{u} \\,\\mathrm{du}",
+                    "text": "INT u:[0,pi / 2]. sqrt(2) * sqrt(2 * cos(u) ^ 2) * cos(u)"
+                },
+                {
+                    "latex": "\\int_{0}^{\\pi/2} \\cos{u} * \\sqrt{2} * \\sqrt{(2 * \\cos^{2}u)} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[0,pi / 2]. cos(u) * sqrt(2) * sqrt(2 * cos(u) ^ 2)"
+                },
+                {
+                    "latex": "\\int_{0}^{\\pi/2} 2 * \\cos^{2}u \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[0,pi / 2]. 2 * cos(u) ^ 2"
+                },
+                {
+                    "latex": "2 * (\\int_{0}^{\\pi/2} \\cos^{2}u \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "2 * (INT u:[0,pi / 2]. cos(u) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\cos^{2}u = \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2}\\); Method : reduce cos power (increase angle).",
+                    "latex": "2 * (\\int_{0}^{\\pi/2} \\frac{\\cos{(2 u)}}{2} + \\frac{1}{2} \\,\\mathrm{du})",
+                    "text": "2 * (INT u:[0,pi / 2]. cos(2 * u) / 2 + 1/2)"
+                },
+                {
+                    "latex": "2 * \\frac{1}{2} * (\\int_{0}^{\\pi/2} \\cos{(2 u)} \\,\\mathrm{du}) + \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "2 * (1/2 * (INT u:[0,pi / 2]. cos(2 * u)) + 1/2 * (INT u:[0,pi / 2]. 1))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(v\\) for \\(2 u\\).",
+                    "latex": "2 * \\frac{1}{2} * (\\int_{0}^{\\pi} \\frac{\\cos{v}}{2} \\,\\mathrm{dv}) + \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "text": "2 * (1/2 * (INT v:[0,pi]. cos(v) / 2) + 1/2 * (INT u:[0,pi / 2]. 1))"
+                },
+                {
+                    "latex": "(\\int_{0}^{\\pi} \\frac{1}{2} \\cos{v} \\,\\mathrm{dv}) + (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "reason": "Simplification",
+                    "text": "(INT v:[0,pi]. 1/2 * cos(v)) + (INT u:[0,pi / 2]. 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} * (\\int_{0}^{\\pi} \\cos{v} \\,\\mathrm{dv}) + (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "1/2 * (INT v:[0,pi]. cos(v)) + (INT u:[0,pi / 2]. 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} * (\\left. \\sin{v} \\right\\vert_{v=0}^{\\pi}) + (\\left. u \\right\\vert_{u=0}^{\\pi/2})",
+                    "reason": "Common integrals",
+                    "text": "1/2 * ([sin(v)]_v=0,pi) + ([u]_u=0,pi / 2)"
+                },
+                {
+                    "latex": "\\frac{1}{2} \\pi",
+                    "reason": "Simplification",
+                    "text": "1/2 * pi"
+                }
+            ],
+            "name": "Exercise 16",
+            "problem": "INT x:[0, sqrt(2)]. sqrt(2 - x^2)"
         }
     ]
 }

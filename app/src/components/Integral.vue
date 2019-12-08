@@ -48,7 +48,7 @@
       <div v-if="r_query_mode === 'substitution'">
         <div>
           <label>Substitute</label>
-          <input v-model="subst_data.var_name" style="margin:0px 5px;width:25px">
+          <input v-model="subst_data.var_name" style="margin:0px 5px;width:100px">
           <label>for</label>
           <input v-model="subst_data.expr" style="margin:0px 5px;width:100px">
         </div>
@@ -57,6 +57,7 @@
         </div>
       </div>
       <div v-if="r_query_mode === 'trig'">
+        <label>The initial expression text is {{cur_calc[cur_calc.length-1].text}}.</label>
         <div>
           <label>Write the expression equal to initial ones and make the trig you want to transform surrounded by '$'</label>
           <input v-model="trig_identities_data.old_expr" style="margin:0px 5px;width:200px">
@@ -110,8 +111,6 @@
           v-on:click.native="operate(index)"
           v-bind:data="'\\(' + step.latex + '\\)'"
           style="cursor:pointer"/>
-          <MathEquation class="calc-reason" v-if="'_latex_reason' in step" v-bind:data="step._latex_reason"/>
-          <span class="calc-reason" v-else>{{step.reason}}</span>
         </div>
         <div style="margin-top:10px">
           <button v-on:click="closeIntegral">Close</button>
@@ -308,6 +307,7 @@ export default {
     },
 
     doTrigSubstitution: async function(){
+      this.trig_identities_data.new_expr = []
       const data = {
         problem: this.sep_int[this.integral_index].text,
         exp: this.trig_identities_data.old_expr
