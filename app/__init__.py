@@ -873,17 +873,21 @@ def integral_trig_transformation():
     del integral.expr.trig_identity[:]
     problem = integral.parser.parse_expr(data['problem'])
     e = integral.parser.parse_expr(data['exp'])
+    print("e.normalize:", e) 
+    print("problem.body: ", problem.body.normalize())
     if e.normalize() == problem.body.normalize():
+        print("wow")
         e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
         possible_new_problem = rule.eval(e)
         #need to do more
+        print("integral.expr.trig_identity[0]",possible_new_problem)
         possible_form = list(integral.expr.trig_transform(integral.expr.trig_identity[0]))
         n = []
         for p in range(len(possible_new_problem)):
             n.append({ 
                 'text': str(possible_new_problem[p][0]),
                 'latex': integral.latex.convert_expr(possible_new_problem[p][0]),
-                '_latex_reason': "Trig identities: \(%s\) substitued to \\(%s\\), method : %s"
+                '_latex_reason': "Trig identities: \(%s = %s\\); Method : %s"
                 % (integral.latex.convert_expr(integral.expr.trig_identity[0]),
                 integral.latex.convert_expr(integral.parser.parse_expr(str(possible_form[p][0]).replace("**", "^"))),
                 str(possible_new_problem[p][1]))
@@ -912,7 +916,7 @@ def integral_substitution():
             'expr': data['expr'],
         },
         '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
-            data['var_name'], integral.latex.convert_expr(expr)
+            integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
         )
     })
 

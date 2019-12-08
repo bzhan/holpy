@@ -31,6 +31,8 @@ class Expr:
     def __mul__(self, other):
         if self == Const(1):
             return other
+        elif self.ty == CONST and other.ty == CONST:
+            return Const(self.val * other.val)
         else:
             return Op("*", self, other)
 
@@ -212,6 +214,13 @@ class Expr:
                 elif y.ty == CONST and y.val == 1:
                     return x.to_poly()
                 elif y.ty == CONST and y.val != 1:
+                    if x.ty == OP:
+                        if x.op == "*":
+                            #(x * y)^2 = x^2 * y^2
+                            return (x.args[0] ^ y).to_poly() * (x.args[1] ^ y).to_poly()
+                        elif x.op == "^":
+                            #(x^(1/2))^2 = x
+                            return (x.args[0] ^ (y * x.args[1])).to_poly() 
                     return poly.Polynomial([poly.Monomial(1, [(x, y.val)])])
                 else:
                     return poly.singleton(self)
@@ -322,6 +331,8 @@ class Expr:
                     return poly.constant(1)
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
+            elif self.func_name == "sqrt":
+                return (self.args[0] ^ Const(Fraction(1/2))).to_poly()
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
@@ -362,6 +373,13 @@ class Expr:
                     return Op(self.op, self.args[0], self.args[1])
                 else:
                     return Op(self.op, self.args)
+            elif self.ty == FUN:
+                if len(self.args) > 0:
+                    self.args = list(self.args)
+                    self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
+                    return Fun(self.func_name, self.args[0])
+                else:
+                    return self
             else:
                 return self
 
@@ -379,6 +397,7 @@ class Expr:
         return n
 
     def separate_integral(self):
+        """Find all integrals in expr."""
         result = []
         def collect(expr, result):
             if expr.ty == INTEGRAL:
@@ -389,15 +408,35 @@ class Expr:
 
         collect(self, result)
         return result
+    
+    def findVar(self):
+        """Find variable in expr for substitution's derivation.
+            Most used in trig functions substitute initial variable.
+        """
+        v = []
+        def findv(e, v):
+            if e.ty == VAR:
+                v.append(e)
+            elif e.ty == FUN:
+                #cos(u) => u
+                for arg in e.args:
+                    findv(arg, v)
+            elif e.ty == OP:
+                for arg in e.args:
+                    findv(arg, v)
+        findv(self, v)
+        return v[0]
 
 def trig_transform(trig):
     """Compute all possible trig function equal to trig"""
     poss = set()
+    poss_expr = set()
     i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
     for f, rule in trigFun.items():
         j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
-        if i != j:
+        if i != j and j not in poss_expr:
             poss.add((j, rule))
+            poss_expr.add(j)
     poss.add((i, "Unchanged"))
     return poss
 
@@ -572,6 +611,11 @@ def deriv(var, e):
             return (exp(x) * deriv(var, x)).normalize()
         elif e.func_name == "pi":
             return Const(0)
+        elif e.func_name == "sqrt":
+            if e.args[0].ty == CONST:
+                return Const(0)
+            else:
+                return deriv(var, e.args[0] ^ Const(Fraction(1/2)))
         else:
             raise NotImplementedError
     else:
@@ -664,7 +708,7 @@ class Fun(Expr):
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
-            assert func_name in ["sin", "cos", "log", "exp", "sqrt", "arcsin", "arctan"]
+            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "asin", "arctan"]
         else:
             raise NotImplementedError
 

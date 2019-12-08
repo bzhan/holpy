@@ -85,8 +85,8 @@ class ExprTest(unittest.TestCase):
             ("[x]_x=a,b", "b + -1 * a"),
             ("[x ^ 2 * y]_x=a,b", "b ^ 2 * y + -1 * a ^ 2 * y"),
             ("[x ^ 2]_x=3,4", "7"),
-            ("cos(pi/4)", "1/2 * sqrt(2)"),
-            ("cos(0) - cos(pi/4)", "-1/2 * sqrt(2) + 1"),
+            ("cos(pi/4)", "1/2 * 2 ^ (1/2)"),
+            ("cos(0) - cos(pi/4)", "-1/2 * 2 ^ (1/2) + 1"),
             ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
              "1/3 * b ^ 3 + b ^ 2 + b + -1/3 * a ^ 3 + -1 * a ^ 2 + -1 * a"),
@@ -95,11 +95,14 @@ class ExprTest(unittest.TestCase):
             ("arctan(1)", "1/4 * pi"),
             ("arctan(sqrt(3)/3)", "1/6 * pi"),
             ("arctan(sqrt(3))", "1/3 * pi"),
-            ("sin(3/4 * pi)", "1/2 * sqrt(2)"),
+            ("sin(3/4 * pi)", "1/2 * 2 ^ (1/2)"),
             ("pi + pi / 3", "4/3 * pi"),
             ("1 - cos(x) ^ 2", "-1 * cos(x) ^ 2 + 1"),
             ("x^2 * 6", "6 * x ^ 2"),
-            ("(-1) * INT x:[0, 2].(1 - x)", "INT x:[0,2]. x + -1")
+            ("(-1) * INT x:[0, 2].(1 - x)", "INT x:[0,2]. x + -1"),
+            ("(x * y)^2", "x ^ 2 * y ^ 2"),
+            ("(2*sin(x))^2", "4 * sin(x) ^ 2"),
+            ("(2^(1/2)*sin(x))^(2)", "2 * sin(x) ^ 2"),
         ]
 
         for s, res in test_data:
