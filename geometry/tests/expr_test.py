@@ -36,7 +36,7 @@ class ExprTest(unittest.TestCase):
             ("para(A, B, C, D)", expr.PonL),
         ]
         for fact, r in test_data:
-            self.assertEqual(expr.get_arg_type_by_fact(parser.parse_fact(fact)), r)
+            self.assertEqual(parser.parse_fact(fact).get_arg_type(), r)
 
     def testGetCircle(self):
         test_data = [

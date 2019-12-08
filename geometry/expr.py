@@ -1,38 +1,9 @@
 """Expressions in geometry prover."""
 
 import itertools, copy
+from typing import Tuple, Sequence, Optional, List, Dict
 
 POINT, LINE, PonL, SEG, TRI, CIRC, CYCL = range(7)
-
-
-def get_arg_type_by_fact(fact):
-    """Obtain the type of arguments for the given fact.
-
-    This is determined by the pred_name of the fact, as well as
-    upper/lower case of the arguments.
-
-    Return the argument type.
-
-    """
-    pred_name = fact.pred_name
-
-    if pred_name in ("para", "perp", "eqangle"):
-        if fact.args[0].isupper():
-            return PonL
-        else:
-            return LINE
-    elif pred_name in ("coll", "midp"):
-        return POINT
-    elif pred_name in ("eqratio", "cong"):
-        return SEG
-    elif pred_name == "cyclic":
-        return CYCL
-    elif pred_name == "circle":
-        return CIRC
-    elif pred_name == "simtri":
-        return TRI
-    else:
-        raise NotImplementedError
 
 
 class Fact:
@@ -48,9 +19,7 @@ class Fact:
             number -1 represents no requirement.
     """
 
-    def __init__(self, pred_name, args, *, updated=False, lemma=None, cond=None):
-        assert isinstance(pred_name, str)
-        assert isinstance(args, list) and all(isinstance(arg, str) for arg in args)
+    def __init__(self, pred_name: str, args: Sequence[str], *, updated=False, lemma=None, cond=None):
         self.pred_name = pred_name
         self.args = args
         self.updated = updated
@@ -101,15 +70,41 @@ class Fact:
         else:
             return self
 
+    def get_arg_type(self):
+        """Obtain the type of arguments for the given fact.
+
+        This is determined by the pred_name of the fact, as well as
+        upper/lower case of the arguments.
+
+        Return the argument type.
+
+        """
+        pred_name = self.pred_name
+
+        if pred_name in ("para", "perp", "eqangle"):
+            if self.args[0].isupper():
+                return PonL
+            else:
+                return LINE
+        elif pred_name in ("coll", "midp"):
+            return POINT
+        elif pred_name in ("eqratio", "cong"):
+            return SEG
+        elif pred_name == "cyclic":
+            return CYCL
+        elif pred_name == "circle":
+            return CIRC
+        elif pred_name == "simtri":
+            return TRI
+        else:
+            raise NotImplementedError
+
 
 class Line:
     """Represent a line contains more than one point."""
-    def __init__(self, args, source=None):
-        assert isinstance(args, list)
+    def __init__(self, args: Sequence[str]):
         assert len(args) > 1
-        assert all(isinstance(arg, str) for arg in args)
         self.args = set(args)
-        self.source = source
 
     def __hash__(self):
         return hash(("line", tuple(sorted(self.args))))
@@ -137,12 +132,8 @@ class Line:
 
 class Circle:
     """Represent a circle."""
-    def __init__(self, args, center=None, source=None):
-        assert isinstance(args, list)
-        assert len(args) >= 3
-        assert all(isinstance(arg, str) for arg in args)
+    def __init__(self, args: Sequence[str], center=None):
         self.args = set(args)
-        self.source = source
         self.center = center
 
     def __hash__(self):
@@ -189,9 +180,7 @@ class Rule:
     Rule([coll(A, B, C)], coll(A, C, B))
 
     """
-    def __init__(self, assums, concl):
-        assert isinstance(assums, list) and all(isinstance(assum, Fact) for assum in assums)
-        assert isinstance(concl, Fact)
+    def __init__(self, assums: Sequence[Fact], concl: Fact):
         self.assums = assums
         self.concl = concl
 
@@ -206,7 +195,7 @@ class MatchException(Exception):
     pass
 
 
-def get_line(lines, pair):
+def get_line(lines: Sequence[Line], pair: Tuple[str]):
     """Return a line from lines containing the given pair of points, if
     it exists. Otherwise return a line containing the pair.
     
@@ -216,8 +205,7 @@ def get_line(lines, pair):
     get_line([Line(P,Q,R)], (O, P)) -> Line(O,P)
 
     """
-    assert isinstance(lines, list) and all(isinstance(line, Line) for line in lines)
-    assert isinstance(pair, tuple) and len(pair) == 2 and all(isinstance(p, str) for p in pair)
+    assert len(pair) == 2
 
     new_line = Line(list(pair))
     for line in lines:
@@ -227,16 +215,11 @@ def get_line(lines, pair):
     return new_line
 
 
-def get_circle(circles, points, center=None):
+def get_circle(circles: Sequence[Circle], points: Sequence[str], center:Optional[str]=None):
     """Return a circle from circles containing the given points and center (optional),
     if it exists. Otherwise return a circle containing the points and center (optional).
 
     """
-    assert isinstance(circles, list) and all(isinstance(circle, Circle) for circle in circles)
-    assert isinstance(points, list) and len(points) >= 3 and all(isinstance(p, str) for p in points)
-    if center:
-        assert isinstance(center, str)
-
     new_circle = Circle(points, center=center)
     for circle in circles:
         if new_circle.is_same_circle(circle):
@@ -251,7 +234,7 @@ def make_pairs(args, pair_len=2):
     return [tuple(args[pair_len*i : pair_len*(i+1)]) for i in range(len(args) // pair_len)]
 
 
-def match_expr(pat, f, inst, *, lines=None, circles=None):
+def match_expr(pat: Fact, f: Fact, inst, *, lines:Optional[Sequence[Line]]=None, circles=None):
     """Match pattern with f, return a list of result(s).
 
     inst is a dictionary that assigns point variables to points,
@@ -276,46 +259,43 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
     """
 
-    def c_process(flag):
+    def c_process(pat_args, f_args, c_args, flag):
         """Identical part of the processing for circ and cycl cases.
         
         flag -- whether the matching has already failed.
 
         """
         fixed = []  # arguments in pattern that are also in inst.
-        same_args = list(set(pat.args).intersection(set(inst.keys())))
+        same_args = list(set(pat_args).intersection(set(inst.keys())))
         for same_arg in same_args:
-            if inst[same_arg] in c.args:
+            if inst[same_arg] in c_args:
                 fixed.append(same_arg)
             else:
                 flag = True
         if not flag:  # start matching
-            for_comb = sorted(list(c.args - set(inst.values())))
-            if len(f.args) - len(fixed) > 0:
+            for_comb = sorted(list(c_args - set(inst.values())))
+            if len(f_args) - len(fixed) > 0:
                 # Order is not considered.
-                comb = itertools.permutations(range(len(for_comb)), len(f.args) - len(fixed))
+                comb = itertools.permutations(range(len(for_comb)), len(f_args) - len(fixed))
                 for c_nums in comb:
                     item = [for_comb[num] for num in c_nums]
                     p = 0
-                    for i in range(len(pat.args)):
-                        if pat.args[i] in fixed:
+                    for i in range(len(pat_args)):
+                        if pat_args[i] in fixed:
                             continue
-                        inst[pat.args[i]] = item[p]
+                        inst[pat_args[i]] = item[p]
                         p += 1
                     new_insts.append((copy.copy(inst), f))
             else:  # remain previous insts and sources
                 new_insts.append((inst, f))
 
-    assert isinstance(pat, Fact) and isinstance(f, Fact)
     if lines is None:
         lines = []
-    else:
-        assert isinstance(lines, list) and all(isinstance(line, Line) for line in lines)
 
     if pat.pred_name != f.pred_name:
         return []
 
-    arg_ty = get_arg_type_by_fact(pat)
+    arg_ty = pat.get_arg_type()
     new_insts = []
 
     if arg_ty == POINT:
@@ -346,19 +326,19 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
         for c_nums in comb:
             if f.pred_name == "eqangle":
-                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
+                cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
             else:
-                c = [groups[num] for num in c_nums]
+                cs = [groups[num] for num in c_nums]
             t_inst = copy.copy(inst)
             flag = False
-            for p_arg, t_arg in zip(pat.args, c):
+            for p_arg, t_args in zip(pat.args, cs):
                 if p_arg in t_inst:
                     l1 = get_line(lines, t_inst[p_arg])
-                    l2 = get_line(lines, t_arg)
+                    l2 = get_line(lines, t_args)
                     if l1 != l2:
                         flag = True
                 else:
-                    t_inst[p_arg] = t_arg
+                    t_inst[p_arg] = t_args
             if not flag:
                 new_insts.append((t_inst, f.get_subfact(c_nums)))
 
@@ -406,14 +386,14 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
         for c_nums in comb:
             if f.pred_name == "eqangle":
-                c = (groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4])
+                cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
             else:
-                c = [groups[num] for num in c_nums]
+                cs = [groups[num] for num in c_nums]
             t_insts = [inst]
             for i in range(len(pat.args) // 2):
                 ts = []
                 for t_inst in t_insts:
-                    l = get_line(lines, c[i])
+                    l = get_line(lines, cs[i])
                     pat_a, pat_b = pat.args[i*2 : i*2+2]
 
                     if pat_a in t_inst:
@@ -444,20 +424,18 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                 new_insts.append((t_inst, subfact))
 
     elif arg_ty == CYCL:
-        c = get_circle(circles, list(f.args))
+        circle = get_circle(circles, list(f.args))
         flag = False
-        c_process(flag)
+        c_process(pat.args, f.args, circle.args, flag)
 
     elif arg_ty == CIRC:
-        c = get_circle(circles, f.args[1:], f.args[0])
+        circle = get_circle(circles, f.args[1:], f.args[0])
         flag = False
         if pat.args[0] in inst and inst[pat.args[0]] != f.args[0]:
             flag = True
         else:
             inst[pat.args[0]] = f.args[0]
-        del f.args[0]
-        del pat.args[0]
-        c_process(flag)
+        c_process(pat.args[1:], f.args[1:], circle.args, flag)
 
     # TODO: Support more types.
     elif arg_ty == TRI:
@@ -469,7 +447,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     return new_insts
 
 
-def make_new_lines(facts, lines):
+def make_new_lines(facts:List[Fact], lines:List[Line]):
     """Construct new lines from a list of given facts.
 
     The arguments of collinear facts will be used to construct new lines.
@@ -478,11 +456,6 @@ def make_new_lines(facts, lines):
     The given list of lines will be updated.
 
     """
-    assert isinstance(facts, list)
-    assert all(isinstance(fact, Fact) for fact in facts)
-    assert isinstance(lines, list)
-    assert all(isinstance(line, Line) for line in lines)
-
     for fact in facts:
         if fact.pred_name == "coll":
             new_line = Line(fact.args)
@@ -493,7 +466,7 @@ def make_new_lines(facts, lines):
             lines.append(new_line)
 
 
-def make_new_circles(facts, circles):
+def make_new_circles(facts:List[Fact], circles:List[Circle]):
     """
     Construct new circles from a list of given facts.
     The arguments of cyclic and circle facts will be used to construct new circles.
@@ -501,9 +474,6 @@ def make_new_circles(facts, circles):
     if the new circle and the given circle is the same circle.
     The given list of circles will be updated.
     """
-    assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
-    assert isinstance(circles, list) and all(isinstance(circle, Circle) for circle in circles)
-
     for fact in facts:
         if fact.pred_name in ("cyclic", "circle"):
             if fact.pred_name == "cyclic":
@@ -517,7 +487,7 @@ def make_new_circles(facts, circles):
             circles.append(new_circle)
 
 
-def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
+def apply_rule(rule_name:str, facts:List[Fact], *, lines=None, circles=None, ruleset:Dict, hyps:List[Fact]):
     """Apply given rule to the list of facts.
 
     If param facts is a list of integers: these integers represents the positions in hyps. In this case,
@@ -537,18 +507,11 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
              [para(A, B, D, C)])
     -> [].
     """
-    assert isinstance(facts, (tuple, list))
-    assert all(isinstance(fact, Fact) for fact in facts)
-    assert all(isinstance(fact, Fact) for fact in hyps)
-    assert isinstance(ruleset, dict)
-    assert isinstance(rule, str)
-
-    rule_name = copy.copy(rule)
-    rule = ruleset[rule]
-
+    rule = ruleset[rule_name]
     assert len(facts) == len(rule.assums)
 
-    insts = [(dict(), [])]  # instantiation and list of subfacts used
+    # instantiation and list of subfacts used
+    insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
     for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
         new_insts = []
         for inst, subfacts in insts:
@@ -559,7 +522,7 @@ def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None, hyps):
 
     for inst, subfacts in insts:  # An inst represents one matching result of match_expr
         if rule.concl.args[0].islower():
-            concl_args = []
+            concl_args = []  # type: List[str]
             for i in rule.concl.args:
                 concl_args.extend((inst[i][0], inst[i][1]))
         else:

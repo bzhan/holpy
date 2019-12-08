@@ -1,6 +1,6 @@
 """Parser for expressions and rules."""
 
-from lark import Lark, Transformer, v_args, exceptions
+from lark import Lark, Transformer, v_args, exceptions  # type: ignore
 
 from geometry.expr import Fact, Rule, Line, Circle
 
