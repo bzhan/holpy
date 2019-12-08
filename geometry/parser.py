@@ -48,18 +48,18 @@ rule_parser = Lark(grammar, start="rule", parser="lalr", transformer=GeometryTra
 line_parser = Lark(grammar, start="line", parser="lalr", transformer=GeometryTransformer())
 circle_parser = Lark(grammar, start="circle", parser="lalr", transformer=GeometryTransformer())
 
-def parse_fact(s):
+def parse_fact(s:str) -> Fact:
     try:
         return fact_parser.parse(s)
     except TypeError as e:
         print("When parsing:", s)
         raise e
 
-def parse_rule(s):
+def parse_rule(s:str) -> Rule:
     return rule_parser.parse(s)
 
-def parse_line(s):
+def parse_line(s:str) -> Line:
     return line_parser.parse(s)
 
-def parse_circle(s):
+def parse_circle(s:str) -> Circle:
     return circle_parser.parse(s)
