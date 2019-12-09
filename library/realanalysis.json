@@ -1,66 +1,6 @@
 {
     "content": [
-        {
-            "name": "eventually",
-            "ty": "def.ax",
-            "type": "('a ⇒ bool) ⇒ 'a net ⇒ bool"
-        },
-        {
-            "name": "sequentially",
-            "ty": "def.ax",
-            "type": "nat net"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "eventually_sequentially",
-            "prop": "eventually p sequentially <--> ?N. !n. N<=n -->p n",
-            "ty": "thm",
-            "vars": {
-                "p": "nat => bool"
-            }
-        },
-        {
-            "name": "netlimit",
-            "ty": "def.ax",
-            "type": "'a net ⇒ 'a"
-        },
-        {
-            "name": "at_infinity",
-            "ty": "def.ax",
-            "type": "real net"
-        },
-        {
-            "name": "at_posinfinity",
-            "prop": "at_posinfinity = at_infinity",
-            "ty": "def",
-            "type": "real net"
-        },
-        {
-            "name": "at_neginfinity",
-            "prop": "at_neginfinity = at_infinity",
-            "ty": "def",
-            "type": "real net"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_open",
-            "prop": "real_open s ⟷ (∀x. x ∈ s ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s)))",
-            "ty": "def",
-            "type": "real set ⇒ bool"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_closed",
-            "prop": "real_closed s ⟷ real_open (diff univ s)",
-            "ty": "def",
-            "type": "real set ⇒ bool"
-        },
+        
         {
             "attributes": [
                 "hint_rewrite"
@@ -5909,7 +5849,7 @@
     "description": "Some analytic concepts for real.",
     "imports": [
         "integral",
-        "iterate",
+        "metric",
         "function"
     ],
     "name": "realanalysis"
