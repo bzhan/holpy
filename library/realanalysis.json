@@ -1,6 +1,5 @@
 {
     "content": [
-        
         {
             "attributes": [
                 "hint_rewrite"
@@ -3243,12 +3242,6 @@
             }
         },
         {
-            "name": "from",
-            "prop": "from n = {m. n ≤ m}",
-            "ty": "def",
-            "type": "nat ⇒ nat set"
-        },
-        {
             "name": "real_series_from",
             "prop": "real_sums f l (from k) ⟷ tendsto_real (λn. sum ({k..n}) f) l sequentially",
             "ty": "thm",
@@ -5848,9 +5841,10 @@
     ],
     "description": "Some analytic concepts for real.",
     "imports": [
-        "integral",
+        "transcendentals",
         "metric",
-        "function"
+        "function",
+        "integral"
     ],
     "name": "realanalysis"
 }

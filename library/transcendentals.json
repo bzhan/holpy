@@ -6503,7 +6503,7 @@
     "description": "Real transcendentals.",
     "imports": [
         "real",
-        "realanalysis"
+        "metric"
     ],
     "name": "transcendentals"
 }

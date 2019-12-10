@@ -202,15 +202,6 @@
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "is_realinterval",
-            "prop": "is_realinterval s ⟷ (∀a. ∀b. ∀c. a ∈ s ⟶ b ∈ s ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s)",
-            "ty": "def",
-            "type": "real set ⇒ bool"
-        },
-        {
             "attributes": [],
             "name": "trivial_limit_within_realinterval",
             "prop": "is_realinterval s ⟶ x ∈ s ⟶ trivial_limit (within (atreal x) s) ⟷ s = {x}",
@@ -238,24 +229,6 @@
             "vars": {
                 "s": "real set"
             }
-        },
-        {
-            "attributes": [
-                "hint_backward"
-            ],
-            "name": "is_realinterval_emptyset",
-            "prop": "is_realinterval ∅",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "attributes": [
-                "hint_backward"
-            ],
-            "name": "is_realinterval_univ",
-            "prop": "is_realinterval univ",
-            "ty": "thm",
-            "vars": {}
         },
         {
             "attributes": [
@@ -14910,7 +14883,7 @@
     "imports": [
         "realanalysis",
         "transcendentals",
-        "floor"
+        "misc"
     ],
     "name": "realderivative"
 }

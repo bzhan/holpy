@@ -319,10 +319,636 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_open_inter",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_open s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_open s ⊢ real_open s"
+                },
+                {
+                    "args": "real_open t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_open t ⊢ real_open t"
+                },
+                {
+                    "args": "real_open_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_open s ⊢ ∀x. x ∈ s ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s))"
+                },
+                {
+                    "args": "real_open_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_open t ⊢ ∀x. x ∈ t ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ t))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_open s, real_open t ⊢ ∀x. x ∈ s ∩ t ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∩ t))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s ∩ t",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∩ t ⊢ x ∈ s ∩ t"
+                },
+                {
+                    "args": "member_inter_iff",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ s ∩ t ⊢ x ∈ s ∧ x ∈ t"
+                },
+                {
+                    "args": "conjD1, {}, {A: x ∈ s, B: x ∈ t}",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ∩ t ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2, {}, {A: x ∈ s, B: x ∈ t}",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ∩ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "2",
+                        "4.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "real_open s, x ∈ s ∩ t ⊢ ∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "3",
+                        "4.4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "real_open t, x ∈ s ∩ t ⊢ ∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ t)"
+                },
+                {
+                    "args": "d1, real",
+                    "id": "4.7",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d1"
+                },
+                {
+                    "args": "0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s)",
+                    "id": "4.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s) ⊢ 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s)"
+                },
+                {
+                    "args": "d2, real",
+                    "id": "4.9",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d2"
+                },
+                {
+                    "args": "0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t)",
+                    "id": "4.10",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t) ⊢ 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t)"
+                },
+                {
+                    "args": "conjD1, {}, {A: 0 < d1, B: ∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s}",
+                    "id": "4.11",
+                    "prevs": [
+                        "4.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s) ⊢ 0 < d1"
+                },
+                {
+                    "args": "conjD1, {}, {A: 0 < d2, B: ∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t}",
+                    "id": "4.12",
+                    "prevs": [
+                        "4.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t) ⊢ 0 < d2"
+                },
+                {
+                    "args": "real_down2, {}, {d1: d1, d2: d2}",
+                    "id": "4.13",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < d1 ⟶ 0 < d2 ⟶ (∃e. 0 < e ∧ e < d1 ∧ e < d2)"
+                },
+                {
+                    "args": "",
+                    "id": "4.14",
+                    "prevs": [
+                        "4.13",
+                        "4.11",
+                        "4.12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t) ⊢ ∃e. 0 < e ∧ e < d1 ∧ e < d2"
+                },
+                {
+                    "args": "e, real",
+                    "id": "4.15",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e ∧ e < d1 ∧ e < d2",
+                    "id": "4.16",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ∧ e < d1 ∧ e < d2 ⊢ 0 < e ∧ e < d1 ∧ e < d2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.17",
+                    "prevs": [
+                        "4.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e ∧ e < d1 ∧ e < d2 ⊢ 0 < e"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < d1, B: ∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s}",
+                    "id": "4.18",
+                    "prevs": [
+                        "4.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s) ⊢ ∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < d2, B: ∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t}",
+                    "id": "4.19",
+                    "prevs": [
+                        "4.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t) ⊢ ∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "4.20",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2 ⊢ ∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∧ x1 ∈ t"
+                },
+                {
+                    "args": "x1, real",
+                    "id": "4.20.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "abs (x1 - x) < e",
+                    "id": "4.20.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs (x1 - x) < e ⊢ abs (x1 - x) < e"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < e, B: e < d1 ∧ e < d2}",
+                    "id": "4.20.2",
+                    "prevs": [
+                        "4.16"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < e ∧ e < d1 ∧ e < d2 ⊢ e < d1 ∧ e < d2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.20.3",
+                    "prevs": [
+                        "4.20.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e ∧ e < d1 ∧ e < d2 ⊢ e < d1"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "4.20.4",
+                    "prevs": [
+                        "4.20.1",
+                        "4.20.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2, abs (x1 - x) < e ⊢ abs (x1 - x) < d1"
+                },
+                {
+                    "args": "x1",
+                    "id": "4.20.5",
+                    "prevs": [
+                        "4.18",
+                        "4.20.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), real_open s, real_open t, x ∈ s ∩ t, 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2, abs (x1 - x) < e ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.20.6",
+                    "prevs": [
+                        "4.20.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e ∧ e < d1 ∧ e < d2 ⊢ e < d2"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "4.20.7",
+                    "prevs": [
+                        "4.20.1",
+                        "4.20.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2, abs (x1 - x) < e ⊢ abs (x1 - x) < d2"
+                },
+                {
+                    "args": "x1",
+                    "id": "4.20.8",
+                    "prevs": [
+                        "4.19",
+                        "4.20.7"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < e ∧ e < d1 ∧ e < d2, abs (x1 - x) < e ⊢ x1 ∈ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.20.9",
+                    "prevs": [
+                        "4.20.5",
+                        "4.20.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2, abs (x1 - x) < e ⊢ x1 ∈ s ∧ x1 ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "4.20.10",
+                    "prevs": [
+                        "4.20.0",
+                        "4.20.1",
+                        "4.20.9"
+                    ],
+                    "rule": "intros",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2 ⊢ ∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∧ x1 ∈ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.21",
+                    "prevs": [
+                        "4.17",
+                        "4.20"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2 ⊢ 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λe. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∧ x1 ∈ t), a: e}",
+                    "id": "4.22",
+                    "prevs": [
+                        "4.21"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2 ⊢ ∃a1. 0 < a1 ∧ (∀x1. abs (x1 - x) < a1 ⟶ x1 ∈ s ∧ x1 ∈ t)"
+                },
+                {
+                    "args": "member_inter_iff, ∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∩ t)",
+                    "id": "4.23",
+                    "prevs": [
+                        "4.22"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_open s, real_open t, x ∈ s ∩ t, 0 < d1 ∧ (∀x1. abs (x1 - x) < d1 ⟶ x1 ∈ s), 0 < d2 ∧ (∀x1. abs (x1 - x) < d2 ⟶ x1 ∈ t), 0 < e ∧ e < d1 ∧ e < d2 ⊢ ∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∩ t)"
+                },
+                {
+                    "args": "∃e. 0 < e ∧ e < d1 ∧ e < d2, ∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ t), ∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s)",
+                    "id": "4.24",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.5",
+                        "4.7",
+                        "4.8",
+                        "4.6",
+                        "4.9",
+                        "4.10",
+                        "4.14",
+                        "4.15",
+                        "4.16",
+                        "4.23"
+                    ],
+                    "rule": "intros",
+                    "th": "real_open s, real_open t ⊢ ∀x. x ∈ s ∩ t ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ s ∩ t))"
+                },
+                {
+                    "args": "real_open_def, real_open (s ∩ t)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_open s, real_open t ⊢ real_open (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_open s ⟶ real_open t ⟶ real_open (s ∩ t)"
+                }
+            ],
+            "prop": "real_open s --> real_open t--> real_open (inter s t)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_open_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_open_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_open_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "4.3"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4.4"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.5"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "exists_elim",
+                    "names": "d1"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.9",
+                    "method_name": "exists_elim",
+                    "names": "d2"
+                },
+                {
+                    "goal_id": "4.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "fact_ids": [
+                        "4.8"
+                    ],
+                    "goal_id": "4.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.10"
+                    ],
+                    "goal_id": "4.12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "4.13",
+                    "method_name": "apply_forward_step",
+                    "param_d1": "d1",
+                    "param_d2": "d2",
+                    "theorem": "real_down2"
+                },
+                {
+                    "fact_ids": [
+                        "4.13",
+                        "4.11",
+                        "4.12"
+                    ],
+                    "goal_id": "4.14",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.14"
+                    ],
+                    "goal_id": "4.15",
+                    "method_name": "exists_elim",
+                    "names": "e"
+                },
+                {
+                    "goal_id": "4.17",
+                    "method_name": "inst_exists_goal",
+                    "s": "e"
+                },
+                {
+                    "goal_id": "4.17",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4.16"
+                    ],
+                    "goal_id": "4.17",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.8"
+                    ],
+                    "goal_id": "4.18",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.10"
+                    ],
+                    "goal_id": "4.19",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4.20",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "4.20.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4.18"
+                    ],
+                    "goal_id": "4.20.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.20.2",
+                    "method_name": "apply_backward_step",
+                    "param_y": "e",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "fact_ids": [
+                        "4.16"
+                    ],
+                    "goal_id": "4.20.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.20.2"
+                    ],
+                    "goal_id": "4.20.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.19"
+                    ],
+                    "goal_id": "4.20.6",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.20.6",
+                    "method_name": "apply_backward_step",
+                    "param_y": "e",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "fact_ids": [
+                        "4.20.2"
+                    ],
+                    "goal_id": "4.20.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "real_open_halfspace_gt",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -355,39 +981,44 @@
                     "th": "x ∈ {x1. a < x1} ⊢ a < x"
                 },
                 {
-                    "args": "(0::real) < 1",
+                    "args": "0 < abs (a - x)",
                     "id": "0.3",
-                    "prevs": [],
+                    "prevs": [
+                        "0.2"
+                    ],
                     "rule": "z3",
-                    "th": "⊢ (0::real) < 1"
+                    "th": "x ∈ {x1. a < x1} ⊢ 0 < abs (a - x)"
                 },
                 {
                     "args": "",
                     "id": "0.4",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "x ∈ {x1. a < x1} ⊢ ∀x1. abs (x1 - x) < 1 ⟶ a < x1"
+                    "th": "x ∈ {x1. a < x1} ⊢ ∀x1. abs (x1 - x) < abs (a - x) ⟶ a < x1"
                 },
                 {
-                    "args": "b, real",
+                    "args": "x1, real",
                     "id": "0.4.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ _VAR b"
+                    "th": "⊢ _VAR x1"
                 },
                 {
-                    "args": "abs (b - x) < 1",
+                    "args": "abs (x1 - x) < abs (a - x)",
                     "id": "0.4.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "abs (b - x) < 1 ⊢ abs (b - x) < 1"
+                    "th": "abs (x1 - x) < abs (a - x) ⊢ abs (x1 - x) < abs (a - x)"
                 },
                 {
-                    "args": "",
+                    "args": "a < x1",
                     "id": "0.4.2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "x ∈ {x1. a < x1}, abs (b - x) < 1 ⊢ a < b"
+                    "prevs": [
+                        "0.2",
+                        "0.4.1"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ {x1. a < x1}, abs (x1 - x) < abs (a - x) ⊢ a < x1"
                 },
                 {
                     "args": "",
@@ -398,7 +1029,7 @@
                         "0.4.2"
                     ],
                     "rule": "intros",
-                    "th": "x ∈ {x1. a < x1} ⊢ ∀x1. abs (x1 - x) < 1 ⟶ a < x1"
+                    "th": "x ∈ {x1. a < x1} ⊢ ∀x1. abs (x1 - x) < abs (a - x) ⟶ a < x1"
                 },
                 {
                     "args": "conjI",
@@ -408,10 +1039,10 @@
                         "0.4"
                     ],
                     "rule": "apply_theorem",
-                    "th": "x ∈ {x1. a < x1} ⊢ (0::real) < 1 ∧ (∀x1. abs (x1 - x) < 1 ⟶ a < x1)"
+                    "th": "x ∈ {x1. a < x1} ⊢ 0 < abs (a - x) ∧ (∀x1. abs (x1 - x) < abs (a - x) ⟶ a < x1)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λe. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ a < x1), a: (1::real)}",
+                    "args": "exI, {a: real}, {P: λe. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ a < x1), a: abs (a - x)}",
                     "id": "0.6",
                     "prevs": [
                         "0.5"
@@ -489,7 +1120,7 @@
                 {
                     "goal_id": "0.3",
                     "method_name": "inst_exists_goal",
-                    "s": "(1::real)"
+                    "s": "abs (a - x)"
                 },
                 {
                     "goal_id": "0.3",
@@ -497,23 +1128,358 @@
                     "theorem": "conjI"
                 },
                 {
+                    "fact_ids": [
+                        "0.2"
+                    ],
                     "goal_id": "0.3",
                     "method_name": "z3"
                 },
                 {
                     "goal_id": "0.4",
                     "method_name": "introduction",
-                    "names": "b"
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2",
+                        "0.4.1"
+                    ],
+                    "goal_id": "0.4.2",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "a": "real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_open_halfspace_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ {x1. x1 < a} ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ {x2. x2 < a}))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ {x1. x1 < a}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ {x1. x1 < a} ⊢ x ∈ {x1. x1 < a}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ {x1. x1 < a} ⊢ x < a"
+                },
+                {
+                    "args": "0 < abs (a - x)",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ {x1. x1 < a} ⊢ 0 < abs (a - x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ {x1. x1 < a} ⊢ ∀x1. abs (x1 - x) < abs (a - x) ⟶ x1 ∈ {x2. x2 < a}"
+                },
+                {
+                    "args": "x1, real",
+                    "id": "0.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "abs (x1 - x) < abs (a - x)",
+                    "id": "0.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs (x1 - x) < abs (a - x) ⊢ abs (x1 - x) < abs (a - x)"
+                },
+                {
+                    "args": "x1 < a",
+                    "id": "0.4.2",
+                    "prevs": [
+                        "0.4.1",
+                        "0.2"
+                    ],
+                    "rule": "z3",
+                    "th": "abs (x1 - x) < abs (a - x), x ∈ {x1. x1 < a} ⊢ x1 < a"
+                },
+                {
+                    "args": "member_collect, x1 ∈ {x2. x2 < a}",
+                    "id": "0.4.3",
+                    "prevs": [
+                        "0.4.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ {x1. x1 < a}, abs (x1 - x) < abs (a - x) ⊢ x1 ∈ {x2. x2 < a}"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.4",
+                    "prevs": [
+                        "0.4.0",
+                        "0.4.1",
+                        "0.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ {x1. x1 < a} ⊢ ∀x1. abs (x1 - x) < abs (a - x) ⟶ x1 ∈ {x2. x2 < a}"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.3",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ {x1. x1 < a} ⊢ 0 < abs (a - x) ∧ (∀x1. abs (x1 - x) < abs (a - x) ⟶ x1 ∈ {x2. x2 < a})"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λe. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ {x2. x2 < a}), a: abs (a - x)}",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ {x1. x1 < a} ⊢ ∃a1. 0 < a1 ∧ (∀x1. abs (x1 - x) < a1 ⟶ x1 ∈ {x2. x2 < a})"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ {x1. x1 < a} ⟶ (∃e. 0 < e ∧ (∀x1. abs (x1 - x) < e ⟶ x1 ∈ {x2. x2 < a}))"
+                },
+                {
+                    "args": "real_open_def, real_open ({x. x < a})",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_open ({x. x < a})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_open ({x. x < a})"
+                }
+            ],
+            "prop": "real_open ({x. x < a})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_open_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "abs (a - x)"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "0.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.1",
+                        "0.2"
+                    ],
+                    "goal_id": "0.4.2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_open_real_interval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "{p. a < p ∧ p < b} = {p. a < p} ∩ {p. p < b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {p. a < p ∧ p < b} = {p. a < p} ∩ {p. p < b}"
+                },
+                {
+                    "args": "real_open_halfspace_gt, {}, {a: a}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_open ({x. a < x})"
+                },
+                {
+                    "args": "real_open_halfspace_lt, {}, {a: b}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_open ({x. x < b})"
+                },
+                {
+                    "args": "real_open_inter",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_open ({p. a < p} ∩ {p. p < b})"
+                },
+                {
+                    "args": "real_open ({p. a < p ∧ p < b})",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ real_open ({p. a < p ∧ p < b})"
+                },
+                {
+                    "args": "real_open_interval_def, real_open (real_open_interval a b)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_open (real_open_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_open (real_open_interval a b)"
+                }
+            ],
+            "prop": "real_open (real_open_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_open_interval_def"
+                },
+                {
+                    "goal": "{p. a < p ∧ p < b} = inter {p. a < p}  {p. p < b} ",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_open_inter"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_open_halfspace_gt"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_open_halfspace_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
         }
     ],
     "description": "Formalization of general topological and metric spaces. Refer to metric.ml from HOL Light.",
     "imports": [
+        "misc",
         "iterate"
     ],
     "name": "metric"
