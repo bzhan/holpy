@@ -409,6 +409,165 @@
             "type": "real ⇒ real ⇒ real set"
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_interval_open_subset_closed",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ real_open_interval a b ⟶ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_open_interval a b",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ real_open_interval a b"
+                },
+                {
+                    "args": "real_open_interval_def",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ {p. a < p ∧ p < b}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_open_interval a b ⊢ a < x ∧ x < b"
+                },
+                {
+                    "args": "a ≤ x ∧ x ≤ b",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ real_open_interval a b ⊢ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "member_collect, x ∈ {p. a ≤ p ∧ p ≤ b}",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval a b",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ real_open_interval a b ⟶ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_open_interval a b ⊆ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_open_interval a b ⊆ real_closed_interval a b"
+                }
+            ],
+            "prop": "subset (real_open_interval a b) (real_closed_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_open_interval_def"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
             "name": "from",
             "prop": "from n = {m. n ≤ m}",
             "ty": "def",
