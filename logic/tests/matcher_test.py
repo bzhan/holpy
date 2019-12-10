@@ -145,10 +145,11 @@ class MatcherTest(unittest.TestCase):
         """No reduction when function is an operator."""
         test_data = [
             ("%x. ?f x - ?g x", "%x. f x - (f b - f a) / (b - a) * x", {"f": "f", "g": "%x. (f b - f a) / (b - a) * x"}),
+            ("%x. ?f x", "%x. comp_fun g f x", {"f": "comp_fun g f"})
         ]
 
         svars = {'f': 'real => real', 'g': 'real => real'}
-        vars = {'f': 'real => real', 'a': 'real', 'b': 'real'}
+        vars = {'f': 'real => real', 'g': 'real => real', 'a': 'real', 'b': 'real'}
         for pat, t, inst in test_data:
             self.run_test('real', pat, t, vars=vars, svars=svars, inst=inst)
 

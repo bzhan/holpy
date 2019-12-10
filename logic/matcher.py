@@ -138,11 +138,16 @@ def first_order_match_incr(pat, t, instsp):
                     inst_t = t
                     for v in reversed(pat.args):
                         if v in bd_vars:
-                            if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun) and \
-                               operator.get_info_for_fun(inst_t.head) is None:
-                                # inst_t is of the form f x, where x is the argument.
-                                # In this case, directly reduce to f.
-                                inst_t = inst_t.fun
+                            if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
+                                op_data = operator.get_info_for_fun(inst_t.head)
+                                if op_data is None:
+                                    # inst_t is of the form f x, where x is the argument.
+                                    # In this case, directly reduce to f.
+                                    inst_t = inst_t.fun
+                                elif op_data.arity == operator.BINARY and len(inst_t.args) == 2:
+                                    inst_t = Term.mk_abs(v, inst_t)
+                                else:
+                                    inst_t = inst_t.fun
                             else:
                                 # Otherwise, perform the abstraction.
                                 inst_t = Term.mk_abs(v, inst_t)
