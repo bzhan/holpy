@@ -4740,11 +4740,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_continuous_atreal",
             "prop": "real_continuous f (atreal x) ⟷ tendsto_real f (f x) (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "x": "real"
             }
         },
