@@ -10536,6 +10536,101 @@
         {
             "attributes": [
                 "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_down2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < d1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d1 ⊢ 0 < d1"
+                },
+                {
+                    "args": "0 < d2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d2 ⊢ 0 < d2"
+                },
+                {
+                    "args": "real_down, {}, {d: d2}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d2 ⊢ ∃e. 0 < e ∧ e < d2"
+                },
+                {
+                    "args": "real_down, {}, {d: d1}",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d1 ⊢ ∃e. 0 < e ∧ e < d1"
+                },
+                {
+                    "args": "∃e. 0 < e ∧ e < d1 ∧ e < d2",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < d2, 0 < d1 ⊢ ∃e. 0 < e ∧ e < d1 ∧ e < d2"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < d1 ⟶ 0 < d2 ⟶ (∃e. 0 < e ∧ e < d1 ∧ e < d2)"
+                }
+            ],
+            "prop": "0 < d1 --> 0 < d2 --> ?e. 0 < e & e < d1 & e < d2",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_down"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_down"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "d1": "real",
+                "d2": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
                 "hint_backward1",
                 "hint_forward"
             ],

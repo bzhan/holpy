@@ -2354,6 +2354,178 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "not_imp",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(A ⟶ B) ⟶ A ∧ ¬B"
+                },
+                {
+                    "args": "¬(A ⟶ B)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(A ⟶ B) ⊢ ¬(A ⟶ B)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(A ⟶ B) ⊢ ¬(A ∧ ¬B) ⟶ ¬¬(A ⟶ B)"
+                },
+                {
+                    "args": "¬(A ∧ ¬B)",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(A ∧ ¬B) ⊢ ¬(A ∧ ¬B)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(A ⟶ B), ¬(A ∧ ¬B) ⊢ A ⟶ B"
+                },
+                {
+                    "args": "A",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(A ⟶ B), ¬(A ∧ ¬B), A ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(A ⟶ B), ¬(A ∧ ¬B) ⊢ A ⟶ B"
+                },
+                {
+                    "args": "double_neg, ¬¬(A ⟶ B)",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(A ⟶ B), ¬(A ∧ ¬B) ⊢ ¬¬(A ⟶ B)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(A ⟶ B) ⊢ ¬(A ∧ ¬B) ⟶ ¬¬(A ⟶ B)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(A ⟶ B) ⊢ A ∧ ¬B"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(A ⟶ B) ⟶ A ∧ ¬B"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ A ∧ ¬B ⟶ ¬(A ⟶ B)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(A ⟶ B) ⟷ A ∧ ¬B"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(A ⟶ B) ⟷ A ∧ ¬B"
+                }
+            ],
+            "prop": "~(A --> B) <--> A & ~B",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
             "name": "eq_true",
             "num_gaps": 0,
             "proof": [

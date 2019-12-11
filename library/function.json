@@ -1073,52 +1073,28 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "comp_fun_def, (λx. (f ∘ g) (h x)) = (λx. f ((g ∘ h) x))",
                     "id": "0",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ ∀x. ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x"
-                },
-                {
-                    "args": "x, 'a",
-                    "id": "0.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "comp_fun_eval, (f ∘ g) (h x) = f (g (h x))",
-                    "id": "0.1",
-                    "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (f ∘ g) (h x) = f (g (h x))"
+                    "th": "⊢ (λx. (f ∘ g) (h x)) = (λx. f ((g ∘ h) x))"
                 },
                 {
-                    "args": "comp_fun_eval, ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x",
-                    "id": "0.2",
-                    "prevs": [
-                        "0.1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x"
-                },
-                {
-                    "args": "",
-                    "id": "0.3",
-                    "prevs": [
-                        "0.0",
-                        "0.2"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ ∀x. ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x"
-                },
-                {
-                    "args": "extension",
+                    "args": "comp_fun_def, (f ∘ g) ∘ h = f ∘ g ∘ h",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (f ∘ g) ∘ h = f ∘ g ∘ h"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ (f ∘ g) ∘ h = f ∘ g ∘ h"
                 }
             ],
@@ -1126,23 +1102,15 @@
             "steps": [
                 {
                     "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "extension"
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
                 },
                 {
                     "goal_id": "0",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "0.1",
                     "method_name": "rewrite_goal",
-                    "theorem": "comp_fun_eval"
-                },
-                {
-                    "goal_id": "0.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "comp_fun_eval"
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
                 }
             ],
             "ty": "thm",

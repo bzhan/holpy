@@ -1,24 +1,6 @@
 {
     "content": [
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_closed_interval",
-            "prop": "real_closed_interval a b = {p. a ≤ p ∧ p ≤ b}",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ real set"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_open_interval",
-            "prop": "real_open_interval a b = {p. a < p ∧ p < b}",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ real set"
-        },
-        {
             "name": "has_integral",
             "ty": "def.ax",
             "type": "(real ⇒ real) ⇒ real ⇒ real set ⇒ bool"
@@ -1918,7 +1900,8 @@
     ],
     "description": "Basic results about integral.",
     "imports": [
-        "real"
+        "real",
+        "metric"
     ],
     "name": "integral"
 }

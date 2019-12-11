@@ -1,0 +1,582 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "is_realinterval",
+            "prop": "is_realinterval s ⟷ (∀a. ∀b. ∀c. a ∈ s ⟶ b ∈ s ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s)",
+            "ty": "def",
+            "type": "real set ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a ∈ ∅ ⟶ b ∈ ∅ ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ ∅"
+                },
+                {
+                    "args": "a, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "c, real",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR c"
+                },
+                {
+                    "args": "a ∈ ∅",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ ∅ ⊢ a ∈ ∅"
+                },
+                {
+                    "args": "b ∈ ∅",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ∈ ∅ ⊢ b ∈ ∅"
+                },
+                {
+                    "args": "a ≤ c",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ c ⊢ a ≤ c"
+                },
+                {
+                    "args": "c ≤ b",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c ≤ b ⊢ c ≤ b"
+                },
+                {
+                    "args": "member_empty, c ∈ ∅",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "a ∈ ∅ ⊢ c ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.3",
+                        "0.4",
+                        "0.5",
+                        "0.6",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a ∈ ∅ ⟶ b ∈ ∅ ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ ∅"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval ∅",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval ∅"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ is_realinterval ∅"
+                }
+            ],
+            "prop": "is_realinterval {}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "a,b,c"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.7",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "is_realinterval_union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "is_realinterval s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "is_realinterval s ⊢ is_realinterval s"
+                },
+                {
+                    "args": "is_realinterval t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "is_realinterval t ⊢ is_realinterval t"
+                },
+                {
+                    "args": "¬(s ∩ t = ∅)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(s ∩ t = ∅) ⊢ ¬(s ∩ t = ∅)"
+                },
+                {
+                    "args": "is_realinterval_def",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "is_realinterval s ⊢ ∀a. ∀b. ∀c. a ∈ s ⟶ b ∈ s ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s"
+                },
+                {
+                    "args": "is_realinterval_def",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "is_realinterval t ⊢ ∀a. ∀b. ∀c. a ∈ t ⟶ b ∈ t ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ t"
+                },
+                {
+                    "args": "∀a. ∀b. ∀c. a ∈ s ∪ t ⟶ b ∈ s ∪ t ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s ∪ t",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "is_realinterval s, is_realinterval t, ¬(s ∩ t = ∅) ⊢ ∀a. ∀b. ∀c. a ∈ s ∪ t ⟶ b ∈ s ∪ t ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s ∪ t"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval (s ∪ t)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "is_realinterval s, is_realinterval t, ¬(s ∩ t = ∅) ⊢ is_realinterval (s ∪ t)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ is_realinterval s ⟶ is_realinterval t ⟶ ¬(s ∩ t = ∅) ⟶ is_realinterval (s ∪ t)"
+                }
+            ],
+            "prop": "is_realinterval s --> is_realinterval t --> ~(inter s t = {}) --> is_realinterval (union s t)",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4",
+                        "2"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_univ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a ∈ univ ⟶ b ∈ univ ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ univ"
+                },
+                {
+                    "args": "a, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "c, real",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR c"
+                },
+                {
+                    "args": "a ∈ univ",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ univ ⊢ a ∈ univ"
+                },
+                {
+                    "args": "b ∈ univ",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ∈ univ ⊢ b ∈ univ"
+                },
+                {
+                    "args": "a ≤ c",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ c ⊢ a ≤ c"
+                },
+                {
+                    "args": "c ≤ b",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c ≤ b ⊢ c ≤ b"
+                },
+                {
+                    "args": "member_univ, {a: real}, {x: c}",
+                    "id": "0.7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ c ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.3",
+                        "0.4",
+                        "0.5",
+                        "0.6",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a ∈ univ ⟶ b ∈ univ ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ univ"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval univ",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval univ"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ is_realinterval univ"
+                }
+            ],
+            "prop": "is_realinterval univ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "is_realinterval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "a,b,c"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_closed_interval",
+            "prop": "real_closed_interval a b = {p. a ≤ p ∧ p ≤ b}",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_open_interval",
+            "prop": "real_open_interval a b = {p. a < p ∧ p < b}",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real set"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_interval_open_subset_closed",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ real_open_interval a b ⟶ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_open_interval a b",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ real_open_interval a b"
+                },
+                {
+                    "args": "real_open_interval_def",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ {p. a < p ∧ p < b}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_open_interval a b ⊢ a < x ∧ x < b"
+                },
+                {
+                    "args": "a ≤ x ∧ x ≤ b",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ real_open_interval a b ⊢ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "member_collect, x ∈ {p. a ≤ p ∧ p ≤ b}",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval a b",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_open_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ real_open_interval a b ⟶ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_open_interval a b ⊆ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_open_interval a b ⊆ real_closed_interval a b"
+                }
+            ],
+            "prop": "subset (real_open_interval a b) (real_closed_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_open_interval_def"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "from",
+            "prop": "from n = {m. n ≤ m}",
+            "ty": "def",
+            "type": "nat ⇒ nat set"
+        }
+    ],
+    "description": "Various convenient background stuff. Refer to misc.ml from HOL Light.",
+    "imports": [
+        "floor"
+    ],
+    "name": "misc"
+}
