@@ -837,6 +837,7 @@ def integral_separate_integrals():
     for i in integrals:
         n.append({
             "text": str(i),
+            "body": str(i.body),
             "latex": integral.latex.convert_expr(i)
         })
     return json.dumps(n)

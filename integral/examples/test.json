@@ -574,6 +574,68 @@
             ],
             "name": "Exercise 16",
             "problem": "INT x:[0, sqrt(2)]. sqrt(2 - x^2)"
+        },
+        {
+            "_problem_latex": "\\int_{-\\sqrt{2}}^{\\sqrt{2}} \\sqrt{(8 - 2 * y ^ 2)} \\,\\mathrm{dy}",
+            "calc": [
+                {
+                    "latex": "\\int_{-\\sqrt{2}}^{\\sqrt{2}} \\sqrt{(8 - 2 * y ^ 2)} \\,\\mathrm{dy}",
+                    "reason": "Initial",
+                    "text": "INT y:[-sqrt(2),sqrt(2)]. sqrt(8 - 2 * y ^ 2)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(2 \\sin{t}\\) for \\(y\\).",
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} 2 \\sqrt{(8 - 8 * \\sin^{2}t)} * \\cos{t} \\,\\mathrm{dt}",
+                    "text": "INT t:[-pi / 4,pi / 4]. 2 * sqrt(8 - 8 * sin(t) ^ 2) * cos(t)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(8 - 8 * \\sin^{2}t = 8 * \\cos^{2}t\\); Method : powers of sin to powers of cos.",
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} 2 \\sqrt{(8 * \\cos^{2}t)} * \\cos{t} \\,\\mathrm{dt}",
+                    "text": "INT t:[-pi / 4,pi / 4]. 2 * sqrt(8 * cos(t) ^ 2) * cos(t)"
+                },
+                {
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} 2 * \\sqrt{8} * \\cos^{2}t \\,\\mathrm{dt}",
+                    "reason": "Simplification",
+                    "text": "INT t:[-pi / 4,pi / 4]. 2 * 8 ^ (1/2) * cos(t) ^ 2"
+                },
+                {
+                    "latex": "2 * \\sqrt{8} * (\\int_{-\\pi/4}^{\\pi/4} \\cos^{2}t \\,\\mathrm{dt})",
+                    "reason": "Linearity",
+                    "text": "2 * 8 ^ (1/2) * (INT t:[-pi / 4,pi / 4]. cos(t) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\cos^{2}t = \\frac{\\cos{(2 t)}}{2} + \\frac{1}{2}\\); Method : reduce cos power (increase angle).",
+                    "latex": "2 * \\sqrt{8} * (\\int_{-\\pi/4}^{\\pi/4} \\frac{\\cos{(2 t)}}{2} + \\frac{1}{2} \\,\\mathrm{dt})",
+                    "text": "2 * 8 ^ (1/2) * (INT t:[-pi / 4,pi / 4]. cos(2 * t) / 2 + 1/2)"
+                },
+                {
+                    "latex": "2 * \\sqrt{8} * (\\frac{1}{2} * (\\int_{-\\pi/4}^{\\pi/4} 1 \\,\\mathrm{dt}) + \\frac{1}{2} * (\\int_{-\\pi/4}^{\\pi/4} \\cos{(2 t)} \\,\\mathrm{dt}))",
+                    "reason": "Linearity",
+                    "text": "2 * 8 ^ (1/2) * (1/2 * (INT t:[-pi / 4,pi / 4]. 1) + 1/2 * (INT t:[-pi / 4,pi / 4]. cos(2 * t)))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 t\\).",
+                    "latex": "2 * \\sqrt{8} * (\\frac{1}{2} * (\\int_{-\\pi/4}^{\\pi/4} 1 \\,\\mathrm{dt}) + \\frac{1}{2} * (\\int_{-1/2 \\pi}^{1/2 \\pi} \\frac{\\cos{u}}{2} \\,\\mathrm{du}))",
+                    "text": "2 * 8 ^ (1/2) * (1/2 * (INT t:[-pi / 4,pi / 4]. 1) + 1/2 * (INT u:[-1/2 * pi,1/2 * pi]. cos(u) / 2))"
+                },
+                {
+                    "latex": "2 * \\sqrt{8} * (\\frac{1}{2} * (\\int_{-\\pi/4}^{\\pi/4} 1 \\,\\mathrm{dt}) + \\frac{1}{2} * \\frac{1}{2} * (\\int_{-1/2 \\pi}^{1/2 \\pi} \\cos{u} \\,\\mathrm{du}))",
+                    "reason": "Linearity",
+                    "text": "2 * 8 ^ (1/2) * (1/2 * (INT t:[-pi / 4,pi / 4]. 1) + 1/2 * (1/2 * (INT u:[-1/2 * pi,1/2 * pi]. cos(u))))"
+                },
+                {
+                    "latex": "2 * \\sqrt{8} * (\\frac{1}{2} * (\\left. t \\right\\vert_{t=-\\pi/4}^{\\pi/4}) + \\frac{1}{2} * \\frac{1}{2} * (\\left. \\sin{u} \\right\\vert_{u=-1/2 \\pi}^{1/2 \\pi}))",
+                    "reason": "Common integrals",
+                    "text": "2 * 8 ^ (1/2) * (1/2 * ([t]_t=-pi / 4,pi / 4) + 1/2 * (1/2 * ([sin(u)]_u=-1/2 * pi,1/2 * pi)))"
+                },
+                {
+                    "latex": "2 * \\sqrt{2} + \\sqrt{2} * \\pi",
+                    "reason": "Simplification",
+                    "text": "2 * 2 ^ (1/2) + 2 ^ (1/2) * pi"
+                }
+            ],
+            "name": "Exercise 17",
+            "problem": "INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)"
         }
     ]
 }
