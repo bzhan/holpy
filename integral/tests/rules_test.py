@@ -48,11 +48,8 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x", "[x ^ 2 / 2]_x=a,b"),
             ("INT x:[a,b]. x ^ 2", "[x ^ 3 / 3]_x=a,b"),
             ("INT x:[a,b]. x ^ 3", "[x ^ 4 / 4]_x=a,b"),
-            ("INT x:[a,b]. (x + 2) ^ 3", "[(x + 2) ^ 4 / 4]_x=a,b"),
             ("INT x:[a,b]. 3 / x ^ 3", "[3 * -1 / (2 * x ^ 2)]_x=a,b"),
             ("INT x:[a,b]. x ^ -1", "[log(x)]_x=a,b"),
-            ("INT x:[a,b]. (x + 1) ^ -1", "[log(x+1)]_x=a,b"),
-            ("INT x:[a,b]. (x + 2) ^ (-2)", "[(x + 2) ^ -1 / -1]_x=a,b"),
             ("INT x:[a,b]. 1 / x", "[log(x)]_x=a,b"),
             ("INT x:[a,b]. 1 / x ^ 2", "[(-1) / x]_x=a,b"),
             ("INT x:[a,b]. sin(x)", "[-cos(x)]_x=a,b"),
@@ -106,6 +103,11 @@ class RulesTest(unittest.TestCase):
         e = parse_expr("INT x:[0, pi].(1 - cos(x)^2)*sin(x)")
         e = rules.Substitution("u",parse_expr("cos(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT u:[1,-1]. u ^ 2 - 1"))
+
+    def testSubstitution4(self):
+        e = parse_expr("INT x:[1, 4]. 1/(1+sqrt(x))")
+        e = rules.Substitution("u", parse_expr("sqrt(x)")).eval(e)
+        self.assertEqual(e, parse_expr("INT u:[1, 2]. (2 * u) / (u + 1)"))
         
     def testEquation(self):
         test_data = [

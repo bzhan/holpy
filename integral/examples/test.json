@@ -102,7 +102,7 @@
             "problem": "INT x:[0,1]. exp(6*x)"
         },
         {
-            "_problem_latex": "\\int_{-1}^{2} x * \\exp{x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
@@ -220,7 +220,7 @@
             "problem": "INT x:[pi/3, pi]. sin(2*x+pi/3)"
         },
         {
-            "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} \\sqrt{x} + 1 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{4}^{9} \\sqrt{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
@@ -316,7 +316,7 @@
             "problem": "INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} \\sin{x} * \\cos^{3}x \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/2} \\sin{x} \\cos^{3}x \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{\\pi/2} \\sin{x} * \\cos^{3}x \\,\\mathrm{dx}",
@@ -636,6 +636,109 @@
             ],
             "name": "Exercise 17",
             "problem": "INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{1/\\sqrt{2}} \\frac{\\sqrt{(1 - x ^ 2)}}{x ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{1/\\sqrt{2}} \\frac{\\sqrt{(1 - x ^ 2)}}{x ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,1 / sqrt(2)]. sqrt(1 - x ^ 2) / x ^ 2"
+                },
+                {
+                    "_latex_reason": "Substitute \\(\\sin{u}\\) for \\(x\\).",
+                    "latex": "\\int_{\\pi/2}^{\\pi/4} \\frac{\\sqrt{(1 - \\sin^{2}u)} * \\cos{u}}{\\sin^{2}u} \\,\\mathrm{du}",
+                    "text": "INT u:[pi / 2,pi / 4]. sqrt(1 - sin(u) ^ 2) * cos(u) / sin(u) ^ 2"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\sqrt{(1 - \\sin^{2}u)} = \\sqrt{(\\cos^{2}u)}\\); Method : powers of sin to powers of cos.",
+                    "latex": "\\int_{\\pi/2}^{\\pi/4} \\frac{\\sqrt{(\\cos^{2}u)} * \\cos{u}}{\\sin^{2}u} \\,\\mathrm{du}",
+                    "text": "INT u:[pi / 2,pi / 4]. sqrt(cos(u) ^ 2) * cos(u) / sin(u) ^ 2"
+                },
+                {
+                    "latex": "\\int_{\\pi/2}^{\\pi/4} \\cos^{2}u * \\sin^{-2}u \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[pi / 2,pi / 4]. cos(u) ^ 2 * sin(u) ^ -2"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\cos^{2}u = 1 - \\sin^{2}u\\); Method : powers of cos to powers of sin.",
+                    "latex": "\\int_{\\pi/2}^{\\pi/4} (1 - \\sin^{2}u) * \\sin^{-2}u \\,\\mathrm{du}",
+                    "text": "INT u:[pi / 2,pi / 4]. (1 - sin(u) ^ 2) * sin(u) ^ -2"
+                },
+                {
+                    "latex": "\\int_{\\pi/2}^{\\pi/4} -1 + \\sin^{-2}u \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[pi / 2,pi / 4]. -1 + sin(u) ^ -2"
+                },
+                {
+                    "latex": "-\\int_{\\pi/2}^{\\pi/4} 1 \\,\\mathrm{du} + (\\int_{\\pi/2}^{\\pi/4} \\sin^{-2}u \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "-1 * (INT u:[pi / 2,pi / 4]. 1) + (INT u:[pi / 2,pi / 4]. sin(u) ^ -2)"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(\\sin^{-2}u = \\csc^{2}u\\); Method : negative sin-cos-tan powers to csc-sec-cot.",
+                    "latex": "-\\int_{\\pi/2}^{\\pi/4} 1 \\,\\mathrm{du} + (\\int_{\\pi/2}^{\\pi/4} \\csc^{2}u \\,\\mathrm{du})",
+                    "text": "-1 * (INT u:[pi / 2,pi / 4]. 1) + (INT u:[pi / 2,pi / 4]. csc(u) ^ 2)"
+                },
+                {
+                    "latex": "-\\left. u \\right\\vert_{u=\\pi/2}^{\\pi/4} + (\\left. -\\cot{u} \\right\\vert_{u=\\pi/2}^{\\pi/4})",
+                    "reason": "Common integrals",
+                    "text": "-1 * ([u]_u=pi / 2,pi / 4) + ([-cot(u)]_u=pi / 2,pi / 4)"
+                },
+                {
+                    "latex": "-1 + \\frac{1}{4} \\pi",
+                    "reason": "Simplification",
+                    "text": "-1 + 1/4 * pi"
+                }
+            ],
+            "name": "Exercise 18",
+            "problem": "INT x:[1, 1/sqrt(2)]. sqrt(1 - x^2) / x ^ 2"
+        },
+        {
+            "_problem_latex": "\\int_{-1}^{1} \\frac{x}{\\sqrt{(5 - 4 x)}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-1}^{1} \\frac{x}{\\sqrt{(5 - 4 x)}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[-1,1]. x / sqrt(5 - 4 * x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = -\\frac{1}{2} * \\sqrt{5 - 4 x}\\).",
+                    "latex": "(\\left. -\\frac{1}{2} x \\sqrt{5 - 4 x} \\right\\vert_{x=-1}^{1}) - (\\int_{-1}^{1} -\\frac{1}{2} * \\sqrt{5 - 4 x} \\,\\mathrm{dx})",
+                    "text": "([-1/2 * x * (5 - 4 * x) ^ (1/2)]_x=-1,1) - (INT x:[-1,1]. -1/2 * (5 - 4 * x) ^ (1/2))"
+                },
+                {
+                    "latex": "\\left. -\\frac{1}{2} x \\sqrt{5 - 4 x} \\right\\vert_{x=-1}^{1} + \\frac{1}{2} * (\\int_{-1}^{1} \\sqrt{5 - 4 x} \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "([-1/2 * x * (5 - 4 * x) ^ (1/2)]_x=-1,1) - -1/2 * (INT x:[-1,1]. (5 - 4 * x) ^ (1/2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(5 - 4 x\\).",
+                    "latex": "\\left. -\\frac{1}{2} x \\sqrt{5 - 4 x} \\right\\vert_{x=-1}^{1} + \\frac{1}{2} * (\\int_{9}^{1} \\frac{-\\sqrt{u}}{4} \\,\\mathrm{du})",
+                    "text": "([-1/2 * x * (5 - 4 * x) ^ (1/2)]_x=-1,1) - -1/2 * (INT u:[9,1]. -sqrt(u) / 4)"
+                },
+                {
+                    "latex": "\\left. -\\frac{1}{2} x \\sqrt{5 - 4 x} \\right\\vert_{x=-1}^{1} + \\frac{1}{2} * -\\frac{1}{4} * (\\int_{9}^{1} \\sqrt{u} \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "([-1/2 * x * (5 - 4 * x) ^ (1/2)]_x=-1,1) - -1/2 * (-1/4 * (INT u:[9,1]. u ^ (1/2)))"
+                },
+                {
+                    "latex": "\\left. -\\frac{1}{2} x \\sqrt{5 - 4 x} \\right\\vert_{x=-1}^{1} + \\frac{1}{2} * -\\frac{1}{4} * (\\left. \\frac{u ^ {(\\frac{3}{2})}}{\\frac{3}{2}} \\right\\vert_{u=9}^{1})",
+                    "reason": "Common integrals",
+                    "text": "([-1/2 * x * (5 - 4 * x) ^ (1/2)]_x=-1,1) - -1/2 * (-1/4 * ([u ^ (3/2) / (3/2)]_u=9,1))"
+                },
+                {
+                    "latex": "\\frac{1}{6}",
+                    "reason": "Simplification",
+                    "text": "1/6"
+                }
+            ],
+            "name": "Exercise 19",
+            "problem": "INT x:[-1, 1]. x / sqrt(5 - 4 * x)"
+        },
+        {
+            "name": "Exercise 20",
+            "problem": "INT x:[1,4]. 1/(1+sqrt(x))"
         }
     ]
 }

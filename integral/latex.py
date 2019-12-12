@@ -68,6 +68,8 @@ def convert_expr(e, mode="large"):
                     sy = "{%s}" % sy
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
+                if not x.is_constant() and not y.is_constant():
+                    return "%s %s" % (sx, sy)
                 if x.ty == expr.CONST and y.ty == expr.VAR:
                     if sx == "1":
                         return "%s" % sy
