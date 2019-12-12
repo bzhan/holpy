@@ -402,6 +402,8 @@ class apply_fact_macro(ProofTermMacro):
         if pt.prop.beta_norm() != pt.prop:
             pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
         for prev_pt in pt_prevs:
+            if prev_pt.prop != pt.assums[0]:
+                prev_pt = top_conv(beta_conv()).apply_to_pt(thy, prev_pt)
             pt = ProofTerm.implies_elim(pt, prev_pt)
         for new_var in new_vars:
             if new_var.name not in inst:
