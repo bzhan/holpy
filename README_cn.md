@@ -31,7 +31,6 @@
   * [`proofterm`](logic/proofterm.py)：证明的树状表达。用于方便地产生证明，并且可以转换成线形表达。
   * [`conv`](logic/conv.py)：变换的定义。
   * [`logic`](logic/logic.py)：关于逻辑的基本工具和宏。
-  * [`induct`](logic/induct.py)：归纳定义类型和函数。
   * [`basic`](logic/basic.py)：导入理论的工具。
 
 * [`data`](data/)：常用数据类型。

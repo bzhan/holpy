@@ -51,6 +51,8 @@ class Fact:
     def __str__(self):
         if self.pred_name == 'eqangle' and self.args[0].isupper():
             return " = ".join("∠[%s%s,%s%s]" % tuple(self.args[4*i:4*i+4]) for i in range(len(self.args) // 4))
+        elif self.pred_name == 'contri':
+            return " ≌ ".join("△%s%s%s" % tuple(self.args[3*i:3*i+3]) for i in range(len(self.args) // 3))
         else:
             return "%s(%s)" % (self.pred_name, ",".join(self.args))
 
@@ -60,6 +62,7 @@ class Fact:
     def get_subfact(self, indices):
         if self.lemma != 'combine':
             return self
+        # return self
 
         if all(i in self.left_map for i in indices):
             new_indices = list(self.left_map[i] for i in indices)
@@ -94,7 +97,7 @@ class Fact:
             return CYCL
         elif pred_name == "circle":
             return CIRC
-        elif pred_name == "simtri":
+        elif pred_name in ("simtri", "contri"):
             return TRI
         else:
             raise NotImplementedError
@@ -221,6 +224,10 @@ class Prover:
         p1, p2 = a1[0:2], a1[2:4]
         q1, q2 = a2[0:2], a2[2:4]
         return self.get_line(p1) == self.get_line(q1) and self.get_line(p2) == self.get_line(q2)
+
+    def equal_triangle(self, t1, t2) -> bool:
+        return set(t1) == set(t2)
+
 
     def get_line(self, pair: Tuple[str]) -> Line:
         """Return a line from lines containing the given pair of points, if
@@ -356,7 +363,9 @@ class Prover:
                     else:
                         t_inst[p_arg] = t_args
                 if not flag:
-                    new_insts.append((t_inst, f.get_subfact(c_nums)))
+                        new_insts.append((t_inst, f.get_subfact(c_nums)))
+
+
 
         elif arg_ty == SEG:
             # eqratio or cong case
@@ -373,7 +382,7 @@ class Prover:
                 for i in range(len(pat.args) // 2):
                     ts = []
                     for t_inst in t_insts:
-                        pat_a, pat_b = pat.args[2*i : 2*i+2]
+                        pat_a, pat_b = pat.args[2*i: 2*i+2]
                         if can_assign(pat_a, c[i][0]) and can_assign(pat_b, c[i][1]):
                             t = copy.copy(t_inst)
                             t[pat_a] = c[i][0]
@@ -389,6 +398,38 @@ class Prover:
                     subfact = f.get_subfact(c_nums)
                 for t_inst in t_insts:
                     new_insts.append((t_inst, subfact))
+
+        elif arg_ty == TRI:
+            # contri case
+            #
+            groups = make_pairs(f.args, pair_len=3)
+            comb = itertools.combinations(range(len(groups)), len(pat.args) // 3)
+            # indices: assign which char in the group to assign to pattern.
+            # E.g.
+            # indices:  0,  2,  1
+            # pat.args: A,  B,  C
+            #           ↓    ↙ ↘ 　
+            # group:    E,  F,  G
+            # matched:  {A: E, B: F, C: G}
+            #
+            indices_list = [[0, 1, 2], [0, 2, 1], [1, 2, 0]]
+            new_insts = []
+            for c_nums in comb:
+                cs = [groups[num] for num in c_nums]
+                for indices in indices_list:
+                    flag = False
+                    t_inst = copy.copy(inst)
+                    for i in range(len(cs)):
+                        for j in range(3):
+                            if pat.args[i * 3 + j] in t_inst:
+                                if cs[i][indices[j]] != t_inst[pat.args[i * 3 + j]]:
+                                    flag = True
+                            else:
+                                # print(cs[i][indices[j]])
+                                t_inst[pat.args[i * 3 + j]] = cs[i][indices[j]]
+                    # print(t_inst)
+                    if not flag:
+                        new_insts.append((t_inst, f.get_subfact(c_nums)))
 
         elif arg_ty == PonL:
             # para, perp, or eqangle, matching points
@@ -410,7 +451,7 @@ class Prover:
                     ts = []
                     for t_inst in t_insts:
                         l = self.get_line(cs[i])
-                        pat_a, pat_b = pat.args[i*2 : i*2+2]
+                        pat_a, pat_b = pat.args[i*2: i*2+2]
 
                         if pat_a in t_inst:
                             if t_inst[pat_a] in l.args:
@@ -454,9 +495,6 @@ class Prover:
             c_process(pat.args[1:], f.args[1:], circle.args, flag)
 
         # TODO: Support more types.
-        elif arg_ty == TRI:
-            raise NotImplementedError
-
         else:
             raise NotImplementedError
 
@@ -495,15 +533,29 @@ class Prover:
                     new_insts.append((i, subfacts + [subfact]))
             insts = new_insts
 
+        # Rule D40 requires more points in conclusion than in assumption. Add points from lines as supplement.
+        if rule_name == "D40" and insts:
+            prev_insts = copy.copy(insts)
+            insts = []
+            if any(i not in prev_insts[0][0].keys() for i in rule.concl.args):
+                for inst, subfacts in prev_insts:
+                    not_match = set(rule.concl.args) - set(inst.keys())
+                    for line in self.lines:
+                        extended_t_inst = copy.copy(inst)
+                        for i, ch in enumerate(not_match):
+                            extended_t_inst[ch] = (list(line.args)[i], list(line.args)[i+1])
+                        insts.append((extended_t_inst, subfacts))
+
         for inst, subfacts in insts:  # An inst represents one matching result of match_expr
             if rule.concl.args[0].islower():
                 concl_args = []  # type: List[str]
+
                 for i in rule.concl.args:
                     concl_args.extend((inst[i][0], inst[i][1]))
             else:
                 concl_args = [inst[i] for i in rule.concl.args]
-
             fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
+            # print(fact, fact.cond)
 
             # Check if fact is trivial
             if self.check_trivial(fact):
@@ -521,7 +573,7 @@ class Prover:
             for target in self.hyps:
                 if not target.shadowed and self.check_imply(fact, target):
                     target.shadowed = True
-                
+
                 if not target.shadowed:
                     new_fact = self.combine_facts(fact, target)
                     if new_fact:
@@ -588,7 +640,7 @@ class Prover:
             for fact in self.hyps:
                 if self.check_imply(fact, self.concl):
                     return fact
-
+        print("Last updated hyps: ", self.hyps)
         assert False, "Fixpoint reached without proving goal."
         return None
 
@@ -713,6 +765,9 @@ class Prover:
             else:
                 return None
 
+        elif fact.pred_name == 'contri':
+            return None
+
         else:
             raise NotImplementedError
 
@@ -782,6 +837,12 @@ class Prover:
             f_angles = make_pairs(fact.args, pair_len=4)
             g_angles = make_pairs(goal.args, pair_len=4)
             return all(any(self.equal_angle(f, g) for f in f_angles) for g in g_angles)
+
+        elif fact.pred_name == "contri":
+            # Check whether both triangles in goal are in fact.
+            f_tris = make_pairs(fact.args, pair_len=3)
+            g_tris = make_pairs(goal.args, pair_len=3)
+            return all(any(self.equal_triangle(f, g) for f in f_tris) for g in g_tris)
 
         else:
             raise NotImplementedError

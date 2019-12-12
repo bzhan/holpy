@@ -15,10 +15,10 @@
                 "hint_rewrite"
             ],
             "name": "eventually_sequentially",
-            "prop": "eventually p sequentially <--> ?N. !n. N<=n -->p n",
+            "prop": "eventually p sequentially ⟷ (∃N. ∀n. N ≤ n ⟶ p n)",
             "ty": "thm",
             "vars": {
-                "p": "nat => bool"
+                "p": "nat ⇒ bool"
             }
         },
         {
@@ -128,7 +128,7 @@
                     "th": "⊢ real_open ∅"
                 }
             ],
-            "prop": "real_open {}",
+            "prop": "real_open ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -708,7 +708,7 @@
                     "th": "⊢ real_open s ⟶ real_open t ⟶ real_open (s ∩ t)"
                 }
             ],
-            "prop": "real_open s --> real_open t--> real_open (inter s t)",
+            "prop": "real_open s ⟶ real_open t ⟶ real_open (s ∩ t)",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1089,7 +1089,7 @@
                     "th": "⊢ real_open ({x. a < x})"
                 }
             ],
-            "prop": "real_open {x. a < x}",
+            "prop": "real_open ({x. a < x})",
             "steps": [
                 {
                     "goal_id": "0",

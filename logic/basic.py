@@ -11,12 +11,12 @@ from kernel.theory import Theory, TheoryException
 from kernel.thm import Thm
 from kernel import extension
 from logic.context import Context
-from logic import induct
 from logic import logic  # Load all defined macros
 from data import expr
 from syntax import parser
 from syntax import operator
 from prover import z3wrapper
+from server import items
 from server import method  # Load all defined methods
 
 
@@ -137,114 +137,12 @@ def get_import_order(filenames, username="master"):
 
     return depend_list
 
-
-def parse_item(thy, data):
-    """Parse the string elements in the item, replacing it by
-    objects of the appropriate type (HOLType, Term, etc).
-    
-    """
-    data = deepcopy(data)  # Avoid modifying input
-
-    if data['ty'] == 'def.ax':
-        data['type'] = parser.parse_type(thy, data['type'])
-
-    elif data['ty'] == 'def':
-        data['type'] = parser.parse_type(thy, data['type'])
-        ctxt = Context(thy, defs={data['name']: data['type']})
-        data['prop'] = parser.parse_term(ctxt, data['prop'])
-
-        # Check validity of definition.
-        assert data['prop'].is_equals(), "parse_item on %s: definition is not an equality" % data['name']
-        f, args = data['prop'].lhs.strip_comb()
-        lhs_vars = set(v.name for v in args)
-        rhs_vars = set(v.name for v in term.get_vars(data['prop'].rhs))
-        assert rhs_vars.issubset(lhs_vars), \
-            "parse_item on %s: extra variable %s on right side of definition" % (
-                data['name'], ", ".join(v for v in rhs_vars - lhs_vars))
-
-    elif data['ty'] in ('thm', 'thm.ax'):
-        ctxt = Context(thy, vars=data['vars'])
-        for nm in data['vars']:
-            data['vars'][nm] = parser.parse_type(thy, data['vars'][nm])
-        data['prop'] = parser.parse_term(ctxt, data['prop'])
-        prop_vars = set(v.name for v in term.get_vars(data['prop']))
-        assert prop_vars.issubset(set(data['vars'].keys())), \
-            "parse_item on %s: extra variables in prop: %s" % (
-                data['name'], ", ".join(v for v in prop_vars - set(data['vars'].keys())))
-
-    elif data['ty'] == 'type.ind':
-        for constr in data['constrs']:
-            constr['type'] = parser.parse_type(thy, constr['type'])
-
-    elif data['ty'] in ('def.ind', 'def.pred'):
-        data['type'] = parser.parse_type(thy, data['type'])
-        for rule in data['rules']:
-            ctxt = Context(thy, defs={data['name']: data['type']})
-            rule['prop'] = parser.parse_term(ctxt, rule['prop'])
-
-    else:
-        pass
-
-    return data
-
-def get_extension(thy, data):
-    """Given a parsed item, return the resulting extension."""
-
-    exts = []
-
-    if data['ty'] == 'type.ax':
-        exts.append(extension.Type(data['name'], len(data['args'])))
-
-    elif data['ty'] == 'def.ax':
-        if 'overloaded' in data:
-            exts.append(extension.Constant(data['name'], data['type']))
-            exts.append(extension.Overload(data['name']))
-        else:
-            cname = thy.get_overload_const_name(data['name'], data['type'])
-            exts.append(extension.Constant(data['name'], data['type'], ref_name=cname))
-
-    elif data['ty'] == 'def':
-        cname = thy.get_overload_const_name(data['name'], data['type'])
-        exts.append(extension.Constant(data['name'], data['type'], ref_name=cname))
-        exts.append(extension.Theorem(cname + "_def", Thm([], data['prop'])))
-        if 'attributes' in data:
-            for attr in data['attributes']:
-                exts.append(extension.Attribute(cname + "_def", attr))
-
-    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        exts.append(extension.Theorem(data['name'], Thm([], data['prop'])))
-        if 'attributes' in data:
-            for attr in data['attributes']:
-                exts.append(extension.Attribute(data['name'], attr))
-
-    elif data['ty'] == 'type.ind':
-        constrs = []
-        for constr in data['constrs']:
-            constrs.append((constr['name'], constr['type'], constr['args']))
-        exts = induct.add_induct_type(thy, data['name'], data['args'], constrs)
-
-    elif data['ty'] == 'def.ind':
-        rules = []
-        for rule in data['rules']:
-            rules.append(rule['prop'])
-        exts = induct.add_induct_def(thy, data['name'], data['type'], rules)
-
-    elif data['ty'] == 'def.pred':
-        rules = []
-        for rule in data['rules']:
-            rules.append((rule['name'], rule['prop']))
-        exts = induct.add_induct_predicate(thy, data['name'], data['type'], rules)
-
-    elif data['ty'] == 'macro':
-        exts.append(extension.Macro(data['name']))
-
-    elif data['ty'] == 'method':
-        exts.append(extension.Method(data['name']))
-
-    return exts
-
 def load_theory_cache(filename, username="master"):
-    """Load the content of the given theory into cache."""
+    """Load the content of the given theory into cache.
+    
+    Return the theory cache as a dictionary.
+
+    """
     if username not in theory_cache:
         load_metadata(username)
 
@@ -252,6 +150,7 @@ def load_theory_cache(filename, username="master"):
     timestamp = os.path.getmtime(user_file(filename, username))
 
     if 'timestamp' in cache and timestamp == cache['timestamp']:
+        # No need to update cache
         return cache
 
     # Load all imported theories
@@ -260,27 +159,25 @@ def load_theory_cache(filename, username="master"):
     for prev_name in depend_list:
         prev_cache = load_theory_cache(prev_name, username)
         for item in prev_cache['content']:
-            thy.unchecked_extend(item['ext'])
+            if item.error is None:
+                thy.unchecked_extend(item.get_extension())
 
     # Use this theory to parse the content of current theory
     cache['timestamp'] = timestamp
     data = load_json_data(filename, username)
     cache['content'] = []
     for index, item in enumerate(data['content']):
-        try:
-            item = parse_item(thy, item)
-            exts = get_extension(thy, item)
-            item['ext'] = exts
+        item = items.parse_item(thy, item)
+        cache['content'].append(item)
+        if item.error is None:
+            exts = item.get_extension()
             thy.unchecked_extend(exts)
-            cache['content'].append(item)
             for ext in exts:
                 if ext.ty == extension.CONSTANT:
                     name = ext.ref_name
                 else:
                     name = ext.name
                 item_index[username][(ext.ty, name)] = (filename, timestamp, index)
-        except Exception as e:
-            pass
 
     return cache
 
@@ -309,7 +206,8 @@ def load_theories(filenames, username="master"):
     for prev_name in depend_list:
         prev_cache = load_theory_cache(prev_name, username)
         for item in prev_cache['content']:
-            thy.unchecked_extend(item['ext'])
+            if item.error is None:
+                thy.unchecked_extend(item.get_extension())
 
     return thy
 
@@ -330,12 +228,12 @@ def load_theory(filename, *, limit=None, username="master"):
     content = cache['content']
     found_limit = False
     for item in content:
-        assert 'ext' in item
-        if limit and item['ty'] == limit[0] and item['name'] == limit[1]:
+        if limit and item.ty == limit[0] and item.name == limit[1]:
             found_limit = True
             break
 
-        thy.unchecked_extend(item['ext'])
+        if item.error is None:
+            thy.unchecked_extend(item.get_extension())
 
     if limit and not found_limit:
         raise TheoryException("load_theory: limit %s not found" % str(limit))

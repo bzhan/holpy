@@ -83,6 +83,11 @@ class ExprTest(unittest.TestCase):
             ("coll(A, B, C)", "coll(P, Q, R, T)", {"A": "Q", "B": "R"}, [{"A": "Q", "B": "R", "C": "T"}]),
             ("coll(A, B, C)", "coll(P, Q, R, T)", {"A": "P", "B": "Q"},
              [{"A": "P", "B": "Q", "C": "R"}, {"A": "P", "B": "Q", "C": "T"}]),
+            ("contri(A, B, C, D, E, F)", "contri(P, Q, R, X, Y, Z)", {},
+             [{"A": "P", "B": "Q", "C": "R", "D": "X", "E": "Y", "F": "Z"},
+             {"A": "P", "B": "R", "C": "Q", "D": "X", "E": "Z", "F": "Y"},
+             {"A": "Q", "B": "R", "C": "P", "D": "Y", "E": "Z", "F": "X"}]
+             )
         ]
 
         for pat, f, inst, res in test_data:
@@ -149,8 +154,8 @@ class ExprTest(unittest.TestCase):
 
     def testApplyRule(self):
         test_data = [
-            ("D44", ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [], ["para(P, Q, F, G)"]),
-            ("D56", ["cong(D, A, D, B)", "cong(E, A, E, B)"],  [], [], ["perp(A, B, D, E)"]),
+            # ("D44", ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [], ["para(P, Q, F, G)"]),
+            # ("D56", ["cong(D, A, D, B)", "cong(E, A, E, B)"],  [], [], ["perp(A, B, D, E)"]),
             # (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], [],
             #  ["para(G, H, E, F)"]),
             # (ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [],
@@ -169,8 +174,8 @@ class ExprTest(unittest.TestCase):
             #  ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"],
             #  [], ["cyclic(A, B, F, E)"]),
             # (ruleset["D9"], ["perp(B, E, A, C)", "perp(A, C, B, E)"], [], [], []),
-            ("D9", ["perp(G, F, D, E)", "perp(A, B, D, E)"], [], [], ["para(G, F, A, B)"]),
-            ("D9", ["perp(A, B, D, E)", "perp(D, E, G, F)"], [], [], ["para(A, B, G, F)"]),
+            # ("D9", ["perp(G, F, D, E)", "perp(A, B, D, E)"], [], [], ["para(G, F, A, B)"]),
+            # ("D9", ["perp(A, B, D, E)", "perp(D, E, G, F)"], [], [], ["para(A, B, G, F)"]),
             # (ruleset["D43"], ["eqangle(B, E, A, C, B, C, A, F)", "cyclic(B, A, E, F)"],
             #  ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"], [],
             #  []),
@@ -315,6 +320,17 @@ class ExprTest(unittest.TestCase):
 
             (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
                        "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+
+            (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
+                        [], [], "cong(B, M, C, M)"),
+
+            (ruleset, ["cong(B, A, B, C)", "midp(D, A, C)", "coll(A, D, C)"], [], [], "perp(B, D, A, C)"),
+
+            # TODO: When two triangles using a same side PQ, make use of PQ = PQ as a fact to obtain contri or simtri.
+            (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "cong(A, D, A, D)", "cong(D, F, D, F)", "coll(A, D, F)"],
+             [], [], "cong(B, F, C, F)")
+
+
         ]
         # pr = cProfile.Profile()
         # pr.enable()

@@ -10,21 +10,9 @@
       <v-icon name="edit"/>
     </a>
     <br>
-    <span v-if="!('err_type' in item)">
-      <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-        <Expression class="indented-text" v-bind:line="line" :editor="editor"/><br>
-      </span>
+    <span v-for="(line, i) in item.prop" v-bind:key=i>
+      <Expression class="indented-text" v-bind:line="line" :editor="editor"/><br>
     </span>
-    <div v-else>
-      <div v-if="typeof(item.prop) === 'string'">
-        <span class="item-text indented-text">{{item.prop}}</span>
-      </div>
-      <div v-else>
-        <span class="item-text indented-text" v-for="(line, i) in item.prop" v-bind:key=i>
-          {{line}}<br>
-        </span>
-      </div>
-    </div>
   </div>
 </template>
 

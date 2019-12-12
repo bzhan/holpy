@@ -6,11 +6,11 @@
     </span>
     <div style="margin-top:5px">
       <label class="keyword">fixes</label>
-      <ExpressionEdit v-model="item.vars_lines"/>
+      <ExpressionEdit v-model="item.vars"/>
     </div>
     <div style="margin-top:5px">
       <label class="keyword">shows</label>
-      <ExpressionEdit v-model="item.prop_lines"/>
+      <ExpressionEdit v-model="item.prop"/>
     </div>
     <div style="margin-top:10px">
       <span class="hint-element">
@@ -60,8 +60,8 @@ export default {
         {
           attributes: [],
           name: "",
-          vars_lines: "",
-          prop_lines: ""
+          vars: "",
+          prop: ""
         },
         JSON.parse(JSON.stringify(this.old_item)))
     }

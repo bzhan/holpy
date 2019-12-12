@@ -15,6 +15,7 @@ from syntax import parser, printer, pprint
 from logic.context import Context
 from server import tactic
 from server import method
+from util import typecheck
 
 
 class TacticException(Exception):
@@ -92,9 +93,7 @@ class ProofState():
         n+1: A1 --> ... --> An --> C by intros from 0, 1, ..., n.
 
         """
-        assert all(isinstance(var, Term) for var in vars), "init_state: vars must be terms."
-        assert all(isinstance(a, Term) for a in assums), "init_state: assums must be terms."
-        assert isinstance(concl, Term), "init_state: conclusion must be a term."
+        typecheck.checkinstance('init_state', vars, [Term], assums, [Term], concl, Term)
         state = ProofState(thy)
 
         state.vars = vars

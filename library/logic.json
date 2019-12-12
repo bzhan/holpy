@@ -1688,6 +1688,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "all_conj_distrib",
             "num_gaps": 0,
             "proof": [
@@ -2485,7 +2488,7 @@
                     "th": "⊢ ¬(A ⟶ B) ⟷ A ∧ ¬B"
                 }
             ],
-            "prop": "~(A --> B) <--> A & ~B",
+            "prop": "¬(A ⟶ B) ⟷ A ∧ ¬B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3307,147 +3310,72 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "not_all",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬(∀x. P x)",
+                    "args": "¬(∀x. P x) ⟷ (∃x. ¬(P x))",
                     "id": "0",
                     "prevs": [],
-                    "rule": "assume",
-                    "th": "¬(∀x. P x) ⊢ ¬(∀x. P x)"
+                    "rule": "z3",
+                    "th": "⊢ ¬(∀x. P x) ⟷ (∃x. ¬(P x))"
                 },
                 {
                     "args": "",
                     "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(∀x. P x) ⊢ ¬(∃x. ¬P x) ⟶ (∃x. ¬P x)"
-                },
-                {
-                    "args": "¬(∃x. ¬P x)",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬(∃x. ¬P x) ⊢ ¬(∃x. ¬P x)"
-                },
-                {
-                    "args": "",
-                    "id": "1.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(∀x. P x), ¬(∃x. ¬P x) ⊢ ∀x. P x"
-                },
-                {
-                    "args": "x, 'a",
-                    "id": "1.1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(∀x. P x), ¬(∃x. ¬P x) ⊢ ¬P x ⟶ P x"
-                },
-                {
-                    "args": "¬P x",
-                    "id": "1.1.1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬P x ⊢ ¬P x"
-                },
-                {
-                    "args": "exI, {a: 'a}, {P: λa. ¬P a, a: x}",
-                    "id": "1.1.1.1",
                     "prevs": [
-                        "1.1.1.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "¬P x ⊢ ∃a. ¬P a"
-                },
-                {
-                    "args": "negE_gen, {}, {A: ∃x. ¬P x, C: P x}",
-                    "id": "1.1.1.2",
-                    "prevs": [
-                        "1.0",
-                        "1.1.1.1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "¬(∃x. ¬P x), ¬(∀x. P x), ¬P x ⊢ P x"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.1.3",
-                    "prevs": [
-                        "1.1.1.0",
-                        "1.1.1.2"
+                        "0"
                     ],
                     "rule": "intros",
-                    "th": "¬(∀x. P x), ¬(∃x. ¬P x) ⊢ ¬P x ⟶ P x"
-                },
-                {
-                    "args": "contradiction",
-                    "id": "1.1.2",
-                    "prevs": [
-                        "1.1.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬(∀x. P x), ¬(∃x. ¬P x) ⊢ P x"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.3",
-                    "prevs": [
-                        "1.1.0",
-                        "1.1.2"
-                    ],
-                    "rule": "intros",
-                    "th": "¬(∀x. P x), ¬(∃x. ¬P x) ⊢ ∀x. P x"
-                },
-                {
-                    "args": "negE_gen, {}, {A: ∀x. P x, C: ∃x. ¬P x}",
-                    "id": "1.2",
-                    "prevs": [
-                        "0",
-                        "1.1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "¬(∀x. P x), ¬(∃x. ¬P x) ⊢ ∃x. ¬P x"
-                },
-                {
-                    "args": "",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.0",
-                        "1.2"
-                    ],
-                    "rule": "intros",
-                    "th": "¬(∀x. P x) ⊢ ¬(∃x. ¬P x) ⟶ (∃x. ¬P x)"
-                },
-                {
-                    "args": "contradiction",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬(∀x. P x) ⊢ ∃x. ¬P x"
-                },
-                {
-                    "args": "",
-                    "id": "3",
-                    "prevs": [
-                        "0",
-                        "2"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ ¬(∀x. P x) ⟶ (∃x. ¬P x)"
+                    "th": "⊢ ¬(∀x. P x) ⟷ (∃x. ¬(P x))"
                 }
             ],
-            "prop": "¬(∀x. P x) ⟶ (∃x. ¬(P x))",
+            "prop": "¬(∀x. P x) ⟷ (∃x. ¬(P x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "not_exists",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(∃x. P x) ⟷ (∀x. ¬(P x))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(∃x. P x) ⟷ (∀x. ¬(P x))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(∃x. P x) ⟷ (∀x. ¬(P x))"
+                }
+            ],
+            "prop": "¬(∃x. P x) ⟷ (∀x. ¬(P x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "P": "'a ⇒ bool"
@@ -3462,7 +3390,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ (∀x. P x) ⟶ (∃x. P x ⟶ (∀x. P x))"
+                    "th": "⊢ (∀x. P x) ⟶ (∃x. P x ⟶ (∀x1. P x1))"
                 },
                 {
                     "args": "∀x. P x",
@@ -3483,7 +3411,7 @@
                     "id": "0.2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀x. P x ⊢ P x ⟶ (∀x. P x)"
+                    "th": "∀x. P x ⊢ P x ⟶ (∀x1. P x1)"
                 },
                 {
                     "args": "P x",
@@ -3500,16 +3428,16 @@
                         "0.0"
                     ],
                     "rule": "intros",
-                    "th": "∀x. P x ⊢ P x ⟶ (∀x. P x)"
+                    "th": "∀x. P x ⊢ P x ⟶ (∀x1. P x1)"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. P x ⟶ (∀x. P x), a: x}",
+                    "args": "exI, {a: 'a}, {P: λx. P x ⟶ (∀x1. P x1), a: x}",
                     "id": "0.3",
                     "prevs": [
                         "0.2"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∀x. P x ⊢ ∃a. P a ⟶ (∀x. P x)"
+                    "th": "∀x. P x ⊢ ∃x. P x ⟶ (∀x1. P x1)"
                 },
                 {
                     "args": "",
@@ -3519,14 +3447,14 @@
                         "0.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ (∀x. P x) ⟶ (∃x. P x ⟶ (∀x. P x))"
+                    "th": "⊢ (∀x. P x) ⟶ (∃x. P x ⟶ (∀x1. P x1))"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ¬(∀x. P x) ⟶ (∃x. P x ⟶ (∀x. P x))"
+                    "th": "⊢ ¬(∀x. P x) ⟶ (∃x. P x ⟶ (∀x1. P x1))"
                 },
                 {
                     "args": "¬(∀x. P x)",
@@ -3541,8 +3469,8 @@
                     "prevs": [
                         "1.0"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "¬(∀x. P x) ⊢ ∃x. ¬P x"
+                    "rule": "rewrite_fact",
+                    "th": "¬(∀x. P x) ⊢ ∃x. ¬(P x)"
                 },
                 {
                     "args": "x, 'a",
@@ -3552,18 +3480,18 @@
                     "th": "⊢ _VAR x"
                 },
                 {
-                    "args": "¬P x",
+                    "args": "¬(P x)",
                     "id": "1.3",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬P x ⊢ ¬P x"
+                    "th": "¬(P x) ⊢ ¬(P x)"
                 },
                 {
                     "args": "",
                     "id": "1.4",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "¬(∀x. P x), ¬P x ⊢ P x ⟶ (∀x. P x)"
+                    "th": "¬(∀x. P x), ¬(P x) ⊢ P x ⟶ (∀x1. P x1)"
                 },
                 {
                     "args": "P x",
@@ -3580,7 +3508,7 @@
                         "1.4.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬P x, ¬(∀x. P x), P x ⊢ ∀x. P x"
+                    "th": "¬(P x), ¬(∀x. P x), P x ⊢ ∀x. P x"
                 },
                 {
                     "args": "",
@@ -3590,19 +3518,19 @@
                         "1.4.1"
                     ],
                     "rule": "intros",
-                    "th": "¬(∀x. P x), ¬P x ⊢ P x ⟶ (∀x. P x)"
+                    "th": "¬(∀x. P x), ¬(P x) ⊢ P x ⟶ (∀x1. P x1)"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. P x ⟶ (∀x. P x), a: x}",
+                    "args": "exI, {a: 'a}, {P: λx. P x ⟶ (∀x1. P x1), a: x}",
                     "id": "1.5",
                     "prevs": [
                         "1.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬(∀x. P x), ¬P x ⊢ ∃a. P a ⟶ (∀x. P x)"
+                    "th": "¬(∀x. P x), ¬(P x) ⊢ ∃x. P x ⟶ (∀x1. P x1)"
                 },
                 {
-                    "args": "∃x. ¬P x",
+                    "args": "∃x. ¬(P x)",
                     "id": "1.6",
                     "prevs": [
                         "1.0",
@@ -3612,7 +3540,7 @@
                         "1.5"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬(∀x. P x) ⟶ (∃x. P x ⟶ (∀x. P x))"
+                    "th": "⊢ ¬(∀x. P x) ⟶ (∃x. P x ⟶ (∀x1. P x1))"
                 },
                 {
                     "args": "classical_cases",
@@ -3622,7 +3550,16 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ ∃x. P x ⟶ (∀x. P x)"
+                    "th": "⊢ ∃x. P x ⟶ (∀x1. P x1)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃x. P x ⟶ (∀x1. P x1)"
                 }
             ],
             "prop": "∃x. P x ⟶ (∀x1. P x1)",
@@ -3663,7 +3600,8 @@
                         "1.0"
                     ],
                     "goal_id": "1.1",
-                    "method_name": "apply_forward_step",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
                     "theorem": "not_all"
                 },
                 {

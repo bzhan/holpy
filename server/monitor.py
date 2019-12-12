@@ -97,6 +97,10 @@ def check_theory(filename, username='master', rewrite=False):
             # Check consistency with edit_item
             edit_item = item.get_display(thy, unicode=True, highlight=False)
             item2 = items.parse_edit(old_thy, edit_item)
+            if item.ty == 'thm':
+                item2.proof = item.proof
+                item2.steps = item.steps
+                item2.num_gaps = item.num_gaps
             if item2.error or item != item2:
                 item_res = {
                     'ty': item.ty,

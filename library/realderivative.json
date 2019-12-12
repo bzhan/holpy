@@ -35,9 +35,6 @@
             "type": "(real ⇒ real) ⇒ real ⇒ real"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "higher_real_derivative",
             "rules": [
                 {
@@ -74,7 +71,7 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set"
             }
@@ -91,7 +88,7 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real"
             }
         },
@@ -106,7 +103,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -124,26 +121,24 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_differentiable_on_imp_differentiable_within",
             "prop": "real_differentiable_on f s ⟶ x ∈ s ⟶ real_differentiable f (within (atreal x) s)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
-            "attributes": [],
             "name": "real_differentiable_on_imp_differentiable_atreal",
             "prop": [
-                "real_differentiable_on f s ⟶ real_open s ⟶ x ∈ s ",
-                "⟶ real_differentiable f (atreal x)"
+                "real_differentiable_on f s ",
+                "⟶ real_open s ⟶ x ∈ s ⟶ real_differentiable f (atreal x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -202,7 +197,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "trivial_limit_within_realinterval",
             "prop": "is_realinterval s ⟶ x ∈ s ⟶ trivial_limit (within (atreal x) s) ⟷ s = {x}",
             "ty": "thm",
@@ -291,7 +285,7 @@
                 "hint_backward"
             ],
             "name": "is_realinterval_clauses_6",
-            "prop": "is_realinterval ({x. a < x ∧ x <= b})",
+            "prop": "is_realinterval ({x. a < x ∧ x ≤ b})",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -303,7 +297,7 @@
                 "hint_backward"
             ],
             "name": "is_realinterval_clauses_7",
-            "prop": "is_realinterval ({x. a <= x ∧ x < b})",
+            "prop": "is_realinterval ({x. a ≤ x ∧ x < b})",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -315,7 +309,7 @@
                 "hint_backward"
             ],
             "name": "is_realinterval_clauses_8",
-            "prop": "is_realinterval ({x. a <= x ∧ x <= b})",
+            "prop": "is_realinterval ({x. a ≤ x ∧ x ≤ b})",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -448,7 +442,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -462,7 +456,7 @@
             "prop": "real_differentiable f (atreal x) ⟶ real_continuous f (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -478,7 +472,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
@@ -493,7 +487,7 @@
             "prop": "has_real_derivative f f1 (atreal x) ⟶ real_continuous f (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "x": "real"
             }
@@ -507,7 +501,7 @@
             "prop": "real_differentiable_on f s ⟶ real_continuous_on f s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -519,14 +513,14 @@
             ],
             "name": "real_continuous_transform_withinreal_set_imp",
             "prop": [
-                "eventually (λx. x ∈ t ⟶ x ∈ s) (atreal a) ⟶ ",
-                "real_continuous f (within (atreal a) s) ",
-                "⟶ real_continuous f (within (atreal a) t)"
+                "eventually (λx. x ∈ t ⟶ x ∈ s) (atreal a) ",
+                "⟶ real_continuous f (within (atreal a) s) ",
+                "   ⟶ real_continuous f (within (atreal a) t)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -539,12 +533,12 @@
             ],
             "name": "has_real_derivative_within_subset",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) ⟶ t ⊆ s ",
-                "⟶ has_real_derivative f f1 (within (atreal x) t)"
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ t ⊆ s ⟶ has_real_derivative f f1 (within (atreal x) t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "t": "real set",
@@ -773,7 +767,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -868,8 +862,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (within (atreal x) s) ⟶ t ⊆ s ",
-                "⟶ real_differentiable f (within (atreal x) t)"
+                "real_differentiable f (within (atreal x) s) ",
+                "⟶ t ⊆ s ⟶ real_differentiable f (within (atreal x) t)"
             ],
             "steps": [
                 {
@@ -912,7 +906,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "x": "real"
@@ -930,7 +924,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
@@ -1000,9 +994,10 @@
                 }
             ],
             "prop": [
-                "a ∈ s ⟶ real_open s ",
-                "⟶ has_real_derivative f f1 (within (atreal a) s) ⟷ ",
-                "   has_real_derivative f f1 (atreal a)"
+                "a ∈ s ",
+                "⟶ real_open s ",
+                "   ⟶ has_real_derivative f f1 (within (atreal a) s) ⟷ ",
+                "      has_real_derivative f f1 (atreal a)"
             ],
             "steps": [
                 {
@@ -1026,7 +1021,7 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set"
             }
@@ -1148,7 +1143,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -1169,9 +1164,9 @@
             "ty": "thm",
             "vars": {
                 "d": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -1356,9 +1351,9 @@
             "ty": "thm",
             "vars": {
                 "d": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -1377,7 +1372,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1453,9 +1448,11 @@
                 }
             ],
             "prop": [
-                "is_realinterval s ⟶ ",
-                "a ∈ s ⟶ f a = c ⟶ (∀x. x ∈ s ⟶ has_real_derivative f 0 (within (atreal x) s)) ",
-                "⟶ (∀x. x ∈ s ⟶ f x = c)"
+                "is_realinterval s ",
+                "⟶ a ∈ s ",
+                "   ⟶ f a = c ",
+                "      ⟶ (∀x. x ∈ s ⟶ has_real_derivative f 0 (within (atreal x) s)) ",
+                "         ⟶ (∀x. x ∈ s ⟶ f x = c)"
             ],
             "steps": [
                 {
@@ -1481,7 +1478,7 @@
             "vars": {
                 "a": "real",
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1493,15 +1490,15 @@
             ],
             "name": "real_diff_chain_within",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) ⟶ ",
-                "has_real_derivative g g1 (within (atreal (f x)) (image f s)) ",
-                "⟶ has_real_derivative (λx1. g (f x1)) (g1 * f1) (within (atreal x) s)"
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative g g1 (within (atreal (f x)) (image f s)) ",
+                "   ⟶ has_real_derivative (λx1. g (f x1)) (g1 * f1) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "s": "real set",
                 "x": "real"
@@ -1597,8 +1594,9 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 (atreal x) ⟶ has_real_derivative g g1 (atreal (f x)) ",
-                "⟶ has_real_derivative (λx1. g (f x1)) (g1 * f1) (atreal x)"
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative g g1 (atreal (f x)) ",
+                "   ⟶ has_real_derivative (λx1. g (f x1)) (g1 * f1) (atreal x)"
             ],
             "steps": [
                 {
@@ -1644,9 +1642,9 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "x": "real"
             }
@@ -1659,18 +1657,19 @@
             "name": "has_real_derivative_chain",
             "prop": [
                 "(∀x. P x ⟶ has_real_derivative g (g1 x) (atreal x)) ",
-                "⟶ (∀x. ∀s. has_real_derivative f f1 (within (atreal x) s) ⟶ P (f x) ",
-                "        ⟶ has_real_derivative (λx1. g (f x1)) (f1 * g1 (f x)) (within (atreal x) s)) ∧ ",
-                "   (∀x. has_real_derivative f f1 (atreal x) ⟶ P (f x) ",
-                "      ⟶ has_real_derivative (λx1. g (f x1)) (f1 * g1 (f x)) (atreal x))"
+                "⟶ (∀x. ∀s. has_real_derivative f f1 (within (atreal x) s) ",
+                "        ⟶ P (f x) ",
+                "           ⟶ has_real_derivative (λx1. g (f x1)) (f1 * g1 (f x)) (within (atreal x) s)) ∧ ",
+                "   (∀x. has_real_derivative f f1 (atreal x) ",
+                "      ⟶ P (f x) ⟶ has_real_derivative (λx1. g (f x1)) (f1 * g1 (f x)) (atreal x))"
             ],
             "ty": "thm",
             "vars": {
-                "P": "real => bool",
-                "f": "real => real",
+                "P": "real ⇒ bool",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
-                "g1": "real => real"
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         },
         {
@@ -2107,12 +2106,12 @@
             ],
             "name": "real_derivative_unique_atreal",
             "prop": [
-                "has_real_derivative f f1 (atreal x) ⟶ has_real_derivative f f2 (atreal x) ",
-                "⟶ f1 = f2"
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative f f2 (atreal x) ⟶ f1 = f2"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "f2": "real",
                 "x": "real"
@@ -2352,7 +2351,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
@@ -2421,7 +2420,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
@@ -2508,7 +2507,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "x": "real"
             }
@@ -2576,7 +2575,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "x": "real"
             }
@@ -3088,7 +3087,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "net": "real net"
             }
@@ -3201,8 +3200,8 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 net ⟶ has_real_derivative g g1 net ",
-                "⟶ has_real_derivative (λx. f x + g x) (f1 + g1) net"
+                "has_real_derivative f f1 net ",
+                "⟶ has_real_derivative g g1 net ⟶ has_real_derivative (λx. f x + g x) (f1 + g1) net"
             ],
             "steps": [
                 {
@@ -3276,9 +3275,9 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "net": "real net"
             }
@@ -3347,8 +3346,8 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 net ⟶ has_real_derivative g g1 net ",
-                "⟶ has_real_derivative (λx. f x - g x) (f1 - g1) net"
+                "has_real_derivative f f1 net ",
+                "⟶ has_real_derivative g g1 net ⟶ has_real_derivative (λx. f x - g x) (f1 - g1) net"
             ],
             "steps": [
                 {
@@ -3370,9 +3369,9 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "net": "real net"
             }
@@ -3385,16 +3384,16 @@
             ],
             "name": "has_real_derivative_mul_within",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) ⟶ ",
-                "has_real_derivative g g1 (within (atreal x) s) ",
-                "⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) ",
-                "     (within (atreal x) s)"
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative g g1 (within (atreal x) s) ",
+                "   ⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) ",
+                "        (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "s": "real set",
                 "x": "real"
@@ -3473,8 +3472,9 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 (atreal x) ⟶ has_real_derivative g g1 (atreal x) ",
-                "⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)"
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative g g1 (atreal x) ",
+                "   ⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)"
             ],
             "steps": [
                 {
@@ -3513,9 +3513,9 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "x": "real"
             }
@@ -4157,7 +4157,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "n": "nat",
                 "s": "real set",
@@ -4244,7 +4244,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "n": "nat",
                 "x": "real"
@@ -4456,7 +4456,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
@@ -4526,8 +4526,9 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 (atreal x) ⟶ ¬(f x = 0) ",
-                "⟶ has_real_derivative (λx1. real_inverse (f x1)) (-f1 / f x ^ (2::nat)) (atreal x)"
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ ¬(f x = 0) ",
+                "   ⟶ has_real_derivative (λx1. real_inverse (f x1)) (-f1 / f x ^ (2::nat)) (atreal x)"
             ],
             "steps": [
                 {
@@ -4553,7 +4554,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "x": "real"
             }
@@ -4677,10 +4678,11 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) ⟶ ",
-                "has_real_derivative g g1 (within (atreal x) s) ⟶ ¬(g x = 0) ",
-                "⟶ has_real_derivative (λx1. f x1 / g x1) ((f1 * g x - f x * g1) / g x ^ (2::nat)) ",
-                "     (within (atreal x) s)"
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative g g1 (within (atreal x) s) ",
+                "   ⟶ ¬(g x = 0) ",
+                "      ⟶ has_real_derivative (λx1. f x1 / g x1) ((f1 * g x - f x * g1) / g x ^ (2::nat)) ",
+                "           (within (atreal x) s)"
             ],
             "steps": [
                 {
@@ -4757,9 +4759,9 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "s": "real set",
                 "x": "real"
@@ -4847,10 +4849,11 @@
                 }
             ],
             "prop": [
-                "has_real_derivative f f1 (atreal x) ⟶ ",
-                "has_real_derivative g g1 (atreal x) ⟶ ¬(g x = 0) ",
-                "⟶ has_real_derivative (λx1. f x1 / g x1) ((f1 * g x - f x * g1) / g x ^ (2::nat)) ",
-                "     (atreal x)"
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative g g1 (atreal x) ",
+                "   ⟶ ¬(g x = 0) ",
+                "      ⟶ has_real_derivative (λx1. f x1 / g x1) ((f1 * g x - f x * g1) / g x ^ (2::nat)) ",
+                "           (atreal x)"
             ],
             "steps": [
                 {
@@ -4885,9 +4888,9 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
-                "g": "real => real",
+                "g": "real ⇒ real",
                 "g1": "real",
                 "x": "real"
             }
@@ -4900,13 +4903,14 @@
             ],
             "name": "has_real_derivative_sum",
             "prop": [
-                "finite s ⟶ (∀a. a ∈ s ⟶ has_real_derivative (f a) (f1 a) net) ",
-                "⟶ has_real_derivative (λx. sum s (λa. f a x)) (sum s f1) net"
+                "finite s ",
+                "⟶ (∀a. a ∈ s ⟶ has_real_derivative (f a) (f1 a) net) ",
+                "   ⟶ has_real_derivative (λx. sum s (λa. f a x)) (sum s f1) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
-                "f1": "'a => real",
+                "f": "'a ⇒ real ⇒ real",
+                "f1": "'a ⇒ real",
                 "net": "real net",
                 "s": "'a set"
             }
@@ -5160,7 +5164,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "net": "real net"
             }
         },
@@ -5280,8 +5284,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable f net ⟶ real_differentiable g net ",
-                "⟶ real_differentiable (λx. f x + g x) net"
+                "real_differentiable f net ",
+                "⟶ real_differentiable g net ⟶ real_differentiable (λx. f x + g x) net"
             ],
             "steps": [
                 {
@@ -5338,8 +5342,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "net": "real net"
             }
         },
@@ -5407,8 +5411,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable f net ⟶ real_differentiable g net ",
-                "⟶ real_differentiable (λx. f x - g x) net"
+                "real_differentiable f net ",
+                "⟶ real_differentiable g net ⟶ real_differentiable (λx. f x - g x) net"
             ],
             "steps": [
                 {
@@ -5430,8 +5434,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "net": "real net"
             }
         },
@@ -5551,9 +5555,9 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (within (atreal x) s) ⟶ ",
-                "real_differentiable g (within (atreal x) s) ",
-                "⟶ real_differentiable (λx1. f x1 * g x1) (within (atreal x) s)"
+                "real_differentiable f (within (atreal x) s) ",
+                "⟶ real_differentiable g (within (atreal x) s) ",
+                "   ⟶ real_differentiable (λx1. f x1 * g x1) (within (atreal x) s)"
             ],
             "steps": [
                 {
@@ -5609,8 +5613,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -5731,8 +5735,9 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (atreal x) ⟶ real_differentiable g (atreal x) ",
-                "⟶ real_differentiable (λx1. f x1 * g x1) (atreal x)"
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_differentiable (λx1. f x1 * g x1) (atreal x)"
             ],
             "steps": [
                 {
@@ -5788,8 +5793,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -5912,7 +5917,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "n": "nat",
                 "s": "real set",
                 "x": "real"
@@ -6157,8 +6162,8 @@
             "ty": "thm",
             "vars": {
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -6254,7 +6259,8 @@
             ],
             "prop": [
                 "real_differentiable f (within (atreal x) s) ",
-                "⟶ ¬(f x = 0) ⟶ real_differentiable (λx1. real_inverse (f x1)) (within (atreal x) s)"
+                "⟶ ¬(f x = 0) ",
+                "   ⟶ real_differentiable (λx1. real_inverse (f x1)) (within (atreal x) s)"
             ],
             "steps": [
                 {
@@ -6293,7 +6299,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -6388,8 +6394,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (atreal x) --> ¬(f x = 0) ",
-                "⟶ real_differentiable (λx1. real_inverse (f x1)) (atreal x)"
+                "real_differentiable f (atreal x) ",
+                "⟶ ¬(f x = 0) ⟶ real_differentiable (λx1. real_inverse (f x1)) (atreal x)"
             ],
             "steps": [
                 {
@@ -6428,7 +6434,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -6615,8 +6621,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -6746,8 +6752,9 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (atreal x) --> real_differentiable g (atreal x) --> ¬(g x = 0) ",
-                "⟶ real_differentiable (λx1. f x1 / g x1) (atreal x)"
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ ¬(g x = 0) ⟶ real_differentiable (λx1. f x1 / g x1) (atreal x)"
             ],
             "steps": [
                 {
@@ -6803,8 +6810,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -7008,8 +7015,8 @@
                 }
             ],
             "prop": [
-                "(∀x. x ∈ s ⟶ f x = g x) --> real_differentiable_on f s ",
-                "⟶ real_differentiable_on g s"
+                "(∀x. x ∈ s ⟶ f x = g x) ",
+                "⟶ real_differentiable_on f s ⟶ real_differentiable_on g s"
             ],
             "steps": [
                 {
@@ -7088,8 +7095,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -7354,8 +7361,9 @@
                 }
             ],
             "prop": [
-                "0 < d ⟶ (∀x1. abs (x1 - x) < d ⟶ f x1 = g x1) ⟶ real_differentiable f (atreal x) ",
-                "⟶ real_differentiable g (atreal x)"
+                "0 < d ",
+                "⟶ (∀x1. abs (x1 - x) < d ⟶ f x1 = g x1) ",
+                "   ⟶ real_differentiable f (atreal x) ⟶ real_differentiable g (atreal x)"
             ],
             "steps": [
                 {
@@ -7399,8 +7407,8 @@
             "ty": "thm",
             "vars": {
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -7529,9 +7537,9 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (within (atreal x) s) ⟶ ",
-                "real_differentiable g (within (atreal (f x)) (image f s)) ",
-                "⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
+                "real_differentiable f (within (atreal x) s) ",
+                "⟶ real_differentiable g (within (atreal (f x)) (image f s)) ",
+                "   ⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
             ],
             "steps": [
                 {
@@ -7597,8 +7605,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -7728,8 +7736,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable f (atreal x) --> real_differentiable g (atreal (f x)) ",
-                "⟶ real_differentiable (g ∘ f) (atreal x)"
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal (f x)) ⟶ real_differentiable (g ∘ f) (atreal x)"
             ],
             "steps": [
                 {
@@ -7795,8 +7803,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -8166,8 +8174,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable_on f s --> real_differentiable_on g (image f s)",
-                "--> real_differentiable_on (g ∘ f) s"
+                "real_differentiable_on f s ",
+                "⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (g ∘ f) s"
             ],
             "steps": [
                 {
@@ -8267,8 +8275,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -8403,7 +8411,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "t": "real set"
             }
         },
@@ -8532,8 +8540,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable_on f t ⟶ real_differentiable_on g t ",
-                "⟶ real_differentiable_on (λx. f x + g x) t"
+                "real_differentiable_on f t ",
+                "⟶ real_differentiable_on g t ⟶ real_differentiable_on (λx. f x + g x) t"
             ],
             "steps": [
                 {
@@ -8587,8 +8595,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "t": "real set"
             }
         },
@@ -8656,8 +8664,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable_on f t ⟶ real_differentiable_on g t ",
-                "⟶ real_differentiable_on (λx. f x - g x) t"
+                "real_differentiable_on f t ",
+                "⟶ real_differentiable_on g t ⟶ real_differentiable_on (λx. f x - g x) t"
             ],
             "steps": [
                 {
@@ -8679,8 +8687,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "t": "real set"
             }
         },
@@ -8809,8 +8817,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable_on f s ⟶ real_differentiable_on g s ",
-                "⟶ real_differentiable_on (λx. f x * g x) s"
+                "real_differentiable_on f s ",
+                "⟶ real_differentiable_on g s ⟶ real_differentiable_on (λx. f x * g x) s"
             ],
             "steps": [
                 {
@@ -8864,8 +8872,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -9001,7 +9009,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "n": "nat",
                 "s": "real set"
             }
@@ -9122,8 +9130,8 @@
                 }
             ],
             "prop": [
-                "real_differentiable_on f s ⟶ (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
-                "⟶ real_differentiable_on (λx. real_inverse (f x)) s"
+                "real_differentiable_on f s ",
+                "⟶ (∀x. x ∈ s ⟶ ¬(f x = 0)) ⟶ real_differentiable_on (λx. real_inverse (f x)) s"
             ],
             "steps": [
                 {
@@ -9168,7 +9176,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -9316,9 +9324,9 @@
                 }
             ],
             "prop": [
-                "real_differentiable_on f s ⟶ ",
-                "real_differentiable_on g s ⟶ (∀x. x ∈ s ⟶ ¬(g x = 0)) ",
-                "⟶ real_differentiable_on (λx. f x / g x) s"
+                "real_differentiable_on f s ",
+                "⟶ real_differentiable_on g s ",
+                "   ⟶ (∀x. x ∈ s ⟶ ¬(g x = 0)) ⟶ real_differentiable_on (λx. f x / g x) s"
             ],
             "steps": [
                 {
@@ -9379,8 +9387,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -9511,8 +9519,9 @@
                 }
             ],
             "prop": [
-                "finite s ⟶ (∀a. a ∈ s ⟶ real_differentiable_on (f a) t) ",
-                "⟶ real_differentiable_on (λx. sum s (λa. f a x)) t"
+                "finite s ",
+                "⟶ (∀a. a ∈ s ⟶ real_differentiable_on (f a) t) ",
+                "   ⟶ real_differentiable_on (λx. sum s (λa. f a x)) t"
             ],
             "steps": [
                 {
@@ -9542,8 +9551,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
-                "f1": "'a => real",
+                "f": "'a ⇒ real ⇒ real",
+                "f1": "'a ⇒ real",
                 "s": "'a set",
                 "t": "real set"
             }
@@ -11685,7 +11694,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -11698,7 +11707,7 @@
             "prop": "real_continuous f (atreal x) ⟶ real_continuous (λx1. sqrt (f x1)) (atreal x)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -12224,7 +12233,10 @@
                     "th": "⊢ abs x < 1 ⟶ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)"
                 }
             ],
-            "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)",
+            "prop": [
+                "abs x < 1 ",
+                "⟶ has_real_derivative asn (real_inverse (sqrt (1 - x ^ (2::nat)))) (atreal x)"
+            ],
             "steps": [
                 {
                     "fact_ids": [
@@ -12940,7 +12952,7 @@
                 "hint_backward"
             ],
             "name": "real_continuous_within_asn_strong",
-            "prop": "real_continuous asn (within (atreal x) ({t::real. abs t ≤ 1}))",
+            "prop": "real_continuous asn (within (atreal x) ({t. abs t ≤ 1}))",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -13718,8 +13730,8 @@
                 }
             ],
             "prop": [
-                "tendsto_real f l net ⟶ tendsto_real g m net ⟶ 0 < l ",
-                "⟶ tendsto_real (λx. f x ^ g x) (l ^ m) net"
+                "tendsto_real f l net ",
+                "⟶ tendsto_real g m net ⟶ 0 < l ⟶ tendsto_real (λx. f x ^ g x) (l ^ m) net"
             ],
             "steps": [
                 {
@@ -13731,8 +13743,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
@@ -13746,14 +13758,14 @@
             ],
             "name": "real_continuous_rpow_compose_within",
             "prop": [
-                "real_continuous f (within (atreal x) s) ⟶ ",
-                "real_continuous g (within (atreal x) s) ⟶ 0 < f x ",
-                "⟶ real_continuous (λx1. f x1 ^ g x1) (within (atreal x) s)"
+                "real_continuous f (within (atreal x) s) ",
+                "⟶ real_continuous g (within (atreal x) s) ",
+                "   ⟶ 0 < f x ⟶ real_continuous (λx1. f x1 ^ g x1) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "x": "real"
             }
@@ -13861,7 +13873,7 @@
             "prop": "tendsto_real f l net ⟶ (l = 0 ⟶ 0 ≤ n) ⟶ tendsto_real (λx. f x ^ n) (l ^ n) net",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "l": "real",
                 "n": "real",
                 "net": "'a net"
@@ -13876,7 +13888,7 @@
             "prop": "¬(n = 0) ⟶ tendsto_real (λx. f x ^ n) 0 net ⟷ tendsto_real f 0 net",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "n": "nat",
                 "net": "'a net"
             }
@@ -13911,7 +13923,7 @@
             "prop": "polynomial_function p ⟶ real_differentiable p (atreal x)",
             "ty": "thm",
             "vars": {
-                "p": "real => real",
+                "p": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -13969,14 +13981,15 @@
             ],
             "name": "real_ivt_increasing",
             "prop": [
-                "a ≤ b ⟶ real_continuous_on f (real_closed_interval a b) ⟶ f a ≤ y ⟶ y ≤ f b ",
-                "⟶ (∃x. x ∈ real_closed_interval a b ∧ f x = y)"
+                "a ≤ b ",
+                "⟶ real_continuous_on f (real_closed_interval a b) ",
+                "   ⟶ f a ≤ y ⟶ y ≤ f b ⟶ (∃x. x ∈ real_closed_interval a b ∧ f x = y)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -13987,14 +14000,15 @@
             ],
             "name": "real_ivt_decreasing",
             "prop": [
-                "a ≤ b ⟶ real_continuous_on f (real_closed_interval a b) ⟶ f b ≤ y ⟶ y ≤ f a ",
-                "⟶ (∃x. x ∈ real_closed_interval a b ∧ f x = y)"
+                "a ≤ b ",
+                "⟶ real_continuous_on f (real_closed_interval a b) ",
+                "   ⟶ f b ≤ y ⟶ y ≤ f a ⟶ (∃x. x ∈ real_closed_interval a b ∧ f x = y)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -14007,7 +14021,7 @@
             "prop": "real_continuous_on f s ⟶ is_realinterval s ⟶ is_realinterval (image f s)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -14018,18 +14032,17 @@
             ],
             "name": "real_derivative_pos_left_minimum",
             "prop": [
-                "a < b ⟶ ",
-                "0 < e ⟶ ",
-                "has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ⟶ ",
-                "(∀x. x ∈ real_closed_interval a b ∧ abs (x - a) < e ⟶ f a ≤ f x) ",
-                "⟶ 0 ≤ f1"
+                "a < b ",
+                "⟶ 0 < e ",
+                "   ⟶ has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ",
+                "      ⟶ (∀x. x ∈ real_closed_interval a b ∧ abs (x - a) < e ⟶ f a ≤ f x) ⟶ 0 ≤ f1"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real"
             }
         },
@@ -14040,18 +14053,17 @@
             ],
             "name": "real_derivative_neg_left_maximum",
             "prop": [
-                "a < b ⟶ ",
-                "0 < e ⟶ ",
-                "has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ⟶ ",
-                "(∀x. x ∈ real_closed_interval a b ∧ abs (x - a) < e ⟶ f x ≤ f a) ",
-                "⟶ f1 ≤ 0"
+                "a < b ",
+                "⟶ 0 < e ",
+                "   ⟶ has_real_derivative f f1 (within (atreal a) (real_closed_interval a b)) ",
+                "      ⟶ (∀x. x ∈ real_closed_interval a b ∧ abs (x - a) < e ⟶ f x ≤ f a) ⟶ f1 ≤ 0"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real"
             }
         },
@@ -14062,18 +14074,17 @@
             ],
             "name": "real_derivative_pos_right_maximum",
             "prop": [
-                "a < b ⟶ ",
-                "0 < e ⟶ ",
-                "has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ⟶ ",
-                "(∀x. x ∈ real_closed_interval a b ∧ abs (x - b) < e ⟶ f x ≤ f b) ",
-                "⟶ 0 ≤ f1"
+                "a < b ",
+                "⟶ 0 < e ",
+                "   ⟶ has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ",
+                "      ⟶ (∀x. x ∈ real_closed_interval a b ∧ abs (x - b) < e ⟶ f x ≤ f b) ⟶ 0 ≤ f1"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real"
             }
         },
@@ -14084,18 +14095,17 @@
             ],
             "name": "real_derivative_neg_right_minimum",
             "prop": [
-                "a < b ⟶ ",
-                "0 < e ⟶ ",
-                "has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ⟶ ",
-                "(∀x. x ∈ real_closed_interval a b ∧ abs (x - b) < e ⟶ f b ≤ f x) ",
-                "⟶ f1 ≤ 0"
+                "a < b ",
+                "⟶ 0 < e ",
+                "   ⟶ has_real_derivative f f1 (within (atreal b) (real_closed_interval a b)) ",
+                "      ⟶ (∀x. x ∈ real_closed_interval a b ∧ abs (x - b) < e ⟶ f b ≤ f x) ⟶ f1 ≤ 0"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
                 "e": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real"
             }
         },
@@ -14106,15 +14116,14 @@
             ],
             "name": "real_derivative_zero_maxmin",
             "prop": [
-                "x ∈ s ⟶ ",
-                "real_open s ⟶ ",
-                "has_real_derivative f f1 (atreal x) ⟶ ",
-                "((∀y. y ∈ s ⟶ f y ≤ f x) ∨ (∀y. y ∈ s ⟶ f x ≤ f y)) ",
-                "⟶ f1 = 0"
+                "x ∈ s ",
+                "⟶ real_open s ",
+                "   ⟶ has_real_derivative f f1 (atreal x) ",
+                "      ⟶ (∀y. y ∈ s ⟶ f y ≤ f x) ∨ (∀y. y ∈ s ⟶ f x ≤ f y) ⟶ f1 = 0"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
@@ -14137,8 +14146,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -14473,8 +14482,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -14830,8 +14839,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -15088,10 +15097,10 @@
                 }
             ],
             "prop": [
-                "a ≤ b ⟶ ",
-                "(∀x. x ∈ real_closed_interval a b ",
-                "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
-                "⟶ (∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a))"
+                "a ≤ b ",
+                "⟶ (∀x. x ∈ real_closed_interval a b ",
+                "      ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
+                "   ⟶ (∃x. x ∈ real_closed_interval a b ∧ f b - f a = f1 x * (b - a))"
             ],
             "steps": [
                 {
@@ -15226,8 +15235,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -15519,8 +15528,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -15783,13 +15792,13 @@
                 }
             ],
             "prop": [
-                "a < b ⟶ ",
-                "real_continuous_on f (real_closed_interval a b) ⟶ ",
-                "real_continuous_on g (real_closed_interval a b) ⟶ ",
-                "(∀x. x ∈ real_open_interval a b ",
-                "   ⟶ has_real_derivative f (f1 x) (atreal x) ∧ ",
-                "      has_real_derivative g (g1 x) (atreal x)) ",
-                "⟶ (∃x. x ∈ real_open_interval a b ∧ (f b - f a) * g1 x = (g b - g a) * f1 x)"
+                "a < b ",
+                "⟶ real_continuous_on f (real_closed_interval a b) ",
+                "   ⟶ real_continuous_on g (real_closed_interval a b) ",
+                "      ⟶ (∀x. x ∈ real_open_interval a b ",
+                "            ⟶ has_real_derivative f (f1 x) (atreal x) ∧ ",
+                "               has_real_derivative g (g1 x) (atreal x)) ",
+                "         ⟶ (∃x. x ∈ real_open_interval a b ∧ (f b - f a) * g1 x = (g b - g a) * f1 x)"
             ],
             "steps": [
                 {
@@ -15937,10 +15946,10 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         },
         {
@@ -15948,8 +15957,8 @@
                 "hint_backward",
                 "hint_backward1"
             ],
-            "name": "lhospital",
-            "num_gaps": 3,
+            "name": "lhospital_lemma",
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "0 < d",
@@ -15966,599 +15975,1226 @@
                     "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)"
                 },
                 {
-                    "args": "tendsto_real f 0 (atreal c)",
+                    "args": "f c = 0",
                     "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f c = 0 ⊢ f c = 0"
+                },
+                {
+                    "args": "g c = 0",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "g c = 0 ⊢ g c = 0"
+                },
+                {
+                    "args": "tendsto_real f 0 (atreal c)",
+                    "id": "4",
                     "prevs": [],
                     "rule": "assume",
                     "th": "tendsto_real f 0 (atreal c) ⊢ tendsto_real f 0 (atreal c)"
                 },
                 {
                     "args": "tendsto_real g 0 (atreal c)",
-                    "id": "3",
+                    "id": "5",
                     "prevs": [],
                     "rule": "assume",
                     "th": "tendsto_real g 0 (atreal c) ⊢ tendsto_real g 0 (atreal c)"
                 },
                 {
                     "args": "tendsto_real (λx. f1 x / g1 x) l (atreal c)",
-                    "id": "4",
+                    "id": "6",
                     "prevs": [],
                     "rule": "assume",
                     "th": "tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ tendsto_real (λx. f1 x / g1 x) l (atreal c)"
                 },
                 {
                     "args": "",
-                    "id": "5",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ real_continuous f (atreal x)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "5.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "0 < abs (x - c)",
-                    "id": "5.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < abs (x - c) ⊢ 0 < abs (x - c)"
-                },
-                {
-                    "args": "abs (x - c) < d",
-                    "id": "5.2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "abs (x - c) < d ⊢ abs (x - c) < d"
-                },
-                {
-                    "args": "",
-                    "id": "5.3",
-                    "prevs": [
-                        "1",
-                        "5.1",
-                        "5.2"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)"
-                },
-                {
-                    "args": "conjD1, {}, {A: has_real_derivative f (f1 x) (atreal x), B: has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)}",
-                    "id": "5.4",
-                    "prevs": [
-                        "5.3"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ has_real_derivative f (f1 x) (atreal x)"
-                },
-                {
-                    "args": "exI, {a: real}, {P: λa1. has_real_derivative f a1 (atreal x), a: f1 x}",
-                    "id": "5.5",
-                    "prevs": [
-                        "5.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ ∃f1. has_real_derivative f f1 (atreal x)"
-                },
-                {
-                    "args": "real_differentiable_def, real_differentiable f (atreal x)",
-                    "id": "5.6",
-                    "prevs": [
-                        "5.5"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ real_differentiable f (atreal x)"
-                },
-                {
-                    "args": "real_differentiable_imp_continuous_atreal",
-                    "id": "5.7",
-                    "prevs": [
-                        "5.6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ real_continuous f (atreal x)"
-                },
-                {
-                    "args": "",
-                    "id": "5.8",
-                    "prevs": [
-                        "5.0",
-                        "5.1",
-                        "5.2",
-                        "5.7"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ real_continuous f (atreal x)"
-                },
-                {
-                    "args": "",
-                    "id": "6",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ real_continuous g (atreal x)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "6.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "0 < abs (x - c)",
-                    "id": "6.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < abs (x - c) ⊢ 0 < abs (x - c)"
-                },
-                {
-                    "args": "abs (x - c) < d",
-                    "id": "6.2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "abs (x - c) < d ⊢ abs (x - c) < d"
-                },
-                {
-                    "args": "",
-                    "id": "6.3",
-                    "prevs": [
-                        "1",
-                        "6.1",
-                        "6.2"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)"
-                },
-                {
-                    "args": "conjD2, {}, {A: has_real_derivative f (f1 x) (atreal x), B: has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)}",
-                    "id": "6.4",
-                    "prevs": [
-                        "6.3"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)"
-                },
-                {
-                    "args": "conjD1, {}, {A: has_real_derivative g (g1 x) (atreal x), B: ¬(g1 x = 0)}",
-                    "id": "6.5",
-                    "prevs": [
-                        "6.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ has_real_derivative g (g1 x) (atreal x)"
-                },
-                {
-                    "args": "exI, {a: real}, {P: λa1. has_real_derivative g a1 (atreal x), a: g1 x}",
-                    "id": "6.6",
-                    "prevs": [
-                        "6.5"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), 0 < abs (x - c), abs (x - c) < d ⊢ ∃f1. has_real_derivative g f1 (atreal x)"
-                },
-                {
-                    "args": "real_differentiable_def, real_differentiable g (atreal x)",
-                    "id": "6.7",
-                    "prevs": [
-                        "6.6"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ real_differentiable g (atreal x)"
-                },
-                {
-                    "args": "real_differentiable_imp_continuous_atreal",
-                    "id": "6.8",
-                    "prevs": [
-                        "6.7"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ real_continuous g (atreal x)"
-                },
-                {
-                    "args": "",
-                    "id": "6.9",
-                    "prevs": [
-                        "6.0",
-                        "6.1",
-                        "6.2",
-                        "6.8"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ real_continuous g (atreal x)"
-                },
-                {
-                    "args": "",
                     "id": "7",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ ¬(g x = 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "7.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "0 < abs (x - c)",
-                    "id": "7.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < abs (x - c) ⊢ 0 < abs (x - c)"
-                },
-                {
-                    "args": "abs (x - c) < d",
-                    "id": "7.2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "abs (x - c) < d ⊢ abs (x - c) < d"
-                },
-                {
-                    "args": "c < x ∨ x < c",
-                    "id": "7.3",
-                    "prevs": [
-                        "7.1"
-                    ],
-                    "rule": "z3",
-                    "th": "0 < abs (x - c) ⊢ c < x ∨ x < c"
-                },
-                {
-                    "args": "",
-                    "id": "7.4",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ c < x ⟶ ¬(g x = 0)"
-                },
-                {
-                    "args": "c < x",
-                    "id": "7.4.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "c < x ⊢ c < x"
-                },
-                {
-                    "args": "real_rolle, {}, {a: c, b: x, f: g, f1: g1}",
-                    "id": "7.4.1",
-                    "prevs": [
-                        "7.4.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "c < x ⊢ g c = g x ⟶ real_continuous_on g (real_closed_interval c x) ⟶ (∀x1. x1 ∈ real_open_interval c x ⟶ has_real_derivative g (g1 x1) (atreal x1)) ⟶ (∃x1. x1 ∈ real_open_interval c x ∧ g1 x1 = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "7.4.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, c < x ⊢ g x = 0 ⟶ false"
-                },
-                {
-                    "args": "g x = 0",
-                    "id": "7.4.2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "g x = 0 ⊢ g x = 0"
-                },
-                {
-                    "args": "",
-                    "id": "7.4.2.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, c < x, g x = 0 ⊢ ¬false ⟶ ¬(g c = g x ⟶ real_continuous_on g (real_closed_interval c x) ⟶ (∀x1. x1 ∈ real_open_interval c x ⟶ has_real_derivative g (g1 x1) (atreal x1)) ⟶ (∃x1. x1 ∈ real_open_interval c x ∧ g1 x1 = 0))"
-                },
-                {
-                    "args": "¬false",
-                    "id": "7.4.2.1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬false ⊢ ¬false"
-                },
-                {
-                    "args": "",
-                    "id": "7.4.2.1.1",
-                    "prevs": [],
                     "rule": "sorry",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, c < x, g x = 0, ¬false ⊢ ¬(g c = g x ⟶ real_continuous_on g (real_closed_interval c x) ⟶ (∀x1. x1 ∈ real_open_interval c x ⟶ has_real_derivative g (g1 x1) (atreal x1)) ⟶ (∃x1. x1 ∈ real_open_interval c x ∧ g1 x1 = 0))"
-                },
-                {
-                    "args": "",
-                    "id": "7.4.2.1.2",
-                    "prevs": [
-                        "7.4.2.1.0",
-                        "7.4.2.1.1"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, c < x, g x = 0 ⊢ ¬false ⟶ ¬(g c = g x ⟶ real_continuous_on g (real_closed_interval c x) ⟶ (∀x1. x1 ∈ real_open_interval c x ⟶ has_real_derivative g (g1 x1) (atreal x1)) ⟶ (∃x1. x1 ∈ real_open_interval c x ∧ g1 x1 = 0))"
-                },
-                {
-                    "args": "contrapositive",
-                    "id": "7.4.2.2",
-                    "prevs": [
-                        "7.4.1",
-                        "7.4.2.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "c < x, 0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, g x = 0 ⊢ false"
-                },
-                {
-                    "args": "",
-                    "id": "7.4.2.3",
-                    "prevs": [
-                        "7.4.2.0",
-                        "7.4.2.2"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, c < x ⊢ g x = 0 ⟶ false"
-                },
-                {
-                    "args": "negI",
-                    "id": "7.4.3",
-                    "prevs": [
-                        "7.4.2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d, c < x ⊢ ¬(g x = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "7.4.4",
-                    "prevs": [
-                        "7.4.0",
-                        "7.4.3"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ c < x ⟶ ¬(g x = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "7.5",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), 0 < abs (x - c), abs (x - c) < d ⊢ x < c ⟶ ¬(g x = 0)"
-                },
-                {
-                    "args": "disjE",
-                    "id": "7.6",
-                    "prevs": [
-                        "7.3",
-                        "7.4",
-                        "7.5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < abs (x - c), 0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c), abs (x - c) < d ⊢ ¬(g x = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "7.7",
-                    "prevs": [
-                        "7.0",
-                        "7.1",
-                        "7.2",
-                        "7.6"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ ¬(g x = 0)"
+                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), f c = 0, g c = 0, tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ tendsto_real (λx. f x / g x) l (atreal c)"
                 },
                 {
                     "args": "",
                     "id": "8",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "0 < d, ∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0), tendsto_real f 0 (atreal c), tendsto_real g 0 (atreal c), tendsto_real (λx. f1 x / g1 x) l (atreal c) ⊢ tendsto_real (λx. f x / g x) l (atreal c)"
-                },
-                {
-                    "args": "",
-                    "id": "9",
                     "prevs": [
                         "0",
                         "1",
                         "2",
                         "3",
                         "4",
-                        "8"
+                        "5",
+                        "6",
+                        "7"
                     ],
                     "rule": "intros",
-                    "th": "⊢ 0 < d ⟶ (∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)) ⟶ tendsto_real f 0 (atreal c) ⟶ tendsto_real g 0 (atreal c) ⟶ tendsto_real (λx. f1 x / g1 x) l (atreal c) ⟶ tendsto_real (λx. f x / g x) l (atreal c)"
+                    "th": "⊢ 0 < d ⟶ (∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)) ⟶ f c = 0 ⟶ g c = 0 ⟶ tendsto_real f 0 (atreal c) ⟶ tendsto_real g 0 (atreal c) ⟶ tendsto_real (λx. f1 x / g1 x) l (atreal c) ⟶ tendsto_real (λx. f x / g x) l (atreal c)"
                 }
             ],
             "prop": [
-                "0 < d ⟶ ",
-                "(∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ",
-                "   ⟶ has_real_derivative f (f1 x) (atreal x) ∧ ",
-                "      has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)) ⟶ ",
-                "tendsto_real f 0 (atreal c) ⟶ ",
-                "tendsto_real g 0 (atreal c) ⟶ tendsto_real (λx. f1 x / g1 x) l (atreal c) ",
-                "⟶ tendsto_real (λx. f x / g x) l (atreal c)"
+                "0 < d ",
+                "⟶ (∀x. 0 < abs (x - c) ",
+                "      ⟶ abs (x - c) < d ",
+                "         ⟶ has_real_derivative f (f1 x) (atreal x) ∧ ",
+                "            has_real_derivative g (g1 x) (atreal x) ∧ ¬(g1 x = 0)) ",
+                "   ⟶ f c = 0 ",
+                "      ⟶ g c = 0 ",
+                "         ⟶ tendsto_real f 0 (atreal c) ",
+                "            ⟶ tendsto_real g 0 (atreal c) ",
+                "               ⟶ tendsto_real (λx. f1 x / g1 x) l (atreal c) ",
+                "                  ⟶ tendsto_real (λx. f x / g x) l (atreal c)"
             ],
             "steps": [
                 {
-                    "goal": "!x. 0 < abs (x - c) --> abs (x - c) < d --> real_continuous f (atreal x)",
-                    "goal_id": "5",
+                    "goal": "!p. !q. !r. (p--> q & r) <--> (p-->q) & (p-->r)",
+                    "goal_id": "7",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "5",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "5.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_differentiable_imp_continuous_atreal"
-                },
-                {
-                    "goal_id": "5.3",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_differentiable_def"
+                    "goal_id": "7",
+                    "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "1",
-                        "5.1",
-                        "5.2"
+                        "7",
+                        "1"
                     ],
-                    "goal_id": "5.3",
-                    "method_name": "apply_fact"
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "5.3"
+                        "7",
+                        "8"
                     ],
-                    "goal_id": "5.4",
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "all_conj_distrib"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
                 },
                 {
                     "fact_ids": [
-                        "5.4"
+                        "12"
                     ],
-                    "goal_id": "5.5",
-                    "method_name": "apply_backward_step",
-                    "theorem": "exI"
-                },
-                {
-                    "goal": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶ real_continuous g (atreal x)",
-                    "goal_id": "6",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "6",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "1",
-                        "6.1",
-                        "6.2"
-                    ],
-                    "goal_id": "6.3",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "6.3"
-                    ],
-                    "goal_id": "6.4",
+                    "goal_id": "14",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "6.4"
+                        "14"
                     ],
-                    "goal_id": "6.5",
+                    "goal_id": "15",
+                    "method_name": "apply_forward_step",
+                    "theorem": "all_conj_distrib"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
                 },
                 {
-                    "goal_id": "6.6",
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "5.25",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal": "x = cc | 0 < abs (x - cc)",
+                    "goal_id": "5.25.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.25.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.25.2"
+                    ],
+                    "goal_id": "5.25.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "5.25.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.25.3.0"
+                    ],
+                    "goal_id": "5.25.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.25.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "5.9"
+                    ],
+                    "goal_id": "5.25.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.25.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.25.4.1",
                     "method_name": "apply_backward_step",
                     "theorem": "real_differentiable_imp_continuous_atreal"
                 },
                 {
-                    "goal_id": "6.6",
+                    "goal_id": "5.25.4.1",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_differentiable_def"
                 },
                 {
                     "fact_ids": [
-                        "6.5"
+                        "5.20",
+                        "5.25.4.0",
+                        "5.25.1"
                     ],
-                    "goal_id": "6.6",
+                    "goal_id": "5.25.4.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5.25.4.1"
+                    ],
+                    "goal_id": "5.25.4.2",
                     "method_name": "apply_backward_step",
                     "theorem": "exI"
                 },
                 {
-                    "goal": "∀x. 0 < abs (x - c) ⟶ abs (x - c) < d ⟶  ¬(g x = 0)",
-                    "goal_id": "7",
+                    "goal": "∀x. abs (x - cc) < dd ⟶ real_continuous gg (atreal x)",
+                    "goal_id": "5.26",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "7",
+                    "goal_id": "5.26",
                     "method_name": "introduction",
                     "names": "x"
                 },
                 {
-                    "goal": "c < x | x < c",
-                    "goal_id": "7.3",
+                    "goal": "x = cc ∨ 0 < abs (x - cc)",
+                    "goal_id": "5.26.2",
                     "method_name": "cut"
                 },
                 {
-                    "fact_ids": [
-                        "7.1"
-                    ],
-                    "goal_id": "7.3",
+                    "goal_id": "5.26.2",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "7.3"
+                        "5.26.2"
                     ],
-                    "goal_id": "7.4",
+                    "goal_id": "5.26.3",
                     "method_name": "apply_backward_step",
                     "theorem": "disjE"
                 },
                 {
-                    "goal_id": "7.4",
+                    "goal_id": "5.26.3",
                     "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
-                        "7.4.0"
+                        "5.26.3.0"
                     ],
-                    "goal_id": "7.4.1",
+                    "goal_id": "5.26.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.26.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "5.10"
+                    ],
+                    "goal_id": "5.26.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.26.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.23",
+                        "5.26.4.0",
+                        "5.26.1"
+                    ],
+                    "goal_id": "5.26.4.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "5.26.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_imp_continuous_atreal"
+                },
+                {
+                    "goal_id": "5.26.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "fact_ids": [
+                        "5.26.4.1"
+                    ],
+                    "goal_id": "5.26.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "goal": "!x. 0 < abs (x - cc) --> abs (x - cc) < dd --> ~(gg x = 0)",
+                    "goal_id": "5.27",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.27",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal": "cc < x | x < cc",
+                    "goal_id": "5.27.3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.1"
+                    ],
+                    "goal_id": "5.27.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.3"
+                    ],
+                    "goal_id": "5.27.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "5.27.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.0"
+                    ],
+                    "goal_id": "5.27.4.1",
                     "method_name": "apply_forward_step",
-                    "param_f": "g",
-                    "param_f1": "g1",
+                    "param_f": "gg",
+                    "param_f1": "gg1",
                     "theorem": "real_rolle"
                 },
                 {
-                    "goal_id": "7.4.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negI"
-                },
-                {
-                    "goal_id": "7.4.2",
-                    "method_name": "introduction"
-                },
-                {
                     "fact_ids": [
-                        "7.4.1"
+                        "5.27.4.1"
                     ],
-                    "goal_id": "7.4.2.1",
+                    "goal_id": "5.27.4.2",
                     "method_name": "apply_backward_step",
                     "theorem": "contrapositive"
                 },
                 {
-                    "goal_id": "7.4.2.1",
+                    "goal_id": "5.27.4.2",
                     "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.0"
+                    ],
+                    "goal_id": "5.27.4.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "5.27.4.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "5.27.4.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "5.27.4.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.1"
+                    ],
+                    "goal_id": "5.27.4.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.27.4.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5.27.4.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "5.27.4.2.3",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.3.1"
+                    ],
+                    "goal_id": "5.27.4.2.3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.3.2"
+                    ],
+                    "goal_id": "5.27.4.2.3.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "5.27.4.2.3.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_atreal_withinreal"
+                },
+                {
+                    "fact_ids": [
+                        "5.26"
+                    ],
+                    "goal_id": "5.27.4.2.3.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.3.3",
+                        "5.27.2"
+                    ],
+                    "goal_id": "5.27.4.2.3.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.27.4.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "5.27.4.2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5.27.4.2.5",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.5.1"
+                    ],
+                    "goal_id": "5.27.4.2.5.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_open_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.5.2"
+                    ],
+                    "goal_id": "5.27.4.2.5.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "5.23"
+                    ],
+                    "goal_id": "5.27.4.2.5.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.5.3"
+                    ],
+                    "goal_id": "5.27.4.2.5.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.5.3",
+                        "5.27.2"
+                    ],
+                    "goal_id": "5.27.4.2.5.5",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.27.4.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_exists"
+                },
+                {
+                    "goal_id": "5.27.4.2.6",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "5.27.4.2.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "5.27.4.2.6.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.0"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.1"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.27.4.2.6.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.24"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.0"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.2.1"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_open_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.2.2"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.2.3"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.4.2.6.1.2.3",
+                        "5.27.2"
+                    ],
+                    "goal_id": "5.27.4.2.6.1.2.5",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.27.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.5.0"
+                    ],
+                    "goal_id": "5.27.5.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "gg",
+                    "param_f1": "gg1",
+                    "theorem": "real_rolle"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.5.1"
+                    ],
+                    "goal_id": "5.27.5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.27.5.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.27.5.2.0"
+                    ],
+                    "goal_id": "5.27.5.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "5.27.5.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "5.27.5.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.10"
+                    ],
+                    "goal_id": "5.27.5.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.27.5.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "5.27.5.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "c": "real",
                 "d": "real",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real",
                 "l": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_ivt_increasing",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "a ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)) ⊢ ∀t. f1 a ≤ t ⟶ t ≤ f1 b ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t)"
+                },
+                {
+                    "args": "t, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t"
+                },
+                {
+                    "args": "f1 a ≤ t",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f1 a ≤ t ⊢ f1 a ≤ t"
+                },
+                {
+                    "args": "t ≤ f1 b",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "t ≤ f1 b ⊢ t ≤ f1 b"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b ⊢ f1 a = t ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t)"
+                },
+                {
+                    "args": "f1 a = t",
+                    "id": "2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f1 a = t ⊢ f1 a = t"
+                },
+                {
+                    "args": "a ≤ a ∧ a ≤ b",
+                    "id": "2.3.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "a ≤ b ⊢ a ≤ a ∧ a ≤ b"
+                },
+                {
+                    "args": "member_collect, a ∈ {p. a ≤ p ∧ p ≤ b}",
+                    "id": "2.3.2",
+                    "prevs": [
+                        "2.3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, f1 a = t ⊢ a ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "real_closed_interval_def, a ∈ real_closed_interval a b",
+                    "id": "2.3.3",
+                    "prevs": [
+                        "2.3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, f1 a = t ⊢ a ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.3.4",
+                    "prevs": [
+                        "2.3.3",
+                        "2.3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, f1 a = t ⊢ a ∈ real_closed_interval a b ∧ f1 a = t"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx. x ∈ real_closed_interval a b ∧ f1 x = t, a: a}",
+                    "id": "2.3.5",
+                    "prevs": [
+                        "2.3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, f1 a = t ⊢ ∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.6",
+                    "prevs": [
+                        "2.3.0",
+                        "2.3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b ⊢ f1 a = t ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b ⊢ ¬(f1 a = t) ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t)"
+                },
+                {
+                    "args": "¬(f1 a = t)",
+                    "id": "2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(f1 a = t) ⊢ ¬(f1 a = t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t) ⊢ f1 b = t ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "f1 b = t",
+                    "id": "2.4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f1 b = t ⊢ f1 b = t"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: b}",
+                    "id": "2.4.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ b ≤ b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.4.1.2",
+                    "prevs": [
+                        "0",
+                        "2.4.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), f1 b = t ⊢ a ≤ b ∧ b ≤ b"
+                },
+                {
+                    "args": "member_collect, b ∈ {p. a ≤ p ∧ p ≤ b}",
+                    "id": "2.4.1.3",
+                    "prevs": [
+                        "2.4.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), f1 b = t ⊢ b ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "real_closed_interval_def, b ∈ real_closed_interval a b",
+                    "id": "2.4.1.4",
+                    "prevs": [
+                        "2.4.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), f1 b = t ⊢ b ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.4.1.5",
+                    "prevs": [
+                        "2.4.1.4",
+                        "2.4.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), f1 b = t ⊢ b ∈ real_closed_interval a b ∧ f1 b = t"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx. x ∈ real_closed_interval a b ∧ f1 x = t, a: b}",
+                    "id": "2.4.1.6",
+                    "prevs": [
+                        "2.4.1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), f1 b = t ⊢ ∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.1.7",
+                    "prevs": [
+                        "2.4.1.0",
+                        "2.4.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t) ⊢ f1 b = t ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t) ⊢ ¬(f1 b = t) ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "¬(f1 b = t)",
+                    "id": "2.4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(f1 b = t) ⊢ ¬(f1 b = t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t) ⊢ b = a ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "b = a",
+                    "id": "2.4.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = a ⊢ b = a"
+                },
+                {
+                    "args": "real_le_antisym, a ≤ a ∧ a ≤ a",
+                    "id": "2.4.2.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ a ≤ a ∧ a ≤ a"
+                },
+                {
+                    "args": "member_collect, a ∈ {p. a ≤ p ∧ p ≤ a}",
+                    "id": "2.4.2.1.2",
+                    "prevs": [
+                        "2.4.2.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t), b = a ⊢ a ∈ {p. a ≤ p ∧ p ≤ a}"
+                },
+                {
+                    "args": "real_closed_interval_def, a ∈ real_closed_interval a a",
+                    "id": "2.4.2.1.3",
+                    "prevs": [
+                        "2.4.2.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t), b = a ⊢ a ∈ real_closed_interval a a"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2.1.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t), b = a ⊢ f1 a = t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.4.2.1.5",
+                    "prevs": [
+                        "2.4.2.1.3",
+                        "2.4.2.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t), b = a ⊢ a ∈ real_closed_interval a a ∧ f1 a = t"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λa1. a1 ∈ real_closed_interval a a ∧ f1 a1 = t, a: a}",
+                    "id": "2.4.2.1.6",
+                    "prevs": [
+                        "2.4.2.1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t), b = a ⊢ ∃a1. a1 ∈ real_closed_interval a a ∧ f1 a1 = t"
+                },
+                {
+                    "args": "∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t",
+                    "id": "2.4.2.1.7",
+                    "prevs": [
+                        "2.4.2.1.0",
+                        "2.4.2.1.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = a, a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t) ⊢ ∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2.1.8",
+                    "prevs": [
+                        "2.4.2.1.0",
+                        "2.4.2.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t) ⊢ b = a ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t) ⊢ ¬(b = a) ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.4.2.3",
+                    "prevs": [
+                        "2.4.2.1",
+                        "2.4.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t), ¬(f1 b = t) ⊢ ∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2.4",
+                    "prevs": [
+                        "2.4.2.0",
+                        "2.4.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t) ⊢ ¬(f1 b = t) ⟶ (∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.4.3",
+                    "prevs": [
+                        "2.4.1",
+                        "2.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b, ¬(f1 a = t) ⊢ ∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.4",
+                    "prevs": [
+                        "2.4.0",
+                        "2.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b ⊢ ¬(f1 a = t) ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.3",
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)), f1 a ≤ t, t ≤ f1 b ⊢ ∃a1. a1 ∈ real_closed_interval a b ∧ f1 a1 = t"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b)) ⊢ ∀t. f1 a ≤ t ⟶ t ≤ f1 b ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ b ⟶ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ⟶ (∀t. f1 a ≤ t ⟶ t ≤ f1 b ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t))"
+                }
+            ],
             "prop": [
-                "a ≤ b ∧ ",
-                "(∀x. x ∈ real_closed_interval a b ",
-                "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
-                "⟶ (∀t. f1 a ≤ t ∧ t ≤ f1 b ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t))"
+                "a ≤ b ",
+                "⟶ (∀x. x ∈ real_closed_interval a b ",
+                "      ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
+                "   ⟶ (∀t. f1 a ≤ t ⟶ t ≤ f1 b ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "t"
+                },
+                {
+                    "case": "f1 a = t",
+                    "goal_id": "2.3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.3.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "a"
+                },
+                {
+                    "goal_id": "2.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "2.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.3.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "f1 b = t",
+                    "goal_id": "2.4.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.4.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "b"
+                },
+                {
+                    "goal_id": "2.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.4.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "2.4.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "2.4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "b = a",
+                    "goal_id": "2.4.2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.4.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.2.1.0"
+                    ],
+                    "goal_id": "2.4.2.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.4.2.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "a"
+                },
+                {
+                    "goal_id": "2.4.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.4.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "2.4.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2.4.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_antisym"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -16569,12 +17205,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_derivative_ivt_decreasing",
             "prop": [
-                "a ≤ b ∧ ",
-                "(∀x. x ∈ real_closed_interval a b ",
-                "   ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
-                "⟶ (∀t. f1 b ≤ t ∧ t ≤ f1 a ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t))"
+                "a ≤ b ",
+                "⟶ (∀x. x ∈ real_closed_interval a b ",
+                "      ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ",
+                "   ⟶ (∀t. f1 b ≤ t ⟶ t ≤ f1 a ⟶ (∃x. x ∈ real_closed_interval a b ∧ f1 x = t))"
             ],
             "ty": "thm",
             "vars": {
@@ -16585,12 +17225,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_real_derivative_inverse_basic",
             "prop": [
-                "has_real_derivative f f1 (atreal (g y)) ∧ ",
-                "¬(f1 = 0) ∧ ",
-                "real_continuous g (atreal y) ∧ real_open t ∧ y ∈ t ∧ (∀z. z ∈ t ⟶ f (g z) = z) ",
-                "⟶ has_real_derivative g (real_inverse f1) (atreal y)"
+                "has_real_derivative f f1 (atreal (g y)) ",
+                "⟶ ¬(f1 = 0) ",
+                "   ⟶ real_continuous g (atreal y) ",
+                "      ⟶ real_open t ",
+                "         ⟶ y ∈ t ",
+                "            ⟶ (∀z. z ∈ t ⟶ f (g z) = z) ⟶ has_real_derivative g (real_inverse f1) (atreal y)"
             ],
             "ty": "thm",
             "vars": {
@@ -16602,13 +17248,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_real_derivative_inverse_strong",
             "prop": [
-                "real_open s ∧ ",
-                "x ∈ s ∧ ",
-                "real_continuous_on f s ∧ ",
-                "(∀x1. x1 ∈ s ⟶ g (f x1) = x1) ∧ has_real_derivative f f1 (atreal x) ∧ ¬(f1 = 0) ",
-                "⟶ has_real_derivative g (real_inverse f1) (atreal (f x))"
+                "real_open s ",
+                "⟶ x ∈ s ",
+                "   ⟶ real_continuous_on f s ",
+                "      ⟶ (∀x1. x1 ∈ s ⟶ g (f x1) = x1) ",
+                "         ⟶ has_real_derivative f f1 (atreal x) ",
+                "            ⟶ ¬(f1 = 0) ⟶ has_real_derivative g (real_inverse f1) (atreal (f x))"
             ],
             "ty": "thm",
             "vars": {
@@ -16620,14 +17271,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_real_derivative_inverse_strong_x",
             "prop": [
-                "real_open s ∧ ",
-                "g y ∈ s ∧ ",
-                "real_continuous_on f s ∧ ",
-                "(∀x. x ∈ s ⟶ g (f x) = x) ∧ ",
-                "has_real_derivative f f1 (atreal (g y)) ∧ ¬(f1 = 0) ∧ f (g y) = y ",
-                "⟶ has_real_derivative g (real_inverse f1) (atreal y)"
+                "real_open s ",
+                "⟶ g y ∈ s ",
+                "   ⟶ real_continuous_on f s ",
+                "      ⟶ (∀x. x ∈ s ⟶ g (f x) = x) ",
+                "         ⟶ has_real_derivative f f1 (atreal (g y)) ",
+                "            ⟶ ¬(f1 = 0) ⟶ f (g y) = y ⟶ has_real_derivative g (real_inverse f1) (atreal y)"
             ],
             "ty": "thm",
             "vars": {

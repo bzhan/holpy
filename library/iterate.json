@@ -19,9 +19,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "numseg_combine_r",
-            "prop": "m ≤ p + 1 --> p ≤ n ⟶ {m..p} ∪ {p + 1..n} = {m..n}",
+            "prop": "m ≤ p + 1 ⟶ p ≤ n ⟶ {m..p} ∪ {p + 1..n} = {m..n}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -30,9 +29,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "numseg_combine_l",
-            "prop": "m ≤ p --> p ≤ n + 1 ⟶ {m..p - 1} ∪ {p..n} = {m..n}",
+            "prop": "m ≤ p ⟶ p ≤ n + 1 ⟶ {m..p - 1} ∪ {p..n} = {m..n}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -2266,10 +2264,10 @@
                 "hint_forward"
             ],
             "name": "sum_union",
-            "prop": "finite s --> finite t --> disjoint s t ⟶ sum (s ∪ t) f = sum s f + sum t f",
+            "prop": "finite s ⟶ finite t ⟶ disjoint s t ⟶ sum (s ∪ t) f = sum s f + sum t f",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -2281,10 +2279,10 @@
                 "hint_forward"
             ],
             "name": "sum_diff",
-            "prop": "finite s --> t ⊆ s ⟶ sum (diff s t) f = sum s f - sum t f",
+            "prop": "finite s ⟶ t ⊆ s ⟶ sum (diff s t) f = sum s f - sum t f",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -2296,10 +2294,10 @@
                 "hint_forward"
             ],
             "name": "sum_incl_excl",
-            "prop": "finite s --> finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f",
+            "prop": "finite s ⟶ finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -2395,13 +2393,13 @@
             ],
             "name": "sum_add_gen",
             "prop": [
-                "finite ({x. x ∈ s ∧ ¬(f x = 0)}) --> finite ({x. x ∈ s ∧ ¬(g x = 0)}) ",
-                "⟶ sum s (λx. f x + g x) = sum s f + sum s g"
+                "finite ({x. x ∈ s ∧ ¬(f x = 0)}) ",
+                "⟶ finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⟶ sum s (λx. f x + g x) = sum s f + sum s g"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2717,11 +2715,11 @@
                 "hint_forward"
             ],
             "name": "sum_le",
-            "prop": "finite s --> (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g",
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2732,11 +2730,11 @@
                 "hint_forward"
             ],
             "name": "sum_lt",
-            "prop": "finite s --> (∀x. x ∈ s ⟶ f x ≤ g x) --> (∃x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ (∃x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2854,7 +2852,7 @@
                     "th": "⊢ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g"
                 }
             ],
-            "prop": "finite s --> ¬(s = ∅) --> (∀x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
+            "prop": "finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
             "steps": [
                 {
                     "goal_id": "3",
@@ -2888,8 +2886,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2973,7 +2971,7 @@
                     "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ 0 ≤ f x) ⟶ (∃x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f"
                 }
             ],
-            "prop": "finite s --> (∀x. x ∈ s ⟶ 0 ≤ f x) --> (∃x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f",
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ 0 ≤ f x) ⟶ (∃x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f",
             "steps": [
                 {
                     "goal_id": "3",
@@ -3000,7 +2998,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -3076,7 +3074,7 @@
                     "th": "⊢ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f"
                 }
             ],
-            "prop": "finite s --> ¬(s = ∅) --> (∀x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f",
+            "prop": "finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f",
             "steps": [
                 {
                     "goal_id": "3",
@@ -3100,7 +3098,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -3196,7 +3194,7 @@
                     "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ f x = g x) ⟶ sum s f = sum s g"
                 }
             ],
-            "prop": "finite s --> (∀x. x ∈ s ⟶ f x = g x) ⟶ sum s f = sum s g",
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x = g x) ⟶ sum s f = sum s g",
             "steps": [
                 {
                     "goal_id": "2",
@@ -3236,8 +3234,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
