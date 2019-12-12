@@ -15,7 +15,6 @@ from syntax import parser, printer, settings, pprint
 from server import server, method
 from logic import basic
 from logic.basic import user_dir, user_file
-from logic import induct
 from imperative import parser2
 from imperative import imp
 from prover import z3wrapper

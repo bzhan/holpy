@@ -11,7 +11,6 @@ from kernel.theory import Theory, TheoryException
 from kernel.thm import Thm
 from kernel import extension
 from logic.context import Context
-from logic import induct
 from logic import logic  # Load all defined macros
 from data import expr
 from syntax import parser
