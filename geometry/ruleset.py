@@ -21,6 +21,7 @@ ruleset_raw = {
     "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",
+    "D40": "eqangle(a, c, b, c) :- para(a, b)",
     "D41": "eqangle(P, A, P, B, Q, A, Q, B) :- cyclic(A, B, P, Q)",
     # TODO: Support symbol "¬". Argument "¬coll(P,Q,A,B)" in D42 has been ignored.
     "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B)",
@@ -31,11 +32,24 @@ ruleset_raw = {
     "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
     "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
+    "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
+    "D68": "cong(A, B, A, C) :- midp(A, B, C)",
     # Use this rule to generate eqangle from two perp facts. (Written by myself)
     "D76": "eqangle(k, l, m, n) :- perp(k, l), perp(m ,n)",
     # (This one is also written by myself)
     "D77": "perp(m, n) :-  eqangle(k, l, m, n), perp(k, l)",
     "D78": "eqangle(l, k, m, n) :- perp(k, l), perp(m, n)",
+    # 4 rules for obtaining contri.
+    "D79": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F), cong(B, C, E, F)",  # SAS
+    "D80": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), cong(B, C, E, F), cong(A, C, D, F)",  # SSS
+    "D81": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F),"
+           "eqangle(B, A, A, C, E, D, D, F)",  # ASA
+    "D82": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F),"
+           "eqangle(A, C, C, B, D, F, F, E)",  # AAS
+    # Get eqangle from contri.
+    "D83": "eqangle(A, B, B, C, D, E, E, F) :- contri(A, B, C, D, E, F)"
+
+
 }
 
 ruleset = dict()
