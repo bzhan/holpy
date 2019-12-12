@@ -57,11 +57,7 @@ class Item:
         raise NotImplementedError
 
     def export_json(self, thy):
-        """Export the object to JSON format.
-        
-        Call only when self.error is None.
-
-        """
+        """Export the object to JSON format."""
         raise NotImplementedError
 
     def export_web(self, thy, line_length=80):
@@ -71,7 +67,11 @@ class Item:
         if self.error is None:
             res['ext'] = printer.print_extensions(thy, self.get_extension())
         else:
-            res['error'] = self.error
+            res['error'] = {
+                "err_type": self.error.__class__.__name__,
+                "err_str": str(self.error),
+                "trace": self.trace
+            }
         return res
 
 
@@ -81,6 +81,14 @@ def export_term(thy, t):
     if len(res) == 1:
         res = res[0]
     return res
+
+@settings.with_settings
+def display_raw(s):
+    """Display unparsed type or term."""
+    if isinstance(s, str):
+        return [pprint.N(s)]
+    else:
+        return [pprint.N(line) for line in s]
 
 class Constant(Item):
     """Axiomatic constant."""
@@ -125,7 +133,7 @@ class Constant(Item):
         return {
             'ty': 'def.ax',
             'name': self.name,
-            'type': self.type if self.error else printer.print_type(thy, self.type),
+            'type': display_raw(self.type) if self.error else printer.print_type(thy, self.type),
             'overloaded': self.overloaded
         }
 
@@ -133,11 +141,10 @@ class Constant(Item):
         self.parse(thy, edit_data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         res = {
             'ty': 'def.ax',
             'name': self.name,
-            'type': printer.print_type(thy, self.type, unicode=True)
+            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True)
         }
         if self.overloaded:
             res['overloaded'] = True
@@ -197,8 +204,8 @@ class Axiom(Item):
     @settings.with_settings
     def get_display(self, thy, line_length=80):
         if self.error:
-            disp_vars = [nm + ' :: ' + T for nm, T in self.vars.items()]
-            disp_prop = self.prop
+            disp_vars = [pprint.N(nm + ' :: ' + T) for nm, T in self.vars.items()]
+            disp_prop = display_raw(self.prop)
         else:
             disp_vars = [pprint.N(nm + ' :: ') + printer.print_type(thy, T) for nm, T in self.vars.items()]
             disp_prop = printer.print_term(thy, self.prop, line_length=line_length)
@@ -221,12 +228,12 @@ class Axiom(Item):
         self.parse(thy, edit_data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         res = {
             'ty': 'thm.ax',
             'name': self.name,
-            'vars': dict((nm, printer.print_type(thy, T, unicode=True)) for nm, T in self.vars.items()),
-            'prop': export_term(thy, self.prop)
+            'vars': self.vars if self.error else \
+                dict((nm, printer.print_type(thy, T, unicode=True)) for nm, T in self.vars.items()),
+            'prop': self.prop if self.error else export_term(thy, self.prop)
         }
         if self.attributes:
             res['attributes'] = self.attributes
@@ -351,8 +358,8 @@ class Definition(Item):
     @settings.with_settings
     def get_display(self, thy, line_length=80):
         if self.error:
-            disp_type = self.type
-            disp_prop = self.prop
+            disp_type = display_raw(self.type)
+            disp_prop = display_raw(self.prop)
         else:
             disp_type = printer.print_type(thy, self.type)
             disp_prop = printer.print_term(thy, self.prop, line_length=line_length)
@@ -369,12 +376,11 @@ class Definition(Item):
         self.parse(thy, edit_data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         res = {
             'ty': 'def',
             'name': self.name,
-            'type': printer.print_type(thy, self.type, unicode=True),
-            'prop': export_term(thy, self.prop)
+            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True),
+            'prop': self.prop if self.error else export_term(thy, self.prop)
         }
         if self.attributes:
             res['attributes'] = self.attributes
@@ -456,7 +462,7 @@ class Fun(Item):
     @settings.with_settings
     def get_display(self, thy, line_length=80):
         if self.error:
-            disp_type = self.type
+            disp_type = display_raw(self.type)
             disp_rules = [rule['prop'] for rule in self.rules]
         else:
             disp_type = printer.print_type(thy, self.type)
@@ -477,12 +483,12 @@ class Fun(Item):
         self.parse(thy, edit_data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         return {
             'ty': 'def.ind',
             'name': self.name,
-            'type': printer.print_type(thy, self.type, unicode=True),
-            'rules': [{'prop': export_term(thy, rule['prop'])} for rule in self.rules]
+            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True),
+            'rules': [{'prop': rule['prop'] if self.error else export_term(thy, rule['prop'])}
+                      for rule in self.rules]
         }
 
 class Inductive(Item):
@@ -567,8 +573,8 @@ class Inductive(Item):
     @settings.with_settings
     def get_display(self, thy, line_length=80):
         if self.error:
-            disp_type = self.type
-            disp_rules = [rule['name'] + ": " + rule['prop'] for rule in self.rules]
+            disp_type = display_raw(self.type)
+            disp_rules = [pprint.N(rule['name'] + ": " + rule['prop']) for rule in self.rules]
         else:
             disp_type = printer.print_type(thy, self.type)
             disp_rules = [pprint.N(rule['name'] + ": ") + printer.print_term(thy, rule['prop'])
@@ -590,12 +596,11 @@ class Inductive(Item):
         self.parse(thy, edit_data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         return {
             'ty': 'def.pred',
             'name': self.name,
-            'type': printer.print_type(thy, self.type, unicode=True),
-            'rules': [{'name': rule['name'], 'prop': export_term(thy, rule['prop'])}
+            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True),
+            'rules': [{'name': rule['name'], 'prop': rule['prop'] if self.error else export_term(thy, rule['prop'])}
                       for rule in self.rules]
         }
 
@@ -640,7 +645,6 @@ class AxType(Item):
         self.parse(thy, data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         return {
             'ty': 'type.ax',
             'name': self.name,
@@ -791,13 +795,12 @@ class Datatype(Item):
         self.parse(thy, data)
 
     def export_json(self, thy):
-        assert self.error is None, "export_json"
         constrs = []
         for constr in self.constrs:
             constrs.append({
                 'name': constr['name'],
                 'args': constr['args'],
-                'type': printer.print_type(thy, constr['type'])
+                'type': constr['type'] if self.error else printer.print_type(thy, constr['type'])
             })
         return {
             'ty': 'type.ind',

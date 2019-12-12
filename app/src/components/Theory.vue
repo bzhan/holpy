@@ -30,7 +30,7 @@
          ref="items"
          v-bind:class="{
            'item-selected': is_selected(index),
-           'item-error': 'err_type' in item
+           'item-error': 'error' in item
          }">
       <div v-if="item.ty === 'header'">
         <span class="header-item">{{item.name}}</span>
@@ -404,11 +404,11 @@ export default {
         return
 
       const item = response.data.item
-      if ('err_type' in item) {
+      if ('error' in item) {
         this.$emit('set-message', {
           type: 'error',
-          data: item.err_type + '\n' + item.err_str,
-          trace: item.trace
+          data: item.error.err_type + '\n' + item.error.err_str,
+          trace: item.error.trace
         })
       } else {
         this.$emit('set-message', {
@@ -424,9 +424,15 @@ export default {
       if (response === undefined)
         return
 
-      var item = this.theory.content[this.on_edit]
-      Object.assign(item, response.data.item)
-      this.$set(this.theory.content, this.on_edit, item)
+      const item = this.theory.content[this.on_edit]
+      const new_item = response.data.item
+      if (item.ty == 'thm') {
+        // Copy over proof information
+        new_item.proof = item.proof
+        new_item.num_gaps = item.num_gaps
+        new_item.steps = item.steps
+      }
+      this.$set(this.theory.content, this.on_edit, new_item)
       this.save_json_file()
       this.on_edit = undefined
       this.on_add = false
@@ -625,11 +631,11 @@ export default {
     selected_set_message: function () {
       if ('single' in this.selected) {
         const item = this.theory.content[this.selected.single]
-        if ('err_type' in item) {
+        if ('error' in item) {
           // Selected item, which has an error
           this.$emit('set-message', {
             type: 'error',
-            data: item.err_type + '\n' + item.err_str
+            data: item.error.err_type + '\n' + item.error.err_str
           })
         } else {
           // Selected item, with no errors
@@ -651,7 +657,7 @@ export default {
         var err_lines = ''
         for (let i = 0; i < this.theory.content.length; i++) {
           let item = this.theory.content[i]
-          if ('err_type' in item) {
+          if ('error' in item) {
             err_count += 1
             err_lines += ('\n' + this.keywords[item.ty] + ' ' + item.name)
           }
