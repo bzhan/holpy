@@ -9,6 +9,7 @@ from syntax import settings
 from syntax import infertype
 from syntax import operator
 from util import name
+from util import typecheck
 
 
 class AST:
@@ -219,7 +220,7 @@ class FunType(AST):
 @settings.with_settings
 def get_ast_type(thy, T):
     """Obtain the abstract syntax tree for a type."""
-    assert isinstance(T, HOLType), "get_ast_type: input is not a type."
+    typecheck.checkinstance('get_ast_type', T, HOLType)
 
     def helper(T):
         if T.is_stvar():
@@ -262,7 +263,7 @@ def get_ast_term(thy, t):
     if (thy, t, settings.unicode()) in term_ast:
         return term_ast[(thy, t, settings.unicode())]
 
-    assert isinstance(t, term.Term), "get_ast_term: input is not a term."
+    typecheck.checkinstance('get_ast_term', t, term.Term)
     var_names = [v.name for v in term.get_vars(t)]
 
     # Import modules for custom parsed data

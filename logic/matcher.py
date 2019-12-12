@@ -13,6 +13,8 @@ from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel import term
 from syntax import operator
 from util import name
+from util import typecheck
+
 
 class MatchException(Exception):
     def __init__(self, trace):
@@ -70,8 +72,7 @@ def first_order_match_incr(pat, t, instsp):
     instantiations are updated by the function.
     
     """
-    assert isinstance(pat, Term) and isinstance(t, Term), \
-           "first_order_match_incr: pat and t must be terms."
+    typecheck.checkinstance('first_order_match_incr', pat, Term, t, Term)
     assert len(term.get_svars(t)) == 0, "first_order_match_incr: t should not contain patterns."
 
     # Trace of pattern and term, for debugging

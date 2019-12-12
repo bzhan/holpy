@@ -6,6 +6,7 @@ from data.int import intT
 from data import int as hol_int
 from data.list import listT, nth, length
 from logic import logic
+from util import typecheck
 
 
 """Expressions in the programming language."""
@@ -27,7 +28,7 @@ class Expr():
 class Var(Expr):
     """Variables."""
     def __init__(self, name):
-        assert isinstance(name, str)
+        typecheck.checkinstance('Var', name, str)
         self.name = name
         self.is_ident = True
 
@@ -58,7 +59,9 @@ class Var(Expr):
 class ArrayElt(Expr):
     """Element of an array."""
     def __init__(self, ident, idx):
-        assert isinstance(ident, Expr) and ident.is_ident and isinstance(idx, Expr)
+        typecheck.checkinstance('ArrayElt', ident, Expr, idx, Expr)
+        if not ident.is_ident:
+            raise NotImplementedError
         self.ident = ident
         self.idx = idx
         self.is_ident = True
@@ -84,7 +87,9 @@ class Field(Expr):
     
     """
     def __init__(self, ident, fieldname):
-        assert isinstance(ident, Expr) and ident.is_ident and isinstance(fieldname, str)
+        typecheck.checkinstance('Field', ident, Expr, fieldname, str)
+        if not ident.is_ident:
+            raise NotImplementedError
         self.ident = ident
         self.fieldname = fieldname
         self.is_ident = True
@@ -110,7 +115,7 @@ class Field(Expr):
 class Const(Expr):
     """Constant value."""
     def __init__(self, val):
-        assert isinstance(val, (int, bool))
+        typecheck.checkinstance('Const', val, (int, bool))
         self.val = val
 
     def __repr__(self):
@@ -139,8 +144,7 @@ class Const(Expr):
 class Op(Expr):
     """One of pre-specified operators."""
     def __init__(self, op, *args):
-        assert isinstance(op, str)
-        assert all(isinstance(arg, Expr) for arg in args)
+        typecheck.checkinstance('Op', op, str, args, [Expr])
         self.op = op
 
         if len(args) == 1:
@@ -223,8 +227,7 @@ class Op(Expr):
 class Fun(Expr):
     """Function application."""
     def __init__(self, fname, *args):
-        assert isinstance(fname, str)
-        assert all(isinstance(arg, Expr) for arg in args)
+        typecheck.checkinstance('Fun', fname, str, args, [Expr])
         self.fname = fname
         self.args = list(args)
 
@@ -249,7 +252,7 @@ class Fun(Expr):
 class ITE(Expr):
     """If-then-else expressions."""
     def __init__(self, cond, e1, e2):
-        assert isinstance(cond, Expr) and isinstance(e1, Expr) and isinstance(e2, Expr)
+        typecheck.checkinstance('ITE', cond, Expr, e1, Expr, e2, Expr)
         self.cond = cond
         self.e1 = e1
         self.e2 = e2
@@ -274,7 +277,7 @@ class ITE(Expr):
 class Forall(Expr):
     """Forall expressions."""
     def __init__(self, var, e):
-        assert isinstance(var, Var) and isinstance(e, Expr)
+        typecheck.checkinstance('Forall', var, Var, e, Expr)
         self.var = var
         self.e = e
 

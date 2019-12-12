@@ -12,6 +12,7 @@ from syntax import settings
 from syntax import infertype
 from syntax import pprint
 from util import name
+from util import typecheck
 
 
 @settings.with_settings
@@ -36,7 +37,7 @@ def commas_join(strs):
 @settings.with_settings
 def print_type(thy, T):
     """Pretty-printing for types."""
-    assert isinstance(T, HOLType), "print_type: input is not a type."
+    typecheck.checkinstance('print_type', T, HOLType)
 
     ast = pprint.get_ast_type(thy, T)
     return pprint.print_ast(thy, ast)
@@ -44,7 +45,7 @@ def print_type(thy, T):
 @settings.with_settings
 def print_term(thy, t, *, line_length=None):
     """Pretty-printing for terms."""
-    assert isinstance(t, Term), "print_term: input is not a term."
+    typecheck.checkinstance('print_term', t, Term)
 
     ast = pprint.get_ast_term(thy, t)
     return pprint.print_ast(thy, ast, line_length=line_length)
@@ -52,7 +53,7 @@ def print_term(thy, t, *, line_length=None):
 @settings.with_settings
 def print_thm(thy, th):
     """Print the given theorem with highlight."""
-    assert isinstance(th, Thm), "print_thm: input is not a theorem."
+    typecheck.checkinstance('print_thm', th, Thm)
 
     turnstile = pprint.N("⊢") if settings.unicode() else pprint.N("|-")
     if th.hyps:
@@ -148,7 +149,7 @@ def print_proof_item(thy, item):
 @settings.with_settings
 def print_proof(thy, prf):
     """Print the given proof."""
-    assert isinstance(prf, proof.Proof), "print_proof"
+    typecheck.checkinstance('print_proof', prf, proof.Proof)
     return '\n'.join(print_proof_item(thy, item) for item in prf.items)
 
 @settings.with_settings

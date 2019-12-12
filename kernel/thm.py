@@ -6,6 +6,7 @@ from kernel.type import Type, TFun, boolT
 from kernel import term
 from kernel.term import Term, Const
 from kernel import macro
+from util import typecheck
 
 
 class InvalidDerivationException(Exception):
@@ -39,10 +40,9 @@ class Thm():
         proposition.
 
         """
+        typecheck.checkinstance('Thm', hyps, [Term], prop, Term)
         self.hyps = tuple(hyps)
         self.prop = prop
-        assert all(isinstance(A, Term) for A in self.hyps), "Thm: hyps must be terms."
-        assert isinstance(prop, Term), "Thm: proposition must be a term."
 
     @property
     def assums(self):
@@ -94,7 +94,7 @@ class Thm():
     @staticmethod
     def mk_implies(*args):
         """Returns the theorem s1 --> ... --> sn --> t."""
-        assert all(isinstance(arg, Term) for arg in args)
+        typecheck.checkinstance('mk_implies', args, [Term])
         return Thm([], Term.mk_implies(*args))
 
     @staticmethod

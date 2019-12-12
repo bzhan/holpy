@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from collections import OrderedDict
+from util import typecheck
 
 
 class TypeMatchException(Exception):
@@ -289,15 +290,12 @@ class Type(HOLType):
 
 def TFun(*args):
     """Returns the function type arg1 => arg2 => ... => argn."""
-
-    if isinstance(args[0], list):
-        args = tuple(args[0])
-    assert all(isinstance(arg, HOLType) for arg in args), \
-           "TFun: each argument of TFun must be a type."
+    typecheck.checkinstance('TFun', args, [HOLType])
     res = args[-1]
     for arg in reversed(args[:-1]):
         res = Type("fun", arg, res)
     return res
+
 
 """Boolean type."""
 boolT = Type("bool")
