@@ -64,6 +64,7 @@ def print_thm(thy, th):
 
 @settings.with_settings
 def print_extension(thy, ext):
+    typecheck.checkinstance('print_extension', ext, extension.Extension)
     if ext.ty == extension.TYPE:
         return "Type " + ext.name + " " + str(ext.arity)
     elif ext.ty == extension.CONSTANT:
@@ -73,11 +74,14 @@ def print_extension(thy, ext):
         return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
     elif ext.ty == extension.ATTRIBUTE:
         return "Attribute " + ext.name + " [" + ext.attribute + "]"
+    elif ext.ty == extension.OVERLOAD:
+        return "Overload " + ext.name
     else:
         raise TypeError
 
 @settings.with_settings
 def print_extensions(thy, exts):
+    typecheck.checkinstance('print_extensions', exts, [extension.Extension])
     return "\n".join(print_extension(thy, ext) for ext in exts)
 
 @settings.with_settings

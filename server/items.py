@@ -64,6 +64,17 @@ class Item:
         """
         raise NotImplementedError
 
+    def export_web(self, thy, line_length=80):
+        res = self.export_json(thy)
+        res['display'] = self.get_display(thy, highlight=True, unicode=True, line_length=line_length)
+        res['edit'] = self.get_display(thy, highlight=False, unicode=True, line_length=line_length)
+        if self.error is None:
+            res['ext'] = printer.print_extensions(thy, self.get_extension())
+        else:
+            res['error'] = self.error
+        return res
+
+
 def export_term(thy, t):
     """Function for printing a term for export to json."""
     res = printer.print_term(thy, t, unicode=True, line_length=80)
@@ -189,22 +200,23 @@ class Axiom(Item):
             disp_vars = [nm + ' :: ' + T for nm, T in self.vars.items()]
             disp_prop = self.prop
         else:
-            disp_vars = [nm + ' :: ' + printer.print_type(thy, T) for nm, T in self.vars.items()]
+            disp_vars = [pprint.N(nm + ' :: ') + printer.print_type(thy, T) for nm, T in self.vars.items()]
             disp_prop = printer.print_term(thy, self.prop, line_length=line_length)
 
         return {
             'ty': 'thm.ax',
             'name': self.name,
-            'vars': disp_vars,
+            'vars': disp_vars if settings.highlight() else '\n'.join(disp_vars),
             'prop': disp_prop,
             'attributes': self.attributes
         }
 
     def parse_edit(self, thy, edit_data):
         vars = dict()
-        for var_decl in edit_data['vars']:
-            nm, T = [s.strip() for s in var_decl.split('::')]
-            vars[nm] = T
+        for var_decl in edit_data['vars'].split('\n'):
+            if var_decl.strip():
+                nm, T = [s.strip() for s in var_decl.split('::')]
+                vars[nm] = T
         edit_data['vars'] = vars
         self.parse(thy, edit_data)
 
@@ -251,6 +263,10 @@ class Theorem(Axiom):
     def get_display(self, thy, line_length=80):
         res = super().get_display(thy, line_length=line_length)
         res['ty'] = 'thm'
+        return res
+
+    def get_proof(self):
+        res = dict()
         if self.steps:
             res['steps'] = self.steps
         if self.proof:
@@ -384,7 +400,7 @@ class Fun(Item):
 
     """
     def __init__(self):
-        self.ty = 'def.ind',
+        self.ty = 'def.ind'
         self.name = None  # name of the constant
         self.type = None  # type of the constant
         self.rules = []  # list of equality rules
@@ -450,12 +466,12 @@ class Fun(Item):
             'ty': 'def.ind',
             'name': self.name,
             'type': disp_type,
-            'rules': disp_rules
+            'rules': disp_rules if settings.highlight() else '\n'.join(disp_rules)
         }
 
     def parse_edit(self, thy, edit_data):
         rules = []
-        for prop in edit_data['rules']:
+        for prop in edit_data['rules'].split('\n'):
             rules.append({'prop': prop})
         edit_data['rules'] = rules
         self.parse(thy, edit_data)
@@ -562,12 +578,12 @@ class Inductive(Item):
             'ty': 'def.pred',
             'name': self.name,
             'type': disp_type,
-            'rules': disp_rules
+            'rules': disp_rules if settings.highlight() else '\n'.join(disp_rules)
         }
 
     def parse_edit(self, thy, edit_data):
         rules = []
-        for rule in edit_data['rules']:
+        for rule in edit_data['rules'].split('\n'):
             name, prop = [s.strip() for s in rule.split(':', 1)]
             rules.append({'name': name, 'prop': prop})
         edit_data['rules'] = rules
@@ -649,7 +665,7 @@ class Datatype(Item):
     
     """
     def __init__(self):
-        self.ty = 'type.ind',
+        self.ty = 'type.ind'
         self.name = None  # name of the type
         self.args = list()  # list of type arguments
         self.constrs = list()  # list of type constructors
@@ -754,13 +770,13 @@ class Datatype(Item):
         return {
             'ty': 'type.ind',
             'type': printer.print_type(thy, T),
-            'constrs': constrs
+            'constrs': constrs if settings.highlight() else '\n'.join(constrs)
         }
 
     def parse_edit(self, thy, edit_data):
         T = parser.parse_type(thy, edit_data['type'])
         constrs = []
-        for constr_decl in edit_data['constrs']:
+        for constr_decl in edit_data['constrs'].split('\n'):
             constr = parser.parse_ind_constr(thy, constr_decl)
             constr['type'] = str(TFun(*(constr['type'] + [T])))
             constrs.append(constr)
