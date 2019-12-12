@@ -7,6 +7,7 @@ from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm, refl
 from logic import matcher
 from util import name
+from util import typecheck
 
 
 class ConvException(Exception):
@@ -63,7 +64,7 @@ class no_conv(Conv):
 class combination_conv(Conv):
     """Apply cv1 to the function and cv2 to the argument."""
     def __init__(self, cv1, cv2):
-        assert isinstance(cv1, Conv) and isinstance(cv2, Conv), "combination_conv: argument"
+        typecheck.checkinstance('combination_conv', cv1, Conv, cv2, Conv)
         self.cv1 = cv1
         self.cv2 = cv2
 
@@ -82,7 +83,7 @@ class combination_conv(Conv):
 class then_conv(Conv):
     """Applies cv1, followed by cv2."""
     def __init__(self, cv1, cv2):
-        assert isinstance(cv1, Conv) and isinstance(cv2, Conv), "then_conv: argument"
+        typecheck.checkinstance('then_conv', cv1, Conv, cv2, Conv)
         self.cv1 = cv1
         self.cv2 = cv2
 
@@ -100,7 +101,7 @@ class then_conv(Conv):
 class else_conv(Conv):
     """Applies cv1, if fails, apply cv2."""
     def __init__(self, cv1, cv2):
-        assert isinstance(cv1, Conv) and isinstance(cv2, Conv), "else_conv: argument"
+        typecheck.checkinstance('else_conv', cv1, Conv, cv2, Conv)
         self.cv1 = cv1
         self.cv2 = cv2
 
@@ -127,7 +128,7 @@ def beta_norm(thy, t):
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
     def __init__(self, cv):
-        assert isinstance(cv, Conv)
+        typecheck.checkinstance('abs_conv', cv, Conv)
         self.cv = cv
 
     def get_proof_term(self, thy, t):
@@ -217,7 +218,7 @@ class sub_conv(Conv):
 class bottom_conv(Conv):
     """Applies cv repeatedly in the bottom-up manner."""
     def __init__(self, cv):
-        assert isinstance(cv, Conv), "bottom_conv: argument"
+        typecheck.checkinstance('bottom_conv', cv, Conv)
         self.cv = cv
 
     def get_proof_term(self, thy, t):
@@ -226,7 +227,7 @@ class bottom_conv(Conv):
 class top_conv(Conv):
     """Applies cv repeatedly in the top-down manner."""
     def __init__(self, cv):
-        assert isinstance(cv, Conv), "top_conv: argument"
+        typecheck.checkinstance('top_conv', cv, Conv)
         self.cv = cv
 
     def __str__(self):
@@ -238,7 +239,7 @@ class top_conv(Conv):
 class top_sweep_conv(Conv):
     """Applies cv in the top-down manner, but only at the first level."""
     def __init__(self, cv):
-        assert isinstance(cv, Conv), "top_sweep_conv: argument"
+        typecheck.checkinstance('top_sweep_conv', cv, Conv)
         self.cv = cv
 
     def __str__(self):
@@ -250,14 +251,11 @@ class top_sweep_conv(Conv):
 class rewr_conv(Conv):
     """Rewrite using the given equality theorem."""
     def __init__(self, pt, *, sym=False, conds=None):
-        assert isinstance(pt, ProofTerm) or isinstance(pt, str), "rewr_conv: argument"
+        if conds is None:
+            conds = []
+        typecheck.checkinstance('rewr_conv', pt, (ProofTerm, str), conds, [ProofTerm])
         self.pt = pt
         self.sym = sym
-        if conds is not None:
-            conds = list(conds)
-            assert all(isinstance(cond, ProofTerm) for cond in conds), "rewr_conv"
-        else:
-            conds = []
         self.conds = conds
 
         # Computed after the first invocation

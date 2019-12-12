@@ -116,7 +116,7 @@
                     "th": "⊢ is_realinterval ∅"
                 }
             ],
-            "prop": "is_realinterval {}",
+            "prop": "is_realinterval ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -221,7 +221,7 @@
                     "th": "⊢ is_realinterval s ⟶ is_realinterval t ⟶ ¬(s ∩ t = ∅) ⟶ is_realinterval (s ∪ t)"
                 }
             ],
-            "prop": "is_realinterval s --> is_realinterval t --> ~(inter s t = {}) --> is_realinterval (union s t)",
+            "prop": "is_realinterval s ⟶ is_realinterval t ⟶ ¬(s ∩ t = ∅) ⟶ is_realinterval (s ∪ t)",
             "steps": [
                 {
                     "goal_id": "3",
@@ -511,7 +511,7 @@
                     "th": "⊢ real_open_interval a b ⊆ real_closed_interval a b"
                 }
             ],
-            "prop": "subset (real_open_interval a b) (real_closed_interval a b)",
+            "prop": "real_open_interval a b ⊆ real_closed_interval a b",
             "steps": [
                 {
                     "goal_id": "0",

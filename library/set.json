@@ -31,13 +31,13 @@
         },
         {
             "name": "empty_set",
-            "prop": "∅ = {x. false}",
+            "prop": "∅ = {x::'a. false}",
             "ty": "def",
             "type": "'a set"
         },
         {
             "name": "univ",
-            "prop": "univ = {x. true}",
+            "prop": "univ = {x::'a. true}",
             "ty": "def",
             "type": "'a set"
         },

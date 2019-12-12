@@ -30,84 +30,76 @@
          ref="items"
          v-bind:class="{
            'item-selected': is_selected(index),
-           'item-error': 'err_type' in item
+           'item-error': 'error' in item
          }">
       <div v-if="item.ty === 'header'">
         <span class="header-item">{{item.name}}</span>
       </div>
       <div v-if="item.ty === 'type.ax'">
         <span class="keyword">type</span>&nbsp;
-        <Expression v-bind:line="item.type_hl" :editor="editor"/>
+        <Expression v-bind:line="item.display.type" :editor="editor"/>
       </div>
       <div v-if="item.ty === 'def.ax'">
-        <Constant v-if="on_edit !== index" v-bind:item="item"
+        <Constant v-if="on_edit !== index" v-bind:item="item.display"
                   v-on:edit="edit_item(index)"
                   :editor="editor"/>
         <div v-else>
-          <ConstantEdit v-bind:old_item="item" ref="edit"/>
+          <ConstantEdit v-bind:old_item="item.edit" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
         </div>
       </div>
       <div v-if="item.ty === 'type.ind'">
-        <Datatype v-if="on_edit !== index" v-bind:item="item"
+        <Datatype v-if="on_edit !== index" v-bind:item="item.display"
                   v-on:edit="edit_item(index)"
                   :editor="editor"/>
         <div v-else>
-          <DatatypeEdit v-bind:old_item="item" ref="edit"/>
+          <DatatypeEdit v-bind:old_item="item.edit" :ext="item.ext" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
         </div>
       </div>
       <div v-if="item.ty === 'def'">
-        <Definition v-if="on_edit !== index" v-bind:item="item"
+        <Definition v-if="on_edit !== index" v-bind:item="item.display"
                     v-on:edit="edit_item(index)"
                     :editor="editor"/>
         <div v-else>
-          <DefinitionEdit v-bind:old_item="item" ref="edit"/>
+          <DefinitionEdit v-bind:old_item="item.edit" :ext="item.ext" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
         </div>
       </div>
       <div v-if="item.ty === 'def.ind'">
-        <Inductive v-if="on_edit !== index" v-bind:item="item"
+        <Inductive v-if="on_edit !== index" v-bind:item="item.display"
                    v-on:edit="edit_item(index)"
                    :editor="editor"/>
         <div v-else>
-          <DefinitionEdit v-bind:old_item="item" ref="edit"/>
+          <InductiveEdit v-bind:old_item="item.edit" :ext="item.ext" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
         </div>
       </div>
       <div v-if="item.ty === 'def.pred'">
-        <Inductive v-if="on_edit !== index" v-bind:item="item"
+        <Inductive v-if="on_edit !== index" v-bind:item="item.display"
                    v-on:edit="edit_item(index)"
                    :editor="editor"/>
         <div v-else>
-          <DefinitionEdit v-bind:old_item="item" ref="edit"/>
+          <InductiveEdit v-bind:old_item="item.edit" :ext="item.ext" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
         </div>
       </div>
-      <div v-if="item.ty === 'macro'">
-        <span class="keyword">macro</span>&nbsp;
-        <span class="item-text">{{item.name}}</span>
-      </div>
-      <div v-if="item.ty === 'method'">
-        <span class="keyword">method</span>&nbsp;
-        <span class="item-text">{{item.name}}</span>
-      </div>
       <div v-if="item.ty == 'thm'">
-        <Theorem v-if="on_edit !== index" v-bind:item="item"
+        <Theorem v-if="on_edit !== index" v-bind:item="item.display" :proof="item.proof" :num_gaps="item.num_gaps"
                  v-on:edit="edit_item(index)" v-on:proof="init_proof(index)"
                  :editor="editor"/>
         <div v-else>
-          <TheoremEdit v-bind:old_item="item" ref="edit"/>
+          <TheoremEdit v-bind:old_item="item.edit" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
@@ -126,11 +118,11 @@
         </div>
       </div>
       <div v-if="item.ty === 'thm.ax'">
-        <Axiom v-if="on_edit !== index" v-bind:item="item"
+        <Axiom v-if="on_edit !== index" v-bind:item="item.display"
                v-on:edit="edit_item(index)"
                :editor="editor"/>
         <div v-else>
-          <TheoremEdit v-bind:old_item="item" ref="edit"/>
+          <TheoremEdit v-bind:old_item="item.edit" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
@@ -151,6 +143,7 @@ import DatatypeEdit from './items/DatatypeEdit'
 import Definition from './items/Definition'
 import DefinitionEdit from './items/DefinitionEdit'
 import Inductive from './items/Inductive'
+import InductiveEdit from './items/InductiveEdit'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
 import MetadataEdit from './items/MetadataEdit'
@@ -168,6 +161,7 @@ export default {
     Definition,
     DefinitionEdit,
     Inductive,
+    InductiveEdit,
     Theorem,
     TheoremEdit,
     MetadataEdit,
@@ -410,11 +404,11 @@ export default {
         return
 
       const item = response.data.item
-      if ('err_type' in item) {
+      if ('error' in item) {
         this.$emit('set-message', {
           type: 'error',
-          data: item.err_type + '\n' + item.err_str,
-          trace: item.trace
+          data: item.error.err_type + '\n' + item.error.err_str,
+          trace: item.error.trace
         })
       } else {
         this.$emit('set-message', {
@@ -430,12 +424,15 @@ export default {
       if (response === undefined)
         return
 
-      var item = this.theory.content[this.on_edit]
-      delete item.err_type
-      delete item.err_str
-      delete item.trace
-      Object.assign(item, response.data.item)
-      this.$set(this.theory.content, this.on_edit, item)
+      const item = this.theory.content[this.on_edit]
+      const new_item = response.data.item
+      if (item.ty == 'thm') {
+        // Copy over proof information
+        new_item.proof = item.proof
+        new_item.num_gaps = item.num_gaps
+        new_item.steps = item.steps
+      }
+      this.$set(this.theory.content, this.on_edit, new_item)
       this.save_json_file()
       this.on_edit = undefined
       this.on_add = false
@@ -537,40 +534,6 @@ export default {
       }
     },
 
-    // Convert items in the theory from json format for the web client
-    // back to the json format for the file.
-    item_to_output: function (data) {
-      delete data.err_type
-      delete data.err_str
-      delete data.trace
-      if (data.ty === 'def.ax' || data.ty === 'type.ax') {
-        delete data.type_hl;
-      } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
-        delete data.prop_hl;
-        delete data.prop_lines;
-        delete data.vars_lines;
-      } else if (data.ty === 'type.ind') {
-        delete data.constrs_hl;
-        delete data.constrs_lines;
-        delete data.type_hl;
-        delete data.edit_type;
-        delete data.ext;
-      } else if (data.ty === 'def') {
-        delete data.type_hl;
-        delete data.prop_hl;
-        delete data.prop_lines;
-        delete data.ext;
-      } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
-        delete data.type_hl;
-        delete data.ext;
-        delete data.prop_lines;
-        delete data.ext;
-        for (var i in data.rules) {
-          delete data.rules[i].prop_hl;
-        }
-      }
-    },
-
     // Save all changed proof on the webpage to the json-file;
     save_json_file: async function () {
       var content = [];
@@ -578,8 +541,11 @@ export default {
         const item = this.theory.content[i]
         if ('name' in item) {
           var item_copy = JSON.parse(JSON.stringify(item)) // deep copy
+          delete item_copy.error
+          delete item_copy.display
+          delete item_copy.edit
+          delete item_copy.ext
           content.push(item_copy);
-          this.item_to_output(item_copy);
         }
       }
 
@@ -665,11 +631,11 @@ export default {
     selected_set_message: function () {
       if ('single' in this.selected) {
         const item = this.theory.content[this.selected.single]
-        if ('err_type' in item) {
+        if ('error' in item) {
           // Selected item, which has an error
           this.$emit('set-message', {
             type: 'error',
-            data: item.err_type + '\n' + item.err_str
+            data: item.error.err_type + '\n' + item.error.err_str
           })
         } else {
           // Selected item, with no errors
@@ -691,7 +657,7 @@ export default {
         var err_lines = ''
         for (let i = 0; i < this.theory.content.length; i++) {
           let item = this.theory.content[i]
-          if ('err_type' in item) {
+          if ('error' in item) {
             err_count += 1
             err_lines += ('\n' + this.keywords[item.ty] + ' ' + item.name)
           }

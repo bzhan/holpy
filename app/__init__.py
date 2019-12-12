@@ -21,6 +21,7 @@ from imperative import imp
 from prover import z3wrapper
 from server.server import ProofState
 from server import monitor
+from server import items
 from imperative.parser2 import cond_parser, com_parser
 import integral
 
@@ -381,108 +382,6 @@ def apply_steps():
     })
 
 
-def file_data_to_output(thy, data, *, line_length=None):
-    """Convert items in the theory from json format for the file to
-    json format for the web client. Modifies data in-place.
-    Also modifies argument thy in parsing the item.
-
-    """
-    parsed_data = None
-    ext = None
-
-    # Attempt to parse the item, creating a parsed version (with
-    # strings replaced by types and terms) and the extension. If
-    # parsing succeeds, apply the extension to the theory. Otherwise,
-    # add exception information to the item.
-    try:
-        parsed_data = basic.parse_item(thy, data)
-        ext = basic.get_extension(thy, parsed_data)
-        thy.unchecked_extend(ext)
-    except Exception as e:
-        data['err_type'] = e.__class__.__name__
-        data['err_str'] = str(e)
-        data['trace'] = traceback2.format_exc()
-
-    # If parsing failed, still create strings for editing.
-    if parsed_data is None:
-        if data['ty'] in ('thm', 'thm.ax'):
-            data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
-            data['prop_lines'] = data['prop']
-            if not isinstance(data['prop_lines'], str):
-                data['prop_lines'] = '\n'.join(data['prop_lines'])
-        elif data['ty'] == 'def':
-            data['prop_lines'] = data['prop']
-            if not isinstance(data['prop_lines'], str):
-                data['prop_lines'] = '\n'.join(data['prop_lines'])
-
-        return
-
-    # If parsing succeeds, fill data with pretty-printed form of
-    # types and terms
-    if data['ty'] == 'type.ax':
-        Targs = [TVar(arg) for arg in data['args']]
-        T = Type(data['name'], *Targs)
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
-
-    elif data['ty'] == 'def.ax':
-        data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
-
-    elif data['ty'] in ('thm', 'thm.ax'):
-        data['vars_lines'] = '\n'.join(nm + ' :: ' + printer.print_type(thy, T, unicode=True)
-                                       for nm, T in parsed_data['vars'].items())
-        ast = pprint.get_ast_term(thy, parsed_data['prop'], unicode=True)
-        data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
-        data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
-
-    elif data['ty'] == 'type.ind':
-        constrs = []
-        data['constrs_lines'] = []
-        data['constrs_hl'] = []
-        for constr in parsed_data['constrs']:
-            data['constrs_lines'].append(printer.print_type_constr(thy, constr, unicode=True, highlight=False))
-            data['constrs_hl'].append(printer.print_type_constr(thy, constr, unicode=True, highlight=True))
-        data['constrs_lines'] = '\n'.join(data['constrs_lines'])
-
-        # Obtain type to be defined
-        T = Type(data['name'], *(TVar(nm) for nm in data['args']))
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
-        data['edit_type'] = printer.print_type(thy, T, unicode=True, highlight=False)
-
-    elif data['ty'] in ('def.ind', 'def.pred'):
-        data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
-
-        rules = []
-        data['prop_lines'] = []
-        for i, rule in enumerate(data['rules']):
-            prop = parsed_data['rules'][i]['prop']
-            rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-            content = printer.print_term(thy, prop, unicode=True, highlight=False)
-            if data['ty'] == 'def.pred':
-                content = rule['name'] + ': ' + content
-                rules.append((rule['name'], prop))
-            else:
-                rules.append(prop)
-            data['prop_lines'].append(content)
-
-        data['prop_lines'] = '\n'.join(data['prop_lines'])
-
-    elif data['ty'] == 'def':
-        data['type'] = printer.print_type(thy, parsed_data['type'], unicode=True)
-        data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
-
-        ast = pprint.get_ast_term(thy, parsed_data['prop'], unicode=True)
-        data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
-        data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
-
-    # Ignore other types of information.
-    else:
-        pass
-
-    # Obtain items added by the extension
-    if ext and data['ty'] in ('type.ind', 'def', 'def.ind', 'def.pred'):
-        data['ext'] = printer.print_extensions(thy, ext, unicode=True)
-
-
 @app.route('/api/load-json-file', methods=['POST'])
 def load_json_file():
     """Loads json file for the given user and file name.
@@ -500,19 +399,24 @@ def load_json_file():
     username = data['username']
     filename = data['filename']
     line_length = data.get('line_length')
-    with open(user_file(filename, username), 'r', encoding='utf-8') as f:
-        f_data = json.load(f)
 
     if data['profile']:
         pr = cProfile.Profile()
         pr.enable()
-        
-    if 'content' in f_data:
-        thy = basic.load_theories(f_data['imports'], username=username)
-        for item in f_data['content']:
-            file_data_to_output(thy, item, line_length=line_length)
-    else:
-        f_data['content'] = []
+
+    cache = basic.load_theory_cache(filename, username)
+    f_data = {
+        'name': filename,
+        'imports': cache['imports'],
+        'description': cache['description'],
+        'content': []
+    }
+    thy = basic.load_theories(cache['imports'])
+    for item in cache['content']:
+        if item.error is None:
+            thy.unchecked_extend(item.get_extension())
+        output_item = item.export_web(thy, line_length=line_length)
+        f_data['content'].append(output_item)
 
     if data['profile']:
         p = Stats(pr)
@@ -617,71 +521,22 @@ def check_modify():
     """
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
-    item = data['item']
+    edit_item = data['item']
     line_length = data.get('line_length')
 
-    start_time = time.perf_counter()
-    try:
-        if 'limit_ty' in data:
-            limit = (data['limit_ty'], data['limit_name'])
-        else:
-            limit = None
-        thy = basic.load_theory(data['filename'], limit=limit, username=username)
-        print("Load:", time.perf_counter() - start_time)
-        start_time = time.perf_counter()
-        if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
-            item['vars'] = dict()
-            for var_decl in item['vars_lines'].split('\n'):
-                if var_decl:
-                    nm, T = parser.parse_var_decl(thy, var_decl)
-                    item['vars'][nm] = str(T)
+    if 'limit_ty' in data:
+        limit = (data['limit_ty'], data['limit_name'])
+    else:
+        limit = None
 
-            item['prop'] = item['prop_lines'].split('\n')
-            if len(item['prop']) == 1:
-                item['prop'] = item['prop'][0]
+    thy = basic.load_theory(data['filename'], limit=limit, username=username)
+    item = items.parse_edit(thy, edit_item)
+    if item.error is None:
+        thy.unchecked_extend(item.get_extension())
+    output_item = item.export_web(thy, line_length=line_length)
 
-        if item['ty'] == 'type.ind':
-            T = parser.parse_type(thy, item['edit_type'])
-            assert T.is_type() and all(argT.is_tvar() for argT in T.args), "invalid input type."
-            item['name'] = T.name
-            item['args'] = [argT.name for argT in T.args]
-
-            item['constrs'] = []
-            for constr in item['constrs_lines'].split('\n'):
-                if constr:
-                    constr = parser.parse_ind_constr(thy, constr)
-                    constr['type'] = str(TFun(*(constr['type'] + [T])))
-                    item['constrs'].append(constr)
-
-        if item['ty'] == 'def':
-            item['prop'] = item['prop_lines'].split('\n')
-            if len(item['prop']) == 1:
-                item['prop'] = item['prop'][0]
-
-        if item['ty'] == 'def.ind':
-            item['rules'] = []
-            for line in item['prop_lines'].split('\n'):
-                item['rules'].append({'prop': line})
-
-        if item['ty'] == 'def.pred':
-            T = parser.parse_type(thy, item['type'])
-            item['rules'] = []
-            for line in item['prop_lines'].split('\n'):
-                colon = line.find(':')
-                item['rules'].append({
-                    'name': line[0:colon].strip(),
-                    'prop': line[colon+1:].strip()
-                })
-
-        file_data_to_output(thy, item, line_length=line_length)
-    except Exception as e:
-        item['err_type'] = e.__class__.__name__
-        item['err_str'] = str(e)
-        item['trace'] = traceback2.format_exc()
-
-    print("Check:", time.perf_counter() - start_time)
     return jsonify({
-        'item': item
+        'item': output_item
     })
 
 
@@ -837,6 +692,7 @@ def integral_separate_integrals():
     for i in integrals:
         n.append({
             "text": str(i),
+            "body": str(i.body),
             "latex": integral.latex.convert_expr(i)
         })
     return json.dumps(n)

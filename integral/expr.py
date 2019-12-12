@@ -23,14 +23,22 @@ trig_identity = []
 class Expr:
     """Expressions."""
     def __add__(self, other):
-        return Op("+", self, other)
+        if self.ty == CONST and other.ty == CONST:
+                return Const(self.val + other.val)
+        else:
+            return Op("+", self, other)
 
     def __sub__(self, other):
-        return Op("-", self, other)
+        if self.ty == CONST and other.ty == CONST:
+            return Const(self.val - other.val)
+        else:
+            return Op("-", self, other)
 
     def __mul__(self, other):
         if self == Const(1):
             return other
+        if other == Const(1):
+            return self
         elif self.ty == CONST and other.ty == CONST:
             return Const(self.val * other.val)
         else:
@@ -74,6 +82,8 @@ class Expr:
             return self.name <= other.name
         elif self.ty == CONST:
             return self.val <= other.val
+        elif self.is_constant() and other.is_constant():
+            return sympy_parser.parse_expr(str(self - other).replace("^", "**")) <= 0
         elif self.ty == OP:
             return (self.op, self.args) <= (other.op, other.args)
         elif self.ty == FUN:
@@ -125,6 +135,23 @@ class Expr:
             return Fun(self.func_name, *[arg.subst(var, e) for arg in self.args])
         else:
             raise NotImplementedError
+    
+    def is_constant(self):
+        """Determine whether expr is a number."""
+        if self.ty == CONST:
+            return True
+        elif self.ty == VAR:
+            return False
+        elif self.ty == FUN:
+            name = self.func_name
+            if name == "pi":
+                return True
+            else:
+                return self.args[0].is_constant()
+        elif self.ty == OP:
+            return all(arg.is_constant() for arg in self.args)
+        else:
+            return False
 
     def replace(self, e, repl_e):
         """Replace occurrences of e with repl_e."""
@@ -148,23 +175,26 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def to_poly(self):
+    def to_poly(self, simp = 1):
         """Convert expression to a polynomial."""
+        p = self
+        if self.is_constant() and simp == 0:
+            p = sympy_parser.parse_expr(str(self).replace("^", "**"))
+            return parser.parse_expr(str(p).replace("**", "^")).to_poly(simp = 1)
         if self.ty == VAR:
             return poly.singleton(self)
         elif self.ty == CONST:
-            return poly.constant(self.val)
+            return poly.constant(self)
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
-                if x == Const(0) or y == Const(0):
-                    return poly.constant(0)
-                elif x.ty == CONST and y.ty == INTEGRAL:
-                    return Integral(y.var, y.lower, y.upper, x * y.body).to_poly() 
-                return x.to_poly() * y.to_poly()
+                if x.ty == CONST and y.ty == INTEGRAL:
+                    return Integral(y.var, y.lower, y.upper, x * y.body).to_poly()
+                else:
+                    return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
                 return x.to_poly() - y.to_poly()
@@ -175,15 +205,13 @@ class Expr:
                 x, y = self.args
                 xp = x.to_poly()
                 yp = y.to_poly()
-                if yp.is_nonzero_constant():
-                    # x / 6
-                    return xp.scale(Fraction(1) / Fraction(yp.get_constant()))
-                # elif xp.is_nonzero_constant() and xp.get_constant() != 1:
-                #     #normalize assures constant always on the right
-                #     return (Const(1)/y.normalize()).to_poly().scale(Fraction(xp.get_constant()))
-                elif len(yp.monomials) == 1:
+                if x.ty == CONST and x.val == 0:
+                    return poly.constant(Const(0))
+                elif y.ty == CONST and y.val != 0:
+                    return xp.scale(Const(Fraction(1, y.val)))                
+                if len(yp.monomials) == 1:
                     k = yp.monomials[0]
-                    k.coeff = Fraction(1, k.coeff)
+                    k.coeff = Const(Fraction(1, k.coeff.val))
                     k_factor = list(k.factors)
                     k_factor = [(f1, -f2) for (f1, f2) in k_factor]
                     k.factors = tuple(k_factor)
@@ -192,136 +220,51 @@ class Expr:
                     return poly.singleton(self)
             elif self.op == "^":
                 x, y = self.args
-                if y.ty == CONST and y.val == 0:
-                    return poly.constant(1)
-                if x.ty == CONST and y.ty == CONST:
-                    if x.val == 0: 
-                        if y.val == 0:
-                            return poly.constant(1)
+                if y.ty == CONST:
+                    if y.val == 0:
+                        return poly.constant(Const(1))
+                    elif y.val == 1:
+                        return x.to_poly()
+                    else:
+                        if x.ty == CONST:
+                            if isinstance(x.val, int) and (isinstance(y.val, Fraction) and y.val.denominator == 1 or isinstance(y.val, int)):
+                                return poly.constant(Const(x.val**y.val))
+                            else:
+                                return poly.constant(Op("^", x, y))
+                        elif x.ty == VAR:
+                            return poly.Polynomial([poly.Monomial(Const(1), [(x, Fraction(y.val))])])
+                        elif x.ty == OP:
+                            if x.op == "*":
+                                #(x * y)^2 = x^2 * y^2
+                                return Op("^", x.args[0], y).to_poly() * Op("^", x.args[1], y).to_poly()
+                            elif x.op == "^":
+                                #(x^(1/2))^2 = x only consider two pow are both constant
+                                return Op("^", x.args[0], y * x.args[1]).to_poly()
+                            elif x.op == "/":
+                                return x.args[0].to_poly() / x.args[1].to_poly()
+                            else:
+                                return poly.singleton(self)
+                        elif x.ty == FUN and x.func_name == "sqrt":
+                            return Op("^", x.args[0], Const(1/2)).to_poly()
                         else:
-                            return poly.constant(0)
-                    if isinstance(y.val, int):
-                        if y.val < 0:
-                            return poly.constant(Fraction(x.val) ** y.val)
-                        else:
-                            return poly.constant(Fraction(x.val ** y.val))
-                    elif isinstance(y.val, Fraction):
-                        k = Fraction(x.val ** y.val)
-                        if k.denominator == 1:
-                            return poly.constant(k.numerator)
-                        else: 
-                            return poly.Polynomial([poly.Monomial(1, [(x, y.val)])])
-                elif y.ty == CONST and y.val == 1:
-                    return x.to_poly()
-                elif y.ty == CONST and y.val != 1:
-                    if x.ty == OP:
-                        if x.op == "*":
-                            #(x * y)^2 = x^2 * y^2
-                            return (x.args[0] ^ y).to_poly() * (x.args[1] ^ y).to_poly()
-                        elif x.op == "^":
-                            #(x^(1/2))^2 = x
-                            return (x.args[0] ^ (y * x.args[1])).to_poly() 
-                    return poly.Polynomial([poly.Monomial(1, [(x, y.val)])])
+                            return poly.Polynomial([poly.Monomial(Const(1), [(x, y.val)])])
                 else:
                     return poly.singleton(self)
             else:
                 return poly.singleton(self)
         elif self.ty == FUN:
-            if self.func_name == "exp" and self.args[0] == Const(0):
-                return poly.constant(1)
-            elif self.func_name == "cos":
+            if self.func_name == "exp":
                 if self.args[0] == Const(0):
-                    return poly.constant(1)
-                elif self.args[0].ty == OP and self.args[0].op == "/" and \
-                        self.args[0].args[0] == pi and self.args[0].args[1].ty == CONST:
-                    p = parser.parse_expr(str(sympy.cos(sympy.pi/self.args[0].args[1].val)))
+                    return poly.constant(Const(1))
+                else:
+                    return poly.singleton(self)
+            elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan"):
+                p = sympy_parser.parse_expr(str(self).replace("^", "**"))
+                p = parser.parse_expr(str(p).replace("**", "^"))
+                if p != self:
                     return p.to_poly()
-                elif self.args[0].ty == OP and self.args[0].op == "*" and \
-                        self.args[0].args[0].ty == CONST and self.args[0].args[1] == pi:
-                    p = parser.parse_expr(str(sympy.cos(sympy.pi*self.args[0].args[0].val)))
-                    return p.to_poly()
-                elif self.args[0].ty == OP and self.args[0].op == "-" and len(self.args[0].args) == 1:
-                    #cos(-x)
-                    a = self.args[0].args[0]
-                    if a.ty == FUN and a.func_name == "pi":
-                        return poly.constant(-1)
-                    elif a.ty == CONST:
-                        p = parser.parse_expr(str(sympy.cos(-a.val)))
-                        return p.to_poly()
-                    else:
-                        return poly.singleton(self)
-                elif self.args[0] == pi:
-                    return poly.constant(-1)
                 else:
                     return poly.singleton(self)                
-            elif self.func_name == "sin":
-                if self.args[0] == Const(0):
-                    return poly.constant(0)
-                elif self.args[0].ty == OP and self.args[0].op == "/" and \
-                        self.args[0].args[0] == pi and self.args[0].args[1].ty == CONST:
-                    p = parser.parse_expr(str(sympy.sin(sympy.pi/self.args[0].args[1].val)))
-                    return p.to_poly()
-                elif self.args[0].ty == OP and self.args[0].op == "*" and \
-                        self.args[0].args[0].ty == CONST and self.args[0].args[1] == pi:
-                    p = parser.parse_expr(str(sympy.sin(sympy.pi*self.args[0].args[0].val)))
-                    return p.to_poly()
-                elif self.args[0] == pi:
-                    return poly.constant(0)
-                elif self.args[0].ty == OP and self.args[0].op == "-" and len(self.args[0].args) == 1:
-                    a = self.args[0].args[0]
-                    if a.ty == FUN and a.func_name == "pi":
-                        return poly.constant(0)
-                    elif a.ty == CONST:
-                        p = parser.parse_expr(str(sympy.sin(-a.val)))
-                        return p.to_poly()
-                    else:
-                        return poly.singleton(self)
-                else:
-                    return poly.singleton(self)
-            elif self.func_name == "tan":
-                if self.args[0] == Const(0):
-                    raise ValueError
-                elif self.args[0].ty == OP and self.args[0].op == "/" and \
-                        self.args[0].args[0] == pi and self.args[0].args[1].ty == CONST:
-                    p = parser.parse_expr(str(sympy.tan(sympy.pi/self.args[0].args[1].val)))
-                    return p.to_poly()
-                elif self.args[0].ty == OP and self.args[0].op == "*" and \
-                        self.args[0].args[0].ty == CONST and self.args[0].args[1] == pi:
-                    p = parser.parse_expr(str(sympy.tan(sympy.pi*self.args[0].args[0].val)))
-                    return p.to_poly()
-                elif self.args[0] == pi:
-                    #haven't implemented infinitely positive symbol
-                    raise ValueError  
-                elif self.args[0].ty == OP and self.args[0].op == "-" and len(self.args[0].args) == 1:
-                    a = self.args[0].args[0]
-                    if a.ty == FUN and a.func_name == "pi":
-                        raise ValueError
-                    elif a.ty == CONST:
-                        p = parser.parse_expr(str(sympy.tan(-a.val)))
-                        return p.to_poly()
-                    else:
-                        return poly.singleton(self)
-                else:
-                    return poly.singleton(self)
-            elif self.func_name == "arctan":
-                arg = self.args[0]
-                if arg == Const(0):
-                    return poly.constant(0)
-                elif arg.ty == FUN and arg.func_name == "sqrt" and arg.args[0].ty == CONST:
-                    #arctan(sqrt(3))
-                    val = str(sympy.atan(sympy.sqrt(arg.args[0].val)))
-                    return parser.parse_expr(val).to_poly()
-                elif arg.ty == OP and arg.op == "/" and arg.args[0].ty == FUN and \
-                        arg.args[0].func_name == "sqrt" and arg.args[0].args[0].ty == CONST and \
-                            arg.args[1].ty == CONST:
-                    #arctan(sqrt(3)/3)
-                    val = str(sympy.atan(sympy.sqrt(arg.args[0].args[0].val)/arg.args[1].val))
-                    return parser.parse_expr(val).to_poly()
-                elif arg.ty == CONST:
-                    val = str(sympy.atan(arg.val))
-                    return parser.parse_expr(val).to_poly()
-                else:
-                    return poly.singleton(self)
             elif self.func_name == "log":
                 if self.args[0].ty == CONST and self.args[0].val <= 0:
                     raise ValueError
@@ -332,13 +275,13 @@ class Expr:
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
             elif self.func_name == "sqrt":
-                return (self.args[0] ^ Const(Fraction(1/2))).to_poly()
+                return Op("^", self.args[0], Const(Fraction(1/2))).to_poly()
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
-            return (upper - lower).normalize().to_poly()
+            return upper.to_poly() - lower.to_poly()
         elif self.ty == INTEGRAL:
             a = self
             if a.lower == a.upper:
@@ -350,7 +293,7 @@ class Expr:
 
     def normalize(self):
         """Normalizes an expression."""
-        return from_poly(self.to_poly())
+        return from_poly(self.to_poly(0))
 
     def replace_trig(self, trig_old, trig_new):
         """Replace the old trig to its identity trig in e."""
@@ -443,8 +386,8 @@ def trig_transform(trig):
 def from_mono(m):
     """Convert a monomial to an expression."""
     factors = []
-    if m.coeff != 1:
-        factors.append(Const(m.coeff))
+    if m.coeff != Const(1):
+            factors.append(m.coeff)
     for factor, pow in m.factors:
         if pow == 1:
             factors.append(factor)
@@ -461,10 +404,7 @@ def from_poly(p):
     if len(p.monomials) == 0:
         return Const(0)
     else:
-        if p.is_zero_constant():
-            monos = [from_mono(m) for m in p.monomials]
-        else:
-            monos = [from_mono(m) for m in p.del_zero_mono().monomials]
+        monos = [from_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0]) 
 
 def extract(p):
@@ -678,7 +618,7 @@ class Op(Expr):
         return hash((OP, self.op, self.args))
 
     def __eq__(self, other):
-        return other.ty == OP and self.op == other.op and self.args == other.args
+        return isinstance(other, Op) and self.op == other.op and self.args == other.args
 
     def __str__(self):
         if len(self.args) == 1:
@@ -708,7 +648,7 @@ class Fun(Expr):
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
-            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "asin", "arctan"]
+            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "asin", "acos", "atan"]
         else:
             raise NotImplementedError
 
@@ -750,10 +690,10 @@ def exp(e):
     return Fun("exp", e)
 
 def arcsin(e):
-    return Fun("arcsin", e)
+    return Fun("asin", e)
 
 def arctan(e):
-    return Fun("arctan", e)
+    return Fun("atan", e)
 
 pi = Fun("pi")
 

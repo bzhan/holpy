@@ -4,25 +4,9 @@ from lark import Lark, Transformer, v_args, exceptions
 from fractions import Fraction
 from decimal import Decimal
 from collections.abc import Iterable
+from integral import expr
 
 def collect_pairs(ps):
-    """Reduce a list of pairs by collecting into groups according to
-    first components, and adding the second component for each group.
-
-    It is assumed that the first components are hashable.
-
-    e.g. [("x", 1), ("y", 2), ("x", 3)] => [("x", 4), ("y", 2)]
-
-    """
-    res = {}
-    for v, c in ps:
-        if v in res:
-            res[v] += c
-        else:
-            res[v] = c
-    return tuple(sorted(((k, v) for k, v in res.items()),reverse=True))
-
-def collect_pairs1(ps):
     """Reduce a list of pairs by collecting into groups according to
     first components, and adding the second component for each group.
 
@@ -50,14 +34,12 @@ class Monomial:
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
         """
-        assert isinstance(coeff, (int, Fraction, Decimal))
+        assert isinstance(coeff, expr.Expr) and coeff.is_constant(), "Unexpected coeff: %s" % str(coeff)
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
             isinstance(factor[1], (int, Fraction)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
-        self.factors = collect_pairs1(factors)
-        self.var = None if self.is_constant() else factors[0][0]
-        self.degree = 0 if self.is_constant() else self.factors[0][1]
+        self.factors = collect_pairs(factors)
 
     def __eq__(self, other):
         return isinstance(other, Monomial) and self.coeff == other.coeff and \
@@ -65,7 +47,7 @@ class Monomial:
 
     def __str__(self):
         res = ""
-        if self.coeff != 1:
+        if self.coeff != expr.Const(1):
             res += str(self.coeff)
         for var, p in self.factors:
             s = str(var)
@@ -98,31 +80,12 @@ class Monomial:
     def __mul__(self, other):
         return Monomial(self.coeff * other.coeff, self.factors + other.factors)
 
-    def __truediv__(self, other):
-        assert other.coeff != 0
-        c = Fraction(self.coeff, other.coeff)
-        if self.is_constant(): 
-            if other.is_constant():
-                return Monomial(c, tuple())
-            else:
-                return Monomial(c, ((self.var, -other.degree),))
-        else:
-            if other.is_constant():
-                return Monomial(c, ((self.var, self.degree),))
-            else:
-                if self.degree - other.degree != 0:
-                    return Monomial(c, ((self.var, self.degree-other.degree),))
-                else:
-                    return Monomial(c, tuple())
     def scale(self, c):
-        assert isinstance(c, (int, Fraction, Decimal))
-        if c == 1:
-            return self
-        else:
-            return Monomial(c * self.coeff, self.factors)
+        assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected coeff: %s" % str(c)
+        return Monomial(c * self.coeff, self.factors)
 
     def __neg__(self):
-        return self.scale(-1)
+        return self.scale(expr.Const(-1))
 
     def is_constant(self):
         return len(self.factors) == 0
@@ -139,11 +102,7 @@ class Polynomial:
         monomials = tuple(monomials)
         assert all(isinstance(mono, Monomial) for mono in monomials)
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
-        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts)
-        self.var = None
-        if not self.is_nonzero_constant():
-            self.var = self.monomials[0].var
-        self.degree = 0 if self.is_nonzero_constant() else self.monomials[0].degree
+        self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts if coeff != expr.Const(0))
 
     def __eq__(self, other):
         return isinstance(other, Polynomial) and self.monomials == other.monomials
@@ -164,27 +123,13 @@ class Polynomial:
         return Polynomial(mono.scale(c) for mono in self.monomials)
 
     def __neg__(self):
-        return self.scale(-1)
+        return self.scale(expr.Const(-1))
 
     def __sub__(self, other):
         return self + (-other)
 
     def __mul__(self, other):
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
-
-    def is_nonzero_constant(self):
-        return len(self.monomials) == 1 and self.monomials[0].is_constant() and self.monomials[0].coeff != 0
-
-    def is_zero_constant(self):
-        return len(self.monomials) == 1 and self.monomials[0].is_constant() and self.monomials[0].coeff == 0 \
-            or all(m.coeff == 0 for m in self.monomials)
-
-    def del_zero_mono(self):
-        np = []
-        for m in self.monomials:
-            if m.coeff != 0:
-                np.append(m)
-        return Polynomial(np)
 
     def get_constant(self):
         """If self is a constant, return the constant. Otherwise raise an exception."""
@@ -195,42 +140,13 @@ class Polynomial:
         else:
             raise AssertionError
 
-    def standardize(self):
-        """Sort the polynomial by the power value by descending order
-
-        5*x^2 + 3*x^4 + 2 => 3*x^4 + 0*x^3 + 5*x^2 + 0*x^1 + 2
-
-        """
-        if self.is_nonzero_constant():
-            return Polynomial(self.monomials)
-        if self.monomials[-1].is_constant():
-            np = list(self.monomials[:-1])
-        else:
-            np = list(self.monomials)
-        de = self.degree
-        for m in self.monomials:
-            if not m.is_constant():
-                while de != m.degree:
-                    np.append(Monomial(0, ((self.var, de),)))
-                    de -= 1
-                de -= 1
-        while de != 0:
-            np.append(Monomial(0, ((self.var, de),)))
-            de -= 1
-        if self.monomials[-1].is_constant():
-            np.append(self.monomials[-1])
-        else:
-            np.append(Monomial(0, tuple()))
-        return Polynomial(np)
-
-
 def singleton(s):
     """Polynomial for 1*s^1."""
-    return Polynomial([Monomial(1, [(s, 1)])])
+    return Polynomial([Monomial(expr.Const(1), [(s, 1)])])
 
 def constant(c):
     """Polynomial for c (numerical constant)."""
-    assert isinstance(c, (int, Fraction, Decimal))
+    assert isinstance(c, expr.Expr) and c.is_constant(), "Unexpected const: %s, type: %s" % (str(c), type(c))
     return Polynomial([Monomial(c, tuple())])
 
 # A simple parser for polynomials, where all variables are characters.
@@ -265,13 +181,13 @@ class PolyTransformer(Transformer):
         return (str(name), int(pow))
 
     def monomial(self, *factors):
-        return Monomial(1, factors)
+        return Monomial(expr.Const(1), factors)
 
     def int_monomial(self, n, *factors):
-        return Monomial(int(n), factors)
+        return Monomial(expr.Const(int(n)), factors)
 
     def decimal_factors(self, n, *factors):
-        return Monomial(Decimal(n), factors)
+        return Monomial(expr.Const(Decimal(n)), factors)
 
     def polynomial(self, *monomials):
         return Polynomial(monomials)

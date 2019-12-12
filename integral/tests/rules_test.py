@@ -15,11 +15,11 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x^(1/2) * x^(1/2)",
              "INT x:[a,b]. x"),
             ("INT x:[4, 9]. x^(1/2)*(1+x^(1/2))",
-            "INT x:[4, 9]. x + x^(1/2)"),
+            "INT x:[4, 9]. x^(1/2) + x"),
             ("INT x:[0, pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
             "INT x:[0, pi/2]. -1 * cos(x) ^ 4 * sin(x)"),
             ("INT x:[a, b]. (x ^ 2 + 2 * x  - x ^ 3 + sin(x)*x) /  (x * y * sin(z))",
-            "INT x:[a,b]. 2 * y ^ -1 * sin(z) ^ -1 + y ^ -1 * sin(x) * sin(z) ^ -1 + -1 * x ^ 2 * y ^ -1 * sin(z) ^ -1 + x * y ^ -1 * sin(z) ^ -1")
+            "INT x:[a,b]. x * y ^ (-1) * sin(z) ^ -1 + -1 * x ^ (2) * y ^ (-1) * sin(z) ^ -1 + y ^ (-1) * sin(x) * sin(z) ^ -1 + 2 * y ^ (-1) * sin(z) ^ -1")
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -30,8 +30,9 @@ class RulesTest(unittest.TestCase):
     def testLinearity(self):
         test_data = [
             ("INT x:[a,b]. 1 + 2 * x + x ^ 2",
-             "(INT x:[a,b]. x ^ 2) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. 1)"),
-            ("(INT u:[1,-1]. -1 * u ^ 2 + 1) + pi", "-1 * (INT u:[1,-1]. u ^ 2) + (INT u:[1,-1]. 1) + pi")
+             "(INT x:[a,b]. 1) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. x ^ (2))"),
+            ("(INT u:[1,-1]. -1 * u ^ 2 + 1) + pi", "(INT u:[1,-1]. 1) + -1 * (INT u:[1,-1]. u ^ (2)) + pi"),
+            ("INT t:[-pi / 4,pi / 4]. 8 ^ (1/2)", "8 ^ (1/2) * INT t:[-pi / 4,pi / 4].1")
         ]
 
         rule = rules.Linearity()
@@ -56,7 +57,8 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. 1 / x ^ 2", "[(-1) / x]_x=a,b"),
             ("INT x:[a,b]. sin(x)", "[-cos(x)]_x=a,b"),
             ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b"),
-            ("INT x:[a,b]. 1 / (x ^ 2 + 1)", "[arctan(x)]_x=a,b")
+            ("INT x:[a,b]. 1 / (x ^ 2 + 1)", "[atan(x)]_x=a,b"),
+            ("INT t:[a,b]. 8 ^ (1/2)", "[8 ^ (1/2) * t]_t=a,b")
         ]
 
         rule = rules.CommonIntegral()
@@ -82,7 +84,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e, Const(Fraction("34/3")))
+        self.assertEqual(e, Const(Fraction(34, 3)))
 
     def testSubstitution(self):
         e = parse_expr("INT x:[0,1]. (3 * x + 1) ^ (-2)")
@@ -98,7 +100,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e, parse_expr("1/6 * exp(6) + -1/6"))
+        self.assertEqual(e, parse_expr("-1/6 + 1/6 * exp(6)"))
 
     def testSubstitution3(self):
         e = parse_expr("INT x:[0, pi].(1 - cos(x)^2)*sin(x)")
@@ -140,7 +142,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e, parse_expr("exp(2) + 2 * exp(-1)"))
+        self.assertEqual(e, parse_expr("2 * exp(-1) + exp(2)"))
 
     def testPolynomialDivision(self):
         test_data = [
@@ -157,3 +159,4 @@ class RulesTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+ 

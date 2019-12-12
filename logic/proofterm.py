@@ -5,6 +5,8 @@ from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
 from kernel.proof import Proof, ItemID
 from kernel.macro import ProofMacro, get_macro
+from util import typecheck
+
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.
@@ -112,7 +114,7 @@ class ProofTerm():
 
     @staticmethod
     def sorry(th):
-        assert isinstance(th, Thm), "sorry: input must be a theorem."
+        typecheck.checkinstance('sorry', th, Thm)
         return ProofTermDeriv("sorry", None, None, [], th=th)
 
     def get_gaps(self):
@@ -187,7 +189,7 @@ class ProofTerm():
 
     def on_prop(self, thy, *cvs):
         """Apply the given conversion to the proposition."""
-        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        typecheck.checkinstance('on_prop', thy, Theory)
         pt = self
         for cv in cvs:
             pt = cv.apply_to_pt(thy, pt)
@@ -195,7 +197,7 @@ class ProofTerm():
 
     def on_arg(self, thy, *cvs):
         """Apply the given conversion to the argument of the proposition."""
-        assert isinstance(thy, Theory), "on_arg: first argument must be Theory object."
+        typecheck.checkinstance('on_arg', thy, Theory)
         pt = self
         for cv in cvs:
             pt = cv.apply_to_pt(thy, pt, pos="arg")
@@ -203,7 +205,7 @@ class ProofTerm():
 
     def on_lhs(self, thy, *cvs):
         """Apply the given expression to the lhs of the proposition."""
-        assert isinstance(thy, Theory), "on_lhs: first argument must be Theory object."
+        typecheck.checkinstance('on_lhs', thy, Theory)
         assert self.prop.is_equals(), "on_lhs: theorem is not an equality."
         pt = self
         for cv in cvs:
@@ -212,7 +214,7 @@ class ProofTerm():
 
     def on_rhs(self, thy, *cvs):
         """Same as on_arg, except check the current theorem is an equality."""
-        assert isinstance(thy, Theory), "on_rhs: first argument must be Theory object."
+        typecheck.checkinstance('on_rhs', thy, Theory)
         assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
         pt = self
         for cv in cvs:
@@ -221,7 +223,7 @@ class ProofTerm():
 
     def on_assums(self, thy, *cvs):
         """Apply the given conversion to the assumptions."""
-        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        typecheck.checkinstance('on_assums', thy, Theory)
         pt = self
         for cv in cvs:
             pt = cv.apply_to_pt(thy, pt, pos="assums")
@@ -233,7 +235,7 @@ def refl(t):
 class ProofTermAtom(ProofTerm):
     """Atom proof terms."""
     def __init__(self, id, th):
-        assert isinstance(th, Thm), "ProofTermAtom: th must be a Thm object."
+        typecheck.checkinstance('ProofTermAtom', th, Thm)
         self.ty = ProofTerm.ATOM
         self.id = ItemID(id)
         self.th = th

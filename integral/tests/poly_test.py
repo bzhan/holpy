@@ -2,7 +2,7 @@
 
 import unittest
 
-from integral.expr import Var
+from integral.expr import Var, Const
 from integral.poly import Monomial, parse_mono, parse_poly
 from decimal import Decimal
 from fractions import Fraction
@@ -10,17 +10,17 @@ from fractions import Fraction
 class PolynomialTest(unittest.TestCase):
     def testPrintMonomial(self):
         test_data = [
-            (Monomial(1, []), "1"),
-            (Monomial(2, []), "2"),
-            (Monomial(0, []), "0"),
-            (Monomial(2, [("x", 1)]), "2x"),
-            (Monomial(2, [("x", 2)]), "2x^2"),
-            (Monomial(2, [("x", 2), ("y", 2)]), "2x^2y^2"),
-            (Monomial(2, [("y", 2), ("x", 2)]), "2x^2y^2"),
-            (Monomial(2, [("x+y", 2)]), "2(x+y)^2"),
-            (Monomial(2, [("x", 1), ("x", 2)]), "2x^3"),
-            (Monomial(1, [("x", Fraction(1, 2))]), "x ^ 1/2"),
-            (Monomial(1, [("x", Fraction(1, 2)), ("x", Fraction(1, 2))]), "x")
+            (Monomial(Const(1), []), "1"),
+            (Monomial(Const(2), []), "2"),
+            (Monomial(Const(0), []), "0"),
+            (Monomial(Const(2), [("x", 1)]), "2x"),
+            (Monomial(Const(2), [("x", 2)]), "2x^2"),
+            (Monomial(Const(2), [("x", 2), ("y", 2)]), "2x^2y^2"),
+            (Monomial(Const(2), [("y", 2), ("x", 2)]), "2x^2y^2"),
+            (Monomial(Const(2), [("x+y", 2)]), "2(x+y)^2"),
+            (Monomial(Const(2), [("x", 1), ("x", 2)]), "2x^3"),
+            (Monomial(Const(1), [("x", Fraction(1, 2))]), "x ^ 1/2"),
+            (Monomial(Const(1), [("x", Fraction(1, 2)), ("x", Fraction(1, 2))]), "x")
         ]
 
         for m, s in test_data:
@@ -72,6 +72,19 @@ class PolynomialTest(unittest.TestCase):
             p3 = parse_poly(p3)
             self.assertEqual(p1 + p2, p3)
 
+    def testSubPolynomial(self):
+        test_data = [
+            ("5", "2", "3"),
+            ("x", "0", "x"),
+        ]
+
+        for p1, p2, p3 in test_data:
+            p1 = parse_poly(p1)
+            p2 = parse_poly(p2)
+            p3 = parse_poly(p3)
+            c = p1 - p2
+            self.assertEqual(p1 - p2, p3)
+
     def testMultPolynomial(self):
         test_data = [
             ("2", "3", "6"),
@@ -85,17 +98,5 @@ class PolynomialTest(unittest.TestCase):
             p2 = parse_poly(p2)
             p3 = parse_poly(p3)
             self.assertEqual(p1 * p2, p3)
-
-    def testStandardizePolynomial(self):
-        test_data = [
-            ("1","1"),
-            ("x","x + 0"),
-            ("2 + 5x^2 + 3x^4 + 3", "3x^4 + 0x^3 + 5x^2 + 0x^1 + 5")
-        ]
-
-        for p1, p2 in test_data:
-            p1 = parse_poly(p1)
-            p2 = parse_poly(p2)
-            self.assertEqual(p1.standardize(), p2)
 if __name__ == "__main__":
     unittest.main()

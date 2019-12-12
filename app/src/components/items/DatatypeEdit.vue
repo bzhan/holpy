@@ -2,13 +2,13 @@
   <form>
     <span>
       <label class="keyword">datatype</label>
-      <ExpressionEdit v-model="item.edit_type" min-width="50" single-line/>
+      <ExpressionEdit v-model="item.type" min-width="50" single-line/>
       <span class="form-element">=</span>
     </span>
     <div style="margin-top:5px">
-      <ExpressionEdit v-model="item.constrs_lines" min-width="200"/>
+      <ExpressionEdit v-model="item.constrs" min-width="200"/>
     </div>
-    <pre class="ext-output">{{item.ext}}</pre>
+    <pre class="ext-output">{{ext}}</pre>
   </form>
 </template>
 
@@ -16,15 +16,16 @@
 export default {
   name: 'DatatypeEdit',
   props: [
-    "old_item"
+    "old_item",
+    "ext"
   ],
 
   data: function () {
     return {
       item: Object.assign(
         {
-          edit_type: "",
-          constrs_lines: ""
+          type: "",
+          constrs: ""
         },
         JSON.parse(JSON.stringify(this.old_item)))
     }

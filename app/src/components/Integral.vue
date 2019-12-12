@@ -8,6 +8,7 @@
           <b-dropdown-item href="#" v-on:click='openFile'>Open</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Calc" left>
+          <b-dropdown-item href="#" v-on:click="back">Back</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click="restart(cur_id)">Restart</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='restore'>Restore</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
@@ -57,7 +58,7 @@
         </div>
       </div>
       <div v-if="r_query_mode === 'trig'">
-        <label>The initial expression text is {{cur_calc[cur_calc.length-1].text}}.</label>
+        <label>The initial expression text is {{sep_int[integral_index].body}}.</label>
         <div>
           <label>Write the expression equal to initial ones and make the trig you want to transform surrounded by '$'</label>
           <input v-model="trig_identities_data.old_expr" style="margin:0px 5px;width:200px">
@@ -73,7 +74,6 @@
             v-on:click.native="transform(step)"
             v-bind:data="'\\(' + step.latex + '\\)'"
             style="cursor:pointer"/>
-
         </div>
       </div>
       <div v-if="r_query_mode === 'byparts'">
@@ -185,6 +185,10 @@ export default {
       } else {
         this.restart()
       }
+    },
+
+    back: function(){
+      this.cur_calc.pop()
     },
 
     restart: async function () {

@@ -6,8 +6,8 @@
       <v-icon name="edit"/>
     </a>
     <br>
-    <span v-if="'prop_hl' in item">
-      <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
+    <span v-if="'prop' in item">
+      <span v-for="(line, i) in item.prop" v-bind:key=i>
         <Expression class="indented-text" v-bind:line="line" :editor="editor"/><br>
       </span>
     </span>

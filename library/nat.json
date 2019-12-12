@@ -4798,9 +4798,6 @@
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "minus",
             "rules": [
                 {
@@ -5663,7 +5660,7 @@
                     "th": "⊢ Suc n - 1 = n"
                 }
             ],
-            "prop": "Suc n - 1 =n",
+            "prop": "Suc n - 1 = n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6036,7 +6033,7 @@
                     "th": "⊢ ¬(even n) ⟷ odd n"
                 }
             ],
-            "prop": "~even n <--> odd n",
+            "prop": "¬(even n) ⟷ odd n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6517,7 +6514,7 @@
                     "th": "⊢ odd (Suc (2 * n))"
                 }
             ],
-            "prop": "odd (Suc (2 * n)) ",
+            "prop": "odd (Suc (2 * n))",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6891,10 +6888,7 @@
                     "th": "⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
                 }
             ],
-            "prop": [
-                "(even n --> (∃m. n = 2 * m)) &",
-                "(~even n --> (∃m. n = Suc (2 * m)))"
-            ],
+            "prop": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))",
             "steps": [
                 {
                     "goal_id": "0",
@@ -7155,7 +7149,7 @@
                     "th": "⊢ even n ⟷ (∃m. n = 2 * m)"
                 }
             ],
-            "prop": "even n <--> ?m. n = 2 * m",
+            "prop": "even n ⟷ (∃m. n = 2 * m)",
             "steps": [
                 {
                     "goal_id": "0",

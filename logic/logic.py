@@ -13,6 +13,8 @@ from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_con
 from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
 from logic import matcher
 from util import name
+from util import typecheck
+
 
 """Utility functions for logic."""
 
@@ -402,6 +404,8 @@ class apply_fact_macro(ProofTermMacro):
         if pt.prop.beta_norm() != pt.prop:
             pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
         for prev_pt in pt_prevs:
+            if prev_pt.prop != pt.assums[0]:
+                prev_pt = top_conv(beta_conv()).apply_to_pt(thy, prev_pt)
             pt = ProofTerm.implies_elim(pt, prev_pt)
         for new_var in new_vars:
             if new_var.name not in inst:
@@ -618,8 +622,7 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     matched next. Finally, the assumptions are matched.
 
     """
-    assert isinstance(pts, tuple) and all(isinstance(pt, ProofTerm) for pt in pts), \
-        "apply_theorem: *pts must be a list of proof terms."
+    typecheck.checkinstance('apply_theorem', pts, [ProofTerm])
     if concl is None and tyinst is None and inst is None:
         # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", thy, th_name, pts)

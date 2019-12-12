@@ -66,9 +66,12 @@ class Linearity(Rule):
             p = e.body.to_poly()
             ts = []
             for mono in p.monomials:
-                t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(1, mono.factors)))
-                if mono.coeff != 1:
-                    t = Const(mono.coeff) * t
+                t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(Const(1), mono.factors)))
+                if mono.coeff != Const(1):
+                    if isinstance(mono.coeff, expr.Op):
+                        t = mono.coeff * t
+                    else:
+                        t = mono.coeff * t
                 ts.append(t)
             if len(ts) == 0:
                 return Const(0)
@@ -102,7 +105,7 @@ class CommonIntegral(Rule):
         if e.body == Var(e.var):
             # Integral of x is x^2/2.
             return EvalAt(e.var, e.lower, e.upper, (Var(e.var) ^ Const(2)) / Const(2))
-        elif e.body.ty == expr.CONST:
+        elif e.body.ty == expr.CONST: 
             if e.body.val == 1:
                 # Integral of 1 is x
                 integral = Var(e.var)
@@ -113,7 +116,10 @@ class CommonIntegral(Rule):
         elif e.body.ty == expr.OP:
             if e.body.op == "^":
                 a, b = e.body.args
-                if (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
+                if a.ty == expr.CONST and b.ty == expr.CONST:
+                    integral = e.body * Var(e.var)
+                    return EvalAt(e.var, e.lower, e.upper, integral)
+                elif (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
                         a.args[1].ty == expr.CONST) and b.ty == expr.CONST and \
                             b.val != -1:
                     # Integral of x ^ n is x ^ (n + 1)/(n + 1)

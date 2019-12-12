@@ -41,7 +41,7 @@
                 "hint_backward"
             ],
             "name": "real_exp_nz",
-            "prop": "~(exp x = 0)",
+            "prop": "¬(exp x = 0)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -310,7 +310,7 @@
                     "th": "⊢ exp (-x) = real_inverse (exp x)"
                 }
             ],
-            "prop": "exp (-x)= real_inverse (exp x)",
+            "prop": "exp (-x) = real_inverse (exp x)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -571,7 +571,7 @@
                     "th": "⊢ exp (of_nat n * x) = exp x ^ n"
                 }
             ],
-            "prop": "exp (of_nat n * x) = (exp x) ^ n ",
+            "prop": "exp (of_nat n * x) = exp x ^ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -805,7 +805,7 @@
                     "th": "⊢ 0 ≤ exp x"
                 }
             ],
-            "prop": "0 <= exp x",
+            "prop": "0 ≤ exp x",
             "steps": [
                 {
                     "goal": "x = x/2 + x/2",
@@ -1051,7 +1051,7 @@
                     "th": "⊢ 1 + x ≤ exp x"
                 }
             ],
-            "prop": "1 + x <= exp x",
+            "prop": "1 + x ≤ exp x",
             "steps": [
                 {
                     "case": "1 + x < 0",
@@ -1145,7 +1145,7 @@
                     "th": "⊢ 0 < x ⟶ 1 < exp x"
                 }
             ],
-            "prop": "0 < x --> 1 < exp x",
+            "prop": "0 < x ⟶ 1 < exp x",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1249,7 +1249,7 @@
                     "th": "⊢ x < y ⟶ exp x < exp y"
                 }
             ],
-            "prop": "x < y --> exp x < exp y",
+            "prop": "x < y ⟶ exp x < exp y",
             "steps": [
                 {
                     "fact_ids": [
@@ -1440,7 +1440,7 @@
                     "th": "⊢ exp x < exp y ⟷ x < y"
                 }
             ],
-            "prop": "exp x < exp y <--> x < y",
+            "prop": "exp x < exp y ⟷ x < y",
             "steps": [
                 {
                     "goal": "!a::real. !b. !c::real. !d. (a < b --> c < d) --> (a = b --> c = d) --> (b < a --> d < c) --> (c < d <--> a < b)",
@@ -1533,7 +1533,7 @@
                     "th": "⊢ exp x ≤ exp y ⟷ x ≤ y"
                 }
             ],
-            "prop": "exp x <= exp y ⟷ x <= y",
+            "prop": "exp x ≤ exp y ⟷ x ≤ y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1641,7 +1641,7 @@
                     "th": "⊢ exp x = 1 ⟷ x = 0"
                 }
             ],
-            "prop": "exp x = 1 <--> x = 0",
+            "prop": "exp x = 1 ⟷ x = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1875,7 +1875,7 @@
                     "th": "⊢ exp (log x) = x ⟷ 0 < x"
                 }
             ],
-            "prop": "exp (log x) = x <--> 0 < x",
+            "prop": "exp (log x) = x ⟷ 0 < x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2035,7 +2035,7 @@
                     "th": "⊢ 0 < x ⟶ 0 < y ⟶ log (x * y) = log x + log y"
                 }
             ],
-            "prop": "0 < x --> 0 < y --> log (x * y) = log x + log y",
+            "prop": "0 < x ⟶ 0 < y ⟶ log (x * y) = log x + log y",
             "steps": [
                 {
                     "goal_id": "2",
@@ -2246,7 +2246,7 @@
                     "th": "⊢ 0 < x ⟶ 0 < y ⟶ log x = log y ⟷ x = y"
                 }
             ],
-            "prop": "0 < x ⟶ 0 < y ⟶ (log x = log y <--> x = y)",
+            "prop": "0 < x ⟶ 0 < y ⟶ log x = log y ⟷ x = y",
             "steps": [
                 {
                     "goal_id": "2",
@@ -3784,7 +3784,7 @@
                     "th": "⊢ root n x ^ n = (if n = 0 then 1 else real_sgn x ^ n * abs x)"
                 }
             ],
-            "prop": "(root n x) ^ n = if n= 0 then 1 else (real_sgn x) ^ n * abs x",
+            "prop": "root n x ^ n = (if n = 0 then 1 else real_sgn x ^ n * abs x)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4273,7 +4273,7 @@
                     "th": "⊢ odd n ⟶ root n x ^ n = x"
                 }
             ],
-            "prop": "odd n --> (root n x) ^ n = x",
+            "prop": "odd n ⟶ root n x ^ n = x",
             "steps": [
                 {
                     "goal_id": "1",
@@ -4652,7 +4652,7 @@
                     "th": "⊢ ¬(n = 0) ⟶ 0 ≤ x ⟶ root n x ^ n = x"
                 }
             ],
-            "prop": "~(n=0) --> 0 <= x --> root n x ^ n = x",
+            "prop": "¬(n = 0) ⟶ 0 ≤ x ⟶ root n x ^ n = x",
             "steps": [
                 {
                     "goal_id": "2",
@@ -5021,7 +5021,7 @@
                     "th": "⊢ 0 ≤ x ⟶ 0 ≤ root n x"
                 }
             ],
-            "prop": "0 <= x ⟶ 0 <= root n x",
+            "prop": "0 ≤ x ⟶ 0 ≤ root n x",
             "steps": [
                 {
                     "goal_id": "1",
@@ -5300,7 +5300,7 @@
                     "th": "⊢ 0 < root n x ⟷ 0 < x"
                 }
             ],
-            "prop": "0 < root n x <--> 0 < x",
+            "prop": "0 < root n x ⟷ 0 < x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5613,7 +5613,7 @@
                     "th": "⊢ 0 ≤ root n x ⟷ 0 ≤ x"
                 }
             ],
-            "prop": "0 <= root n x ⟷ 0 <= x",
+            "prop": "0 ≤ root n x ⟷ 0 ≤ x",
             "steps": [
                 {
                     "goal_id": "0",
