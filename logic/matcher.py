@@ -146,6 +146,8 @@ def first_order_match_incr(pat, t, instsp):
                                     inst_t = inst_t.fun
                                 elif op_data.arity == operator.BINARY and len(inst_t.args) == 2:
                                     inst_t = Term.mk_abs(v, inst_t)
+                                elif inst_t.is_const_name("IF"):
+                                    inst_t = Term.mk_abs(v, inst_t) 
                                 else:
                                     inst_t = inst_t.fun
                             else:
