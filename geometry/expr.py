@@ -51,6 +51,8 @@ class Fact:
     def __str__(self):
         if self.pred_name == 'eqangle' and self.args[0].isupper():
             return " = ".join("∠[%s%s,%s%s]" % tuple(self.args[4*i:4*i+4]) for i in range(len(self.args) // 4))
+        elif self.pred_name == 'contri':
+            return " ≌ ".join("△%s%s%s" % tuple(self.args[3*i:3*i+3]) for i in range(len(self.args) // 3))
         else:
             return "%s(%s)" % (self.pred_name, ",".join(self.args))
 
