@@ -66,15 +66,6 @@ class ExprTest(unittest.TestCase):
         # Goal is not avalI
         self.assertFalse(macro.can_eval(thy, Term.mk_equals(V(one), N(zero))))
 
-    def testProveAvalIMethod(self):
-        method = expr.prove_avalI_method()
-        thy = basic.load_theory('expr')
-        th = thy.get_theorem('avalI_test1')
-
-        state = ProofState.init_state(thy, [], [], th.prop)
-        self.assertEqual(method.search(state, (0,), []), [{}])
-        method.apply(state, (0,), {}, [])
-
 
 if __name__ == "__main__":
     unittest.main()

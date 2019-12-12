@@ -2,12 +2,12 @@
 
 import unittest
 
-from kernel.term import Var
+from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel import theory
 from logic.context import Context
 from server import method
-from server.server import ProofState
+from server import server
 from syntax import parser
 
 
@@ -25,14 +25,13 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
     thy = ctxt.thy
 
     # Build starting state
-    vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
     if assms is not None:
         assert isinstance(assms, list), "test_method: assms need to be a list"
         assms = [parser.parse_term(ctxt, t) for t in assms]
     else:
         assms = []
     concl = parser.parse_term(ctxt, concl)
-    state = ProofState.init_state(thy, vars, assms, concl)
+    state = server.parse_init_state(ctxt, Term.mk_implies(*(assms + [concl])))
 
     # Obtain and run method
     if args is None:
@@ -76,10 +75,9 @@ class MethodTest(unittest.TestCase):
         thy = ctxt.thy
 
         # Build starting state
-        vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
         assms = [parser.parse_term(ctxt, t) for t in assms] if assms is not None else []
         concl = parser.parse_term(ctxt, concl)
-        state = ProofState.init_state(thy, vars, assms, concl)
+        state = server.parse_init_state(ctxt, Term.mk_implies(*(assms + [concl])))
 
         # Obtain method and run its search function
         method = theory.global_methods[method_name]
@@ -318,24 +316,6 @@ class MethodTest(unittest.TestCase):
         )
 
     def testIntroduction(self):
-        test_method(self,
-            'logic_base',
-            vars={'A': 'bool', 'B': 'bool'},
-            concl="A | B --> B | A",
-            method_name='introduction',
-            gaps=['B | A']
-        )
-
-    def testIntroduction2(self):
-        test_method(self,
-            'logic_base',
-            vars={'A': 'bool', 'B': 'bool'},
-            concl='A --> B --> A & B',
-            method_name='introduction',
-            gaps=['A & B'],
-        )
-
-    def testIntroduction3(self):
         test_method(self,
             'logic_base',
             vars={'A': "'a => bool", 'B': "'a => bool"},

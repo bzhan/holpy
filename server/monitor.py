@@ -9,7 +9,7 @@ import copy
 from kernel.proof import Proof
 from logic import basic
 from logic.context import Context
-from server.server import ProofState
+from server import server
 from server import method
 from logic import logic
 from server import items
@@ -18,7 +18,8 @@ from syntax import parser
 
 def check_proof(thy, item):
     if 'steps' in item:
-        state = ProofState.parse_init_state(thy, item)
+        ctxt = Context(thy, vars=item['vars'])
+        state = server.parse_init_state(ctxt, item['prop'])
         state.steps = item['steps']
         try:
             for step in item['steps']:
@@ -39,7 +40,7 @@ def check_proof(thy, item):
         }
     elif 'proof' in item:
         ctxt = Context(thy, vars=item['vars'])
-        state = ProofState(thy)
+        state = server.ProofState(thy)
         state.vars = ctxt.get_vars()
         state.prf = Proof()
         try:

@@ -14,6 +14,7 @@ from kernel import extension, theory
 from syntax import parser, printer, settings, pprint
 from server import server, method
 from logic import basic
+from logic.context import Context
 from logic.basic import user_dir, user_file
 from imperative import parser2
 from imperative import imp
@@ -222,7 +223,8 @@ def init_empty_proof():
     else:
         limit = None
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    cell = server.ProofState.parse_init_state(thy, data['proof'])
+    ctxt = Context(thy, vars=data['proof']['vars'])
+    cell = server.parse_init_state(ctxt, data['proof']['prop'])
     return jsonify(cell.json_data())
 
 
@@ -256,7 +258,7 @@ def init_saved_proof():
         thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
         print("Load: %f" % (time.perf_counter() - start_time))
         start_time = time.perf_counter()
-        cell = server.ProofState.parse_proof(thy, data['proof'])
+        cell = server.parse_proof(thy, data['proof'])
         print("Parse: %f" % (time.perf_counter() - start_time))
 
         if data['profile']:
@@ -298,7 +300,7 @@ def apply_method():
     else:
         limit = None
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    cell = server.ProofState.parse_proof(thy, data['proof'])
+    cell = server.parse_proof(thy, data['proof'])
     try:
         step_output = method.output_step(cell, data['step'], unicode=True, highlight=True)
         method.apply_method(cell, data['step'])
@@ -343,7 +345,7 @@ def apply_steps():
     else:
         limit = None
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    state = server.ProofState.parse_proof(thy, data['proof'])
+    state = server.parse_proof(thy, data['proof'])
 
     history = []
     for step in data['steps']:
@@ -475,7 +477,7 @@ def search_method():
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     print("Load:", time.perf_counter() - start_time)
     start_time = time.perf_counter()
-    cell = server.ProofState.parse_proof(thy, data['proof'])
+    cell = server.parse_proof(thy, data['proof'])
     print("Parse:", time.perf_counter() - start_time)
     start_time = time.perf_counter()
     fact_ids = data['step']['fact_ids']
