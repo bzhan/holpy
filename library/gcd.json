@@ -282,7 +282,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "divides_antisym",
             "num_gaps": 1,
             "proof": [
@@ -381,7 +380,7 @@
                     "th": "⊢ divides m n ⟶ divides n m ⟶ m = n"
                 }
             ],
-            "prop": "divides m n --> divides n m --> m = n",
+            "prop": "divides m n ⟶ divides n m ⟶ m = n",
             "steps": [
                 {
                     "fact_ids": [
@@ -990,9 +989,11 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd",
-            "prop": "gcd m n = (THE k. divides k m ∧ divides k n ∧ (∀a. a divides m ∧ a divides n ⟶ a divides k))",
+            "prop": [
+                "gcd m n = ",
+                "(THE k. divides k m ∧ divides k n ∧ (∀a. a divides m ∧ a divides n ⟶ a divides k))"
+            ],
             "ty": "def",
             "type": "nat ⇒ nat ⇒ nat"
         },
@@ -1050,7 +1051,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd_comm",
             "num_gaps": 0,
             "proof": [
@@ -1299,7 +1299,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd_assoc",
             "num_gaps": 0,
             "proof": [
@@ -1570,7 +1569,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd_equal_left",
             "num_gaps": 0,
             "proof": [
@@ -1617,7 +1615,7 @@
                     "th": "⊢ divides m n ⟶ gcd m n = m"
                 }
             ],
-            "prop": "divides m n --> gcd m n = m",
+            "prop": "divides m n ⟶ gcd m n = m",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1637,7 +1635,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd_equal_right",
             "num_gaps": 0,
             "proof": [
@@ -1704,7 +1701,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd_mult_left",
             "num_gaps": 1,
             "proof": [
@@ -1849,7 +1845,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "gcd_add_left",
             "num_gaps": 0,
             "proof": [
