@@ -97,6 +97,8 @@ class CommonIntegral(Rule):
     INT 1 / (x + c) = log(x + c),  (where the range is positive, c is a constant)
     INT e^x = e^x
     INT 1 / (x^2 + 1) = arctan(x)
+    INT sec(x)^2 = tan(x)
+    INT csc(x)^2 = -cot(x)
     """
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -119,18 +121,23 @@ class CommonIntegral(Rule):
                 if a.ty == expr.CONST and b.ty == expr.CONST:
                     integral = e.body * Var(e.var)
                     return EvalAt(e.var, e.lower, e.upper, integral)
-                elif (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
-                        a.args[1].ty == expr.CONST) and b.ty == expr.CONST and \
-                            b.val != -1:
+                elif a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
                     # Integral of x ^ n is x ^ (n + 1)/(n + 1)
                     # Intgeral of (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
                     integral = (a ^ Const(b.val + 1)) / Const(b.val + 1)
                     return EvalAt(e.var, e.lower, e.upper, integral)
-                elif (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
-                        a.args[1].ty == expr.CONST) and b.ty == expr.CONST and b.val == -1:
+                elif a == Var(e.var) and b.ty == expr.CONST and b.val == -1:
                     # Integral of x ^ -1 is log(x)
                     # Integral of (x + c) ^ -1 is log(x)
                     return EvalAt(e.var, e.lower, e.upper, expr.log(a))
+                elif a.ty == expr.FUN:
+                    if b ==  Const(2):
+                        if a.func_name == "sec":
+                            return EvalAt(e.var, e.lower, e.upper, expr.Fun("tan", *a.args))
+                        elif a.func_name == "csc":
+                            return EvalAt(e.var, e.lower, e.upper, -expr.Fun("cot", *a.args))
+                        else:
+                            raise NotImplementedError
                 else:
                     return e
             elif e.body.op == "/":
@@ -215,9 +222,9 @@ class Substitution(Rule):
         if e.ty != expr.INTEGRAL:
             return e
         self.var_name = parser.parse_expr(self.var_name)
-        d_subst_1 = expr.deriv(str(self.var_name.findVar()), self.var_name)
-        d_subst = expr.deriv(e.var, self.var_subst)
-        body2 = e.body.replace_trig(self.var_subst, self.var_name) * (d_subst_1 / d_subst)
+        d_subst_1 = expr.deriv(str(self.var_name.findVar()), self.var_name) # Derivates substitute expr
+        d_subst = expr.deriv(e.var, self.var_subst) #Derivates initial expr
+        body2 = (e.body*(d_subst_1 / d_subst)).normalize().replace_trig(self.var_subst.normalize(), self.var_name) 
         body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
         if self.var_name.ty == expr.VAR:
             #u subsitutes f(x)

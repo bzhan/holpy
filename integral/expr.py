@@ -25,12 +25,16 @@ class Expr:
     def __add__(self, other):
         if self.ty == CONST and other.ty == CONST:
                 return Const(self.val + other.val)
+        elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
+            return Fun("log", self.args[0]*other.args[0])
         else:
             return Op("+", self, other)
 
     def __sub__(self, other):
         if self.ty == CONST and other.ty == CONST:
             return Const(self.val - other.val)
+        elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
+            return Fun("log", self.args[0]/other.args[0])
         else:
             return Op("-", self, other)
 
@@ -57,6 +61,8 @@ class Expr:
             return Op("^", self, other)
 
     def __neg__(self):
+        if self.ty == CONST:
+            return Const(-self.val)
         return Op("-", self)
 
     def size(self):
@@ -188,6 +194,8 @@ class Expr:
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
+                if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
+                    return (x+y).to_poly()
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
@@ -197,6 +205,8 @@ class Expr:
                     return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
+                if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
+                    return (x-y).to_poly()
                 return x.to_poly() - y.to_poly()
             elif self.op == "-" and len(self.args) == 1:
                 x, = self.args
@@ -217,7 +227,7 @@ class Expr:
                     k.factors = tuple(k_factor)
                     return poly.Polynomial([m*k for m in xp.monomials])
                 else:
-                    return poly.singleton(self)
+                    return poly.singleton(Op("/", from_poly(xp), from_poly(yp)))
             elif self.op == "^":
                 x, y = self.args
                 if y.ty == CONST:
@@ -243,9 +253,9 @@ class Expr:
                             elif x.op == "/":
                                 return x.args[0].to_poly() / x.args[1].to_poly()
                             else:
-                                return poly.singleton(self)
+                                return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                         elif x.ty == FUN and x.func_name == "sqrt":
-                            return Op("^", x.args[0], Const(1/2)).to_poly()
+                            return Op("^", x.args[0], Const(Fraction(y.val*(1/2)))).to_poly()
                         else:
                             return poly.Polynomial([poly.Monomial(Const(1), [(x, y.val)])])
                 else:
@@ -413,10 +423,7 @@ def extract(p):
     if len(p.monomials) == 0:
         return Const(0)
     else:
-        if p.is_zero_constant():
-            monos = [from_mono(m) for m in p.monomials]
-        else:
-            monos = [from_mono(m) for m in p.del_zero_mono().monomials]
+        monos = [from_mono(m) for m in p.monomials]
         common_factor = collect_common_factor(monos)
         common_keys = common_factor[0].keys()
         for d in common_factor:
@@ -527,7 +534,7 @@ def deriv(var, e):
             return (x * deriv(var, y) + deriv(var, x) * y).normalize()
         elif e.op == "/":
             x, y = e.args
-            return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2))
+            return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2)).normalize()
         elif e.op == "^":
             x, y = e.args
             if y.ty == CONST:
@@ -648,7 +655,7 @@ class Fun(Expr):
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
-            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "asin", "acos", "atan"]
+            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc", "sec", "cot", "asin", "acos", "atan"]
         else:
             raise NotImplementedError
 

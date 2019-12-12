@@ -112,7 +112,12 @@ class ExprTest(unittest.TestCase):
             ("1/3 * 3 ^ (3)", "9"),
             ("-1 * (1/3 * 2 ^ (3))", "-8/3"),
             ("5 + (1/3 * 3 ^ (3) + -1 * (1/3 * 2 ^ (3)))", "34/3"),
-            ("2 * 8 ^ (1/2) * (1/2)", "2 * 2 ^ (1/2)")
+            ("2 * 8 ^ (1/2) * (1/2)", "2 * 2 ^ (1/2)"),
+            ("x / sqrt(5 - 4 * x)", "x * (5 + -4 * x) ^ (-1/2)"),
+            ("1/(1+sqrt(x))", "1 / (1 + x ^ (1/2))"),
+            ("log(2) - log(3)", "log(2/3)"),
+            ("log(2) + log(x)", "log(2 * x)"),
+            ("(3 * x + 1) ^ -2", "(1 + 3 * x) ^ -2")
         ]
 
         for s, res in test_data:
@@ -202,7 +207,12 @@ class ExprTest(unittest.TestCase):
         for s, s2 in test_data:
             s = parse_expr(s)
             self.assertEqual(s.is_constant(), s2)
-            
+    
+    def testExtract(self):
+        test_data = [
+            "x^2 + x",
+            "2 + 2*log(2)"
+        ]
 
 if __name__ == "__main__":
     unittest.main()

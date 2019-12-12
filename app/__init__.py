@@ -877,11 +877,9 @@ def integral_trig_transformation():
     print("e.normalize:", e) 
     print("problem.body: ", problem.body.normalize())
     if e.normalize() == problem.body.normalize():
-        print("wow")
         e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
         possible_new_problem = rule.eval(e)
         #need to do more
-        print("integral.expr.trig_identity[0]",possible_new_problem)
         possible_form = list(integral.expr.trig_transform(integral.expr.trig_identity[0]))
         n = []
         for p in range(len(possible_new_problem)):

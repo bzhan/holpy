@@ -48,10 +48,13 @@
     <div id="dialog">
       <div v-if="r_query_mode === 'substitution'">
         <div>
+          <span>The initial text is {{cur_calc[cur_calc.length - 1].text}}</span>
+        </div>
+        <div>
           <label>Substitute</label>
-          <input v-model="subst_data.var_name" style="margin:0px 5px;width:100px">
+          <input v-model="subst_data.var_name" style="margin:0px 5px;width:200px">
           <label>for</label>
-          <input v-model="subst_data.expr" style="margin:0px 5px;width:100px">
+          <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
         </div>
         <div style="margin-top:10px">
           <button v-on:click="doSubstitution">OK</button>
@@ -144,6 +147,7 @@ export default {
       display_integral: undefined, //display the separate integral
       sep_int: [], //all separate integrals
       integral_index: undefined, //integral on processing
+      take_effect: 0,     //Flag for whether a rule takes effect or close on halfway.
 
       allow_click_latex: 0,
 
@@ -273,13 +277,14 @@ export default {
       for(var i = 0; i < this.sep_int.length; ++i){
         integrals.push(this.sep_int[i])
       }
-      const data = {
-        problem: integrals,
-        cur_calc: this.cur_calc[this.cur_calc.length - 1].text
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
-      this.cur_calc.push(response.data)
-      this.clear_separate_integral()
+      if (this.take_effect == 1){
+        const data = {
+          problem: integrals,
+          cur_calc: this.cur_calc[this.cur_calc.length - 1].text
+        }
+        const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
+        this.cur_calc.push(response.data)        
+      }this.clear_separate_integral()
     },
 
     displaySeparateIntegrals: async function(){
@@ -308,6 +313,7 @@ export default {
 
         this.query_mode = 'trig'
         this.displaySeparateIntegrals()
+        this.sep_int = []
     },
 
     doTrigSubstitution: async function(){
@@ -322,6 +328,7 @@ export default {
         this.trig_identities_data.new_expr.push(response.data[i])
       }
       this.r_query_mode = 'display_trig'
+      this.take_effect = 1
     },
 
     transform: function(item){
@@ -335,7 +342,7 @@ export default {
     substitution: function () {
       if (this.cur_calc.length === 0)
         return;
-
+      this.sep_int = []
       this.query_mode = 'substitution'
       this.displaySeparateIntegrals()
     },
@@ -351,12 +358,13 @@ export default {
       this.r_query_mode = undefined
       this.subst_data = {var_name: '', expr: ''}
       this.integral_index = undefined
+      this.take_effect = 1
     },
 
     integrateByParts: function () {
       if (this.cur_calc.length === 0)
         return;
-
+      this.sep_int = []
       this.query_mode = 'byparts'
       this.displaySeparateIntegrals()
     },
@@ -371,9 +379,10 @@ export default {
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
       this.sep_int[this.integral_index] = response.data
-      this.query_mode = undefined
+      this.r_query_mode = undefined
       this.integral_index = undefined
       this.byparts_data = {parts_u: '', parts_v: ''}
+      this.take_effect = 1
     },
 
     polynomialDivision: async function () {
@@ -407,7 +416,8 @@ export default {
       this.query_mode = undefined
       this.integral_index = undefined
       this.equation_data = {old_expr: undefined, new_expr: ''}
-      this.allow_click_latex = 0      
+      this.allow_click_latex = 0
+      this.cur_calc = 1      
     }
 
 
