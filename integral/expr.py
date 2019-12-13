@@ -267,7 +267,7 @@ class Expr:
                 if self.args[0] == Const(0):
                     return poly.constant(Const(1))
                 else:
-                    return poly.singleton(self)
+                    return poly.singleton(Fun("exp", self.args[0].normalize()))
             elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan"):
                 p = sympy_parser.parse_expr(str(self).replace("^", "**"))
                 p = parser.parse_expr(str(p).replace("**", "^"))
@@ -282,6 +282,12 @@ class Expr:
                     return poly.constant(0)
                 elif self.args[0].ty == FUN and self.args[0].func_name == "exp":
                     return poly.constant(1)
+                elif self.args[0].ty == OP and self.args[0].op == "^":
+                    i, j = self.args[0].args
+                    if i.ty == FUN and i.func_name == "exp":
+                        return j.to_poly()
+                    else:
+                        return (j * Fun("log", i)).to_poly()
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
             elif self.func_name == "sqrt":

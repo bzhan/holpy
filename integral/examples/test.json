@@ -65,7 +65,7 @@
             "problem": "INT x:[0,1]. (3 * x + 1) ^ (-2)"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} e^{(6 x)} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
@@ -102,7 +102,7 @@
             "problem": "INT x:[0,1]. exp(6*x)"
         },
         {
-            "_problem_latex": "\\int_{-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{2} x e^{x} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
@@ -220,7 +220,7 @@
             "problem": "INT x:[pi/3, pi]. sin(2*x+pi/3)"
         },
         {
-            "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} \\sqrt{x} + 1 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} (\\sqrt{x} + 1) \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{4}^{9} \\sqrt{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
@@ -737,8 +737,166 @@
             "problem": "INT x:[-1, 1]. x / sqrt(5 - 4 * x)"
         },
         {
+            "_problem_latex": "\\int_{1}^{4} \\frac{1}{1 + \\sqrt{x}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{4} \\frac{1}{1 + \\sqrt{x}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,4]. 1 / (1 + sqrt(x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{x}\\).",
+                    "latex": "\\int_{1}^{2} \\frac{2 u}{u + 1} \\,\\mathrm{du}",
+                    "text": "INT u:[1,2]. 2 * u / (u + 1)"
+                },
+                {
+                    "latex": "\\int_{1}^{2} 2 - \\frac{2}{u + 1} \\,\\mathrm{du}",
+                    "reason": "Polynomial division",
+                    "text": "INT u:[1,2]. 2 - 2 / (u + 1)"
+                },
+                {
+                    "latex": "2 * (\\int_{1}^{2} 1 \\,\\mathrm{du}) - \\int_{1}^{2} \\frac{2}{1 + u} \\,\\mathrm{du}",
+                    "reason": "Linearity",
+                    "text": "2 * (INT u:[1,2]. 1) + -1 * (INT u:[1,2]. 2 / (1 + u))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(1 + u\\).",
+                    "latex": "2 * (\\int_{1}^{2} 1 \\,\\mathrm{du}) - \\int_{2}^{3} \\frac{2}{t} \\,\\mathrm{dt}",
+                    "text": "2 * (INT u:[1,2]. 1) + -1 * (INT t:[2,3]. 2 / t)"
+                },
+                {
+                    "latex": "2 * (\\left. u \\right\\vert_{u=1}^{2}) - \\left. 2 \\log{t} \\right\\vert_{t=2}^{3}",
+                    "reason": "Common integrals",
+                    "text": "2 * ([u]_u=1,2) + -1 * ([2 * log(t)]_t=2,3)"
+                },
+                {
+                    "latex": "2 + 2 \\log{2} - 2 \\log{3}",
+                    "reason": "Simplification",
+                    "text": "2 + 2 * log(2) + -2 * log(3)"
+                }
+            ],
             "name": "Exercise 20",
             "problem": "INT x:[1,4]. 1/(1+sqrt(x))"
+        },
+        {
+            "_problem_latex": "\\int_{3/4}^{1} \\frac{1}{\\sqrt{(1 - x)} - 1} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{3/4}^{1} \\frac{1}{\\sqrt{(1 - x)} - 1} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[3/4,1]. 1 / (sqrt(1 - x) - 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{(1 - x)}\\).",
+                    "latex": "\\int_{1/2}^{0} \\frac{-2 u}{u - 1} \\,\\mathrm{du}",
+                    "text": "INT u:[1/2,0]. -2 * u / (u - 1)"
+                },
+                {
+                    "latex": "\\int_{1/2}^{0} -2 - \\frac{2}{u - 1} \\,\\mathrm{du}",
+                    "reason": "Polynomial division",
+                    "text": "INT u:[1/2,0]. -2 - 2 / (u - 1)"
+                },
+                {
+                    "latex": "-2 * (\\int_{1/2}^{0} 1 \\,\\mathrm{du}) - \\int_{1/2}^{0} \\frac{2}{-1 + u} \\,\\mathrm{du}",
+                    "reason": "Linearity",
+                    "text": "-2 * (INT u:[1/2,0]. 1) + -1 * (INT u:[1/2,0]. 2 / (-1 + u))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(-1 + u\\).",
+                    "latex": "-2 * (\\int_{1/2}^{0} 1 \\,\\mathrm{du}) - \\int_{-1/2}^{-1} \\frac{2}{t} \\,\\mathrm{dt}",
+                    "text": "-2 * (INT u:[1/2,0]. 1) + -1 * (INT t:[-1/2,-1]. 2 / t)"
+                },
+                {
+                    "latex": "-2 * (\\int_{1/2}^{0} 1 \\,\\mathrm{du}) - 2 * (\\int_{-1/2}^{-1} t ^ {(-1)} \\,\\mathrm{dt})",
+                    "reason": "Linearity",
+                    "text": "-2 * (INT u:[1/2,0]. 1) + -2 * (INT t:[-1/2,-1]. t ^ (-1))"
+                },
+                {
+                    "latex": "-2 * (\\left. u \\right\\vert_{u=1/2}^{0}) - 2 * (\\left. \\log{t} \\right\\vert_{t=-1/2}^{-1})",
+                    "reason": "Common integrals",
+                    "text": "-2 * ([u]_u=1/2,0) + -2 * ([log(t)]_t=-1/2,-1)"
+                }
+            ],
+            "name": "Exercise 21",
+            "problem": "INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} t e^{(-\\frac{t ^ 2}{2})} \\,\\mathrm{dt}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} t e^{(-\\frac{t ^ 2}{2})} \\,\\mathrm{dt}",
+                    "reason": "Initial",
+                    "text": "INT t:[0,1]. t * exp(-(t ^ 2 / 2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(t ^ 2\\).",
+                    "latex": "\\int_{0}^{1} \\frac{e^{(\\frac{-u}{2})}}{2} \\,\\mathrm{du}",
+                    "text": "INT u:[0,1]. exp(-u / 2) / 2"
+                },
+                {
+                    "latex": "\\frac{1}{2} * (\\int_{0}^{1} e^{(-\\frac{1}{2} u)} \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "1/2 * (INT u:[0,1]. exp(-1/2 * u))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(-\\frac{1}{2} u\\).",
+                    "latex": "\\frac{1}{2} * (\\int_{0}^{-1/2} -2 e^{t} \\,\\mathrm{dt})",
+                    "text": "1/2 * (INT t:[0,-1/2]. -2 * exp(t))"
+                },
+                {
+                    "latex": "-\\int_{0}^{-1/2} e^{t} \\,\\mathrm{dt}",
+                    "reason": "Linearity",
+                    "text": "-1 * (INT t:[0,-1/2]. exp(t))"
+                },
+                {
+                    "latex": "-\\left. e^{t} \\right\\vert_{t=0}^{-1/2}",
+                    "reason": "Common integrals",
+                    "text": "-1 * ([exp(t)]_t=0,-1/2)"
+                },
+                {
+                    "latex": "1 - e^{(-\\frac{1}{2})}",
+                    "reason": "Simplification",
+                    "text": "1 + -1 * exp(-1/2)"
+                }
+            ],
+            "name": "Exercise 22",
+            "problem": "INT t:[0, 1]. t * exp(-(t^2/2))"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{e^{2}} \\frac{1}{x \\sqrt{(1 + \\log{x})}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e^{2}} \\frac{1}{x \\sqrt{(1 + \\log{x})}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(2)]. 1 / (x * sqrt(1 + log(x)))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(1 + \\log{x}\\).",
+                    "latex": "\\int_{1}^{3} \\frac{1}{\\sqrt{u}} \\,\\mathrm{du}",
+                    "text": "INT u:[1,3]. 1 / sqrt(u)"
+                },
+                {
+                    "latex": "\\int_{1}^{3} u ^ {(-\\frac{1}{2})} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "INT u:[1,3]. u ^ (-1/2)"
+                },
+                {
+                    "latex": "\\left. \\frac{\\sqrt{u}}{\\frac{1}{2}} \\right\\vert_{u=1}^{3}",
+                    "reason": "Common integrals",
+                    "text": "[u ^ (1/2) / (1/2)]_u=1,3"
+                },
+                {
+                    "latex": "-2 + 2 * \\sqrt{3}",
+                    "reason": "Simplification",
+                    "text": "-2 + 2 * 3 ^ (1/2)"
+                }
+            ],
+            "name": "Exercise 23",
+            "problem": "INT x:[1, exp(2)]. 1 / (x*sqrt(1+log(x)))"
+        },
+        {
+            "name": "Exercise 24",
+            "problem": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)" 
         }
     ]
 }

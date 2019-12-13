@@ -117,7 +117,12 @@ class ExprTest(unittest.TestCase):
             ("1/(1+sqrt(x))", "1 / (1 + x ^ (1/2))"),
             ("log(2) - log(3)", "log(2/3)"),
             ("log(2) + log(x)", "log(2 * x)"),
-            ("(3 * x + 1) ^ -2", "(1 + 3 * x) ^ -2")
+            ("(3 * x + 1) ^ -2", "(1 + 3 * x) ^ -2"),
+            ("-u/2","-1/2 * u"),
+            ("exp(-u/2)", "exp(-1/2 * u)"),
+            ("log(exp(2))", "2"),
+            ("log(x^2)", "2 * log(x)")
+            #("1/2 * (-2 * (INT t:[0,-1/2]. exp(t)))", "(INT t:[0,-1/2]. -1 * exp(t)))")
         ]
 
         for s, res in test_data:
