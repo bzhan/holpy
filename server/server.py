@@ -12,6 +12,7 @@ from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from syntax import parser, printer, pprint
+from syntax import settings
 from logic.context import Context
 from server import tactic
 from server import method
@@ -76,15 +77,15 @@ class ProofState():
         lines = "\n".join('var ' + v.name + ' :: ' + str(v.T) for v in vars)
         return lines + "\n" + str(self.prf)
 
-    def export_proof(self, prf):
-        return sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
-                    for item in prf.items], [])
+    @settings.with_settings
+    def export_proof(self):
+        return sum([printer.export_proof_item(self.thy, item) for item in self.prf.items], [])
 
     def json_data(self):
         """Export proof in json format."""
         res = {
             "vars": {v.name: str(v.T) for v in self.vars},
-            "proof": self.export_proof(self.prf),
+            "proof": self.export_proof(unicode=True, highlight=True),
             "num_gaps": len(self.rpt.gaps),
             "method_sig": theory.get_method_sig(self.thy),
         }
