@@ -26,7 +26,7 @@ def convert_expr(e, mode="large"):
         if len(e.args) == 1:
             a, = e.args
             sa = convert_expr(a, mode)
-            if a.priority() < 80:
+            if a.priority() < 70:
                 sa = "(%s)" % sa
             return "%s%s" % (e.op, sa)
         elif len(e.args) == 2:
@@ -34,8 +34,9 @@ def convert_expr(e, mode="large"):
             sx = convert_expr(x, mode)
             sy = convert_expr(y, mode)
             if e.op in ("+", "-", "^"):
-                if e.op == "^": 
-                    if isinstance(y.val, Fraction):
+                if e.op == "^":
+                    # Still can improve 
+                    if y.ty == expr.CONST and isinstance(y.val, Fraction):
                         if y.val.numerator == 1:
                             if y.val.denominator == 2:
                                 return "\\sqrt{%s}" % sx
@@ -69,6 +70,10 @@ def convert_expr(e, mode="large"):
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
                 if not x.is_constant() and not y.is_constant():
+                    if x.ty == expr.OP and x.op != "^":
+                        sx = "(" + sx + ")"
+                    if y.ty == expr.OP and y.op != "^":
+                        sy = "(" + sy + ")"
                     return "%s %s" % (sx, sy)
                 if x.ty == expr.CONST and y.ty == expr.VAR:
                     if sx == "1":
@@ -111,8 +116,11 @@ def convert_expr(e, mode="large"):
             sx = convert_expr(x, mode)
             if len(sx) > 1:
                 sx = "(%s)" % sx
-            if e.func_name == "exp" and e.args[0] == expr.Const(1):
-                return "\\%s" % e.func_name
+            if e.func_name == "exp":
+                if e.args[0] == expr.Const(1):
+                    return "\\%s" % e.func_name
+                else:
+                    return "e^{%s}" % sx
             elif e.func_name == "sqrt":
                 return "\\sqrt{%s}" % sx
             return "\\%s{%s}" % (e.func_name, sx)

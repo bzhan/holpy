@@ -593,6 +593,7 @@ def integral_linearity():
     data = json.loads(request.get_data().decode('utf-8'))
     rule = integral.rules.Linearity()
     problem = integral.parser.parse_expr(data['problem'])
+    print("!!", problem)
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),

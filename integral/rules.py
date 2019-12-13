@@ -68,22 +68,22 @@ class Linearity(Rule):
             for mono in p.monomials:
                 t = expr.Integral(e.var, e.lower, e.upper, expr.from_mono(poly.Monomial(Const(1), mono.factors)))
                 if mono.coeff != Const(1):
-                    if isinstance(mono.coeff, expr.Op):
-                        t = mono.coeff * t
-                    else:
-                        t = mono.coeff * t
+                    t = mono.coeff * t
                 ts.append(t)
             if len(ts) == 0:
                 return Const(0)
             else:
                 return sum(ts[1:], ts[0])
-        integrals = e.separate_integral()
-        result = []
-        for i in integrals:
-            result.append(eval1(i))
-        for i in range(len(integrals)):
-            e = e.replace_trig(integrals[i], result[i])
-        return e
+        def eval2(c):
+            integrals = c.separate_integral()
+            result = []
+            for i in integrals:
+                result.append(eval1(i))
+            for i in range(len(integrals)):
+                c = c.replace_trig(integrals[i], result[i]) # e = a * b * INT c
+            return c
+        c = eval2(e).normalize().normalize()
+        return eval2(c)
 
 class CommonIntegral(Rule):
     """Applies common integrals:
@@ -222,9 +222,9 @@ class Substitution(Rule):
         if e.ty != expr.INTEGRAL:
             return e
         self.var_name = parser.parse_expr(self.var_name)
-        d_subst_1 = expr.deriv(str(self.var_name.findVar()), self.var_name) # Derivates substitute expr
+        d_name = expr.deriv(str(self.var_name.findVar()), self.var_name) # Derivates substitute expr
         d_subst = expr.deriv(e.var, self.var_subst) #Derivates initial expr
-        body2 = (e.body*(d_subst_1 / d_subst)).normalize().replace_trig(self.var_subst.normalize(), self.var_name) 
+        body2 = (e.body*(d_name / d_subst)).normalize().replace_trig(self.var_subst.normalize(), self.var_name) 
         body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
         if self.var_name.ty == expr.VAR:
             #u subsitutes f(x)

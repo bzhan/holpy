@@ -2,7 +2,7 @@
   <div>
     <!-- Menu -->
     <b-navbar type="light" variant="info">
-      <b-navbar-brand href="#">integral</b-navbar-brand>
+      <b-navbar-brand href="#">Integral</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
           <b-dropdown-item href="#" v-on:click='openFile'>Open</b-dropdown-item>
