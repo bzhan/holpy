@@ -594,16 +594,8 @@ export default {
         delete item.num_gaps
         delete item.steps
       } else {
-        var cur_proof = undefined
-        if ($proof.history !== undefined) {
-          const len = $proof.history.length
-          cur_proof = $proof.history[len-1].proof
-          item.num_gaps = $proof.history[len-1].num_gaps
-        } else {
-          cur_proof = $proof.proof
-          item.num_gaps = $proof.num_gaps
-        }
-
+        const cur_proof = $proof.proof
+        item.num_gaps = $proof.num_gaps
         var output_proof = []
         for (let i = 0; i < cur_proof.length; i++) {
           output_proof.push(JSON.parse(JSON.stringify(cur_proof[i])))  // deep copy
