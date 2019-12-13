@@ -18,19 +18,13 @@ from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
 
-thy = basic.load_theory('logic_base')
-
-A = Var("A", boolT)
-B = Var("B", boolT)
-conj = logic.mk_conj
-disj = logic.mk_disj
-
 
 def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
               print_stat=False, print_search=False, print_steps=False):
     """Test list of steps for the given theorem."""
     def test_val(thy, val):
-        state = ProofState.parse_init_state(thy, val)
+        ctxt = Context(thy, vars=val['vars'])
+        state = server.parse_init_state(ctxt, val['prop'])
         goal = state.prf.items[-1].th
         num_found = 0
         if print_stat and 'steps' not in val:
@@ -85,29 +79,26 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
 
 class ServerTest(unittest.TestCase):
     def testInitState(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A & B --> B & A")
         self.assertEqual(len(state.prf.items), 3)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
 
     def testInitState2(self):
-        state = ProofState.init_state(thy, [A, B], [A, B], conj(A, B))
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A --> B --> A & B")
         self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A --> B --> A & B"))
 
     def testInitState3(self):
-        state = ProofState.init_state(thy, [A], [], disj(A, logic.neg(A)))
+        ctxt = Context('logic_base', vars={'A': 'bool'})
+        state = server.parse_init_state(ctxt, "A | ~A")
         self.assertEqual(len(state.prf.items), 2)
-        self.assertEqual(state.check_proof(), Thm([], disj(A, logic.neg(A))))
-
-    def testParseInitState(self):
-        state = ProofState.parse_init_state(
-            thy, {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
-        self.assertEqual(len(state.prf.items), 3)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A | ~A"))
 
     def testJsonData(self):
-        state = ProofState.parse_init_state(
-            thy, {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A & B --> B & A")
         json_data = state.json_data()
         self.assertEqual(len(json_data['vars']), 2)
         self.assertEqual(len(json_data['proof']), 3)
@@ -122,7 +113,7 @@ class ServerTest(unittest.TestCase):
                 {'id': 2, 'rule': 'implies_intr', 'args': 'A & B', 'prevs': [1], 'th': ''}
             ]
         }
-        state = ProofState.parse_proof(thy, data)
+        state = server.parse_proof('logic_base', data)
         self.assertEqual(len(state.vars), 2)
         self.assertEqual(len(state.prf.items), 3)
 
@@ -133,37 +124,43 @@ class ServerTest(unittest.TestCase):
                 {'id': 0, 'rule': 'variable', 'args': "a, 'a", 'prevs': [], 'th': ''}
             ]
         }
-        state = ProofState.parse_proof(thy, data)
+        state = server.parse_proof('logic_base', data)
         self.assertEqual(len(state.prf.items), 1)
 
     def testGetCtxt(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(0), Context(thy, vars={'A': 'bool', 'B': 'bool'}))
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A & B --> B & A")
+        self.assertEqual(state.get_ctxt(0), Context(ctxt.thy, vars={'A': 'bool', 'B': 'bool'}))
 
     def testAddLineBefore(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A & B --> B & A")
 
         state.add_line_before(2, 1)
         self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
 
         state.add_line_before(2, 3)
         self.assertEqual(len(state.prf.items), 7)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
 
     def testRemoveLine(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A & B --> B & A")
+
         state.add_line_before(2, 1)
         state.remove_line(2)
         self.assertEqual(len(state.prf.items), 3)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
 
     def testSetLine(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state(ctxt, "A & B --> B & A")
+
         state.add_line_before(2, 1)
         state.set_line(2, "theorem", args="conjD1")
         self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""
