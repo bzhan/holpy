@@ -461,22 +461,28 @@ export default {
         // Have not loaded any theory
         return
       }
+      const new_item = {
+        ty: ty, name: '',
+        edit: {
+          ty: ty, name: ''
+        }
+      }
       if (pos == 'end') {
         const len = this.theory.content.length
-        this.$set(this.theory.content, len, {ty: ty})
+        this.$set(this.theory.content, len, new_item)
         this.selected = {single: len}
       } else if (pos == 'before') {
         if (!('single' in this.selected)) {
           return
         }
         this.theory.content.splice(this.selected.single, 0, {})
-        this.$set(this.theory.content, this.selected.single, {ty: ty})
+        this.$set(this.theory.content, this.selected.single, new_item)
       } else if (pos == 'after') {
         if (!('single' in this.selected)) {
           return
         }
         this.theory.content.splice(this.selected.single+1, 0, {})
-        this.$set(this.theory.content, this.selected.single+1, {ty: ty})
+        this.$set(this.theory.content, this.selected.single+1, new_item)
         this.selected = {single: this.selected.single+1}
       }
       this.on_edit = this.selected.single
