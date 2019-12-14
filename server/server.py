@@ -12,6 +12,7 @@ from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from syntax import parser, printer, pprint
+from syntax import settings
 from logic.context import Context
 from server import tactic
 from server import method
@@ -76,23 +77,18 @@ class ProofState():
         lines = "\n".join('var ' + v.name + ' :: ' + str(v.T) for v in vars)
         return lines + "\n" + str(self.prf)
 
-    def export_proof(self, prf):
-        return sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
-                    for item in prf.items], [])
+    @settings.with_settings
+    def export_proof(self):
+        return sum([printer.export_proof_item(self.thy, item) for item in self.prf.items], [])
 
     def json_data(self):
         """Export proof in json format."""
         res = {
             "vars": {v.name: str(v.T) for v in self.vars},
-            "proof": self.export_proof(self.prf),
+            "proof": self.export_proof(unicode=True, highlight=True),
             "num_gaps": len(self.rpt.gaps),
             "method_sig": theory.get_method_sig(self.thy),
         }
-        if hasattr(self, 'steps'):
-            res['steps'] = self.steps
-        if hasattr(self, 'history'):
-            res['history'] = self.history
-
         return res
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
@@ -231,6 +227,39 @@ class ProofState():
                 if logic.trivial_macro().can_eval(self.thy, item.th.prop):
                     self.set_line(item.id, 'trivial', args=item.th.prop)
 
+    def parse_steps(self, steps):
+        """Parse and apply a list of steps to self.
+
+        Return the output from the list of steps.
+
+        """
+        history = []
+        for step in steps:
+            try:
+                step_output = method.output_step(self, step, unicode=True, highlight=True)
+                method.apply_method(self, step)
+                self.check_proof(compute_only=True)
+                history.append({
+                    'step_output': step_output,
+                    'goal_id': step['goal_id'],
+                    'fact_ids': step.get('fact_ids', [])
+                })
+            except Exception as e:
+                history.append({
+                    'step_output': pprint.N(step['method_name']),
+                    'goal_id': step['goal_id'],
+                    'fact_ids': step.get('fact_ids', []),
+                    'error': {
+                        'err_type': e.__class__.__name__,
+                        'err_str': str(e),
+                        'trace': traceback2.format_exc()
+                    }
+                })
+
+        # Perform final check. Should not raise Exception here
+        self.check_proof()
+        return history
+
 
 def parse_init_state(ctxt, prop):
     """Given data for a theorem statement, construct the initial partial proof.
@@ -267,54 +296,18 @@ def parse_init_state(ctxt, prop):
     state.check_proof(compute_only=True)
     return state
 
-def parse_proof(thy, data):
+def parse_proof(ctxt, proof):
     """Obtain proof from json format."""
-    ctxt = Context(thy, vars=data['vars'])
     thy = ctxt.thy
-
-    if 'steps' in data:
-        state = parse_init_state(ctxt, data['prop'])
-        state.steps = data['steps']
-        state.history = []
-        for step in data['steps']:
-            state.history.append({
-                'steps_output': pprint.N(step['method_name']),
-                'proof': state.export_proof(state.prf),
-                'num_gaps': len(state.rpt.gaps)
-            })
-            try:
-                steps_output = method.output_step(state, step, unicode=True, highlight=True)
-                state.history[-1]['steps_output'] = steps_output
-                method.apply_method(state, step)
-                state.check_proof(compute_only=True)
-            except Exception as e:
-                state.history[-1]['error'] = {
-                    'err_type': e.__class__.__name__,
-                    'err_str': str(e),
-                    'trace': traceback2.format_exc()
-                }
-        state.history.append({
-            'proof': state.export_proof(state.prf),
-            'num_gaps': len(state.rpt.gaps)
-        })
-        try:    
-            state.check_proof()
-        except Exception as e:
-            state.history[-1]['error'] = {
-                'err_type': e.__class__.__name__,
-                'err_str': str(e),
-                'trace': traceback2.format_exc()
-            }
-    else:
-        state = ProofState(thy)
-        state.vars = ctxt.get_vars()
-        state.prf = Proof()
-        for line in data['proof']:
-            if line['rule'] == "variable":
-                nm, str_T = line['args'].split(',', 1)
-                ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
-            item = parser.parse_proof_rule(ctxt, line)
-            state.prf.insert_item(item)
-        state.check_proof()
+    state = ProofState(thy)
+    state.vars = ctxt.get_vars()
+    state.prf = Proof()
+    for line in proof:
+        if line['rule'] == "variable":
+            nm, str_T = line['args'].split(',', 1)
+            ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
+        item = parser.parse_proof_rule(ctxt, line)
+        state.prf.insert_item(item)
+    state.check_proof()
 
     return state

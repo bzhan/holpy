@@ -65,10 +65,7 @@ export default {
       steps: [],
       goal: -1,
       facts: new Set(),
-      proof: undefined,
-
-      // Maximum index in history that is read.
-      max_loaded: -1,
+      proof: undefined
     }
   },
 
@@ -131,36 +128,17 @@ export default {
     },
 
     display_instructions: function () {
-      if (this.history[this.index] !== undefined) {
-        if (this.index === this.history.length - 1) {
-          this.ref_status.instr = [{text: "Current state", color: 0}]
+      if (this.history !== undefined) {
+        if (this.index === 0) {
+          this.ref_status.instr = [{color: 0, text: 'Initial'}]
         } else {
-          this.ref_status.instr = this.history[this.index].steps_output
+          this.ref_status.instr = this.history[this.index-1].step_output
         }
-        this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
+        this.ref_status.instr_no = this.index + '/' + this.history.length
       } else {
         this.ref_status.instr = ''
         this.ref_status.instr_no = ''
       }
-    },
-
-    display_history: function () {
-      // Display history in ref_context
-      var steps = []
-      var h_len = this.history.length
-      for (let i = 0; i < h_len-1; i++) {
-        steps.push({
-          error: this.history[i].error,
-          steps_output: this.history[i].steps_output,
-          is_read: this.max_loaded >= i
-        })
-      }
-      steps.push({
-        error: this.history[h_len-1].error,
-        steps_output: [{text: "Current state", color: 0}],
-        is_read: this.max_loaded >= h_len-1
-      })
-      this.ref_context.steps = steps
     },
 
     current_state: function () {
@@ -178,10 +156,10 @@ export default {
         profile: this.editor.profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
-        proof: {
-          vars: this.vars,
-          proof: this.proof,
-        },
+        vars: this.vars,
+        prop: this.prop,
+        steps: this.steps,
+        index: this.index,
         step: {
           goal_id: goal_id,
           fact_ids: fact_ids,
@@ -274,58 +252,47 @@ export default {
       }
     },
 
-    loadSteps: async function () {
-      var result = undefined
-      const at_end = (this.index === this.history.length-1)
-      const input = {
+    // Go to the step given by index
+    gotoStep: async function (index) {
+      this.index = index
+
+      const data = {
         username: this.$state.user,
+        profile: this.editor !== undefined && this.editor.profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
-        proof: {
-          vars: this.vars,
-          proof: this.history[this.max_loaded+1].proof
-        },
-        steps: this.steps.slice(this.max_loaded+1, at_end ? this.index : this.index+1)
+        vars: this.vars,
+        prop: this.prop,
+        steps: this.steps,
+        index: this.index
       }
+
+      var response = undefined
       try {
-        result = await axios.post('http://127.0.0.1:5000/api/apply-steps', JSON.stringify(input))
+        response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
       } catch (err) {
         this.$emit('set-message', {
           type: 'error',
           data: 'Server error'
         })
       }
-      if (result === undefined) {
+      if (response === undefined) {
         this.display_status('Server error')
         return
       }
 
-      const history = result.data.history
-      const h_len = history.length
-      for (let i = 0; i < h_len-1; i++) {
-        this.history[this.max_loaded+i+1] = history[i]
-      }
-      const history_last = this.history[this.max_loaded+h_len]
-      history_last.proof = history[h_len-1].proof
-      history_last.num_gaps = history[h_len-1].num_gaps
-      history_last.error = history[h_len-1].error
-      this.max_loaded = this.index
-    },
+      const state = response.data.state
+      this.history = response.data.history
+      this.num_gaps = state.num_gaps
+      this.method_sig = state.method_sig
+      this.proof = state.proof
 
-    // Go to the step given by index
-    gotoStep: async function (index) {
-      this.index = index
-      if (this.index > this.max_loaded) {
-        await this.loadSteps()
-      }
-      this.proof = this.history[index].proof
-      this.num_gaps = this.history[index].num_gaps
       this.facts = []
-      if (index === this.steps.length) {
+      if (this.index === this.history.length) {
         this.goal = this.compute_new_goal(0)
       } else {
-        this.goal = this.get_line_no_from_id(this.steps[index].goal_id)
-        const fact_ids = this.steps[index].fact_ids
+        this.goal = this.get_line_no_from_id(this.history[this.index].goal_id)
+        const fact_ids = this.history[this.index].fact_ids
         if (fact_ids !== undefined) {
           for (let i = 0; i < fact_ids.length; i++) {
             let fact_no = this.get_line_no_from_id(fact_ids[i])
@@ -336,7 +303,7 @@ export default {
         }
       }
       this.ref_context.selected_step = this.index
-      this.display_history()
+      this.ref_context.steps = this.history
       this.display_num_gaps()
       this.display_instructions()
       this.match_thm()
@@ -344,10 +311,7 @@ export default {
 
     // Delete the step given by index
     deleteStep: function (index) {
-      this.history[index+1].proof = this.history[index].proof
-      this.history.splice(index, 1)
       this.steps.splice(index, 1)
-      this.max_loaded = index-1
       this.gotoStep(index)
     },
 
@@ -390,30 +354,15 @@ export default {
         this.display_error(result.data.err_type, result.data.err_str, result.data.trace)
       } else {
         // Success
-        var hId = this.index
-        this.steps.splice(hId, 0, input.step)
-        if (this.steps[hId].fact_ids.length === 0) {
-          delete this.steps[hId].fact_ids
+        if (input.step.fact_ids.length == 0) {
+          delete input.step.fact_ids
         }
-        if (this.index == this.history.length-1) {
-          // At end
-          this.history.splice(hId+1, 0, {
-            proof: result.data.proof,
-            num_gaps: result.data.num_gaps
-          })
-          this.history[hId].steps_output = result.data.steps_output
-        } else {
-          // In the middle
-          this.history.splice(hId, 0, {
-            steps_output: result.data.steps_output,
-            proof: this.history[hId].proof,
-            num_gaps: this.history[hId].num_gaps
-          })
-          this.history[hId + 1].proof = result.data.proof
-          this.history[hId + 1].num_gaps = result.data.num_gaps
-        }
-        this.max_loaded = hId
-        this.gotoStep(hId + 1)
+        this.steps.splice(this.index, 0, input.step)
+        const state = result.data.state
+        this.history = result.data.history
+        this.proof = state.proof
+        this.num_gaps = state.num_gaps
+        this.gotoStep(this.index + 1)
       }
     },
 
@@ -462,90 +411,14 @@ export default {
 
     init_empty_proof: async function () {
       // Start new proof
-      const data = {
-        username: this.$state.user,
-        theory_name: this.theory_name,
-        thm_name: this.thm_name,
-        proof: {
-          vars: this.vars,
-          prop: this.prop
-        }
-      }
-
-      var response = undefined
-      try {
-        response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
-      } catch (err) {
-        this.$emit('set-message', {
-          type: 'error',
-          data: 'Server error'
-        })
-      }
-      if (response === undefined) {
-        this.display_status('Server error')
-        return
-      }
-
-      this.goal = -1
-      this.method_sig = response.data.method_sig
       this.steps = []
-      this.history = [{
-        proof: response.data.proof,
-        num_gaps: response.data.num_gaps
-      }]
+      this.history = []
       this.gotoStep(0)
     },
 
     init_saved_proof: async function () {
-      // Has existing proof
-      const data = {
-        username: this.$state.user,
-        profile: this.editor !== undefined && this.editor.profile,
-        theory_name: this.theory_name,
-        thm_name: this.thm_name,
-        proof: {
-          vars: this.vars,
-          prop: this.prop,
-          steps: this.old_steps,
-          proof: this.old_proof
-        }
-      }
-
-      var response = undefined
-      try {
-        response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
-      } catch (err) {
-        this.$emit('set-message', {
-          type: 'error',
-          data: 'Server error'
-        })
-      }
-      if (response === undefined) {
-        this.display_status('Server error')
-        return
-      }
-
-      if ('err_type' in response.data) {
-        this.display_error(response.data.err_type, response.data.err_str, response.data.trace)
-      } else {
-        this.method_sig = response.data.method_sig
-        if (response.data.steps !== undefined) {
-          // Case with history
-          this.steps = response.data.steps
-          this.history = response.data.history
-          this.max_loaded = this.history.length-1
-          this.gotoStep(this.history.length-1)
-        } else {
-          // Case without history
-          this.num_gaps = response.data.num_gaps
-          this.goal = -1
-          this.facts = []
-          this.proof = response.data.proof
-          this.display_num_gaps()
-          this.display_instructions()
-          this.match_thm()
-        }
-      }
+      this.steps = this.old_steps
+      this.gotoStep(this.old_steps.length)
     },
 
     init_proof: async function () {

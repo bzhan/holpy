@@ -105,26 +105,22 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(json_data['num_gaps'], 1)
 
     def testParseProof(self):
-        data = {
-            'vars': {'A': 'bool', 'B': 'bool'},
-            'proof': [
-                {'id': 0, 'rule': 'assume', 'args': 'A & B', 'prevs': [], 'th': ''},
-                {'id': 1, 'rule': 'sorry', 'args': '', 'prevs': [], 'th': 'A & B |- B & A'},
-                {'id': 2, 'rule': 'implies_intr', 'args': 'A & B', 'prevs': [1], 'th': ''}
-            ]
-        }
-        state = server.parse_proof('logic_base', data)
+        data = [
+            {'id': 0, 'rule': 'assume', 'args': 'A & B', 'prevs': [], 'th': ''},
+            {'id': 1, 'rule': 'sorry', 'args': '', 'prevs': [], 'th': 'A & B |- B & A'},
+            {'id': 2, 'rule': 'implies_intr', 'args': 'A & B', 'prevs': [1], 'th': ''}
+        ]
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_proof(ctxt, data)
         self.assertEqual(len(state.vars), 2)
         self.assertEqual(len(state.prf.items), 3)
 
     def testParseProof2(self):
-        data = {
-            'vars': {},
-            'proof': [
-                {'id': 0, 'rule': 'variable', 'args': "a, 'a", 'prevs': [], 'th': ''}
-            ]
-        }
-        state = server.parse_proof('logic_base', data)
+        data = [
+            {'id': 0, 'rule': 'variable', 'args': "a, 'a", 'prevs': [], 'th': ''}
+        ]
+        ctxt = Context('logic_base')
+        state = server.parse_proof(ctxt, data)
         self.assertEqual(len(state.prf.items), 1)
 
     def testGetCtxt(self):
