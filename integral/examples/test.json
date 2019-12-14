@@ -895,8 +895,83 @@
             "problem": "INT x:[1, exp(2)]. 1 / (x*sqrt(1+log(x)))"
         },
         {
+            "_problem_latex": "\\int_{-2}^{0} \\frac{x + 2}{x ^ 2 + 2 x + 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-2}^{0} \\frac{x + 2}{x ^ 2 + 2 x + 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[-2,0]. (x + 2) / (x ^ 2 + 2 * x + 2)"
+                },
+                {
+                    "_latex_reason": "Equation substitution successful, \\( \\frac{x + 2}{x ^ 2 + 2 x + 2}\\) == \\(\\frac{x + 1 + 1}{(x + 1) (x + 1) + 1}\\).",
+                    "latex": "\\int_{-2}^{0} \\frac{x + 1 + 1}{(x + 1) (x + 1) + 1} \\,\\mathrm{dx}",
+                    "text": "INT x:[-2,0]. (x + 1 + 1) / ((x + 1) * (x + 1) + 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(x + 1\\).",
+                    "latex": "\\int_{-1}^{1} \\frac{u + 1}{u ^ 2 + 1} \\,\\mathrm{du}",
+                    "text": "INT u:[-1,1]. (u + 1) / (u ^ 2 + 1)"
+                },
+                {
+                    "_latex_reason": "Equation substitution successful, \\( \\frac{u + 1}{u ^ 2 + 1}\\) == \\(\\frac{1}{u ^ 2 + 1} + \\frac{u}{u ^ 2 + 1}\\).",
+                    "latex": "\\int_{-1}^{1} \\frac{1}{u ^ 2 + 1} + \\frac{u}{u ^ 2 + 1} \\,\\mathrm{du}",
+                    "text": "INT u:[-1,1]. 1 / (u ^ 2 + 1) + u / (u ^ 2 + 1)"
+                },
+                {
+                    "latex": "(\\int_{-1}^{1} \\frac{u}{1 + u ^ {(2)}} \\,\\mathrm{du}) + (\\int_{-1}^{1} \\frac{1}{1 + u ^ {(2)}} \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "(INT u:[-1,1]. u / (1 + u ^ (2))) + (INT u:[-1,1]. 1 / (1 + u ^ (2)))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\frac{1}{2}, v = \\log{(1 + u ^ 2)}\\).",
+                    "latex": "(\\left. \\frac{1}{2} \\log{(1 + u ^ 2)} \\right\\vert_{u=-1}^{1}) - (\\int_{-1}^{1} 0 \\,\\mathrm{du}) + (\\int_{-1}^{1} \\frac{1}{1 + u ^ 2} \\,\\mathrm{du})",
+                    "text": "([1/2 * log(1 + u ^ 2)]_u=-1,1) - (INT u:[-1,1]. 0) + (INT u:[-1,1]. 1 / (1 + u ^ 2))"
+                },
+                {
+                    "latex": "(\\left. \\frac{1}{2} \\log{(1 + u ^ 2)} \\right\\vert_{u=-1}^{1}) - (\\left. 0 u \\right\\vert_{u=-1}^{1}) + (\\left. \\atan{u} \\right\\vert_{u=-1}^{1})",
+                    "reason": "Common integrals",
+                    "text": "([1/2 * log(1 + u ^ 2)]_u=(-1),1) - ([0 * u]_u=(-1),1) + ([atan(u)]_u=(-1),1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} \\pi",
+                    "reason": "Simplification",
+                    "text": "1/2 * pi"
+                }
+            ],
             "name": "Exercise 24",
-            "problem": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)" 
+            "problem": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)"
+        },
+        {
+            "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\cos^{4}x \\,\\mathrm{dx}",
+            "name": "Exercise 25",
+            "problem": "INT x:[-pi/2,pi/2]. cos(x)^4"
+        },
+        {
+            "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{(\\cos{x} - \\cos^{3}x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{(\\cos{x} - \\cos^{3}x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[(-pi) / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)"
+                },
+                {
+                    "_latex_reason": "Equation substitution successful, \\( \\sqrt{(\\cos{x} - \\cos^{3}x)}\\) == \\(\\sqrt{(\\cos{x} (1 - \\cos^{2}x))}\\).",
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{(\\cos{x} (1 - \\cos^{2}x))} \\,\\mathrm{dx}",
+                    "text": "INT x:[(-pi) / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))"
+                },
+                {
+                    "_latex_reason": "Trig identities: \\(1 - \\cos^{2}x = \\sin^{2}x\\); Method : powers of cos to powers of sin.",
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{(\\cos{x} \\sin^{2}x)} \\,\\mathrm{dx}",
+                    "text": "INT x:[(-pi) / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)"
+                },
+                {
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{x}} \\sin{x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[(-pi) / 2,pi / 2]. cos(x) ^ (1/2) * sin(x)"
+                }
+            ],
+            "name": "Exercise 26",
+            "problem": "INT x:[-pi/2, pi/2]. sqrt(cos(x) - cos(x)^3)"
         }
     ]
 }

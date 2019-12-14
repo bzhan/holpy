@@ -39,7 +39,8 @@ class Monomial:
             isinstance(factor[1], (int, Fraction)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
-        self.factors = collect_pairs(factors)
+        self.factors = tuple((i, j) for i, j in collect_pairs(factors) if j != 0)
+
 
     def __eq__(self, other):
         return isinstance(other, Monomial) and self.coeff == other.coeff and \

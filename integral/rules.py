@@ -107,8 +107,8 @@ class CommonIntegral(Rule):
         if e.body == Var(e.var):
             # Integral of x is x^2/2.
             return EvalAt(e.var, e.lower, e.upper, (Var(e.var) ^ Const(2)) / Const(2))
-        elif e.body.ty == expr.CONST: 
-            if e.body.val == 1:
+        elif e.body.is_constant(): 
+            if e.body.ty == expr.CONST and e.body.val == 1:
                 # Integral of 1 is x
                 integral = Var(e.var)
             else:
@@ -155,11 +155,11 @@ class CommonIntegral(Rule):
                         if c == Var(e.var) and d.ty == expr.CONST:
                             #Integral of 1 / (x + c) is log(x + c)
                             return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
-                        elif b.op == "+" and c.ty == expr.OP and c.op == "^" and \
-                                c.args[0] == Var(e.var) and c.args[1] == Const(2) and \
-                                d == expr.Const(1):
+                        elif b.op == "+" and d.ty == expr.OP and d.op == "^" and \
+                                d.args[0] == Var(e.var) and d.args[1] == Const(2) and \
+                                c == expr.Const(1):
                             #Integral of 1 / x ^ 2 + 1 is arctan(x)
-                            return EvalAt(e.var, e.lower, e.upper, a * expr.arctan(Var(e.var)))
+                            return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
                 elif b == Var(e.var):
                     return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
             else:
@@ -224,7 +224,9 @@ class Substitution(Rule):
         self.var_name = parser.parse_expr(self.var_name)
         d_name = expr.deriv(str(self.var_name.findVar()), self.var_name) # Derivates substitute expr
         d_subst = expr.deriv(e.var, self.var_subst) #Derivates initial expr
-        body2 = (e.body*(d_name / d_subst)).normalize().replace_trig(self.var_subst.normalize(), self.var_name) 
+        d_subst = d_subst.replace_trig(self.var_subst.normalize(), self.var_subst)
+        div = d_name / d_subst
+        body2 = (e.body * div).replace_trig(self.var_subst, self.var_name)
         body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
         if self.var_name.ty == expr.VAR:
             #u subsitutes f(x)
@@ -246,8 +248,8 @@ class Equation(Rule):
         self.new_expr = new_expr
     
     def eval(self, e):
-        if self.old_expr.normalize() != self.new_expr.normalize():
-            return e
+        if self.new_expr.normalize() != self.old_expr.normalize():
+            return Integral(e.var, e.lower, e.upper, self.old_expr)
         else:
             return Integral(e.var, e.lower, e.upper, self.new_expr)
 
@@ -274,7 +276,7 @@ class IntegrationByParts(Rule):
         e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
-        udv = (self.u * dv).normalize()
+        udv = (self.u * dv).normalize().normalize()
         if udv == e.body:
             return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
                    expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())

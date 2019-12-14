@@ -114,8 +114,7 @@ def convert_expr(e, mode="large"):
         elif len(e.args) == 1:
             x, = e.args
             sx = convert_expr(x, mode)
-            if len(sx) > 1:
-                sx = "(%s)" % sx
+            sx = "(%s)" % sx
             if e.func_name == "exp":
                 if e.args[0] == expr.Const(1):
                     return "\\%s" % e.func_name

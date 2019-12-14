@@ -37,10 +37,7 @@
     <div id="calc">
       <div v-for="(step, index) in cur_calc" :key="index">
         <span>Step {{index+1}}:</span>
-        <MathEquation class="calc-equation"
-          v-on:click.native="transfer(step)"
-          v-bind:data="'\\(' + step.latex + '\\)'"
-          style="cursor:pointer"/>
+        <MathEquation v-bind:data="'\\(' + step.latex + '\\)'"/>
         <MathEquation class="calc-reason" v-if="'_latex_reason' in step" v-bind:data="step._latex_reason"/>
         <span class="calc-reason" v-else>{{step.reason}}</span>
       </div>
@@ -95,14 +92,17 @@
       </div>
       <div v-if="r_query_mode === 'eqsubst'">
         <div>
-          <MathEquation v-bind:data="'Write the expression that you think is equal to the \\(' + this.equation_data.old_expr.latex + '\\).'"/>
+          <MathEquation v-bind:data="'Write the expression that you think is equal to the ' + this.sep_int[integral_index].body + '.'"/>
         </div>
         <div>
-          <MathEquation data="new ="/>
-          <input v-model="equation_data.new_expr" style="margin:0px 5px;width:100px">
+          <MathEquation data="new expr ="/>
+          <input v-model="equation_data.new_expr" style="margin:0px 5px;width:300px">
         </div>
         <div style="margin-top:10px">
           <button v-on:click="doEquationSubst">OK</button>
+        </div>
+        <div v-if="equation_data.fail_reason !== undefined">
+          <MathEquation v-bind:data=equation_data.fail_reason style="color:#FF0000"/>
         </div>
       </div>
     </div>
@@ -149,8 +149,6 @@ export default {
       integral_index: undefined, //integral on processing
       take_effect: 0,     //Flag for whether a rule takes effect or close on halfway.
 
-      allow_click_latex: 0,
-
       subst_data: {
         var_name: '',  // name of new variable u
         expr: ''       // expression to substitute for u
@@ -162,9 +160,10 @@ export default {
       },
 
       equation_data: {
-        old_expr: undefined, //old expression
-        new_expr: ''  //new expression
+        new_expr: '',  //new expression
+        fail_reason: undefined
       },
+
       trig_identities_data: {
         old_expr: undefined, //the equation you need to transform
         new_expr: []
@@ -183,7 +182,10 @@ export default {
     },
 
     initialize: async function (index) {
+      this.query_mode = undefined
+      this.r_query_mode = undefined
       this.cur_id = index
+      this.take_effect = 0
       if ('calc' in this.content[index]) {
         this.restore()
       } else {
@@ -193,6 +195,7 @@ export default {
 
     back: function(){
       this.cur_calc.pop()
+      this.clear_separate_integral()
     },
 
     restart: async function () {
@@ -234,6 +237,13 @@ export default {
       this.sep_int = []
       this.integral_index = undefined
       this.r_query_mode = undefined
+    },
+
+    clear_input_info: function() {
+      this.subst_data =  { var_name: '', expr: ''};
+      this.byparts_data =  {parts_u: '', parts_v: ''};
+      this.equation_data = {new_expr: '', fail_reason: undefined};
+      this.trig_identities_data = {old_expr: undefined, new_expr: []};
     },
 
     simplify: async function () {
@@ -297,14 +307,9 @@ export default {
     },
 
     operate: function(index){
+      this.clear_input_info()
       this.r_query_mode = this.query_mode
       this.integral_index = index
-    },
-
-    transfer: function(step) {
-      if (this.allow_click_latex != 0){
-        this.equation_data.old_expr = step
-      }
     },
 
     trigtransform: function(){
@@ -399,25 +404,28 @@ export default {
     equationSubst: function() {
       if (this.cur_calc.length === 0)
         return;
-      this.allow_click_latex = 1
+      this.sep_int = []
       this.query_mode = 'eqsubst'
       this.displaySeparateIntegrals()
+      this.equation_data.fail_reason = undefined
     },
 
     doEquationSubst: async function() {
       const data = {
         problem: this.sep_int[this.integral_index].text,
-        old_expr: this.equation_data.old_expr.text,
         new_expr: this.equation_data.new_expr
       }
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-equation-substitution", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.query_mode = undefined
-      this.integral_index = undefined
-      this.equation_data = {old_expr: undefined, new_expr: ''}
-      this.allow_click_latex = 0
-      this.cur_calc = 1      
+      if (response.data.flag == 'success'){
+        this.sep_int[this.integral_index] = response.data
+        this.r_query_mode = undefined
+        this.integral_index = undefined
+        this.equation_data = {new_expr: '', fail_reason: undefined}
+        this.take_effect = 1      
+      }else{
+        this.equation_data.fail_reason = response.data._latex_reason
+      }
     }
 
 

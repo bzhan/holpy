@@ -12,7 +12,7 @@ from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS = range(8)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
@@ -51,6 +51,10 @@ class Expr:
     def __truediv__(self, other):
         if other == Const(1):
             return self
+        elif self.ty == CONST and other.ty == CONST:
+            return Const(Fraction(self.val, other.val))
+        elif self.ty == OP and self.op == "/" and other.ty == OP and other.op == "/" and self.args[1] == other.args[1]:
+            return Op("/", self.args[0] + other.args[0], self.args[1])
         else:
             return Op("/", self, other)
 
@@ -196,11 +200,16 @@ class Expr:
                 x, y = self.args
                 if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
                     return (x+y).to_poly()
+                # elif x.ty == OP and x.op == "/" and y.ty == OP and y.op == "/" and x.args[1] == y.args[1]:
+                #     # 1 / x + 1 / x = 2 / x
+                #     return Op("/", x.args[0] + y.args[0], x.args[1]).to_poly()
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
                 if x.ty == CONST and y.ty == INTEGRAL:
                     return Integral(y.var, y.lower, y.upper, x * y.body).to_poly()
+                elif y.ty == OP and y.op == "/":
+                    return Op("/", x * y.args[0], y.args[1]).to_poly()
                 else:
                     return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
@@ -231,7 +240,7 @@ class Expr:
             elif self.op == "^":
                 x, y = self.args
                 if y.ty == CONST:
-                    if y.val == 0:
+                    if y.val == Fraction(0):
                         return poly.constant(Const(1))
                     elif y.val == 1:
                         return x.to_poly()
@@ -291,7 +300,7 @@ class Expr:
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
             elif self.func_name == "sqrt":
-                return Op("^", self.args[0], Const(Fraction(1/2))).to_poly()
+                return Op("^", self.args[0].normalize(), Const(Fraction(1/2))).to_poly()
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
@@ -301,7 +310,7 @@ class Expr:
         elif self.ty == INTEGRAL:
             a = self
             if a.lower == a.upper:
-                return poly.constant(0)
+                return poly.constant(Const(0))
             a.body = a.body.normalize()
             return poly.singleton(a) 
         else:
@@ -323,12 +332,16 @@ class Expr:
                 self.args = list(self.args)
                 if len(self.args) == 1:
                     self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
-                    self.args = tuple(self.args)
+                    #self.args = tuple(self.args)
                     return Op(self.op, self.args[0])
                 elif len(self.args) == 2:
+                    if self.op == "^" and trig_old.ty == OP and trig_old.op == "^" \
+                      and self.args[0] == trig_old.args[0]:
+                        # expr : x ^ 4 trig_old x ^ 2 trig_new u => u ^ 2
+                        return Op(self.op, trig_new, self.args[1] / trig_old.args[1])
                     self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
                     self.args[1] = self.args[1].replace_trig(trig_old, trig_new)
-                    self.args = tuple(self.args)
+                    #self.args = tuple(self.args)
                     return Op(self.op, self.args[0], self.args[1])
                 else:
                     return Op(self.op, self.args)
@@ -607,6 +620,8 @@ class Const(Expr):
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
+        if self.val < 0:
+            return "(" + str(self.val) + ")"
         return str(self.val)
 
     def __repr__(self):
@@ -645,7 +660,7 @@ class Op(Expr):
             s1, s2 = str(a), str(b)
             if a.priority() < op_priority[self.op]:
                 s1 = "(%s)" % s1
-            if b.priority() <= op_priority[self.op]:
+            if b.priority() <= op_priority[self.op] and not (b.ty == CONST and b.val < 0):
                 s2 = "(%s)" % s2
             return "%s %s %s" % (s1, self.op, s2)           
         else:
@@ -730,6 +745,25 @@ class Deriv(Expr):
 
     def __repr__(self):
         return "Deriv(%s,%s)" % (self.var, repr(self.body))
+
+class Abs(Expr):
+    """Absolute expression."""
+    def __init__(self, exp):
+        assert isinstance(exp, Expr)
+        self.exp = exp
+        self.ty = ABS
+
+    def __hash__(self):
+        return hash((ABS, self.exp))
+
+    def __eq__(self, other):
+        return other.ty == ABS and self.exp == other.exp
+
+    def __str__(self):
+        return "|%s|" % str(self.exp)
+
+    def __repr__(self):
+        return "Abs(%s)" % (repr(self.exp))
 
 class Integral(Expr):
     """Integral of an expression."""
