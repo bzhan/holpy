@@ -766,11 +766,6 @@
             }
         },
         {
-            "name": "real_compact",
-            "ty": "def.ax",
-            "type": "real set ⇒ bool"
-        },
-        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -5630,6 +5625,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_attains_inf",
             "prop": [
                 "real_compact s ",

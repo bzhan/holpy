@@ -1475,6 +1475,23 @@
                 "a": "real",
                 "b": "real"
             }
+        },
+        {
+            "name": "real_compact",
+            "ty": "def.ax",
+            "type": "real set ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_compact_interval",
+            "prop": "real_compact (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
         }
     ],
     "description": "Formalization of general topological and metric spaces. Refer to metric.ml from HOL Light.",
