@@ -246,7 +246,7 @@ class ProofState():
                 })
             except Exception as e:
                 history.append({
-                    'step_output': pprint.N(step['method_name']),
+                    'step_output': pprint.N(step['method_name'], highlight=True),
                     'goal_id': step['goal_id'],
                     'fact_ids': step.get('fact_ids', []),
                     'error': {

@@ -20724,7 +20724,7 @@
             ],
             "steps": [
                 {
-                    "goal": "tendsto_real (λx. (%x. if x =c then 0 else f x)  x / (%x. if x =c then 0 else g x) x) l (atreal c)\n--> tendsto_real (λx. f x / g x) l (atreal c)",
+                    "goal": "tendsto_real (λx. (if x =c then 0 else f x) / (if x =c then 0 else g x)) l (atreal c)\n--> tendsto_real (λx. f x / g x) l (atreal c)",
                     "goal_id": "5",
                     "method_name": "cut"
                 },
