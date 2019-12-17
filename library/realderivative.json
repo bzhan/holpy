@@ -23423,6 +23423,91 @@
                 "hint_backward1"
             ],
             "name": "has_real_derivative_inverse_basic",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal (g y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal (g y)) ⊢ has_real_derivative f f1 (atreal (g y))"
+                },
+                {
+                    "args": "¬(f1 = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(f1 = 0) ⊢ ¬(f1 = 0)"
+                },
+                {
+                    "args": "real_continuous g (atreal y)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_continuous g (atreal y) ⊢ real_continuous g (atreal y)"
+                },
+                {
+                    "args": "real_open t",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_open t ⊢ real_open t"
+                },
+                {
+                    "args": "y ∈ t",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ t ⊢ y ∈ t"
+                },
+                {
+                    "args": "∀z. z ∈ t ⟶ f (g z) = z",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀z. z ∈ t ⟶ f (g z) = z ⊢ ∀z. z ∈ t ⟶ f (g z) = z"
+                },
+                {
+                    "args": "has_real_derivative_def",
+                    "id": "6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 (atreal (g y)) ⊢ tendsto_real (λx. real_inverse (x - netlimit (atreal (g y))) * (f x - (f (netlimit (atreal (g y))) + f1 * (x - netlimit (atreal (g y)))))) 0 (atreal (g y))"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_real_derivative f f1 (atreal (g y)), ¬(f1 = 0), real_continuous g (atreal y), real_open t, y ∈ t, ∀z. z ∈ t ⟶ f (g z) = z ⊢ tendsto_real (λx. real_inverse (x - netlimit (atreal y)) * (g x - (g (netlimit (atreal y)) + real_inverse f1 * (x - netlimit (atreal y))))) 0 (atreal y)"
+                },
+                {
+                    "args": "has_real_derivative_def, has_real_derivative g (real_inverse f1) (atreal y)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (atreal (g y)), ¬(f1 = 0), real_continuous g (atreal y), real_open t, y ∈ t, ∀z. z ∈ t ⟶ f (g z) = z ⊢ has_real_derivative g (real_inverse f1) (atreal y)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal (g y)) ⟶ ¬(f1 = 0) ⟶ real_continuous g (atreal y) ⟶ real_open t ⟶ y ∈ t ⟶ (∀z. z ∈ t ⟶ f (g z) = z) ⟶ has_real_derivative g (real_inverse f1) (atreal y)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (atreal (g y)) ",
                 "⟶ ¬(f1 = 0) ",
@@ -23430,6 +23515,23 @@
                 "      ⟶ real_open t ",
                 "         ⟶ y ∈ t ",
                 "            ⟶ (∀z. z ∈ t ⟶ f (g z) = z) ⟶ has_real_derivative g (real_inverse f1) (atreal y)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                }
             ],
             "ty": "thm",
             "vars": {
