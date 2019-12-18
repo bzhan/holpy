@@ -425,9 +425,7 @@ class Prover:
                                 if cs[i][indices[j]] != t_inst[pat.args[i * 3 + j]]:
                                     flag = True
                             else:
-                                # print(cs[i][indices[j]])
                                 t_inst[pat.args[i * 3 + j]] = cs[i][indices[j]]
-                    # print(t_inst)
                     if not flag:
                         new_insts.append((t_inst, f.get_subfact(c_nums)))
 

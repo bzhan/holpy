@@ -326,8 +326,7 @@ class ExprTest(unittest.TestCase):
 
             (ruleset, ["cong(B, A, B, C)", "midp(D, A, C)", "coll(A, D, C)"], [], [], "perp(B, D, A, C)"),
 
-            # TODO: When two triangles using a same side PQ, make use of PQ = PQ as a fact to obtain contri or simtri.
-            (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "cong(A, D, A, D)", "cong(D, F, D, F)", "coll(A, D, F)"],
+            (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
              [], [], "cong(B, F, C, F)")
 
 
