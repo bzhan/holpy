@@ -7,10 +7,11 @@ from integral.parser import parse_expr
 class LatexTest(unittest.TestCase):
     def testConvertExpr(self):
         test_data = [
+            ("sqrt(2)", "\\sqrt{2}"),
             ("1/3", "\\frac{1}{3}"),
             ("x^-2", "x ^ {-2}"),
             ("-t^2", "-t ^ 2"),
-            ("exp(-1)", "e^{(-1)}"),
+            ("exp(-1)", "e^{-1}"),
             ("-(x + y)", "-(x + y)"),
             ("[3 * x]_x=1,2", "\\left. 3 x \\right\\vert_{x=1}^{2}"),
             ("INT x:[2,3]. 2 * x + x ^ 2", "\int_{2}^{3} 2 x + x ^ 2 \,\mathrm{dx}"),
@@ -20,7 +21,9 @@ class LatexTest(unittest.TestCase):
             ("x * (1 + x)", "x (1 + x)"),
             ("INT x:[4,9]. x^(1/2) * (1 + x^(1/2))","\int_{4}^{9} \sqrt{x} (1 + \sqrt{x}) \,\mathrm{dx}"),
             ("cos(x) ^ 2", "\cos^{2}x"),
-            ("exp(-(t^2/2))", "e^{(-\\frac{t ^ 2}{2})}")
+            ("exp(-(t^2/2))", "e^{-\\frac{t ^ 2}{2}}"),
+            ("2 * 2 ^ (1/2)", "2 \\sqrt{2}"),
+            ("(-1) * exp((-1))", "-e^{-1}"),
         ]
 
         for e, res in test_data:

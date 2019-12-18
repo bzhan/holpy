@@ -22,6 +22,7 @@
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='applyElimAbs'>Elim Abs</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -36,7 +37,7 @@
     </div>
     <div id="calc">
       <div v-for="(step, index) in cur_calc" :key="index">
-        <span>Step {{index+1}}:</span>
+        <span>Step {{index+1}}:&nbsp;&nbsp;</span>
         <MathEquation v-bind:data="'\\(' + step.latex + '\\)'"/>
         <MathEquation class="calc-reason" v-if="'_latex_reason' in step" v-bind:data="step._latex_reason"/>
         <span class="calc-reason" v-else>{{step.reason}}</span>
@@ -266,6 +267,18 @@ export default {
         problem: this.cur_calc[this.cur_calc.length - 1].text
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-linearity", JSON.stringify(data))
+      this.cur_calc.push(response.data)
+    },
+
+    applyElimAbs: async function () {
+      this.clear_separate_integral()
+      if (this.cur_calc.length === 0)
+        return;
+
+      const data = {
+        problem: this.cur_calc[this.cur_calc.length - 1].text
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-elim-abs", JSON.stringify(data))
       this.cur_calc.push(response.data)
     },
 

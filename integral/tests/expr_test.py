@@ -90,6 +90,7 @@ class ExprTest(unittest.TestCase):
             ("[x ^ 2]_x=3,4", "7"),
             ("cos(x ^ 2)", "cos(x ^ 2)"),
             ("cos(pi/4)", "1/2 * 2 ^ (1/2)"),
+            ("-(-x)", "x"),
             ("cos(0) - cos(pi/4)", "1 + (-1) * (1/2 * 2 ^ (1/2))"),
             ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
@@ -126,14 +127,17 @@ class ExprTest(unittest.TestCase):
             ("sqrt(cos(x) * (1 - cos(x)^2))","(cos(x) + (-1) * cos(x) ^ 3) ^ (1/2)"),
             ("1/2 * u ^ ((-1)) * 2 * u", "1"),
             ("1/2 * u ^ ((-1)) * (2 * u / (1 + u ^ (2)))", "1 / (1 + u ^ (2))"),
-            ("[log(1 + u ^ 2)]_u=(-1),1", "0")
+            ("[log(1 + u ^ 2)]_u=(-1),1", "0"),
+            ("sqrt(x ^ 2)", "abs(x)"),
+            ("[abs(x)]_x=-2,3", "1"),
+            ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "log(1/2 * 6 ^ (1/2))"),
+            ("exp(1)", "exp(1)"),
+            ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
 
         for s, res in test_data:
             t = parse_expr(s)
-            # print([t], t)
-            # print([t.normalize()], t.normalize())
             self.assertEqual(str(t.normalize()), res)
 
     def testReplace(self):
@@ -239,6 +243,27 @@ class ExprTest(unittest.TestCase):
             "2 + 2*log(2)"
         ]
 
+    def testGetAbs(self):
+        test_data = [
+            ("x * abs(x)", ["x","x"]),
+            ("sqrt(cos(x)) * abs(sin(x))", ["sin(x)", "cos(x)^(1/2)"]),
+            ("abs(x) * abs(y)", ["x*y", "1"])
+        ]
+
+        for s, s2 in test_data:
+            s = parse_expr(s)
+            for i in range(len(s2)):
+                s2[i] = parse_expr(s2[i])
+            self.assertEqual(s.getAbs(), tuple(s2))
+
+    def testPriority(self):
+        x = parse_expr("x")
+        test_data = [
+            (Const(1) + (x ^ Const(2)), "1 + x^2"),
+        ]
+
+        for s, s2 in test_data:
+            self.assertEqual(s, parse_expr(s2))
 
 if __name__ == "__main__":
     unittest.main()

@@ -8,6 +8,7 @@ from sympy import apart
 from sympy.parsing import sympy_parser
 from sympy import solvers
 from integral import parser
+from fractions import Fraction
 
 class Rule:
     """Represents a rule for integration. It takes an integral
@@ -90,11 +91,10 @@ class CommonIntegral(Rule):
 
     INT c = c * x,
     INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1, c is a constant)
-    INT (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
     INT 1 / x ^ n = (-n) / x ^ (n + 1), (where n != 1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
-    INT 1 / (x + c) = log(x + c),  (where the range is positive, c is a constant)
+    INT 1 / x = log(|x|)
     INT e^x = e^x
     INT 1 / (x^2 + 1) = arctan(x)
     INT sec(x)^2 = tan(x)
@@ -129,7 +129,7 @@ class CommonIntegral(Rule):
                 elif a == Var(e.var) and b.ty == expr.CONST and b.val == -1:
                     # Integral of x ^ -1 is log(x)
                     # Integral of (x + c) ^ -1 is log(x)
-                    return EvalAt(e.var, e.lower, e.upper, expr.log(a))
+                    return EvalAt(e.var, e.lower, e.upper, expr.log(Fun("abs",a)))
                 elif a.ty == expr.FUN:
                     if b ==  Const(2):
                         if a.func_name == "sec":
@@ -154,14 +154,14 @@ class CommonIntegral(Rule):
                     elif b.op in ("+", "-"):
                         if c == Var(e.var) and d.ty == expr.CONST:
                             #Integral of 1 / (x + c) is log(x + c)
-                            return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
+                            return EvalAt(e.var, e.lower, e.upper, a * expr.log(Fun("abs", b)))
                         elif b.op == "+" and d.ty == expr.OP and d.op == "^" and \
                                 d.args[0] == Var(e.var) and d.args[1] == Const(2) and \
                                 c == expr.Const(1):
                             #Integral of 1 / x ^ 2 + 1 is arctan(x)
                             return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
                 elif b == Var(e.var):
-                    return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
+                    return EvalAt(e.var, e.lower, e.upper, a * expr.log(Fun("abs", b)))
             else:
                 return e
 
@@ -228,6 +228,8 @@ class Substitution(Rule):
         div = d_name / d_subst
         body2 = (e.body * div).replace_trig(self.var_subst, self.var_name)
         body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
+        sol = solvers.solve(expr.sympy_style(self.var_name - self.var_subst), expr.sympy_style(str(e.var)))
+        body2 = body2.replace_trig(expr.holpy_style(str(e.var)), expr.holpy_style(sol[0]))
         if self.var_name.ty == expr.VAR:
             #u subsitutes f(x)
             lower2 = self.var_subst.subst(e.var, e.lower).normalize()
@@ -238,7 +240,19 @@ class Substitution(Rule):
             upper2 = solvers.solve(sympy_parser.parse_expr(str(self.var_name - e.upper).replace("^","**")), sympy_parser.parse_expr(str(self.var_name.findVar())))[0]
             lower2 = parser.parse_expr(str(lower2).replace("**", "^"))
             upper2 = parser.parse_expr(str(upper2).replace("**", "^"))
-        return expr.Integral(self.var_name.findVar().name, lower2, upper2, body2)
+        var_subst_subst = expr.deriv(e.var, self.var_subst)
+        g,l = var_subst_subst.ranges(e.var, e.lower, e.upper)
+        new_integral = []
+        var = parser.parse_expr(str(e.var))
+        if len(g) != 0:
+            for i, j in g:
+                x, y = self.var_subst.replace(var, i).normalize(), self.var_subst.replace(var, j).normalize()
+                new_integral.append(expr.Integral(str(self.var_name.findVar()), x, y, body2))
+        if len(l) != 0:
+            for i, j in l:
+                x, y = self.var_subst.replace(var, i).normalize(), self.var_subst.replace(var, j).normalize()
+                new_integral.append(expr.Integral(str(self.var_name.findVar()), y, x, expr.Op("-", body2)))
+        return sum(new_integral[1:], new_integral[0])
 
 class Equation(Rule):
     """Apply substitution for equal expressions"""
@@ -288,5 +302,23 @@ class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polinomial.
     """
     def eval(self, e):
-        result = apart(sympy_parser.parse_expr(str(e.body).replace("^", "**")))
+        if e.ty != expr.INTEGRAL:
+            return e
+        result = apart(expr.sympy_style(e.body))
         return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))
+
+class ElimAbs(Rule):
+    """Eliminate abstract value."""
+    def eval(self, e):
+        if e.ty != expr.INTEGRAL:
+            return e
+        abs_expr, norm_expr = e.body.normalize().getAbs()
+        greator = [] #collect all abs values greater than 0's set
+        smallor = [] #collect all abs values smaller than 0's set
+        g, s = abs_expr.ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
+        new_integral = []
+        for l, h in g:
+            new_integral.append(expr.Integral(e.var, l, h, norm_expr * abs_expr))
+        for l, h in s:
+            new_integral.append(expr.Integral(e.var, l, h, norm_expr * expr.Op("-", abs_expr)))
+        return sum(new_integral[1:], new_integral[0])

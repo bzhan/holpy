@@ -593,7 +593,6 @@ def integral_linearity():
     data = json.loads(request.get_data().decode('utf-8'))
     rule = integral.rules.Linearity()
     problem = integral.parser.parse_expr(data['problem'])
-    print("!!", problem)
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
@@ -623,6 +622,18 @@ def integral_common_integral():
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Common integrals"
+    })
+
+@app.route("/api/integral-elim-abs", methods=["POST"])
+def integral_elim_abs():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.OnSubterm(integral.rules.ElimAbs())
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Eliminate abs"
     })
 
 @app.route("/api/integral-separate-integrals", methods=['POST'])
@@ -671,8 +682,6 @@ def integral_trig_transformation():
     del integral.expr.trig_identity[:]
     problem = integral.parser.parse_expr(data['problem'])
     e = integral.parser.parse_expr(data['exp'])
-    print("e.normalize:", e) 
-    print("problem.body: ", problem.body.normalize())
     if e.normalize() == problem.body.normalize():
         e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
         possible_new_problem = rule.eval(e)
@@ -764,7 +773,7 @@ def integral_equation_substitution():
 @app.route("/api/integral-polynomial-division", methods=['POST'])
 def integral_polynomial_division():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.PolynomialDivision()
+    rule = integral.rules.OnSubterm(integral.rules.PolynomialDivision())
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
     return jsonify({
