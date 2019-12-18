@@ -97,6 +97,8 @@ class MatcherTest(unittest.TestCase):
             ("%x. ?P x & ?Q x", "%x. Q x & P x", {"P": "Q", "Q": "P"}),
             ("%x. ?P x & ?Q x", "%x. (P x & Q x) & R x", {"P": "%x. P x & Q x", "Q": "R"}),
             ("?x. ?P x", "?x. P x & Q x", {"P": "%x. P x & Q x"}),
+            ("%x. ?P x", "P", {"P": "P"}),
+            ("%x. ?P x", "if b then P else Q", {"P": "if b then P else Q"}),
         ]
 
         svars = {"P": "nat => bool", "Q": "nat => bool"}

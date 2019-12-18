@@ -141,7 +141,7 @@ def first_order_match_incr(pat, t, instsp):
                         if v in bd_vars:
                             if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
                                 op_data = operator.get_info_for_fun(inst_t.head)
-                                if inst_t.head.is_const_name("IF"):
+                                if inst_t.head.is_const_name("IF") and len(inst_t.args) == 3:
                                     inst_t = Term.mk_abs(v, inst_t) 
                                 elif op_data is None:
                                     # inst_t is of the form f x, where x is the argument.
@@ -170,14 +170,10 @@ def first_order_match_incr(pat, t, instsp):
                 # and match again.
                 pat2 = inst[pat.head.name](*pat.args).beta_norm()
                 match(pat2, t.beta_norm(), instsp, bd_vars)
-        elif pat.ty != t.ty:
-            # In all other cases, top-level structure of the term
-            # must agree.
-            raise MatchException(trace)
         elif pat.is_var() or pat.is_const():
             # The case where pat is a free variable, constant, or comes
             # from a bound variable.
-            if pat.name != t.name:
+            if pat.ty != t.ty or pat.name != t.name:
                 raise MatchException(trace)
             else:
                 try:
@@ -187,6 +183,8 @@ def first_order_match_incr(pat, t, instsp):
         elif pat.is_comb():
             # In the combination case (where the head is not a variable),
             # match fun and arg.
+            if pat.ty != t.ty:
+                raise MatchException(trace)
             if is_pattern(pat.fun, list(instsp[1].keys()), bd_vars=[v.name for v in bd_vars]):
                 match(pat.fun, t.fun, instsp, bd_vars)
                 match(pat.arg, t.arg, instsp, bd_vars)
@@ -196,17 +194,29 @@ def first_order_match_incr(pat, t, instsp):
         elif pat.is_abs():
             # When pat is a lambda term, t must also be a lambda term.
             # Replace bound variable by a variable, then match the body.
-            try:
-                pat.var_T.match_incr(t.var_T, tyinst)
-            except TypeMatchException:
-                raise MatchException(trace)
-            T = pat.var_T.subst(tyinst)
-            var_names = [v.name for v in term.get_vars(pat.body) + term.get_vars(t.body)]
-            nm = name.get_variant_name(pat.var_name, var_names)
-            v = Var(nm, T)
-            pat_body = pat.subst_type(tyinst).subst_bound(v)
-            t_body = t.subst_bound(v)
-            match(pat_body, t_body, instsp, bd_vars + [v])
+            if t.is_abs():
+                try:
+                    pat.var_T.match_incr(t.var_T, tyinst)
+                except TypeMatchException:
+                    raise MatchException(trace)
+                T = pat.var_T.subst(tyinst)
+
+                var_names = [v.name for v in term.get_vars(pat.body) + term.get_vars(t.body)]
+                nm = name.get_variant_name(pat.var_name, var_names)
+                v = Var(nm, T)
+                pat_body = pat.subst_type(tyinst).subst_bound(v)
+                t_body = t.subst_bound(v)
+                match(pat_body, t_body, instsp, bd_vars + [v])
+            else:
+                tT = t.get_type()
+                if not tT.is_fun():
+                    raise MatchException(trace)
+                try:
+                    pat.var_T.match_incr(tT.domain_type(), tyinst)
+                except TypeMatchException:
+                    raise MatchException(trace)
+                T = pat.var_T.subst(tyinst)
+                match(pat, Abs(pat.var_name, T, t(Bound(0))), instsp, bd_vars)
         elif pat.is_bound():
             raise MatchException(trace)
         else:

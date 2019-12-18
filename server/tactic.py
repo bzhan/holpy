@@ -247,6 +247,8 @@ class apply_prev(Tactic):
             pt = ProofTerm.subst_type(tyinst, pt)
         for new_name in new_names:
             pt = ProofTerm.forall_elim(inst[new_name], pt)
+        if pt.prop.beta_norm() != pt.prop:
+            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
         inst_As, inst_C = pt.prop.strip_implies()
 
         inst_arg = [inst[new_name] for new_name in new_names]

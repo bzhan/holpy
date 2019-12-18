@@ -7953,6 +7953,24 @@
             "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
             "ty": "def",
             "type": "real set ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_inf",
+            "prop": "has_inf s b ⟷ (∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ b)",
+            "ty": "def",
+            "type": "real set ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_sup",
+            "prop": "has_sup s b ⟷ (∀c. (∀x. x ∈ s ⟶ x ≤ c) ⟷ b ≤ c)",
+            "ty": "def",
+            "type": "real set ⇒ real ⇒ bool"
         }
     ],
     "description": "Basic results about sets.",

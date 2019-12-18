@@ -1,11 +1,6 @@
 {
     "content": [
         {
-            "name": "has_inf",
-            "ty": "def.ax",
-            "type": "real set ⇒ real ⇒ bool"
-        },
-        {
             "name": "has_limsup",
             "prop": [
                 "has_limsup f l net ⟷ ",
@@ -18,14 +13,18 @@
             "name": "has_liminf",
             "prop": [
                 "has_liminf f l net ⟷ ",
-                "trivial_limit net ∨ has_inf ({b. eventually (λx. b ≤ f x) net}) l"
+                "trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
             ],
             "ty": "def",
             "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_limsup_transform",
-            "prop": "eventually (λx. f x = g x) net ∧ has_limsup f l net ⟶ has_limsup g l net",
+            "prop": "eventually (λx. f x = g x) net ⟶ has_limsup f l net ⟶ has_limsup g l net",
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
