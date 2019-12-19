@@ -763,7 +763,7 @@ class Prover:
             else:
                 return None
 
-        elif fact.pred_name == 'contri':
+        elif fact.pred_name in ('simtri', 'contri'):
             return None
 
         else:
@@ -836,7 +836,7 @@ class Prover:
             g_angles = make_pairs(goal.args, pair_len=4)
             return all(any(self.equal_angle(f, g) for f in f_angles) for g in g_angles)
 
-        elif fact.pred_name == "contri":
+        elif fact.pred_name in ("simtri", "contri"):
             # Check whether both triangles in goal are in fact.
             f_tris = make_pairs(fact.args, pair_len=3)
             g_tris = make_pairs(goal.args, pair_len=3)

@@ -188,6 +188,7 @@ class ExprTest(unittest.TestCase):
             # (ruleset["D42"], ["eqangle(B, E, A, C, A, F, B, C, A, C, B, E, B, C, A, F)"],
             #   ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"],
             #   [], ["cyclic(E, C, F, H)", "cyclic(E, A, F, B)"]),
+            ("D61", ["simtri(B, A, D, C, A, D)", "cong(A, B, A, C)"], [], [], ["contri(B, A, D, C, A, D)"])
         ]
 
         for rule, facts, lines, circles, concls in test_data:
@@ -340,8 +341,8 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             prover = expr.Prover(ruleset, hyps, concl, lines, circles)
-            res = prover.search_fixpoint()
             print("--- Proof for", concl, "---")
+            res = prover.search_fixpoint()
             prover.print_search(res)
 
         # p = Stats(pr)
