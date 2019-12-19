@@ -9,6 +9,7 @@ from sympy.parsing import sympy_parser
 from sympy import solvers
 from integral import parser
 from fractions import Fraction
+import copy
 
 class Rule:
     """Represents a rule for integration. It takes an integral
@@ -322,3 +323,27 @@ class ElimAbs(Rule):
         for l, h in s:
             new_integral.append(expr.Integral(e.var, l, h, norm_expr * expr.Op("-", abs_expr)))
         return sum(new_integral[1:], new_integral[0])
+
+class IntegrateByEquation(Rule):
+    """When the initial integral occurs in the steps."""
+    def __init__(self, lhs):
+        assert isinstance(lhs, expr.Expr)
+        self.lhs = lhs
+    
+    def eval(self, e):
+        integral_in_e = e.separate_integral()
+        flag = 0 # If e have integral same as lhs
+        if integral_in_e == []:
+            return e
+        same_integral = []
+        for i in integral_in_e:
+            if i.normalize() == self.lhs.normalize():
+                same_integral.append(i)
+        if len(same_integral) == 0:
+            return e
+        v = expr.Var("I")
+        new_e = copy.deepcopy(e)
+        for i in same_integral:
+            new_e = new_e.replace_trig(i, v)
+        s = solvers.solve(expr.sympy_style(new_e - v), expr.sympy_style(v))
+        return expr.holpy_style(s[0])

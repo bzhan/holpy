@@ -44,7 +44,6 @@ class RulesTest(unittest.TestCase):
         for s, s2 in test_data:
             s = parse_expr(s)
             s2 = parse_expr(s2)
-            print(rule.eval(s), s2)
             self.assertEqual(rule.eval(s), s2)
 
     def testCommonIntegral(self):
@@ -107,7 +106,6 @@ class RulesTest(unittest.TestCase):
     def testSubstitution3(self):
         e = parse_expr("INT x:[0, pi].(1 - cos(x)^2)*sin(x)")
         e = rules.Substitution("u",parse_expr("cos(x)")).eval(e)
-        print(e)
         self.assertEqual(e, parse_expr("INT u:[(-1),1]. -(u ^ 2 - 1)"))
 
     def testSubstitution4(self):
@@ -196,6 +194,23 @@ class RulesTest(unittest.TestCase):
             s1 = parse_expr(s1)
             rule = rules.ElimAbs()
             self.assertEqual(rules.OnSubterm(rules.ElimAbs()).eval(s), s1)
+    
+    def testIntegrateByEquation(self):
+        test_data = [
+            ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)", 
+            "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))", 
+            "-2/5 + exp(pi)/5"),
+            ("INT u:[0,1]. exp(u) * sin(u)",
+            "1 + (-1) * cos(1) * exp(1) + sin(1) * exp(1) + (-1) * (INT u:[0,1]. exp(u) * sin(u))",
+            "-sqrt(2)*exp(1)*cos(pi/4 + 1)/2 + 1/2")
+        ]
+
+        for s, s1, s2 in test_data:
+            s = parse_expr(s)
+            s1 = parse_expr(s1)
+            s2 = parse_expr(s2)
+            rule = rules.IntegrateByEquation(s)
+            self.assertEqual(rule.eval(s1), s2)
             
 
 

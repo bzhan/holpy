@@ -80,7 +80,7 @@ def convert_expr(e, mode="large"):
                         return "-%s" % sy
                     elif x.val == 1:
                         return "%s" % sy
-                    elif isinstance(x.val, Fraction) and x.val.numerator == 1 and y.ty != expr.INTEGRAL:
+                    elif isinstance(x.val, Fraction) and x.val.numerator == 1 and y.ty not in (expr.INTEGRAL, expr.OP, expr.EVAL_AT):
                         return "\\frac{%s}{%s}" % (sy, convert_expr(expr.Const(x.val.denominator)))
                     elif y.ty in (expr.VAR, expr.FUN):
                         return "%s %s" % (sx, sy)
@@ -101,10 +101,15 @@ def convert_expr(e, mode="large"):
                 if mode == 'large':
                     if sy == "1":
                         return "%s" % sx
-                    elif x.ty == expr.OP and x.op == "-" and len(x.args) == 1:
-                        # (-x) / y => - (x/y)
-                        sxx = convert_expr(x.args[0])
-                        return "-\\frac{%s}{%s}" % (sxx, sy)
+                    elif x.ty == expr.OP:
+                        if x.op == "-" and len(x.args) == 1:
+                            # (-x) / y => - (x/y)
+                            sxx = convert_expr(x.args[0])
+                            return "-\\frac{%s}{%s}" % (sxx, sy)
+                        elif y.ty == expr.CONST:
+                            return "\\frac{1}{%s} * %s" % (sy, sx)
+                        else:
+                            return "\\frac{%s}{%s}" % (sx, sy)
                     else:
                         return "\\frac{%s}{%s}" % (sx, sy)
                 else:

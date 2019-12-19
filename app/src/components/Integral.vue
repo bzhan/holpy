@@ -23,6 +23,7 @@
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyElimAbs'>Elim Abs</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -106,6 +107,17 @@
           <MathEquation v-bind:data=equation_data.fail_reason style="color:#FF0000"/>
         </div>
       </div>
+      <div v-if="r_query_mode === 'byequation'">
+        <div>
+        <MathEquation data="Input the step index you want to put on the eqution' left side."/>
+        </div>
+        <div>
+          <input v-model.number="lhs" type="number" style="margin:0px 5px;width:50px">
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="doIntegrateByEquation">OK</button>
+        </div>
+      </div>
     </div>
     <div id="select">
       <div v-if="display_integral === 'separate'">
@@ -168,7 +180,9 @@ export default {
       trig_identities_data: {
         old_expr: undefined, //the equation you need to transform
         new_expr: []
-      }
+      },
+
+      lhs: undefined, //equation left hand side
 
     }
   },
@@ -402,6 +416,24 @@ export default {
       this.byparts_data = {parts_u: '', parts_v: ''}
       this.take_effect = 1
     },
+
+    integrateByEquation: function(){
+      if (this.cur_calc.length === 0)
+        return;
+      this.r_query_mode = "byequation"
+    },
+
+    doIntegrateByEquation: async function(){
+      const data = {
+        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        left: this.cur_calc[this.lhs - 1].text
+      }
+
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation", JSON.stringify(data))
+      this.cur_calc.push(response.data)
+      this.r_query_mode = undefined
+            
+    }, 
 
     polynomialDivision: async function () {
       if (this.cur_calc.length === 0)

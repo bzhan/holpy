@@ -132,7 +132,8 @@ class ExprTest(unittest.TestCase):
             ("[abs(x)]_x=-2,3", "1"),
             ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "log(1/2 * 6 ^ (1/2))"),
             ("exp(1)", "exp(1)"),
-            ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)")
+            ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)"),
+            ("exp(1) ^ 2", "exp(2)")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
 

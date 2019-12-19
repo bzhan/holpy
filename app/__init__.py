@@ -636,6 +636,25 @@ def integral_elim_abs():
         'reason': "Eliminate abs"
     })
 
+@app.route("/api/integral-integrate-by-equation", methods=['POST'])
+def integrate_by_equation():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    lhs = integral.parser.parse_expr(data['left'])
+    rule = integral.rules.IntegrateByEquation(lhs)
+    result = rule.eval(problem)
+    return jsonify({
+        "text": str(result),
+        "latex": integral.latex.convert_expr(result),
+        "params": {
+            "lhs": data['left'],
+            "rhs": data['problem']
+        },
+        "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
+            integral.latex.convert_expr(lhs), integral.latex.convert_expr(problem)
+        )
+    })
+
 @app.route("/api/integral-separate-integrals", methods=['POST'])
 def integral_separate_integrals():
     data = json.loads(request.get_data().decode('utf-8'))

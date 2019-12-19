@@ -256,6 +256,8 @@ class Expr:
                     return poly.singleton(Op("/", from_poly(xp), from_poly(yp))).scale(c)
             elif self.op == "^":
                 x, y = self.args
+                if x.ty == FUN and x.func_name == "exp":
+                    return Fun("exp", y * x.args[0]).to_poly()
                 if y.ty == CONST:
                     if y.val == Fraction(0):
                         return poly.constant(Const(1))
@@ -300,7 +302,7 @@ class Expr:
                     return poly.constant(Const(1))
                 else:
                     return poly.singleton(Fun("exp", self.args[0].normalize()))
-            elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan"):
+            elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan", "cot", "csc", "sec"):
                 p = sympy_parser.parse_expr(str(self).replace("^", "**"))
                 p = parser.parse_expr(str(p).replace("**", "^"))
                 if p != self:
@@ -476,7 +478,7 @@ def sympy_style(s):
         return sympy_parser.parse_expr(str(s).replace("^", "**"))
 
 def holpy_style(s):
-    return parser.parse_expr(str(s).replace("**", "^"))
+    return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
 
 def trig_transform(trig):
     """Compute all possible trig function equal to trig"""
