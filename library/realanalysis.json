@@ -784,15 +784,6 @@
             "type": "'a net ⇒ ('a ⇒ real) ⇒ real"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "trivial_limit",
-            "prop": "trivial_limit net ⟷ eventually (λx. false) net",
-            "ty": "def",
-            "type": "'a net ⇒ bool"
-        },
-        {
             "name": "reallim_trivial",
             "num_gaps": 1,
             "proof": [

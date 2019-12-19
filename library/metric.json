@@ -1,9 +1,565 @@
 {
     "content": [
         {
+            "name": "within",
+            "ty": "def.ax",
+            "type": "'a net ⇒ 'a set ⇒ 'a net"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "net_within_univ",
+            "prop": "within net univ = net",
+            "ty": "thm",
+            "vars": {
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "within_within",
+            "prop": "within (within net s) t = within net (s ∩ t)",
+            "ty": "thm",
+            "vars": {
+                "net": "'a net",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
             "name": "eventually",
             "ty": "def.ax",
             "type": "('a ⇒ bool) ⇒ 'a net ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "trivial_limit",
+            "prop": "trivial_limit net ⟷ eventually (λx. false) net",
+            "ty": "def",
+            "type": "'a net ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eventually_within_imp",
+            "prop": "eventually P (within net s) ⟷ eventually (λx. x ∈ s ⟶ P x) net",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "net": "'a net",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "eventually_imp_within",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "eventually P net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually P net ⊢ eventually P net"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "eventually P net ⊢ eventually (λx. x ∈ s ⟶ P x) net"
+                },
+                {
+                    "args": "eventually_within_imp, eventually P (within net s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "eventually P net ⊢ eventually P (within net s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually P net ⟶ eventually P (within net s)"
+                }
+            ],
+            "prop": "eventually P net ⟶ eventually P (within net s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_within_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "net": "'a net",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eventually_within_inter_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "eventually_within_imp, eventually (λx. x ∈ t ⟶ P x) (within net s) ⟷ eventually (λx. x ∈ s ⟶ x ∈ t ⟶ P x) net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually (λx. x ∈ t ⟶ P x) (within net s) ⟷ eventually (λx. x ∈ s ⟶ x ∈ t ⟶ P x) net"
+                },
+                {
+                    "args": "eventually_within_imp, eventually P (within (within net s) t) ⟷ eventually (λx. x ∈ t ⟶ P x) (within net s)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually P (within (within net s) t) ⟷ eventually (λx. x ∈ t ⟶ P x) (within net s)"
+                },
+                {
+                    "args": "within_within, eventually P (within net (s ∩ t)) ⟷ eventually (λx. x ∈ t ⟶ P x) (within net s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ eventually P (within net (s ∩ t)) ⟷ eventually (λx. x ∈ t ⟶ P x) (within net s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually P (within net (s ∩ t)) ⟷ eventually (λx. x ∈ t ⟶ P x) (within net s)"
+                }
+            ],
+            "prop": "eventually P (within net (s ∩ t)) ⟷ eventually (λx. x ∈ t ⟶ P x) (within net s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "within_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_within_imp"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_within_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "net": "'a net",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "nontrivial_limit_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "trivial_limit net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit net ⊢ trivial_limit net"
+                },
+                {
+                    "args": "trivial_limit_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "trivial_limit net ⊢ eventually (λx. false) net"
+                },
+                {
+                    "args": "eventually_imp_within, {a: 'a}, {P: λx::'a. false, net: net, s: s}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "trivial_limit net ⊢ eventually (λx. false) (within net s)"
+                },
+                {
+                    "args": "trivial_limit_def, trivial_limit (within net s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "trivial_limit net ⊢ trivial_limit (within net s)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ trivial_limit net ⟶ trivial_limit (within net s)"
+                }
+            ],
+            "prop": "trivial_limit net ⟶ trivial_limit (within net s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "trivial_limit_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "trivial_limit_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eventually_imp_within"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "net": "'a net",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "eventually_happens",
+            "prop": "eventually P net ⟶ trivial_limit net ∨ (∃x. P x)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "always_eventually",
+            "prop": "(∀x. P x) ⟶ eventually P net",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "eventually_mono",
+            "prop": "(∀x. P x ⟶ Q x) ⟶ eventually P net ⟶ eventually Q net",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eventually_and",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ eventually (λx. P x ∧ Q x) net ⟶ eventually P net ∧ eventually Q net"
+                },
+                {
+                    "args": "eventually (λx. P x ∧ Q x) net",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λx. P x ∧ Q x) net ⊢ eventually (λx. P x ∧ Q x) net"
+                },
+                {
+                    "args": "∀x. P x ∧ Q x ⟶ P x",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. P x ∧ Q x ⟶ P x"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1",
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λx. P x ∧ Q x) net ⊢ eventually P net"
+                },
+                {
+                    "args": "∀x. P x ∧ Q x ⟶ Q x",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. P x ∧ Q x ⟶ Q x"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λx. P x ∧ Q x) net ⊢ eventually Q net"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.2",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λx. P x ∧ Q x) net ⊢ eventually P net ∧ eventually Q net"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λx. P x ∧ Q x) net ⟶ eventually P net ∧ eventually Q net"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ eventually P net ∧ eventually Q net ⟶ eventually (λx. P x ∧ Q x) net"
+                },
+                {
+                    "args": "eventually P net ∧ eventually Q net",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually P net ∧ eventually Q net ⊢ eventually P net ∧ eventually Q net"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "eventually P net ∧ eventually Q net ⊢ eventually (λx. P x ∧ Q x) net"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually P net ∧ eventually Q net ⟶ eventually (λx. P x ∧ Q x) net"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ eventually (λx. P x ∧ Q x) net ⟷ eventually P net ∧ eventually Q net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λx. P x ∧ Q x) net ⟷ eventually P net ∧ eventually Q net"
+                }
+            ],
+            "prop": "eventually (λx. P x ∧ Q x) net ⟷ eventually P net ∧ eventually Q net",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λx. P x ∧ Q x)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λx. P x ∧ Q x)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "eventually_mp",
+            "prop": "eventually (λx. P x ⟶ Q x) net ⟶ eventually P net ⟶ eventually Q net",
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "eventually_iff",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "eventually (λx. P x ⟷ Q x) net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λx. P x ⟷ Q x) net ⊢ eventually (λx. P x ⟷ Q x) net"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "eventually (λx. P x ⟷ Q x) net ⊢ eventually P net ⟶ eventually Q net"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "eventually (λx. P x ⟷ Q x) net ⊢ eventually Q net ⟶ eventually P net"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λx. P x ⟷ Q x) net ⊢ eventually P net ⟷ eventually Q net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λx. P x ⟷ Q x) net ⟶ eventually P net ⟷ eventually Q net"
+                }
+            ],
+            "prop": "eventually (λx. P x ⟷ Q x) net ⟶ eventually P net ⟷ eventually Q net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "net": "'a net"
+            }
         },
         {
             "name": "sequentially",

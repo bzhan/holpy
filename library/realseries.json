@@ -1,6 +1,9 @@
 {
     "content": [
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_limsup",
             "prop": [
                 "has_limsup f l net ⟷ ",
@@ -10,6 +13,9 @@
             "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_liminf",
             "prop": [
                 "has_liminf f l net ⟷ ",
@@ -24,7 +30,199 @@
                 "hint_backward1"
             ],
             "name": "has_limsup_transform",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "eventually (λx. f x = g x) net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λx. f x = g x) net ⊢ eventually (λx. f x = g x) net"
+                },
+                {
+                    "args": "has_limsup f l net",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limsup f l net ⊢ has_limsup f l net"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net ⊢ trivial_limit net ⟶ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "trivial_limit net",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit net ⊢ trivial_limit net"
+                },
+                {
+                    "args": "disjI1, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. g x ≤ b) net}) l}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net, trivial_limit net ⊢ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net ⊢ trivial_limit net ⟶ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net ⊢ ¬(trivial_limit net) ⟶ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "¬(trivial_limit net)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(trivial_limit net) ⊢ ¬(trivial_limit net)"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net, ¬(trivial_limit net) ⊢ ∀b. eventually (λx. g x ≤ b) net ⟷ eventually (λx. f x ≤ b) net"
+                },
+                {
+                    "args": "b, real",
+                    "id": "3.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net, ¬(trivial_limit net) ⊢ eventually (λx. g x ≤ b) net ⟷ eventually (λx. f x ≤ b) net"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.2",
+                    "prevs": [
+                        "3.1.0",
+                        "3.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net, ¬(trivial_limit net) ⊢ ∀b. eventually (λx. g x ≤ b) net ⟷ eventually (λx. f x ≤ b) net"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net, ¬(trivial_limit net) ⊢ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "disjI2, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. g x ≤ b) net}) l}",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net, ¬(trivial_limit net) ⊢ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net ⊢ ¬(trivial_limit net) ⟶ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net ⊢ trivial_limit net ∨ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
+                },
+                {
+                    "args": "has_limsup_def, has_limsup g l net",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "eventually (λx. f x = g x) net, has_limsup f l net ⊢ has_limsup g l net"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λx. f x = g x) net ⟶ has_limsup f l net ⟶ has_limsup g l net"
+                }
+            ],
             "prop": "eventually (λx. f x = g x) net ⟶ has_limsup f l net ⟶ has_limsup g l net",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_limsup_def"
+                },
+                {
+                    "case": "trivial_limit net",
+                    "goal_id": "2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal": "!b. eventually (λx. g x ≤ b) net <--> eventually (λx. f x ≤ b) net",
+                    "goal_id": "3.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "introduction",
+                    "names": "b"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",

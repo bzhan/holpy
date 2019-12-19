@@ -1293,11 +1293,6 @@
             }
         },
         {
-            "name": "within",
-            "ty": "def.ax",
-            "type": "'a net ⇒ 'a set ⇒ 'a net"
-        },
-        {
             "name": "at",
             "ty": "def.ax",
             "type": "real ⇒ real net"
