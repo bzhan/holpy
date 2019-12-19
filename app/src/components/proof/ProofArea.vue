@@ -417,7 +417,7 @@ export default {
     },
 
     init_saved_proof: async function () {
-      this.steps = this.old_steps
+      this.steps = JSON.parse(JSON.stringify(this.old_steps))
       this.gotoStep(this.old_steps.length)
     },
 
