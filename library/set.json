@@ -7938,6 +7938,730 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nat_finite",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite s ⟶ (∃a. ∀x. x ∈ s ⟶ x ≤ a)"
+                },
+                {
+                    "args": "finite s",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∃a::nat. ∀x. x ∈ ∅ ⟶ x ≤ a",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∃a::nat. ∀x. x ∈ ∅ ⟶ x ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x::nat. ∀s1. (∃a. ∀x1. x1 ∈ s1 ⟶ x1 ≤ a) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a)"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s1, nat set",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ s1 ⟶ x ≤ a",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a. ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∃a. ∀x. x ∈ s1 ⟶ x ≤ a"
+                },
+                {
+                    "args": "¬(x ∈ s1)",
+                    "id": "0.2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s1) ⊢ ¬(x ∈ s1)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "0.2.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ⊢ finite s1"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "0.2.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "∀x. x ∈ s1 ⟶ x ≤ a",
+                    "id": "0.2.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∀x. x ∈ s1 ⟶ x ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ max a x"
+                },
+                {
+                    "args": "x1, nat",
+                    "id": "0.2.7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 = x ∨ x1 ∈ s1",
+                    "id": "0.2.7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 = x ∨ x1 ∈ s1 ⊢ x1 = x ∨ x1 ∈ s1"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 = x ⟶ x1 ≤ max a x"
+                },
+                {
+                    "args": "x1 = x",
+                    "id": "0.2.7.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 = x ⊢ x1 = x"
+                },
+                {
+                    "args": "x ≤ max a x",
+                    "id": "0.2.7.2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ x ≤ max a x"
+                },
+                {
+                    "args": "x1 ≤ max a x",
+                    "id": "0.2.7.2.2",
+                    "prevs": [
+                        "0.2.7.2.0",
+                        "0.2.7.2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x1 = x, finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 ≤ max a x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7.2.3",
+                    "prevs": [
+                        "0.2.7.2.0",
+                        "0.2.7.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 = x ⟶ x1 ≤ max a x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 ∈ s1 ⟶ x1 ≤ max a x"
+                },
+                {
+                    "args": "x1 ∈ s1",
+                    "id": "0.2.7.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ s1 ⊢ x1 ∈ s1"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7.3.1",
+                    "prevs": [
+                        "0.2.6",
+                        "0.2.7.3.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. x ∈ s1 ⟶ x ≤ a, x1 ∈ s1 ⊢ x1 ≤ a"
+                },
+                {
+                    "args": "x1 ≤ max a x",
+                    "id": "0.2.7.3.2",
+                    "prevs": [
+                        "0.2.7.3.1"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. x ∈ s1 ⟶ x ≤ a, x1 ∈ s1 ⊢ x1 ≤ max a x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7.3.3",
+                    "prevs": [
+                        "0.2.7.3.0",
+                        "0.2.7.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 ∈ s1 ⟶ x1 ≤ max a x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.2.7.4",
+                    "prevs": [
+                        "0.2.7.1",
+                        "0.2.7.2",
+                        "0.2.7.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x1 = x ∨ x1 ∈ s1, finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ x1 ≤ max a x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7.5",
+                    "prevs": [
+                        "0.2.7.0",
+                        "0.2.7.1",
+                        "0.2.7.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ max a x"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λa. ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ a, a: max a x}",
+                    "id": "0.2.8",
+                    "prevs": [
+                        "0.2.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∃a1. ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ a1"
+                },
+                {
+                    "args": "member_insert, ∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a",
+                    "id": "0.2.9",
+                    "prevs": [
+                        "0.2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ s1 ⟶ x ≤ a",
+                    "id": "0.2.10",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2",
+                        "0.2.3",
+                        "0.2.4",
+                        "0.2.2",
+                        "0.2.5",
+                        "0.2.6",
+                        "0.2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ ∀x::nat. ∀s1. (∃a. ∀x1. x1 ∈ s1 ⟶ x1 ≤ a) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a)"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ ∃a. ∀x. x ∈ s ⟶ x ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∃a. ∀x. x ∈ s ⟶ x ≤ a)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃a. ∀x. x ∈ s ⟶ x ≤ a) ⟶ finite s"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ s ⟶ x ≤ a",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a. ∀x. x ∈ s ⟶ x ≤ a ⊢ ∃a. ∀x. x ∈ s ⟶ x ≤ a"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ x ≤ n",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ x ≤ n ⊢ ∀x. x ∈ s ⟶ x ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ n ⊢ finite ({m. m ≤ n})"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ n ⊢ s ⊆ {m. m ≤ n}"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ n ⊢ finite s"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ s ⟶ x ≤ a",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃a. ∀x. x ∈ s ⟶ x ≤ a) ⟶ finite s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite s ⟷ (∃a. ∀x. x ∈ s ⟶ x ≤ a)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟷ (∃a. ∀x. x ∈ s ⟶ x ≤ a)"
+                }
+            ],
+            "prop": "finite s ⟷ (∃a. ∀x. x ∈ s ⟶ x ≤ a)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction",
+                    "names": "x,s1"
+                },
+                {
+                    "goal_id": "0.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.5",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "goal_id": "0.2.7",
+                    "method_name": "inst_exists_goal",
+                    "s": "max a x"
+                },
+                {
+                    "goal_id": "0.2.7",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.7.1"
+                    ],
+                    "goal_id": "0.2.7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2.7.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.7.2.0"
+                    ],
+                    "goal_id": "0.2.7.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.2.7.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.2.7.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.6",
+                        "0.2.7.3.0"
+                    ],
+                    "goal_id": "0.2.7.3.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.7.3.1"
+                    ],
+                    "goal_id": "0.2.7.3.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "param_t": "{m. m <=n}",
+                    "theorem": "finite_subset"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "nat_finite_avoid",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "nat_finite",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s ⊢ ∃a. ∀x. x ∈ s ⟶ x ≤ a"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ x ≤ a",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ x ≤ a ⊢ ∀x. x ∈ s ⟶ x ≤ a"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ x ≤ m",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ x ≤ m ⊢ ∀x. x ∈ s ⟶ x ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ Suc m ∈ s ⟶ false"
+                },
+                {
+                    "args": "Suc m ∈ s",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc m ∈ s ⊢ Suc m ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "6.1",
+                    "prevs": [
+                        "5",
+                        "6.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ Suc m ≤ m"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "6.2",
+                    "prevs": [
+                        "6.1"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ ¬¬(Suc m ≤ m)"
+                },
+                {
+                    "args": "less_eq_refl, {}, {n: m}",
+                    "id": "6.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m"
+                },
+                {
+                    "args": "less_Suc_lesseq, m < Suc m",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ m < Suc m"
+                },
+                {
+                    "args": "not_le, ¬(Suc m ≤ m)",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ ¬(Suc m ≤ m)"
+                },
+                {
+                    "args": "negE",
+                    "id": "6.6",
+                    "prevs": [
+                        "6.2",
+                        "6.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s, finite s, ∀x. x ∈ s ⟶ x ≤ a ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "6.7",
+                    "prevs": [
+                        "6.0",
+                        "6.6"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ Suc m ∈ s ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ ¬(Suc m ∈ s)"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λa. ¬(a ∈ s), a: Suc m}",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ ∃a1. ¬(a1 ∈ s)"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∃a. ∀x. x ∈ s ⟶ x ≤ a",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "1",
+                        "4",
+                        "5",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∃a. ¬(a ∈ s))"
+                }
+            ],
+            "prop": "finite s ⟶ (∃a. ¬(a ∈ s))",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_finite"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "inst_exists_goal",
+                    "s": "Suc m"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6.0"
+                    ],
+                    "goal_id": "6.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "6.2"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat set"
+            }
+        },
+        {
             "name": "countable",
             "ty": "def.ax",
             "type": "'a set ⇒ bool"
