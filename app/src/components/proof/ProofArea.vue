@@ -77,7 +77,7 @@ export default {
     },
 
     step_forward: function () {
-      if (this.index < this.history.length-1) {
+      if (this.index < this.history.length) {
         this.gotoStep(this.index + 1);
       }
     },
