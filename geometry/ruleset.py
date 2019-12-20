@@ -18,7 +18,7 @@ ruleset_raw = {
     # "D19": "eqangle(l, k, n, m) :- eqangle(k, l, m, n)",
     # "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",
     "D21": "eqangle(k, m ,l, n) :- eqangle(k, l, m, n)",
-    "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",
+    # "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",
     "D40": "eqangle(a, c, b, c) :- para(a, b)",
@@ -31,13 +31,17 @@ ruleset_raw = {
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
     "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
+    "D53": "perp(A, B, B, C) :- circle(O, A, B, C), coll(O, A, C)",
     "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
     "D58": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(A, C, B, C, P, R, Q, R)",
     "D61": "contri(A, B, C, P, Q, R) :- simtri(A, B, C, P, Q, R), cong(A, B, P, Q)",
     "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
-    "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
+    # TODO: Handle eqratio.
+    # "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
     "D68": "cong(A, B, A, C) :- midp(A, B, C)",
-    "D70": "eqratio(M, A, A, B, N, C, C, D) :- midp(M, A, B), midp(N, C, D)",
+    # "D70": "eqratio(M, A, A, B, N, C, C, D) :- midp(M, A, B), midp(N, C, D)",
+
+    # ⬇ Additional rules ⬇ #
     # Use this rule to generate eqangle from two perp facts. (Written by myself)
     "D76": "eqangle(k, l, m, n) :- perp(k, l), perp(m ,n)",
     "D77": "perp(m, n) :-  eqangle(k, l, m, n), perp(k, l)",
@@ -65,7 +69,7 @@ ruleset_raw = {
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS
     # D88 and D89 are using different sides of a triangle compares to D58.
     "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R)",
-    "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, B, C, P, R, Q, R), eqangle(B, A, A, C, Q, P, P, R)",
+    "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q)",
 }
 
 ruleset = dict()

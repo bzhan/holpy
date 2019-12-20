@@ -285,7 +285,38 @@ class Prover:
 
         """
 
-        def c_process(pat_args, f_args, c_args, flag):
+        def match_PonL(cs):
+            t_insts = [inst]
+            i = 0
+            while i < len(pat.args) // 2:
+                ts = []
+                for t_inst in t_insts:
+                    l = self.get_line(cs[i])
+                    pat_a, pat_b = pat.args[i * 2: i * 2 + 2]
+                    if pat_a in t_inst:
+                        if t_inst[pat_a] in l.args:
+                            a = [t_inst[pat_a]]
+                        else:
+                            a = []
+                    else:
+                        a = list(l.args)
+                    if pat_b in t_inst:
+                        if t_inst[pat_b] in l.args:
+                            b = [t_inst[pat_b]]
+                        else:
+                            b = []
+                    else:
+                        b = list(l.args)
+                    perms = [[x, y] for x in a for y in b if x != y]
+                    for a, b in perms:
+                        t = copy.copy(t_inst)  # t is one result
+                        t[pat_a], t[pat_b] = a, b
+                        ts.append(t)
+                i += 1
+                t_insts = ts
+            return t_insts
+
+        def match_c(pat_args, f_args, c_args, flag):
             """Identical part of the processing for circ and cycl cases.
             
             flag -- whether the matching has already failed.
@@ -444,35 +475,9 @@ class Prover:
                     cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
                 else:
                     cs = [groups[num] for num in c_nums]
-                t_insts = [inst]
-                for i in range(len(pat.args) // 2):
-                    ts = []
-                    for t_inst in t_insts:
-                        l = self.get_line(cs[i])
-                        pat_a, pat_b = pat.args[i*2: i*2+2]
 
-                        if pat_a in t_inst:
-                            if t_inst[pat_a] in l.args:
-                                a = [t_inst[pat_a]]
-                            else:
-                                a = []
-                        else:
-                            a = list(l.args)
+                t_insts = match_PonL(cs)
 
-                        if pat_b in t_inst:
-                            if t_inst[pat_b] in l.args:
-                                b = [t_inst[pat_b]]
-                            else:
-                                b = []
-                        else:
-                            b = list(l.args)
-
-                        perms = [[x, y] for x in a for y in b if x != y]
-                        for a, b in perms:
-                            t = copy.copy(t_inst)
-                            t[pat_a], t[pat_b] = a, b
-                            ts.append(t)
-                    t_insts = ts
                 if t_insts:
                     subfact = f.get_subfact(c_nums)
                 for t_inst in t_insts:
@@ -481,7 +486,7 @@ class Prover:
         elif arg_ty == CYCL:
             circle = self.get_circle(list(f.args))
             flag = False
-            c_process(pat.args, f.args, circle.args, flag)
+            match_c(pat.args, f.args, circle.args, flag)
 
         elif arg_ty == CIRC:
             circle = self.get_circle(f.args[1:], f.args[0])
@@ -490,7 +495,7 @@ class Prover:
                 flag = True
             else:
                 inst[pat.args[0]] = f.args[0]
-            c_process(pat.args[1:], f.args[1:], circle.args, flag)
+            match_c(pat.args[1:], f.args[1:], circle.args, flag)
 
         # TODO: Support more types.
         else:
@@ -521,10 +526,20 @@ class Prover:
         rule = self.ruleset[rule_name]
         assert len(facts) == len(rule.assums)
 
+        # TODO: flip
+        # When trying to obtain contri or simtri from eqangles,
+        # There exists the scenario that we need to "flip" one triangle to make its shape as same as
+        # another triangle. But the full-angle of the triangle will be changed when "flipping".
+        # (The conventional angle will not be changed after "flipping")
+        # E.g.
+        # Original: eqangle(A, B, C, D, E, F, G, H)
+        # Flipped:  eqangle(C, D, A, B, E, F, G, H)
+
         # instantiation and list of subfacts used
         insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
         for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
             new_insts = []
+            # flip = fact.pred_name == 'eqangle' and rule.concl.pred_name in ('simtri', 'contri')
             for inst, subfacts in insts:
                 news = self.match_expr(assum, fact, inst)
                 for i, subfact in news:
@@ -532,7 +547,7 @@ class Prover:
             insts = new_insts
 
         # Rule D40 requires more points in conclusion than in assumption. Add points from lines as supplement.
-        if rule_name == "D40" and insts:
+        if rule_name in ("D40") and insts:
             prev_insts = copy.copy(insts)
             insts = []
             if any(i not in prev_insts[0][0].keys() for i in rule.concl.args):
@@ -638,6 +653,7 @@ class Prover:
             for fact in self.hyps:
                 if self.check_imply(fact, self.concl):
                     return fact
+        print("Last updated lines:", self.lines)
         print("Last updated hyps: ", self.hyps)
         assert False, "Fixpoint reached without proving goal."
         return None
@@ -843,6 +859,7 @@ class Prover:
             return all(any(self.equal_triangle(f, g) for f in f_tris) for g in g_tris)
 
         else:
+            print(fact.pred_name)
             raise NotImplementedError
 
     def print_search(self, res) -> None:

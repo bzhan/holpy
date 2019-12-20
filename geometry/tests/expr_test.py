@@ -188,7 +188,15 @@ class ExprTest(unittest.TestCase):
             # (ruleset["D42"], ["eqangle(B, E, A, C, A, F, B, C, A, C, B, E, B, C, A, F)"],
             #   ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"],
             #   [], ["cyclic(E, C, F, H)", "cyclic(E, A, F, B)"]),
-            ("D61", ["simtri(B, A, D, C, A, D)", "cong(A, B, A, C)"], [], [], ["contri(B, A, D, C, A, D)"])
+            # ("D61", ["simtri(B, A, D, C, A, D)", "cong(A, B, A, C)"], [], [], ["contri(B, A, D, C, A, D)"]),
+            # ("D89", ["eqangle(A, F, A, B, A, E, D, E)", "eqangle(B, F, A, E, A, D, D, E)"], [], [],
+            #  ["simtri(A, B, F, E, A, D)"]),
+            # ("D58", ["eqangle(A, B, A, F, A, E, E, D)", "eqangle(B, F, F, A, A, D, D, E)"], [], [],
+            #  ["simtri(A, B, F, E, A, D)"]),
+            # ("D89", ["eqangle(A, F, A, B, D, E, E, A)", "eqangle(B, F, F, A, A, D, D, E)"], [], [],
+            #  ["simtri(A, B, F, E, A, D)"]),
+            # ("D40", ["para(A, B, D, E)"], ["line(E, A, F)"], [], ["eqangle(B, A, A, F, A, E, E, D)"])
+
         ]
 
         for rule, facts, lines, circles, concls in test_data:
@@ -322,15 +330,27 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
                        "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
 
+            # Following 2 tests: testing if contri works.
             (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
                         [], [], "cong(B, M, C, M)"),
 
-            (ruleset, ["cong(B, A, B, C)", "midp(D, A, C)", "coll(A, D, C)"], [], [], "perp(B, D, A, C)"),
-
             (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
-             [], [], "cong(B, F, C, F)")
+             [], [], "cong(B, F, C, F)"),
 
+            # Following 3 tests: testing if simtri works.
+            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
+             "simtri(A, D, E, E, F, C)"),
 
+            (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
+
+            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
+                       "perp(A, B, B, C)", "perp(D, C, C, B)"],
+             [], [], "simtri(A, B, F, E, A, D)"),
+
+            # Not working
+            # (ruleset, ["circle(O, A, E, D, F)", "coll(A, E, B)", "coll(A, F, C)", "coll(B, D, C)", "coll(O, A, D)",
+            #            "eqangle(B, A, A, D, B, A, A, D)"], [], [],
+            #  "simtri(A, E, F, A, C, B)")
         ]
         # pr = cProfile.Profile()
         # pr.enable()
