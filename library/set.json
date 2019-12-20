@@ -5433,6 +5433,15 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "infinite",
+            "prop": "infinite s ⟷ ¬(finite s)",
+            "ty": "def",
+            "type": "'a set ⇒ bool"
+        },
+        {
+            "attributes": [
                 "hint_backward1"
             ],
             "name": "finite_induct_strong",
@@ -5554,6 +5563,30 @@
             "type": "'a set ⇒ nat"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "card_empty",
+            "prop": "card (∅::'a set) = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "card_insert",
+            "prop": "finite s ⟶ card (insert x s) = (if x ∈ s then card s else Suc (card s))",
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_size",
             "prop": "has_size s n ⟷ finite s ∧ card s = n",
             "ty": "def",
@@ -7941,8 +7974,940 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "natseg_clauses_lt_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "{i::nat. false} = ∅",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {i::nat. false} = ∅"
+                },
+                {
+                    "args": "nat_less_def_1, {i::nat. i < 0} = ∅",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ {i::nat. i < 0} = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ {i::nat. i < 0} = ∅"
+                }
+            ],
+            "prop": "{i::nat. i < 0} = ∅",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "natseg_clauses_lt_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "{i. i = k ∨ i < k} = insert k ({i. i < k})",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {i. i = k ∨ i < k} = insert k ({i. i < k})"
+                },
+                {
+                    "args": "nat_less_def_2, {i. i < Suc k} = insert k ({i. i < k})",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ {i. i < Suc k} = insert k ({i. i < k})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ {i. i < Suc k} = insert k ({i. i < k})"
+                }
+            ],
+            "prop": "{i. i < Suc k} = insert k ({i. i < k})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_size_natseg_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_empty, {a: nat}, {}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::nat set)"
+                },
+                {
+                    "args": "card_empty, card (∅::nat set) = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ card (∅::nat set) = 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite (∅::nat set) ∧ card (∅::nat set) = 0"
+                },
+                {
+                    "args": "natseg_clauses_lt_1, finite ({i::nat. i < 0}) ∧ card ({i::nat. i < 0}) = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ finite ({i::nat. i < 0}) ∧ card ({i::nat. i < 0}) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. finite ({m. m < n}) ∧ card ({m. m < n}) = n ⟶ finite ({m. m < Suc n}) ∧ card ({m. m < Suc n}) = Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "finite ({m. m < n}) ∧ card ({m. m < n}) = n",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite ({m. m < n}) ∧ card ({m. m < n}) = n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite ({m. m < n})"
+                },
+                {
+                    "args": "finite_insert, {a: nat}, {A: {i. i < n}, x: n}",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite (insert n ({i. i < n}))"
+                },
+                {
+                    "args": "card_insert, {a: nat}, {s: {i. i < n}, x: n}",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ card (insert n ({m. m < n})) = (if n ∈ {m. m < n} then card ({m. m < n}) else Suc (card ({m. m < n})))"
+                },
+                {
+                    "args": "¬(n ∈ {m. m < n})",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(n ∈ {m. m < n})"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite ({m. m < n}), B: card ({m. m < n}) = n}",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ card ({m. m < n}) = n"
+                },
+                {
+                    "args": "Suc (card ({m. m < n})) = Suc n",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ Suc (card ({m. m < n})) = Suc n"
+                },
+                {
+                    "args": "if_not_P, (if n ∈ {m. m < n} then card ({m. m < n}) else Suc (card ({m. m < n}))) = Suc n",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.7",
+                        "4.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ (if n ∈ {m. m < n} then card ({m. m < n}) else Suc (card ({m. m < n}))) = Suc n"
+                },
+                {
+                    "args": "card (insert n ({m. m < n})) = Suc n",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.4",
+                        "4.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ card (insert n ({m. m < n})) = Suc n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.10",
+                    "prevs": [
+                        "4.3",
+                        "4.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite (insert n ({i. i < n})) ∧ card (insert n ({i. i < n})) = Suc n"
+                },
+                {
+                    "args": "natseg_clauses_lt_2, finite ({i. i < Suc n}) ∧ card ({i. i < Suc n}) = Suc n",
+                    "id": "4.11",
+                    "prevs": [
+                        "4.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite ({i. i < Suc n}) ∧ card ({i. i < Suc n}) = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.12",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. finite ({m. m < n}) ∧ card ({m. m < n}) = n ⟶ finite ({m. m < Suc n}) ∧ card ({m. m < Suc n}) = Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. finite ({m. m < n}) ∧ card ({m. m < n}) = n, x: n}",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m. m < n}) ∧ card ({m. m < n}) = n"
+                },
+                {
+                    "args": "has_size_def, has_size ({m. m < n}) n",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_size ({m. m < n}) n"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_size ({m. m < n}) n"
+                }
+            ],
+            "prop": "has_size ({m. m < n}) n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_size_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "natseg_clauses_lt_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "card_empty"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "natseg_clauses_lt_2"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_insert"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "apply_forward_step",
+                    "param_x": "n",
+                    "theorem": "card_insert"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "~(n ∈ {m. m < n})",
+                    "goal_id": "4.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.5"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "card_natseg_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_size_natseg_lt, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_size ({m. m < n}) n"
+                },
+                {
+                    "args": "has_size_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ finite ({m. m < n}) ∧ card ({m. m < n}) = n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ card ({m. m < n}) = n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ card ({m. m < n}) = n"
+                }
+            ],
+            "prop": "card ({m. m < n}) = n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "has_size_natseg_lt"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_size_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_natseg_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_size_natseg_lt, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_size ({m. m < n}) n"
+                },
+                {
+                    "args": "has_size_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ finite ({m. m < n}) ∧ card ({m. m < n}) = n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite ({m. m < n})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({m. m < n})"
+                }
+            ],
+            "prop": "finite ({m. m < n})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "has_size_natseg_lt"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_size_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "natseg_clauses_le_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "{i::nat. i = 0} = {0}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {i::nat. i = 0} = {0}"
+                },
+                {
+                    "args": "nat_less_eq_def_1, {i::nat. i ≤ 0} = {0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ {i::nat. i ≤ 0} = {0}"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ {i::nat. i ≤ 0} = {0}"
+                }
+            ],
+            "prop": "{i::nat. i ≤ 0} = {0}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "natseg_clauses_le_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ {i. i = Suc k ∨ i ≤ k} ⟷ x ∈ insert (Suc k) ({i. i ≤ k})"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "member_collect, x ∈ {i. i = Suc k ∨ i ≤ k} ⟷ x = Suc k ∨ x ∈ {i. i ≤ k}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {i. i = Suc k ∨ i ≤ k} ⟷ x = Suc k ∨ x ∈ {i. i ≤ k}"
+                },
+                {
+                    "args": "member_insert, x ∈ {i. i = Suc k ∨ i ≤ k} ⟷ x ∈ insert (Suc k) ({i. i ≤ k})",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {i. i = Suc k ∨ i ≤ k} ⟷ x ∈ insert (Suc k) ({i. i ≤ k})"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ {i. i = Suc k ∨ i ≤ k} ⟷ x ∈ insert (Suc k) ({i. i ≤ k})"
+                },
+                {
+                    "args": "set_equal_iff, {i. i = Suc k ∨ i ≤ k} = insert (Suc k) ({i. i ≤ k})",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ {i. i = Suc k ∨ i ≤ k} = insert (Suc k) ({i. i ≤ k})"
+                },
+                {
+                    "args": "nat_less_eq_def_2, {i. i ≤ Suc k} = insert (Suc k) ({i. i ≤ k})",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ {i. i ≤ Suc k} = insert (Suc k) ({i. i ≤ k})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ {i. i ≤ Suc k} = insert (Suc k) ({i. i ≤ k})"
+                }
+            ],
+            "prop": "{i. i ≤ Suc k} = insert (Suc k) ({i. i ≤ k})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "set_equal_iff"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_size_natseg_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_size_natseg_lt, {}, {n: Suc n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_size ({m. m < Suc n}) (Suc n)"
+                },
+                {
+                    "args": "add_1_right, has_size ({m. m < Suc n}) (n + 1)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_size ({m. m < Suc n}) (n + 1)"
+                },
+                {
+                    "args": "less_Suc_lesseq, has_size ({m. m ≤ n}) (n + 1)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ has_size ({m. m ≤ n}) (n + 1)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_size ({m. m ≤ n}) (n + 1)"
+                }
+            ],
+            "prop": "has_size ({m. m ≤ n}) (n + 1)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_size_natseg_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_natseg_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_size_natseg_le, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_size ({m. m ≤ n}) (n + 1)"
+                },
+                {
+                    "args": "has_size_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ finite ({m. m ≤ n}) ∧ card ({m. m ≤ n}) = n + 1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite ({m. m ≤ n})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({m. m ≤ n})"
+                }
+            ],
+            "prop": "finite ({m. m ≤ n})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "has_size_natseg_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_size_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "card_natseg_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_size_natseg_le, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_size ({m. m ≤ n}) (n + 1)"
+                },
+                {
+                    "args": "has_size_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ finite ({m. m ≤ n}) ∧ card ({m. m ≤ n}) = n + 1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ card ({m. m ≤ n}) = n + 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ card ({m. m ≤ n}) = n + 1"
+                }
+            ],
+            "prop": "card ({m. m ≤ n}) = n + 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "has_size_natseg_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_size_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "nat_finite",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -8008,177 +8973,24 @@
                     "th": "finite s1 ⊢ finite s1"
                 },
                 {
-                    "args": "a, nat",
+                    "args": "∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a",
                     "id": "0.2.5",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR a"
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∃a. ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a"
                 },
                 {
-                    "args": "∀x. x ∈ s1 ⟶ x ≤ a",
+                    "args": "",
                     "id": "0.2.6",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∀x. x ∈ s1 ⟶ x ≤ a"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ max a x"
-                },
-                {
-                    "args": "x1, nat",
-                    "id": "0.2.7.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x1"
-                },
-                {
-                    "args": "x1 = x ∨ x1 ∈ s1",
-                    "id": "0.2.7.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x1 = x ∨ x1 ∈ s1 ⊢ x1 = x ∨ x1 ∈ s1"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 = x ⟶ x1 ≤ max a x"
-                },
-                {
-                    "args": "x1 = x",
-                    "id": "0.2.7.2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x1 = x ⊢ x1 = x"
-                },
-                {
-                    "args": "x ≤ max a x",
-                    "id": "0.2.7.2.1",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ x ≤ max a x"
-                },
-                {
-                    "args": "x1 ≤ max a x",
-                    "id": "0.2.7.2.2",
-                    "prevs": [
-                        "0.2.7.2.0",
-                        "0.2.7.2.1"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "x1 = x, finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 ≤ max a x"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7.2.3",
-                    "prevs": [
-                        "0.2.7.2.0",
-                        "0.2.7.2.2"
-                    ],
-                    "rule": "intros",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 = x ⟶ x1 ≤ max a x"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7.3",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 ∈ s1 ⟶ x1 ≤ max a x"
-                },
-                {
-                    "args": "x1 ∈ s1",
-                    "id": "0.2.7.3.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x1 ∈ s1 ⊢ x1 ∈ s1"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7.3.1",
-                    "prevs": [
-                        "0.2.6",
-                        "0.2.7.3.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "∀x. x ∈ s1 ⟶ x ≤ a, x1 ∈ s1 ⊢ x1 ≤ a"
-                },
-                {
-                    "args": "x1 ≤ max a x",
-                    "id": "0.2.7.3.2",
-                    "prevs": [
-                        "0.2.7.3.1"
-                    ],
-                    "rule": "z3",
-                    "th": "∀x. x ∈ s1 ⟶ x ≤ a, x1 ∈ s1 ⊢ x1 ≤ max a x"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7.3.3",
-                    "prevs": [
-                        "0.2.7.3.0",
-                        "0.2.7.3.2"
-                    ],
-                    "rule": "intros",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a, x1 = x ∨ x1 ∈ s1 ⊢ x1 ∈ s1 ⟶ x1 ≤ max a x"
-                },
-                {
-                    "args": "disjE",
-                    "id": "0.2.7.4",
-                    "prevs": [
-                        "0.2.7.1",
-                        "0.2.7.2",
-                        "0.2.7.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x1 = x ∨ x1 ∈ s1, finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ x1 ≤ max a x"
-                },
-                {
-                    "args": "",
-                    "id": "0.2.7.5",
-                    "prevs": [
-                        "0.2.7.0",
-                        "0.2.7.1",
-                        "0.2.7.4"
-                    ],
-                    "rule": "intros",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ max a x"
-                },
-                {
-                    "args": "exI, {a: nat}, {P: λa. ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ a, a: max a x}",
-                    "id": "0.2.8",
-                    "prevs": [
-                        "0.2.7"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∃a1. ∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ a1"
-                },
-                {
-                    "args": "member_insert, ∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a",
-                    "id": "0.2.9",
-                    "prevs": [
-                        "0.2.8"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "finite s, ∃a. ∀x. x ∈ s1 ⟶ x ≤ a, ¬(x ∈ s1), finite s1, ∀x. x ∈ s1 ⟶ x ≤ a ⊢ ∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a"
-                },
-                {
-                    "args": "∃a. ∀x. x ∈ s1 ⟶ x ≤ a",
-                    "id": "0.2.10",
                     "prevs": [
                         "0.2.0",
                         "0.2.1",
                         "0.2.2",
                         "0.2.3",
                         "0.2.4",
-                        "0.2.2",
-                        "0.2.5",
-                        "0.2.6",
-                        "0.2.9"
+                        "0.2.5"
                     ],
                     "rule": "intros",
                     "th": "finite s ⊢ ∀x::nat. ∀s1. (∃a. ∀x1. x1 ∈ s1 ⟶ x1 ≤ a) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∃a. ∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ a)"
@@ -8233,18 +9045,20 @@
                     "th": "∀x. x ∈ s ⟶ x ≤ n ⊢ ∀x. x ∈ s ⟶ x ≤ n"
                 },
                 {
-                    "args": "",
+                    "args": "finite_natseg_le, {}, {n: n}",
                     "id": "1.3",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ n ⊢ finite ({m. m ≤ n})"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m. m ≤ n})"
                 },
                 {
-                    "args": "",
+                    "args": "s ⊆ {m. m ≤ n}",
                     "id": "1.4",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ n ⊢ s ⊆ {m. m ≤ n}"
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. x ∈ s ⟶ x ≤ n ⊢ s ⊆ {m. m ≤ n}"
                 },
                 {
                     "args": "finite_subset",
@@ -8318,69 +9132,10 @@
                     "names": "x,s1"
                 },
                 {
-                    "goal_id": "0.2.5",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "member_insert"
-                },
-                {
                     "fact_ids": [
                         "0.2.2"
                     ],
                     "goal_id": "0.2.5",
-                    "method_name": "exists_elim",
-                    "names": "a"
-                },
-                {
-                    "goal_id": "0.2.7",
-                    "method_name": "inst_exists_goal",
-                    "s": "max a x"
-                },
-                {
-                    "goal_id": "0.2.7",
-                    "method_name": "introduction",
-                    "names": "x1"
-                },
-                {
-                    "fact_ids": [
-                        "0.2.7.1"
-                    ],
-                    "goal_id": "0.2.7.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "0.2.7.2",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "0.2.7.2.0"
-                    ],
-                    "goal_id": "0.2.7.2.1",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "0.2.7.2.1",
-                    "method_name": "z3"
-                },
-                {
-                    "goal_id": "0.2.7.3",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "0.2.6",
-                        "0.2.7.3.0"
-                    ],
-                    "goal_id": "0.2.7.3.1",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "0.2.7.3.1"
-                    ],
-                    "goal_id": "0.2.7.3.2",
                     "method_name": "z3"
                 },
                 {
@@ -8398,8 +9153,20 @@
                 {
                     "goal_id": "1.3",
                     "method_name": "apply_backward_step",
-                    "param_t": "{m. m <=n}",
+                    "param_t": "{m. m <= n}",
                     "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
@@ -8432,141 +9199,20 @@
                     "th": "finite s ⊢ ∃a. ∀x. x ∈ s ⟶ x ≤ a"
                 },
                 {
-                    "args": "a, nat",
+                    "args": "∃a. ¬(a ∈ s)",
                     "id": "2",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR a"
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "finite s ⊢ ∃a. ¬(a ∈ s)"
                 },
                 {
-                    "args": "∀x. x ∈ s ⟶ x ≤ a",
+                    "args": "",
                     "id": "3",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "∀x. x ∈ s ⟶ x ≤ a ⊢ ∀x. x ∈ s ⟶ x ≤ a"
-                },
-                {
-                    "args": "m, nat",
-                    "id": "4",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR m"
-                },
-                {
-                    "args": "∀x. x ∈ s ⟶ x ≤ m",
-                    "id": "5",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "∀x. x ∈ s ⟶ x ≤ m ⊢ ∀x. x ∈ s ⟶ x ≤ m"
-                },
-                {
-                    "args": "",
-                    "id": "6",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ Suc m ∈ s ⟶ false"
-                },
-                {
-                    "args": "Suc m ∈ s",
-                    "id": "6.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "Suc m ∈ s ⊢ Suc m ∈ s"
-                },
-                {
-                    "args": "",
-                    "id": "6.1",
-                    "prevs": [
-                        "5",
-                        "6.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ Suc m ≤ m"
-                },
-                {
-                    "args": "double_neg",
-                    "id": "6.2",
-                    "prevs": [
-                        "6.1"
-                    ],
-                    "rule": "rewrite_fact_sym",
-                    "th": "∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ ¬¬(Suc m ≤ m)"
-                },
-                {
-                    "args": "less_eq_refl, {}, {n: m}",
-                    "id": "6.3",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ m ≤ m"
-                },
-                {
-                    "args": "less_Suc_lesseq, m < Suc m",
-                    "id": "6.4",
-                    "prevs": [
-                        "6.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ m < Suc m"
-                },
-                {
-                    "args": "not_le, ¬(Suc m ≤ m)",
-                    "id": "6.5",
-                    "prevs": [
-                        "6.4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s ⊢ ¬(Suc m ≤ m)"
-                },
-                {
-                    "args": "negE",
-                    "id": "6.6",
-                    "prevs": [
-                        "6.2",
-                        "6.5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "∀x. x ∈ s ⟶ x ≤ m, Suc m ∈ s, finite s, ∀x. x ∈ s ⟶ x ≤ a ⊢ false"
-                },
-                {
-                    "args": "",
-                    "id": "6.7",
-                    "prevs": [
-                        "6.0",
-                        "6.6"
-                    ],
-                    "rule": "intros",
-                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ Suc m ∈ s ⟶ false"
-                },
-                {
-                    "args": "negI",
-                    "id": "7",
-                    "prevs": [
-                        "6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ ¬(Suc m ∈ s)"
-                },
-                {
-                    "args": "exI, {a: nat}, {P: λa. ¬(a ∈ s), a: Suc m}",
-                    "id": "8",
-                    "prevs": [
-                        "7"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "finite s, ∀x. x ∈ s ⟶ x ≤ a, ∀x. x ∈ s ⟶ x ≤ m ⊢ ∃a1. ¬(a1 ∈ s)"
-                },
-                {
-                    "args": "∃a. ∀x. x ∈ s ⟶ x ≤ a, ∃a. ∀x. x ∈ s ⟶ x ≤ a",
-                    "id": "9",
                     "prevs": [
                         "0",
-                        "1",
-                        "2",
-                        "3",
-                        "1",
-                        "4",
-                        "5",
-                        "8"
+                        "2"
                     ],
                     "rule": "intros",
                     "th": "⊢ finite s ⟶ (∃a. ¬(a ∈ s))"
@@ -8588,78 +9234,615 @@
                         "1"
                     ],
                     "goal_id": "2",
-                    "method_name": "exists_elim",
-                    "names": "a"
-                },
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "4",
-                    "method_name": "exists_elim",
-                    "names": "m"
-                },
-                {
-                    "goal_id": "6",
-                    "method_name": "inst_exists_goal",
-                    "s": "Suc m"
-                },
-                {
-                    "goal_id": "6",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negI"
-                },
-                {
-                    "goal_id": "6",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "5",
-                        "6.0"
-                    ],
-                    "goal_id": "6.1",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "6.1"
-                    ],
-                    "goal_id": "6.2",
-                    "method_name": "rewrite_fact",
-                    "sym": "true",
-                    "theorem": "double_neg"
-                },
-                {
-                    "fact_ids": [
-                        "6.2"
-                    ],
-                    "goal_id": "6.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negE"
-                },
-                {
-                    "goal_id": "6.3",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "not_le"
-                },
-                {
-                    "goal_id": "6.3",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "less_Suc_lesseq"
-                },
-                {
-                    "goal_id": "6.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "less_eq_refl"
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "s": "nat set"
             }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nat_infinite_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀x. ∃x1. x1 ∈ s ∧ x < x1) ⟶ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "∀x. ∃x1. x1 ∈ s ∧ x < x1",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1 ⊢ ∀x. ∃x1. x1 ∈ s ∧ x < x1"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1 ⊢ ∀N. ∃n. N ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "N",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1 ⊢ ∃x1. x1 ∈ s ∧ N < x1"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "n ∈ s ∧ N < n",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ∈ s ∧ N < n ⊢ n ∈ s ∧ N < n"
+                },
+                {
+                    "args": "conjD2, {}, {A: n ∈ s, B: N < n}",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n ∈ s ∧ N < n ⊢ N < n"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n ∈ s ∧ N < n ⊢ N ≤ n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n ∈ s ∧ N < n ⊢ n ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.7",
+                    "prevs": [
+                        "0.1.5",
+                        "0.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1, n ∈ s ∧ N < n ⊢ N ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λn. N ≤ n ∧ n ∈ s, a: n}",
+                    "id": "0.1.8",
+                    "prevs": [
+                        "0.1.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1, n ∈ s ∧ N < n ⊢ ∃a1. N ≤ a1 ∧ a1 ∈ s"
+                },
+                {
+                    "args": "∃x1. x1 ∈ s ∧ N < x1",
+                    "id": "0.1.9",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.3",
+                        "0.1.8"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1 ⊢ ∀N. ∃n. N ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. ∃x1. x1 ∈ s ∧ x < x1) ⟶ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀N. ∃n. N ≤ n ∧ n ∈ s) ⟶ (∀x. ∃x1. x1 ∈ s ∧ x < x1)"
+                },
+                {
+                    "args": "∀N. ∃n. N ≤ n ∧ n ∈ s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀N. ∃n. N ≤ n ∧ n ∈ s ⊢ ∀N. ∃n. N ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀N. ∃n. N ≤ n ∧ n ∈ s ⊢ ∀x. ∃x1. x1 ∈ s ∧ x < x1"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "Suc N",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀N. ∃n. N ≤ n ∧ n ∈ s ⊢ ∃n. Suc N ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "Suc N ≤ n ∧ n ∈ s",
+                    "id": "1.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc N ≤ n ∧ n ∈ s ⊢ Suc N ≤ n ∧ n ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc N ≤ n ∧ n ∈ s ⊢ n ∈ s"
+                },
+                {
+                    "args": "conjD1, {}, {A: Suc N ≤ n, B: n ∈ s}",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "Suc N ≤ n ∧ n ∈ s ⊢ Suc N ≤ n"
+                },
+                {
+                    "args": "lesseq_Suc_less",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "Suc N ≤ n ∧ n ∈ s ⊢ N < n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.4",
+                        "1.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀N. ∃n. N ≤ n ∧ n ∈ s, Suc N ≤ n ∧ n ∈ s ⊢ n ∈ s ∧ N < n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λx1. x1 ∈ s ∧ N < x1, a: n}",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀N. ∃n. N ≤ n ∧ n ∈ s, Suc N ≤ n ∧ n ∈ s ⊢ ∃x1. x1 ∈ s ∧ N < x1"
+                },
+                {
+                    "args": "∃n. Suc N ≤ n ∧ n ∈ s",
+                    "id": "1.1.9",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2",
+                        "1.1.3",
+                        "1.1.8"
+                    ],
+                    "rule": "intros",
+                    "th": "∀N. ∃n. N ≤ n ∧ n ∈ s ⊢ ∀x. ∃x1. x1 ∈ s ∧ x < x1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀N. ∃n. N ≤ n ∧ n ∈ s) ⟶ (∀x. ∃x1. x1 ∈ s ∧ x < x1)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀x. ∃x1. x1 ∈ s ∧ x < x1) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "not_le, (∀x. ∃x1. x1 ∈ s ∧ ¬(x1 ≤ x)) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. ∃x1. x1 ∈ s ∧ ¬(x1 ≤ x)) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "not_imp, (∀x. ∃x1. ¬(x1 ∈ s ⟶ x1 ≤ x)) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. ∃x1. ¬(x1 ∈ s ⟶ x1 ≤ x)) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "not_all, (∀x. ¬(∀x1. x1 ∈ s ⟶ x1 ≤ x)) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. ¬(∀x1. x1 ∈ s ⟶ x1 ≤ x)) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "not_exists, ¬(∃x. ∀x1. x1 ∈ s ⟶ x1 ≤ x) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(∃x. ∀x1. x1 ∈ s ⟶ x1 ≤ x) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "nat_finite, ¬(finite s) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(finite s) ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "infinite_def, infinite s ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ infinite s ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite s ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)"
+                }
+            ],
+            "prop": "infinite s ⟷ (∀N. ∃n. N ≤ n ∧ n ∈ s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "infinite_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_finite"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_exists"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "N"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "forall_elim",
+                    "s": "N"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "0.1.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3"
+                    ],
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.4"
+                    ],
+                    "goal_id": "0.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3"
+                    ],
+                    "goal_id": "0.1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "N"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "forall_elim",
+                    "s": "Suc N"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5"
+                    ],
+                    "goal_id": "1.1.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "lesseq_Suc_less"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nat_infinite",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite (univ::nat set) ⟶ false"
+                },
+                {
+                    "args": "finite (univ::nat set)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (univ::nat set) ⊢ finite (univ::nat set)"
+                },
+                {
+                    "args": "nat_finite_avoid, {}, {s: (univ::nat set)}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite (univ::nat set) ⊢ ∃a::nat. ¬(a ∈ univ)"
+                },
+                {
+                    "args": "false",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "z3",
+                    "th": "finite (univ::nat set) ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite (univ::nat set) ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(finite (univ::nat set))"
+                },
+                {
+                    "args": "infinite_def, infinite (univ::nat set)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ infinite (univ::nat set)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite (univ::nat set)"
+                }
+            ],
+            "prop": "infinite (univ::nat set)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "infinite_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "nat_finite_avoid"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
         },
         {
             "name": "countable",

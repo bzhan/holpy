@@ -23831,11 +23831,6 @@
                     "names": "y"
                 },
                 {
-                    "goal_id": "2.4.2.2.23.17",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI1"
-                },
-                {
                     "fact_ids": [
                         "2.4.2.2.18"
                     ],
