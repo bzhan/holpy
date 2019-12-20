@@ -1621,7 +1621,7 @@
                 "hint_rewrite_sym"
             ],
             "name": "eventually_sequentially_within",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -1638,27 +1638,55 @@
                     "th": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ ∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
                 },
                 {
-                    "args": "",
+                    "args": "N, nat",
                     "id": "0.1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n"
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n}",
+                    "args": "∀n. N ≤ n ⟶ n ∈ k ⟶ P n",
                     "id": "0.2",
-                    "prevs": [
-                        "0.1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n)"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
                 },
                 {
-                    "args": "",
+                    "args": "∀n. n ∈ k ⟶ N ≤ n ⟶ P n",
                     "id": "0.3",
                     "prevs": [
-                        "0.0",
                         "0.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ ∀n. n ∈ k ⟶ N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n, a: N}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n, ∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n"
+                },
+                {
+                    "args": "disjI2, {}, {A: finite k, B: ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n}",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n, ∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n)"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.5"
                     ],
                     "rule": "intros",
                     "th": "⊢ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n) ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n)"
@@ -1667,7 +1695,213 @@
                     "args": "",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
+                },
+                {
+                    "args": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ finite k ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
+                },
+                {
+                    "args": "finite k",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite k ⊢ finite k"
+                },
+                {
+                    "args": "nat_finite",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite k ⊢ ∃a. ∀x. x ∈ k ⟶ x ≤ a"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "∀x. x ∈ k ⟶ x ≤ a",
+                    "id": "1.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ k ⟶ x ≤ a ⊢ ∀x. x ∈ k ⟶ x ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), finite k, ∀x. x ∈ k ⟶ x ≤ a ⊢ ∀n. a + 1 ≤ n ⟶ n ∈ k ⟶ P n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.1.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "a + 1 ≤ n",
+                    "id": "1.1.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a + 1 ≤ n ⊢ a + 1 ≤ n"
+                },
+                {
+                    "args": "n ∈ k",
+                    "id": "1.1.4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ∈ k ⊢ n ∈ k"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4.3",
+                    "prevs": [
+                        "1.1.3",
+                        "1.1.4.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. x ∈ k ⟶ x ≤ a, n ∈ k ⊢ n ≤ a"
+                },
+                {
+                    "args": "P n",
+                    "id": "1.1.4.4",
+                    "prevs": [
+                        "1.1.4.1",
+                        "1.1.4.3"
+                    ],
+                    "rule": "z3",
+                    "th": "a + 1 ≤ n, ∀x. x ∈ k ⟶ x ≤ a, n ∈ k ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4.5",
+                    "prevs": [
+                        "1.1.4.0",
+                        "1.1.4.1",
+                        "1.1.4.2",
+                        "1.1.4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), finite k, ∀x. x ∈ k ⟶ x ≤ a ⊢ ∀n. a + 1 ≤ n ⟶ n ∈ k ⟶ P n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n, a: a + 1}",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), finite k, ∀x. x ∈ k ⟶ x ≤ a ⊢ ∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ k ⟶ x ≤ a",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2",
+                        "1.1.3",
+                        "1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ finite k ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
+                },
+                {
+                    "args": "∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n ⊢ ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. n ∈ k ⟶ N ≤ n ⟶ P n",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. n ∈ k ⟶ N ≤ n ⟶ P n ⊢ ∀n. n ∈ k ⟶ N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ n ∈ k ⟶ P n",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. n ∈ k ⟶ N ≤ n ⟶ P n ⊢ ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n, a: N}",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n, ∀n. n ∈ k ⟶ N ≤ n ⟶ P n ⊢ ∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
+                },
+                {
+                    "args": "∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.2",
+                        "1.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ ∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
                 },
                 {
@@ -1735,12 +1969,651 @@
                     "goal_id": "0.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_finite"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "a + 1"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3",
+                        "1.1.4.2"
+                    ],
+                    "goal_id": "1.1.4.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.4.1",
+                        "1.1.4.3"
+                    ],
+                    "goal_id": "1.1.4.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2"
+                    ],
+                    "goal_id": "1.2.3",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
             "vars": {
                 "P": "nat ⇒ bool",
                 "k": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "trivial_limit_sequentially_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⟶ finite k"
+                },
+                {
+                    "args": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)"
+                },
+                {
+                    "args": "finite k ⟶ finite k",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ finite k ⟶ finite k"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⟶ finite k"
+                },
+                {
+                    "args": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false ⊢ ¬(finite k) ⟶ ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)"
+                },
+                {
+                    "args": "¬(finite k)",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(finite k) ⊢ ¬(finite k)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false, ¬(finite k) ⊢ ∀x. ¬(∀n. n ∈ k ⟶ x ≤ n ⟶ false)"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "0.2.1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "infinite_def",
+                    "id": "0.2.1.1.1",
+                    "prevs": [
+                        "0.2.1.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "¬(finite k) ⊢ infinite k"
+                },
+                {
+                    "args": "nat_infinite_eq",
+                    "id": "0.2.1.1.2",
+                    "prevs": [
+                        "0.2.1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(finite k) ⊢ ∀N. ∃n. N ≤ n ∧ n ∈ k"
+                },
+                {
+                    "args": "x",
+                    "id": "0.2.1.1.3",
+                    "prevs": [
+                        "0.2.1.1.2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "¬(finite k) ⊢ ∃n. x ≤ n ∧ n ∈ k"
+                },
+                {
+                    "args": "∃x1. ¬(x1 ∈ k ⟶ x ≤ x1 ⟶ false)",
+                    "id": "0.2.1.1.4",
+                    "prevs": [
+                        "0.2.1.1.3"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(finite k) ⊢ ∃x1. ¬(x1 ∈ k ⟶ x ≤ x1 ⟶ false)"
+                },
+                {
+                    "args": "not_all, ¬(∀x1. x1 ∈ k ⟶ x ≤ x1 ⟶ false)",
+                    "id": "0.2.1.1.5",
+                    "prevs": [
+                        "0.2.1.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false, ¬(finite k) ⊢ ¬(∀x1. x1 ∈ k ⟶ x ≤ x1 ⟶ false)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.1.6",
+                    "prevs": [
+                        "0.2.1.1.0",
+                        "0.2.1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false, ¬(finite k) ⊢ ∀x. ¬(∀n. n ∈ k ⟶ x ≤ n ⟶ false)"
+                },
+                {
+                    "args": "not_exists, ¬(∃x. ∀n. n ∈ k ⟶ x ≤ n ⟶ false)",
+                    "id": "0.2.1.2",
+                    "prevs": [
+                        "0.2.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false, ¬(finite k) ⊢ ¬(∃x. ∀n. n ∈ k ⟶ x ≤ n ⟶ false)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.3",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false ⊢ ¬(finite k) ⟶ ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false, finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⊢ finite k"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⟶ finite k"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⊢ finite k"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⟶ finite k"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite k ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)"
+                },
+                {
+                    "args": "finite k",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite k ⊢ finite k"
+                },
+                {
+                    "args": "disjI1, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite k ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite k ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false) ⟷ finite k"
+                },
+                {
+                    "args": "eventually_sequentially_within, eventually (λx. false) (within sequentially k) ⟷ finite k",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually (λx. false) (within sequentially k) ⟷ finite k"
+                },
+                {
+                    "args": "trivial_limit_def, trivial_limit (within sequentially k) ⟷ finite k",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ trivial_limit (within sequentially k) ⟷ finite k"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ trivial_limit (within sequentially k) ⟷ finite k"
+                }
+            ],
+            "prop": "trivial_limit (within sequentially k) ⟷ finite k",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "trivial_limit_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially_within"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_exists"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.0"
+                    ],
+                    "goal_id": "0.2.1.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "infinite_def"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.1.1"
+                    ],
+                    "goal_id": "0.2.1.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_infinite_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.1.2"
+                    ],
+                    "goal_id": "0.2.1.1.3",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.1.3"
+                    ],
+                    "goal_id": "0.2.1.1.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "eventually_subsequence",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀m. ∀n. m < n ⟶ R m < R n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. ∀n. m < n ⟶ R m < R n ⊢ ∀m. ∀n. m < n ⟶ R m < R n"
+                },
+                {
+                    "args": "eventually P sequentially",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually P sequentially ⊢ eventually P sequentially"
+                },
+                {
+                    "args": "eventually_sequentially",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "eventually P sequentially ⊢ ∃N. ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ P n",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. N ≤ n ⟶ P n ⊢ ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "monotone_bigger, {}, {R: R}",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀m. ∀n. m < n ⟶ R m < R n ⊢ ∀n. n ≤ R n"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ P (R n)",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. N ≤ n ⟶ P n, ∀m. ∀n. m < n ⟶ R m < R n ⊢ ∀n. N ≤ n ⟶ P (R n)"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ P (R n), a: N}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀m. ∀n. m < n ⟶ R m < R n, eventually P sequentially, ∀n. N ≤ n ⟶ P n ⊢ ∃a1. ∀n. a1 ≤ n ⟶ P (R n)"
+                },
+                {
+                    "args": "comp_fun_def, ∃N. ∀n. N ≤ n ⟶ (P ∘ R) n",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀m. ∀n. m < n ⟶ R m < R n, eventually P sequentially, ∀n. N ≤ n ⟶ P n ⊢ ∃N. ∀n. N ≤ n ⟶ (P ∘ R) n"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (P ∘ R) sequentially",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀m. ∀n. m < n ⟶ R m < R n, eventually P sequentially, ∀n. N ≤ n ⟶ P n ⊢ eventually (P ∘ R) sequentially"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ P n",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀m. ∀n. m < n ⟶ R m < R n) ⟶ eventually P sequentially ⟶ eventually (P ∘ R) sequentially"
+                }
+            ],
+            "prop": [
+                "(∀m. ∀n. m < n ⟶ R m < R n) ",
+                "⟶ eventually P sequentially ⟶ eventually (P ∘ R) sequentially"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "monotone_bigger"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool",
+                "R": "nat ⇒ nat"
             }
         },
         {
