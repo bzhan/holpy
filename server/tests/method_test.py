@@ -294,6 +294,16 @@ class MethodTest(unittest.TestCase):
             lines={'1': 'B Sub C --> A Sub C'}
         )
 
+    def testApplyForwardStep6(self):
+        test_method(self,
+            'set',
+            vars={'A': 'nat set', 'B': 'nat set', 'C': 'nat set'},
+            concl='false',
+            method_name='apply_forward_step',
+            args={'theorem': 'subset_trans', 'param_A': 'A', 'param_B': 'B', 'param_C': 'C'},
+            lines={'0': 'A Sub B --> B Sub C --> A Sub C'}
+        )
+
     def testApplyResolveStepThms(self):
         self.run_search_thm(
             'set',
