@@ -137,6 +137,26 @@ class ProofItem():
             return sum([item.get_sorrys() for item in self.subproof.items], [])
         else:
             return []
+            
+    def incr_proof_item(self, start, n):
+        """Increment all ids in the given proof item. Recursively increment
+        ids in subproofs.
+        
+        """
+        self.id = self.id.incr_id_after(start, n)
+        self.prevs = [id.incr_id_after(start, n) for id in self.prevs]
+        if self.subproof:
+            for subitem in self.subproof.items:
+                subitem.incr_proof_item(start, n)
+
+    def decr_proof_item(self, id_remove):
+        """Decrement all ids in the given proof item."""
+        self.id = self.id.decr_id(id_remove)
+        self.prevs = [id.decr_id(id_remove) for id in self.prevs]
+        if self.subproof:
+            for subitem in self.subproof.items:
+                subitem.decr_proof_item(id_remove)
+
 
 class Proof():
     """Proof objects represent proofs in the natural deduction format.

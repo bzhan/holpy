@@ -24,26 +24,6 @@ class TacticException(Exception):
 
 # Helper functions
 
-def incr_proof_item(item, start, n):
-    """Increment all ids in the given proof item. Recursively increment
-    ids in subproofs.
-    
-    """
-    item.id = item.id.incr_id_after(start, n)
-    item.prevs = [id.incr_id_after(start, n) for id in item.prevs]
-    if item.subproof:
-        for subitem in item.subproof.items:
-            incr_proof_item(subitem, start, n)
-
-def decr_proof_item(item, id_remove):
-    """Decrement all ids in the given proof item."""
-    item.id = item.id.decr_id(id_remove)
-    item.prevs = [id.decr_id(id_remove) for id in item.prevs]
-    if item.subproof:
-        for subitem in item.subproof.items:
-            decr_proof_item(subitem, id_remove)
-
-
 class ProofState():
     """Represents proof state on the server side."""
 
@@ -104,7 +84,7 @@ class ProofState():
         new_items = [ProofItem(id.incr_id(i), "") for i in range(n)]
         prf.items = prf.items[:split] + new_items + prf.items[split:]
         for item in prf.items[split+n:]:
-            incr_proof_item(item, id, n)
+            item.incr_proof_item(id, n)
 
         self.check_proof(compute_only=True)
 
@@ -115,7 +95,7 @@ class ProofState():
         split = id.last()
         prf.items = prf.items[:split] + prf.items[split+1:]
         for item in prf.items[split:]:
-            decr_proof_item(item, id)
+            item.decr_proof_item(id)
 
         self.check_proof(compute_only=True)
 
