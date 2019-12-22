@@ -748,6 +748,9 @@ class nat_const_less_eq_macro(ProofTermMacro):
         ex_eq = apply_theorem(thy, 'exI', eq, concl=goal2)
         return ex_eq.on_prop(thy, rewr_conv('less_eq_exist', sym=True))
 
+def nat_less_eq(thy, t1, t2):
+    return ProofTermDeriv("nat_const_less_eq", thy, less_eq(t1, t2))
+
 class nat_const_less_macro(ProofTermMacro):
     """Given m and n, with m < n, return the less-than theorem."""
     def __init__(self):
@@ -765,6 +768,9 @@ class nat_const_less_macro(ProofTermMacro):
         ineq_goal = logic.neg(Term.mk_equals(m, n))
         ineq_pt = nat_const_ineq_macro().get_proof_term(thy, ineq_goal, [])
         return apply_theorem(thy, "less_lesseqI", less_eq_pt, ineq_pt)
+
+def nat_less(thy, t1, t2):
+    return ProofTermDeriv("nat_const_less", thy, less(t1, t2))
 
 class nat_eq_conv(Conv):
     """Simplify equality a = b to either True or False."""
