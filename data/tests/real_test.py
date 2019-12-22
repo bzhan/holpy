@@ -57,6 +57,7 @@ class RealTest(unittest.TestCase):
             ("~(1::real) = 2", True),
             ("~(2::real) = 1", True),
             ("~(1::real) = 1", False),
+            ("(1::real) / 3 < 1 / 2", True),
         ]
 
         for expr, res in test_data:

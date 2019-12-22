@@ -239,6 +239,21 @@ class ProofTest(unittest.TestCase):
             ]
         )
 
+    def testIntegral2(self):
+        ctxt = Context('realintegral')
+        f = parser.parse_term(ctxt, "%x::real. (1/3) * x ^ (-(2::real))")
+        g = parser.parse_term(ctxt, "%x::real. 3 * x + 1")
+        self.run_test(
+            "real_integral (real_closed_interval 0 1) (%x. (3 * x + 1) ^ (-(2::real)))",
+            "(1::real) / 4",
+            [
+                proof.substitution(f, g),
+                proof.linearity(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
     def testIntegral3(self):
         ctxt = Context('realintegral')
         f = parser.parse_term(ctxt, "%x::real. (1/6) * exp x")

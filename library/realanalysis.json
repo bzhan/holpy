@@ -5399,6 +5399,36 @@
             }
         },
         {
+            "name": "real_continuou_on_real_pow",
+            "prop": "0 ≤ p ⟶ real_continuous_on f s ⟶ real_continuous_on (λx. f x ^ p) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "p": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_real_pow_pos",
+            "prop": "0 < a ⟶ real_continuous_on (λx. x ^ p) (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real"
+            }
+        },
+        {
+            "name": "real_continuous_on_real_pow_neg",
+            "prop": "b < 0 ⟶ real_continuous_on (λx. x ^ p) (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real"
+            }
+        },
+        {
             "name": "real_continuous_on_abs",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. abs (f x)) s",
             "ty": "thm",

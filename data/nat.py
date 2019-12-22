@@ -250,24 +250,25 @@ class rewr_of_nat_conv(Conv):
         else:
             return pt.on_rhs(thy, rewr_conv("nat_of_nat_def", sym=self.sym))
 
+def nat_eval(t):
+    if is_binary_nat(t):
+        return from_binary_nat(t)
+    elif t.is_comb():
+        if t.head == Suc:
+            return nat_eval(t.arg) + 1
+        elif t.head == plus:
+            return nat_eval(t.arg1) + nat_eval(t.arg)
+        elif t.head == times:
+            return nat_eval(t.arg1) * nat_eval(t.arg)
+        else:
+            raise ConvException('nat_eval')
+    else:
+        raise ConvException('nat_eval')
+
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
     def eval(self, thy, t):
-        def val(t):
-            """Evaluate the given term."""
-            if is_binary_nat(t):
-                return from_binary_nat(t)
-            else:
-                if t.head == Suc:
-                    return val(t.arg) + 1
-                elif t.head == plus:
-                    return val(t.arg1) + val(t.arg)
-                elif t.head == times:
-                    return val(t.arg1) * val(t.arg)
-                else:
-                    raise ConvException("nat_conv")
-
-        return Thm.mk_equals(t, to_binary_nat(val(t)))
+        return Thm.mk_equals(t, to_binary_nat(nat_eval(t)))
 
     def get_proof_term(self, thy, t):
         pt = refl(t)

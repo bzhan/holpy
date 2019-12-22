@@ -11377,6 +11377,49 @@
             }
         },
         {
+            "name": "real_integral_real_pow_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ ¬(p = -1) ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. x ^ p) = ",
+                "      evalat (λx. x ^ (p + 1) / (p + 1)) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "p": "real"
+            }
+        },
+        {
+            "name": "real_integral_inverse_pos_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ 0 < a ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. x ^ -(1::real)) = ",
+                "      evalat (λx. log x) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "real_integral_inverse_neg_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ b < 0 ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. x ^ -(1::real)) = ",
+                "      evalat (λx. log (-x)) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
             "name": "real_integral_sin_evalat",
             "prop": [
                 "a ≤ b ",
