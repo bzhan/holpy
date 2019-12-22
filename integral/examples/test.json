@@ -216,6 +216,33 @@
         },
         {
             "_problem_latex": "\\int_{\\pi/3}^{\\pi} \\sin{(2 x + \\frac{\\pi}{3})} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{\\pi/3}^{\\pi} \\sin{(2 x + \\frac{\\pi}{3})} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[pi / 3,pi]. sin(2 * x + pi / 3)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 x + \\frac{\\pi}{3}\\).",
+                    "latex": "\\int_{\\pi}^{7/3 \\pi} \\frac{\\sin{(u)}}{2} \\,\\mathrm{du}",
+                    "text": "INT u:[pi,7/3 * pi]. sin(u) / 2"
+                },
+                {
+                    "latex": "\\frac{1}{2} * \\int_{\\pi}^{7/3 \\pi} \\sin{(u)} \\,\\mathrm{du}",
+                    "reason": "Linearity",
+                    "text": "1/2 * (INT u:[pi,7/3 * pi]. sin(u))"
+                },
+                {
+                    "latex": "\\frac{1}{2} * \\left. -\\cos{(u)} \\right\\vert_{u=\\pi}^{7/3 \\pi}",
+                    "reason": "Common integrals",
+                    "text": "1/2 * ([-cos(u)]_u=pi,7/3 * pi)"
+                },
+                {
+                    "latex": "-\\frac{3}{4}",
+                    "reason": "Simplification",
+                    "text": "(-3/4)"
+                }
+            ],
             "name": "Exercise 8",
             "problem": "INT x:[pi/3, pi]. sin(2*x+pi/3)"
         },
@@ -319,34 +346,24 @@
             "_problem_latex": "\\int_{0}^{\\pi/2} \\sin{(x)} \\cos^{3}x \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/2} \\sin{x} * \\cos^{3}x \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/2} \\sin{(x)} \\cos^{3}x \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[0,pi / 2]. sin(x) * cos(x) ^ 3"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{x}\\)",
-                    "latex": "\\int_{1}^{0} \\frac{\\sin{x} * u ^ 3}{-1 \\sin{x}} \\,\\mathrm{du}",
-                    "params": {
-                        "expr": "cos(x)",
-                        "var_name": "u"
-                    },
-                    "reason": "Substitution",
-                    "text": "INT u:[1,0]. sin(x) * u ^ 3 / (-1 * sin(x))"
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\).",
+                    "latex": "\\int_{0}^{1} --u ^ 3 \\,\\mathrm{du}",
+                    "text": "INT u:[0,1]. --(u ^ 3)"
                 },
                 {
-                    "latex": "\\int_{1}^{0} -1 u ^ 3 \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "INT u:[1,0]. -1 * u ^ 3"
-                },
-                {
-                    "latex": "-1 * (\\int_{1}^{0} u ^ 3 \\,\\mathrm{du})",
+                    "latex": "\\int_{0}^{1} u ^ {(3)} \\,\\mathrm{du}",
                     "reason": "Linearity",
-                    "text": "-1 * (INT u:[1,0]. u ^ 3)"
+                    "text": "INT u:[0,1]. u ^ (3)"
                 },
                 {
-                    "latex": "-1 * (\\left. \\frac{u ^ 4}{4} \\right\\vert_{u=1}^{0})",
+                    "latex": "\\left. \\frac{1}{4} * u ^ 4 \\right\\vert_{u=0}^{1}",
                     "reason": "Common integrals",
-                    "text": "-1 * ([u ^ 4 / 4]_u=1,0)"
+                    "text": "[u ^ 4 / 4]_u=0,1"
                 },
                 {
                     "latex": "\\frac{1}{4}",
@@ -826,7 +843,7 @@
             "problem": "INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} t e^{-\\frac{t ^ 2}{2}} \\,\\mathrm{dt}",
+            "_problem_latex": "\\int_{0}^{1} t e^{-\\frac{1}{2} * t ^ 2} \\,\\mathrm{dt}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{1} t e^{(-\\frac{t ^ 2}{2})} \\,\\mathrm{dt}",
