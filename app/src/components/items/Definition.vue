@@ -2,7 +2,7 @@
   <div>
     <span class="keyword">definition</span>&nbsp;
     <span class="item-text">{{item.name}}</span> ::
-    <Expression v-if="!('err_type' in item)" v-bind:line="item.type_hl"/>
+    <Expression v-if="!('err_type' in item)" v-bind:line="item.type"/>
     <span v-else class="item-text">{{item.type}}</span>
     &nbsp;
     <span class="keyword">where</span>

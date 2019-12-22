@@ -11420,6 +11420,22 @@
             }
         },
         {
+            "name": "real_integral_inverse_pow_evalat_pos",
+            "prop": [
+                "a ≤ b ",
+                "⟶ 0 < a ",
+                "   ⟶ 1 < n ",
+                "      ⟶ real_integral (real_closed_interval a b) (λx. 1 / x ^ n) = ",
+                "         evalat (λx. 1 / (-(of_nat n - 1) * x ^ (n - 1))) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "n": "nat"
+            }
+        },
+        {
             "name": "real_integral_sin_evalat",
             "prop": [
                 "a ≤ b ",
