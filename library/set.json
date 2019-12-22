@@ -9878,6 +9878,141 @@
             "prop": "has_sup s b ⟷ (∀c. (∀x. x ∈ s ⟶ x ≤ c) ⟷ b ≤ c)",
             "ty": "def",
             "type": "real set ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_inf_lbound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_inf s b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_inf s b ⊢ has_inf s b"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "has_inf_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_inf s b ⊢ ∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ b"
+                },
+                {
+                    "args": "b",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_inf s b ⊢ (∀x. x ∈ s ⟶ b ≤ x) ⟷ b ≤ b"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ b ≤ x",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "has_inf s b ⊢ ∀x. x ∈ s ⟶ b ≤ x"
+                },
+                {
+                    "args": "x",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "has_inf s b, x ∈ s ⊢ b ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_inf s b ⟶ x ∈ s ⟶ b ≤ x"
+                }
+            ],
+            "prop": "has_inf s b ⟶ x ∈ s ⟶ b ≤ x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_inf_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "forall_elim",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal": "(∀x. x ∈ s ⟶ b ≤ x)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_inf_approach",
+            "prop": "has_inf s l ⟶ l < c ⟶ (∃x. x ∈ s ∧ x < c)",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "l": "real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Basic results about sets.",
