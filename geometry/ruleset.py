@@ -29,7 +29,7 @@ ruleset_raw = {
     # original version.
     "D43": "cong(A, B, P, Q) :- eqangle(C, A, C, B, R, P, R, Q), cyclic(A, B, C, P, Q, R)",
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
-    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
+    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C)",
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
     "D53": "perp(A, B, B, C) :- circle(O, A, B, C), coll(O, A, C)",
     "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
@@ -38,6 +38,7 @@ ruleset_raw = {
     "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
     # TODO: Handle eqratio.
     # "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
+    "D66": "coll(A, B, C) :- para(A, B, A, C)",
     "D68": "cong(A, B, A, C) :- midp(A, B, C)",
     # "D70": "eqratio(M, A, A, B, N, C, C, D) :- midp(M, A, B), midp(N, C, D)",
 

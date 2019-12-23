@@ -337,7 +337,7 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
              [], [], "cong(B, F, C, F)"),
 
-            # Following 3 tests: testing if simtri works.
+            # # Following 3 tests: testing if simtri works.
             (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
              "simtri(A, D, E, E, F, C)"),
 
@@ -347,10 +347,15 @@ class ExprTest(unittest.TestCase):
                        "perp(A, B, B, C)", "perp(D, C, C, B)"],
              [], [], "simtri(A, B, F, E, A, D)"),
 
-            # Not working
+            # Not working. Cannot obtain simtri when using exactly the same angle as a condition.
             # (ruleset, ["circle(O, A, E, D, F)", "coll(A, E, B)", "coll(A, F, C)", "coll(B, D, C)", "coll(O, A, D)",
-            #            "eqangle(B, A, A, D, B, A, A, D)"], [], [],
-            #  "simtri(A, E, F, A, C, B)")
+            #            "eqangle(B, A, A, D, B, A, A, D)"], [], [], "simtri(A, E, F, A, C, B)"),
+
+            # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
+            # in the hypothesis :midp(F, A, D) and coll(F, A, D).
+            (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
+                       "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
+                       ], [], [], "midp(E, B, C)"),
         ]
         # pr = cProfile.Profile()
         # pr.enable()

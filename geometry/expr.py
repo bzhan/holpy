@@ -3,7 +3,7 @@
 import itertools, copy
 from typing import Tuple, Sequence, Optional, List, Dict
 
-POINT, LINE, PonL, SEG, TRI, CIRC, CYCL = range(7)
+POINT, LINE, PonL, SEG, TRI, CIRC, CYCL, MIDP = range(8)
 
 
 class Fact:
@@ -89,7 +89,7 @@ class Fact:
                 return PonL
             else:
                 return LINE
-        elif pred_name in ("coll", "midp"):
+        elif pred_name == "coll":
             return POINT
         elif pred_name in ("eqratio", "cong"):
             return SEG
@@ -99,6 +99,8 @@ class Fact:
             return CIRC
         elif pred_name in ("simtri", "contri"):
             return TRI
+        elif pred_name == "midp":
+            return MIDP
         else:
             raise NotImplementedError
 
@@ -346,6 +348,10 @@ class Prover:
                 else:  # remain previous insts and sources
                     new_insts.append((inst, f))
 
+        def can_assign(pat, arg):
+            # For case MIDP and case SEG.
+            return pat not in t_inst or t_inst[pat] == arg
+
         if pat.pred_name != f.pred_name:
             return []
 
@@ -368,6 +374,30 @@ class Prover:
                         t_inst[p_arg] = t_arg
                 if not flag:
                     new_insts.append((t_inst, f.get_subfact(c_nums)))
+
+        elif arg_ty == MIDP:
+            # match point in the middle (exchange is no possible)
+            t_inst = copy.copy(inst)
+            flag = False
+            if pat.args[0] in t_inst:
+                if f.args[0] != t_inst[pat.args[0]]:
+                    flag = True
+            else:
+                t_inst[pat.args[0]] = f.args[0]
+            # match other points, which are two sides of a segment (exchange available)
+            if not flag:
+                # case: not exchange
+                if can_assign(pat.args[1], f.args[1]) and can_assign(pat.args[2], f.args[2]):
+                    t = copy.copy(t_inst)
+                    t[pat.args[1]] = f.args[1]
+                    t[pat.args[2]] = f.args[2]
+                    new_insts.append((t, f.get_subfact([0])))
+                # case: exchange
+                if can_assign(pat.args[1], f.args[2]) and can_assign(pat.args[2], f.args[1]):
+                    t = copy.copy(t_inst)
+                    t[pat.args[1]] = f.args[2]
+                    t[pat.args[2]] = f.args[1]
+                    new_insts.append((t, f.get_subfact([0])))
 
         elif arg_ty == LINE:
             # para, perp, or eqangle case, matching lines
@@ -396,13 +426,9 @@ class Prover:
                 if not flag:
                         new_insts.append((t_inst, f.get_subfact(c_nums)))
 
-
-
         elif arg_ty == SEG:
             # eqratio or cong case
             # Possible to assign t_inst[pat] to arg
-            def can_assign(pat, arg):
-                return pat not in t_inst or t_inst[pat] == arg
 
             new_insts = []
             groups = make_pairs(f.args)
@@ -568,7 +594,7 @@ class Prover:
             else:
                 concl_args = [inst[i] for i in rule.concl.args]
             fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
-            # print(fact, fact.cond)
+            # print(fact)
 
             # Check if fact is trivial
             if self.check_trivial(fact):
@@ -644,7 +670,7 @@ class Prover:
         prev_len = len(self.hyps)
         self.search_step()
         steps = 0
-        while prev_len != len(self.hyps) and steps < 10:
+        while prev_len != len(self.hyps) and steps < 5:
             steps += 1
             print("Step", steps)
             # print(list(hyp for hyp in hyps if not hyp.shadowed))
@@ -652,6 +678,8 @@ class Prover:
             self.search_step(only_updated=True)
             for fact in self.hyps:
                 if self.check_imply(fact, self.concl):
+                    # print("Last updated lines:", self.lines)
+                    # print("Last updated hyps: ", self.hyps)
                     return fact
         print("Last updated lines:", self.lines)
         print("Last updated hyps: ", self.hyps)
@@ -778,8 +806,8 @@ class Prover:
                 return f
             else:
                 return None
-
-        elif fact.pred_name in ('simtri', 'contri'):
+            
+        elif fact.pred_name in ('simtri', 'contri', 'midp'):
             return None
 
         else:
@@ -857,6 +885,9 @@ class Prover:
             f_tris = make_pairs(fact.args, pair_len=3)
             g_tris = make_pairs(goal.args, pair_len=3)
             return all(any(self.equal_triangle(f, g) for f in f_tris) for g in g_tris)
+
+        elif fact.pred_name == "midp":
+            return fact.args[0] == goal.args[0] and set(fact.args[1:]) == set(goal.args[1:])
 
         else:
             print(fact.pred_name)
