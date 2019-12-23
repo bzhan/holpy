@@ -166,8 +166,8 @@ class rewrite_goal(Tactic):
         C = goal.prop
 
         # Do not perform rewrite on forall-imply goals
-        assert not (goal.prop.is_implies() or goal.prop.is_all()), \
-            "rewrite: goal is in implies/forall form."
+        # assert not (goal.prop.is_implies() or goal.prop.is_all()), \
+        #     "rewrite: goal is in implies/forall form."
 
         # Check whether rewriting using the theorem has an effect
         assert has_rewrite(thy, th_name, C, sym=self.sym, conds=prevs), \
@@ -203,8 +203,8 @@ class rewrite_goal_with_prev(Tactic):
         assert len(prev_As) == 0 and prev_C.is_equals(), "rewrite_goal_with_prev"
 
         # Do not perform rewrite on forall-imply goals
-        assert not (goal.prop.is_implies() or goal.prop.is_all()), \
-               "rewrite_goal_with_prev"
+        # assert not (goal.prop.is_implies() or goal.prop.is_all()), \
+        #        "rewrite_goal_with_prev"
 
         for new_var in new_vars:
             pt = ProofTerm.forall_elim(new_var, pt)

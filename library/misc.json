@@ -4,6 +4,116 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_lt_between",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ a < b ⟶ (∃x. a < x ∧ x < b)"
+                },
+                {
+                    "args": "a < b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a < b ⊢ a < b"
+                },
+                {
+                    "args": "a < (a + b) / 2 ∧ (a + b) / 2 < b",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "a < b ⊢ a < (a + b) / 2 ∧ (a + b) / 2 < b"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx. a < x ∧ x < b, a: (a + b) / 2}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a < b ⊢ ∃a1. a < a1 ∧ a1 < b"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a < b ⟶ (∃x. a < x ∧ x < b)"
+                },
+                {
+                    "args": "(∃x. a < x ∧ x < b) ⟶ a < b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∃x. a < x ∧ x < b) ⟶ a < b"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ a < b ⟷ (∃x. a < x ∧ x < b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a < b ⟷ (∃x. a < x ∧ x < b)"
+                }
+            ],
+            "prop": "a < b ⟷ (∃x. a < x ∧ x < b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(a+b)/2"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "is_realinterval",
             "prop": "is_realinterval s ⟷ (∀a. ∀b. ∀c. a ∈ s ⟶ b ∈ s ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s)",
             "ty": "def",

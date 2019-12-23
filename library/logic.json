@@ -3382,6 +3382,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "right_or_exists_thm",
+            "prop": "P ∨ (∃x. Q x) ⟷ (∃x. P ∨ Q x)",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "Q": "'a ⇒ bool"
+            }
+        },
+        {
             "name": "drinker",
             "num_gaps": 0,
             "proof": [
