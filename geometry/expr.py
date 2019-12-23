@@ -3,7 +3,7 @@
 import itertools, copy
 from typing import Tuple, Sequence, Optional, List, Dict
 
-POINT, LINE, PonL, SEG, TRI, CIRC, CYCL = range(7)
+POINT, LINE, PonL, SEG, TRI, CIRC, CYCL, MIDP = range(8)
 
 
 class Fact:
@@ -89,7 +89,7 @@ class Fact:
                 return PonL
             else:
                 return LINE
-        elif pred_name in ("coll", "midp"):
+        elif pred_name == "coll":
             return POINT
         elif pred_name in ("eqratio", "cong"):
             return SEG
@@ -99,6 +99,8 @@ class Fact:
             return CIRC
         elif pred_name in ("simtri", "contri"):
             return TRI
+        elif pred_name == "midp":
+            return MIDP
         else:
             raise NotImplementedError
 
@@ -285,7 +287,38 @@ class Prover:
 
         """
 
-        def c_process(pat_args, f_args, c_args, flag):
+        def match_PonL(cs):
+            t_insts = [inst]
+            i = 0
+            while i < len(pat.args) // 2:
+                ts = []
+                for t_inst in t_insts:
+                    l = self.get_line(cs[i])
+                    pat_a, pat_b = pat.args[i * 2: i * 2 + 2]
+                    if pat_a in t_inst:
+                        if t_inst[pat_a] in l.args:
+                            a = [t_inst[pat_a]]
+                        else:
+                            a = []
+                    else:
+                        a = list(l.args)
+                    if pat_b in t_inst:
+                        if t_inst[pat_b] in l.args:
+                            b = [t_inst[pat_b]]
+                        else:
+                            b = []
+                    else:
+                        b = list(l.args)
+                    perms = [[x, y] for x in a for y in b if x != y]
+                    for a, b in perms:
+                        t = copy.copy(t_inst)  # t is one result
+                        t[pat_a], t[pat_b] = a, b
+                        ts.append(t)
+                i += 1
+                t_insts = ts
+            return t_insts
+
+        def match_c(pat_args, f_args, c_args, flag):
             """Identical part of the processing for circ and cycl cases.
             
             flag -- whether the matching has already failed.
@@ -315,6 +348,10 @@ class Prover:
                 else:  # remain previous insts and sources
                     new_insts.append((inst, f))
 
+        def can_assign(pat, arg):
+            # For case MIDP and case SEG.
+            return pat not in t_inst or t_inst[pat] == arg
+
         if pat.pred_name != f.pred_name:
             return []
 
@@ -337,6 +374,30 @@ class Prover:
                         t_inst[p_arg] = t_arg
                 if not flag:
                     new_insts.append((t_inst, f.get_subfact(c_nums)))
+
+        elif arg_ty == MIDP:
+            # match point in the middle (exchange is no possible)
+            t_inst = copy.copy(inst)
+            flag = False
+            if pat.args[0] in t_inst:
+                if f.args[0] != t_inst[pat.args[0]]:
+                    flag = True
+            else:
+                t_inst[pat.args[0]] = f.args[0]
+            # match other points, which are two sides of a segment (exchange available)
+            if not flag:
+                # case: not exchange
+                if can_assign(pat.args[1], f.args[1]) and can_assign(pat.args[2], f.args[2]):
+                    t = copy.copy(t_inst)
+                    t[pat.args[1]] = f.args[1]
+                    t[pat.args[2]] = f.args[2]
+                    new_insts.append((t, f.get_subfact([0])))
+                # case: exchange
+                if can_assign(pat.args[1], f.args[2]) and can_assign(pat.args[2], f.args[1]):
+                    t = copy.copy(t_inst)
+                    t[pat.args[1]] = f.args[2]
+                    t[pat.args[2]] = f.args[1]
+                    new_insts.append((t, f.get_subfact([0])))
 
         elif arg_ty == LINE:
             # para, perp, or eqangle case, matching lines
@@ -365,13 +426,9 @@ class Prover:
                 if not flag:
                         new_insts.append((t_inst, f.get_subfact(c_nums)))
 
-
-
         elif arg_ty == SEG:
             # eqratio or cong case
             # Possible to assign t_inst[pat] to arg
-            def can_assign(pat, arg):
-                return pat not in t_inst or t_inst[pat] == arg
 
             new_insts = []
             groups = make_pairs(f.args)
@@ -425,9 +482,7 @@ class Prover:
                                 if cs[i][indices[j]] != t_inst[pat.args[i * 3 + j]]:
                                     flag = True
                             else:
-                                # print(cs[i][indices[j]])
                                 t_inst[pat.args[i * 3 + j]] = cs[i][indices[j]]
-                    # print(t_inst)
                     if not flag:
                         new_insts.append((t_inst, f.get_subfact(c_nums)))
 
@@ -446,35 +501,9 @@ class Prover:
                     cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
                 else:
                     cs = [groups[num] for num in c_nums]
-                t_insts = [inst]
-                for i in range(len(pat.args) // 2):
-                    ts = []
-                    for t_inst in t_insts:
-                        l = self.get_line(cs[i])
-                        pat_a, pat_b = pat.args[i*2: i*2+2]
 
-                        if pat_a in t_inst:
-                            if t_inst[pat_a] in l.args:
-                                a = [t_inst[pat_a]]
-                            else:
-                                a = []
-                        else:
-                            a = list(l.args)
+                t_insts = match_PonL(cs)
 
-                        if pat_b in t_inst:
-                            if t_inst[pat_b] in l.args:
-                                b = [t_inst[pat_b]]
-                            else:
-                                b = []
-                        else:
-                            b = list(l.args)
-
-                        perms = [[x, y] for x in a for y in b if x != y]
-                        for a, b in perms:
-                            t = copy.copy(t_inst)
-                            t[pat_a], t[pat_b] = a, b
-                            ts.append(t)
-                    t_insts = ts
                 if t_insts:
                     subfact = f.get_subfact(c_nums)
                 for t_inst in t_insts:
@@ -483,7 +512,7 @@ class Prover:
         elif arg_ty == CYCL:
             circle = self.get_circle(list(f.args))
             flag = False
-            c_process(pat.args, f.args, circle.args, flag)
+            match_c(pat.args, f.args, circle.args, flag)
 
         elif arg_ty == CIRC:
             circle = self.get_circle(f.args[1:], f.args[0])
@@ -492,7 +521,7 @@ class Prover:
                 flag = True
             else:
                 inst[pat.args[0]] = f.args[0]
-            c_process(pat.args[1:], f.args[1:], circle.args, flag)
+            match_c(pat.args[1:], f.args[1:], circle.args, flag)
 
         # TODO: Support more types.
         else:
@@ -523,10 +552,20 @@ class Prover:
         rule = self.ruleset[rule_name]
         assert len(facts) == len(rule.assums)
 
+        # TODO: flip
+        # When trying to obtain contri or simtri from eqangles,
+        # There exists the scenario that we need to "flip" one triangle to make its shape as same as
+        # another triangle. But the full-angle of the triangle will be changed when "flipping".
+        # (The conventional angle will not be changed after "flipping")
+        # E.g.
+        # Original: eqangle(A, B, C, D, E, F, G, H)
+        # Flipped:  eqangle(C, D, A, B, E, F, G, H)
+
         # instantiation and list of subfacts used
         insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
         for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
             new_insts = []
+            # flip = fact.pred_name == 'eqangle' and rule.concl.pred_name in ('simtri', 'contri')
             for inst, subfacts in insts:
                 news = self.match_expr(assum, fact, inst)
                 for i, subfact in news:
@@ -534,7 +573,7 @@ class Prover:
             insts = new_insts
 
         # Rule D40 requires more points in conclusion than in assumption. Add points from lines as supplement.
-        if rule_name == "D40" and insts:
+        if rule_name in ("D40") and insts:
             prev_insts = copy.copy(insts)
             insts = []
             if any(i not in prev_insts[0][0].keys() for i in rule.concl.args):
@@ -555,7 +594,7 @@ class Prover:
             else:
                 concl_args = [inst[i] for i in rule.concl.args]
             fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
-            # print(fact, fact.cond)
+            # print(fact)
 
             # Check if fact is trivial
             if self.check_trivial(fact):
@@ -631,7 +670,7 @@ class Prover:
         prev_len = len(self.hyps)
         self.search_step()
         steps = 0
-        while prev_len != len(self.hyps) and steps < 10:
+        while prev_len != len(self.hyps) and steps < 5:
             steps += 1
             print("Step", steps)
             # print(list(hyp for hyp in hyps if not hyp.shadowed))
@@ -639,7 +678,10 @@ class Prover:
             self.search_step(only_updated=True)
             for fact in self.hyps:
                 if self.check_imply(fact, self.concl):
+                    # print("Last updated lines:", self.lines)
+                    # print("Last updated hyps: ", self.hyps)
                     return fact
+        print("Last updated lines:", self.lines)
         print("Last updated hyps: ", self.hyps)
         assert False, "Fixpoint reached without proving goal."
         return None
@@ -764,8 +806,8 @@ class Prover:
                 return f
             else:
                 return None
-
-        elif fact.pred_name == 'contri':
+            
+        elif fact.pred_name in ('simtri', 'contri', 'midp'):
             return None
 
         else:
@@ -838,13 +880,17 @@ class Prover:
             g_angles = make_pairs(goal.args, pair_len=4)
             return all(any(self.equal_angle(f, g) for f in f_angles) for g in g_angles)
 
-        elif fact.pred_name == "contri":
+        elif fact.pred_name in ("simtri", "contri"):
             # Check whether both triangles in goal are in fact.
             f_tris = make_pairs(fact.args, pair_len=3)
             g_tris = make_pairs(goal.args, pair_len=3)
             return all(any(self.equal_triangle(f, g) for f in f_tris) for g in g_tris)
 
+        elif fact.pred_name == "midp":
+            return fact.args[0] == goal.args[0] and set(fact.args[1:]) == set(goal.args[1:])
+
         else:
+            print(fact.pred_name)
             raise NotImplementedError
 
     def print_search(self, res) -> None:
