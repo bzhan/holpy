@@ -10001,6 +10001,360 @@
         },
         {
             "attributes": [
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_sup_ubound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_sup s b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_sup s b ⊢ has_sup s b"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "has_sup_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_sup s b ⊢ ∀c. (∀x. x ∈ s ⟶ x ≤ c) ⟷ b ≤ c"
+                },
+                {
+                    "args": "b",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_sup s b ⊢ (∀x. x ∈ s ⟶ x ≤ b) ⟷ b ≤ b"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ x ≤ b",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "has_sup s b ⊢ ∀x. x ∈ s ⟶ x ≤ b"
+                },
+                {
+                    "args": "x",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "has_sup s b, x ∈ s ⊢ x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_sup s b ⟶ x ∈ s ⟶ x ≤ b"
+                }
+            ],
+            "prop": "has_sup s b ⟶ x ∈ s ⟶ x ≤ b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_sup_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "forall_elim",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal": "(∀x. x ∈ s ⟶ x ≤ b)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_inf_inf",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l) ⟶ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                },
+                {
+                    "args": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ s = ∅ ⟶ false"
+                },
+                {
+                    "args": "s = ∅",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s = ∅ ⊢ s = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "s = ∅, ∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ∀c. (∀x. x ∈ ∅ ⟶ c ≤ x) ⟷ c ≤ l"
+                },
+                {
+                    "args": "false",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1"
+                    ],
+                    "rule": "z3",
+                    "th": "s = ∅, ∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ s = ∅ ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ l ≤ x",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ∀x. x ∈ s ⟶ l ≤ x"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ s ⟶ b ≤ x, a: l}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ∃a1. ∀x. x ∈ s ⟶ a1 ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ inf s = l"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.4",
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.2",
+                        "0.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                },
+                {
+                    "args": "",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l) ⟶ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l ⟶ (∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l) ⟷ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                },
+                {
+                    "args": "has_inf_def, has_inf s l ⟷ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_inf s l ⟷ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_inf s l ⟷ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l"
+                }
+            ],
+            "prop": "has_inf s l ⟷ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_inf_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0",
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "l"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward",
                 "hint_backward1",
                 "hint_forward"
@@ -10010,6 +10364,111 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
+                "l": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_inf",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_inf s l ⟶ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))"
+                },
+                {
+                    "args": "has_inf s l",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_inf s l ⊢ has_inf s l"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_inf s l ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_inf s l ⊢ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_inf s l ⊢ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_inf s l ⟶ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c)) ⟶ has_inf s l"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_inf s l ⟷ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_inf s l ⟷ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))"
+                }
+            ],
+            "prop": "has_inf s l ⟷ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ s ∧ x < c))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
                 "l": "real",
                 "s": "real set"
             }
