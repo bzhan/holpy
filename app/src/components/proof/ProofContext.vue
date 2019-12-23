@@ -8,6 +8,12 @@
     </div>
     <div style="margin-top:10px;margin-bottom:5px;font-size:18px">History</div>
     <div>
+      <Expression style="margin-left:5px"
+          v-bind:line="[{color: 0, text: 'Initial'}]"
+          v-on:click.native="handleSelect(0)"
+          v-bind:class="{
+            'step-entry': true,
+            'step-selected': selected_step === 0}"/>
       <div v-for="(line, index) in steps" v-bind:key="index"
            style="white-space:nowrap"
            v-on:mouseenter="handleMouseEnter(index)"
@@ -15,13 +21,12 @@
         <v-icon style="color:red" title="delete" name="times"
             v-on:click.native="handleDelete(index)"
             v-show="line.hover === true"/>
-        <Expression style="margin-left:5px" v-bind:line="line.steps_output" 
-            v-on:click.native="handleSelect(index)"
+        <Expression style="margin-left:5px" v-bind:line="line.step_output" 
+            v-on:click.native="handleSelect(index+1)"
             v-bind:class="{
               'step-entry': true,
-              'step-selected': selected_step === index,
-              'step-unread': !line.is_read,
-              'step-error': line.is_read && line.error !== undefined}"/>
+              'step-selected': selected_step === index+1,
+              'step-error': line.error !== undefined}"/>
       </div>
     </div>
   </div>

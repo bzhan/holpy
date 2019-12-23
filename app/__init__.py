@@ -14,8 +14,8 @@ from kernel import extension, theory
 from syntax import parser, printer, settings, pprint
 from server import server, method
 from logic import basic
+from logic.context import Context
 from logic.basic import user_dir, user_file
-from logic import induct
 from imperative import parser2
 from imperative import imp
 from prover import z3wrapper
@@ -202,31 +202,6 @@ def refresh_files():
     return jsonify({})
 
 
-@app.route('/api/init-empty-proof', methods=['POST'])
-def init_empty_proof():
-    """Initialize an empty proof for the given theorem.
-
-    Input:
-    * username: username.
-    * theory_name: name of the theory.
-    * thm_name: name of the theorem.
-    * proof: initial data for the proof.
-
-    Returns:
-    * initial proof of the theorem.
-    
-    """
-    data = json.loads(request.get_data().decode("utf-8"))
-    username = data['username']
-    if 'thm_name' in data:
-        limit = ('thm', data['thm_name'])
-    else:
-        limit = None
-    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    cell = server.ProofState.parse_init_state(thy, data['proof'])
-    return jsonify(cell.json_data())
-
-
 @app.route('/api/init-saved-proof', methods=['POST'])
 def init_saved_proof():
     """Load a saved proof.
@@ -244,36 +219,42 @@ def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
     start_time = time.perf_counter()
-    try:
-        if 'thm_name' in data:
-            limit = ('thm', data['thm_name'])
-        else:
-            limit = None
 
-        if data['profile']:
-            pr = cProfile.Profile()
-            pr.enable()
+    if 'thm_name' in data:
+        limit = ('thm', data['thm_name'])
+    else:
+        limit = None
 
-        thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-        print("Load: %f" % (time.perf_counter() - start_time))
-        start_time = time.perf_counter()
-        cell = server.ProofState.parse_proof(thy, data['proof'])
-        print("Parse: %f" % (time.perf_counter() - start_time))
+    if data['profile']:
+        pr = cProfile.Profile()
+        pr.enable()
 
-        if data['profile']:
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats()
+    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
+    print("Load: %f" % (time.perf_counter() - start_time))
+    start_time = time.perf_counter()
 
-        return jsonify(cell.json_data())
-    except Exception as e:
-        error = {
-            "err_type": e.__class__.__name__,
-            "err_str": str(e),
-            "trace": traceback2.format_exc()
-        }
-    return jsonify(error)
+    # Obtain initial state
+    ctxt = Context(thy, vars=data['vars'])
+    state = server.parse_init_state(ctxt, data['prop'])
+
+    # Traverse data['steps'] upto index, save state, then continue traversal.
+    index = data['index']
+    history = state.parse_steps(data['steps'][:index])
+    json_state = state.json_data()
+    history.extend(state.parse_steps(data['steps'][index:]))
+
+    print("Parse: %f" % (time.perf_counter() - start_time))
+
+    if data['profile']:
+        p = Stats(pr)
+        p.strip_dirs()
+        p.sort_stats('cumtime')
+        p.print_stats()
+
+    return jsonify({
+        'state': json_state,
+        'history': history
+    })
 
 
 @app.route('/api/apply-method', methods=['POST'])
@@ -298,14 +279,25 @@ def apply_method():
         limit = ('thm', data['thm_name'])
     else:
         limit = None
+
+    start_time = time.perf_counter()
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    cell = server.ProofState.parse_proof(thy, data['proof'])
+    ctxt = Context(thy, vars=data['vars'])
+    state = server.parse_init_state(ctxt, data['prop'])
+    index = data['index']
+    history = state.parse_steps(data['steps'][:index])
+    print("Parse:", time.perf_counter() - start_time)
+    start_time = time.perf_counter()
+
     try:
-        step_output = method.output_step(cell, data['step'], unicode=True, highlight=True)
-        method.apply_method(cell, data['step'])
-        cell_data = cell.json_data()
-        cell_data['steps_output'] = step_output
-        return jsonify(cell_data)
+        step_output = method.output_step(state, data['step'], unicode=True, highlight=True)
+        method.apply_method(state, data['step'])
+        state.check_proof(compute_only=True)
+        history.append({
+            'step_output': step_output,
+            'goal_id': data['step']['goal_id'],
+            'fact_ids': data['step']['fact_ids']
+        })
     except Exception as e:
         if isinstance(e, theory.ParameterQueryException):
             return jsonify({
@@ -318,66 +310,10 @@ def apply_method():
                 "trace": traceback2.format_exc()
             })
 
-@app.route('/api/apply-steps', methods=['POST'])
-def apply_steps():
-    """Apply multiple steps in batch mode.
-
-    Unlike apply_method, failure in one of the steps does not lead
-    to exit of the function. Instead, error information is returned
-    along with the history.
-
-    Input:
-    * username: username.
-    * theory_name: name of the theory.
-    * thm_name: name of the theorem to be proved.
-    * proof: starting proof.
-    * steps: steps to be applied.
-
-    Returns:
-    * history: history of the proof when applying steps.
-
-    """
-    data = json.loads(request.get_data().decode("utf-8"))
-    username = data['username']
-    if 'thm_name' in data:
-        limit = ('thm', data['thm_name'])
-    else:
-        limit = None
-    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    state = server.ProofState.parse_proof(thy, data['proof'])
-
-    history = []
-    for step in data['steps']:
-        history.append({
-            'steps_output': pprint.N(step['method_name']),
-            'proof': state.export_proof(state.prf),
-            'num_gaps': len(state.rpt.gaps)
-        })
-        try:
-            step_output = method.output_step(state, step, unicode=True, highlight=True)
-            history[-1]['steps_output'] = step_output
-            method.apply_method(state, step)
-            state.check_proof(compute_only=True)
-        except Exception as e:
-            history[-1]['error'] = {
-                'err_type': e.__class__.__name__,
-                'err_str': str(e),
-                'trace': traceback2.format_exc()
-            }
-    history.append({
-        'proof': state.export_proof(state.prf),
-        'num_gaps': len(state.rpt.gaps)
-    })
-    try:    
-        state.check_proof()
-    except Exception as e:
-        history[-1]['error'] = {
-            'err_type': e.__class__.__name__,
-            'err_str': str(e),
-            'trace': traceback2.format_exc()
-        }
-    
+    json_state = state.json_data()
+    history.extend(state.parse_steps(data['steps'][index:]))
     return jsonify({
+        'state': json_state,
         'history': history
     })
 
@@ -476,19 +412,24 @@ def search_method():
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     print("Load:", time.perf_counter() - start_time)
     start_time = time.perf_counter()
-    cell = server.ProofState.parse_proof(thy, data['proof'])
+
+    ctxt = Context(thy, vars=data['vars'])
+    state = server.parse_init_state(ctxt, data['prop'])
+    index = data['index']
+    state.parse_steps(data['steps'][:index])
     print("Parse:", time.perf_counter() - start_time)
     start_time = time.perf_counter()
     fact_ids = data['step']['fact_ids']
     goal_id = data['step']['goal_id']
-    search_res = cell.search_method(goal_id, fact_ids)
+
+    search_res = state.search_method(goal_id, fact_ids)
     for res in search_res:
         if '_goal' in res:
             res['_goal'] = [printer.print_term(thy, t, unicode=True) for t in res['_goal']]
         if '_fact' in res:
             res['_fact'] = [printer.print_term(thy, t, unicode=True) for t in res['_fact']]
 
-    ctxt = cell.get_ctxt(goal_id)
+    ctxt = state.get_ctxt(goal_id)
     print_ctxt = dict((k, printer.print_type(thy, v, unicode=True, highlight=True))
                       for k, v in ctxt.vars.items())
     print("Response:", time.perf_counter() - start_time)
@@ -683,6 +624,37 @@ def integral_common_integral():
         'reason': "Common integrals"
     })
 
+@app.route("/api/integral-elim-abs", methods=["POST"])
+def integral_elim_abs():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.OnSubterm(integral.rules.ElimAbs())
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Eliminate abs"
+    })
+
+@app.route("/api/integral-integrate-by-equation", methods=['POST'])
+def integrate_by_equation():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    lhs = integral.parser.parse_expr(data['left'])
+    rule = integral.rules.IntegrateByEquation(lhs)
+    result = rule.eval(problem)
+    return jsonify({
+        "text": str(result),
+        "latex": integral.latex.convert_expr(result),
+        "params": {
+            "lhs": data['left'],
+            "rhs": data['problem']
+        },
+        "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
+            integral.latex.convert_expr(lhs), integral.latex.convert_expr(problem)
+        )
+    })
+
 @app.route("/api/integral-separate-integrals", methods=['POST'])
 def integral_separate_integrals():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -729,14 +701,10 @@ def integral_trig_transformation():
     del integral.expr.trig_identity[:]
     problem = integral.parser.parse_expr(data['problem'])
     e = integral.parser.parse_expr(data['exp'])
-    print("e.normalize:", e) 
-    print("problem.body: ", problem.body.normalize())
     if e.normalize() == problem.body.normalize():
-        print("wow")
         e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
         possible_new_problem = rule.eval(e)
         #need to do more
-        print("integral.expr.trig_identity[0]",possible_new_problem)
         possible_form = list(integral.expr.trig_transform(integral.expr.trig_identity[0]))
         n = []
         for p in range(len(possible_new_problem)):
@@ -800,42 +768,31 @@ def integral_integrate_by_parts():
 @app.route("/api/integral-equation-substitution", methods=['POST'])
 def integral_equation_substitution():
     data = json.loads(request.get_data().decode('utf-8'))
-    old_expr = integral.parser.parse_expr(data['old_expr']).body
+    old_expr = integral.parser.parse_expr(data['problem']).body
     new_expr = integral.parser.parse_expr(data['new_expr'])
     rule = integral.rules.Equation(old_expr, new_expr)
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
-    if new_problem != problem:
+    if new_problem != problem and new_problem != old_expr:
         return jsonify({
             'text': str(new_problem),
             'latex': integral.latex.convert_expr(new_problem),
-            'reason': "Integrate by parts",
-            'params': {
-                'old_expr': data['old_expr'],
-                'new_expr': data['new_expr'],
-            },
-            '_latex_reason': "Equation substitution successful, \\( %s\\) = \\(%s\\)" % (
+            '_latex_reason': "Equation substitution successful, \\( %s\\) == \\(%s\\)" % (
                 integral.latex.convert_expr(old_expr), integral.latex.convert_expr(new_expr)
-            )
+            ),
+            'flag': "success"
         })
     else:
         return jsonify({
-            'text': str(new_problem),
-            'latex': integral.latex.convert_expr(new_problem),
-            'reason': "Integrate by parts",
-            'params': {
-                'old_expr': data['old_expr'],
-                'new_expr': data['new_expr'],
-            },
-            '_latex_reason': "Equation substitution failed, \\( %s\\) != \\(%s\\)" % (
-                integral.latex.convert_expr(old_expr), integral.latex.convert_expr(new_expr)
-            )
+            'flag': "fail",
+            "_latex_reason": "\\(%s != %s\\)" % 
+            (integral.latex.convert_expr(old_expr), integral.latex.convert_expr(new_expr))
         })
 
 @app.route("/api/integral-polynomial-division", methods=['POST'])
 def integral_polynomial_division():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.PolynomialDivision()
+    rule = integral.rules.OnSubterm(integral.rules.PolynomialDivision())
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
     return jsonify({

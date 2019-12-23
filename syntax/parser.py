@@ -11,7 +11,6 @@ from kernel import term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from kernel import extension
-from logic import induct
 from syntax import infertype
 
 

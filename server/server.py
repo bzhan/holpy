@@ -12,6 +12,7 @@ from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from syntax import parser, printer, pprint
+from syntax import settings
 from logic.context import Context
 from server import tactic
 from server import method
@@ -22,26 +23,6 @@ class TacticException(Exception):
     pass
 
 # Helper functions
-
-def incr_proof_item(item, start, n):
-    """Increment all ids in the given proof item. Recursively increment
-    ids in subproofs.
-    
-    """
-    item.id = item.id.incr_id_after(start, n)
-    item.prevs = [id.incr_id_after(start, n) for id in item.prevs]
-    if item.subproof:
-        for subitem in item.subproof.items:
-            incr_proof_item(subitem, start, n)
-
-def decr_proof_item(item, id_remove):
-    """Decrement all ids in the given proof item."""
-    item.id = item.id.decr_id(id_remove)
-    item.prevs = [id.decr_id(id_remove) for id in item.prevs]
-    if item.subproof:
-        for subitem in item.subproof.items:
-            decr_proof_item(subitem, id_remove)
-
 
 class ProofState():
     """Represents proof state on the server side."""
@@ -76,117 +57,19 @@ class ProofState():
         lines = "\n".join('var ' + v.name + ' :: ' + str(v.T) for v in vars)
         return lines + "\n" + str(self.prf)
 
-    @staticmethod
-    def init_state(thy, vars, assums, concl):
-        """Construct initial partial proof for the given assumptions and
-        conclusion.
-
-        assums - assumptions A1, ... An.
-        concl - conclusion C.
-        
-        Constructs:
-
-        0: assume A1
-        ...
-        n-1: assume An
-        n: C by sorry
-        n+1: A1 --> ... --> An --> C by intros from 0, 1, ..., n.
-
-        """
-        typecheck.checkinstance('init_state', vars, [Term], assums, [Term], concl, Term)
-        state = ProofState(thy)
-
-        state.vars = vars
-        state.prf = Proof(*assums)
-        n = len(assums)
-        state.prf.add_item(n, "sorry", th=Thm(assums, concl))
-        state.prf.add_item(n + 1, "intros", prevs=range(n+1))
-        state.check_proof(compute_only=True)
-        return state
-
-    @staticmethod
-    def parse_init_state(thy, data):
-        """Given data for a theorem statement, construct the initial partial proof.
-        
-        data['vars']: list of variables.
-        data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
-
-        """
-        ctxt = Context(thy, vars=data['vars'])
-        prop = parser.parse_term(ctxt, data['prop'])
-        assums, concl = prop.strip_implies()
-
-        return ProofState.init_state(thy, ctxt.get_vars(), assums, concl)
-
-    def export_proof(self, prf):
-        return sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
-                    for item in prf.items], [])
+    @settings.with_settings
+    def export_proof(self):
+        return sum([printer.export_proof_item(self.thy, item) for item in self.prf.items], [])
 
     def json_data(self):
         """Export proof in json format."""
         res = {
             "vars": {v.name: str(v.T) for v in self.vars},
-            "proof": self.export_proof(self.prf),
+            "proof": self.export_proof(unicode=True, highlight=True),
             "num_gaps": len(self.rpt.gaps),
             "method_sig": theory.get_method_sig(self.thy),
         }
-        if hasattr(self, 'steps'):
-            res['steps'] = self.steps
-        if hasattr(self, 'history'):
-            res['history'] = self.history
-
         return res
-
-    @staticmethod
-    def parse_proof(thy, data):
-        """Obtain proof from json format."""
-        if 'steps' in data:
-            state = ProofState.parse_init_state(thy, data)
-            state.steps = data['steps']
-            state.history = []
-            for step in data['steps']:
-                state.history.append({
-                    'steps_output': pprint.N(step['method_name']),
-                    'proof': state.export_proof(state.prf),
-                    'num_gaps': len(state.rpt.gaps)
-                })
-                try:
-                    steps_output = method.output_step(state, step, unicode=True, highlight=True)
-                    state.history[-1]['steps_output'] = steps_output
-                    method.apply_method(state, step)
-                    state.check_proof(compute_only=True)
-                except Exception as e:
-                    state.history[-1]['error'] = {
-                        'err_type': e.__class__.__name__,
-                        'err_str': str(e),
-                        'trace': traceback2.format_exc()
-                    }
-            state.history.append({
-                'proof': state.export_proof(state.prf),
-                'num_gaps': len(state.rpt.gaps)
-            })
-            try:    
-                state.check_proof()
-            except Exception as e:
-                state.history[-1]['error'] = {
-                    'err_type': e.__class__.__name__,
-                    'err_str': str(e),
-                    'trace': traceback2.format_exc()
-                }
-        else:
-            ctxt = Context(thy, vars=data['vars'])
-            state = ProofState(thy)
-            state.vars = ctxt.get_vars()
-            state.prf = Proof()
-            for line in data['proof']:
-                if line['rule'] == "variable":
-                    nm, str_T = line['args'].split(',', 1)
-                    ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
-                item = parser.parse_proof_rule(ctxt, line)
-                state.prf.insert_item(item)
-            state.check_proof()
-
-        return state
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""
@@ -201,7 +84,7 @@ class ProofState():
         new_items = [ProofItem(id.incr_id(i), "") for i in range(n)]
         prf.items = prf.items[:split] + new_items + prf.items[split:]
         for item in prf.items[split+n:]:
-            incr_proof_item(item, id, n)
+            item.incr_proof_item(id, n)
 
         self.check_proof(compute_only=True)
 
@@ -212,7 +95,7 @@ class ProofState():
         split = id.last()
         prf.items = prf.items[:split] + prf.items[split+1:]
         for item in prf.items[split:]:
-            decr_proof_item(item, id)
+            item.decr_proof_item(id)
 
         self.check_proof(compute_only=True)
 
@@ -323,3 +206,88 @@ class ProofState():
             if item.rule == 'sorry':
                 if logic.trivial_macro().can_eval(self.thy, item.th.prop):
                     self.set_line(item.id, 'trivial', args=item.th.prop)
+
+    def parse_steps(self, steps):
+        """Parse and apply a list of steps to self.
+
+        Return the output from the list of steps.
+
+        """
+        history = []
+        for step in steps:
+            try:
+                step_output = method.output_step(self, step, unicode=True, highlight=True)
+                method.apply_method(self, step)
+                self.check_proof(compute_only=True)
+                history.append({
+                    'step_output': step_output,
+                    'goal_id': step['goal_id'],
+                    'fact_ids': step.get('fact_ids', [])
+                })
+            except Exception as e:
+                history.append({
+                    'step_output': pprint.N(step['method_name'], highlight=True),
+                    'goal_id': step['goal_id'],
+                    'fact_ids': step.get('fact_ids', []),
+                    'error': {
+                        'err_type': e.__class__.__name__,
+                        'err_str': str(e),
+                        'trace': traceback2.format_exc()
+                    }
+                })
+
+        # Perform final check. Should not raise Exception here
+        self.check_proof()
+        return history
+
+
+def parse_init_state(ctxt, prop):
+    """Given data for a theorem statement, construct the initial partial proof.
+    
+    data['vars']: list of variables.
+    data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
+
+    Construct initial partial proof for the given assumptions and
+    conclusion.
+
+    assums - assumptions A1, ... An.
+    concl - conclusion C.
+    
+    Constructs:
+
+    0: assume A1
+    ...
+    n-1: assume An
+    n: C by sorry
+    n+1: A1 --> ... --> An --> C by intros from 0, 1, ..., n.
+
+    """
+    typecheck.checkinstance('parse_init_state', prop, (str, list, Term))
+    if isinstance(prop, (str, list)):
+       prop = parser.parse_term(ctxt, prop)
+    assums, concl = prop.strip_implies()
+
+    state = ProofState(ctxt.thy)
+    state.vars = ctxt.get_vars()
+    state.prf = Proof(*assums)
+    n = len(assums)
+    state.prf.add_item(n, "sorry", th=Thm(assums, concl))
+    state.prf.add_item(n + 1, "intros", prevs=range(n+1))
+    state.check_proof(compute_only=True)
+    return state
+
+def parse_proof(ctxt, proof):
+    """Obtain proof from json format."""
+    thy = ctxt.thy
+    state = ProofState(thy)
+    state.vars = ctxt.get_vars()
+    state.prf = Proof()
+    for line in proof:
+        if line['rule'] == "variable":
+            nm, str_T = line['args'].split(',', 1)
+            ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
+        item = parser.parse_proof_rule(ctxt, line)
+        state.prf.insert_item(item)
+    state.check_proof()
+
+    return state

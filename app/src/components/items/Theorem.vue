@@ -7,7 +7,7 @@
     </a>
     <a href="#" v-on:click="$emit('proof')" style="margin-left:10px">
       <v-icon v-if="proof === undefined" style="color:red" title="no proof" name="times"/>
-      <v-icon v-else-if="item.num_gaps > 0" style="color:orange" v-bind:title="num_gaps + ' gap(s)'" name="times"/>
+      <v-icon v-else-if="num_gaps > 0" style="color:orange" v-bind:title="num_gaps + ' gap(s)'" name="times"/>
       <v-icon v-else name="check" style="color:green" title="qed"/>
     </a>
     <br>

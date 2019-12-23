@@ -9,22 +9,22 @@ import copy
 from kernel.proof import Proof
 from logic import basic
 from logic.context import Context
-from server.server import ProofState
+from server import server
 from server import method
 from logic import logic
 from server import items
 from syntax import parser
 
 
-def check_proof(thy, item):
-    if 'steps' in item:
-        state = ProofState.parse_init_state(thy, item)
-        state.steps = item['steps']
+def check_proof(thy, item, *, rewrite):
+    if item.steps:
         try:
-            for step in item['steps']:
-                method.apply_method(state, step)
-                state.check_proof(compute_only=True)
+            ctxt = Context(thy, vars=item.vars)
+            state = server.parse_init_state(ctxt, item.prop)
+            state.parse_steps(item.steps)
             state.check_proof()
+            if rewrite:
+                item.proof = state.export_proof(unicode=True, highlight=False)
         except Exception as e:
             return {
                 'status': 'Failed',
@@ -35,20 +35,12 @@ def check_proof(thy, item):
 
         return {
             'status': 'OK' if len(state.rpt.gaps) == 0 else 'Partial',
-            'num_steps': len(item['steps']),
+            'num_steps': len(item.steps),
         }
-    elif 'proof' in item:
-        ctxt = Context(thy, vars=item['vars'])
-        state = ProofState(thy)
-        state.vars = ctxt.get_vars()
-        state.prf = Proof()
+    elif item.proof:
         try:
-            for line in item['proof']:
-                if line['rule'] == "variable":
-                    nm, str_T = line['args'].split(',', 1)
-                    ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
-                proof_item = parser.parse_proof_rule(ctxt, line)
-                state.prf.insert_item(proof_item)
+            ctxt = Context(thy, vars=item.vars)
+            state = server.parse_proof(ctxt, item.proof)
             state.check_proof(no_gaps=True)
         except Exception as e:
             return {
@@ -108,7 +100,7 @@ def check_theory(filename, username='master', rewrite=False):
                     'status': 'EditFail'
                 }
             elif item.ty == 'thm':
-                item_res = check_proof(old_thy, raw_item)
+                item_res = check_proof(old_thy, item, rewrite=rewrite)
                 item_res['ty'] = 'thm'
                 item_res['name'] = item.name
             else:

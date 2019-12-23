@@ -141,7 +141,23 @@ def real_continuous_onI(thy, expr, a, b):
     v = Var(nm, expr.var_T)
     t = expr.subst_bound(v)
 
-    if t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
+    if real.is_nat_power(t) and not t.arg.occurs_var(v):
+        t1 = Term.mk_abs(v, t.arg1)
+        pt1 = real_continuous_onI(thy, t1, a, b)
+        return apply_theorem(thy, 'real_continuous_on_pow', pt1, inst={'n': t.arg})
+    elif real.is_real_power(t) and not t.arg.occurs_var(v):
+        p = t.arg
+        t1 = Term.mk_abs(v, t.arg1)
+        pt1 = real_continuous_onI(thy, t1, a, b)
+        if real.is_const_less_eq(thy, real.zero, p):
+            return apply_theorem(thy, 'real_continuous_on_real_pow', real.real_less_eq(thy, real.zero, p), pt1)
+        elif real.is_const_less(thy, real.zero, a) and t.arg1 == v:
+            return apply_theorem(thy, 'real_continuous_on_real_pow_pos', real.real_less(thy, real.zero, a), inst={'b': b, 'p': p})
+        elif real.is_const_less(thy, b, real.zero) and t.arg1 == v:
+            return apply_theorem(thy, 'real_continuous_on_real_pow_neg', real.real_less(thy, b, real.zero), inst={'a': a, 'p': p})
+        else:
+            raise NotImplementedError
+    elif t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
         t1 = Term.mk_abs(v, t.arg1)
         t2 = Term.mk_abs(v, t.arg)
         pt1 = real_continuous_onI(thy, t1, a, b)
@@ -152,14 +168,16 @@ def real_continuous_onI(thy, expr, a, b):
             return apply_theorem(thy, 'real_continuous_on_sub', pt1, pt2)
         elif real.is_times(t):
             return apply_theorem(thy, 'real_continuous_on_mul', pt1, pt2)
-        elif real.is_divides(t) and not t2.occurs_var(v):
+        elif real.is_divides(t) and not t.arg.occurs_var(v):
             return apply_theorem(thy, 'real_continuous_on_div_const', pt1, real.real_ineq(thy, t.arg, real.zero))
+        elif real.is_divides(t) and real.is_nat_power(t.arg) and real.is_const_less(thy, real.zero, a):
+            return apply_theorem(thy, 'real_continuous_on_real_inverse_pow_pos',
+                                 real.real_less(thy, real.zero, a), pt1, inst={'n': t.arg.arg})
+        elif real.is_divides(t) and real.is_nat_power(t.arg) and real.is_const_less(thy, b, real.zero):
+            return apply_theorem(thy, 'real_continuous_on_real_inverse_pow_neg',
+                                 real.real_less(thy, b, real.zero), pt1, inst={'n': t.arg.arg})
         else:
             raise NotImplementedError
-    elif real.is_nat_power(t) and not t.arg.occurs_var(v):
-        t1 = Term.mk_abs(v, t.arg1)
-        pt1 = real_continuous_onI(thy, t1, a, b)
-        return apply_theorem(thy, 'real_continuous_on_pow', pt1, inst={'n': t.arg})
     elif t.is_comb() and real.is_real(t.arg):
         f = Term.mk_abs(v, t.arg)
         pt = real_continuous_onI(thy, f, a, b)
@@ -231,9 +249,9 @@ class linearity(Conv):
                 return pt.on_rhs(thy, rewr_conv('real_integral_add', conds=[pt1, pt2]), binop_conv(self))
             elif real.is_minus(t):
                 return pt.on_rhs(thy, rewr_conv('real_integral_sub', conds=[pt1, pt2]), binop_conv(self))
-            elif not t1.occurs_var(v):
+            elif real.is_times(t) and not t1.occurs_var(v):
                 return pt.on_rhs(thy, rewr_conv('real_integral_lmul', conds=[pt2]), arg_conv(self))
-            elif not t2.occurs_var(v):
+            elif real.is_times(t) and not t2.occurs_var(v):
                 return pt.on_rhs(thy, rewr_conv('real_integral_rmul', conds=[pt1]), arg1_conv(self))
             else:
                 return pt
@@ -248,18 +266,18 @@ class linearity(Conv):
 class common_integral(Conv):
     """Apply common integrals."""
     def get_proof_term(self, thy, expr):
-        if not expr.head.is_const_name('real_integral'):
-            raise ConvException
+        if not (expr.head.is_const_name('real_integral') and len(expr.args) == 2):
+            raise ConvException('common_integral')
 
         S, f = expr.args
         if not S.head.is_const_name('real_closed_interval'):
-            raise ConvException
+            raise ConvException('common_integral')
         a, b = S.args
         pt = refl(expr)
 
         le_pt = real.real_less_eq(thy, a, b)
         if not f.is_abs():
-            raise ConvException
+            raise ConvException('common_integral')
 
         var_names = [v.name for v in term.get_vars(f)]
         nm = name.get_variant_name(f.var_name, var_names)
@@ -272,6 +290,22 @@ class common_integral(Conv):
             return pt.on_rhs(thy, rewr_conv('real_integral_id_evalat', conds=[le_pt]))
         elif real.is_nat_power(t) and not t.arg.occurs_var(v):
             return pt.on_rhs(thy, rewr_conv('real_integral_pow_evalat', conds=[le_pt]))
+        elif real.is_divides(t) and real.is_nat_power(t.arg) and nat.from_binary_nat(t.arg.arg) > 1 and \
+             real.is_const_less(thy, real.zero, a):
+            return pt.on_rhs(thy, rewr_conv('real_integral_inverse_pow_evalat_pos',
+                             conds=[le_pt, real.real_less(thy, real.zero, a), nat.nat_less(thy, nat.one, t.arg.arg)]))
+        elif real.is_real_power(t) and real.is_binary_real(t.arg):
+            if real.from_binary_real(t.arg) != -1:
+                return pt.on_rhs(thy, rewr_conv('real_integral_real_pow_evalat',
+                                 conds=[le_pt, real.real_ineq(thy, t.arg, real.to_binary_real(-1))]))
+            elif real.is_binary_real(a) and real.from_binary_real(a) > 0:
+                return pt.on_rhs(thy, rewr_conv('real_integral_inverse_pos_evalat',
+                                 conds=[le_pt, real.real_less(thy, real.zero, a)]))
+            elif real.is_binary_real(b) and real.from_binary_real(b) < 0:
+                return pt.on_rhs(thy, rewr_conv('real_integral_inverse_neg_evalat',
+                                 conds=[le_pt, real.real_less(thy, b, real.zero)]))
+            else:
+                return pt
         elif t.is_comb():
             if t.fun == real.exp:
                 return pt.on_rhs(thy, rewr_conv('real_integral_exp_evalat', conds=[le_pt]))
@@ -286,18 +320,28 @@ class common_integral(Conv):
 
 
 simplify_list = [
-    'real_exp_0'
+    'real_exp_0',
+    'real_sin_0',
+    'real_sin_pi6',
+    'real_sin_pi4',
+    'real_sin_pi3',
+    'real_sin_pi2',
+    'real_cos_0',
+    'real_cos_pi6',
+    'real_cos_pi4',
+    'real_cos_pi3',
+    'real_cos_pi2',
 ]
 
 class simplify(Conv):
     """Simplify evalat as well as arithmetic."""
     def get_proof_term(self, thy, t):
-        cvs = [rewr_conv(s) for s in simplify_list]
+        cvs = [top_conv(rewr_conv(s)) for s in simplify_list]
         return refl(t).on_rhs(
             thy,
             top_conv(rewr_conv('evalat_def')),
             top_conv(beta_conv()),
-            top_conv(every_conv(*cvs)),
+            every_conv(*cvs),
             real.real_norm_conv())
 
 

@@ -313,6 +313,12 @@ class apply_theorem_macro(ProofTermMacro):
 
         assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
+        # First attempt to match type variables
+        svars = term.get_svars(th.prop)
+        for v in svars:
+            if v.name in inst:
+                v.T.match_incr(inst[v.name].get_type(), tyinst)
+
         pats = As[:len(prevs)]
         ts = [prev_th.prop for prev_th in prevs]
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
@@ -339,6 +345,12 @@ class apply_theorem_macro(ProofTermMacro):
         As, C = th.prop.strip_implies()
 
         assert len(pts) <= len(As), "apply_theorem: too many prevs."
+
+        # First attempt to match type variables
+        svars = term.get_svars(th.prop)
+        for v in svars:
+            if v.name in inst:
+                v.T.match_incr(inst[v.name].get_type(), tyinst)
 
         pats = As[:len(pts)]
         ts = [pt.prop for pt in pts]

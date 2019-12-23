@@ -6,13 +6,12 @@ from integral import poly
 from integral.poly import *
 import functools, operator
 from integral import parser
-import sympy
-from sympy.simplify.fu import *
 from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
+from sympy import solveset, Interval, Eq, Union, EmptySet
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS = range(8)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
@@ -25,12 +24,18 @@ class Expr:
     def __add__(self, other):
         if self.ty == CONST and other.ty == CONST:
                 return Const(self.val + other.val)
+        elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
+            return Fun("log", self.args[0] * other.args[0])
+        # elif self.ty == OP and self.op == "/" and other.ty == OP and other.op == "/" and self.args[1] == other.args[1]:
+        #     return (self.args[0] + other.args[0]) / self.args[1]
         else:
             return Op("+", self, other)
 
     def __sub__(self, other):
         if self.ty == CONST and other.ty == CONST:
             return Const(self.val - other.val)
+        elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
+            return Fun("log", self.args[0] / other.args[0])
         else:
             return Op("-", self, other)
 
@@ -47,6 +52,16 @@ class Expr:
     def __truediv__(self, other):
         if other == Const(1):
             return self
+        elif self.ty == CONST and other.ty == CONST:
+            return Const(Fraction(self.val, other.val))
+        elif self.ty == OP and self.op == "^" and other.ty == OP and other.op == "^" and self.args[1] == other.args[1]:
+            return (self.args[0] / other.args[0]) ^ self.args[1]
+        elif all(s.ty == FUN and s.func_name == "abs" for s in [self, other]):
+            x, y = self.args[0], other.args[0]
+            if x.is_constant() and y.is_constant():
+                n = sympy_style(x/y)
+                return holpy_style(n) if n > 0 else holpy_style(-n)
+
         else:
             return Op("/", self, other)
 
@@ -57,6 +72,8 @@ class Expr:
             return Op("^", self, other)
 
     def __neg__(self):
+        if self.ty == CONST:
+            return Const(-self.val)
         return Op("-", self)
 
     def size(self):
@@ -180,7 +197,7 @@ class Expr:
         p = self
         if self.is_constant() and simp == 0:
             p = sympy_parser.parse_expr(str(self).replace("^", "**"))
-            return parser.parse_expr(str(p).replace("**", "^")).to_poly(simp = 1)
+            return parser.parse_expr(str(p).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1))).to_poly(simp = 1)
         if self.ty == VAR:
             return poly.singleton(self)
         elif self.ty == CONST:
@@ -188,18 +205,30 @@ class Expr:
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
+                if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
+                    return (x+y).to_poly()
+                # elif x.ty == OP and x.op == "/" and y.ty == OP and y.op == "/" and x.args[1] == y.args[1]:
+                #     # 1 / x + 1 / x = 2 / x
+                #     return Op("/", x.args[0] + y.args[0], x.args[1]).to_poly()
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
                 if x.ty == CONST and y.ty == INTEGRAL:
                     return Integral(y.var, y.lower, y.upper, x * y.body).to_poly()
+                elif y.ty == OP and y.op == "/":
+                    return Op("/", x * y.args[0], y.args[1]).to_poly()
                 else:
                     return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
+                if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
+                    return (x-y).to_poly()
                 return x.to_poly() - y.to_poly()
             elif self.op == "-" and len(self.args) == 1:
                 x, = self.args
+                if x.ty == OP and x.op == "-" and len(x.args) == 1:
+                    # --x => x
+                    return x.args[0].to_poly()
                 return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
@@ -217,11 +246,20 @@ class Expr:
                     k.factors = tuple(k_factor)
                     return poly.Polynomial([m*k for m in xp.monomials])
                 else:
-                    return poly.singleton(self)
+                    c = Const(1)
+                    if len(yp.monomials) == 1:
+                        c *= yp.monomials[0].coeff
+                        yp.monomials[0].coeff = Const(1)
+                    if len(xp.monomials) == 1:
+                        c *= xp.monomials[0].coeff
+                        xp.monomials[0].coeff = Const(1)
+                    return poly.singleton(Op("/", from_poly(xp), from_poly(yp))).scale(c)
             elif self.op == "^":
                 x, y = self.args
+                if x.ty == FUN and x.func_name == "exp":
+                    return Fun("exp", y * x.args[0]).to_poly()
                 if y.ty == CONST:
-                    if y.val == 0:
+                    if y.val == Fraction(0):
                         return poly.constant(Const(1))
                     elif y.val == 1:
                         return x.to_poly()
@@ -239,13 +277,19 @@ class Expr:
                                 return Op("^", x.args[0], y).to_poly() * Op("^", x.args[1], y).to_poly()
                             elif x.op == "^":
                                 #(x^(1/2))^2 = x only consider two pow are both constant
-                                return Op("^", x.args[0], y * x.args[1]).to_poly()
+                                #(x^2)^(1/2) = abs(x)
+                                if x.args[1].val % 2 == 0:
+                                    if x.args[1] * y == Const(1):
+                                        return Fun("abs", x.args[0]).to_poly()
+                                    return Fun("abs", Op("^", x.args[0], y * x.args[1])).to_poly()
+                                else:
+                                    return Op("^", x.args[0], y * x.args[1]).to_poly()
                             elif x.op == "/":
                                 return x.args[0].to_poly() / x.args[1].to_poly()
                             else:
-                                return poly.singleton(self)
+                                return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                         elif x.ty == FUN and x.func_name == "sqrt":
-                            return Op("^", x.args[0], Const(1/2)).to_poly()
+                            return Op("^", x.args[0], Const(Fraction(y.val*(1/2)))).to_poly()
                         else:
                             return poly.Polynomial([poly.Monomial(Const(1), [(x, y.val)])])
                 else:
@@ -257,8 +301,8 @@ class Expr:
                 if self.args[0] == Const(0):
                     return poly.constant(Const(1))
                 else:
-                    return poly.singleton(self)
-            elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan"):
+                    return poly.singleton(Fun("exp", self.args[0].normalize()))
+            elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan", "cot", "csc", "sec"):
                 p = sympy_parser.parse_expr(str(self).replace("^", "**"))
                 p = parser.parse_expr(str(p).replace("**", "^"))
                 if p != self:
@@ -269,23 +313,38 @@ class Expr:
                 if self.args[0].ty == CONST and self.args[0].val <= 0:
                     raise ValueError
                 elif self.args[0] == Const(1):
-                    return poly.constant(0)
+                    return poly.constant(Const(0))
                 elif self.args[0].ty == FUN and self.args[0].func_name == "exp":
-                    return poly.constant(1)
+                    x, = self.args
+                    y, = x.args
+                    return y.to_poly()
+                elif self.args[0].ty == OP and self.args[0].op == "^":
+                    i, j = self.args[0].args
+                    if i.ty == FUN and i.func_name == "exp":
+                        return j.to_poly()
+                    else:
+                        return (j * Fun("log", i)).to_poly()
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
             elif self.func_name == "sqrt":
-                return Op("^", self.args[0], Const(Fraction(1/2))).to_poly()
+                return Op("^", self.args[0].normalize(), Const(Fraction(1/2))).to_poly()
+            elif self.func_name == "abs":
+                x, =self.args
+                if x.ty == CONST:
+                    return poly.constant(Const(abs(x.val)))
+                else:
+                    return poly.singleton(self)
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
-            return upper.to_poly() - lower.to_poly()
+            return (upper.normalize() - lower.normalize()).to_poly()
+            # return upper.to_poly() - lower.to_poly()
         elif self.ty == INTEGRAL:
             a = self
             if a.lower == a.upper:
-                return poly.constant(0)
+                return poly.constant(Const(0))
             a.body = a.body.normalize()
             return poly.singleton(a) 
         else:
@@ -307,12 +366,16 @@ class Expr:
                 self.args = list(self.args)
                 if len(self.args) == 1:
                     self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
-                    self.args = tuple(self.args)
+                    #self.args = tuple(self.args)
                     return Op(self.op, self.args[0])
                 elif len(self.args) == 2:
+                    if self.op == "^" and trig_old.ty == OP and trig_old.op == "^" \
+                      and self.args[0] == trig_old.args[0]:
+                        # expr : x ^ 4 trig_old x ^ 2 trig_new u => u ^ 2
+                        return Op(self.op, trig_new, self.args[1] / trig_old.args[1])
                     self.args[0] = self.args[0].replace_trig(trig_old, trig_new)
                     self.args[1] = self.args[1].replace_trig(trig_old, trig_new)
-                    self.args = tuple(self.args)
+                    #self.args = tuple(self.args)
                     return Op(self.op, self.args[0], self.args[1])
                 else:
                     return Op(self.op, self.args)
@@ -370,6 +433,53 @@ class Expr:
         findv(self, v)
         return v[0]
 
+    def ranges(self, var, lower, upper):
+        e = sympy_style(self)
+        var = sympy_style(var)
+        lower = sympy_style(lower)
+        upper = sympy_style(upper)
+        greater_zero = solveset(e > 0, var, Interval(lower, upper, left_open = True, right_open = True))
+        smaller_zero = solveset(e < 0, var, Interval(lower, upper, left_open = True, right_open = True))
+        def to_holpy(l):
+            if isinstance(l, Union):
+                return [(holpy_style(x.start), holpy_style(x.end)) for x in l.args]
+            elif isinstance(l, Interval):
+                return [(holpy_style(l.start), holpy_style(l.end))]
+            elif isinstance(l, EmptySet):
+                return []
+            else:
+                raise NotImplementedError
+        g, s = to_holpy(greater_zero), to_holpy(smaller_zero)
+        def e_exp(e):
+            """Because sympy use e represent exp, so need to convert it to exp(1)."""
+            return Fun("exp", Const(1)) if e == Var("E") else e
+        g = [(e_exp(i), e_exp(j)) for i, j in g]
+        s = [(e_exp(i), e_exp(j)) for i, j in s]
+        return g, s
+
+    def getAbs(self):
+        """Separate abs from monomial"""
+        p = self.to_poly()
+        assert len(p.monomials) == 1 #Only separate 
+        a = []
+        b = []
+        for f in p.monomials[0].factors:
+            if f[0].ty == FUN and f[0].func_name == "abs":
+                a.append((f[0].args[0], 1))
+            else:
+                b.append(f)
+        am = from_mono(poly.Monomial(Const(1), a)) #terms with abs
+        bm = from_mono(poly.Monomial(p.monomials[0].coeff, b)) #terms not with abs
+        return am, bm
+
+def sympy_style(s):
+        """Transform expr to sympy object.
+        """
+        return sympy_parser.parse_expr(str(s).replace("^", "**"))
+
+def holpy_style(s):
+    return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
+
 def trig_transform(trig):
     """Compute all possible trig function equal to trig"""
     poss = set()
@@ -413,10 +523,7 @@ def extract(p):
     if len(p.monomials) == 0:
         return Const(0)
     else:
-        if p.is_zero_constant():
-            monos = [from_mono(m) for m in p.monomials]
-        else:
-            monos = [from_mono(m) for m in p.del_zero_mono().monomials]
+        monos = [from_mono(m) for m in p.monomials]
         common_factor = collect_common_factor(monos)
         common_keys = common_factor[0].keys()
         for d in common_factor:
@@ -527,7 +634,7 @@ def deriv(var, e):
             return (x * deriv(var, y) + deriv(var, x) * y).normalize()
         elif e.op == "/":
             x, y = e.args
-            return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2))
+            return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2)).normalize()
         elif e.op == "^":
             x, y = e.args
             if y.ty == CONST:
@@ -543,6 +650,12 @@ def deriv(var, e):
         elif e.func_name == "cos":
             x, = e.args
             return (-(sin(x) * deriv(var, x))).normalize()
+        elif e.func_name == "tan":
+            x, = e.args
+            return (sec(x) ^ Const(2) * deriv(var, x)).normalize()
+        elif e.func_name == "cot":
+            x, = e.args
+            return (-(sin(x) ^ Const(-2)) * deriv(var, x)).normalize()
         elif e.func_name == "log":
             x, = e.args
             return (deriv(var, x) / x).normalize()
@@ -556,6 +669,9 @@ def deriv(var, e):
                 return Const(0)
             else:
                 return deriv(var, e.args[0] ^ Const(Fraction(1/2)))
+        elif e.func_name == "atan":
+            x, = e.args
+            return (deriv(var, x) / (Const(1) + (x ^ Const(2)))).normalize()
         else:
             raise NotImplementedError
     else:
@@ -594,6 +710,8 @@ class Const(Expr):
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
+        if self.val < 0:
+            return "(" + str(self.val) + ")"
         return str(self.val)
 
     def __repr__(self):
@@ -632,7 +750,7 @@ class Op(Expr):
             s1, s2 = str(a), str(b)
             if a.priority() < op_priority[self.op]:
                 s1 = "(%s)" % s1
-            if b.priority() <= op_priority[self.op]:
+            if b.priority() <= op_priority[self.op] and not (b.ty == CONST and b.val < 0):
                 s2 = "(%s)" % s2
             return "%s %s %s" % (s1, self.op, s2)           
         else:
@@ -648,7 +766,7 @@ class Fun(Expr):
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
-            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "asin", "acos", "atan"]
+            assert func_name in ["sin", "cos", "tan", "log", "exp", "sqrt", "csc", "sec", "cot", "asin", "acos", "atan", "abs"]
         else:
             raise NotImplementedError
 

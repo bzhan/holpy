@@ -5449,6 +5449,43 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_eq_neg2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-x = -y ⟷ x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ -x = -y ⟷ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -x = -y ⟷ x = y"
+                }
+            ],
+            "prop": "-x = -y ⟷ x = y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_abs_zero",
             "num_gaps": 0,
             "proof": [

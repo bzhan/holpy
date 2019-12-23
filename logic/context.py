@@ -37,5 +37,11 @@ class Context:
         return self.thy == other.thy and self.vars == other.vars and self.svars == other.svars and \
             self.defs == other.defs
 
+    def __str__(self):
+        return 'vars: %s' % str(self.vars)
+
+    def __repr__(self):
+        return str(self)
+
     def get_vars(self):
         return [Var(nm, T) for nm, T in self.vars.items()]

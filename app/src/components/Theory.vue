@@ -461,22 +461,28 @@ export default {
         // Have not loaded any theory
         return
       }
+      const new_item = {
+        ty: ty, name: '',
+        edit: {
+          ty: ty, name: ''
+        }
+      }
       if (pos == 'end') {
         const len = this.theory.content.length
-        this.$set(this.theory.content, len, {ty: ty})
+        this.$set(this.theory.content, len, new_item)
         this.selected = {single: len}
       } else if (pos == 'before') {
         if (!('single' in this.selected)) {
           return
         }
         this.theory.content.splice(this.selected.single, 0, {})
-        this.$set(this.theory.content, this.selected.single, {ty: ty})
+        this.$set(this.theory.content, this.selected.single, new_item)
       } else if (pos == 'after') {
         if (!('single' in this.selected)) {
           return
         }
         this.theory.content.splice(this.selected.single+1, 0, {})
-        this.$set(this.theory.content, this.selected.single+1, {ty: ty})
+        this.$set(this.theory.content, this.selected.single+1, new_item)
         this.selected = {single: this.selected.single+1}
       }
       this.on_edit = this.selected.single
@@ -594,16 +600,8 @@ export default {
         delete item.num_gaps
         delete item.steps
       } else {
-        var cur_proof = undefined
-        if ($proof.history !== undefined) {
-          const len = $proof.history.length
-          cur_proof = $proof.history[len-1].proof
-          item.num_gaps = $proof.history[len-1].num_gaps
-        } else {
-          cur_proof = $proof.proof
-          item.num_gaps = $proof.num_gaps
-        }
-
+        const cur_proof = $proof.proof
+        item.num_gaps = $proof.num_gaps
         var output_proof = []
         for (let i = 0; i < cur_proof.length; i++) {
           output_proof.push(JSON.parse(JSON.stringify(cur_proof[i])))  // deep copy

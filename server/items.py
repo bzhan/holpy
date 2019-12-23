@@ -90,6 +90,16 @@ def display_raw(s):
     else:
         return [pprint.N(line) for line in s]
 
+@settings.with_settings
+def display_term(thy, t, line_length):
+    """Display parsed term."""
+    res = printer.print_term(thy, t, line_length=line_length)
+    if settings.highlight():
+        return res
+    else:
+        return '\n'.join(res)
+
+
 class Constant(Item):
     """Axiomatic constant."""
     def __init__(self):
@@ -208,7 +218,7 @@ class Axiom(Item):
             disp_prop = display_raw(self.prop)
         else:
             disp_vars = [pprint.N(nm + ' :: ') + printer.print_type(thy, T) for nm, T in self.vars.items()]
-            disp_prop = printer.print_term(thy, self.prop, line_length=line_length)
+            disp_prop = display_term(thy, self.prop, line_length)
 
         return {
             'ty': 'thm.ax',
@@ -362,7 +372,7 @@ class Definition(Item):
             disp_prop = display_raw(self.prop)
         else:
             disp_type = printer.print_type(thy, self.type)
-            disp_prop = printer.print_term(thy, self.prop, line_length=line_length)
+            disp_prop = display_term(thy, self.prop, line_length)
         
         return {
             'ty': 'def',

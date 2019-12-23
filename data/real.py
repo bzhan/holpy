@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from fractions import Fraction
+import math
 
 from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Const
@@ -10,7 +11,7 @@ from kernel import macro
 from data import nat
 from data.set import setT
 from logic import logic
-from logic.conv import Conv
+from logic.conv import Conv, ConvException
 from logic.proofterm import refl, ProofTermMacro, ProofTermDeriv
 from syntax import pprint, settings
 from server.tactic import MacroTactic
@@ -31,6 +32,8 @@ divides = Const("real_divide", TFun(realT, realT, realT))
 less_eq = Const("less_eq", TFun(realT, realT, boolT))
 less = Const("less", TFun(realT, realT, boolT))
 nat_power = Const("power", TFun(realT, nat.natT, realT))
+real_power = Const("power", TFun(realT, realT, realT))
+pi = Const("pi", realT)
 
 # Transcendental functions
 
@@ -81,6 +84,9 @@ def is_divides(t):
 def is_nat_power(t):
     return t.is_binop() and t.head == nat_power
 
+def is_real_power(t):
+    return t.is_binop() and t.head == real_power
+
 def is_less_eq(t):
     return t.is_binop() and t.head == less_eq
 
@@ -120,6 +126,33 @@ def from_binary_real(t):
     else:
         return nat.from_binary(t.arg)
 
+def real_approx_eval(t):
+    """Approximately evaluate t as a constant.
+
+    Return a floating point number.
+
+    """
+    if is_binary_real(t):
+        return from_binary_real(t)
+    elif t == pi:
+        return math.pi
+    elif t.is_comb() and t.fun.is_const_name('of_nat'):
+        return nat.nat_eval(t.arg)
+    elif is_plus(t):
+        return real_approx_eval(t.arg1) + real_approx_eval(t.arg)
+    elif is_minus(t):
+        return real_approx_eval(t.arg1) - real_approx_eval(t.arg)
+    elif is_times(t):
+        return real_approx_eval(t.arg1) * real_approx_eval(t.arg)
+    elif is_divides(t):
+        denom = real_approx_eval(t.arg)
+        if denom == 0.0:
+            raise ConvException('real_approx_eval: divide by 0')
+        else:
+            return real_approx_eval(t.arg1) / denom
+    else:
+        raise ConvException('real_approx_eval')
+
 def convert_to_poly(t):
     """Convert a term t to polynomial normal form."""
     if t.is_var():
@@ -150,6 +183,13 @@ def convert_to_poly(t):
         power = nat.convert_to_poly(t.arg)
         if power.is_constant():
             return convert_to_poly(t.arg1) ** power.get_constant()
+        else:
+            return poly.singleton(t)
+    elif is_real_power(t):
+        base = convert_to_poly(t.arg1)
+        power = convert_to_poly(t.arg)
+        if base.is_constant() and power.is_constant():
+            return poly.constant(Fraction(base.get_constant()) ** Fraction(power.get_constant()))
         else:
             return poly.singleton(t)
     else:
@@ -193,43 +233,47 @@ class real_ineq_macro(ProofTermMacro):
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "real_ineq_macro"
  
-        if is_less_eq(goal):
+        if goal.is_binop():
             t1, t2 = goal.args
-            if not (is_binary_real(t1) and is_binary_real(t2)):
-                return False
-            return from_binary_real(t1) <= from_binary_real(t2)
-        elif is_less(goal):
-            t1, t2 = goal.args
-            if not (is_binary_real(t1) and is_binary_real(t2)):
-                return False
-            return from_binary_real(t1) < from_binary_real(t2)
-        elif logic.is_neg(goal) and goal.arg.is_equals():
+        elif logic.is_neg(goal) and goal.is_binop:
             t1, t2 = goal.arg.args
-            if not (is_binary_real(t1) and is_binary_real(t2)):
-                return False
-            return from_binary_real(t1) != from_binary_real(t2)
         else:
-            raise NotImplementedError
+            return False
+
+        try:
+            val1 = real_approx_eval(t1)
+            val2 = real_approx_eval(t2)
+        except ConvException:
+            return False
+
+        if is_less_eq(goal):
+            return val1 <= val2
+        elif is_less(goal):
+            return val1 < val2
+        elif logic.is_neg(goal) and goal.arg.is_equals():
+            return val1 != val2
+        else:
+            return False
 
     def get_proof_term(self, thy, goal, pts):
         raise NotImplementedError
 
-def real_less_eq(thy, t1, t2):
-    assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) <= from_binary_real(t2), \
-        "real_less_eq"
+def is_const_less_eq(thy, t1, t2):
+    return real_ineq_macro().can_eval(thy, less_eq(t1, t2))
 
+def is_const_less(thy, t1, t2):
+    return real_ineq_macro().can_eval(thy, less(t1, t2))
+
+def is_const_ineq(thy, t1, t2):
+    return real_ineq_macro().can_eval(thy, logic.neg(Term.mk_equals(t1, t2)))
+
+def real_less_eq(thy, t1, t2):
     return ProofTermDeriv("real_ineq", thy, less_eq(t1, t2))
 
 def real_less(thy, t1, t2):
-    assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) < from_binary_real(t2), \
-        "real_less"
-
     return ProofTermDeriv("real_ineq", thy, less(t1, t2))
 
 def real_ineq(thy, t1, t2):
-    assert is_binary_real(t1) and is_binary_real(t2) and from_binary_real(t1) != from_binary_real(t2), \
-        "real_ineq"
-
     return ProofTermDeriv("real_ineq", thy, logic.neg(Term.mk_equals(t1, t2)))
 
 class real_norm_macro(ProofTermMacro):

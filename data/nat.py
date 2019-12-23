@@ -250,24 +250,25 @@ class rewr_of_nat_conv(Conv):
         else:
             return pt.on_rhs(thy, rewr_conv("nat_of_nat_def", sym=self.sym))
 
+def nat_eval(t):
+    if is_binary_nat(t):
+        return from_binary_nat(t)
+    elif t.is_comb():
+        if t.head == Suc:
+            return nat_eval(t.arg) + 1
+        elif t.head == plus:
+            return nat_eval(t.arg1) + nat_eval(t.arg)
+        elif t.head == times:
+            return nat_eval(t.arg1) * nat_eval(t.arg)
+        else:
+            raise ConvException('nat_eval')
+    else:
+        raise ConvException('nat_eval')
+
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
     def eval(self, thy, t):
-        def val(t):
-            """Evaluate the given term."""
-            if is_binary_nat(t):
-                return from_binary_nat(t)
-            else:
-                if t.head == Suc:
-                    return val(t.arg) + 1
-                elif t.head == plus:
-                    return val(t.arg1) + val(t.arg)
-                elif t.head == times:
-                    return val(t.arg1) * val(t.arg)
-                else:
-                    raise ConvException("nat_conv")
-
-        return Thm.mk_equals(t, to_binary_nat(val(t)))
+        return Thm.mk_equals(t, to_binary_nat(nat_eval(t)))
 
     def get_proof_term(self, thy, t):
         pt = refl(t)
@@ -747,6 +748,9 @@ class nat_const_less_eq_macro(ProofTermMacro):
         ex_eq = apply_theorem(thy, 'exI', eq, concl=goal2)
         return ex_eq.on_prop(thy, rewr_conv('less_eq_exist', sym=True))
 
+def nat_less_eq(thy, t1, t2):
+    return ProofTermDeriv("nat_const_less_eq", thy, less_eq(t1, t2))
+
 class nat_const_less_macro(ProofTermMacro):
     """Given m and n, with m < n, return the less-than theorem."""
     def __init__(self):
@@ -764,6 +768,9 @@ class nat_const_less_macro(ProofTermMacro):
         ineq_goal = logic.neg(Term.mk_equals(m, n))
         ineq_pt = nat_const_ineq_macro().get_proof_term(thy, ineq_goal, [])
         return apply_theorem(thy, "less_lesseqI", less_eq_pt, ineq_pt)
+
+def nat_less(thy, t1, t2):
+    return ProofTermDeriv("nat_const_less", thy, less(t1, t2))
 
 class nat_eq_conv(Conv):
     """Simplify equality a = b to either True or False."""

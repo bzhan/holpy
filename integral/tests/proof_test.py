@@ -4,6 +4,7 @@ import unittest
 
 from kernel.term import Term, Var
 from kernel.thm import Thm
+from data import real
 from data.real import realT
 from data.set import setT
 from data.integral import within, atreal
@@ -103,6 +104,27 @@ class ProofTest(unittest.TestCase):
         for s in test_data:
             s = parser.parse_term(ctxt, s)
             f = Term.mk_abs(x, s)
+            pt = proof.real_continuous_onI(thy, f, a, b)
+            th = thy.check_proof(pt.export())
+            self.assertEqual(th.prop, proof.mk_real_continuous_on(f, a, b))
+            pt2 = proof.real_integrable_onI(thy, f, a, b)
+            th2 = thy.check_proof(pt2.export())
+            self.assertEqual(pt2.prop, proof.mk_real_integrable_on(f, a, b))
+
+    def testRealContinuousOnRange(self):
+        test_data = [
+            ("1 / (x ^ (2::nat))", 1, 2),
+            ("1 / (x ^ (2::nat))", -2, -1),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real'})
+        thy = ctxt.thy
+        x = Var('x', realT)
+        for s, a, b in test_data:
+            s = parser.parse_term(ctxt, s)
+            f = Term.mk_abs(x, s)
+            a = real.to_binary_real(a)
+            b = real.to_binary_real(b)
             pt = proof.real_continuous_onI(thy, f, a, b)
             th = thy.check_proof(pt.export())
             self.assertEqual(th.prop, proof.mk_real_continuous_on(f, a, b))
@@ -239,6 +261,21 @@ class ProofTest(unittest.TestCase):
             ]
         )
 
+    def testIntegral2(self):
+        ctxt = Context('realintegral')
+        f = parser.parse_term(ctxt, "%x::real. (1/3) * x ^ (-(2::real))")
+        g = parser.parse_term(ctxt, "%x::real. 3 * x + 1")
+        self.run_test(
+            "real_integral (real_closed_interval 0 1) (%x. (3 * x + 1) ^ (-(2::real)))",
+            "(1::real) / 4",
+            [
+                proof.substitution(f, g),
+                proof.linearity(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
     def testIntegral3(self):
         ctxt = Context('realintegral')
         f = parser.parse_term(ctxt, "%x::real. (1/6) * exp x")
@@ -263,6 +300,27 @@ class ProofTest(unittest.TestCase):
             "exp 2 + 2 * exp (-1)",
             [
                 proof.integrate_by_parts(u, v),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
+    def testIntegral5(self):
+        self.run_test(
+            "real_integral (real_closed_interval 0 (pi / 4)) (%x. sin x)",
+            "1 + -(1 / 2) * sqrt(2)",
+            [
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
+    def testIntegral7(self):
+        self.run_test(
+            "real_integral (real_closed_interval 1 2) (%x. x ^ (2::nat) + 1 / x ^ (4::nat))",
+            "(21 :: real) / 8",
+            [
+                proof.linearity(),
                 top_conv(proof.common_integral()),
                 proof.simplify()
             ]

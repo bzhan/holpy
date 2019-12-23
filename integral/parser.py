@@ -15,6 +15,7 @@ grammar = r"""
         | "pi" -> pi_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
+        | "\|" expr "\|" -> abs_expr 
         | "$" expr "$" -> trig_expr
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
@@ -87,6 +88,9 @@ class ExprTransformer(Transformer):
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)
+
+    def abs_expr(self, expr):
+        return expr.Abs(expr)
 
     def deriv_expr(self, var, body):
         return expr.Deriv(var, body)

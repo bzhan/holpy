@@ -10,13 +10,13 @@ from kernel import extension
 from logic import basic
 from logic import logic
 from logic.logic import apply_theorem
-from logic import induct
 from data.nat import natT, to_binary_nat
 from logic.conv import rewr_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
+from server import items
 from logic.context import Context
 from paraverifier import gcl
 
@@ -183,13 +183,18 @@ class ParaSystem():
         """Add the semantics of the system in GCL."""
         transC = Const("trans", TFun(gcl.stateT, gcl.stateT, boolT))
         s = Var("s", gcl.stateT)
-        props = []
+        rules = []
         for i, (_, guard, assign) in enumerate(self.rules):
             t = gcl.convert_term(self.var_map, s, guard)
             t2 = gcl.mk_assign(self.var_map, s, assign)
-            props.append(("trans_rule" + str(i), Term.mk_implies(t, transC(s, t2))))
+            rules.append({'name': "trans_rule" + str(i), 'prop': Term.mk_implies(t, transC(s, t2))})
 
-        exts = induct.add_induct_predicate(self.thy, "trans", TFun(gcl.stateT, gcl.stateT, boolT), props)
+        item = items.Inductive()
+        item.name = 'trans'
+        item.cname = 'trans'
+        item.type = TFun(gcl.stateT, gcl.stateT, boolT)
+        item.rules = rules
+        exts = item.get_extension()
         self.thy.unchecked_extend(exts)
         # print(printer.print_extensions(self.thy, exts))
 

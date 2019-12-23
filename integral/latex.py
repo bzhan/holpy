@@ -26,7 +26,7 @@ def convert_expr(e, mode="large"):
         if len(e.args) == 1:
             a, = e.args
             sa = convert_expr(a, mode)
-            if a.priority() < 80:
+            if a.priority() < 70:
                 sa = "(%s)" % sa
             return "%s%s" % (e.op, sa)
         elif len(e.args) == 2:
@@ -34,8 +34,9 @@ def convert_expr(e, mode="large"):
             sx = convert_expr(x, mode)
             sy = convert_expr(y, mode)
             if e.op in ("+", "-", "^"):
-                if e.op == "^": 
-                    if isinstance(y.val, Fraction):
+                if e.op == "^":
+                    # Still can improve 
+                    if y.ty == expr.CONST and isinstance(y.val, Fraction):
                         if y.val.numerator == 1:
                             if y.val.denominator == 2:
                                 return "\\sqrt{%s}" % sx
@@ -68,21 +69,28 @@ def convert_expr(e, mode="large"):
                     sy = "{%s}" % sy
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
-                if x.ty == expr.CONST and y.ty == expr.VAR:
-                    if sx == "1":
-                        return "%s" % sy
+                if not x.is_constant() and not y.is_constant():
+                    if x.ty == expr.OP and x.op != "^":
+                        sx = "(" + sx + ")"
+                    if y.ty == expr.OP and y.op != "^":
+                        sy = "(" + sy + ")"
                     return "%s %s" % (sx, sy)
-                elif x.ty == expr.CONST and y.ty == expr.OP:
-                    if y.op == "^" and y.args[0].ty == expr.VAR:
-                        if sx == "1":
-                            return "%s" % sy
-                    return "%s %s %s" % (sx, e.op, sy)
-                elif x.ty == expr.CONST and y.ty == expr.FUN:
-                    if sx == "1":
+                elif x.ty == expr.CONST:
+                    if x.val == -1:
+                        return "-%s" % sy
+                    elif x.val == 1:
                         return "%s" % sy
-                    return "%s %s" % (sx, sy)
-                elif x.ty == expr.CONST and x.val == -1:
-                    return "-%s" % sy
+                    elif isinstance(x.val, Fraction) and x.val.numerator == 1 and y.ty not in (expr.INTEGRAL, expr.OP, expr.EVAL_AT):
+                        return "\\frac{%s}{%s}" % (sy, convert_expr(expr.Const(x.val.denominator)))
+                    elif y.ty in (expr.VAR, expr.FUN):
+                        return "%s %s" % (sx, sy)
+                    elif y.ty == expr.OP:
+                        if y.op == "^" and (y.args[0].ty == expr.VAR or y.args[1].val == 1/2):
+                            return "%s %s" % (sx, sy)
+                        else:
+                            return "%s * %s" % (sx, sy)
+                    else:
+                        return "%s * %s" % (sx, sy)
                 else:
                     if x.priority() < expr.op_priority[e.op]:
                         sx = "(%s)" % sx
@@ -93,6 +101,15 @@ def convert_expr(e, mode="large"):
                 if mode == 'large':
                     if sy == "1":
                         return "%s" % sx
+                    elif x.ty == expr.OP:
+                        if x.op == "-" and len(x.args) == 1:
+                            # (-x) / y => - (x/y)
+                            sxx = convert_expr(x.args[0])
+                            return "-\\frac{%s}{%s}" % (sxx, sy)
+                        elif y.ty == expr.CONST:
+                            return "\\frac{1}{%s} * %s" % (sy, sx)
+                        else:
+                            return "\\frac{%s}{%s}" % (sx, sy)
                     else:
                         return "\\frac{%s}{%s}" % (sx, sy)
                 else:
@@ -107,13 +124,16 @@ def convert_expr(e, mode="large"):
         elif len(e.args) == 1:
             x, = e.args
             sx = convert_expr(x, mode)
-            if len(sx) > 1:
-                sx = "(%s)" % sx
-            if e.func_name == "exp" and e.args[0] == expr.Const(1):
-                return "\\%s" % e.func_name
+            if e.func_name == "exp":
+                if e.args[0] == expr.Const(1):
+                    return "e"
+                else:
+                    return "e^{%s}" % sx
             elif e.func_name == "sqrt":
                 return "\\sqrt{%s}" % sx
-            return "\\%s{%s}" % (e.func_name, sx)
+            elif e.func_name == "abs":
+                return "\\left| %s \\right|" % sx
+            return "\\%s{(%s)}" % (e.func_name, sx)
         else:
             raise NotImplementedError
     elif e.ty == expr.INTEGRAL:

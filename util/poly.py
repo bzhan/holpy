@@ -157,4 +157,7 @@ def singleton(s):
 def constant(c):
     """Polynomial for c (numerical constant)."""
     assert isinstance(c, (int, Fraction))
-    return Polynomial([Monomial(c, tuple())])
+    if isinstance(c, Fraction) and c.denominator == 1:
+        return Polynomial([Monomial(c.numerator, tuple())])
+    else:
+        return Polynomial([Monomial(c, tuple())])
