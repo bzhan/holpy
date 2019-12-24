@@ -1,6 +1,13 @@
 {
     "content": [
         {
+            "args": [
+                "a"
+            ],
+            "name": "net",
+            "ty": "type.ax"
+        },
+        {
             "name": "within",
             "ty": "def.ax",
             "type": "'a net ⇒ 'a set ⇒ 'a net"

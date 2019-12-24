@@ -646,7 +646,7 @@ class AxType(Item):
         }
 
     def parse_edit(self, thy, edit_data):
-        T = parser.parse_type(thy, edit_data['type'])
+        T = parser.parse_type(thy, edit_data['type'], check_type=False)
         data = {
             'ty': 'type.ax',
             'name': T.name,
@@ -692,6 +692,7 @@ class Datatype(Item):
     def parse(self, thy, data):
         self.name = data['name']
         self.args = data['args']
+        thy.add_type_sig(self.name, len(self.args))
 
         try:
             for constr in data['constrs']:

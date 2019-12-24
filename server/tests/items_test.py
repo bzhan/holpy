@@ -81,7 +81,7 @@ class ItemsTest(unittest.TestCase):
         self.assertEqual(printer.print_extensions(thy, ext), '\n'.join(ext_output))
 
     def testFunPlus(self):
-        thy = basic.load_theory('nat', limit=('type.ind', 'nat'))
+        thy = basic.load_theory('nat', limit=('def', 'one'))
         plus_item = items.parse_item(thy, {
             "name": "plus",
             "rules": [
@@ -104,7 +104,7 @@ class ItemsTest(unittest.TestCase):
         self.assertEqual(printer.print_extensions(thy, ext), '\n'.join(ext_output))
 
     def testPredEven(self):
-        thy = basic.load_theory('nat', limit=('type.ind', 'nat'))
+        thy = basic.load_theory('nat', limit=('def', 'one'))
         even_item = items.parse_item(thy, {
             "name": "even",
             "rules": [
@@ -123,7 +123,7 @@ class ItemsTest(unittest.TestCase):
             "Attribute even_zero [hint_backward]",
             "Theorem even_Suc: even n --> even (Suc (Suc n))",
             "Attribute even_Suc [hint_backward]",
-            "Theorem even_cases: even _a1 --> (_a1 = 0 --> P) --> (!n. !Suc. _a1 = Suc (Suc n) --> even n --> P) --> P"
+            "Theorem even_cases: even _a1 --> (_a1 = 0 --> P) --> (!n. _a1 = Suc (Suc n) --> even n --> P) --> P"
         ]
         self.assertEqual(printer.print_extensions(thy, ext), '\n'.join(ext_output))
 

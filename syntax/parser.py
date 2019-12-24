@@ -160,7 +160,18 @@ class HOLTransformer(Transformer):
         return STVar(str(s))
 
     def type(self, *args):
-        return Type(str(args[-1]), *args[:-1])
+        thy = parser_setting['thy']
+        tname = args[-1]
+        if not parser_setting['check_type']:
+            return Type(str(args[-1]), *args[:-1])
+
+        if thy.has_type_sig(tname):
+            if len(args) == thy.get_type_sig(tname) + 1:
+                return Type(str(args[-1]), *args[:-1])
+            else:
+                raise ParserException("Incorrect arity for type %s" % tname)
+        else:
+            raise ParserException("Unknown type %s" % tname)
 
     def funtype(self, t1, t2):
         return TFun(t1, t2)
@@ -417,9 +428,10 @@ var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
 term_list_parser = get_parser_for("term_list")
 
-def parse_type(thy, s):
+def parse_type(thy, s, check_type=True):
     """Parse a type."""
     parser_setting['thy'] = thy
+    parser_setting['check_type'] = check_type
     return type_parser.parse(s)
 
 def parse_term(ctxt, s):

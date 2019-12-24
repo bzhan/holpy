@@ -25,9 +25,7 @@ class ParserTest(unittest.TestCase):
             "nat",
             "'a list",
             "nat list",
-            "('a, 'b) prod",
             "nat list list",
-            "(nat, 'a) prod",
             "'a => 'b",
             "'a => 'b => 'c",
             "('a => 'b) => 'c",
@@ -39,8 +37,6 @@ class ParserTest(unittest.TestCase):
             "'a list list",
             "'a list => 'b list",
             "('a list => 'b) list",
-            "('a => 'b, 'c) prod",
-            "('a list, 'b => 'c) prod",
         ]
 
         thy = basic.load_theory('list')
@@ -426,7 +422,7 @@ class ParserTest(unittest.TestCase):
              {'name': 'cons', 'type': [TVar('a'), Type('list', TVar('a'))], 'args': ['x', 'xs']}),
         ]
 
-        thy = basic.load_theory('logic_base')
+        thy = basic.load_theory('list')
         for s, res in test_data:
             self.assertEqual(parser.parse_ind_constr(thy, s), res)
 
