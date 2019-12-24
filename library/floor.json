@@ -76,7 +76,7 @@
     ],
     "description": "The integer/rational-value reals, and the 'floor' and 'frac' functions.",
     "imports": [
-        "real"
+        "realset"
     ],
     "name": "floor"
 }

@@ -473,7 +473,7 @@
                 "hint_backward1"
             ],
             "name": "real_le_sup",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "y ∈ s",
@@ -551,20 +551,24 @@
                     "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ sup s"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "args": "y",
                     "id": "9",
                     "prevs": [
-                        "7"
+                        "8",
+                        "0"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b"
+                    "rule": "apply_fact_for",
+                    "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b, a ≤ y ⊢ y ≤ sup s"
                 },
                 {
-                    "args": "",
+                    "args": "real_le_trans",
                     "id": "10",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "y ∈ s, a ≤ y, ∀x. x ∈ s ⟶ x ≤ b ⊢ a ≤ sup s"
+                    "prevs": [
+                        "1",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ y, y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ a ≤ sup s"
                 },
                 {
                     "args": "",
@@ -644,11 +648,18 @@
                 },
                 {
                     "fact_ids": [
-                        "7"
+                        "1"
                     ],
                     "goal_id": "9",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -665,7 +676,94 @@
                 "hint_backward1"
             ],
             "name": "element_le_sup",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∃b. ∀x. x ∈ s ⟶ x ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃b. ∀x. x ∈ s ⟶ x ≤ b ⊢ ∃b. ∀x. x ∈ s ⟶ x ≤ b"
+                },
+                {
+                    "args": "a ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ⊢ a ∈ s"
+                },
+                {
+                    "args": "b, real",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ x ≤ b",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ b"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: a}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a ≤ a"
+                },
+                {
+                    "args": "real_le_sup",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "4",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ∈ s, ∃b. ∀x. x ∈ s ⟶ x ≤ b, ∀x. x ∈ s ⟶ x ≤ b ⊢ a ≤ sup s"
+                },
+                {
+                    "args": "∃b. ∀x. x ∈ s ⟶ x ≤ b",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "0",
+                        "2",
+                        "3",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ a ∈ s ⟶ a ≤ sup s"
+                }
+            ],
             "prop": "(∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ a ∈ s ⟶ a ≤ sup s",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "b"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "param_b": "b",
+                    "theorem": "real_le_sup"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -1606,7 +1704,7 @@
                 "s": "real set"
             }
         }
-         ],
+    ],
     "description": "Supremum and infimum. Relaitonal counterparts of sup and inf. Refer to sets.ml from HOL light",
     "imports": [
         "real"

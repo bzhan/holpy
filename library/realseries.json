@@ -6118,7 +6118,7 @@
         },
         {
             "name": "has_limsup_sequentially_imp_reallim_sup",
-            "num_gaps": 2,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "has_limsup a l sequentially",
@@ -6267,100 +6267,28 @@
                     "th": "N ≤ n ⊢ N ≤ n"
                 },
                 {
-                    "args": "N",
+                    "args": "",
                     "id": "2.12.2",
-                    "prevs": [
-                        "2.9"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "has_limsup a l sequentially, 0 < e ⊢ ∃n. N ≤ n ∧ l - e < a n"
-                },
-                {
-                    "args": "M, nat",
-                    "id": "2.12.3",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR M"
-                },
-                {
-                    "args": "N ≤ M ∧ l - e < a M",
-                    "id": "2.12.4",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "N ≤ M ∧ l - e < a M ⊢ N ≤ M ∧ l - e < a M"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "2.12.5",
-                    "prevs": [
-                        "2.12.4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "N ≤ M ∧ l - e < a M ⊢ l - e < a M"
-                },
-                {
-                    "args": "",
-                    "id": "2.12.6",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, N ≤ M ∧ l - e < a M ⊢ a M ≤ sup (image a ({m. m ≥ n}))"
-                },
-                {
-                    "args": "real_lte_trans",
-                    "id": "2.12.7",
-                    "prevs": [
-                        "2.12.5",
-                        "2.12.6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, N ≤ M ∧ l - e < a M ⊢ l - e < sup (image a ({m. m ≥ n}))"
-                },
-                {
-                    "args": "",
-                    "id": "2.12.8",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, N ≤ M ∧ l - e < a M ⊢ sup (image a ({m. m ≥ n})) < l + e"
-                },
-                {
-                    "args": "conjI",
-                    "id": "2.12.9",
-                    "prevs": [
-                        "2.12.7",
-                        "2.12.8"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, N ≤ M ∧ l - e < a M ⊢ l - e < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + e"
-                },
-                {
-                    "args": "conjI",
-                    "id": "2.12.10",
-                    "prevs": [
-                        "2.1",
-                        "2.12.9"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, N ≤ M ∧ l - e < a M ⊢ 0 < e ∧ l - e < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + e"
+                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n ⊢ 0 < e ∧ l - e < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + e"
                 },
                 {
                     "args": "real_abs_between, abs (sup (image a ({m. m ≥ n})) - l) < e",
-                    "id": "2.12.11",
+                    "id": "2.12.3",
                     "prevs": [
-                        "2.12.10"
+                        "2.12.2"
                     ],
                     "rule": "rewrite_goal_sym",
-                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, N ≤ M ∧ l - e < a M ⊢ abs (sup (image a ({m. m ≥ n})) - l) < e"
+                    "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n ⊢ abs (sup (image a ({m. m ≥ n})) - l) < e"
                 },
                 {
-                    "args": "∃n. N ≤ n ∧ l - e < a n",
-                    "id": "2.12.12",
+                    "args": "",
+                    "id": "2.12.4",
                     "prevs": [
                         "2.12.0",
                         "2.12.1",
-                        "2.12.2",
-                        "2.12.3",
-                        "2.12.4",
-                        "2.12.11"
+                        "2.12.3"
                     ],
                     "rule": "intros",
                     "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2 ⊢ ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e"
@@ -6568,6 +6496,90 @@
                     "goal_id": "2.12.5",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.12.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "element_le_sup"
+                },
+                {
+                    "goal_id": "2.12.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "l + e/2"
+                },
+                {
+                    "goal_id": "2.12.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "image_def"
+                },
+                {
+                    "goal_id": "2.12.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "2.12.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "forall_in_gspec1"
+                },
+                {
+                    "goal_id": "2.12.6",
+                    "method_name": "introduction",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "2.12.6.1"
+                    ],
+                    "goal_id": "2.12.6.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "2.11"
+                    ],
+                    "goal_id": "2.12.6.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.12.6.2",
+                        "2.12.1"
+                    ],
+                    "goal_id": "2.12.6.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.12.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "2.12.11",
+                    "method_name": "inst_exists_goal",
+                    "s": "M"
+                },
+                {
+                    "goal_id": "2.12.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.12.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "2.12.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
                 }
             ],
             "ty": "thm",
