@@ -2972,6 +2972,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "reallim_sequentially",
             "prop": [
                 "tendsto_real s l sequentially ⟷ ",

@@ -5633,6 +5633,45 @@
         },
         {
             "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "real_abs_between",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < d ∧ x - d < y ∧ y < x + d ⟷ abs (y - x) < d",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 0 < d ∧ x - d < y ∧ y < x + d ⟷ abs (y - x) < d"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < d ∧ x - d < y ∧ y < x + d ⟷ abs (y - x) < d"
+                }
+            ],
+            "prop": "0 < d ∧ x - d < y ∧ y < x + d ⟷ abs (y - x) < d",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_abs_bounds",

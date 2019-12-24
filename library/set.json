@@ -9850,10 +9850,676 @@
             "type": "'a set ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "sup",
             "prop": "sup s = (THE a. (∀x. x ∈ s ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ b))",
             "ty": "def",
             "type": "real set ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sup_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b) ⊢ ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b)"
+                },
+                {
+                    "args": "(THE a. (∀x. x ∈ s ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ b)) = (THE a. (∀x. x ∈ t ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ t ⟶ x ≤ b) ⟶ a ≤ b))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b) ⊢ (THE a. (∀x. x ∈ s ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ b)) = (THE a. (∀x. x ∈ t ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ t ⟶ x ≤ b) ⟶ a ≤ b))"
+                },
+                {
+                    "args": "sup_def, sup s = sup t",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b) ⊢ sup s = sup t"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b)) ⟶ sup s = sup t"
+                }
+            ],
+            "prop": "(∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟷ (∀x. x ∈ t ⟶ x ≤ b)) ⟶ sup s = sup t",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sup_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sup",
+            "prop": [
+                "¬(s = ∅) ",
+                "⟶ (∃b. ∀x. x ∈ s ⟶ x ≤ b) ",
+                "   ⟶ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sup_finite_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ¬((∅::real set) = ∅) ⟶ (∃b::real. false ∧ (∀x. false ⟶ x ≤ b))"
+                },
+                {
+                    "args": "¬((∅::real set) = ∅)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬((∅::real set) = ∅) ⊢ ¬((∅::real set) = ∅)"
+                },
+                {
+                    "args": "eq_refl, {a: real set}, {x: (∅::real set)}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∅::real set) = ∅"
+                },
+                {
+                    "args": "negE_gen, {}, {A: (∅::real set) = ∅, C: ∃b::real. false ∧ (∀x. false ⟶ x ≤ b)}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬((∅::real set) = ∅), finite s ⊢ ∃b::real. false ∧ (∀x. false ⟶ x ≤ b)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ ¬((∅::real set) = ∅) ⟶ (∃b::real. false ∧ (∀x. false ⟶ x ≤ b))"
+                },
+                {
+                    "args": "member_empty_simp, ¬((∅::real set) = ∅) ⟶ (∃b::real. b ∈ ∅ ∧ (∀x. x ∈ ∅ ⟶ x ≤ b))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ ¬((∅::real set) = ∅) ⟶ (∃b::real. b ∈ ∅ ∧ (∀x. x ∈ ∅ ⟶ x ≤ b))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x::real. ∀s1. (¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x1. x1 ∈ s1 ⟶ x1 ≤ b))) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ ¬(insert x s1 = ∅) ⟶ (∃b. b ∈ insert x s1 ∧ (∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ b))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s1, real set",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b))",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b)) ⊢ ¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b))"
+                },
+                {
+                    "args": "¬(x ∈ s1)",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s1) ⊢ ¬(x ∈ s1)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ⊢ finite s1"
+                },
+                {
+                    "args": "¬(insert x s1 = ∅)",
+                    "id": "3.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(insert x s1 = ∅) ⊢ ¬(insert x s1 = ∅)"
+                },
+                {
+                    "args": "set_equal_iff",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b)) ⊢ ¬(∀x. x ∈ s1 ⟷ x ∈ ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b))"
+                },
+                {
+                    "args": "not_all",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b)) ⊢ (∃x. ¬(x ∈ s1 ⟷ x ∈ ∅)) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b))"
+                },
+                {
+                    "args": "member_empty_simp",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b)) ⊢ (∃x. ¬(x ∈ s1 ⟷ false)) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b))"
+                },
+                {
+                    "args": "∃b. (b = x ∨ b ∈ s1) ∧ (∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ b)",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.8"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b)) ⊢ ∃b. (b = x ∨ b ∈ s1) ∧ (∀x1. x1 = x ∨ x1 ∈ s1 ⟶ x1 ≤ b)"
+                },
+                {
+                    "args": "member_insert, ∃b. b ∈ insert x s1 ∧ (∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ b)",
+                    "id": "3.10",
+                    "prevs": [
+                        "3.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x. x ∈ s1 ⟶ x ≤ b)), ¬(x ∈ s1), finite s1, ¬(insert x s1 = ∅) ⊢ ∃b. b ∈ insert x s1 ∧ (∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ b)"
+                },
+                {
+                    "args": "",
+                    "id": "3.11",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.3",
+                        "3.4",
+                        "3.5",
+                        "3.10"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ ∀x::real. ∀s1. (¬(s1 = ∅) ⟶ (∃b. b ∈ s1 ∧ (∀x1. x1 ∈ s1 ⟶ x1 ≤ b))) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ ¬(insert x s1 = ∅) ⟶ (∃b. b ∈ insert x s1 ∧ (∀x1. x1 ∈ insert x s1 ⟶ x1 ≤ b))"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ ¬(s = ∅) ⟶ (∃b. b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ ¬(s = ∅) ⟶ (∃b. b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b))"
+                }
+            ],
+            "prop": "finite s ⟶ ¬(s = ∅) ⟶ (∃b. b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b))",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x,s1"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "set_equal_iff"
+                },
+                {
+                    "fact_ids": [
+                        "3.6"
+                    ],
+                    "goal_id": "3.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "fact_ids": [
+                        "3.7"
+                    ],
+                    "goal_id": "3.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "goal_id": "3.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "fact_ids": [
+                        "3.8"
+                    ],
+                    "goal_id": "3.9",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sup_finite",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "¬(s = ∅)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "sup_finite_lemma, {}, {s: s}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ¬(s = ∅) ⊢ ∃b. b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s, ¬(s = ∅) ⊢ sup s ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s, ¬(s = ∅) ⊢ ∀x. x ∈ s ⟶ x ≤ sup s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(s = ∅) ⊢ sup s ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ sup s)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ ¬(s = ∅) ⟶ sup s ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ sup s)"
+                }
+            ],
+            "prop": "finite s ⟶ ¬(s = ∅) ⟶ sup s ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ sup s)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sup_finite_lemma"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_le_sup",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "y ∈ s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ s ⊢ y ∈ s"
+                },
+                {
+                    "args": "a ≤ y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ y ⊢ a ≤ y"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ x ≤ b",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ b"
+                },
+                {
+                    "args": "sup, {}, {s: s}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(s = ∅) ⟶ (∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
+                },
+                {
+                    "args": "¬(s = ∅)",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "y ∈ s ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y ∈ s ⊢ (∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
+                    "id": "6",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. x ∈ s ⟶ x ≤ b ⊢ ∃b. ∀x. x ∈ s ⟶ x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ sup s"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "id": "9",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "y ∈ s, a ≤ y, ∀x. x ∈ s ⟶ x ≤ b ⊢ a ≤ sup s"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ y ∈ s ⟶ a ≤ y ⟶ (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ sup s"
+                }
+            ],
+            "prop": "y ∈ s ⟶ a ≤ y ⟶ (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ sup s",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_s": "s",
+                    "theorem": "sup"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal": "¬(s = ∅)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal": "(∃b. ∀x. x ∈ s ⟶ x ≤ b)",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "s": "real set",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "element_le_sup",
+            "prop": "(∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ a ∈ s ⟶ a ≤ sup s",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
         },
         {
             "name": "inf",
