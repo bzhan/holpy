@@ -11,7 +11,7 @@ from data.integral import within, atreal
 from integral import proof
 from logic.context import Context
 from logic.proofterm import refl
-from logic.conv import top_conv
+from logic.conv import top_conv, arg_conv
 from syntax import parser
 from syntax import printer
 from logic.tests.conv_test import test_conv
@@ -133,21 +133,40 @@ class ProofTest(unittest.TestCase):
             self.assertEqual(pt2.prop, proof.mk_real_integrable_on(f, a, b))
 
     def testRealIncreasingOn(self):
-        test_data =[
-            "6 * x"
+        test_data = [
+            ("6 * x", "a", "b"),
+            ("sin x", "(0::real)", "pi / 2"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real'})
+        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real', 'a': 'real', 'b': 'real'})
         thy = ctxt.thy
         x = Var('x', realT)
-        a = Var('a', realT)
-        b = Var('b', realT)
-        for s in test_data:
+        for s, a, b in test_data:
             s = parser.parse_term(ctxt, s)
             f = Term.mk_abs(x, s)
+            a = parser.parse_term(ctxt, a)
+            b = parser.parse_term(ctxt, b)
             pt = proof.real_increasing_onI(thy, f, a, b)
             th = thy.check_proof(pt.export())
             self.assertEqual(th.prop, proof.mk_real_increasing_on(f, a, b))
+
+    def testRealDecreasingOn(self):
+        test_data = [
+            ("- 6 * x", "a", "b"),
+            ("cos x", "(0::real)", "pi / 2"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real', 'a': 'real', 'b': 'real'})
+        thy = ctxt.thy
+        x = Var('x', realT)
+        for s, a, b in test_data:
+            s = parser.parse_term(ctxt, s)
+            f = Term.mk_abs(x, s)
+            a = parser.parse_term(ctxt, a)
+            b = parser.parse_term(ctxt, b)
+            pt = proof.real_decreasing_onI(thy, f, a, b)
+            th = thy.check_proof(pt.export())
+            self.assertEqual(th.prop, proof.mk_real_decreasing_on(f, a, b))
 
     def testLinearityConv(self):
         test_data = [
@@ -324,6 +343,22 @@ class ProofTest(unittest.TestCase):
                 top_conv(proof.common_integral()),
                 proof.simplify()
             ]
+        )
+
+    def testIntegral12(self):
+        ctxt = Context('realintegral')
+        f = parser.parse_term(ctxt, "%x::real. - x ^ (3::nat)")
+        g = parser.parse_term(ctxt, "%x. cos x")
+        self.run_test(
+            "real_integral (real_closed_interval 0 (pi / 2)) (%x. sin x * (cos x) ^ (3::nat))",
+            "(1 :: real) / 4",
+            [
+                proof.substitution(f, g),
+                arg_conv(proof.linearity()),
+                proof.simplify(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ], debug=True
         )
 
 

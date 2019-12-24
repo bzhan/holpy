@@ -116,6 +116,7 @@ def is_binary_real(t):
                 nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)
 
 def from_binary_real(t):
+    assert isinstance(t, Term), "from_binary_real"
     assert is_binary_real(t), "from_binary_real"
     if t.is_comb() and t.fun.is_const_name("uminus"):
         return -from_binary_real(t.arg)
@@ -136,22 +137,39 @@ def real_approx_eval(t):
         return from_binary_real(t)
     elif t == pi:
         return math.pi
-    elif t.is_comb() and t.fun.is_const_name('of_nat'):
-        return nat.nat_eval(t.arg)
-    elif is_plus(t):
-        return real_approx_eval(t.arg1) + real_approx_eval(t.arg)
-    elif is_minus(t):
-        return real_approx_eval(t.arg1) - real_approx_eval(t.arg)
-    elif is_times(t):
-        return real_approx_eval(t.arg1) * real_approx_eval(t.arg)
-    elif is_divides(t):
-        denom = real_approx_eval(t.arg)
-        if denom == 0.0:
-            raise ConvException('real_approx_eval: divide by 0')
+    elif t.is_comb():
+        if t.fun.is_const_name('of_nat'):
+            return nat.nat_eval(t.arg)
+        elif is_plus(t):
+            return real_approx_eval(t.arg1) + real_approx_eval(t.arg)
+        elif is_minus(t):
+            return real_approx_eval(t.arg1) - real_approx_eval(t.arg)
+        elif is_times(t):
+            return real_approx_eval(t.arg1) * real_approx_eval(t.arg)
+        elif is_divides(t):
+            denom = real_approx_eval(t.arg)
+            if denom == 0.0:
+                raise ConvException('real_approx_eval: divide by 0')
+            else:
+                return real_approx_eval(t.arg1) / denom
+        elif is_nat_power(t):
+            return real_approx_eval(t.arg1) ** nat.nat_eval(t.arg)
+        elif is_real_power(t):
+            return real_approx_eval(t.arg1) ** real_approx_eval(t.arg)
+        elif t.fun.is_const_name('sin'):
+            return math.sin(real_approx_eval(t.arg))
+        elif t.fun.is_const_name('cos'):
+            return math.cos(real_approx_eval(t.arg))
+        elif t.fun.is_const_name('tan'):
+            return math.tan(real_approx_eval(t.arg))
+        elif t.fun.is_const_name('log'):
+            return math.log(real_approx_eval(t.arg))
+        elif t.fun.is_const_name('exp'):
+            return math.exp(real_approx_eval(t.arg))
         else:
-            return real_approx_eval(t.arg1) / denom
+            raise ConvException('real_approx_eval: %s' % str(t))
     else:
-        raise ConvException('real_approx_eval')
+        raise ConvException('real_approx_eval: %s' % str(t))
 
 def convert_to_poly(t):
     """Convert a term t to polynomial normal form."""

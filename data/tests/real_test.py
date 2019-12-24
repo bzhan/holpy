@@ -1,10 +1,13 @@
 # Author: Bohua Zhan
 
 import unittest
+import math
 
 from logic.tests.conv_test import test_conv
 from logic.tests.logic_test import test_macro
+from logic.context import Context
 from data import real
+from syntax import parser
 
 
 class RealTest(unittest.TestCase):
@@ -45,6 +48,29 @@ class RealTest(unittest.TestCase):
         vars = {'x': 'real', 'y': 'real', 'z': 'real', 'm': 'nat', 'n': 'nat'}
         for expr, res in test_data:
             test_conv(self, 'real', real.real_norm_conv(), vars=vars, t=expr, t_res=res)
+
+    def testRealApproxEval(self):
+        test_data = [
+            ("(0::real)", 0),
+            ("(1::real) / 3", 1.0/3),
+            ("(2::real) ^ (3::nat)", 8),
+            ("(2::real) ^ (-(3::real))", 0.125),
+            ("sin(0)", 0),
+            ("sin(pi/2)", 1),
+            ("sin(pi/4)", math.sqrt(2)/2),
+            ("cos(0)", 1),
+            ("cos(pi/3)", 0.5),
+            ("cos(pi/2)", 0),
+            ("log(1)", 0),
+            ("log(2)", math.log(2)),
+            ("exp(0)", 1),
+            ("exp(1)", math.exp(1)),
+        ]
+
+        for expr, res in test_data:
+            ctxt = Context('transcendentals')
+            t = parser.parse_term(ctxt, expr)
+            self.assertAlmostEqual(real.real_approx_eval(t), res)
 
     def testRealIneq(self):
         test_data = [

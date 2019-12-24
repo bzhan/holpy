@@ -187,6 +187,7 @@ norm_thms = [
     'real_of_nat_minus',
     'real_inverse_divide',
     'real_increasing_on_def',
+    'real_decreasing_on_def',
     'real_open_interval_def',
     'real_closed_interval_def',
 ]

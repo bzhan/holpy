@@ -261,9 +261,9 @@ def nat_eval(t):
         elif t.head == times:
             return nat_eval(t.arg1) * nat_eval(t.arg)
         else:
-            raise ConvException('nat_eval')
+            raise ConvException('nat_eval: %s' % str(t))
     else:
-        raise ConvException('nat_eval')
+        raise ConvException('nat_eval: %s' % str(t))
 
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
