@@ -6391,6 +6391,44 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_max_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "max x y < z ⟷ x < z ∧ y < z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ max x y < z ⟷ x < z ∧ y < z"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ max x y < z ⟷ x < z ∧ y < z"
+                }
+            ],
+            "prop": "max x y < z ⟷ x < z ∧ y < z",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward",
                 "hint_forward"
             ],

@@ -2624,6 +2624,1184 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "arch_eventually_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_arch_simple, {}, {x: x + 1}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃n. x + 1 ≤ of_nat n"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "x + 1 ≤ of_nat N",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + 1 ≤ of_nat N ⊢ x + 1 ≤ of_nat N"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x + 1 ≤ of_nat N ⊢ ∀n. N ≤ n ⟶ x < of_nat n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "real_of_nat_le",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "N ≤ n ⊢ (of_nat::nat ⇒ real) N ≤ of_nat n"
+                },
+                {
+                    "args": "x < of_nat n",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2",
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "N ≤ n, x + 1 ≤ of_nat N ⊢ x < of_nat n"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "x + 1 ≤ of_nat N ⊢ ∀n. N ≤ n ⟶ x < of_nat n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ x < of_nat n, a: N}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x + 1 ≤ of_nat N ⊢ ∃a1. ∀n. a1 ≤ n ⟶ x < of_nat n"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λn. x < of_nat n) sequentially",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + 1 ≤ of_nat N ⊢ eventually (λn. x < of_nat n) sequentially"
+                },
+                {
+                    "args": "∃n. x + 1 ≤ of_nat n",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. x < of_nat n) sequentially"
+                }
+            ],
+            "prop": "eventually (λn. x < of_nat n) sequentially",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x+1",
+                    "theorem": "real_arch_simple"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_of_nat_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.2",
+                        "2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "arch_eventually_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_arch_simple, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃n. x ≤ of_nat n"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "x ≤ of_nat N",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ of_nat N ⊢ x ≤ of_nat N"
+                },
+                {
+                    "args": "∀n. (of_nat::nat ⇒ real) N ≤ of_nat n ⟶ x ≤ of_nat n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "x ≤ of_nat N ⊢ ∀n. (of_nat::nat ⇒ real) N ≤ of_nat n ⟶ x ≤ of_nat n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. (of_nat::nat ⇒ real) N ≤ of_nat n ⟶ x ≤ of_nat n, a: N}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ≤ of_nat N ⊢ ∃a1. ∀n. (of_nat::nat ⇒ real) a1 ≤ of_nat n ⟶ x ≤ of_nat n"
+                },
+                {
+                    "args": "real_of_nat_le, ∃N. ∀n. N ≤ n ⟶ x ≤ of_nat n",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x ≤ of_nat N ⊢ ∃N. ∀n. N ≤ n ⟶ x ≤ of_nat n"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λn. x ≤ of_nat n) sequentially",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ of_nat N ⊢ eventually (λn. x ≤ of_nat n) sequentially"
+                },
+                {
+                    "args": "∃n. x ≤ of_nat n",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. x ≤ of_nat n) sequentially"
+                }
+            ],
+            "prop": "eventually (λn. x ≤ of_nat n) sequentially",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "real_arch_simple"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_of_nat_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "arch_eventually_abs_inv_offset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially"
+                },
+                {
+                    "args": "eventually_happens, {a: nat}, {P: λn. abs (real_inverse (of_nat n + a)) < e, net: sequentially}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⊢ trivial_limit sequentially ∨ (∃x. abs (real_inverse (of_nat x + a)) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⊢ trivial_limit sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "trivial_limit sequentially",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit sequentially ⊢ trivial_limit sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially, trivial_limit sequentially ⊢ ¬(0 < e) ⟶ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "¬(0 < e)",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 < e) ⊢ ¬(0 < e)"
+                },
+                {
+                    "args": "trivial_limit_sequentially",
+                    "id": "0.2.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.2",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially, trivial_limit sequentially ⊢ ¬(0 < e) ⟶ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "trivial_limit sequentially, eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⊢ trivial_limit sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "(∃x. abs (real_inverse (of_nat x + a)) < e) ⟶ 0 < e",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∃x. abs (real_inverse (of_nat x + a)) < e) ⟶ 0 < e"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.1",
+                        "0.2",
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 < e ⟶ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < e ⊢ ∀x. max 0 (max (2 * abs a) (2 / e)) < of_nat x ⟶ abs (real_inverse (of_nat x + a)) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "max 0 (max (2 * abs a) (2 / e)) < of_nat n",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ max 0 (max (2 * abs a) (2 / e)) < of_nat n"
+                },
+                {
+                    "args": "real_max_lt",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ (0::real) < of_nat n ∧ max (2 * abs a) (2 / e) < of_nat n"
+                },
+                {
+                    "args": "conjD2, {}, {A: (0::real) < of_nat n, B: max (2 * abs a) (2 / e) < of_nat n}",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ max (2 * abs a) (2 / e) < of_nat n"
+                },
+                {
+                    "args": "real_max_lt",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ 2 * abs a < of_nat n ∧ 2 / e < of_nat n"
+                },
+                {
+                    "args": "0 < of_nat n / 2",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "z3",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ 0 < of_nat n / 2"
+                },
+                {
+                    "args": "of_nat n / 2 ≤ abs (of_nat n + a)",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.4",
+                        "1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n, 0 < e ⊢ of_nat n / 2 ≤ abs (of_nat n + a)"
+                },
+                {
+                    "args": "real_le_inv2",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.5",
+                        "1.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ real_inverse (abs (of_nat n + a)) ≤ real_inverse (of_nat n / 2)"
+                },
+                {
+                    "args": "real_abs_inv, abs (real_inverse (of_nat n + a)) ≤ real_inverse (of_nat n / 2)",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e, max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ abs (real_inverse (of_nat n + a)) ≤ real_inverse (of_nat n / 2)"
+                },
+                {
+                    "args": "real_inv_inv, e = real_inverse (real_inverse e)",
+                    "id": "1.1.9",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ e = real_inverse (real_inverse e)"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "1.1.10",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ 0 < real_inverse e"
+                },
+                {
+                    "args": "real_inverse e < of_nat n / 2",
+                    "id": "1.1.11",
+                    "prevs": [
+                        "1.1.4",
+                        "1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "max 0 (max (2 * abs a) (2 / e)) < of_nat n, 0 < e ⊢ real_inverse e < of_nat n / 2"
+                },
+                {
+                    "args": "real_lt_inv2",
+                    "id": "1.1.12",
+                    "prevs": [
+                        "1.1.10",
+                        "1.1.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ real_inverse (of_nat n / 2) < real_inverse (real_inverse e)"
+                },
+                {
+                    "args": "real_inverse (of_nat n / 2) < e",
+                    "id": "1.1.13",
+                    "prevs": [
+                        "1.1.9",
+                        "1.1.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < e, max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ real_inverse (of_nat n / 2) < e"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "1.1.14",
+                    "prevs": [
+                        "1.1.8",
+                        "1.1.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e, max 0 (max (2 * abs a) (2 / e)) < of_nat n ⊢ abs (real_inverse (of_nat n + a)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.15",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.14"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < e ⊢ ∀x. max 0 (max (2 * abs a) (2 / e)) < of_nat x ⟶ abs (real_inverse (of_nat x + a)) < e"
+                },
+                {
+                    "args": "arch_eventually_lt, {}, {x: max 0 (max (2 * abs a) (2 / e))}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ eventually (λn. max 0 (max (2 * abs a) (2 / e)) < of_nat n) sequentially"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e ⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < e ⟶ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⟷ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⟷ 0 < e"
+                }
+            ],
+            "prop": "eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially ⟷ 0 < e",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "eventually_happens"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trivial_limit_sequentially"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λn. max 0 (max (2 * abs a) (2/e)) < of_nat n)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_max_lt"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "real_inverse (of_nat n /2)",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_max_lt"
+                },
+                {
+                    "goal_id": "1.1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_inv"
+                },
+                {
+                    "goal_id": "1.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_inv2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.4",
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.6",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "e = real_inverse (real_inverse e)",
+                    "goal_id": "1.1.9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_inv"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.9"
+                    ],
+                    "goal_id": "1.1.10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv2"
+                },
+                {
+                    "goal_id": "1.1.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.4",
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.11",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "arch_eventually_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "e": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "arch_eventually_inv_offset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "arch_eventually_lt, {}, {x: abs a}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ eventually (λn. abs a < of_nat n) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially"
+                },
+                {
+                    "args": "conjI, {}, {A: eventually (λn. real_inverse (of_nat n + a) < e) sequentially, B: eventually (λn. abs a < of_nat n) sequentially}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially ∧ eventually (λn. abs a < of_nat n) sequentially"
+                },
+                {
+                    "args": "eventually_and",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ eventually (λx. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x) sequentially"
+                },
+                {
+                    "args": "eventually_happens, {a: nat}, {P: λx. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x, net: sequentially}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ trivial_limit sequentially ∨ (∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ trivial_limit sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "trivial_limit sequentially",
+                    "id": "1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit sequentially ⊢ trivial_limit sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially, trivial_limit sequentially ⊢ ¬(0 < e) ⟶ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "¬(0 < e)",
+                    "id": "1.4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 < e) ⊢ ¬(0 < e)"
+                },
+                {
+                    "args": "trivial_limit_sequentially",
+                    "id": "1.4.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1.2",
+                    "prevs": [
+                        "1.4.1.0",
+                        "1.4.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially, trivial_limit sequentially ⊢ ¬(0 < e) ⟶ ¬(trivial_limit sequentially)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.4.2",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "trivial_limit sequentially, eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.3",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ trivial_limit sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ (∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x) ⟶ 0 < e"
+                },
+                {
+                    "args": "∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x",
+                    "id": "1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x ⊢ ∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "real_inverse (of_nat n + a) < e ∧ abs a < of_nat n",
+                    "id": "1.5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_inverse (of_nat n + a) < e ∧ abs a < of_nat n ⊢ real_inverse (of_nat n + a) < e ∧ abs a < of_nat n"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "1.5.3",
+                    "prevs": [
+                        "1.5.2"
+                    ],
+                    "rule": "z3",
+                    "th": "real_inverse (of_nat n + a) < e ∧ abs a < of_nat n ⊢ 0 < e"
+                },
+                {
+                    "args": "∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x",
+                    "id": "1.5.4",
+                    "prevs": [
+                        "1.5.0",
+                        "1.5.0",
+                        "1.5.1",
+                        "1.5.2",
+                        "1.5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ (∃x. real_inverse (of_nat x + a) < e ∧ abs a < of_nat x) ⟶ 0 < e"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.3",
+                        "1.4",
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⟶ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 < e ⟶ eventually (λn. real_inverse (of_nat n + a) < e) sequentially"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "∀x. abs (real_inverse (of_nat x + a)) < e ⟶ real_inverse (of_nat x + a) < e",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. abs (real_inverse (of_nat x + a)) < e ⟶ real_inverse (of_nat x + a) < e"
+                },
+                {
+                    "args": "arch_eventually_abs_inv_offset, eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < e ⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < e ⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < e ⟶ eventually (λn. real_inverse (of_nat n + a) < e) sequentially"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⟷ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⟷ 0 < e"
+                }
+            ],
+            "prop": "eventually (λn. real_inverse (of_nat n + a) < e) sequentially ⟷ 0 < e",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "abs a",
+                    "theorem": "arch_eventually_lt"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "eventually_and"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "eventually_happens"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.0"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trivial_limit_sequentially"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.0"
+                    ],
+                    "goal_id": "1.5.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.2"
+                    ],
+                    "goal_id": "1.5.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λn. abs (real_inverse (of_nat n + a)) < e)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "arch_eventually_abs_inv_offset"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "e": "real"
+            }
+        },
+        {
             "name": "netlimit",
             "ty": "def.ax",
             "type": "'a net ⇒ 'a"
