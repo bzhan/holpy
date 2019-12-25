@@ -18038,6 +18038,532 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_pow_lbound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: (1::real)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (1::real) ≤ 1"
+                },
+                {
+                    "args": "real_add_rid, (1::real) + 0 ≤ 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ (1::real) + 0 ≤ 1"
+                },
+                {
+                    "args": "real_mul_lzero, 1 + 0 * x ≤ 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ 1 + 0 * x ≤ 1"
+                },
+                {
+                    "args": "real_zero_def, 1 + of_nat 0 * x ≤ 1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ x ⊢ 1 + of_nat 0 * x ≤ 1"
+                },
+                {
+                    "args": "real_nat_power_def_1, 1 + of_nat 0 * x ≤ (1 + x) ^ (0::nat)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ 1 + of_nat 0 * x ≤ (1 + x) ^ (0::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x ⊢ ∀n. 1 + of_nat n * x ≤ (1 + x) ^ n ⟶ 1 + of_nat (Suc n) * x ≤ (1 + x) ^ Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "1 + of_nat n * x ≤ (1 + x) ^ n",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 + of_nat n * x ≤ (1 + x) ^ n ⊢ 1 + of_nat n * x ≤ (1 + x) ^ n"
+                },
+                {
+                    "args": "1 + (of_nat n + 1) * x ≤ (1 + x) * (1 + of_nat n * x)",
+                    "id": "6.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 ≤ x ⊢ 1 + (of_nat n + 1) * x ≤ (1 + x) * (1 + of_nat n * x)"
+                },
+                {
+                    "args": "0 ≤ 1 + x",
+                    "id": "6.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 ≤ x ⊢ 0 ≤ 1 + x"
+                },
+                {
+                    "args": "real_le_lmul",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3",
+                        "6.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, 1 + of_nat n * x ≤ (1 + x) ^ n ⊢ (1 + x) * (1 + of_nat n * x) ≤ (1 + x) * (1 + x) ^ n"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.2",
+                        "6.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, 1 + of_nat n * x ≤ (1 + x) ^ n ⊢ 1 + (of_nat n + 1) * x ≤ (1 + x) * (1 + x) ^ n"
+                },
+                {
+                    "args": "real_one_def, 1 + (of_nat n + of_nat 1) * x ≤ (1 + x) * (1 + x) ^ n",
+                    "id": "6.6",
+                    "prevs": [
+                        "6.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ x, 1 + of_nat n * x ≤ (1 + x) ^ n ⊢ 1 + (of_nat n + of_nat 1) * x ≤ (1 + x) * (1 + x) ^ n"
+                },
+                {
+                    "args": "real_of_nat_add, 1 + of_nat (n + 1) * x ≤ (1 + x) * (1 + x) ^ n",
+                    "id": "6.7",
+                    "prevs": [
+                        "6.6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ x, 1 + of_nat n * x ≤ (1 + x) ^ n ⊢ 1 + of_nat (n + 1) * x ≤ (1 + x) * (1 + x) ^ n"
+                },
+                {
+                    "args": "add_1_right, 1 + of_nat (Suc n) * x ≤ (1 + x) * (1 + x) ^ n",
+                    "id": "6.8",
+                    "prevs": [
+                        "6.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 ≤ x, 1 + of_nat n * x ≤ (1 + x) ^ n ⊢ 1 + of_nat (Suc n) * x ≤ (1 + x) * (1 + x) ^ n"
+                },
+                {
+                    "args": "real_nat_power_def_2, 1 + of_nat (Suc n) * x ≤ (1 + x) ^ Suc n",
+                    "id": "6.9",
+                    "prevs": [
+                        "6.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, 1 + of_nat n * x ≤ (1 + x) ^ n ⊢ 1 + of_nat (Suc n) * x ≤ (1 + x) ^ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.10",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.9"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x ⊢ ∀n. 1 + of_nat n * x ≤ (1 + x) ^ n ⟶ 1 + of_nat (Suc n) * x ≤ (1 + x) ^ Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. 1 + of_nat n * x ≤ (1 + x) ^ n, x: n}",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ x ⊢ 1 + of_nat n * x ≤ (1 + x) ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ 1 + of_nat n * x ≤ (1 + x) ^ n"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ 1 + of_nat n * x ≤ (1 + x) ^ n",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_2"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "param_y": "(1 + x) * (1 + of_nat n * x)",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_arch_pow",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "1 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 < x ⊢ 1 < x"
+                },
+                {
+                    "args": "real_arch, {}, {x: x - 1}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < x - 1 ⟶ (∀y. ∃n. y < of_nat n * (x - 1))"
+                },
+                {
+                    "args": "0 < x - 1",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "1 < x ⊢ 0 < x - 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "1 < x ⊢ ∀y. ∃n. y < of_nat n * (x - 1)"
+                },
+                {
+                    "args": "y",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "1 < x ⊢ ∃n. y < of_nat n * (x - 1)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "y < of_nat n * (x - 1)",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < of_nat n * (x - 1) ⊢ y < of_nat n * (x - 1)"
+                },
+                {
+                    "args": "y < 1 + of_nat n * (x - 1)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "z3",
+                    "th": "y < of_nat n * (x - 1) ⊢ y < 1 + of_nat n * (x - 1)"
+                },
+                {
+                    "args": "real_lt_imp_le, {}, {x: (0::real), y: x - 1}",
+                    "id": "8",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "1 < x ⊢ 0 ≤ x - 1"
+                },
+                {
+                    "args": "real_pow_lbound, {}, {n: n, x: x - 1}",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "1 < x ⊢ 1 + of_nat n * (x - 1) ≤ (1 + (x - 1)) ^ n"
+                },
+                {
+                    "args": "1 + (x - 1) = x",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ 1 + (x - 1) = x"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "10",
+                        "9"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "1 < x ⊢ 1 + of_nat n * (x - 1) ≤ x ^ n"
+                },
+                {
+                    "args": "real_lte_trans",
+                    "id": "12",
+                    "prevs": [
+                        "7",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < x, y < of_nat n * (x - 1) ⊢ y < x ^ n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λn::nat. y < x ^ n, a: n}",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "1 < x, y < of_nat n * (x - 1) ⊢ ∃a1::nat. y < x ^ a1"
+                },
+                {
+                    "args": "∃n. y < of_nat n * (x - 1)",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "4",
+                        "5",
+                        "6",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 < x ⟶ (∃n::nat. y < x ^ n)"
+                }
+            ],
+            "prop": "1 < x ⟶ (∃n::nat. y < x ^ n)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x-1",
+                    "theorem": "real_arch"
+                },
+                {
+                    "goal": "0 < x - 1",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "forall_elim",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "param_y": "1+ (of_nat n) * (x - 1)",
+                    "theorem": "real_lte_trans"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "real_pow_lbound"
+                },
+                {
+                    "goal": "1+(x-1)=x",
+                    "goal_id": "10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "10",
+                        "9"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_sgn",

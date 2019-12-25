@@ -3802,6 +3802,1056 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "arch_eventually_inv1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "arch_eventually_inv_offset, eventually (λn. real_inverse (of_nat n + 1) < e) sequentially ⟷ 0 < e",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + 1) < e) sequentially ⟷ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + 1) < e) sequentially ⟷ 0 < e"
+                }
+            ],
+            "prop": "eventually (λn. real_inverse (of_nat n + 1) < e) sequentially ⟷ 0 < e",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "arch_eventually_inv_offset"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "e": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "arch_eventually_inv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. of_nat n = of_nat n + (0::real)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "real_add_rid, of_nat n = of_nat n + (0::real)",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ of_nat n = of_nat n + (0::real)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. of_nat n = of_nat n + (0::real)"
+                },
+                {
+                    "args": "arch_eventually_inv_offset, eventually (λn. real_inverse (of_nat n + 0) < e) sequentially ⟷ 0 < e",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n + 0) < e) sequentially ⟷ 0 < e"
+                },
+                {
+                    "args": "eventually (λn. real_inverse (of_nat n) < e) sequentially ⟷ 0 < e",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n) < e) sequentially ⟷ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually (λn. real_inverse (of_nat n) < e) sequentially ⟷ 0 < e"
+                }
+            ],
+            "prop": "eventually (λn. real_inverse (of_nat n) < e) sequentially ⟷ 0 < e",
+            "steps": [
+                {
+                    "goal": "!n. of_nat n = of_nat n + (0::real)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "arch_eventually_inv_offset"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "e": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "arch_eventually_pow",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "1 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 < x ⊢ 1 < x"
+                },
+                {
+                    "args": "real_arch_pow, {}, {x: x, y: b}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "1 < x ⊢ ∃n::nat. b < x ^ n"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "b < x ^ N",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b < x ^ N ⊢ b < x ^ N"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "1 < x, b < x ^ N ⊢ ∀n. N ≤ n ⟶ b < x ^ n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "4.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < x, b < x ^ N, N ≤ n ⊢ 1 ≤ x"
+                },
+                {
+                    "args": "real_pow_mono",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2",
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < x, b < x ^ N, N ≤ n ⊢ x ^ N ≤ x ^ n"
+                },
+                {
+                    "args": "real_lte_trans",
+                    "id": "4.4",
+                    "prevs": [
+                        "3",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < x, b < x ^ N, N ≤ n ⊢ b < x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "1 < x, b < x ^ N ⊢ ∀n. N ≤ n ⟶ b < x ^ n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN::nat. ∀n. N ≤ n ⟶ b < x ^ n, a: N}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "1 < x, b < x ^ N ⊢ ∃a1::nat. ∀n. a1 ≤ n ⟶ b < x ^ n"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λn. b < x ^ n) sequentially",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < x, b < x ^ N ⊢ eventually (λn. b < x ^ n) sequentially"
+                },
+                {
+                    "args": "∃n::nat. b < x ^ n",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 < x ⟶ eventually (λn. b < x ^ n) sequentially"
+                }
+            ],
+            "prop": "1 < x ⟶ eventually (λn. b < x ^ n) sequentially",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_y": "b",
+                    "theorem": "real_arch_pow"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "param_y": "x ^ N",
+                    "theorem": "real_lte_trans"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_mono"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "arch_eventually_pow_inv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "1 < e",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 < e ⊢ 1 < e"
+                },
+                {
+                    "args": "abs x < 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < 1 ⊢ abs x < 1"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "1 < e, abs x < 1 ⊢ x = 0 ⟶ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "∀n::nat. 1 ≤ n ⟶ abs (if n = 0 then 1 else 0) < e",
+                    "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "1 < e ⊢ ∀n::nat. 1 ≤ n ⟶ abs (if n = 0 then 1 else 0) < e"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN::nat. ∀n. N ≤ n ⟶ abs (if n = 0 then 1 else 0) < e, a: (1::nat)}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "1 < e, abs x < 1, x = 0 ⊢ ∃a1::nat. ∀n. a1 ≤ n ⟶ abs (if n = 0 then 1 else 0) < e"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λn. abs (if n = 0 then 1 else 0) < e) sequentially",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < e, abs x < 1, x = 0 ⊢ eventually (λn. abs (if n = 0 then 1 else 0) < e) sequentially"
+                },
+                {
+                    "args": "real_pow_zero, eventually (λn. abs (0 ^ n) < e) sequentially",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < e, abs x < 1, x = 0 ⊢ eventually (λn. abs (0 ^ n) < e) sequentially"
+                },
+                {
+                    "args": "eventually (λn. abs (x ^ n) < e) sequentially",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0, 1 < e, abs x < 1 ⊢ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "1 < e, abs x < 1 ⊢ x = 0 ⟶ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "1 < e, abs x < 1 ⊢ ¬(x = 0) ⟶ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "arch_eventually_pow, {}, {b: real_inverse e, x: real_inverse (abs x)}",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 1 < real_inverse (abs x) ⟶ eventually (λn. real_inverse e < real_inverse (abs x) ^ n) sequentially"
+                },
+                {
+                    "args": "1 < real_inverse (abs x)",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x = 0), abs x < 1 ⊢ 1 < real_inverse (abs x)"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(x = 0), abs x < 1 ⊢ eventually (λn. real_inverse e < real_inverse (abs x) ^ n) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ ∀x1::nat. real_inverse e < real_inverse (abs x) ^ x1 ⟶ abs (x ^ x1) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "real_inverse e < real_inverse (abs x) ^ n",
+                    "id": "3.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_inverse e < real_inverse (abs x) ^ n ⊢ real_inverse e < real_inverse (abs x) ^ n"
+                },
+                {
+                    "args": "0 < real_inverse e",
+                    "id": "3.4.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "1 < e ⊢ 0 < real_inverse e"
+                },
+                {
+                    "args": "real_pow_inv",
+                    "id": "3.4.3",
+                    "prevs": [
+                        "3.4.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_inverse e < real_inverse (abs x) ^ n ⊢ real_inverse e < real_inverse (abs x ^ n)"
+                },
+                {
+                    "args": "real_lt_inv2",
+                    "id": "3.4.4",
+                    "prevs": [
+                        "3.4.2",
+                        "3.4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < e, abs x < 1, ¬(x = 0), real_inverse e < real_inverse (abs x) ^ n ⊢ real_inverse (real_inverse (abs x ^ n)) < real_inverse (real_inverse e)"
+                },
+                {
+                    "args": "real_inv_inv, abs x ^ n < e",
+                    "id": "3.4.5",
+                    "prevs": [
+                        "3.4.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "1 < e, abs x < 1, ¬(x = 0), real_inverse e < real_inverse (abs x) ^ n ⊢ abs x ^ n < e"
+                },
+                {
+                    "args": "real_abs_pow, abs (x ^ n) < e",
+                    "id": "3.4.6",
+                    "prevs": [
+                        "3.4.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < e, abs x < 1, ¬(x = 0), real_inverse e < real_inverse (abs x) ^ n ⊢ abs (x ^ n) < e"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.7",
+                    "prevs": [
+                        "3.4.0",
+                        "3.4.1",
+                        "3.4.6"
+                    ],
+                    "rule": "intros",
+                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ ∀x1::nat. real_inverse e < real_inverse (abs x) ^ x1 ⟶ abs (x ^ x1) < e"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4",
+                        "3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "1 < e, abs x < 1 ⊢ ¬(x = 0) ⟶ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 < e, abs x < 1 ⊢ eventually (λn. abs (x ^ n) < e) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 < e ⟶ abs x < 1 ⟶ eventually (λn. abs (x ^ n) < e) sequentially"
+                }
+            ],
+            "prop": "1 < e ⟶ abs x < 1 ⟶ eventually (λn. abs (x ^ n) < e) sequentially",
+            "steps": [
+                {
+                    "case": "x = 0",
+                    "goal_id": "2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(1::nat)"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_forward_step",
+                    "param_b": "real_inverse e",
+                    "param_x": "real_inverse (abs x)",
+                    "theorem": "arch_eventually_pow"
+                },
+                {
+                    "goal": "1 < real_inverse (abs x)",
+                    "goal_id": "3.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "3.0",
+                        "1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λn::nat. real_inverse e < real_inverse (abs x) ^ n)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_pow"
+                },
+                {
+                    "goal_id": "3.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_inv_inv"
+                },
+                {
+                    "goal_id": "3.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.4.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.1"
+                    ],
+                    "goal_id": "3.4.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_inv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "e": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "eventually_in_sequentially",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃N. ∀n. N ≤ n ⟶ P n) ⟶ (∃a. ∀x. ¬(P x) ⟶ x ≤ a)"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ P n",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃N. ∀n. N ≤ n ⟶ P n ⊢ ∃N. ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ P n",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. N ≤ n ⟶ P n ⊢ ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "∀x. ¬(P x) ⟶ x ≤ N",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. N ≤ n ⟶ P n ⊢ ∀x. ¬(P x) ⟶ x ≤ N"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λa. ∀x. ¬(P x) ⟶ x ≤ a, a: N}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃N. ∀n. N ≤ n ⟶ P n, ∀n. N ≤ n ⟶ P n ⊢ ∃a1. ∀x. ¬(P x) ⟶ x ≤ a1"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ P n",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃N. ∀n. N ≤ n ⟶ P n) ⟶ (∃a. ∀x. ¬(P x) ⟶ x ≤ a)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃a. ∀x. ¬(P x) ⟶ x ≤ a) ⟶ (∃N. ∀n. N ≤ n ⟶ P n)"
+                },
+                {
+                    "args": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1 ⊢ ∃a1. ∀x. ¬(P x) ⟶ x ≤ a1"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀x. ¬(P x) ⟶ x ≤ N",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ¬(P x) ⟶ x ≤ N ⊢ ∀x. ¬(P x) ⟶ x ≤ N"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N ⊢ ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N, N ≤ n ⊢ ¬(P n) ⟶ ¬(N ≤ n)"
+                },
+                {
+                    "args": "¬(P n)",
+                    "id": "1.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(P n) ⊢ ¬(P n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2.1",
+                    "prevs": [
+                        "1.2",
+                        "1.3.2.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. ¬(P x) ⟶ x ≤ N, ¬(P n) ⊢ n ≤ N"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N, N ≤ n, ¬(P n) ⊢ ¬(N ≤ n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2.3",
+                    "prevs": [
+                        "1.3.2.0",
+                        "1.3.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N, N ≤ n ⊢ ¬(P n) ⟶ ¬(N ≤ n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "1.3.1",
+                        "1.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "N ≤ n, ∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.4",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.1",
+                        "1.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N ⊢ ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ P n, a: N}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N ⊢ ∃N. ∀n. N ≤ n ⟶ P n"
+                },
+                {
+                    "args": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃a. ∀x. ¬(P x) ⟶ x ≤ a) ⟶ (∃N. ∀n. N ≤ n ⟶ P n)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃N. ∀n. N ≤ n ⟶ P n) ⟷ (∃a. ∀x. ¬(P x) ⟶ x ≤ a)"
+                },
+                {
+                    "args": "member_collect, (∃N. ∀n. N ≤ n ⟶ P n) ⟷ (∃a. ∀x. x ∈ {n. ¬(P n)} ⟶ x ≤ a)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃N. ∀n. N ≤ n ⟶ P n) ⟷ (∃a. ∀x. x ∈ {n. ¬(P n)} ⟶ x ≤ a)"
+                },
+                {
+                    "args": "eventually_sequentially, eventually P sequentially ⟷ (∃a. ∀x. x ∈ {n. ¬(P n)} ⟶ x ≤ a)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually P sequentially ⟷ (∃a. ∀x. x ∈ {n. ¬(P n)} ⟶ x ≤ a)"
+                },
+                {
+                    "args": "nat_finite, eventually P sequentially ⟷ finite ({n. ¬(P n)})",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually P sequentially ⟷ finite ({n. ¬(P n)})"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ eventually P sequentially ⟷ finite ({n. ¬(P n)})"
+                }
+            ],
+            "prop": "eventually P sequentially ⟷ finite ({n. ¬(P n)})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_finite"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1"
+                    ],
+                    "goal_id": "1.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2",
+                        "1.3.2.0"
+                    ],
+                    "goal_id": "1.3.2.1",
+                    "method_name": "apply_fact"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool"
+            }
+        },
+        {
             "name": "netlimit",
             "ty": "def.ax",
             "type": "'a net ⇒ 'a"
