@@ -191,8 +191,7 @@ def strip_exists(t, names):
     input term, with bound variables substituted for v_1, ..., v_k.
 
     """
-    if is_exists(t):
-        assert len(names) > 0, "strip_exists: not enough names input."
+    if is_exists(t) and len(names) > 0:
         assert isinstance(names[0], str), "strip_exists: names must be strings."
         v = Var(names[0], t.arg.var_T)
         vars, body = strip_exists(t.arg.subst_bound(v), names[1:])
