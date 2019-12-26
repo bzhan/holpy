@@ -7078,26 +7078,44 @@
                     "th": "has_limsup a l sequentially ⊢ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
                 },
                 {
-                    "args": "",
+                    "args": "reallim_sequentially",
                     "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_limsup a l sequentially ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "has_limsup a l sequentially ⊢ ∃b. eventually (λn. a n ≤ b) sequentially"
+                    "th": "has_limsup a l sequentially ⊢ eventually (λn. a n ≤ l) sequentially"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λb. eventually (λn. a n ≤ b) sequentially, a: l}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup a l sequentially ⊢ ∃a1. eventually (λn. a n ≤ a1) sequentially"
                 },
                 {
                     "args": "eventually_ubound_le_sequentially, ∃b. ∀n. a n ≤ b",
-                    "id": "0.3",
+                    "id": "0.5",
                     "prevs": [
-                        "0.2"
+                        "0.4"
                     ],
                     "rule": "rewrite_goal_sym",
                     "th": "has_limsup a l sequentially ⊢ ∃b. ∀n. a n ≤ b"
                 },
                 {
                     "args": "conjI",
-                    "id": "0.4",
+                    "id": "0.6",
                     "prevs": [
-                        "0.3",
+                        "0.5",
                         "0.1"
                     ],
                     "rule": "apply_theorem",
@@ -7105,10 +7123,10 @@
                 },
                 {
                     "args": "",
-                    "id": "0.5",
+                    "id": "0.7",
                     "prevs": [
                         "0.0",
-                        "0.4"
+                        "0.6"
                     ],
                     "rule": "intros",
                     "th": "⊢ has_limsup a l sequentially ⟶ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
@@ -7172,6 +7190,20 @@
                     "method_name": "rewrite_goal",
                     "sym": "true",
                     "theorem": "eventually_ubound_le_sequentially"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "l"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "reallim_sequentially"
                 }
             ],
             "ty": "thm",
