@@ -6393,6 +6393,120 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_le_max",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "z ≤ max x y ⟷ z ≤ x ∨ z ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ z ≤ max x y ⟷ z ≤ x ∨ z ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ z ≤ max x y ⟷ z ≤ x ∨ z ≤ y"
+                }
+            ],
+            "prop": "z ≤ max x y ⟷ z ≤ x ∨ z ≤ y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_le_min",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "z ≤ min x y ⟷ z ≤ x ∧ z ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ z ≤ min x y ⟷ z ≤ x ∧ z ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ z ≤ min x y ⟷ z ≤ x ∧ z ≤ y"
+                }
+            ],
+            "prop": "z ≤ min x y ⟷ z ≤ x ∧ z ≤ y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_min_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "min x y ≤ z ⟷ x ≤ z ∨ y ≤ z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ min x y ≤ z ⟷ x ≤ z ∨ y ≤ z"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ min x y ≤ z ⟷ x ≤ z ∨ y ≤ z"
+                }
+            ],
+            "prop": "min x y ≤ z ⟷ x ≤ z ∨ y ≤ z",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_max_lt",
             "num_gaps": 0,
             "proof": [

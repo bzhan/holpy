@@ -5544,6 +5544,18 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_image",
+            "prop": "finite s ⟶ finite (image f s)",
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "itset",
