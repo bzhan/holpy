@@ -7082,13 +7082,22 @@
                     "id": "0.2",
                     "prevs": [],
                     "rule": "sorry",
+                    "th": "has_limsup a l sequentially ⊢ ∃b. eventually (λn. a n ≤ b) sequentially"
+                },
+                {
+                    "args": "eventually_ubound_le_sequentially, ∃b. ∀n. a n ≤ b",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
                     "th": "has_limsup a l sequentially ⊢ ∃b. ∀n. a n ≤ b"
                 },
                 {
                     "args": "conjI",
-                    "id": "0.3",
+                    "id": "0.4",
                     "prevs": [
-                        "0.2",
+                        "0.3",
                         "0.1"
                     ],
                     "rule": "apply_theorem",
@@ -7096,10 +7105,10 @@
                 },
                 {
                     "args": "",
-                    "id": "0.4",
+                    "id": "0.5",
                     "prevs": [
                         "0.0",
-                        "0.3"
+                        "0.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ has_limsup a l sequentially ⟶ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
@@ -7157,6 +7166,12 @@
                     "goal_id": "0.2",
                     "method_name": "apply_backward_step",
                     "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "eventually_ubound_le_sequentially"
                 }
             ],
             "ty": "thm",

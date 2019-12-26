@@ -1252,6 +1252,467 @@
             "vars": {
                 "R": "nat ⇒ nat"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "infinite_enumerate_weak",
+            "prop": "infinite s ⟶ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s))",
+            "ty": "thm",
+            "vars": {
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "infinite_enumerate_eq_alt",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ infinite s ⟶ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s))"
+                },
+                {
+                    "args": "infinite s",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "infinite s ⊢ infinite s"
+                },
+                {
+                    "args": "infinite_enumerate_weak",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "infinite s ⊢ ∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite s ⟶ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s)) ⟶ infinite s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ infinite s ⟷ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite s ⟷ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s))"
+                }
+            ],
+            "prop": "infinite s ⟷ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ (∀n. r n ∈ s))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "infinite_enumerate_weak"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "monotone_subsequence",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (∀n. ∃p. n < p ∧ (∀m. p ≤ m ⟶ s m ≤ s p)) ⟶ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ ((∀m. ∀n. m < n ⟶ s (r m) ≤ s (r n)) ∨ (∀m. ∀n. m < n ⟶ s (r n) ≤ s (r m))))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬(∀n. ∃p. n < p ∧ (∀m. p ≤ m ⟶ s m ≤ s p)) ⟶ (∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ ((∀m. ∀n. m < n ⟶ s (r m) ≤ s (r n)) ∨ (∀m. ∀n. m < n ⟶ s (r n) ≤ s (r m))))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ ((∀m. ∀n. m < n ⟶ s (r m) ≤ s (r n)) ∨ (∀m. ∀n. m < n ⟶ s (r n) ≤ s (r m)))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ ((∀m. ∀n. m < n ⟶ s (r m) ≤ s (r n)) ∨ (∀m. ∀n. m < n ⟶ s (r n) ≤ s (r m)))"
+                }
+            ],
+            "prop": [
+                "∃r. (∀m::nat. ∀n. m < n ⟶ r m < r n) ∧ ",
+                "  ((∀m. ∀n. m < n ⟶ s (r m) ≤ s (r n)) ∨ (∀m. ∀n. m < n ⟶ s (r n) ≤ s (r m)))"
+            ],
+            "steps": [
+                {
+                    "case": "!n. ?p. n < p & !m. p <= m --> s m <= s p",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat ⇒ real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "convergent_bounded_increasing",
+            "prop": [
+                "(∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ",
+                "⟶ (∀n. abs (s n) ≤ b) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "s": "nat ⇒ real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "convergent_bounded_monotone",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. abs (s n) ≤ b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. abs (s n) ≤ b ⊢ ∀n. abs (s n) ≤ b"
+                },
+                {
+                    "args": "(∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⊢ (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⊢ (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+                },
+                {
+                    "args": "∀m. ∀n. m ≤ n ⟶ s m ≤ s n",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. ∀n. m ≤ n ⟶ s m ≤ s n ⊢ ∀m. ∀n. m ≤ n ⟶ s m ≤ s n"
+                },
+                {
+                    "args": "convergent_bounded_increasing",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀m. ∀n. m ≤ n ⟶ s m ≤ s n, ∀n. abs (s n) ≤ b ⊢ ∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⊢ (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⊢ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+                },
+                {
+                    "args": "∀m. ∀n. m ≤ n ⟶ s n ≤ s m",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. ∀n. m ≤ n ⟶ s n ≤ s m ⊢ ∀m. ∀n. m ≤ n ⟶ s n ≤ s m"
+                },
+                {
+                    "args": "convergent_bounded_increasing, {}, {b: b, s: λn. -(s n)}",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀m. ∀n. m ≤ n ⟶ -(s m) ≤ -(s n)) ⟶ (∀n. abs (-(s n)) ≤ b) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e))"
+                },
+                {
+                    "args": "real_le_lneg2",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⟶ (∀n. abs (-(s n)) ≤ b) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e))"
+                },
+                {
+                    "args": "real_abs_neg",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⟶ (∀n. abs (s n) ≤ b) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e))"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3",
+                        "3.0",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀m. ∀n. m ≤ n ⟶ s n ≤ s m, ∀n. abs (s n) ≤ b ⊢ ∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e)"
+                },
+                {
+                    "args": "l, real",
+                    "id": "3.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR l"
+                },
+                {
+                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e)",
+                    "id": "3.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e)"
+                },
+                {
+                    "args": "∀n. abs (-(s n) - l) = abs (s n - -l)",
+                    "id": "3.7",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀n. abs (-(s n) - l) = abs (s n - -l)"
+                },
+                {
+                    "args": "",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.7",
+                        "3.6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - -l) < e)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λl. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e), a: -l}",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m), ∀m. ∀n. m ≤ n ⟶ s n ≤ s m, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e) ⊢ ∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e)"
+                },
+                {
+                    "args": "∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e)",
+                    "id": "3.10",
+                    "prevs": [
+                        "3.0",
+                        "3.4",
+                        "3.5",
+                        "3.6",
+                        "3.9"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⊢ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m), ∀n. abs (s n) ≤ b ⊢ ∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. abs (s n) ≤ b) ⟶ (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+                }
+            ],
+            "prop": [
+                "(∀n. abs (s n) ≤ b) ",
+                "⟶ (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m) ",
+                "   ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e))"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0",
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "convergent_bounded_increasing"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_forward_step",
+                    "param_b": "b",
+                    "param_s": "(%n. -s n)",
+                    "theorem": "convergent_bounded_increasing"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lneg2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "fact_ids": [
+                        "3.3",
+                        "3.0",
+                        "0"
+                    ],
+                    "goal_id": "3.4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.4"
+                    ],
+                    "goal_id": "3.5",
+                    "method_name": "exists_elim",
+                    "names": "l"
+                },
+                {
+                    "goal_id": "3.7",
+                    "method_name": "inst_exists_goal",
+                    "s": "-l"
+                },
+                {
+                    "goal": "!n. abs (-(s n) - l) = abs (s n - -l) ",
+                    "goal_id": "3.7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.7",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.7",
+                        "3.6"
+                    ],
+                    "goal_id": "3.8",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "s": "nat ⇒ real"
+            }
         }
     ],
     "description": "Various convenient background stuff. Refer to misc.ml from HOL Light.",
