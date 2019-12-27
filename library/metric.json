@@ -5925,7 +5925,7 @@
                 "hint_rewrite"
             ],
             "name": "eventually_lbound_le_sequentially",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -6085,24 +6085,242 @@
                     "args": "",
                     "id": "0.6.1.1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ m < N ⟶ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "m < N",
+                    "id": "0.6.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < N ⊢ m < N"
+                },
+                {
+                    "args": "{y. ∃m. y = f m ∧ m < N} = {y. ∃x. x ∈ {m. m < N} ∧ y = f x}",
+                    "id": "0.6.1.1.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {y. ∃m. y = f m ∧ m < N} = {y. ∃x. x ∈ {m. m < N} ∧ y = f x}"
+                },
+                {
+                    "args": "image_def, {y. ∃m. y = f m ∧ m < N} = image f ({m. m < N})",
+                    "id": "0.6.1.1.2",
+                    "prevs": [
+                        "0.6.1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ {y. ∃m. y = f m ∧ m < N} = image f ({m. m < N})"
+                },
+                {
+                    "args": "finite_natseg_lt, {}, {n: N}",
+                    "id": "0.6.1.1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m. m < N})"
+                },
+                {
+                    "args": "finite_image, {a: nat, b: real}, {f: f, s: {m. m < N}}",
+                    "id": "0.6.1.1.4",
+                    "prevs": [
+                        "0.6.1.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ finite (image f ({m. m < N}))"
+                },
+                {
+                    "args": "finite ({y. ∃m. y = f m ∧ m < N})",
+                    "id": "0.6.1.1.5",
+                    "prevs": [
+                        "0.6.1.1.2",
+                        "0.6.1.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ finite ({y. ∃m. y = f m ∧ m < N})"
+                },
+                {
+                    "args": "¬({y. ∃m. y = f m ∧ m < N} = ∅)",
+                    "id": "0.6.1.1.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬({y. ∃m. y = f m ∧ m < N} = ∅)"
+                },
+                {
+                    "args": "real_inf_le_finite, {}, {a: f m, s: {y. ∃m. y = f m ∧ m < N}}",
+                    "id": "0.6.1.1.7",
+                    "prevs": [
+                        "0.6.1.1.5",
+                        "0.6.1.1.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m ⟷ (∃x. x ∈ {y. ∃m1. y = f m1 ∧ m1 < N} ∧ x ≤ f m)"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: f m}",
+                    "id": "0.6.1.1.8",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ f m = f m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.6.1.1.9",
+                    "prevs": [
+                        "0.6.1.1.8",
+                        "0.6.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ f m = f m ∧ m < N"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λm1. f m = f m1 ∧ m1 < N, a: m}",
+                    "id": "0.6.1.1.10",
+                    "prevs": [
+                        "0.6.1.1.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ ∃a1. f m = f a1 ∧ a1 < N"
+                },
+                {
+                    "args": "member_collect, f m ∈ {y. ∃m1. y = f m1 ∧ m1 < N}",
+                    "id": "0.6.1.1.11",
+                    "prevs": [
+                        "0.6.1.1.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ f m ∈ {y. ∃m1. y = f m1 ∧ m1 < N}"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: f m}",
+                    "id": "0.6.1.1.12",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ f m ≤ f m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.6.1.1.13",
+                    "prevs": [
+                        "0.6.1.1.11",
+                        "0.6.1.1.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ f m ∈ {y. ∃m1. y = f m1 ∧ m1 < N} ∧ f m ≤ f m"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx. x ∈ {y. ∃m1. y = f m1 ∧ m1 < N} ∧ x ≤ f m, a: f m}",
+                    "id": "0.6.1.1.14",
+                    "prevs": [
+                        "0.6.1.1.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ ∃a1. a1 ∈ {y. ∃m1. y = f m1 ∧ m1 < N} ∧ a1 ≤ f m"
+                },
+                {
+                    "args": "inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m",
+                    "id": "0.6.1.1.15",
+                    "prevs": [
+                        "0.6.1.1.7",
+                        "0.6.1.1.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "disjI2, {}, {A: b ≤ f m, B: inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m}",
+                    "id": "0.6.1.1.16",
+                    "prevs": [
+                        "0.6.1.1.15"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), m < N ⊢ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "",
+                    "id": "0.6.1.1.17",
+                    "prevs": [
+                        "0.6.1.1.0",
+                        "0.6.1.1.16"
+                    ],
+                    "rule": "intros",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ m < N ⟶ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "",
+                    "id": "0.6.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ ¬(m < N) ⟶ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "¬(m < N)",
+                    "id": "0.6.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m < N) ⊢ ¬(m < N)"
+                },
+                {
+                    "args": "N ≤ m",
+                    "id": "0.6.1.2.1",
+                    "prevs": [
+                        "0.6.1.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(m < N) ⊢ N ≤ m"
+                },
+                {
+                    "args": "m",
+                    "id": "0.6.1.2.2",
+                    "prevs": [
+                        "0.4",
+                        "0.6.1.2.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. N ≤ n ⟶ b ≤ f n, ∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), ¬(m < N) ⊢ b ≤ f m"
+                },
+                {
+                    "args": "disjI1, {}, {A: b ≤ f m, B: inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m}",
+                    "id": "0.6.1.2.3",
+                    "prevs": [
+                        "0.6.1.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0), ¬(m < N) ⊢ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "",
+                    "id": "0.6.1.2.4",
+                    "prevs": [
+                        "0.6.1.2.0",
+                        "0.6.1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ ¬(m < N) ⟶ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.6.1.3",
+                    "prevs": [
+                        "0.6.1.1",
+                        "0.6.1.2"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ b ≤ f m ∨ inf ({y. ∃m1. y = f m1 ∧ m1 < N}) ≤ f m"
                 },
                 {
                     "args": "real_min_le, min b (inf ({y. ∃m1. y = f m1 ∧ m1 < N})) ≤ f m",
-                    "id": "0.6.1.2",
+                    "id": "0.6.1.4",
                     "prevs": [
-                        "0.6.1.1"
+                        "0.6.1.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ min b (inf ({y. ∃m1. y = f m1 ∧ m1 < N})) ≤ f m"
                 },
                 {
                     "args": "",
-                    "id": "0.6.1.3",
+                    "id": "0.6.1.5",
                     "prevs": [
                         "0.6.1.0",
-                        "0.6.1.2"
+                        "0.6.1.4"
                     ],
                     "rule": "intros",
                     "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ ∀n. min b (inf ({y. ∃m. y = f m ∧ m < N})) ≤ f n"
@@ -6156,7 +6374,59 @@
                     "args": "",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ (∃b. ∀n. b ≤ f n) ⟶ (∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n)"
+                },
+                {
+                    "args": "∃a1. ∀n. a1 ≤ f n",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a1. ∀n. a1 ≤ f n ⊢ ∃a1. ∀n. a1 ≤ f n"
+                },
+                {
+                    "args": "b, real",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "∀n. b ≤ f n",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. b ≤ f n ⊢ ∀n. b ≤ f n"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ b ≤ f n",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. b ≤ f n ⊢ ∃N. ∀n. N ≤ n ⟶ b ≤ f n"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λb. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, a: b}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃a1. ∀n. a1 ≤ f n, ∀n. b ≤ f n ⊢ ∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n"
+                },
+                {
+                    "args": "∃a1. ∀n. a1 ≤ f n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.4"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ (∃b. ∀n. b ≤ f n) ⟶ (∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n)"
                 },
                 {
@@ -6278,6 +6548,166 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_min_le"
+                },
+                {
+                    "case": "m < N",
+                    "goal_id": "0.6.1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.6.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.6.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal": "finite ({y. ∃m. y = f m ∧ m < N})",
+                    "goal_id": "0.6.1.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "{y. ∃m. y = f m ∧ m < N} = image f {m. m < N}",
+                    "goal_id": "0.6.1.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.6.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "image_def"
+                },
+                {
+                    "goal_id": "0.6.1.1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.1.1.2"
+                    ],
+                    "goal_id": "0.6.1.1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.6.1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_image"
+                },
+                {
+                    "goal_id": "0.6.1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg_lt"
+                },
+                {
+                    "goal": "~({y. ∃m. y = f m ∧ m < N} = {})",
+                    "goal_id": "0.6.1.1.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.6.1.1.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.1.1.5",
+                        "0.6.1.1.6"
+                    ],
+                    "goal_id": "0.6.1.1.7",
+                    "method_name": "apply_forward_step",
+                    "param_a": "f m",
+                    "theorem": "real_inf_le_finite"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.1.1.7"
+                    ],
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "inst_exists_goal",
+                    "s": "f m"
+                },
+                {
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "inst_exists_goal",
+                    "s": "m"
+                },
+                {
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.6.1.1.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "0.6.1.1.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "0.6.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.6.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.6.1.2.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.1.2.0"
+                    ],
+                    "goal_id": "0.6.1.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "b"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
