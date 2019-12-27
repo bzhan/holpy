@@ -305,9 +305,11 @@ def apply_method():
             })
         else:
             return jsonify({
-                "err_type": e.__class__.__name__,
-                "err_str": str(e),
-                "trace": traceback2.format_exc()
+                "error": {
+                    "err_type": e.__class__.__name__,
+                    "err_str": str(e),
+                    "trace": traceback2.format_exc()
+                }
             })
 
     json_state = state.json_data()

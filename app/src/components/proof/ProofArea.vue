@@ -87,9 +87,9 @@ export default {
       this.ref_status.trace = undefined
     },
 
-    display_error: function (err_type, err_str, trace) {
-      this.ref_status.status = err_type + ": " + err_str
-      this.ref_status.trace = trace
+    display_error: function (error) {
+      this.ref_status.status = error.err_type + ": " + error.err_str
+      this.ref_status.trace = error.trace
     },
 
     compute_new_goal: function (start) {
@@ -132,6 +132,9 @@ export default {
         if (this.index === 0) {
           this.ref_status.instr = [{color: 0, text: 'Initial'}]
         } else {
+          if ('error' in this.history[this.index-1]) {
+            this.display_error(this.history[this.index-1].error)
+          }
           this.ref_status.instr = this.history[this.index-1].step_output
         }
         this.ref_status.instr_no = this.index + '/' + this.history.length
@@ -350,8 +353,8 @@ export default {
           }
           this.apply_method_ajax(input)
         }
-      } else if ('err_type' in result.data) {
-        this.display_error(result.data.err_type, result.data.err_str, result.data.trace)
+      } else if ('error' in result.data) {
+        this.display_error(result.data.error)
       } else {
         // Success
         if (input.step.fact_ids.length == 0) {
