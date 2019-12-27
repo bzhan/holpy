@@ -18,21 +18,22 @@ from syntax import parser
 
 def check_proof(thy, item, *, rewrite):
     if item.steps:
-        try:
-            ctxt = Context(thy, vars=item.vars)
-            state = server.parse_init_state(ctxt, item.prop)
-            state.parse_steps(item.steps)
-            state.check_proof()
-            if rewrite:
-                item.proof = state.export_proof(unicode=True, highlight=False)
-        except Exception as e:
-            return {
-                'status': 'Failed',
-                'err_type': e.__class__.__name__,
-                'err_str': str(e),
-                'trace': traceback2.format_exc()
-            }
+        ctxt = Context(thy, vars=item.vars)
+        state = server.parse_init_state(ctxt, item.prop)
+        history = state.parse_steps(item.steps)
+        if rewrite:
+            item.proof = state.export_proof(unicode=True, highlight=False)
 
+        for step in history:
+            if 'error' in step:
+                return {
+                    'status': 'Failed',
+                    'err_type': step['error']['err_type'],
+                    'err_str': step['error']['err_str'],
+                    'trace': step['error']['trace']
+                }
+
+        # Otherwise OK
         return {
             'status': 'OK' if len(state.rpt.gaps) == 0 else 'Partial',
             'num_steps': len(item.steps),

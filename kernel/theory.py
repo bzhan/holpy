@@ -6,7 +6,7 @@ from typing import Tuple
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
-from kernel.proof import Proof, ProofException
+from kernel.proof import Proof, ProofStateException
 from kernel.macro import ProofMacro, global_macros, has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
@@ -410,7 +410,7 @@ class Theory():
                     raise CheckProofException("id %s cannot depend on %s" % (seq.id, prev))
                 try:
                     prev_ths.append(prf.find_item(prev).th)
-                except ProofException:
+                except ProofStateException:
                     raise CheckProofException("previous item not found")
             
             for prev, prev_th in zip(seq.prevs, prev_ths):

@@ -215,26 +215,21 @@ class ProofState():
         """
         history = []
         for step in steps:
+            step_output = method.output_step(self, step, unicode=True, highlight=True)
+            history.append({
+                'step_output': step_output,
+                'goal_id': step['goal_id'],
+                'fact_ids': step.get('fact_ids', [])
+            })
             try:
-                step_output = method.output_step(self, step, unicode=True, highlight=True)
                 method.apply_method(self, step)
                 self.check_proof(compute_only=True)
-                history.append({
-                    'step_output': step_output,
-                    'goal_id': step['goal_id'],
-                    'fact_ids': step.get('fact_ids', [])
-                })
             except Exception as e:
-                history.append({
-                    'step_output': pprint.N(step['method_name'], highlight=True),
-                    'goal_id': step['goal_id'],
-                    'fact_ids': step.get('fact_ids', []),
-                    'error': {
-                        'err_type': e.__class__.__name__,
-                        'err_str': str(e),
-                        'trace': traceback2.format_exc()
-                    }
-                })
+                history[-1]['error'] = {
+                    'err_type': e.__class__.__name__,
+                    'err_str': str(e),
+                    'trace': traceback2.format_exc()
+                }
 
         # Perform final check. Should not raise Exception here
         self.check_proof()

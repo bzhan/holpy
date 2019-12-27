@@ -71,7 +71,7 @@ class ItemID():
             return False
         return other.id[l-1] < self.id[l-1]
 
-class ProofException(Exception):
+class ProofStateException(Exception):
     pass
 
 
@@ -192,7 +192,7 @@ class Proof():
                 item = item.subproof.items[i]
             return item
         except (AttributeError, IndexError):
-            raise ProofException
+            raise ProofStateException
 
     def get_parent_proof(self, id):
         """Traverse the proof to the subproof containing the given id."""
@@ -201,10 +201,10 @@ class Proof():
             for i in id.id[:-1]:
                 prf = prf.items[i].subproof
             if prf is None:
-                raise ProofException
+                raise ProofStateException
             return prf
         except IndexError:
-            raise ProofException
+            raise ProofStateException
 
     def insert_item(self, item):
         """Insert the item using the id in the item. This item should
@@ -218,10 +218,10 @@ class Proof():
                     prf.items[i].subproof = Proof()
                 prf = prf.items[i].subproof
             if item.id.id[-1] != len(prf.items):
-                raise ProofException
+                raise ProofStateException
             prf.items.append(item)
         except IndexError:
-            raise ProofException
+            raise ProofStateException
 
     def get_sorrys(self):
         return sum([item.get_sorrys() for item in self.items], [])

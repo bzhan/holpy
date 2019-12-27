@@ -5,7 +5,7 @@ from typing import List, Tuple
 from kernel.type import TVar, TFun, boolT
 from kernel import term
 from kernel.term import Term, SVar, Var, Const, Abs
-from kernel.thm import Thm
+from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel import macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
@@ -494,7 +494,8 @@ class rewrite_fact_macro(ProofTermMacro):
         assert len(pts) == len(eq_pt.assums) + 1, "rewrite_fact_macro: signature"
 
         # Check rewriting using the theorem has an effect
-        assert has_rewrite(thy, th_name, pts[0].prop, sym=self.sym, conds=pts[1:]), "rewrite_fact"
+        if not has_rewrite(thy, th_name, pts[0].prop, sym=self.sym, conds=pts[1:]):
+            raise InvalidDerivationException("rewrite_fact using %s" % th_name)
 
         cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym, conds=pts[1:])),
                        top_conv(beta_conv()))

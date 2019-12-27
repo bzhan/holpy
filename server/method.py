@@ -2,8 +2,8 @@
 
 from kernel import term
 from kernel.term import Term, Var
-from kernel.thm import Thm
-from kernel.proof import ItemID, Proof, ProofException
+from kernel.thm import Thm, InvalidDerivationException
+from kernel.proof import ItemID, Proof, ProofStateException
 from kernel.theory import Method, get_method
 from kernel import theory
 from logic.proofterm import ProofTermAtom
@@ -181,7 +181,7 @@ class rewrite_fact(Method):
                 sym_b = True if sym == 'true' else False
                 pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(thy, th_name, prevs)
                 results.append({"theorem": th_name, "sym": sym, "_fact": [pt.prop]})
-            except (AssertionError, matcher.MatchException) as e:
+            except (AssertionError, matcher.MatchException, InvalidDerivationException) as e:
                 # print(e)
                 pass
 
@@ -204,6 +204,13 @@ class rewrite_fact(Method):
             return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
+        try:
+            prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            sym_b = 'sym' in data and data['sym'] == 'true'
+            pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(state.thy, data['theorem'], prev_pts)
+        except InvalidDerivationException as e:
+            raise e
+
         state.add_line_before(id, 1)
         if 'sym' in data and data['sym'] == 'true':
             state.set_line(id, 'rewrite_fact_sym', args=data['theorem'], prevs=prevs)
@@ -235,6 +242,12 @@ class rewrite_fact_with_prev(Method):
         return pprint.N("rewrite fact with fact")
 
     def apply(self, state, id, data, prevs):
+        try:
+            prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            pt = logic.rewrite_fact_with_prev_macro().get_proof_term(state.thy, None, prev_pts)
+        except AssertionError as e:
+            raise e
+
         state.add_line_before(id, 1)
         state.set_line(id, 'rewrite_fact_with_prev', prevs=prevs)
 
@@ -542,7 +555,7 @@ class exists_elim(Method):
         while True:
             try:
                 item = state.get_proof_item(id.incr_id(i))
-            except ProofException:
+            except ProofStateException:
                 raise AssertionError("exists_elim: cannot find intros at the end")
             else:
                 if item.rule == 'intros':
@@ -733,7 +746,10 @@ def apply_method(state, step):
 def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
     method = theory.global_methods[step['method_name']]
-    res = method.display_step(state, step)
+    try:
+        res = method.display_step(state, step)
+    except Exception as e:
+        res = pprint.N(step['method_name'])
     res += pprint.N(' on ' + step['goal_id'])
     if 'fact_ids' in step and len(step['fact_ids']) > 0:
         res += pprint.N(' using ' + ','.join(step['fact_ids']))
