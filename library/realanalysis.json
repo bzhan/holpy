@@ -3169,6 +3169,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_sums",
             "prop": "real_sums f l s ⟷ tendsto_real (λn. sum (s ∩ {0..n}) f) l sequentially",
             "ty": "def",

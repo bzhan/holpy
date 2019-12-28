@@ -9088,11 +9088,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_series_root_test",
             "prop": [
-                "(∀n. n ∈ k ⟶ 0 ≤ a n) ∧ ",
-                "b < 1 ∧ has_limsup (λn. root n (a n)) b (within sequentially k) ",
-                "⟶ real_summable k a"
+                "(∀n. n ∈ k ⟶ 0 ≤ a n) ",
+                "⟶ b < 1 ",
+                "   ⟶ has_limsup (λn. root n (a n)) b (within sequentially k) ⟶ real_summable k a"
             ],
             "ty": "thm",
             "vars": {
@@ -9102,10 +9106,13 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward1"
+            ],
             "name": "real_cauchy_hadamard_radius",
             "prop": [
-                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
-                "⟶ real_summable k (λn. a n * x ^ n)"
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
+                "⟶ b * abs x < 1 ⟶ real_summable k (λn. a n * x ^ n)"
             ],
             "ty": "thm",
             "vars": {
@@ -9116,10 +9123,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_cauchy_hadamard_radius_absconv_derivative",
             "prop": [
-                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
-                "⟶ real_summable k (λn. abs (of_nat n * a n * x ^ (n - 1)))"
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
+                "⟶ b * abs x < 1 ⟶ real_summable k (λn. abs (of_nat n * a n * x ^ (n - 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -9130,10 +9141,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_cauchy_hadamard_radius_derivative",
             "prop": [
-                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
-                "⟶ real_summable k (λn. of_nat n * a n * x ^ (n - 1))"
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
+                "⟶ b * abs x < 1 ⟶ real_summable k (λn. of_nat n * a n * x ^ (n - 1))"
             ],
             "ty": "thm",
             "vars": {
@@ -9144,12 +9159,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_cauchy_hadamard_radius_uniform",
             "prop": [
-                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
-                "real_compact s ∧ (∀x. x ∈ s ⟶ b * abs x < 1) ",
-                "⟶ (∃l. ∀e. 0 < e ",
-                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
+                "⟶ real_compact s ",
+                "   ⟶ (∀x. x ∈ s ⟶ b * abs x < 1) ",
+                "      ⟶ (∃l. ∀e. 0 < e ",
+                "              ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
             ],
             "ty": "thm",
             "vars": {
@@ -9160,13 +9180,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_cauchy_hadamard_radius_uniform_derivative",
             "prop": [
-                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
-                "real_compact s ∧ (∀x. x ∈ s ⟶ b * abs x < 1) ",
-                "⟶ (∃l. ∀e. 0 < e ",
-                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ",
-                "                  ⟶ abs (sum (k ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - l x) < e))"
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
+                "⟶ real_compact s ",
+                "   ⟶ (∀x. x ∈ s ⟶ b * abs x < 1) ",
+                "      ⟶ (∃l. ∀e. 0 < e ",
+                "              ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ",
+                "                        ⟶ abs (sum (k ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - l x) < e))"
             ],
             "ty": "thm",
             "vars": {
@@ -9177,15 +9202,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_real_derivative_sequence",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ∧ ",
-                "(∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (f1 n x - g1 x) ≤ e)) ∧ ",
-                "(∃x. ∃l. x ∈ s ∧ tendsto_real (λn. f n x) l sequentially) ",
-                "⟶ (∃g. ∀x. x ∈ s ",
-                "        ⟶ tendsto_real (λn. f n x) (g x) sequentially ∧ ",
-                "           has_real_derivative g (g1 x) (within (atreal x) s))"
+                "is_realinterval s ",
+                "⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ",
+                "   ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (f1 n x - g1 x) ≤ e)) ",
+                "      ⟶ (∃x. ∃l. x ∈ s ∧ tendsto_real (λn. f n x) l sequentially) ",
+                "         ⟶ (∃g. ∀x. x ∈ s ",
+                "                 ⟶ tendsto_real (λn. f n x) (g x) sequentially ∧ ",
+                "                    has_real_derivative g (g1 x) (within (atreal x) s))"
             ],
             "ty": "thm",
             "vars": {
@@ -9196,16 +9225,106 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_real_derivative_series",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "is_realinterval s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "is_realinterval s ⊢ is_realinterval s"
+                },
+                {
+                    "args": "∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s) ⊢ ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)"
+                },
+                {
+                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)"
+                },
+                {
+                    "args": "∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k"
+                },
+                {
+                    "args": "real_sums_def",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃x. ∃l. x ∈ s ∧ tendsto_real (λn. sum (k ∩ {0..n}) (λn1. f n1 x)) l sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ tendsto_real (λn. sum (k ∩ {0..n}) (λn1. f n1 x)) (g x) sequentially ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_sums_def, ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ is_realinterval s ⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ⟶ (∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ⟶ (∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s))"
+                }
+            ],
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ∧ ",
-                "(∀e. 0 < e ",
-                "   ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ∧ ",
-                "(∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ",
-                "⟶ (∃g. ∀x. x ∈ s ",
-                "        ⟶ real_sums (λn. f n x) (g x) k ∧ ",
-                "           has_real_derivative g (g1 x) (within (atreal x) s))"
+                "is_realinterval s ",
+                "⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ",
+                "   ⟶ (∀e. 0 < e ",
+                "         ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ",
+                "      ⟶ (∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ",
+                "         ⟶ (∃g. ∀x. x ∈ s ",
+                "                 ⟶ real_sums (λn. f n x) (g x) k ∧ ",
+                "                    has_real_derivative g (g1 x) (within (atreal x) s))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sums_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sums_def"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -9217,11 +9336,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_differentiable_bound",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s) ∧ abs (f1 x) ≤ B) ",
-                "⟶ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ abs (f x - f y) ≤ B * abs (x - y))"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s) ⟶ abs (f1 x) ≤ B) ",
+                "   ⟶ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ abs (f x - f y) ≤ B * abs (x - y))"
             ],
             "ty": "thm",
             "vars": {
