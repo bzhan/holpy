@@ -7055,7 +7055,7 @@
         },
         {
             "name": "has_limsup_sequentially_reallim_sup",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -7123,549 +7123,660 @@
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ (∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⟶ has_limsup a l sequentially"
+                    "th": "⊢ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⟶ has_limsup a l sequentially"
                 },
                 {
-                    "args": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e))",
+                    "args": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ (∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e))"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
                 },
                 {
-                    "args": "",
+                    "args": "reallim_sequentially",
                     "id": "1.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)"
-                },
-                {
-                    "args": "c, real",
-                    "id": "1.1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR c"
-                },
-                {
-                    "args": "l < c",
-                    "id": "1.1.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "l < c ⊢ l < c"
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ (∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e))"
                 },
                 {
                     "args": "conjD2, {}, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
-                    "id": "1.1.2",
+                    "id": "1.2",
                     "prevs": [
-                        "1.0"
+                        "1.1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)"
-                },
-                {
-                    "args": "c - l",
-                    "id": "1.1.3",
-                    "prevs": [
-                        "1.1.2"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ 0 < c - l ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l)"
-                },
-                {
-                    "args": "0 < c - l",
-                    "id": "1.1.4",
-                    "prevs": [
-                        "1.1.1"
-                    ],
-                    "rule": "z3",
-                    "th": "l < c ⊢ 0 < c - l"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.5",
-                    "prevs": [
-                        "1.1.3",
-                        "1.1.4"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c ⊢ ∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l"
-                },
-                {
-                    "args": "N, nat",
-                    "id": "1.1.6",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR N"
-                },
-                {
-                    "args": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l",
-                    "id": "1.1.7",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.8",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ a n ≤ c"
-                },
-                {
-                    "args": "n, nat",
-                    "id": "1.1.8.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR n"
-                },
-                {
-                    "args": "N ≤ n",
-                    "id": "1.1.8.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "N ≤ n ⊢ N ≤ n"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.8.2",
-                    "prevs": [
-                        "1.1.7",
-                        "1.1.8.1"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ abs (sup (image a ({m. m ≥ n})) - l) < c - l"
-                },
-                {
-                    "args": "real_abs_between",
-                    "id": "1.1.8.3",
-                    "prevs": [
-                        "1.1.8.2"
-                    ],
-                    "rule": "rewrite_fact_sym",
-                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ 0 < c - l ∧ l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)"
-                },
-                {
-                    "args": "conjD2, {}, {A: 0 < c - l, B: l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)}",
-                    "id": "1.1.8.4",
-                    "prevs": [
-                        "1.1.8.3"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)"
-                },
-                {
-                    "args": "conjD2, {}, {A: l - (c - l) < sup (image a ({m. m ≥ n})), B: sup (image a ({m. m ≥ n})) < l + (c - l)}",
-                    "id": "1.1.8.5",
-                    "prevs": [
-                        "1.1.8.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ sup (image a ({m. m ≥ n})) < l + (c - l)"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)"
                 },
                 {
                     "args": "conjD1, {}, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
-                    "id": "1.1.8.6",
+                    "id": "1.3",
                     "prevs": [
-                        "1.0"
+                        "1.1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∃b. ∀n. a n ≤ b"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ ∃b. ∀n. a n ≤ b"
                 },
                 {
                     "args": "b, real",
-                    "id": "1.1.8.7",
+                    "id": "1.4",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR b"
                 },
                 {
                     "args": "∀n. a n ≤ b",
-                    "id": "1.1.8.8",
+                    "id": "1.5",
                     "prevs": [],
                     "rule": "assume",
                     "th": "∀n. a n ≤ b ⊢ ∀n. a n ≤ b"
                 },
                 {
                     "args": "",
-                    "id": "1.1.8.9",
+                    "id": "1.6",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b ⊢ ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)"
                 },
                 {
-                    "args": "x, nat",
-                    "id": "1.1.8.9.0",
+                    "args": "c, real",
+                    "id": "1.6.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ _VAR x"
+                    "th": "⊢ _VAR c"
                 },
                 {
-                    "args": "x ∈ {m. m ≥ n}",
-                    "id": "1.1.8.9.1",
+                    "args": "l < c",
+                    "id": "1.6.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "x ∈ {m. m ≥ n} ⊢ x ∈ {m. m ≥ n}"
+                    "th": "l < c ⊢ l < c"
                 },
                 {
-                    "args": "x",
-                    "id": "1.1.8.9.2",
+                    "args": "c - l",
+                    "id": "1.6.2",
                     "prevs": [
-                        "1.1.8.8"
+                        "1.2"
                     ],
-                    "rule": "apply_fact_for",
-                    "th": "∀n. a n ≤ b ⊢ a x ≤ b"
+                    "rule": "forall_elim",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ 0 < c - l ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l)"
+                },
+                {
+                    "args": "0 < c - l",
+                    "id": "1.6.3",
+                    "prevs": [
+                        "1.6.1"
+                    ],
+                    "rule": "z3",
+                    "th": "l < c ⊢ 0 < c - l"
                 },
                 {
                     "args": "",
-                    "id": "1.1.8.9.3",
+                    "id": "1.6.4",
                     "prevs": [
-                        "1.1.8.9.0",
-                        "1.1.8.9.1",
-                        "1.1.8.9.2"
+                        "1.6.2",
+                        "1.6.3"
                     ],
-                    "rule": "intros",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b"
+                    "rule": "apply_fact",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, l < c ⊢ ∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "1.6.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l",
+                    "id": "1.6.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l"
+                },
+                {
+                    "args": "",
+                    "id": "1.6.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ a n ≤ c"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.6.7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "1.6.7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.6.7.2",
+                    "prevs": [
+                        "1.6.6",
+                        "1.6.7.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ abs (sup (image a ({m. m ≥ n})) - l) < c - l"
+                },
+                {
+                    "args": "real_abs_between",
+                    "id": "1.6.7.3",
+                    "prevs": [
+                        "1.6.7.2"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ 0 < c - l ∧ l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < c - l, B: l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)}",
+                    "id": "1.6.7.4",
+                    "prevs": [
+                        "1.6.7.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)"
+                },
+                {
+                    "args": "conjD2, {}, {A: l - (c - l) < sup (image a ({m. m ≥ n})), B: sup (image a ({m. m ≥ n})) < l + (c - l)}",
+                    "id": "1.6.7.5",
+                    "prevs": [
+                        "1.6.7.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ sup (image a ({m. m ≥ n})) < l + (c - l)"
+                },
+                {
+                    "args": "∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b",
+                    "id": "1.6.7.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. a n ≤ b ⊢ ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b"
                 },
                 {
                     "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b, a: b}",
-                    "id": "1.1.8.10",
+                    "id": "1.6.7.7",
                     "prevs": [
-                        "1.1.8.9"
+                        "1.6.7.6"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∃a1. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ a1"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ ∃a1. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ a1"
                 },
                 {
                     "args": "forall_in_gspec1, ∃b. ∀z. z ∈ {y. ∃x. y = a x ∧ x ∈ {m. m ≥ n}} ⟶ z ≤ b",
-                    "id": "1.1.8.11",
+                    "id": "1.6.7.8",
                     "prevs": [
-                        "1.1.8.10"
+                        "1.6.7.7"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∃b. ∀z. z ∈ {y. ∃x. y = a x ∧ x ∈ {m. m ≥ n}} ⟶ z ≤ b"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ ∃b. ∀z. z ∈ {y. ∃x. y = a x ∧ x ∈ {m. m ≥ n}} ⟶ z ≤ b"
                 },
                 {
                     "args": "conj_comm, ∃b. ∀x. x ∈ {y. ∃x1. x1 ∈ {m. m ≥ n} ∧ y = a x1} ⟶ x ≤ b",
-                    "id": "1.1.8.12",
+                    "id": "1.6.7.9",
                     "prevs": [
-                        "1.1.8.11"
+                        "1.6.7.8"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∃b. ∀x. x ∈ {y. ∃x1. x1 ∈ {m. m ≥ n} ∧ y = a x1} ⟶ x ≤ b"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ ∃b. ∀x. x ∈ {y. ∃x1. x1 ∈ {m. m ≥ n} ∧ y = a x1} ⟶ x ≤ b"
                 },
                 {
                     "args": "image_def, ∃b. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ x ≤ b",
-                    "id": "1.1.8.13",
+                    "id": "1.6.7.10",
                     "prevs": [
-                        "1.1.8.12"
+                        "1.6.7.9"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∃b. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ x ≤ b"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ ∃b. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ x ≤ b"
                 },
                 {
                     "args": "eq_refl, {a: real}, {x: a n}",
-                    "id": "1.1.8.14",
+                    "id": "1.6.7.11",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ a n = a n"
                 },
                 {
-                    "args": "n ≥ n",
-                    "id": "1.1.8.15",
+                    "args": "n ∈ {m. m ≥ n}",
+                    "id": "1.6.7.12",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ n ≥ n"
-                },
-                {
-                    "args": "member_collect, n ∈ {m. m ≥ n}",
-                    "id": "1.1.8.16",
-                    "prevs": [
-                        "1.1.8.15"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ n ∈ {m. m ≥ n}"
+                    "th": "⊢ n ∈ {m. m ≥ n}"
                 },
                 {
                     "args": "conjI",
-                    "id": "1.1.8.17",
+                    "id": "1.6.7.13",
                     "prevs": [
-                        "1.1.8.14",
-                        "1.1.8.16"
+                        "1.6.7.11",
+                        "1.6.7.12"
                     ],
                     "rule": "apply_theorem",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ a n = a n ∧ n ∈ {m. m ≥ n}"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ a n = a n ∧ n ∈ {m. m ≥ n}"
                 },
                 {
                     "args": "exI, {a: nat}, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
-                    "id": "1.1.8.18",
+                    "id": "1.6.7.14",
                     "prevs": [
-                        "1.1.8.17"
+                        "1.6.7.13"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ ∃a1. a n = a a1 ∧ a1 ∈ {m. m ≥ n}"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ ∃a1. a n = a a1 ∧ a1 ∈ {m. m ≥ n}"
                 },
                 {
                     "args": "in_image, a n ∈ image a ({m. m ≥ n})",
-                    "id": "1.1.8.19",
+                    "id": "1.6.7.15",
                     "prevs": [
-                        "1.1.8.18"
+                        "1.6.7.14"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ a n ∈ image a ({m. m ≥ n})"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ a n ∈ image a ({m. m ≥ n})"
                 },
                 {
                     "args": "element_le_sup",
-                    "id": "1.1.8.20",
+                    "id": "1.6.7.16",
                     "prevs": [
-                        "1.1.8.13",
-                        "1.1.8.19"
+                        "1.6.7.10",
+                        "1.6.7.15"
                     ],
                     "rule": "apply_theorem",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ a n ≤ sup (image a ({m. m ≥ n}))"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ a n ≤ sup (image a ({m. m ≥ n}))"
                 },
                 {
                     "args": "real_lt_imp_le",
-                    "id": "1.1.8.21",
+                    "id": "1.6.7.17",
                     "prevs": [
-                        "1.1.8.5"
+                        "1.6.7.5"
                     ],
                     "rule": "apply_theorem",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ sup (image a ({m. m ≥ n})) ≤ l + (c - l)"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ sup (image a ({m. m ≥ n})) ≤ l + (c - l)"
                 },
                 {
                     "args": "l + (c - l) ≤ c",
-                    "id": "1.1.8.22",
+                    "id": "1.6.7.18",
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ l + (c - l) ≤ c"
                 },
                 {
                     "args": "real_le_trans",
-                    "id": "1.1.8.23",
+                    "id": "1.6.7.19",
                     "prevs": [
-                        "1.1.8.21",
-                        "1.1.8.22"
+                        "1.6.7.17",
+                        "1.6.7.18"
                     ],
                     "rule": "apply_theorem",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ sup (image a ({m. m ≥ n})) ≤ c"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ sup (image a ({m. m ≥ n})) ≤ c"
                 },
                 {
                     "args": "real_le_trans",
-                    "id": "1.1.8.24",
+                    "id": "1.6.7.20",
                     "prevs": [
-                        "1.1.8.20",
-                        "1.1.8.23"
+                        "1.6.7.16",
+                        "1.6.7.19"
                     ],
                     "rule": "apply_theorem",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n, ∀n. a n ≤ b ⊢ a n ≤ c"
-                },
-                {
-                    "args": "∃b. ∀n. a n ≤ b",
-                    "id": "1.1.8.25",
-                    "prevs": [
-                        "1.1.8.0",
-                        "1.1.8.1",
-                        "1.1.8.6",
-                        "1.1.8.7",
-                        "1.1.8.8",
-                        "1.1.8.24"
-                    ],
-                    "rule": "intros",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ a n ≤ c"
-                },
-                {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ a n ≤ c, a: N}",
-                    "id": "1.1.9",
-                    "prevs": [
-                        "1.1.8"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∃a1. ∀n. a1 ≤ n ⟶ a n ≤ c"
-                },
-                {
-                    "args": "∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l",
-                    "id": "1.1.10",
-                    "prevs": [
-                        "1.1.0",
-                        "1.1.1",
-                        "1.1.5",
-                        "1.1.6",
-                        "1.1.7",
-                        "1.1.9"
-                    ],
-                    "rule": "intros",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ a n ≤ c"
                 },
                 {
                     "args": "",
-                    "id": "1.2",
+                    "id": "1.6.7.21",
+                    "prevs": [
+                        "1.6.7.0",
+                        "1.6.7.1",
+                        "1.6.7.20"
+                    ],
+                    "rule": "intros",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ a n ≤ c"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ a n ≤ c, a: N}",
+                    "id": "1.6.8",
+                    "prevs": [
+                        "1.6.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∃a1. ∀n. a1 ≤ n ⟶ a n ≤ c"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l",
+                    "id": "1.6.9",
+                    "prevs": [
+                        "1.6.0",
+                        "1.6.1",
+                        "1.6.4",
+                        "1.6.5",
+                        "1.6.6",
+                        "1.6.8"
+                    ],
+                    "rule": "intros",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b ⊢ ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b ⊢ ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)"
                 },
                 {
                     "args": "c, real",
-                    "id": "1.2.0",
+                    "id": "1.7.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR c"
                 },
                 {
                     "args": "c < l",
-                    "id": "1.2.1",
+                    "id": "1.7.1",
                     "prevs": [],
                     "rule": "assume",
                     "th": "c < l ⊢ c < l"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2",
+                    "id": "1.7.2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), c < l ⊢ ∀N. ∃n. N ≤ n ∧ c < a n"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l ⊢ ∀N. ∃n. N ≤ n ∧ c < a n"
                 },
                 {
                     "args": "N, nat",
-                    "id": "1.2.2.0",
+                    "id": "1.7.2.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR N"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
-                    "id": "1.2.2.1",
-                    "prevs": [
-                        "1.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)"
-                },
-                {
                     "args": "l - c",
-                    "id": "1.2.2.2",
+                    "id": "1.7.2.1",
                     "prevs": [
-                        "1.2.2.1"
+                        "1.2"
                     ],
                     "rule": "forall_elim",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ 0 < l - c ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c)"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ 0 < l - c ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c)"
                 },
                 {
-                    "args": "0 < l - c",
-                    "id": "1.2.2.3",
+                    "args": "real_sub_lt",
+                    "id": "1.7.2.2",
                     "prevs": [
-                        "1.2.1"
+                        "1.7.1"
                     ],
-                    "rule": "z3",
+                    "rule": "rewrite_fact_sym",
                     "th": "c < l ⊢ 0 < l - c"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.4",
+                    "id": "1.7.2.3",
                     "prevs": [
-                        "1.2.2.2",
-                        "1.2.2.3"
+                        "1.7.2.1",
+                        "1.7.2.2"
                     ],
                     "rule": "apply_fact",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), c < l ⊢ ∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, c < l ⊢ ∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c"
                 },
                 {
                     "args": "M, nat",
-                    "id": "1.2.2.5",
+                    "id": "1.7.2.4",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR M"
                 },
                 {
                     "args": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c",
-                    "id": "1.2.2.6",
+                    "id": "1.7.2.5",
                     "prevs": [],
                     "rule": "assume",
                     "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c"
                 },
                 {
-                    "args": "",
-                    "id": "1.2.2.7",
+                    "args": "sup_approach, {}, {c: c, s: {y. ∃k. y = a k ∧ k ≥ max N M}}",
+                    "id": "1.7.2.6",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∃n. N ≤ n ∧ c < a n"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬({y. ∃k. y = a k ∧ k ≥ max N M} = ∅) ⟶ (∃b. ∀x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ⟶ x ≤ b) ⟶ c < sup ({y. ∃k. y = a k ∧ k ≥ max N M}) ⟶ (∃x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ∧ c < x)"
+                },
+                {
+                    "args": "¬({y. ∃k. y = a k ∧ k ≥ max N M} = ∅)",
+                    "id": "1.7.2.7",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬({y. ∃k. y = a k ∧ k ≥ max N M} = ∅)"
+                },
+                {
+                    "args": "∀x. x ≥ max N M ⟶ a x ≤ b",
+                    "id": "1.7.2.8",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. a n ≤ b ⊢ ∀x. x ≥ max N M ⟶ a x ≤ b"
+                },
+                {
+                    "args": "forall_in_gspec1, ∀z. z ∈ {y. ∃x. y = a x ∧ x ≥ max N M} ⟶ z ≤ b",
+                    "id": "1.7.2.9",
+                    "prevs": [
+                        "1.7.2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∀z. z ∈ {y. ∃x. y = a x ∧ x ≥ max N M} ⟶ z ≤ b"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ⟶ x ≤ b, a: b}",
+                    "id": "1.7.2.10",
+                    "prevs": [
+                        "1.7.2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∃a1. ∀x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ⟶ x ≤ a1"
+                },
+                {
+                    "args": "max N M",
+                    "id": "1.7.2.11",
+                    "prevs": [
+                        "1.7.2.5"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ M ≤ max N M ⟶ abs (sup (image a ({m. m ≥ max N M})) - l) < l - c"
+                },
+                {
+                    "args": "M ≤ max N M",
+                    "id": "1.7.2.12",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ M ≤ max N M"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.2.13",
+                    "prevs": [
+                        "1.7.2.11",
+                        "1.7.2.12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ abs (sup (image a ({m. m ≥ max N M})) - l) < l - c"
+                },
+                {
+                    "args": "real_abs_between",
+                    "id": "1.7.2.14",
+                    "prevs": [
+                        "1.7.2.13"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ 0 < l - c ∧ l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < l - c, B: l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)}",
+                    "id": "1.7.2.15",
+                    "prevs": [
+                        "1.7.2.14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)"
+                },
+                {
+                    "args": "conjD1, {}, {A: l - (l - c) < sup (image a ({m. m ≥ max N M})), B: sup (image a ({m. m ≥ max N M})) < l + (l - c)}",
+                    "id": "1.7.2.16",
+                    "prevs": [
+                        "1.7.2.15"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ l - (l - c) < sup (image a ({m. m ≥ max N M}))"
+                },
+                {
+                    "args": "image_def",
+                    "id": "1.7.2.17",
+                    "prevs": [
+                        "1.7.2.16"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ l - (l - c) < sup ({y. ∃x. x ∈ {m. m ≥ max N M} ∧ y = a x})"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "1.7.2.18",
+                    "prevs": [
+                        "1.7.2.17"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ l - (l - c) < sup ({y. ∃x. x ≥ max N M ∧ y = a x})"
+                },
+                {
+                    "args": "c ≤ l - (l - c)",
+                    "id": "1.7.2.19",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ c ≤ l - (l - c)"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "1.7.2.20",
+                    "prevs": [
+                        "1.7.2.19",
+                        "1.7.2.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ c < sup ({y. ∃k. k ≥ max N M ∧ y = a k})"
+                },
+                {
+                    "args": "conj_comm, c < sup ({y. ∃k. y = a k ∧ k ≥ max N M})",
+                    "id": "1.7.2.21",
+                    "prevs": [
+                        "1.7.2.20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ c < sup ({y. ∃k. y = a k ∧ k ≥ max N M})"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.2.22",
+                    "prevs": [
+                        "1.7.2.6",
+                        "1.7.2.7",
+                        "1.7.2.10",
+                        "1.7.2.21"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∃x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ∧ c < x"
+                },
+                {
+                    "args": "exists_in_gspec1",
+                    "id": "1.7.2.23",
+                    "prevs": [
+                        "1.7.2.22"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∃x. x ≥ max N M ∧ c < a x"
+                },
+                {
+                    "args": "∃n. N ≤ n ∧ c < a n",
+                    "id": "1.7.2.24",
+                    "prevs": [
+                        "1.7.2.23"
+                    ],
+                    "rule": "z3",
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∃n. N ≤ n ∧ c < a n"
                 },
                 {
                     "args": "∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c",
-                    "id": "1.2.2.8",
+                    "id": "1.7.2.25",
                     "prevs": [
-                        "1.2.2.0",
-                        "1.2.2.4",
-                        "1.2.2.5",
-                        "1.2.2.6",
-                        "1.2.2.7"
+                        "1.7.2.0",
+                        "1.7.2.3",
+                        "1.7.2.4",
+                        "1.7.2.5",
+                        "1.7.2.24"
                     ],
                     "rule": "intros",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)), c < l ⊢ ∀N. ∃n. N ≤ n ∧ c < a n"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l ⊢ ∀N. ∃n. N ≤ n ∧ c < a n"
                 },
                 {
                     "args": "",
-                    "id": "1.2.3",
+                    "id": "1.7.3",
                     "prevs": [
-                        "1.2.0",
-                        "1.2.1",
-                        "1.2.2"
+                        "1.7.0",
+                        "1.7.1",
+                        "1.7.2"
                     ],
                     "rule": "intros",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b ⊢ ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)"
                 },
                 {
                     "args": "conjI",
-                    "id": "1.3",
+                    "id": "1.8",
                     "prevs": [
-                        "1.1",
-                        "1.2"
+                        "1.6",
+                        "1.7"
                     ],
                     "rule": "apply_theorem",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ (∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n))"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b ⊢ (∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n))"
                 },
                 {
                     "args": "has_limsup_sequentially, has_limsup a l sequentially",
-                    "id": "1.4",
+                    "id": "1.9",
                     "prevs": [
-                        "1.3"
+                        "1.8"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "(∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⊢ has_limsup a l sequentially"
+                    "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b ⊢ has_limsup a l sequentially"
                 },
                 {
-                    "args": "",
-                    "id": "1.5",
+                    "args": "∃b. ∀n. a n ≤ b",
+                    "id": "1.10",
                     "prevs": [
                         "1.0",
-                        "1.4"
+                        "1.3",
+                        "1.4",
+                        "1.5",
+                        "1.9"
                     ],
                     "rule": "intros",
-                    "th": "⊢ (∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)) ⟶ has_limsup a l sequentially"
-                },
-                {
-                    "args": "reallim_sequentially, (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⟶ has_limsup a l sequentially",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_goal",
                     "th": "⊢ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⟶ has_limsup a l sequentially"
                 },
                 {
                     "args": "iffI",
-                    "id": "3",
+                    "id": "2",
                     "prevs": [
                         "0",
-                        "2"
+                        "1"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ has_limsup a l sequentially ⟷ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "3",
                     "prevs": [
-                        "3"
+                        "2"
                     ],
                     "rule": "intros",
                     "th": "⊢ has_limsup a l sequentially ⟷ (∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
@@ -7705,288 +7816,409 @@
                     "theorem": "eventually_ubound_le_sequentially"
                 },
                 {
+                    "fact_ids": [
+                        "0.0"
+                    ],
                     "goal_id": "0.2",
                     "method_name": "apply_backward_step",
-                    "param_l": "l",
                     "theorem": "has_limsup_imp_ubound_le"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "reallim_sequentially"
                 },
                 {
                     "goal_id": "1",
                     "method_name": "introduction"
                 },
                 {
-                    "goal_id": "1.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "has_limsup_sequentially"
-                },
-                {
-                    "goal_id": "1.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "1.1",
-                    "method_name": "introduction",
-                    "names": "c"
-                },
-                {
                     "fact_ids": [
                         "1.0"
                     ],
-                    "goal_id": "1.1.2",
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "reallim_sequentially"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "1.1.2"
+                        "1.3"
                     ],
-                    "goal_id": "1.1.3",
+                    "goal_id": "1.4",
+                    "method_name": "exists_elim",
+                    "names": "b"
+                },
+                {
+                    "goal_id": "1.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_limsup_sequentially"
+                },
+                {
+                    "goal_id": "1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.6",
+                    "method_name": "introduction",
+                    "names": "c"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.6.2",
                     "method_name": "forall_elim",
                     "s": "c-l"
                 },
                 {
                     "goal": "0 < c - l",
-                    "goal_id": "1.1.4",
+                    "goal_id": "1.6.3",
                     "method_name": "cut"
                 },
                 {
                     "fact_ids": [
-                        "1.1.1"
+                        "1.6.1"
                     ],
-                    "goal_id": "1.1.4",
+                    "goal_id": "1.6.3",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "1.1.3",
-                        "1.1.4"
+                        "1.6.2",
+                        "1.6.3"
                     ],
-                    "goal_id": "1.1.5",
+                    "goal_id": "1.6.4",
                     "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "1.1.5"
+                        "1.6.4"
                     ],
-                    "goal_id": "1.1.6",
+                    "goal_id": "1.6.5",
                     "method_name": "exists_elim",
                     "names": "N"
                 },
                 {
-                    "goal_id": "1.1.8",
+                    "goal_id": "1.6.7",
                     "method_name": "inst_exists_goal",
                     "s": "N"
                 },
                 {
-                    "goal_id": "1.1.8",
+                    "goal_id": "1.6.7",
                     "method_name": "introduction",
                     "names": "n"
                 },
                 {
                     "fact_ids": [
-                        "1.1.7",
-                        "1.1.8.1"
+                        "1.6.6",
+                        "1.6.7.1"
                     ],
-                    "goal_id": "1.1.8.2",
+                    "goal_id": "1.6.7.2",
                     "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "1.1.8.2"
+                        "1.6.7.2"
                     ],
-                    "goal_id": "1.1.8.3",
+                    "goal_id": "1.6.7.3",
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "real_abs_between"
                 },
                 {
                     "fact_ids": [
-                        "1.1.8.3"
+                        "1.6.7.3"
                     ],
-                    "goal_id": "1.1.8.4",
+                    "goal_id": "1.6.7.4",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "1.1.8.4"
+                        "1.6.7.4"
                     ],
-                    "goal_id": "1.1.8.5",
+                    "goal_id": "1.6.7.5",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
-                    "goal_id": "1.1.8.6",
+                    "goal_id": "1.6.7.6",
                     "method_name": "apply_backward_step",
                     "param_y": "sup (image a ({m. m ≥ n}))",
                     "theorem": "real_le_trans"
                 },
                 {
-                    "goal_id": "1.1.8.6",
+                    "goal_id": "1.6.7.6",
                     "method_name": "apply_backward_step",
                     "theorem": "element_le_sup"
                 },
                 {
-                    "goal_id": "1.1.8.6",
+                    "goal_id": "1.6.7.6",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "image_def"
                 },
                 {
-                    "goal_id": "1.1.8.6",
+                    "goal_id": "1.6.7.6",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "conj_comm"
                 },
                 {
-                    "goal_id": "1.1.8.6",
+                    "goal_id": "1.6.7.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "forall_in_gspec1"
+                },
+                {
+                    "goal_id": "1.6.7.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "1.5"
+                    ],
+                    "goal_id": "1.6.7.6",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.6.7.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "1.6.7.11",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "1.6.7.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.6.7.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "1.6.7.12",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.6.7.17",
+                    "method_name": "apply_backward_step",
+                    "param_y": "l + (c - l)",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "1.6.7.17",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "1.6.7.18",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.7",
+                    "method_name": "introduction",
+                    "names": "c"
+                },
+                {
+                    "goal_id": "1.7.2",
+                    "method_name": "introduction",
+                    "names": "N"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.7.2.1",
+                    "method_name": "forall_elim",
+                    "s": "l-c"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.1"
+                    ],
+                    "goal_id": "1.7.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_sub_lt"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.1",
+                        "1.7.2.2"
+                    ],
+                    "goal_id": "1.7.2.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.3"
+                    ],
+                    "goal_id": "1.7.2.4",
+                    "method_name": "exists_elim",
+                    "names": "M"
+                },
+                {
+                    "goal_id": "1.7.2.6",
+                    "method_name": "apply_forward_step",
+                    "param_c": "c",
+                    "param_s": "{y. ?k. y = a k & k >= max N M}",
+                    "theorem": "sup_approach"
+                },
+                {
+                    "goal": "(∃x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ∧ c < x)",
+                    "goal_id": "1.7.2.7",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.6"
+                    ],
+                    "goal_id": "1.7.2.7",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.7.2.7",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.7.2.8",
+                    "method_name": "inst_exists_goal",
+                    "s": "b"
+                },
+                {
+                    "goal_id": "1.7.2.8",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "forall_in_gspec1"
                 },
                 {
                     "fact_ids": [
-                        "1.0"
+                        "1.5"
                     ],
-                    "goal_id": "1.1.8.6",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "1.1.8.6"
-                    ],
-                    "goal_id": "1.1.8.7",
-                    "method_name": "exists_elim",
-                    "names": "b"
-                },
-                {
-                    "goal_id": "1.1.8.9",
-                    "method_name": "inst_exists_goal",
-                    "s": "b"
-                },
-                {
-                    "goal_id": "1.1.8.9",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "1.1.8.8"
-                    ],
-                    "goal_id": "1.1.8.9.2",
-                    "method_name": "apply_prev"
-                },
-                {
-                    "goal_id": "1.1.8.14",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "in_image"
-                },
-                {
-                    "goal_id": "1.1.8.14",
-                    "method_name": "inst_exists_goal",
-                    "s": "n"
-                },
-                {
-                    "goal_id": "1.1.8.14",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "1.1.8.14",
-                    "method_name": "apply_backward_step",
-                    "theorem": "eq_refl"
-                },
-                {
-                    "goal_id": "1.1.8.15",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "member_collect"
-                },
-                {
-                    "goal_id": "1.1.8.15",
+                    "goal_id": "1.7.2.8",
                     "method_name": "z3"
                 },
                 {
-                    "goal_id": "1.1.8.21",
-                    "method_name": "apply_backward_step",
-                    "param_y": "l + (c - l)",
-                    "theorem": "real_le_trans"
+                    "fact_ids": [
+                        "1.7.2.5"
+                    ],
+                    "goal_id": "1.7.2.11",
+                    "method_name": "forall_elim",
+                    "s": "max N M"
                 },
                 {
-                    "goal_id": "1.1.8.21",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_lt_imp_le"
+                    "goal": "M ≤ max N M",
+                    "goal_id": "1.7.2.12",
+                    "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.1.8.22",
+                    "goal_id": "1.7.2.12",
                     "method_name": "z3"
                 },
                 {
-                    "goal_id": "1.2",
-                    "method_name": "introduction",
-                    "names": "c"
-                },
-                {
-                    "goal_id": "1.2.2",
-                    "method_name": "introduction",
-                    "names": "N"
+                    "fact_ids": [
+                        "1.7.2.11",
+                        "1.7.2.12"
+                    ],
+                    "goal_id": "1.7.2.13",
+                    "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "1.0"
+                        "1.7.2.13"
                     ],
-                    "goal_id": "1.2.2.1",
+                    "goal_id": "1.7.2.14",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_abs_between"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.14"
+                    ],
+                    "goal_id": "1.7.2.15",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.1"
+                        "1.7.2.15"
                     ],
-                    "goal_id": "1.2.2.2",
-                    "method_name": "forall_elim",
-                    "s": "l-c"
+                    "goal_id": "1.7.2.16",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.2"
+                        "1.7.2.16"
                     ],
-                    "goal": "0 < l - c",
-                    "goal_id": "1.2.2.3",
-                    "method_name": "cut"
+                    "goal_id": "1.7.2.17",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "image_def"
                 },
                 {
                     "fact_ids": [
-                        "1.2.1"
+                        "1.7.2.17"
                     ],
-                    "goal_id": "1.2.2.3",
+                    "goal_id": "1.7.2.18",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "1.7.2.19",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "1.7.2.19",
+                    "method_name": "apply_backward_step",
+                    "param_y": "l - (l - c)",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "goal_id": "1.7.2.19",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.2",
-                        "1.2.2.3"
+                        "1.7.2.22"
                     ],
-                    "goal_id": "1.2.2.4",
-                    "method_name": "apply_fact"
+                    "goal_id": "1.7.2.23",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "exists_in_gspec1"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.4"
+                        "1.7.2.23"
                     ],
-                    "goal_id": "1.2.2.5",
-                    "method_name": "exists_elim",
-                    "names": "M"
+                    "goal_id": "1.7.2.24",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
@@ -8001,11 +8233,613 @@
                 "hint_backward1"
             ],
             "name": "has_limsup_mul_reallim_right",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "has_limsup f a net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limsup f a net ⊢ has_limsup f a net"
+                },
+                {
+                    "args": "tendsto_real g b net",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real g b net ⊢ tendsto_real g b net"
+                },
+                {
+                    "args": "eventually (λx. 0 ≤ f x) net",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λx. 0 ≤ f x) net ⊢ eventually (λx. 0 ≤ f x) net"
+                },
+                {
+                    "args": "eventually (λx. 0 ≤ g x) net",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ g x) net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ trivial_limit net ⟶ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "trivial_limit net",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit net ⊢ trivial_limit net"
+                },
+                {
+                    "args": "disjI1, {}, {A: trivial_limit net, B: (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))}",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, trivial_limit net ⊢ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.0",
+                        "4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ trivial_limit net ⟶ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ ¬(trivial_limit net) ⟶ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "¬(trivial_limit net)",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(trivial_limit net) ⊢ ¬(trivial_limit net)"
+                },
+                {
+                    "args": "",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net) ⊢ ∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net"
+                },
+                {
+                    "args": "c, real",
+                    "id": "5.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR c"
+                },
+                {
+                    "args": "a * b < c",
+                    "id": "5.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * b < c ⊢ a * b < c"
+                },
+                {
+                    "args": "real_continuous_const, {a: real}, {c: a, net: atreal 0}",
+                    "id": "5.1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous (λx. a) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_at_id, {}, {x: (0::real)}",
+                    "id": "5.1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous (λx1. x1) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_add",
+                    "id": "5.1.4",
+                    "prevs": [
+                        "5.1.2",
+                        "5.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ real_continuous (λx. a + x) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_const, {a: real}, {c: b, net: atreal 0}",
+                    "id": "5.1.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous (λx. b) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_add",
+                    "id": "5.1.6",
+                    "prevs": [
+                        "5.1.5",
+                        "5.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ real_continuous (λx. b + x) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_mul",
+                    "id": "5.1.7",
+                    "prevs": [
+                        "5.1.4",
+                        "5.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ real_continuous (λx. (a + x) * (b + x)) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_atreal1",
+                    "id": "5.1.8",
+                    "prevs": [
+                        "5.1.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ ∀e. 0 < e ⟶ (∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < e))"
+                },
+                {
+                    "args": "c - a * b",
+                    "id": "5.1.9",
+                    "prevs": [
+                        "5.1.8"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ 0 < c - a * b ⟶ (∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b))"
+                },
+                {
+                    "args": "0 < c - a * b",
+                    "id": "5.1.10",
+                    "prevs": [
+                        "5.1.1"
+                    ],
+                    "rule": "z3",
+                    "th": "a * b < c ⊢ 0 < c - a * b"
+                },
+                {
+                    "args": "",
+                    "id": "5.1.11",
+                    "prevs": [
+                        "5.1.9",
+                        "5.1.10"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ ∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b)"
+                },
+                {
+                    "args": "d, real",
+                    "id": "5.1.12",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b)",
+                    "id": "5.1.13",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.1.14",
+                    "prevs": [
+                        "5.1.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ 0 < d"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < d, B: ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b}",
+                    "id": "5.1.15",
+                    "prevs": [
+                        "5.1.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b"
+                },
+                {
+                    "args": "",
+                    "id": "5.1.16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∀x. abs x < d ⟶ (a + x) * (b + x) < c"
+                },
+                {
+                    "args": "x, real",
+                    "id": "5.1.16.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "abs x < d",
+                    "id": "5.1.16.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < d ⊢ abs x < d"
+                },
+                {
+                    "args": "real_sub_rzero",
+                    "id": "5.1.16.2",
+                    "prevs": [
+                        "5.1.15"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∀x1. abs x1 < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b"
+                },
+                {
+                    "args": "",
+                    "id": "5.1.16.3",
+                    "prevs": [
+                        "5.1.16.2",
+                        "5.1.16.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b), abs x < d ⊢ abs ((a + x) * (b + x) - (a + 0) * (b + 0)) < c - a * b"
+                },
+                {
+                    "args": "(a + x) * (b + x) < c",
+                    "id": "5.1.16.4",
+                    "prevs": [
+                        "5.1.16.3"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b), abs x < d ⊢ (a + x) * (b + x) < c"
+                },
+                {
+                    "args": "",
+                    "id": "5.1.16.5",
+                    "prevs": [
+                        "5.1.16.0",
+                        "5.1.16.1",
+                        "5.1.16.4"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∀x. abs x < d ⟶ (a + x) * (b + x) < c"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.1.17",
+                    "prevs": [
+                        "5.1.14",
+                        "5.1.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ 0 < d ∧ (∀x. abs x < d ⟶ (a + x) * (b + x) < c)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λd. 0 < d ∧ (∀x. abs x < d ⟶ (a + x) * (b + x) < c), a: d}",
+                    "id": "5.1.18",
+                    "prevs": [
+                        "5.1.17"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∃d. 0 < d ∧ (∀x. abs x < d ⟶ (a + x) * (b + x) < c)"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < d, B: ∀x. abs x < d ⟶ (a + x) * (b + x) < c}",
+                    "id": "5.1.19",
+                    "prevs": [
+                        "5.1.17"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∀x. abs x < d ⟶ (a + x) * (b + x) < c"
+                },
+                {
+                    "args": "d / 2",
+                    "id": "5.1.20",
+                    "prevs": [
+                        "5.1.19"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ abs (d / 2) < d ⟶ (a + d / 2) * (b + d / 2) < c"
+                },
+                {
+                    "args": "",
+                    "id": "5.1.21",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ eventually (λx. f x * g x ≤ c) net"
+                },
+                {
+                    "args": "∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b)",
+                    "id": "5.1.22",
+                    "prevs": [
+                        "5.1.0",
+                        "5.1.1",
+                        "5.1.11",
+                        "5.1.12",
+                        "5.1.13",
+                        "5.1.21"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net) ⊢ ∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net"
+                },
+                {
+                    "args": "",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net) ⊢ ∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.1",
+                        "5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net) ⊢ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "disjI2, {}, {A: trivial_limit net, B: (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))}",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net) ⊢ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.0",
+                        "5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ ¬(trivial_limit net) ⟶ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ trivial_limit net ∨ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
+                },
+                {
+                    "args": "has_limsup, has_limsup (λx. f x * g x) (a * b) net",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ has_limsup (λx. f x * g x) (a * b) net"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limsup f a net ⟶ tendsto_real g b net ⟶ eventually (λx. 0 ≤ f x) net ⟶ eventually (λx. 0 ≤ g x) net ⟶ has_limsup (λx. f x * g x) (a * b) net"
+                }
+            ],
             "prop": [
                 "has_limsup f a net ",
                 "⟶ tendsto_real g b net ",
                 "   ⟶ eventually (λx. 0 ≤ f x) net ",
                 "      ⟶ eventually (λx. 0 ≤ g x) net ⟶ has_limsup (λx. f x * g x) (a * b) net"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_limsup"
+                },
+                {
+                    "case": "trivial_limit net",
+                    "goal_id": "4",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "introduction",
+                    "names": "c"
+                },
+                {
+                    "goal": "?d. 0 < d & !x. abs x < d --> (a + x) * (b + x) < c",
+                    "goal_id": "5.1.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "real_continuous (λx. (a + x) * (b + x)) (atreal 0)",
+                    "goal_id": "5.1.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_mul"
+                },
+                {
+                    "goal_id": "5.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_add"
+                },
+                {
+                    "goal_id": "5.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_const"
+                },
+                {
+                    "goal_id": "5.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_id"
+                },
+                {
+                    "goal_id": "5.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_add"
+                },
+                {
+                    "goal_id": "5.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_const"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.7"
+                    ],
+                    "goal_id": "5.1.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_continuous_atreal1"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.8"
+                    ],
+                    "goal_id": "5.1.9",
+                    "method_name": "forall_elim",
+                    "s": "c- a * b"
+                },
+                {
+                    "goal": "0 < c - a * b",
+                    "goal_id": "5.1.10",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.1"
+                    ],
+                    "goal_id": "5.1.10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.9",
+                        "5.1.10"
+                    ],
+                    "goal_id": "5.1.11",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.11"
+                    ],
+                    "goal_id": "5.1.12",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "goal_id": "5.1.14",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "5.1.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.13"
+                    ],
+                    "goal_id": "5.1.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.13"
+                    ],
+                    "goal_id": "5.1.15",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "5.1.16",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.15"
+                    ],
+                    "goal_id": "5.1.16.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.16.2",
+                        "5.1.16.1"
+                    ],
+                    "goal_id": "5.1.16.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.16.3"
+                    ],
+                    "goal_id": "5.1.16.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.17"
+                    ],
+                    "goal_id": "5.1.19",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5.1.19"
+                    ],
+                    "goal_id": "5.1.20",
+                    "method_name": "forall_elim",
+                    "s": "d/2"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -8051,8 +8885,13 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "has_liminf_transform",
-            "prop": "eventually (λx. f x = g x) net ∧ has_liminf f l net ⟶ has_liminf g l net",
+            "prop": "eventually (λx. f x = g x) net ⟶ has_liminf f l net ⟶ has_liminf g l net",
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -8062,8 +8901,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_liminf_eventually_lbound",
-            "prop": "¬(trivial_limit net) ∧ has_liminf f l net ∧ b < l ⟶ eventually (λx. b < f x) net",
+            "prop": "¬(trivial_limit net) ⟶ has_liminf f l net ⟶ b < l ⟶ eventually (λx. b < f x) net",
             "ty": "thm",
             "vars": {
                 "b": "real",
@@ -8073,6 +8916,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_imp_has_liminf",
             "prop": "tendsto_real f l net ⟶ has_liminf f l net",
             "ty": "thm",
@@ -8083,6 +8930,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_forward",
+                "hint_backward"
+            ],
             "name": "has_liminf_imp_lbound_le",
             "prop": "has_liminf f l net ⟶ (∃b. eventually (λx. b ≤ f x) net)",
             "ty": "thm",
@@ -8093,10 +8944,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_liminf_not_lbound",
             "prop": [
-                "¬(trivial_limit net) ∧ has_liminf f l net ∧ l < c ",
-                "⟶ ¬(eventually (λx. c ≤ f x) net)"
+                "¬(trivial_limit net) ",
+                "⟶ has_liminf f l net ⟶ l < c ⟶ ¬(eventually (λx. c ≤ f x) net)"
             ],
             "ty": "thm",
             "vars": {
@@ -8107,6 +8962,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_liminf",
             "prop": [
                 "has_liminf f l net ⟷ ",
@@ -8122,6 +8980,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "liminf_exists",
             "prop": [
                 "(∃l. has_liminf f l net) ⟷ ",
@@ -8135,11 +8996,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward1"
+            ],
             "name": "has_liminf_le",
             "prop": [
-                "has_liminf f l net ∧ ",
-                "has_liminf g m net ∧ ¬(trivial_limit net) ∧ eventually (λx. f x ≤ g x) net ",
-                "⟶ l ≤ m"
+                "has_liminf f l net ",
+                "⟶ has_liminf g m net ",
+                "   ⟶ ¬(trivial_limit net) ⟶ eventually (λx. f x ≤ g x) net ⟶ l ≤ m"
             ],
             "ty": "thm",
             "vars": {
@@ -8151,8 +9015,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "has_liminf_lbound",
-            "prop": "eventually (λx. b ≤ f x) net ∧ has_liminf f l net ∧ ¬(trivial_limit net) ⟶ b ≤ l",
+            "prop": "eventually (λx. b ≤ f x) net ⟶ has_liminf f l net ⟶ ¬(trivial_limit net) ⟶ b ≤ l",
             "ty": "thm",
             "vars": {
                 "b": "real",
@@ -8162,6 +9030,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_liminf_sequentially",
             "prop": [
                 "has_liminf a l sequentially ⟷ ",
@@ -8175,6 +9046,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_liminf_sequentially_within",
             "prop": [
                 "has_liminf a l (within sequentially k) ⟷ ",

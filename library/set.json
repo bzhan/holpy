@@ -8005,9 +8005,18 @@
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ (∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))"
                 }
             ],
-            "prop": "(∃z. z ∈ {y. ∃x. y = f x} ∧ Q z) ⟷ (∃x. Q (f x))",
+            "prop": "(∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))",
             "steps": [
                 {
                     "goal_id": "0",
@@ -8016,6 +8025,7 @@
             ],
             "ty": "thm",
             "vars": {
+                "P": "'a ⇒ bool",
                 "Q": "'b ⇒ bool",
                 "f": "'a ⇒ 'b"
             }
