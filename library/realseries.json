@@ -9355,16 +9355,21 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_taylor_mvt_pos",
             "prop": [
-                "a < x ∧ ",
-                "(∀i. ∀t. t ∈ real_closed_interval a x ∧ i ≤ n ",
-                "     ⟶ has_real_derivative (f i) (f (i + 1) t) ",
-                "          (within (atreal t) (real_closed_interval a x))) ",
-                "⟶ (∃t. t ∈ real_closed_interval a x ∧ ",
-                "      f 0 x = ",
-                "      sum ({0..n}) (λi. f i a * (x - a) ^ i / of_nat (fact i)) + ",
-                "      f (n + 1) t * (x - a) ^ (n + 1) / of_nat (fact (n + 1)))"
+                "a < x ",
+                "⟶ (∀i. ∀t. t ∈ real_closed_interval a x ",
+                "        ⟶ i ≤ n ",
+                "           ⟶ has_real_derivative (f i) (f (i + 1) t) ",
+                "                (within (atreal t) (real_closed_interval a x))) ",
+                "   ⟶ (∃t. t ∈ real_closed_interval a x ∧ ",
+                "         f 0 x = ",
+                "         sum ({0..n}) (λi. f i a * (x - a) ^ i / of_nat (fact i)) + ",
+                "         f (n + 1) t * (x - a) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -9375,16 +9380,21 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_taylor_mvt_neg",
             "prop": [
-                "x < a ∧ ",
-                "(∀i. ∀t. t ∈ real_closed_interval x a ∧ i ≤ n ",
-                "     ⟶ has_real_derivative (f i) (f (i + 1) t) ",
-                "          (within (atreal t) (real_closed_interval x a))) ",
-                "⟶ (∃t. t ∈ real_closed_interval x a ∧ ",
-                "      f 0 x = ",
-                "      sum ({0..n}) (λi. f i a * (x - a) ^ i / of_nat (fact i)) + ",
-                "      f (n + 1) t * (x - a) ^ (n + 1) / of_nat (fact (n + 1)))"
+                "x < a ",
+                "⟶ (∀i. ∀t. t ∈ real_closed_interval x a ",
+                "        ⟶ i ≤ n ",
+                "           ⟶ has_real_derivative (f i) (f (i + 1) t) ",
+                "                (within (atreal t) (real_closed_interval x a))) ",
+                "   ⟶ (∃t. t ∈ real_closed_interval x a ∧ ",
+                "         f 0 x = ",
+                "         sum ({0..n}) (λi. f i a * (x - a) ^ i / of_nat (fact i)) + ",
+                "         f (n + 1) t * (x - a) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -9395,14 +9405,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_taylor",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀i. ∀x. x ∈ s ∧ i ≤ n ⟶ has_real_derivative (f i) (f (i + 1) x) (within (atreal x) s)) ∧ ",
-                "(∀x. x ∈ s ⟶ abs (f (n + 1) x) ≤ B) ",
-                "⟶ (∀w. ∀z. w ∈ s ∧ z ∈ s ",
-                "        ⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / of_nat (fact i))) ≤ ",
-                "           B * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
+                "is_realinterval s ",
+                "⟶ (∀i. ∀x. x ∈ s ⟶ i ≤ n ⟶ has_real_derivative (f i) (f (i + 1) x) (within (atreal x) s)) ",
+                "   ⟶ (∀x. x ∈ s ⟶ abs (f (n + 1) x) ≤ B) ",
+                "      ⟶ (∀w. ∀z. w ∈ s ",
+                "              ⟶ z ∈ s ",
+                "                 ⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / of_nat (fact i))) ≤ ",
+                "                    B * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
