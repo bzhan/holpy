@@ -6,7 +6,8 @@ from kernel.thm import Thm
 from kernel import theory
 from logic import logic
 from logic import matcher
-from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, top_sweep_conv, has_rewrite
+from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, beta_norm_conv, \
+    top_sweep_conv, has_rewrite
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import printer
@@ -174,7 +175,7 @@ class rewrite_goal(Tactic):
             "rewrite: unable to apply theorem."
 
         cv = then_conv(top_sweep_conv(rewr_conv(th_name, sym=self.sym, conds=prevs)),
-                       top_conv(beta_conv()))
+                       beta_norm_conv())
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
@@ -213,7 +214,7 @@ class rewrite_goal_with_prev(Tactic):
         assert has_rewrite(thy, pt.th, C), "rewrite_goal_with_prev"
 
         cv = then_conv(top_sweep_conv(rewr_conv(pt)),
-                       top_conv(beta_conv()))
+                       beta_norm_conv())
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
@@ -248,7 +249,7 @@ class apply_prev(Tactic):
         for new_name in new_names:
             pt = ProofTerm.forall_elim(inst[new_name], pt)
         if pt.prop.beta_norm() != pt.prop:
-            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+            pt = beta_norm_conv().apply_to_pt(thy, pt)
         inst_As, inst_C = pt.prop.strip_implies()
 
         inst_arg = [inst[new_name] for new_name in new_names]
@@ -278,6 +279,8 @@ class inst_exists_goal(Tactic):
         C = goal.prop
         assert logic.is_exists(C), "inst_exists_goal: goal is not exists statement"
         argT = args.get_type()
-        assert C.arg.var_T == argT, "inst_exists_goal: incorrect type"
+        assert C.arg.var_T == argT, "inst_exists_goal: incorrect type: expect %s, given %s" % (
+            str(C.arg.var_T), str(argT)
+        )
 
         return rule().get_proof_term(thy, goal, args=('exI', ({'a': argT}, {'P': C.arg, 'a': args})))

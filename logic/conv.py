@@ -122,8 +122,17 @@ class beta_conv(Conv):
         except InvalidDerivationException:
             raise ConvException("beta_conv")
 
+class beta_norm_conv(Conv):
+    def get_proof_term(self, thy, t):
+        pt1 = top_conv(beta_conv()).get_proof_term(thy, t)
+        if pt1.prop.rhs != t:
+            pt2 = self.get_proof_term(thy, pt1.prop.rhs)
+            return ProofTerm.transitive(pt1, pt2)
+        else:
+            return refl(t)
+
 def beta_norm(thy, t):
-    return top_conv(beta_conv()).eval(thy, t).prop.arg
+    return beta_norm_conv().eval(thy, t).prop.arg
 
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
@@ -308,7 +317,7 @@ class rewr_conv(Conv):
         assert pt.th.is_equals(), "rewr_conv: wrong result."
 
         if pt.th.prop.lhs != t:
-            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+            pt = beta_norm_conv().apply_to_pt(thy, pt)
 
         assert pt.th.prop.lhs == t, "rewr_conv: wrong result"
         return pt

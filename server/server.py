@@ -231,10 +231,7 @@ class ProofState():
                     'trace': traceback2.format_exc()
                 }
 
-        # Perform final check. Should not raise Exception here
-        self.check_proof()
         return history
-
 
 def parse_init_state(ctxt, prop):
     """Given data for a theorem statement, construct the initial partial proof.

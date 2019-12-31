@@ -9,7 +9,7 @@ from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel import macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
-    top_conv, top_sweep_conv, beta_conv, has_rewrite
+    top_conv, top_sweep_conv, beta_conv, beta_norm_conv, has_rewrite
 from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
 from logic import matcher
 from util import name
@@ -247,13 +247,12 @@ class beta_norm_macro(ProofTermMacro):
 
     def eval(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
-        cv = top_conv(beta_conv())
-        eq_th = cv.eval(thy, ths[0].prop)
+        eq_th = beta_norm_conv().eval(thy, ths[0].prop)
         return Thm(ths[0].hyps, eq_th.prop.arg)
 
     def get_proof_term(self, thy, args, pts):
         assert args is None, "beta_norm_macro"
-        return top_conv(beta_conv()).apply_to_pt(thy, pts[0])
+        return beta_norm_conv().apply_to_pt(thy, pts[0])
 
 class intros_macro(ProofTermMacro):
     """Introduce assumptions and variables."""
@@ -361,7 +360,7 @@ class apply_theorem_macro(ProofTermMacro):
         if inst:
             pt = ProofTerm.substitution(inst, pt)
         if pt.prop.beta_norm() != pt.prop:
-            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+            pt = beta_norm_conv().apply_to_pt(thy, pt)
         for prev_pt in pts:
             pt = ProofTerm.implies_elim(pt, prev_pt)
 
@@ -413,10 +412,10 @@ class apply_fact_macro(ProofTermMacro):
             else:
                 pt = ProofTerm.forall_elim(new_var, pt)
         if pt.prop.beta_norm() != pt.prop:
-            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+            pt = beta_norm_conv().apply_to_pt(thy, pt)
         for prev_pt in pt_prevs:
             if prev_pt.prop != pt.assums[0]:
-                prev_pt = top_conv(beta_conv()).apply_to_pt(thy, prev_pt)
+                prev_pt = beta_norm_conv().apply_to_pt(thy, prev_pt)
             pt = ProofTerm.implies_elim(pt, prev_pt)
         for new_var in new_vars:
             if new_var.name not in inst:
@@ -466,8 +465,7 @@ class rewrite_goal_macro(ProofTermMacro):
             assert len(pts) == len(eq_pt.assums) + 1, "rewrite_goal: wrong number of prevs"
             rewr_cv = rewr_conv(eq_pt, sym=self.sym, conds=pts[1:])
 
-        cv = then_conv(top_sweep_conv(rewr_cv),
-                       top_conv(beta_conv()))
+        cv = then_conv(top_sweep_conv(rewr_cv), beta_norm_conv())
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
         if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
@@ -498,7 +496,7 @@ class rewrite_fact_macro(ProofTermMacro):
             raise InvalidDerivationException("rewrite_fact using %s" % th_name)
 
         cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym, conds=pts[1:])),
-                       top_conv(beta_conv()))
+                       beta_norm_conv())
         return pts[0].on_prop(thy, cv)
 
 class rewrite_goal_with_prev_macro(ProofTermMacro):
@@ -529,7 +527,7 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         pts = pts[1:]
 
         cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym)),
-                       top_conv(beta_conv()))
+                       beta_norm_conv())
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
         if pt.prop.lhs.is_reflexive():
@@ -573,7 +571,7 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         cv1 = top_sweep_conv(rewr_conv(eq_pt))
         assert not cv1.eval(thy, pt.prop).is_reflexive(), "rewrite_fact_with_prev"
 
-        cv = then_conv(cv1, top_conv(beta_conv()))
+        cv = then_conv(cv1, beta_norm_conv())
         return pt.on_prop(thy, cv)
 
 class trivial_macro(ProofTermMacro):

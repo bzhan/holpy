@@ -137,6 +137,14 @@ class ConvTest(unittest.TestCase):
             t_res="f (f x x) (f x x)"
         )
 
+    def testTopBetaConvAbs(self):
+        test_conv(
+            self, 'logic_base', top_conv(beta_conv()),
+            vars={"f": "'a => 'a => 'a", "x": "'a"},
+            t="%x. (%a. f a) x",
+            t_res="%x. f x"
+        )
+
     def testBottomBetaConv(self):
         test_conv(
             self, 'logic_base', bottom_conv(beta_conv()),
@@ -145,12 +153,12 @@ class ConvTest(unittest.TestCase):
             t_res="f (f x x) (f x x)"
         )
 
-    def testTopBetaConvAbs(self):
+    def testBottomBetaConv2(self):
         test_conv(
-            self, 'logic_base', top_conv(beta_conv()),
-            vars={"f": "'a => 'a => 'a", "x": "'a"},
-            t="%x. (%a. f a) x",
-            t_res="%x. f x"
+            self, 'logic_base', bottom_conv(beta_conv()),
+            vars={'f': "'a => 'a => 'a", 'x': "'a"},
+            t="(%x. %y. f x y) x x",
+            t_res="f x x"
         )
 
     def testTopSweepConv(self):

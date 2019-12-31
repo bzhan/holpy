@@ -33,6 +33,16 @@ def check_proof(thy, item, *, rewrite):
                     'trace': step['error']['trace']
                 }
 
+        try:
+            state.check_proof()
+        except Exception as e:
+            return {
+                'status': 'Failed',
+                'err_type': e.__class__.__name__,
+                'err_str': str(e),
+                'trace': traceback2.format_exc()
+            }
+
         # Otherwise OK
         return {
             'status': 'OK' if len(state.rpt.gaps) == 0 else 'Partial',

@@ -8,7 +8,7 @@ from kernel.theory import Method, global_methods
 from data import nat
 from data import function
 from logic import logic
-from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
+from logic.conv import arg_conv, then_conv, top_conv, beta_conv, beta_norm_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic import apply_theorem
@@ -213,7 +213,7 @@ def vcg_norm(thy, T, goal):
         pt = ProofTerm.implies_intr(A, pt)
 
     # Normalize each of the assumptions
-    return pt.on_assums(thy, rewr_conv("Entail_def"), top_conv(beta_conv()),
+    return pt.on_assums(thy, rewr_conv("Entail_def"), beta_norm_conv(),
                         top_conv(function.fun_upd_eval_conv()))
 
 class vcg_macro(ProofTermMacro):

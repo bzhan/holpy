@@ -243,6 +243,18 @@ def init_saved_proof():
     json_state = state.json_data()
     history.extend(state.parse_steps(data['steps'][index:]))
 
+    res = {
+        'state': json_state,
+        'history': history
+    }
+    try:
+        state.check_proof()
+    except Exception as e:
+        res['error'] = {
+            'err_type': e.__class__.__name__,
+            'err_str': str(e),
+            'trace': traceback2.format_exc()
+        }
     print("Parse: %f" % (time.perf_counter() - start_time))
 
     if data['profile']:
@@ -251,10 +263,7 @@ def init_saved_proof():
         p.sort_stats('cumtime')
         p.print_stats()
 
-    return jsonify({
-        'state': json_state,
-        'history': history
-    })
+    return jsonify(res)
 
 
 @app.route('/api/apply-method', methods=['POST'])

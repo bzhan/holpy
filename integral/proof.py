@@ -3,7 +3,7 @@
 from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
-from logic.conv import Conv, ConvException, top_conv, beta_conv, argn_conv, \
+from logic.conv import Conv, ConvException, top_conv, beta_conv, beta_norm_conv, argn_conv, \
     arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv
 from logic.logic import apply_theorem, conj_thms
 from logic.proofterm import ProofTerm, ProofTermDeriv, refl
@@ -366,7 +366,7 @@ class simplify(Conv):
         return refl(t).on_rhs(
             thy,
             top_conv(rewr_conv('evalat_def')),
-            top_conv(beta_conv()),
+            beta_norm_conv(),
             every_conv(*cvs),
             real.real_norm_conv())
 
