@@ -8233,7 +8233,7 @@
                 "hint_backward1"
             ],
             "name": "has_limsup_mul_reallim_right",
-            "num_gaps": 3,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "has_limsup f a net",
@@ -8974,112 +8974,137 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ ¬(0 ≤ c)"
                 },
                 {
-                    "args": "eventually_happens, {a: 'a}, {P: λx. f x * g x ≤ c, net: net}",
+                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
                     "id": "5.2.2.3.3",
                     "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ f x) net ∧ eventually (λx. 0 ≤ g x) net"
+                },
+                {
+                    "args": "eventually_and",
+                    "id": "5.2.2.3.4",
+                    "prevs": [
+                        "5.2.2.3.3"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net"
+                },
+                {
+                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net, B: eventually (λx. f x * g x ≤ c) net}",
+                    "id": "5.2.2.3.5",
+                    "prevs": [
+                        "5.2.2.3.4",
                         "5.2.2.3.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "eventually (λx. f x * g x ≤ c) net ⊢ trivial_limit net ∨ (∃x. f x * g x ≤ c)"
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, eventually (λx. f x * g x ≤ c) net ⊢ eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net ∧ eventually (λx. f x * g x ≤ c) net"
+                },
+                {
+                    "args": "eventually_and",
+                    "id": "5.2.2.3.6",
+                    "prevs": [
+                        "5.2.2.3.5"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, eventually (λx. f x * g x ≤ c) net ⊢ eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ f x * g x ≤ c) net"
+                },
+                {
+                    "args": "∀x. (0 ≤ f x ∧ 0 ≤ g x) ∧ f x * g x ≤ c ⟶ 0 ≤ c",
+                    "id": "5.2.2.3.7",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. (0 ≤ f x ∧ 0 ≤ g x) ∧ f x * g x ≤ c ⟶ 0 ≤ c"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "5.2.2.3.8",
+                    "prevs": [
+                        "5.2.2.3.7",
+                        "5.2.2.3.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ eventually (λx. 0 ≤ c) net"
+                },
+                {
+                    "args": "eventually_happens, {a: 'a}, {P: λx::'a. 0 ≤ c, net: net}",
+                    "id": "5.2.2.3.9",
+                    "prevs": [
+                        "5.2.2.3.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ trivial_limit net ∨ (∃x::'a. 0 ≤ c)"
                 },
                 {
                     "args": "",
-                    "id": "5.2.2.3.4",
+                    "id": "5.2.2.3.10",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ trivial_limit net ⟶ eventually (λx. 0 ≤ c) net"
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ trivial_limit net ⟶ 0 ≤ c"
                 },
                 {
                     "args": "trivial_limit net",
-                    "id": "5.2.2.3.4.0",
+                    "id": "5.2.2.3.10.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "eventually_trivial, {a: 'a}, {P: λx::'a. 0 ≤ c, net: net}",
-                    "id": "5.2.2.3.4.1",
+                    "args": "negE_gen, {}, {A: trivial_limit net, C: 0 ≤ c}",
+                    "id": "5.2.2.3.10.1",
                     "prevs": [
-                        "5.2.2.3.4.0"
+                        "5.0",
+                        "5.2.2.3.10.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "trivial_limit net ⊢ eventually (λx. 0 ≤ c) net"
+                    "th": "¬(trivial_limit net), trivial_limit net ⊢ 0 ≤ c"
                 },
                 {
                     "args": "",
-                    "id": "5.2.2.3.4.2",
+                    "id": "5.2.2.3.10.2",
                     "prevs": [
-                        "5.2.2.3.4.0",
-                        "5.2.2.3.4.1"
+                        "5.2.2.3.10.0",
+                        "5.2.2.3.10.1"
                     ],
                     "rule": "intros",
-                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ trivial_limit net ⟶ eventually (λx. 0 ≤ c) net"
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ trivial_limit net ⟶ 0 ≤ c"
                 },
                 {
-                    "args": "",
-                    "id": "5.2.2.3.5",
+                    "args": "(∃x::'a. 0 ≤ c) ⟶ 0 ≤ c",
+                    "id": "5.2.2.3.11",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ (∃x. f x * g x ≤ c) ⟶ eventually (λx. 0 ≤ c) net"
-                },
-                {
-                    "args": "∃x. f x * g x ≤ c",
-                    "id": "5.2.2.3.5.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "∃x. f x * g x ≤ c ⊢ ∃x. f x * g x ≤ c"
-                },
-                {
-                    "args": "",
-                    "id": "5.2.2.3.5.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net, ∃x. f x * g x ≤ c ⊢ eventually (λx. 0 ≤ c) net"
-                },
-                {
-                    "args": "",
-                    "id": "5.2.2.3.5.2",
-                    "prevs": [
-                        "5.2.2.3.5.0",
-                        "5.2.2.3.5.1"
-                    ],
-                    "rule": "intros",
-                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ (∃x. f x * g x ≤ c) ⟶ eventually (λx. 0 ≤ c) net"
+                    "rule": "z3",
+                    "th": "⊢ (∃x::'a. 0 ≤ c) ⟶ 0 ≤ c"
                 },
                 {
                     "args": "disjE",
-                    "id": "5.2.2.3.6",
+                    "id": "5.2.2.3.12",
                     "prevs": [
-                        "5.2.2.3.3",
-                        "5.2.2.3.4",
-                        "5.2.2.3.5"
+                        "5.2.2.3.9",
+                        "5.2.2.3.10",
+                        "5.2.2.3.11"
                     ],
                     "rule": "apply_theorem",
-                    "th": "eventually (λx. f x * g x ≤ c) net, has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0 ⊢ eventually (λx. 0 ≤ c) net"
-                },
-                {
-                    "args": "",
-                    "id": "5.2.2.3.7",
-                    "prevs": [],
-                    "rule": "sorry",
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ 0 ≤ c"
                 },
                 {
                     "args": "negE",
-                    "id": "5.2.2.3.8",
+                    "id": "5.2.2.3.13",
                     "prevs": [
                         "5.2.2.3.2",
-                        "5.2.2.3.7"
+                        "5.2.2.3.12"
                     ],
                     "rule": "apply_theorem",
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "5.2.2.3.9",
+                    "id": "5.2.2.3.14",
                     "prevs": [
                         "5.2.2.3.0",
-                        "5.2.2.3.8"
+                        "5.2.2.3.13"
                     ],
                     "rule": "intros",
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0 ⊢ eventually (λx. f x * g x ≤ c) net ⟶ false"
@@ -9107,7 +9132,775 @@
                     "args": "",
                     "id": "5.2.3",
                     "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b ⊢ ¬(b = 0) ⟶ ¬(eventually (λx. f x * g x ≤ c) net)"
+                },
+                {
+                    "args": "¬(b = 0)",
+                    "id": "5.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(b = 0) ⊢ ¬(b = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0) ⊢ eventually (λx. f x * g x ≤ c) net ⟶ false"
+                },
+                {
+                    "args": "eventually (λx. f x * g x ≤ c) net",
+                    "id": "5.2.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "eventually (λx. f x * g x ≤ c) net ⊢ eventually (λx. f x * g x ≤ c) net"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net ⊢ 0 < b ⟶ false"
+                },
+                {
+                    "args": "0 < b",
+                    "id": "5.2.3.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < b ⊢ 0 < b"
+                },
+                {
+                    "args": "real_continuous_const, {a: real}, {c: a, net: atreal 0}",
+                    "id": "5.2.3.1.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous (λx. a) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_at_id, {}, {x: (0::real)}",
+                    "id": "5.2.3.1.1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous (λx1. x1) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_add",
+                    "id": "5.2.3.1.1.3",
+                    "prevs": [
+                        "5.2.3.1.1.1",
+                        "5.2.3.1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ real_continuous (λx. a + x) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_const, {a: real}, {c: b, net: atreal 0}",
+                    "id": "5.2.3.1.1.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous (λx. b) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_add",
+                    "id": "5.2.3.1.1.5",
+                    "prevs": [
+                        "5.2.3.1.1.4",
+                        "5.2.3.1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ real_continuous (λx. b + x) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_mul",
+                    "id": "5.2.3.1.1.6",
+                    "prevs": [
+                        "5.2.3.1.1.3",
+                        "5.2.3.1.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ real_continuous (λx. (a + x) * (b + x)) (atreal 0)"
+                },
+                {
+                    "args": "real_continuous_atreal1",
+                    "id": "5.2.3.1.1.7",
+                    "prevs": [
+                        "5.2.3.1.1.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ ∀e. 0 < e ⟶ (∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < e))"
+                },
+                {
+                    "args": "a * b - c",
+                    "id": "5.2.3.1.1.8",
+                    "prevs": [
+                        "5.2.3.1.1.7"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ 0 < a * b - c ⟶ (∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c))"
+                },
+                {
+                    "args": "0 < a * b - c",
+                    "id": "5.2.3.1.1.9",
+                    "prevs": [
+                        "5.2.1"
+                    ],
+                    "rule": "z3",
+                    "th": "c < a * b ⊢ 0 < a * b - c"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.10",
+                    "prevs": [
+                        "5.2.3.1.1.8",
+                        "5.2.3.1.1.9"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ ∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c)"
+                },
+                {
+                    "args": "d, real",
+                    "id": "5.2.3.1.1.11",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c)",
+                    "id": "5.2.3.1.1.12",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.2.3.1.1.13",
+                    "prevs": [
+                        "5.2.3.1.1.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ 0 < d"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < d, B: ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c}",
+                    "id": "5.2.3.1.1.14",
+                    "prevs": [
+                        "5.2.3.1.1.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c"
+                },
+                {
+                    "args": "real_sub_rzero",
+                    "id": "5.2.3.1.1.15",
+                    "prevs": [
+                        "5.2.3.1.1.14"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ ∀x1. abs x1 < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ ∀x. abs x < d ⟶ c < (a + x) * (b + x)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "5.2.3.1.1.16.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "abs x < d",
+                    "id": "5.2.3.1.1.16.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < d ⊢ abs x < d"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.16.2",
+                    "prevs": [
+                        "5.2.3.1.1.15",
+                        "5.2.3.1.1.16.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), abs x < d ⊢ abs ((a + x) * (b + x) - (a + 0) * (b + 0)) < a * b - c"
+                },
+                {
+                    "args": "c < (a + x) * (b + x)",
+                    "id": "5.2.3.1.1.16.3",
+                    "prevs": [
+                        "5.2.3.1.1.16.2"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), abs x < d ⊢ c < (a + x) * (b + x)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.16.4",
+                    "prevs": [
+                        "5.2.3.1.1.16.0",
+                        "5.2.3.1.1.16.1",
+                        "5.2.3.1.1.16.3"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ ∀x. abs x < d ⟶ c < (a + x) * (b + x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.2.3.1.1.17",
+                    "prevs": [
+                        "5.2.3.1.1.13",
+                        "5.2.3.1.1.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x))"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λd. 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x)), a: d}",
+                    "id": "5.2.3.1.1.18",
+                    "prevs": [
+                        "5.2.3.1.1.17"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ ∃d. 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x))"
+                },
+                {
+                    "args": "d1, real",
+                    "id": "5.2.3.1.1.19",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d1"
+                },
+                {
+                    "args": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x))",
+                    "id": "5.2.3.1.1.20",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x))"
+                },
+                {
+                    "args": "has_limsup",
+                    "id": "5.2.3.1.1.21",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_limsup f a net ⊢ trivial_limit net ∨ (∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net))"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.22",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ ¬false ⟶ ¬(trivial_limit net ∨ (∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))"
+                },
+                {
+                    "args": "¬false",
+                    "id": "5.2.3.1.1.22.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "a - min b (d1 / 2) / 2 < a",
+                    "id": "5.2.3.1.1.22.1",
+                    "prevs": [
+                        "5.2.3.1.1.13",
+                        "5.2.3.1.1.0",
+                        "5.2.3.1.1.20"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ a - min b (d1 / 2) / 2 < a"
+                },
+                {
+                    "args": "tendsto_real_def",
+                    "id": "5.2.3.1.1.22.2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real g b net ⊢ ∀e. 0 < e ⟶ eventually (λx. abs (g x - b) < e) net"
+                },
+                {
+                    "args": "min b (d1 / 2) / 2",
+                    "id": "5.2.3.1.1.22.3",
+                    "prevs": [
+                        "5.2.3.1.1.22.2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "tendsto_real g b net ⊢ 0 < min b (d1 / 2) / 2 ⟶ eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "0 < min b (d1 / 2) / 2",
+                    "id": "5.2.3.1.1.22.4",
+                    "prevs": [
+                        "5.2.3.1.1.0",
+                        "5.2.3.1.1.20"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ 0 < min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.22.5",
+                    "prevs": [
+                        "5.2.3.1.1.22.3",
+                        "5.2.3.1.1.22.4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
+                    "id": "5.2.3.1.1.22.6",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ f x) net ∧ eventually (λx. 0 ≤ g x) net"
+                },
+                {
+                    "args": "eventually_and",
+                    "id": "5.2.3.1.1.22.7",
+                    "prevs": [
+                        "5.2.3.1.1.22.6"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net"
+                },
+                {
+                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net, B: eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net}",
+                    "id": "5.2.3.1.1.22.8",
+                    "prevs": [
+                        "5.2.3.1.1.22.7",
+                        "5.2.3.1.1.22.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net ∧ eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "eventually_and",
+                    "id": "5.2.3.1.1.22.9",
+                    "prevs": [
+                        "5.2.3.1.1.22.8"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "conjI, {}, {A: eventually (λx. f x * g x ≤ c) net, B: eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net}",
+                    "id": "5.2.3.1.1.22.10",
+                    "prevs": [
+                        "5.2.3.1.0",
+                        "5.2.3.1.1.22.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "eventually (λx. f x * g x ≤ c) net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. f x * g x ≤ c) net ∧ eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "eventually_and",
+                    "id": "5.2.3.1.1.22.11",
+                    "prevs": [
+                        "5.2.3.1.1.22.10"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "eventually (λx. f x * g x ≤ c) net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.22.12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ∀x. f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⟶ f x ≤ a - min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "5.2.3.1.1.22.12.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2",
+                    "id": "5.2.3.1.1.22.12.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "conjD1, {}, {A: f x * g x ≤ c, B: (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2}",
+                    "id": "5.2.3.1.1.22.12.2",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * g x ≤ c"
+                },
+                {
+                    "args": "conjD2, {}, {A: f x * g x ≤ c, B: (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2}",
+                    "id": "5.2.3.1.1.22.12.3",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "conjD1, {}, {A: 0 ≤ f x ∧ 0 ≤ g x, B: abs (g x - b) < min b (d1 / 2) / 2}",
+                    "id": "5.2.3.1.1.22.12.4",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ 0 ≤ f x ∧ 0 ≤ g x"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 ≤ f x ∧ 0 ≤ g x, B: abs (g x - b) < min b (d1 / 2) / 2}",
+                    "id": "5.2.3.1.1.22.12.5",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ abs (g x - b) < min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "conjD1, {}, {A: 0 < d1, B: ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)}",
+                    "id": "5.2.3.1.1.22.12.6",
+                    "prevs": [
+                        "5.2.3.1.1.20"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ 0 < d1"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < d1, B: ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)}",
+                    "id": "5.2.3.1.1.22.12.7",
+                    "prevs": [
+                        "5.2.3.1.1.20"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)"
+                },
+                {
+                    "args": "0 < b - min b (d1 / 2) / 2",
+                    "id": "5.2.3.1.1.22.12.8",
+                    "prevs": [
+                        "5.2.3.1.1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < b ⊢ 0 < b - min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.2.3.1.1.22.12.9",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ 0 ≤ f x"
+                },
+                {
+                    "args": "b - min b (d1 / 2) / 2 ≤ g x",
+                    "id": "5.2.3.1.1.22.12.10",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.5"
+                    ],
+                    "rule": "z3",
+                    "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ b - min b (d1 / 2) / 2 ≤ g x"
+                },
+                {
+                    "args": "real_le_lmul",
+                    "id": "5.2.3.1.1.22.12.11",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.9",
+                        "5.2.3.1.1.22.12.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * (b - min b (d1 / 2) / 2) ≤ f x * g x"
+                },
+                {
+                    "args": "-(min b (d1 / 2) / 2)",
+                    "id": "5.2.3.1.1.22.12.12",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.7"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ abs (-(min b (d1 / 2) / 2)) < d1 ⟶ c < (a + -(min b (d1 / 2) / 2)) * (b + -(min b (d1 / 2) / 2))"
+                },
+                {
+                    "args": "abs (-(min b (d1 / 2) / 2)) < d1",
+                    "id": "5.2.3.1.1.22.12.13",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.6",
+                        "5.2.3.1.1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), 0 < b ⊢ abs (-(min b (d1 / 2) / 2)) < d1"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.22.12.14",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.12",
+                        "5.2.3.1.1.22.12.13"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ c < (a + -(min b (d1 / 2) / 2)) * (b + -(min b (d1 / 2) / 2))"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "5.2.3.1.1.22.12.15",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ c ≤ (a + -(min b (d1 / 2) / 2)) * (b + -(min b (d1 / 2) / 2))"
+                },
+                {
+                    "args": "real_minus_def, c ≤ (a - min b (d1 / 2) / 2) * (b - min b (d1 / 2) / 2)",
+                    "id": "5.2.3.1.1.22.12.16",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ c ≤ (a - min b (d1 / 2) / 2) * (b - min b (d1 / 2) / 2)"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "5.2.3.1.1.22.12.17",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.2",
+                        "5.2.3.1.1.22.12.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * g x ≤ (a - min b (d1 / 2) / 2) * (b - min b (d1 / 2) / 2)"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "5.2.3.1.1.22.12.18",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.11",
+                        "5.2.3.1.1.22.12.17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * (b - min b (d1 / 2) / 2) ≤ (a - min b (d1 / 2) / 2) * (b - min b (d1 / 2) / 2)"
+                },
+                {
+                    "args": "real_le_rcancel_imp",
+                    "id": "5.2.3.1.1.22.12.19",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.8",
+                        "5.2.3.1.1.22.12.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false, f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x ≤ a - min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.22.12.20",
+                    "prevs": [
+                        "5.2.3.1.1.22.12.0",
+                        "5.2.3.1.1.22.12.1",
+                        "5.2.3.1.1.22.12.19"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ∀x. f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⟶ f x ≤ a - min b (d1 / 2) / 2"
+                },
+                {
+                    "args": "eventually_mono",
+                    "id": "5.2.3.1.1.22.13",
+                    "prevs": [
+                        "5.2.3.1.1.22.12",
+                        "5.2.3.1.1.22.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ eventually (λx. f x ≤ a - min b (d1 / 2) / 2) net"
+                },
+                {
+                    "args": "double_neg, ¬¬(eventually (λx. f x ≤ a - min b (d1 / 2) / 2) net)",
+                    "id": "5.2.3.1.1.22.14",
+                    "prevs": [
+                        "5.2.3.1.1.22.13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬¬(eventually (λx. f x ≤ a - min b (d1 / 2) / 2) net)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.2.3.1.1.22.15",
+                    "prevs": [
+                        "5.2.3.1.1.22.1",
+                        "5.2.3.1.1.22.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ a - min b (d1 / 2) / 2 < a ∧ ¬¬(eventually (λx. f x ≤ a - min b (d1 / 2) / 2) net)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx. x < a ∧ ¬¬(eventually (λx1. f x1 ≤ x) net), a: a - min b (d1 / 2) / 2}",
+                    "id": "5.2.3.1.1.22.16",
+                    "prevs": [
+                        "5.2.3.1.1.22.15"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ∃a1. a1 < a ∧ ¬¬(eventually (λx. f x ≤ a1) net)"
+                },
+                {
+                    "args": "not_imp, ∃x. ¬(x < a ⟶ ¬(eventually (λx1. f x1 ≤ x) net))",
+                    "id": "5.2.3.1.1.22.17",
+                    "prevs": [
+                        "5.2.3.1.1.22.16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ∃x. ¬(x < a ⟶ ¬(eventually (λx1. f x1 ≤ x) net))"
+                },
+                {
+                    "args": "not_all, ¬(∀x. x < a ⟶ ¬(eventually (λx1. f x1 ≤ x) net))",
+                    "id": "5.2.3.1.1.22.18",
+                    "prevs": [
+                        "5.2.3.1.1.22.17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬(∀x. x < a ⟶ ¬(eventually (λx1. f x1 ≤ x) net))"
+                },
+                {
+                    "args": "disjI2, {}, {A: ¬(∀c. a < c ⟶ eventually (λx. f x ≤ c) net), B: ¬(∀x. x < a ⟶ ¬(eventually (λx1. f x1 ≤ x) net))}",
+                    "id": "5.2.3.1.1.22.19",
+                    "prevs": [
+                        "5.2.3.1.1.22.18"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬(∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∨ ¬(∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net))"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬((∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))",
+                    "id": "5.2.3.1.1.22.20",
+                    "prevs": [
+                        "5.2.3.1.1.22.19"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬((∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.2.3.1.1.22.21",
+                    "prevs": [
+                        "5.0",
+                        "5.2.3.1.1.22.20"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬(trivial_limit net) ∧ ¬((∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(trivial_limit net ∨ (∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))",
+                    "id": "5.2.3.1.1.22.22",
+                    "prevs": [
+                        "5.2.3.1.1.22.21"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬(trivial_limit net ∨ (∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.1.22.23",
+                    "prevs": [
+                        "5.2.3.1.1.22.0",
+                        "5.2.3.1.1.22.22"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ ¬false ⟶ ¬(trivial_limit net ∨ (∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)))"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "5.2.3.1.1.23",
+                    "prevs": [
+                        "5.2.3.1.1.21",
+                        "5.2.3.1.1.22"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ false"
+                },
+                {
+                    "args": "∃d. 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x)), ∃d. 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c)",
+                    "id": "5.2.3.1.1.24",
+                    "prevs": [
+                        "5.2.3.1.1.0",
+                        "5.2.3.1.1.10",
+                        "5.2.3.1.1.11",
+                        "5.2.3.1.1.12",
+                        "5.2.3.1.1.18",
+                        "5.2.3.1.1.19",
+                        "5.2.3.1.1.20",
+                        "5.2.3.1.1.23"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net ⊢ 0 < b ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "5.2.3.1.2",
+                    "prevs": [
+                        "5.2.3.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net ⊢ ¬(0 < b)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.3",
+                    "prevs": [],
                     "rule": "sorry",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net ⊢ 0 ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net ⊢ 0 < b"
+                },
+                {
+                    "args": "negE",
+                    "id": "5.2.3.1.5",
+                    "prevs": [
+                        "5.2.3.1.2",
+                        "5.2.3.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.1.6",
+                    "prevs": [
+                        "5.2.3.1.0",
+                        "5.2.3.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0) ⊢ eventually (λx. f x * g x ≤ c) net ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "5.2.3.2",
+                    "prevs": [
+                        "5.2.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0) ⊢ ¬(eventually (λx. f x * g x ≤ c) net)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.3.3",
+                    "prevs": [
+                        "5.2.3.0",
+                        "5.2.3.2"
+                    ],
+                    "rule": "intros",
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b ⊢ ¬(b = 0) ⟶ ¬(eventually (λx. f x * g x ≤ c) net)"
                 },
                 {
@@ -9663,35 +10456,573 @@
                 },
                 {
                     "fact_ids": [
-                        "5.2.2.3.0"
+                        "2",
+                        "3"
                     ],
                     "goal_id": "5.2.2.3.3",
                     "method_name": "apply_forward_step",
-                    "theorem": "eventually_happens"
+                    "theorem": "conjI"
                 },
                 {
                     "fact_ids": [
                         "5.2.2.3.3"
                     ],
                     "goal_id": "5.2.2.3.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "eventually_and"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.2.3.4",
+                        "5.2.2.3.0"
+                    ],
+                    "goal_id": "5.2.2.3.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.2.3.5"
+                    ],
+                    "goal_id": "5.2.2.3.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "eventually_and"
+                },
+                {
+                    "goal_id": "5.2.2.3.7",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ f x * g x ≤ c)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "5.2.2.3.7",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.2.3.8"
+                    ],
+                    "goal_id": "5.2.2.3.9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "eventually_happens"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.2.3.9"
+                    ],
+                    "goal_id": "5.2.2.3.10",
                     "method_name": "apply_backward_step",
                     "theorem": "disjE"
                 },
                 {
-                    "goal_id": "5.2.2.3.4",
+                    "goal_id": "5.2.2.3.10",
                     "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
-                        "5.2.2.3.4.0"
+                        "5.0",
+                        "5.2.2.3.10.0"
                     ],
-                    "goal_id": "5.2.2.3.4.1",
+                    "goal_id": "5.2.2.3.10.1",
                     "method_name": "apply_backward_step",
-                    "theorem": "eventually_trivial"
+                    "theorem": "negE_gen"
                 },
                 {
-                    "goal_id": "5.2.2.3.5",
+                    "goal_id": "5.2.2.3.11",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.2.3",
                     "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "5.2.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.3.1.1",
+                    "method_name": "apply_backward_step",
+                    "param_A": "0 < b",
+                    "theorem": "negE"
+                },
+                {
+                    "goal_id": "5.2.3.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "5.2.3.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "∃d. 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x))",
+                    "goal_id": "5.2.3.1.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "real_continuous (λx. (a + x) * (b + x)) (atreal 0)",
+                    "goal_id": "5.2.3.1.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_mul"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_add"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_const"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_at_id"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_add"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_const"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.6"
+                    ],
+                    "goal_id": "5.2.3.1.1.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_continuous_atreal1"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.7"
+                    ],
+                    "goal_id": "5.2.3.1.1.8",
+                    "method_name": "forall_elim",
+                    "s": "a * b -c"
+                },
+                {
+                    "goal": "0 < a * b - c",
+                    "goal_id": "5.2.3.1.1.9",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.1"
+                    ],
+                    "goal_id": "5.2.3.1.1.9",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.8",
+                        "5.2.3.1.1.9"
+                    ],
+                    "goal_id": "5.2.3.1.1.10",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.10"
+                    ],
+                    "goal_id": "5.2.3.1.1.11",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.13",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.12"
+                    ],
+                    "goal_id": "5.2.3.1.1.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.12"
+                    ],
+                    "goal_id": "5.2.3.1.1.14",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.14"
+                    ],
+                    "goal_id": "5.2.3.1.1.15",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.16",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.15",
+                        "5.2.3.1.1.16.1"
+                    ],
+                    "goal_id": "5.2.3.1.1.16.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.16.2"
+                    ],
+                    "goal_id": "5.2.3.1.1.16.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.18"
+                    ],
+                    "goal_id": "5.2.3.1.1.19",
+                    "method_name": "exists_elim",
+                    "names": "d1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5.2.3.1.1.21",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_limsup"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.21"
+                    ],
+                    "goal_id": "5.2.3.1.1.22",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "a - min b (d1 / 2) / 2"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.13",
+                        "5.2.3.1.1.0",
+                        "5.2.3.1.1.20"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "tendsto_real_def"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.2"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.3",
+                    "method_name": "forall_elim",
+                    "s": "min b (d1 / 2) / 2"
+                },
+                {
+                    "goal": "0 < min b (d1 / 2) / 2",
+                    "goal_id": "5.2.3.1.1.22.4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.0",
+                        "5.2.3.1.1.20"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.3",
+                        "5.2.3.1.1.22.4"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.6"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "eventually_and"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.7",
+                        "5.2.3.1.1.22.5"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.8"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "eventually_and"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.0",
+                        "5.2.3.1.1.22.9"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.10"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.11",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "eventually_and"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12",
+                    "method_name": "apply_backward_step",
+                    "param_P": "(λx. f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2)",
+                    "theorem": "eventually_mono"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.1"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.1"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.3"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.3"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.20"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.20"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12.8",
+                    "method_name": "apply_backward_step",
+                    "param_z": "b-min b (d1 / 2) / 2",
+                    "theorem": "real_le_rcancel_imp"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.0"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.8",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12.9",
+                    "method_name": "apply_backward_step",
+                    "param_y": "f x * g x",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.4"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.5"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.10",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12.12",
+                    "method_name": "apply_backward_step",
+                    "param_y": "c",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.7"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.12",
+                    "method_name": "forall_elim",
+                    "s": "- (min b (d1 / 2) / 2)"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "5.2.3.1.1.22.12.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.12"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.13",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.3.1.1.22.12.6",
+                        "5.2.3.1.1.0"
+                    ],
+                    "goal_id": "5.2.3.1.1.22.12.13",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "0 <= b",
+                    "goal_id": "5.2.3.1.3",
+                    "method_name": "cut"
                 }
             ],
             "ty": "thm",
