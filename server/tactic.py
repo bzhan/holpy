@@ -77,6 +77,12 @@ class rule(Tactic):
         if instsp is None:
             instsp = (dict(), dict())
 
+        tyinst, inst = instsp
+        svars = term.get_svars(th.prop)
+        for v in svars:
+            if v.name in inst:
+                v.T.match_incr(inst[v.name].get_type(), tyinst)
+
         # Match the conclusion and assumptions. Either the conclusion
         # or the list of assumptions must be a first-order pattern.
         if matcher.is_pattern(C, []):

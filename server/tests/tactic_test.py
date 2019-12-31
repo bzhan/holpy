@@ -165,15 +165,6 @@ class TacticTest(unittest.TestCase):
             failed=AssertionError
         )
 
-    def testRewriteGoal3(self):
-        self.run_test(
-            'real', tactic.rewrite_goal(),
-            vars={'n': 'nat', 's': 'real set', 'x': 'real', 'f': 'real => real'},
-            goal='∃A. A ∈ {t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}} ∧ x ∈ A',
-            args='exists_in_gspec1',
-            new_goals=['∃x1. x ∈ {x. x ∈ s & abs (f x) >= 1 / (of_nat x1 + 1)}']
-        )
-
     def testRewriteGoalWithPrev(self):
         self.run_test(
             'nat', tactic.rewrite_goal_with_prev(),
