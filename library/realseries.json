@@ -12702,7 +12702,187 @@
                 "hint_backward"
             ],
             "name": "has_liminf_imp_lbound_le",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "has_liminf f l net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_liminf f l net ⊢ has_liminf f l net"
+                },
+                {
+                    "args": "has_liminf_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_liminf f l net ⊢ trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_liminf f l net ⊢ trivial_limit net ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                },
+                {
+                    "args": "trivial_limit net",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit net ⊢ trivial_limit net"
+                },
+                {
+                    "args": "eventually_trivial, {a: 'a}, {P: λx. l ≤ f x, net: net}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_liminf f l net, trivial_limit net ⊢ eventually (λx. l ≤ f x) net"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λb. eventually (λx. b ≤ f x) net, a: l}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_liminf f l net, trivial_limit net ⊢ ∃a1. eventually (λx. a1 ≤ f x) net"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "has_liminf f l net ⊢ trivial_limit net ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_liminf f l net ⊢ ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)) ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                },
+                {
+                    "args": "¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x))",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)) ⊢ ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x))"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_liminf f l net, ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)) ⊢ ∃a1. eventually (λx. a1 ≤ f x) net"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "has_liminf f l net ⊢ ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)) ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                },
+                {
+                    "args": "member_collect, ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. x ∈ {b. eventually (λx1. b ≤ f x1) net} ∧ c < x)) ⟶ (∃b. eventually (λx. b ≤ f x) net)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_liminf f l net ⊢ ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. x ∈ {b. eventually (λx1. b ≤ f x1) net} ∧ c < x)) ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                },
+                {
+                    "args": "has_sup, has_sup ({b. eventually (λx. b ≤ f x) net}) l ⟶ (∃b. eventually (λx. b ≤ f x) net)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_liminf f l net ⊢ has_sup ({b. eventually (λx. b ≤ f x) net}) l ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_liminf f l net ⊢ ∃a1. eventually (λx. a1 ≤ f x) net"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_liminf f l net ⟶ (∃b. eventually (λx. b ≤ f x) net)"
+                }
+            ],
             "prop": "has_liminf f l net ⟶ (∃b. eventually (λx. b ≤ f x) net)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_liminf_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "l"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eventually_trivial"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_sup"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -12716,9 +12896,72 @@
                 "hint_backward1"
             ],
             "name": "has_liminf_not_lbound",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "¬(trivial_limit net)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(trivial_limit net) ⊢ ¬(trivial_limit net)"
+                },
+                {
+                    "args": "has_liminf f l net",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_liminf f l net ⊢ has_liminf f l net"
+                },
+                {
+                    "args": "l < c",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "l < c ⊢ l < c"
+                },
+                {
+                    "args": "has_liminf_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_liminf f l net ⊢ trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(trivial_limit net), has_liminf f l net, l < c ⊢ ¬(eventually (λx. c ≤ f x) net)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(trivial_limit net) ⟶ has_liminf f l net ⟶ l < c ⟶ ¬(eventually (λx. c ≤ f x) net)"
+                }
+            ],
             "prop": [
                 "¬(trivial_limit net) ",
                 "⟶ has_liminf f l net ⟶ l < c ⟶ ¬(eventually (λx. c ≤ f x) net)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_liminf_def"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -12997,7 +13240,7 @@
                 "hint_backward1"
             ],
             "name": "has_real_derivative_series",
-            "num_gaps": 1,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "is_realinterval s",
@@ -13041,26 +13284,45 @@
                     "id": "5",
                     "prevs": [],
                     "rule": "sorry",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∀n. ∀x. x ∈ s ⟶ has_real_derivative (λx1. sum (k ∩ {0..n}) (λn1. f n1 x1)) (sum (k ∩ {0..n}) (λn1. f1 n1 x)) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λn1. f1 n1 x) - g1 x) ≤ e)"
+                },
+                {
+                    "args": "has_real_derivative_sequence",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "5",
+                        "6",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ tendsto_real (λn. sum (k ∩ {0..n}) (λn1. f n1 x)) (g x) sequentially ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
                 },
                 {
                     "args": "real_sums_def, ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)",
-                    "id": "6",
+                    "id": "8",
                     "prevs": [
-                        "5"
+                        "7"
                     ],
                     "rule": "rewrite_goal",
                     "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "9",
                     "prevs": [
                         "0",
                         "1",
                         "2",
                         "3",
-                        "6"
+                        "8"
                     ],
                     "rule": "intros",
                     "th": "⊢ is_realinterval s ⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ⟶ (∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ⟶ (∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s))"
@@ -13091,6 +13353,12 @@
                     "method_name": "rewrite_fact",
                     "sym": "false",
                     "theorem": "real_sums_def"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "param_f1": "(%n::nat. %x::real. sum (inter k ({0..n})) (%n. f1 n x))",
+                    "theorem": "has_real_derivative_sequence"
                 }
             ],
             "ty": "thm",
