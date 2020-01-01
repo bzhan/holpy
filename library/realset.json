@@ -3215,6 +3215,20 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "has_sup_approach",
+            "prop": "has_sup s l ⟶ c < l ⟶ (∃x. x ∈ s ∧ c < x)",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "l": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "has_inf",
@@ -3312,6 +3326,18 @@
                     "theorem": "conjI"
                 }
             ],
+            "ty": "thm",
+            "vars": {
+                "l": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_sup",
+            "prop": "has_sup s l ⟷ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. x ∈ s ∧ c < x))",
             "ty": "thm",
             "vars": {
                 "l": "real",
