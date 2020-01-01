@@ -62,12 +62,12 @@ export default {
 
     handleSelect: function (index) {
       this.setSelectedSingle(index)
-      this.ref_proof.gotoStep(index)
+      this.ref_proof.gotoStep(index, false)
     },
 
     handleShiftSelect: function (index) {
       this.selected_end = index
-      this.ref_proof.gotoStep(index)
+      this.ref_proof.gotoStep(index, false)
     },
 
     deleteStep: function () {

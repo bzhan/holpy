@@ -72,14 +72,12 @@ export default {
   methods: {
     step_backward: function () {
       if (this.index > 0) {
-        this.ref_context.setSelecedSingle(this.index - 1)
         this.gotoStep(this.index - 1);
       }
     },
 
     step_forward: function () {
       if (this.index < this.history.length) {
-        this.ref_context.setSelectedSingle(this.index + 1)
         this.gotoStep(this.index + 1);
       }
     },
@@ -258,8 +256,12 @@ export default {
     },
 
     // Go to the step given by index
-    gotoStep: async function (index) {
+    gotoStep: async function (index, set_selected) {
       this.index = index
+      if (set_selected === undefined || set_selected === true) {
+        this.ref_context.selected_start = index
+        this.ref_context.selected_end = index
+      }
 
       const data = {
         username: this.$state.user,
