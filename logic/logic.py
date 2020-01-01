@@ -497,7 +497,10 @@ class rewrite_fact_macro(ProofTermMacro):
 
         cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym, conds=pts[1:])),
                        beta_norm_conv())
-        return pts[0].on_prop(thy, cv)
+        res = pts[0].on_prop(thy, cv)
+        if res == pts[0]:
+            raise InvalidDerivationException("rewrite_fact using %s" % th_name)
+        return res
 
 class rewrite_goal_with_prev_macro(ProofTermMacro):
     """Given an input equality theorem and a goal, the macro rewrites

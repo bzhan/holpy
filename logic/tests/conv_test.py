@@ -7,6 +7,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
 from logic.proofterm import ProofTerm
+from logic import conv
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     top_sweep_conv, arg_conv, rewr_conv, has_rewrite, ConvException
 from syntax import parser
@@ -119,6 +120,30 @@ class ConvTest(unittest.TestCase):
             vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set"},
             t="image f (image g s)",
             t_res="image (f O g) s"
+        )
+
+    def testRewrConv7(self):
+        test_conv(
+            self, 'logic_base', rewr_conv('eta_conversion'),
+            vars={'f': "'a => 'b"},
+            t="%x. f x",
+            t_res="f"
+        )
+
+    def testEtaConv(self):
+        test_conv(
+            self, 'logic_base', conv.eta_conv(),
+            vars={'f': "'a => 'b"},
+            t="%x. f x",
+            t_res="f"
+        )
+
+    def testEtaConv2(self):
+        test_conv(
+            self, 'nat', conv.eta_conv(),
+            vars={'x': 'nat'},
+            t="%y. x + y",
+            t_res='plus x'
         )
 
     def testAbsConv(self):

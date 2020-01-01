@@ -745,8 +745,8 @@ def apply_method(state, step):
 @settings.with_settings
 def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
-    method = theory.global_methods[step['method_name']]
     try:
+        method = theory.global_methods[step['method_name']]
         res = method.display_step(state, step)
     except Exception as e:
         res = pprint.N(step['method_name'])
