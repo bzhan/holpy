@@ -1,6 +1,7 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 import json, os, traceback2, time
+import copy
 from flask import request
 from flask.json import jsonify
 from pstats import Stats
@@ -14,6 +15,74 @@ from logic.context import Context
 from server import monitor
 from server import items
 from app.app import app
+
+
+# Cache of the most recent proof
+class ProofCache():
+    def __init__(self):
+        # Key for the cache
+        self.username = ''
+        self.theory_name = ''
+        self.thm_name = ''
+        self.vars = dict()
+        self.prop = None
+        self.steps = []
+
+        # List of output steps
+        self.history = []
+
+        # List of states
+        self.states = []
+
+        # Possible error
+        self.error = None
+
+    def check_cache(self, data):
+        return self.username == data['username'] and self.theory_name == data['theory_name'] and \
+            self.thm_name == data['thm_name'] and self.vars == data['vars'] and \
+            self.prop == data['prop'] and self.steps == data['steps']
+
+    def create_cache(self, data):
+        self.username = data['username']
+        self.theory_name = data['theory_name']
+        self.thm_name = data['thm_name']
+        self.vars = data['vars']
+        self.prop = data['prop']
+        self.steps = data['steps']
+
+        limit = ('thm', self.thm_name)
+        thy = basic.load_theory(self.theory_name, limit=limit, username=self.username)
+
+        ctxt = Context(thy, vars=self.vars)
+        state = server.parse_init_state(ctxt, self.prop)
+
+        self.history = []
+        self.states = [copy.copy(state)]
+        self.error = None
+        for step in self.steps:
+            self.history.extend(state.parse_steps([step]))
+            self.states.append(copy.copy(state))
+
+        try:
+            state.check_proof()
+        except Exception as e:
+            self.error = {
+                'err_type': e.__class__.__name__,
+                'err_str': str(e),
+                'trace': traceback2.format_exc()
+            }
+
+    def insert_step(self, index, step):
+        self.steps = self.steps[:index] + [step] + self.steps[index:]
+        self.history = self.history[:index]
+        self.states = self.states[:index+1]
+        self.error = None
+        state = self.states[index]
+        for step in self.steps:
+            self.history.extend(state.parse_steps([step]))
+            self.states.append(copy.copy(state))
+
+proof_cache = ProofCache()
 
 
 @app.route('/api/init-saved-proof', methods=['POST'])
@@ -31,45 +100,25 @@ def init_saved_proof():
 
     """
     data = json.loads(request.get_data().decode("utf-8"))
-    username = data['username']
-    start_time = time.perf_counter()
-
-    if 'thm_name' in data:
-        limit = ('thm', data['thm_name'])
-    else:
-        limit = None
 
     if data['profile']:
         pr = cProfile.Profile()
         pr.enable()
 
-    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    print("Load: %f" % (time.perf_counter() - start_time))
+    if not proof_cache.check_cache(data):
+        start_time = time.perf_counter()
+        proof_cache.create_cache(data)
+        print("Load: %f" % (time.perf_counter() - start_time))
+
     start_time = time.perf_counter()
-
-    # Obtain initial state
-    ctxt = Context(thy, vars=data['vars'])
-    state = server.parse_init_state(ctxt, data['prop'])
-
-    # Traverse data['steps'] upto index, save state, then continue traversal.
-    index = data['index']
-    history = state.parse_steps(data['steps'][:index])
-    json_state = state.json_data()
-    history.extend(state.parse_steps(data['steps'][index:]))
-
     res = {
-        'state': json_state,
-        'history': history
+        'state': proof_cache.states[data['index']].json_data(),
+        'history': proof_cache.history
     }
-    try:
-        state.check_proof()
-    except Exception as e:
-        res['error'] = {
-            'err_type': e.__class__.__name__,
-            'err_str': str(e),
-            'trace': traceback2.format_exc()
-        }
-    print("Parse: %f" % (time.perf_counter() - start_time))
+    if proof_cache.error:
+        res['error'] = proof_cache.error
+
+    print("Print: %f" % (time.perf_counter() - start_time))
 
     if data['profile']:
         p = Stats(pr)
@@ -97,30 +146,17 @@ def apply_method():
 
     """
     data = json.loads(request.get_data().decode("utf-8"))
-    username = data['username']
-    if 'thm_name' in data:
-        limit = ('thm', data['thm_name'])
-    else:
-        limit = None
+
+    if not proof_cache.check_cache(data):
+        start_time = time.perf_counter()
+        proof_cache.create_cache(data)
+        print("Load: %f" % (time.perf_counter() - start_time))
 
     start_time = time.perf_counter()
-    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    ctxt = Context(thy, vars=data['vars'])
-    state = server.parse_init_state(ctxt, data['prop'])
-    index = data['index']
-    history = state.parse_steps(data['steps'][:index])
-    print("Parse:", time.perf_counter() - start_time)
-    start_time = time.perf_counter()
+    state = proof_cache.states[data['index']]
 
     try:
-        step_output = method.output_step(state, data['step'], unicode=True, highlight=True)
         method.apply_method(state, data['step'])
-        state.check_proof(compute_only=True)
-        history.append({
-            'step_output': step_output,
-            'goal_id': data['step']['goal_id'],
-            'fact_ids': data['step']['fact_ids']
-        })
     except Exception as e:
         if isinstance(e, theory.ParameterQueryException):
             return jsonify({
@@ -135,12 +171,12 @@ def apply_method():
                 }
             })
 
-    json_state = state.json_data()
-    history.extend(state.parse_steps(data['steps'][index:]))
-    return jsonify({
-        'state': json_state,
-        'history': history
-    })
+    proof_cache.insert_step(data['index'], data['step'])
+    res = {
+        'state': proof_cache.states[data['index']+1].json_data(),
+        'history': proof_cache.history
+    }
+    return jsonify(res)
 
 
 @app.route('/api/load-json-file', methods=['POST'])
@@ -222,28 +258,19 @@ def search_method():
 
     """
     data = json.loads(request.get_data().decode("utf-8"))
-    username = data['username']
-
-    if 'thm_name' in data:
-        limit = ('thm', data['thm_name'])
-    else:
-        limit = None
-    start_time = time.perf_counter()
 
     if data['profile']:
         pr = cProfile.Profile()
         pr.enable()
 
-    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    print("Load:", time.perf_counter() - start_time)
-    start_time = time.perf_counter()
+    if not proof_cache.check_cache(data):
+        start_time = time.perf_counter()
+        proof_cache.create_cache(data)
+        print("Load: %f" % (time.perf_counter() - start_time))
 
-    ctxt = Context(thy, vars=data['vars'])
-    state = server.parse_init_state(ctxt, data['prop'])
-    index = data['index']
-    state.parse_steps(data['steps'][:index])
-    print("Parse:", time.perf_counter() - start_time)
     start_time = time.perf_counter()
+    state = proof_cache.states[data['index']]
+    thy = state.thy
     fact_ids = data['step']['fact_ids']
     goal_id = data['step']['goal_id']
 

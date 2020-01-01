@@ -1,5 +1,7 @@
 # Author: Bohua Zhan
 
+import copy
+
 from kernel.term import Term
 from kernel.thm import Thm
 
@@ -128,7 +130,14 @@ class ProofItem():
         return self.id == other.id and self.rule == other.rule and self.args == other.args \
             and self.prevs == other.prevs and self.th == other.th
 
+    def __copy__(self):
+        res = ProofItem(self.id, self.rule, args=self.args, prevs=self.prevs, th=self.th)
+        if self.subproof:
+            res.subproof = copy.copy(self.subproof)
+        return res
+
     def get_sorrys(self):
+        """Return the list of gaps in the item (including subproofs)."""
         if self.rule == 'sorry':
             assert self.subproof is None
             return [self.th]
@@ -139,10 +148,7 @@ class ProofItem():
             return []
             
     def incr_proof_item(self, start, n):
-        """Increment all ids in the given proof item. Recursively increment
-        ids in subproofs.
-        
-        """
+        """Increment all ids in the proof item (including subproofs)."""
         self.id = self.id.incr_id_after(start, n)
         self.prevs = [id.incr_id_after(start, n) for id in self.prevs]
         if self.subproof:
@@ -150,7 +156,7 @@ class ProofItem():
                 subitem.incr_proof_item(start, n)
 
     def decr_proof_item(self, id_remove):
-        """Decrement all ids in the given proof item."""
+        """Decrement all ids in the proof item (including subproofs)."""
         self.id = self.id.decr_id(id_remove)
         self.prevs = [id.decr_id(id_remove) for id in self.prevs]
         if self.subproof:
@@ -183,6 +189,11 @@ class Proof():
 
     def __repr__(self):
         return str(self)
+
+    def __copy__(self):
+        res = Proof()
+        res.items = [copy.copy(item) for item in self.items]
+        return res
 
     def find_item(self, id):
         """Find item at the given id."""
@@ -224,4 +235,5 @@ class Proof():
             raise ProofStateException
 
     def get_sorrys(self):
+        """Return the list of gaps in the proof."""
         return sum([item.get_sorrys() for item in self.items], [])

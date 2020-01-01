@@ -1,6 +1,5 @@
 # Author: Bohua Zhan
 
-from copy import copy, deepcopy
 import os
 import inspect
 import json
