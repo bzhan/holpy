@@ -20,16 +20,16 @@ grammar = r"""
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
         | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
 
-    ?uminus: "-" uminus -> uminus_expr | atom
+    ?uminus: "-" uminus -> uminus_expr | atom  // priority 80
 
-    ?pow: atom "^" uminus -> pow_expr 
+    ?pow: atom "^" uminus -> pow_expr          // priority 75
         | "-" atom "^" uminus -> uminus_pow_expr
         | uminus
 
-    ?times: times "*" pow -> times_expr
+    ?times: times "*" pow -> times_expr        // priority 70
         | times "/" pow -> divides_expr | pow
 
-    ?plus: plus "+" times -> plus_expr
+    ?plus: plus "+" times -> plus_expr         // priority 65
         | plus "-" times -> minus_expr | times
 
     ?expr: plus

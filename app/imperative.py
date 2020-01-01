@@ -8,6 +8,7 @@ from flask.json import jsonify
 
 from logic import basic
 from imperative import parser2
+from imperative import imp  # for the imp methods
 from syntax import printer
 from prover import z3wrapper
 from app.app import app

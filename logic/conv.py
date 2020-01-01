@@ -2,7 +2,7 @@
 
 from kernel.type import Type
 from kernel import term
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Bound
 from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm, refl
 from logic import matcher
@@ -133,6 +133,27 @@ class beta_norm_conv(Conv):
 
 def beta_norm(thy, t):
     return beta_norm_conv().eval(thy, t).prop.arg
+
+class eta_conv(Conv):
+    """Eta-conversion."""
+    def get_proof_term(self, thy, t):
+        if not t.is_abs():
+            raise ConvException("eta_conv")
+
+        var_names = [v.name for v in term.get_vars(t.body)]
+        nm = name.get_variant_name(t.var_name, var_names)
+        v = Var(nm, t.var_T)
+        t2 = t.subst_bound(v)
+
+        if not (t2.is_comb() and t2.arg == v and not t2.fun.occurs_var(v)):
+            raise ConvException("eta_conv")
+
+        eq_pt = ProofTerm.theorem(thy, 'eta_conversion')
+        eq_pt = ProofTerm.subst_type({
+            'a': t2.fun.get_type().domain_type(),
+            'b': t2.fun.get_type().range_type()}, eq_pt)
+        eq_pt = ProofTerm.substitution({'f': t2.fun}, eq_pt)
+        return eq_pt
 
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
@@ -279,6 +300,8 @@ class rewr_conv(Conv):
             return "rewr_conv(%s)" % str(self.pt.th)
 
     def get_proof_term(self, thy, t):
+        # If self.eq_pt is not present, produce it from thy, self.pt
+        # and self.sym. Decompose into self.As and self.C.
         if self.eq_pt is None:
             if isinstance(self.pt, str):
                 self.eq_pt = ProofTerm.theorem(thy, self.pt)
@@ -289,6 +312,8 @@ class rewr_conv(Conv):
 
             self.As, self.C = self.eq_pt.prop.strip_implies()
 
+        # The conclusion of eq_pt should be an equality, and the number of
+        # assumptions in eq_pt should match number of conditions.
         assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
         if len(self.As) != len(self.conds):
             raise ConvException("rewr_conv: number of conds does not agree")
@@ -319,7 +344,10 @@ class rewr_conv(Conv):
         if pt.th.prop.lhs != t:
             pt = beta_norm_conv().apply_to_pt(thy, pt)
 
-        assert pt.th.prop.lhs == t, "rewr_conv: wrong result"
+        if pt.th.prop.lhs != t:
+            pt = eta_conv().apply_to_pt(thy, pt)
+
+        assert pt.th.prop.lhs == t, "rewr_conv: wrong result. Expected %s, got %s" % (str(t), str(pt.th.prop.lhs))
         return pt
 
 def has_rewrite(thy, th, t, *, sym=False, conds=None):

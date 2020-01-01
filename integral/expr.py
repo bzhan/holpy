@@ -118,12 +118,14 @@ class Expr:
             return 100
         elif self.ty == CONST:
             if isinstance(self.val, Fraction):
-                return 70  # priority of division
+                return op_priority['/']
+            elif self.val < 0:
+                return 80  # priority of uminus
             else:
                 return 100
         elif self.ty == OP:
             if len(self.args) == 1:
-                return 80
+                return 80  # priority of uminus
             elif self.op in op_priority:
                 return op_priority[self.op]
             else:
@@ -710,8 +712,6 @@ class Const(Expr):
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
-        if self.val < 0:
-            return "(" + str(self.val) + ")"
         return str(self.val)
 
     def __repr__(self):

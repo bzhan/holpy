@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+import copy
 import itertools
 import traceback2
 
@@ -32,6 +33,7 @@ class ProofState():
         self.thy = thy
         self.vars = []
         self.prf = Proof()
+        self.rpt = None
 
     def get_ctxt(self, id):
         """Obtain the context at the given id."""
@@ -56,6 +58,13 @@ class ProofState():
         vars = sorted(self.vars, key = lambda v: v.name)
         lines = "\n".join('var ' + v.name + ' :: ' + str(v.T) for v in vars)
         return lines + "\n" + str(self.prf)
+
+    def __copy__(self):
+        res = ProofState(self.thy)
+        res.vars = copy.copy(self.vars)
+        res.prf = copy.copy(self.prf)
+        res.rpt = copy.copy(self.rpt)
+        return res
 
     @settings.with_settings
     def export_proof(self):
