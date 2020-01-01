@@ -10,22 +10,19 @@
     <div>
       <Expression style="margin-left:5px"
           v-bind:line="[{color: 0, text: 'Initial'}]"
-          v-on:click.native="handleSelect(0)"
+          v-on:click.exact.native="handleSelect(0)"
+          v-on:click.shift.native="handleShiftSelect(0)"
           v-bind:class="{
             'step-entry': true,
-            'step-selected': selected_step === 0}"/>
+            'step-selected': isSelected(0)}"/>
       <div v-for="(line, index) in steps" v-bind:key="index"
-           style="white-space:nowrap"
-           v-on:mouseenter="handleMouseEnter(index)"
-           v-on:mouseleave="handleMouseLeave(index)">
-        <v-icon style="color:red" title="delete" name="times"
-            v-on:click.native="handleDelete(index)"
-            v-show="line.hover === true"/>
+           style="white-space:nowrap">
         <Expression style="margin-left:5px" v-bind:line="line.step_output" 
-            v-on:click.native="handleSelect(index+1)"
+            v-on:click.exact.native="handleSelect(index+1)"
+            v-on:click.shift.native="handleShiftSelect(index+1)"
             v-bind:class="{
               'step-entry': true,
-              'step-selected': selected_step === index+1,
+              'step-selected': isSelected(index+1),
               'step-error': line.error !== undefined}"/>
       </div>
     </div>
@@ -49,25 +46,43 @@ export default {
 
       // History information.
       steps: undefined,
-      selected_step: undefined
+      selected_start: undefined,
+      selected_end: undefined
     }
   },
 
   methods: {
-    handleMouseEnter: function (index) {
-      this.$set(this.steps[index], 'hover', true)
-    },
-
-    handleMouseLeave: function (index) {
-      this.$set(this.steps[index], 'hover', false)
+    isSelected: function (index) {
+      if (this.selected_start <= this.selected_end) {
+        return this.selected_start <= index && index <= this.selected_end
+      } else {
+        return this.selected_end <= index && index <= this.selected_start
+      }
     },
 
     handleSelect: function (index) {
+      this.setSelectedSingle(index)
       this.ref_proof.gotoStep(index)
     },
 
-    handleDelete: function (index) {
-      this.ref_proof.deleteStep(index)
+    handleShiftSelect: function (index) {
+      this.selected_end = index
+      this.ref_proof.gotoStep(index)
+    },
+
+    deleteStep: function () {
+      var start = Math.max(0, this.selected_start - 1)
+      var end = Math.max(0, this.selected_end - 1)
+      if (start > end) {
+        [start, end] = [end, start]
+      }
+      this.setSelectedSingle(start)
+      this.ref_proof.deleteStep(start, end)
+    },
+
+    setSelectedSingle: function (index) {
+      this.selected_start = index
+      this.selected_end = index
     }
   }
 }
@@ -86,10 +101,6 @@ export default {
 
 .step-error {
   background-color: red
-}
-
-.step-unread {
-  background-color: pink
 }
 
 </style>

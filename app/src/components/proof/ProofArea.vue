@@ -72,12 +72,14 @@ export default {
   methods: {
     step_backward: function () {
       if (this.index > 0) {
+        this.ref_context.setSelecedSingle(this.index - 1)
         this.gotoStep(this.index - 1);
       }
     },
 
     step_forward: function () {
       if (this.index < this.history.length) {
+        this.ref_context.setSelectedSingle(this.index + 1)
         this.gotoStep(this.index + 1);
       }
     },
@@ -305,7 +307,6 @@ export default {
           }
         }
       }
-      this.ref_context.selected_step = this.index
       this.ref_context.steps = this.history
       this.display_num_gaps()
       this.display_instructions()
@@ -313,9 +314,9 @@ export default {
     },
 
     // Delete the step given by index
-    deleteStep: function (index) {
-      this.steps.splice(index, 1)
-      this.gotoStep(index)
+    deleteStep: function (start, end) {
+      this.steps.splice(start, end - start + 1)
+      this.gotoStep(start)
     },
 
     apply_method_ajax: async function (input) {
