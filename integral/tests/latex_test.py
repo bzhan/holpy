@@ -21,7 +21,7 @@ class LatexTest(unittest.TestCase):
             ("x * (1 + x)", "x (1 + x)"),
             ("INT x:[4,9]. x^(1/2) * (1 + x^(1/2))","\int_{4}^{9} \sqrt{x} (1 + \sqrt{x}) \,\mathrm{dx}"),
             ("cos(x) ^ 2", "\cos^{2}x"),
-            ("exp(-(t^2/2))", "e^{-\\frac{t ^ 2}{2}}"),
+            ("exp(-(t^2/2))", "e^{-\\frac{1}{2} * t ^ 2}"),
             ("2 * 2 ^ (1/2)", "2 \\sqrt{2}"),
             ("(-1) * exp((-1))", "-e^{-1}"),
         ]
