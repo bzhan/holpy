@@ -78,7 +78,7 @@ class ProofCache():
         self.states = self.states[:index+1]
         self.error = None
         state = self.states[index]
-        for step in self.steps:
+        for step in self.steps[index:]:
             self.history.extend(state.parse_steps([step]))
             self.states.append(copy.copy(state))
 
@@ -153,7 +153,7 @@ def apply_method():
         print("Load: %f" % (time.perf_counter() - start_time))
 
     start_time = time.perf_counter()
-    state = proof_cache.states[data['index']]
+    state = copy.copy(proof_cache.states[data['index']])
 
     try:
         method.apply_method(state, data['step'])
