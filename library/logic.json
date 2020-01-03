@@ -3395,6 +3395,44 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "left_exists_and_thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q"
+                }
+            ],
+            "prop": "∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "bool"
+            }
+        },
+        {
             "name": "drinker",
             "num_gaps": 0,
             "proof": [
