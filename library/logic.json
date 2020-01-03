@@ -3419,7 +3419,7 @@
                     "th": "⊢ ∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q"
                 }
             ],
-            "prop": "∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q",
+            "prop": "(∃x. P x ∧ Q) ⟷ (∃x1. P x1) ∧ Q",
             "steps": [
                 {
                     "goal_id": "0",
