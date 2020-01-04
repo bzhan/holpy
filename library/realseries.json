@@ -24829,8 +24829,8 @@
             ],
             "name": "real_convex_local_global_minimum",
             "prop": [
-                "real_convex_on f s ∧ x ∈ t ",
-                "⟶ real_open t ⟶ t ⊆ s ⟶ (∀y. y ∈ t ⟶ f x ≤ f y) ⟶ (∀y. y ∈ s ⟶ f x ≤ f y)"
+                "real_convex_on f s ",
+                "⟶ x ∈ t ⟶ real_open t ⟶ t ⊆ s ⟶ (∀y. y ∈ t ⟶ f x ≤ f y) ⟶ (∀y. y ∈ s ⟶ f x ≤ f y)"
             ],
             "ty": "thm",
             "vars": {
@@ -24871,11 +24871,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_imp_jensen",
             "prop": [
-                "real_convex_on f s ∧ ",
-                "is_realinterval s ∧ finite k ∧ (∀i. i ∈ k ⟶ 0 ≤ u i ∧ x i ∈ s) ∧ sum k u = 1 ",
-                "⟶ f (sum k (λi. u i * x i)) ≤ sum k (λi. u i * f (x i))"
+                "real_convex_on f s ",
+                "⟶ is_realinterval s ",
+                "   ⟶ finite k ",
+                "      ⟶ (∀i. i ∈ k ⟶ 0 ≤ u i ∧ x i ∈ s) ",
+                "         ⟶ sum k u = 1 ⟶ f (sum k (λi. u i * x i)) ≤ sum k (λi. u i * f (x i))"
             ],
             "ty": "thm",
             "vars": {
@@ -24887,8 +24893,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_continuous",
-            "prop": "real_open s ∧ real_convex_on f s ⟶ real_continuous_on f s",
+            "prop": "real_open s ⟶ real_convex_on f s ⟶ real_continuous_on f s",
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
@@ -24896,11 +24906,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex_on_left_secant_mul",
             "prop": [
                 "real_convex_on f s ⟷ ",
-                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
-                "       ⟶ (f x - f a) * abs (b - a) ≤ (f b - f a) * abs (x - a))"
+                "(∀a. ∀b. ∀x. a ∈ s ",
+                "       ⟶ b ∈ s ",
+                "          ⟶ x ∈ closed_real_segment a b ",
+                "             ⟶ (f x - f a) * abs (b - a) ≤ (f b - f a) * abs (x - a))"
             ],
             "ty": "thm",
             "vars": {
@@ -24909,11 +24924,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex_on_right_secant_mul",
             "prop": [
                 "real_convex_on f s ⟷ ",
-                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
-                "       ⟶ (f b - f a) * abs (b - x) ≤ (f b - f x) * abs (b - a))"
+                "(∀a. ∀b. ∀x. a ∈ s ",
+                "       ⟶ b ∈ s ",
+                "          ⟶ x ∈ closed_real_segment a b ",
+                "             ⟶ (f b - f a) * abs (b - x) ≤ (f b - f x) * abs (b - a))"
             ],
             "ty": "thm",
             "vars": {
@@ -24922,11 +24942,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex_on_left_secant",
             "prop": [
                 "real_convex_on f s ⟷ ",
-                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
-                "       ⟶ (f x - f a) / abs (x - a) ≤ (f b - f a) / abs (b - a))"
+                "(∀a. ∀b. ∀x. a ∈ s ",
+                "       ⟶ b ∈ s ",
+                "          ⟶ x ∈ closed_real_segment a b ",
+                "             ⟶ (f x - f a) / abs (x - a) ≤ (f b - f a) / abs (b - a))"
             ],
             "ty": "thm",
             "vars": {
@@ -24935,11 +24960,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex_on_right_secant",
             "prop": [
                 "real_convex_on f s ⟷ ",
-                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
-                "       ⟶ (f b - f a) / abs (b - a) ≤ (f b - f x) * abs (b - x))"
+                "(∀a. ∀b. ∀x. a ∈ s ",
+                "       ⟶ b ∈ s ",
+                "          ⟶ x ∈ closed_real_segment a b ",
+                "             ⟶ (f b - f a) / abs (b - a) ≤ (f b - f x) * abs (b - x))"
             ],
             "ty": "thm",
             "vars": {
@@ -24948,11 +24978,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_derivative_secant_imp",
             "prop": [
-                "real_convex_on f s ∧ ",
-                "closed_real_segment x y ⊆ s ∧ has_real_derivative f f1 (within (atreal x) s) ",
-                "⟶ f1 * (y - x) ≤ f y - f x"
+                "real_convex_on f s ",
+                "⟶ closed_real_segment x y ⊆ s ",
+                "   ⟶ has_real_derivative f f1 (within (atreal x) s) ⟶ f1 * (y - x) ≤ f y - f x"
             ],
             "ty": "thm",
             "vars": {
@@ -24964,11 +24998,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_secant_derivative_imp",
             "prop": [
-                "real_convex_on f s ∧ ",
-                "closed_real_segment x y ⊆ s ∧ has_real_derivative f f1 (within (atreal y) s) ",
-                "⟶ f y - f x ≤ f1 * (y - x)"
+                "real_convex_on f s ",
+                "⟶ closed_real_segment x y ⊆ s ",
+                "   ⟶ has_real_derivative f f1 (within (atreal y) s) ⟶ f y - f x ≤ f1 * (y - x)"
             ],
             "ty": "thm",
             "vars": {
@@ -24980,13 +25018,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_derivative_imp",
             "prop": [
-                "real_convex_on f s ∧ ",
-                "closed_real_segment x y ⊆ s ∧ ",
-                "has_real_derivative f f1x (within (atreal x) s) ∧ ",
-                "has_real_derivative f f1y (within (atreal y) s) ",
-                "⟶ f1x * (y - x) ≤ f1y * (y - x)"
+                "real_convex_on f s ",
+                "⟶ closed_real_segment x y ⊆ s ",
+                "   ⟶ has_real_derivative f f1x (within (atreal x) s) ",
+                "      ⟶ has_real_derivative f f1y (within (atreal y) s) ⟶ f1x * (y - x) ≤ f1y * (y - x)"
             ],
             "ty": "thm",
             "vars": {
@@ -24999,13 +25040,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_derivative_increasing_imp",
             "prop": [
-                "real_convex_on f s ∧ ",
-                "real_closed_interval x y ⊆ s ∧ ",
-                "has_real_derivative f f1x (within (atreal x) s) ∧ ",
-                "has_real_derivative f f1y (within (atreal y) s) ∧ x < y ",
-                "⟶ f1x ≤ f1y"
+                "real_convex_on f s ",
+                "⟶ real_closed_interval x y ⊆ s ",
+                "   ⟶ has_real_derivative f f1x (within (atreal x) s) ",
+                "      ⟶ has_real_derivative f f1y (within (atreal y) s) ⟶ x < y ⟶ f1x ≤ f1y"
             ],
             "ty": "thm",
             "vars": {
@@ -25018,11 +25062,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_derivative_secant",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
-                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f1 x * (y - x) ≤ f y - f x)"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "   ⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f1 x * (y - x) ≤ f y - f x)"
             ],
             "ty": "thm",
             "vars": {
@@ -25032,11 +25080,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_secant_derivative",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
-                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f y - f x ≤ f1 y * (y - x))"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "   ⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f y - f x ≤ f1 y * (y - x))"
             ],
             "ty": "thm",
             "vars": {
@@ -25046,11 +25098,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_derivatives",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
-                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f1 x * (y - x) ≤ f1 y * (y - x))"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "   ⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f1 x * (y - x) ≤ f1 y * (y - x))"
             ],
             "ty": "thm",
             "vars": {
@@ -25060,11 +25116,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_derivatives_increasing",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
-                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x ≤ y ⟶ f1 x ≤ f1 y)"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "   ⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ⟶ y ∈ s ∧ x ≤ y ⟶ f1 x ≤ f1 y)"
             ],
             "ty": "thm",
             "vars": {
@@ -25074,12 +25134,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "has_real_derivative_increasing_imp",
             "prop": [
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ∧ ",
-                "(∀x. x ∈ s ⟶ 0 ≤ f1 x) ∧ a ∈ s ∧ b ∈ s ∧ a ≤ b ",
-                "⟶ f a ≤ f b"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "   ⟶ (∀x. x ∈ s ⟶ 0 ≤ f1 x) ⟶ a ∈ s ⟶ b ∈ s ⟶ a ≤ b ⟶ f a ≤ f b"
             ],
             "ty": "thm",
             "vars": {
@@ -25122,13 +25185,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_second_derivative",
             "prop": [
-                "is_realinterval s ∧ ",
-                "¬(∃a. s = {a}) ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ∧ ",
-                "(∀x. x ∈ s ⟶ has_real_derivative f1 (f2 x) (within (atreal x) s)) ",
-                "⟶ real_convex_on f s ⟷ (∀x. x ∈ s ⟶ 0 ≤ f2 x)"
+                "is_realinterval s ",
+                "⟶ ¬(∃a. s = {a}) ",
+                "   ⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "      ⟶ (∀x. x ∈ s ⟶ has_real_derivative f1 (f2 x) (within (atreal x) s)) ",
+                "         ⟶ real_convex_on f s ⟷ (∀x. x ∈ s ⟶ 0 ≤ f2 x)"
             ],
             "ty": "thm",
             "vars": {
@@ -25139,11 +25206,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex_on_asym",
             "prop": [
                 "real_convex_on f s ⟷ ",
-                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ x < y ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "         ⟶ f (u * x + v * y) ≤ u * f x + v * f y)"
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ",
+                "         ⟶ y ∈ s ",
+                "            ⟶ x < y ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y)"
             ],
             "ty": "thm",
             "vars": {
@@ -25152,6 +25223,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_convex_on_exp",
             "prop": "real_convex_on exp s",
             "ty": "thm",
@@ -25160,8 +25234,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_rpow",
-            "prop": "s ⊆ {x. 0 ≤ x} ∧ 1 ≤ t ⟶ real_convex_on (λx. x ^ t) s",
+            "prop": "s ⊆ {x. 0 ≤ x} ⟶ 1 ≤ t ⟶ real_convex_on (λx. x ^ t) s",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -25169,8 +25247,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_rpow_neg",
-            "prop": "s ⊆ {x. x < 0} ∧ t ≤ 0 ⟶ real_convex_on (λx. x ^ t) s",
+            "prop": "s ⊆ {x. x < 0} ⟶ t ≤ 0 ⟶ real_convex_on (λx. x ^ t) s",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -25178,8 +25260,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_rpow_integer",
-            "prop": "s ⊆ {x. 0 < x} ∧ integer t ⟶ real_convex_on (λx. x ^ t) s",
+            "prop": "s ⊆ {x. 0 < x} ⟶ integer t ⟶ real_convex_on (λx. x ^ t) s",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -25187,6 +25273,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_convex_on_real_inv",
             "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on real_inverse s",
             "ty": "thm",
@@ -25195,10 +25284,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_real_",
             "prop": [
-                "real_convex_on f s ∧ is_realinterval s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ",
-                "⟶ real_convex_on (λx. f x ^ n) s"
+                "real_convex_on f s ",
+                "⟶ is_realinterval s ⟶ (∀x. x ∈ s ⟶ 0 ≤ f x) ⟶ real_convex_on (λx. f x ^ n) s"
             ],
             "ty": "thm",
             "vars": {
@@ -25208,6 +25301,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_convex_on_log",
             "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on (λx. -(log x)) s",
             "ty": "thm",
@@ -25216,11 +25312,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_midpoint_convex",
             "prop": [
-                "real_continuous_on f s ∧ ",
-                "is_realinterval s ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) / 2) ≤ (f x + f y) / 2) ",
-                "⟶ real_convex_on f s"
+                "real_continuous_on f s ",
+                "⟶ is_realinterval s ",
+                "   ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f ((x + y) / 2) ≤ (f x + f y) / 2) ⟶ real_convex_on f s"
             ],
             "ty": "thm",
             "vars": {
@@ -25229,10 +25329,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "agm_gen",
             "prop": [
-                "finite k ∧ sum k a = 1 ∧ (∀i. i ∈ k ⟶ 0 ≤ a i ∧ 0 ≤ x i) ",
-                "⟶ product k (λi. x i ^ a i) ≤ sum k (λi. a i * x i)"
+                "finite k ",
+                "⟶ sum k a = 1 ",
+                "   ⟶ (∀i. i ∈ k ⟶ 0 ≤ a i ∧ 0 ≤ x i) ",
+                "      ⟶ product k (λi. x i ^ a i) ≤ sum k (λi. a i * x i)"
             ],
             "ty": "thm",
             "vars": {
@@ -25242,10 +25348,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "agm_rpow",
             "prop": [
-                "has_size k n ∧ ¬(n = 0) ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
-                "⟶ product k (λi. x i ^ (1 / of_nat n)) ≤ sum k (λi. x i / of_nat n)"
+                "has_size k n ",
+                "⟶ ¬(n = 0) ",
+                "   ⟶ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
+                "      ⟶ product k (λi. x i ^ (1 / of_nat n)) ≤ sum k (λi. x i / of_nat n)"
             ],
             "ty": "thm",
             "vars": {
@@ -25255,10 +25367,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "agm_boot",
             "prop": [
-                "has_size k n ∧ ¬(n = 0) ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
-                "⟶ root n (product k x) ≤ sum k x / of_nat n"
+                "has_size k n ",
+                "⟶ ¬(n = 0) ⟶ (∀i. i ∈ k ⟶ 0 ≤ x i) ⟶ root n (product k x) ≤ sum k x / of_nat n"
             ],
             "ty": "thm",
             "vars": {
@@ -25268,8 +25384,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "agm_sqrt",
-            "prop": "0 ≤ x ∧ 0 ≤ y ⟶ sqrt (x + y) ≤ (x + y) / 2",
+            "prop": "0 ≤ x ⟶ 0 ≤ y ⟶ sqrt (x + y) ≤ (x + y) / 2",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -25277,10 +25397,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "agm",
             "prop": [
-                "has_size k n ∧ ¬(n = 0) ∧ (∀i. i ∈ k ⟶ 0 ≤ x i) ",
-                "⟶ product k x ≤ (sum k x / of_nat n) ^ n"
+                "has_size k n ",
+                "⟶ ¬(n = 0) ⟶ (∀i. i ∈ k ⟶ 0 ≤ x i) ⟶ product k x ≤ (sum k x / of_nat n) ^ n"
             ],
             "ty": "thm",
             "vars": {
@@ -25290,8 +25414,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "agm_2",
-            "prop": "0 ≤ x ∧ 0 ≤ y ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ x ^ u * y ^ v ≤ u * x + v * y",
+            "prop": "0 ≤ x ⟶ 0 ≤ y ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ x ^ u * y ^ v ≤ u * x + v * y",
             "ty": "thm",
             "vars": {
                 "u": "real",
@@ -25301,10 +25429,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "young_inequality",
             "prop": [
-                "0 ≤ x ∧ 0 ≤ y ∧ 0 < u ∧ 0 < v ∧ real_inverse u + real_inverse v = 1 ",
-                "⟶ x * y ≤ x ^ u / u + y ^ v / v"
+                "0 ≤ x ",
+                "⟶ 0 ≤ y ",
+                "   ⟶ 0 < u ",
+                "      ⟶ 0 < v ⟶ real_inverse u + real_inverse v = 1 ⟶ x * y ≤ x ^ u / u + y ^ v / v"
             ],
             "ty": "thm",
             "vars": {
@@ -25315,11 +25449,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "hoelder",
             "prop": [
-                "finite k ∧ sum k a = 1 ∧ (∀i. i ∈ k ⟶ 0 ≤ a i ∧ 0 ≤ x i ∧ 0 ≤ y i) ",
-                "⟶ product k (λi. x i ^ a i) + product k (λi. y i ^ a i) ≤ ",
-                "   product k (λi. (x i + y i) ^ a i)"
+                "finite k ",
+                "⟶ sum k a = 1 ",
+                "   ⟶ (∀i. i ∈ k ⟶ 0 ≤ a i ∧ 0 ≤ x i ∧ 0 ≤ y i) ",
+                "      ⟶ product k (λi. x i ^ a i) + product k (λi. y i ^ a i) ≤ ",
+                "         product k (λi. (x i + y i) ^ a i)"
             ],
             "ty": "thm",
             "vars": {
@@ -25330,8 +25470,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "rpow_minus1_quotient_lt",
-            "prop": "0 < a ∧ ¬(a = 1) ∧ 0 < x ∧ x < y ⟶ (a ^ x - 1) / x < (a ^ y - 1) / y",
+            "prop": "0 < a ⟶ ¬(a = 1) ⟶ 0 < x ⟶ x < y ⟶ (a ^ x - 1) / x < (a ^ y - 1) / y",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -25340,8 +25484,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "rpow_minus1_quotient_le",
-            "prop": "0 < a ∧ ¬(a = 1) ∧ 0 < x ∧ x ≤ y ⟶ (a ^ x - 1) / x ≤ (a ^ y - 1) / y",
+            "prop": "0 < a ⟶ ¬(a = 1) ⟶ 0 < x ⟶ x ≤ y ⟶ (a ^ x - 1) / x ≤ (a ^ y - 1) / y",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -25350,8 +25498,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_exp_limit_rpow_lt",
-            "prop": "0 < r ∧ r < s ∧ ¬(x = 0) ∧ x < r ⟶ (1 - x / r) ^ r < (1 - x / s) ^ s",
+            "prop": "0 < r ⟶ r < s ⟶ ¬(x = 0) ⟶ x < r ⟶ (1 - x / r) ^ r < (1 - x / s) ^ s",
             "ty": "thm",
             "vars": {
                 "r": "real",
@@ -25360,8 +25512,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_exp_limit_rpow_le",
-            "prop": "0 ≤ r ∧ r ≤ s ∧ ¬(x = 0) ∧ x ≤ r ⟶ (1 - x / r) ^ r ≤ (1 - x / s) ^ s",
+            "prop": "0 ≤ r ⟶ r ≤ s ⟶ ¬(x = 0) ⟶ x ≤ r ⟶ (1 - x / r) ^ r ≤ (1 - x / s) ^ s",
             "ty": "thm",
             "vars": {
                 "r": "real",
@@ -25370,6 +25526,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_le_x_sinh",
             "prop": "0 ≤ x ⟶ x ≤ (exp x - real_inverse (exp x)) / 2",
             "ty": "thm",
@@ -25378,6 +25537,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_le_abs_sinh",
             "prop": "abs x ≤ abs ((exp x - real_inverse (exp x)) / 2)",
             "ty": "thm",
@@ -25392,13 +25554,19 @@
             "name": "real_log_convex_on",
             "prop": [
                 "real_log_convex_on f s ⟷ ",
-                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "         ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ",
+                "         ⟶ y ∈ s ",
+                "            ⟶ 0 ≤ u ",
+                "               ⟶ 0 ≤ v ",
+                "                  ⟶ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
             ],
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_log_convex_on_empty",
             "num_gaps": 0,
             "proof": [
@@ -25407,7 +25575,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
+                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ⟶ y ∈ ∅ ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "x, real",
@@ -25438,34 +25606,66 @@
                     "th": "⊢ _VAR v"
                 },
                 {
-                    "args": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1",
+                    "args": "x ∈ ∅",
                     "id": "0.4",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v",
+                    "args": "y ∈ ∅",
                     "id": "0.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ ∅ ⊢ y ∈ ∅"
+                },
+                {
+                    "args": "0 ≤ u",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ u ⊢ 0 ≤ u"
+                },
+                {
+                    "args": "0 ≤ v",
+                    "id": "0.7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ v ⊢ 0 ≤ v"
+                },
+                {
+                    "args": "u + v = 1",
+                    "id": "0.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "u + v = 1 ⊢ u + v = 1"
+                },
+                {
+                    "args": "member_empty, 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v",
+                    "id": "0.9",
                     "prevs": [
                         "0.4"
                     ],
-                    "rule": "z3",
-                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "",
-                    "id": "0.6",
+                    "id": "0.10",
                     "prevs": [
                         "0.0",
                         "0.1",
                         "0.2",
                         "0.3",
                         "0.4",
-                        "0.5"
+                        "0.5",
+                        "0.6",
+                        "0.7",
+                        "0.8",
+                        "0.9"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
+                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ⟶ y ∈ ∅ ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "real_log_convex_on_def, real_log_convex_on f ∅",
@@ -25502,8 +25702,9 @@
                     "fact_ids": [
                         "0.4"
                     ],
-                    "goal_id": "0.5",
-                    "method_name": "z3"
+                    "goal_id": "0.9",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
                 }
             ],
             "ty": "thm",
@@ -25512,178 +25713,223 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_on_subset",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_log_convex_on f t ∧ s ⊆ t",
+                    "args": "real_log_convex_on f t",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ real_log_convex_on f t ∧ s ⊆ t"
+                    "th": "real_log_convex_on f t ⊢ real_log_convex_on f t"
+                },
+                {
+                    "args": "s ⊆ t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ⊆ t ⊢ s ⊆ t"
                 },
                 {
                     "args": "real_log_convex_on_def",
-                    "id": "1",
+                    "id": "2",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ (∀x. ∀y. ∀u. ∀v. x ∈ t ∧ y ∈ t ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v) ∧ s ⊆ t"
+                    "th": "real_log_convex_on f t ⊢ ∀x. ∀y. ∀u. ∀v. x ∈ t ⟶ y ∈ t ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "",
-                    "id": "2",
+                    "id": "3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ ∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
+                    "th": "real_log_convex_on f t, s ⊆ t ⊢ ∀x. ∀y. ∀u. ∀v. x ∈ s ⟶ y ∈ s ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "x, real",
-                    "id": "2.0",
+                    "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR x"
                 },
                 {
                     "args": "y, real",
-                    "id": "2.1",
+                    "id": "3.1",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR y"
                 },
                 {
                     "args": "u, real",
-                    "id": "2.2",
+                    "id": "3.2",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR u"
                 },
                 {
                     "args": "v, real",
-                    "id": "2.3",
+                    "id": "3.3",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR v"
                 },
                 {
-                    "args": "x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1",
-                    "id": "2.4",
+                    "args": "x ∈ s",
+                    "id": "3.4",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
+                    "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀u. ∀v. x ∈ t ∧ y ∈ t ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v, B: s ⊆ t}",
-                    "id": "2.5",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ ∀x. ∀y. ∀u. ∀v. x ∈ t ∧ y ∈ t ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
-                },
-                {
-                    "args": "conjD2, {}, {A: ∀x. ∀y. ∀u. ∀v. x ∈ t ∧ y ∈ t ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v, B: s ⊆ t}",
-                    "id": "2.6",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ s ⊆ t"
-                },
-                {
-                    "args": "",
-                    "id": "2.7",
+                    "args": "y ∈ s",
+                    "id": "3.5",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t, x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ t ∧ y ∈ t ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
+                    "rule": "assume",
+                    "th": "y ∈ s ⊢ y ∈ s"
                 },
                 {
-                    "args": "",
-                    "id": "2.8",
+                    "args": "0 ≤ u",
+                    "id": "3.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ u ⊢ 0 ≤ u"
+                },
+                {
+                    "args": "0 ≤ v",
+                    "id": "3.7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ v ⊢ 0 ≤ v"
+                },
+                {
+                    "args": "u + v = 1",
+                    "id": "3.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "u + v = 1 ⊢ u + v = 1"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "3.9",
                     "prevs": [
-                        "2.5",
-                        "2.7"
+                        "1",
+                        "3.4"
                     ],
-                    "rule": "apply_fact",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t, x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
+                    "rule": "apply_theorem",
+                    "th": "s ⊆ t, real_log_convex_on f t, x ∈ s, y ∈ s, 0 ≤ u, 0 ≤ v, u + v = 1 ⊢ x ∈ t"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "3.10",
+                    "prevs": [
+                        "1",
+                        "3.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "s ⊆ t, real_log_convex_on f t, x ∈ s, y ∈ s, 0 ≤ u, 0 ≤ v, u + v = 1 ⊢ y ∈ t"
+                },
+                {
+                    "args": "x, y, u, v",
+                    "id": "3.11",
+                    "prevs": [
+                        "2",
+                        "3.9",
+                        "3.10",
+                        "3.6",
+                        "3.7",
+                        "3.8"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "real_log_convex_on f t, s ⊆ t, x ∈ s, y ∈ s, 0 ≤ u, 0 ≤ v, u + v = 1 ⊢ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "",
-                    "id": "2.9",
+                    "id": "3.12",
                     "prevs": [
-                        "2.0",
-                        "2.1",
-                        "2.2",
-                        "2.3",
-                        "2.4",
-                        "2.8"
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.3",
+                        "3.4",
+                        "3.5",
+                        "3.6",
+                        "3.7",
+                        "3.8",
+                        "3.11"
                     ],
                     "rule": "intros",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ ∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
+                    "th": "real_log_convex_on f t, s ⊆ t ⊢ ∀x. ∀y. ∀u. ∀v. x ∈ s ⟶ y ∈ s ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
                     "args": "real_log_convex_on_def, real_log_convex_on f s",
-                    "id": "3",
+                    "id": "4",
                     "prevs": [
-                        "2"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "real_log_convex_on f t ∧ s ⊆ t ⊢ real_log_convex_on f s"
+                    "th": "real_log_convex_on f t, s ⊆ t ⊢ real_log_convex_on f s"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "3"
+                        "1",
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_log_convex_on f t ∧ s ⊆ t ⟶ real_log_convex_on f s"
+                    "th": "⊢ real_log_convex_on f t ⟶ s ⊆ t ⟶ real_log_convex_on f s"
                 }
             ],
-            "prop": "real_log_convex_on f t ∧ s ⊆ t ⟶ real_log_convex_on f s",
+            "prop": "real_log_convex_on f t ⟶ s ⊆ t ⟶ real_log_convex_on f s",
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "real_log_convex_on_def"
                 },
                 {
                     "fact_ids": [
                         "0"
                     ],
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "rewrite_fact",
+                    "sym": "false",
                     "theorem": "real_log_convex_on_def"
                 },
                 {
-                    "goal_id": "2",
+                    "goal_id": "3",
                     "method_name": "introduction",
                     "names": "x,y,u,v"
                 },
                 {
                     "fact_ids": [
-                        "1"
+                        "2"
                     ],
-                    "goal_id": "2.5",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "2.6",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "2.5"
-                    ],
-                    "goal_id": "2.7",
+                    "goal_id": "3.9",
                     "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
                 }
             ],
             "ty": "thm",
@@ -25694,10 +25940,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_on_eq",
             "prop": [
-                "is_realinterval s ∧ (∀x. x ∈ s ⟶ f x = g x) ∧ real_log_convex_on f s ",
-                "⟶ real_log_convex_on g s"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ f x = g x) ⟶ real_log_convex_on f s ⟶ real_log_convex_on g s"
             ],
             "ty": "thm",
             "vars": {
@@ -25707,6 +25957,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_log_convex_on_sing",
             "prop": "real_log_convex_on f ({a}) ⟷ 0 ≤ f a",
             "ty": "thm",
@@ -25716,8 +25969,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward1"
+            ],
             "name": "real_log_convex_imp_pos",
-            "prop": "real_log_convex_on f s ∧ x ∈ s ⟶ 0 ≤ f x",
+            "prop": "real_log_convex_on f s ⟶ x ∈ s ⟶ 0 ≤ f x",
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
@@ -25726,13 +25982,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_log_convex_on_convex",
             "prop": [
                 "is_realinterval s ",
                 "⟶ real_log_convex_on f s ⟷ ",
                 "   (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ ",
-                "   (∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "            ⟶ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
+                "   (∀x. ∀y. ∀u. ∀v. x ∈ s ",
+                "            ⟶ y ∈ s ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ f (u * x + v * y) ≤ f x ^ u * f y ^ v)"
             ],
             "ty": "thm",
             "vars": {
@@ -25741,10 +26000,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_on",
             "prop": [
-                "is_realinterval s ∧ (∀x. x ∈ s ⟶ 0 < f x) ",
-                "⟶ real_log_convex_on f s ⟷ real_log_convex_on (log ∘ f) s"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ 0 < f x) ⟶ real_log_convex_on f s ⟷ real_log_convex_on (log ∘ f) s"
             ],
             "ty": "thm",
             "vars": {
@@ -25753,6 +26016,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_log_convex_imp_convex",
             "prop": "real_log_convex_on f s ⟶ real_convex_on f s",
             "ty": "thm",
@@ -25762,10 +26029,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_add",
             "prop": [
-                "real_log_convex_on f s ∧ real_log_convex_on g s ",
-                "⟶ real_log_convex_on (λx. f x + g x) s"
+                "real_log_convex_on f s ",
+                "⟶ real_log_convex_on g s ⟶ real_log_convex_on (λx. f x + g x) s"
             ],
             "ty": "thm",
             "vars": {
@@ -25775,10 +26046,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_mul",
             "prop": [
-                "real_log_convex_on f s ∧ real_log_convex_on g s ",
-                "⟶ real_log_convex_on (λx. f x * g x) s"
+                "real_log_convex_on f s ",
+                "⟶ real_log_convex_on g s ⟶ real_log_convex_on (λx. f x * g x) s"
             ],
             "ty": "thm",
             "vars": {
@@ -25788,13 +26063,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "midpoint_real_log_convex",
             "prop": [
-                "real_continuous_on f s ∧ ",
-                "is_realinterval s ∧ ",
-                "(∀x. x ∈ s ⟶ 0 < f x) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) / 2) ^ (2::nat) ≤ f x * f y) ",
-                "⟶ real_log_convex_on f s"
+                "real_continuous_on f s ",
+                "⟶ is_realinterval s ",
+                "   ⟶ (∀x. x ∈ s ⟶ 0 < f x) ",
+                "      ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f ((x + y) / 2) ^ (2::nat) ≤ f x * f y) ",
+                "         ⟶ real_log_convex_on f s"
             ],
             "ty": "thm",
             "vars": {
@@ -25803,6 +26082,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_log_convex_const",
             "prop": "0 ≤ a ⟶ real_log_convex_on (λx. a) s",
             "ty": "thm",
@@ -25812,10 +26094,15 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_product",
             "prop": [
-                "finite k ∧ (∀i. i ∈ k ⟶ real_log_convex_on (λx. f x i) s) ",
-                "⟶ real_log_convex_on (λx. product k (f x)) s"
+                "finite k ",
+                "⟶ (∀i. i ∈ k ⟶ real_log_convex_on (λx. f x i) s) ",
+                "   ⟶ real_log_convex_on (λx. product k (f x)) s"
             ],
             "ty": "thm",
             "vars": {
@@ -25825,6 +26112,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_log_convex_rpow_right",
             "prop": "0 < a ⟶ real_log_convex_on (λx. a ^ x) s",
             "ty": "thm",
@@ -25834,13 +26124,20 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_log_convex_lim",
             "prop": [
-                "¬(trivial_limit net) ∧ ",
-                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "         ⟶ tendsto_real (λi. f i (u * x + v * y)) (g (u * x + v * y)) net) ∧ ",
-                "eventually (λi. real_log_convex_on (f i) s) net ",
-                "⟶ real_log_convex_on g s"
+                "¬(trivial_limit net) ",
+                "⟶ (∀x. ∀y. ∀u. ∀v. x ∈ s ",
+                "            ⟶ y ∈ s ",
+                "               ⟶ 0 ≤ u ",
+                "                  ⟶ 0 ≤ v ",
+                "                     ⟶ u + v = 1 ⟶ tendsto_real (λi. f i (u * x + v * y)) (g (u * x + v * y)) net) ∧ ",
+                "   eventually (λi. real_log_convex_on (f i) s) net ",
+                "   ⟶ real_log_convex_on g s"
             ],
             "ty": "thm",
             "vars": {
