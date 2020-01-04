@@ -1076,10 +1076,232 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "from",
             "prop": "from n = {m. n ≤ m}",
             "ty": "def",
             "type": "nat ⇒ nat set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "from_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x::nat. 0 ≤ x ⟷ x ∈ univ",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::nat. 0 ≤ x ⟷ x ∈ univ"
+                },
+                {
+                    "args": "member_collect, ∀x::nat. x ∈ {m. 0 ≤ m} ⟷ x ∈ univ",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x::nat. x ∈ {m. 0 ≤ m} ⟷ x ∈ univ"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ {m::nat. 0 ≤ m} = univ"
+                },
+                {
+                    "args": "from_def, from 0 = univ",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ from 0 = univ"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ from 0 = univ"
+                }
+            ],
+            "prop": "from 0 = univ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "in_from",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, m ∈ {m1. n ≤ m1} ⟷ n ≤ m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ∈ {m1. n ≤ m1} ⟷ n ≤ m"
+                },
+                {
+                    "args": "from_def, m ∈ from n ⟷ n ≤ m",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ∈ from n ⟷ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ∈ from n ⟷ n ≤ m"
+                }
+            ],
+            "prop": "m ∈ from n ⟷ n ≤ m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "from_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "from_mono",
+            "prop": "from m ⊆ from n ⟷ n ≤ m",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "from_inter_natseg_gen",
+            "prop": "from m ∩ from n = (if m < k then {k..n} else {m..n})",
+            "ty": "thm",
+            "vars": {
+                "k": "nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_inter_natseg",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "finite_natseg, {}, {m: m, n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ s ∩ {m..n} ⊆ {m..n}"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite (s ∩ {m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite (s ∩ {m..n})"
+                }
+            ],
+            "prop": "finite (s ∩ {m..n})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "param_t": "{m..n}",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "s": "nat set"
+            }
         },
         {
             "attributes": [
@@ -1717,7 +1939,8 @@
     ],
     "description": "Various convenient background stuff. Refer to misc.ml from HOL Light.",
     "imports": [
-        "floor"
+        "floor",
+        "iterate"
     ],
     "name": "misc"
 }

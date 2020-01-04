@@ -3010,12 +3010,18 @@
             "type": "'a ⇒ 'a ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "greater_eq",
             "prop": "m ≥ n ⟷ n ≤ m",
             "ty": "def",
             "type": "'a ⇒ 'a ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "greater",
             "prop": "m > n ⟷ n < m",
             "ty": "def",

@@ -10,7 +10,10 @@
             "type": "nat ⇒ nat ⇒ nat set"
         },
         {
-            "name": "finite_numseg",
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_natseg",
             "prop": "finite ({m..n})",
             "ty": "thm",
             "vars": {
@@ -19,7 +22,11 @@
             }
         },
         {
-            "name": "numseg_combine_r",
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "natseg_combine_r",
             "prop": "m ≤ p + 1 ⟶ p ≤ n ⟶ {m..p} ∪ {p + 1..n} = {m..n}",
             "ty": "thm",
             "vars": {

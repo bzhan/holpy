@@ -3184,6 +3184,9 @@
             "type": "nat set ⇒ (nat ⇒ real) ⇒ real"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_summable",
             "prop": "real_summable s f ⟷ (∃l. real_sums f l s)",
             "ty": "def",
@@ -3276,6 +3279,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_summable_finite",
             "prop": "finite s ⟶ real_summable s f",
             "ty": "thm",
@@ -4173,6 +4179,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_series_absconv_imp_conv",
             "prop": "real_summable s (λn. abs (f n)) ⟶ real_summable s f",
             "ty": "thm",
@@ -4182,6 +4192,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_sums_gp",
             "prop": "abs x < 1 ⟶ real_sums (λk. x ^ k) (x ^ n / (1 - x)) (from n)",
             "ty": "thm",
@@ -4191,6 +4204,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_summable_gp",
             "prop": "abs x < 1 ⟶ real_summable s (λk. x ^ k)",
             "ty": "thm",
@@ -4200,6 +4216,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_summable_zeta_integer",
             "prop": "2 ≤ m ⟶ real_summable (from n) (λk. real_inverse (of_nat k ^ m))",
             "ty": "thm",

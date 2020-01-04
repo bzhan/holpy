@@ -8190,8 +8190,7 @@
     ],
     "description": "Formalization of general topological and metric spaces. Refer to metric.ml from HOL Light.",
     "imports": [
-        "misc",
-        "iterate"
+        "misc"
     ],
     "name": "metric"
 }

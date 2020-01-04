@@ -20384,10 +20384,864 @@
                 "hint_backward1"
             ],
             "name": "real_series_root_test",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀n. n ∈ k ⟶ 0 ≤ a n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n ⊢ ∀n. n ∈ k ⟶ 0 ≤ a n"
+                },
+                {
+                    "args": "b < 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b < 1 ⊢ b < 1"
+                },
+                {
+                    "args": "has_limsup (λn. root n (a n)) b (within sequentially k)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limsup (λn. root n (a n)) b (within sequentially k) ⊢ has_limsup (λn. root n (a n)) b (within sequentially k)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k) ⊢ finite k ⟶ real_summable k a"
+                },
+                {
+                    "args": "finite k",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite k ⊢ finite k"
+                },
+                {
+                    "args": "real_summable_finite, {}, {f: a, s: k}",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), finite k ⊢ real_summable k a"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k) ⊢ finite k ⟶ real_summable k a"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k) ⊢ ¬(finite k) ⟶ real_summable k a"
+                },
+                {
+                    "args": "¬(finite k)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(finite k) ⊢ ¬(finite k)"
+                },
+                {
+                    "args": "reallim_const, {a: nat}, {a: (0::real), net: within sequentially k}",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tendsto_real (λx. 0) 0 (within sequentially k)"
+                },
+                {
+                    "args": "reallim_imp_has_limsup",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ has_limsup (λn. 0) 0 (within sequentially k)"
+                },
+                {
+                    "args": "trivial_limit_sequentially_within, ¬(trivial_limit (within sequentially k))",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ¬(trivial_limit (within sequentially k))"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ∀n. n ∈ k ⟶ 0 ≤ n ⟶ 0 ≤ a n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "n ∈ k",
+                    "id": "4.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ∈ k ⊢ n ∈ k"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "4.4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "4.4.3",
+                    "prevs": [
+                        "0",
+                        "4.4.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), n ∈ k, 0 ≤ n ⊢ 0 ≤ a n"
+                },
+                {
+                    "args": "",
+                    "id": "4.4.4",
+                    "prevs": [
+                        "4.4.0",
+                        "4.4.1",
+                        "4.4.2",
+                        "4.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ∀n. n ∈ k ⟶ 0 ≤ n ⟶ 0 ≤ a n"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ a n, a: (0::nat)}",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ 0 ≤ a n"
+                },
+                {
+                    "args": "root_le_0, ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n)",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n)"
+                },
+                {
+                    "args": "disjI2, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n)}",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n))"
+                },
+                {
+                    "args": "eventually_sequentially_within, eventually (λx. 0 ≤ root x (a x)) (within sequentially k)",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ eventually (λx. 0 ≤ root x (a x)) (within sequentially k)"
+                },
+                {
+                    "args": "has_limsup_le",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.2",
+                        "2",
+                        "4.3",
+                        "4.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ 0 ≤ b"
+                },
+                {
+                    "args": "infinite_def",
+                    "id": "4.10",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "¬(finite k) ⊢ infinite k"
+                },
+                {
+                    "args": "infinite_nonempty, {a: nat}, {s: k}",
+                    "id": "4.11",
+                    "prevs": [
+                        "4.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(finite k) ⊢ ¬(k = ∅)"
+                },
+                {
+                    "args": "∃a. a ∈ k",
+                    "id": "4.12",
+                    "prevs": [
+                        "4.11"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(finite k) ⊢ ∃a. a ∈ k"
+                },
+                {
+                    "args": "b < b + (1 - b) / 2",
+                    "id": "4.13",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "b < 1 ⊢ b < b + (1 - b) / 2"
+                },
+                {
+                    "args": "has_limsup_eventually_ubound",
+                    "id": "4.14",
+                    "prevs": [
+                        "4.3",
+                        "2",
+                        "4.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ eventually (λn. root n (a n) < b + (1 - b) / 2) (within sequentially k)"
+                },
+                {
+                    "args": "eventually_sequentially_within",
+                    "id": "4.15",
+                    "prevs": [
+                        "4.14"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2)"
+                },
+                {
+                    "args": "",
+                    "id": "4.16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2) ⟶ real_summable k a"
+                },
+                {
+                    "args": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2",
+                    "id": "4.16.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "4.16.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2",
+                    "id": "4.16.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2"
+                },
+                {
+                    "args": "abs (b + (1 - b) / 2) < 1",
+                    "id": "4.16.3",
+                    "prevs": [
+                        "4.9",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), b < 1 ⊢ abs (b + (1 - b) / 2) < 1"
+                },
+                {
+                    "args": "real_summable_gp, {}, {s: k, x: b + (1 - b) / 2}",
+                    "id": "4.16.4",
+                    "prevs": [
+                        "4.16.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ real_summable k (λk1. (b + (1 - b) / 2) ^ k1)"
+                },
+                {
+                    "args": "real_summable_def, ∃l. real_sums (λn. (b + (1 - b) / 2) ^ n) l k",
+                    "id": "4.16.5",
+                    "prevs": [
+                        "4.16.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∃l. real_sums (λn. (b + (1 - b) / 2) ^ n) l k"
+                },
+                {
+                    "args": "",
+                    "id": "4.16.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∀i. N + 1 ≤ i ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.16.6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "N + 1 ≤ n",
+                    "id": "4.16.6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N + 1 ≤ n ⊢ N + 1 ≤ n"
+                },
+                {
+                    "args": "n ∈ k",
+                    "id": "4.16.6.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ∈ k ⊢ n ∈ k"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "4.16.6.3",
+                    "prevs": [
+                        "4.16.6.1"
+                    ],
+                    "rule": "z3",
+                    "th": "N + 1 ≤ n ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_0, {}, {n: n}",
+                    "id": "4.16.6.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "4.16.6.5",
+                    "prevs": [
+                        "4.4",
+                        "4.16.6.2",
+                        "4.16.6.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ 0 ≤ a n"
+                },
+                {
+                    "args": "real_pow_root_2",
+                    "id": "4.16.6.6",
+                    "prevs": [
+                        "4.16.6.3",
+                        "4.16.6.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ root n (a n) ^ n = a n"
+                },
+                {
+                    "args": "eq_sym_eq, a n = root n (a n) ^ n",
+                    "id": "4.16.6.7",
+                    "prevs": [
+                        "4.16.6.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ a n = root n (a n) ^ n"
+                },
+                {
+                    "args": "root_pos_le, {}, {n: n, x: a n}",
+                    "id": "4.16.6.8",
+                    "prevs": [
+                        "4.16.6.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ 0 ≤ root n (a n)"
+                },
+                {
+                    "args": "N ≤ n",
+                    "id": "4.16.6.9",
+                    "prevs": [
+                        "4.16.6.1"
+                    ],
+                    "rule": "z3",
+                    "th": "N + 1 ≤ n ⊢ N ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "4.16.6.10",
+                    "prevs": [
+                        "4.16.2",
+                        "4.16.6.2",
+                        "4.16.6.9"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ root n (a n) < b + (1 - b) / 2"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "4.16.6.11",
+                    "prevs": [
+                        "4.16.6.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ root n (a n) ≤ b + (1 - b) / 2"
+                },
+                {
+                    "args": "real_pow_le2, {}, {n: n, x: root n (a n), y: b + (1 - b) / 2}",
+                    "id": "4.16.6.12",
+                    "prevs": [
+                        "4.16.6.8",
+                        "4.16.6.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ root n (a n) ^ n ≤ (b + (1 - b) / 2) ^ n"
+                },
+                {
+                    "args": "a n ≤ (b + (1 - b) / 2) ^ n",
+                    "id": "4.16.6.13",
+                    "prevs": [
+                        "4.16.6.7",
+                        "4.16.6.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ a n ≤ (b + (1 - b) / 2) ^ n"
+                },
+                {
+                    "args": "if_P, (if 0 ≤ a n then a n else -(a n)) ≤ (b + (1 - b) / 2) ^ n",
+                    "id": "4.16.6.14",
+                    "prevs": [
+                        "4.16.6.13",
+                        "4.16.6.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ (if 0 ≤ a n then a n else -(a n)) ≤ (b + (1 - b) / 2) ^ n"
+                },
+                {
+                    "args": "abs_def, abs (a n) ≤ (b + (1 - b) / 2) ^ n",
+                    "id": "4.16.6.15",
+                    "prevs": [
+                        "4.16.6.14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ abs (a n) ≤ (b + (1 - b) / 2) ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "4.16.6.16",
+                    "prevs": [
+                        "4.16.6.0",
+                        "4.16.6.1",
+                        "4.16.6.2",
+                        "4.16.6.15"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∀i. N + 1 ≤ i ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i"
+                },
+                {
+                    "args": "greater_eq_def, ∀i. i ≥ N + 1 ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i",
+                    "id": "4.16.7",
+                    "prevs": [
+                        "4.16.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∀i. i ≥ N + 1 ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀i. i ≥ N ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i, a: N + 1}",
+                    "id": "4.16.8",
+                    "prevs": [
+                        "4.16.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∃a1. ∀i. i ≥ a1 ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i"
+                },
+                {
+                    "args": "real_series_comparison",
+                    "id": "4.16.9",
+                    "prevs": [
+                        "4.16.5",
+                        "4.16.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∃l. real_sums a l k"
+                },
+                {
+                    "args": "real_summable_def, real_summable k a",
+                    "id": "4.16.10",
+                    "prevs": [
+                        "4.16.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ real_summable k a"
+                },
+                {
+                    "args": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2",
+                    "id": "4.16.11",
+                    "prevs": [
+                        "4.16.0",
+                        "4.16.0",
+                        "4.16.1",
+                        "4.16.2",
+                        "4.16.10"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2) ⟶ real_summable k a"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4.17",
+                    "prevs": [
+                        "4.15",
+                        "3",
+                        "4.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ real_summable k a"
+                },
+                {
+                    "args": "",
+                    "id": "4.18",
+                    "prevs": [
+                        "4.0",
+                        "4.17"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k) ⊢ ¬(finite k) ⟶ real_summable k a"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k) ⊢ real_summable k a"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. n ∈ k ⟶ 0 ≤ a n) ⟶ b < 1 ⟶ has_limsup (λn. root n (a n)) b (within sequentially k) ⟶ real_summable k a"
+                }
+            ],
             "prop": [
                 "(∀n. n ∈ k ⟶ 0 ≤ a n) ",
                 "⟶ b < 1 ",
                 "   ⟶ has_limsup (λn. root n (a n)) b (within sequentially k) ⟶ real_summable k a"
+            ],
+            "steps": [
+                {
+                    "case": "finite k",
+                    "goal_id": "3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_summable_finite"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "0 <= b",
+                    "goal_id": "4.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%n::nat. (0::real))",
+                    "param_g": "(λn. root n (a n))",
+                    "param_net": "(within sequentially k)",
+                    "theorem": "has_limsup_le"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_imp_has_limsup"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_const"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "trivial_limit_sequentially_within"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially_within"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_le_0"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.4.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "?a. a ∈ k",
+                    "goal_id": "4.10",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.10",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "infinite_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.10"
+                    ],
+                    "goal_id": "4.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "infinite_nonempty"
+                },
+                {
+                    "fact_ids": [
+                        "4.11"
+                    ],
+                    "goal_id": "4.12",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "eventually (λn. root n (a n) < b + (1-b)/2) (within sequentially k)",
+                    "goal_id": "4.13",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.13",
+                    "method_name": "apply_backward_step",
+                    "param_l": "b",
+                    "theorem": "has_limsup_eventually_ubound"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4.13",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.14"
+                    ],
+                    "goal_id": "4.15",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially_within"
+                },
+                {
+                    "fact_ids": [
+                        "4.15"
+                    ],
+                    "goal_id": "4.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4.16",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.16.0"
+                    ],
+                    "goal_id": "4.16.1",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "4.16.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "4.16.3",
+                    "method_name": "apply_backward_step",
+                    "param_g": "(λn::nat. (b + (1 - b) / 2) ^ n)",
+                    "theorem": "real_series_comparison"
+                },
+                {
+                    "goal_id": "4.16.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_summable_def"
+                },
+                {
+                    "goal_id": "4.16.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_summable_gp"
+                },
+                {
+                    "fact_ids": [
+                        "4.9",
+                        "1"
+                    ],
+                    "goal_id": "4.16.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4.16.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "N+1"
+                },
+                {
+                    "goal_id": "4.16.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "greater_eq_def"
+                },
+                {
+                    "goal_id": "4.16.6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "4.16.6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "abs_def"
+                },
+                {
+                    "goal": "a n = root n (a n) ^ (n::nat)",
+                    "goal_id": "4.16.6.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.16.6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "4.16.6.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_root_2"
+                },
+                {
+                    "fact_ids": [
+                        "4.16.6.1"
+                    ],
+                    "goal_id": "4.16.6.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.16.6.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.16.6.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "fact_ids": [
+                        "4.16.6.5"
+                    ],
+                    "goal_id": "4.16.6.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.16.6.7"
+                    ],
+                    "goal_id": "4.16.6.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.16.6.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_le2"
+                },
+                {
+                    "goal_id": "4.16.6.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "root_pos_le"
+                },
+                {
+                    "goal_id": "4.16.6.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "4.16.2"
+                    ],
+                    "goal_id": "4.16.6.9",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.16.6.1"
+                    ],
+                    "goal_id": "4.16.6.9",
+                    "method_name": "z3"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20437,9 +21291,72 @@
                 "hint_backward1"
             ],
             "name": "real_cauchy_hadamard_radius_derivative",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_limsup (λn. root n (abs (a n))) b (within sequentially k)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ⊢ has_limsup (λn. root n (abs (a n))) b (within sequentially k)"
+                },
+                {
+                    "args": "b * abs x < 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * abs x < 1 ⊢ b * abs x < 1"
+                },
+                {
+                    "args": "real_cauchy_hadamard_radius_absconv_derivative",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), b * abs x < 1 ⊢ real_summable k (λn. abs (of_nat n * a n * x ^ (n - 1)))"
+                },
+                {
+                    "args": "real_series_absconv_imp_conv",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), b * abs x < 1 ⊢ real_summable k (λn. of_nat n * a n * x ^ (n - 1))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limsup (λn. root n (abs (a n))) b (within sequentially k) ⟶ b * abs x < 1 ⟶ real_summable k (λn. of_nat n * a n * x ^ (n - 1))"
+                }
+            ],
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
                 "⟶ b * abs x < 1 ⟶ real_summable k (λn. of_nat n * a n * x ^ (n - 1))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_series_absconv_imp_conv"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_cauchy_hadamard_radius_absconv_derivative"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20455,12 +21372,439 @@
                 "hint_backward1"
             ],
             "name": "real_cauchy_hadamard_radius_uniform",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "has_limsup (λn. root n (abs (a n))) b (within sequentially k)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ⊢ has_limsup (λn. root n (abs (a n))) b (within sequentially k)"
+                },
+                {
+                    "args": "real_compact s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_compact s ⊢ real_compact s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ b * abs x < 1",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ b * abs x < 1 ⊢ ∀x. x ∈ s ⟶ b * abs x < 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1 ⊢ finite k ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+                },
+                {
+                    "args": "finite k",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite k ⊢ finite k"
+                },
+                {
+                    "args": "nat_finite",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite k ⊢ ∃a. ∀x. x ∈ k ⟶ x ≤ a"
+                },
+                {
+                    "args": "N, nat",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR N"
+                },
+                {
+                    "args": "∀x. x ∈ k ⟶ x ≤ N",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ k ⟶ x ≤ N ⊢ ∀x. x ∈ k ⟶ x ≤ N"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e)"
+                },
+                {
+                    "args": "e, real",
+                    "id": "3.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "3.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e ⊢ ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.4.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.4.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "N ≤ n ∧ x ∈ s",
+                    "id": "3.4.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "N ≤ n ∧ x ∈ s ⊢ N ≤ n ∧ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ ∀x. x ∈ k ∧ 0 ≤ x ∧ x ≤ n ⟷ x ∈ k"
+                },
+                {
+                    "args": "x1, nat",
+                    "id": "3.4.2.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 ∈ k ∧ 0 ≤ x1 ∧ x1 ≤ n ⟷ x1 ∈ k",
+                    "id": "3.4.2.3.1",
+                    "prevs": [
+                        "3.4.2.2",
+                        "3.3"
+                    ],
+                    "rule": "z3",
+                    "th": "N ≤ n ∧ x ∈ s, ∀x. x ∈ k ⟶ x ≤ N ⊢ x1 ∈ k ∧ 0 ≤ x1 ∧ x1 ≤ n ⟷ x1 ∈ k"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2.3.2",
+                    "prevs": [
+                        "3.4.2.3.0",
+                        "3.4.2.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ ∀x. x ∈ k ∧ 0 ≤ x ∧ x ≤ n ⟷ x ∈ k"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ k ∧ x ∈ {p. 0 ≤ p ∧ p ≤ n} ⟷ x ∈ k",
+                    "id": "3.4.2.4",
+                    "prevs": [
+                        "3.4.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ ∀x. x ∈ k ∧ x ∈ {p. 0 ≤ p ∧ p ≤ n} ⟷ x ∈ k"
+                },
+                {
+                    "args": "member_inter_iff, ∀x. x ∈ k ∩ {p. 0 ≤ p ∧ p ≤ n} ⟷ x ∈ k",
+                    "id": "3.4.2.5",
+                    "prevs": [
+                        "3.4.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ ∀x. x ∈ k ∩ {p. 0 ≤ p ∧ p ≤ n} ⟷ x ∈ k"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "3.4.2.6",
+                    "prevs": [
+                        "3.4.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ k ∩ {p. 0 ≤ p ∧ p ≤ n} = k"
+                },
+                {
+                    "args": "nat_interval_def, k ∩ {0..n} = k",
+                    "id": "3.4.2.7",
+                    "prevs": [
+                        "3.4.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ k ∩ {0..n} = k"
+                },
+                {
+                    "args": "real_abs_0, abs 0 < e",
+                    "id": "3.4.2.8",
+                    "prevs": [
+                        "3.4.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ abs 0 < e"
+                },
+                {
+                    "args": "real_sub_refl, abs (sum k (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e",
+                    "id": "3.4.2.9",
+                    "prevs": [
+                        "3.4.2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ abs (sum k (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e"
+                },
+                {
+                    "args": "abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e",
+                    "id": "3.4.2.10",
+                    "prevs": [
+                        "3.4.2.7",
+                        "3.4.2.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e, N ≤ n ∧ x ∈ s ⊢ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2.11",
+                    "prevs": [
+                        "3.4.2.0",
+                        "3.4.2.1",
+                        "3.4.2.2",
+                        "3.4.2.10"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e ⊢ ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e, a: N}",
+                    "id": "3.4.3",
+                    "prevs": [
+                        "3.4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e ⊢ ∃a1. ∀n. ∀x. a1 ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.4",
+                    "prevs": [
+                        "3.4.0",
+                        "3.4.1",
+                        "3.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e)"
+                },
+                {
+                    "args": "exI, {a: real ⇒ real}, {P: λl. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e), a: λx. sum k (λi. a i * x ^ i)}",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N ⊢ ∃a1. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - a1 x) < e)"
+                },
+                {
+                    "args": "∃a. ∀x. x ∈ k ⟶ x ≤ a",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.3",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1 ⊢ finite k ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1 ⊢ ¬(finite k) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+                },
+                {
+                    "args": "¬(finite k)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(finite k) ⊢ ¬(finite k)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, ¬(finite k) ⊢ ∃a1. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - a1 x) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.0",
+                        "4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1 ⊢ ¬(finite k) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1 ⊢ ∃a1. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - a1 x) < e)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limsup (λn. root n (abs (a n))) b (within sequentially k) ⟶ real_compact s ⟶ (∀x. x ∈ s ⟶ b * abs x < 1) ⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+                }
+            ],
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ",
                 "⟶ real_compact s ",
                 "   ⟶ (∀x. x ∈ s ⟶ b * abs x < 1) ",
                 "      ⟶ (∃l. ∀e. 0 < e ",
                 "              ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e))"
+            ],
+            "steps": [
+                {
+                    "case": "finite k",
+                    "goal_id": "3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_finite"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "exists_elim",
+                    "names": "N"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "(%x::real. sum k (λi. a i * x ^ i))"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "goal_id": "3.4.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "N"
+                },
+                {
+                    "goal_id": "3.4.2",
+                    "method_name": "introduction",
+                    "names": "n,x"
+                },
+                {
+                    "goal": "k ∩ {0..n} = k",
+                    "goal_id": "3.4.2.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.4.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_interval_def"
+                },
+                {
+                    "goal_id": "3.4.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "3.4.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_inter_iff"
+                },
+                {
+                    "goal_id": "3.4.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "3.4.2.3",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2.2",
+                        "3.3"
+                    ],
+                    "goal_id": "3.4.2.3.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2.7"
+                    ],
+                    "goal_id": "3.4.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.4.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_refl"
+                },
+                {
+                    "goal_id": "3.4.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_0"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20521,7 +21865,7 @@
                 "hint_backward1"
             ],
             "name": "has_real_derivative_series",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "is_realinterval s",
@@ -20538,11 +21882,11 @@
                     "th": "∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s) ⊢ ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)"
                 },
                 {
-                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)",
+                    "args": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e)",
                     "id": "2",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)"
+                    "th": "∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e) ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e)"
                 },
                 {
                     "args": "∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k",
@@ -20564,56 +21908,141 @@
                     "args": "",
                     "id": "5",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∀n. ∀x. x ∈ s ⟶ has_real_derivative (λx1. sum (k ∩ {0..n}) (λn1. f n1 x1)) (sum (k ∩ {0..n}) (λn1. f1 n1 x)) (within (atreal x) s)"
+                    "rule": "subproof",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∀n. ∀x. x ∈ s ⟶ has_real_derivative (λx1. sum (k ∩ {0..n}) (λn1. f n1 x1)) (sum (k ∩ {0..n}) (λn1. f1 n1 x)) (within (atreal x) s)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "x, real",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "finite_inter_natseg, {}, {m: (0::nat), n: n, s: k}",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (k ∩ {0..n})"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "5.4",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λn1. f1 n1 x) - g1 x) ≤ e)"
+                    "rule": "subproof",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k, x ∈ s ⊢ ∀a. a ∈ k ∩ {0..n} ⟶ has_real_derivative (f a) (f1 a x) (within (atreal x) s)"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "5.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "a ∈ k ∩ {0..n}",
+                    "id": "5.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ k ∩ {0..n} ⊢ a ∈ k ∩ {0..n}"
+                },
+                {
+                    "args": "a, x",
+                    "id": "5.4.2",
+                    "prevs": [
+                        "1",
+                        "5.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), is_realinterval s, ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k, x ∈ s, a ∈ k ∩ {0..n} ⊢ has_real_derivative (f a) (f1 a x) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.3",
+                    "prevs": [
+                        "5.4.0",
+                        "5.4.1",
+                        "5.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k, x ∈ s ⊢ ∀a. a ∈ k ∩ {0..n} ⟶ has_real_derivative (f a) (f1 a x) (within (atreal x) s)"
+                },
+                {
+                    "args": "has_real_derivative_sum",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.3",
+                        "5.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k, x ∈ s ⊢ has_real_derivative (λx1. sum (k ∩ {0..n}) (λa. f a x1)) (sum (k ∩ {0..n}) (λa. f1 a x)) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.2",
+                        "5.5"
+                    ],
+                    "rule": "intros",
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∀n. ∀x. x ∈ s ⟶ has_real_derivative (λx1. sum (k ∩ {0..n}) (λn1. f n1 x1)) (sum (k ∩ {0..n}) (λn1. f1 n1 x)) (within (atreal x) s)"
                 },
                 {
                     "args": "has_real_derivative_sequence",
-                    "id": "7",
+                    "id": "6",
                     "prevs": [
                         "0",
                         "5",
-                        "6",
+                        "2",
                         "4"
                     ],
                     "rule": "apply_theorem",
-                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ tendsto_real (λn. sum (k ∩ {0..n}) (λn1. f n1 x)) (g x) sequentially ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ tendsto_real (λn. sum (k ∩ {0..n}) (λn1. f n1 x)) (g x) sequentially ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
                 },
                 {
                     "args": "real_sums_def, ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)",
-                    "id": "8",
+                    "id": "7",
                     "prevs": [
-                        "7"
+                        "6"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
+                    "th": "is_realinterval s, ∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s), ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e), ∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k ⊢ ∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s)"
                 },
                 {
                     "args": "",
-                    "id": "9",
+                    "id": "8",
                     "prevs": [
                         "0",
                         "1",
                         "2",
                         "3",
-                        "8"
+                        "7"
                     ],
                     "rule": "intros",
-                    "th": "⊢ is_realinterval s ⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ⟶ (∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ⟶ (∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s))"
+                    "th": "⊢ is_realinterval s ⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ⟶ (∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e)) ⟶ (∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ⟶ (∃g. ∀x. x ∈ s ⟶ real_sums (λn. f n x) (g x) k ∧ has_real_derivative g (g1 x) (within (atreal x) s))"
                 }
             ],
             "prop": [
                 "is_realinterval s ",
                 "⟶ (∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ",
                 "   ⟶ (∀e. 0 < e ",
-                "         ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ",
+                "         ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) ≤ e)) ",
                 "      ⟶ (∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ",
                 "         ⟶ (∃g. ∀x. x ∈ s ",
                 "                 ⟶ real_sums (λn. f n x) (g x) k ∧ ",
@@ -20640,6 +22069,33 @@
                     "method_name": "apply_backward_step",
                     "param_f1": "(%n::nat. %x::real. sum (inter k ({0..n})) (%n. f1 n x))",
                     "theorem": "has_real_derivative_sequence"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "n,x"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_sum"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_inter_natseg"
+                },
+                {
+                    "goal_id": "5.4",
+                    "method_name": "introduction",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5.4.2",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -20744,14 +22200,86 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sum_integral_ubound_increasing",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1))) ⊢ ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1))), ∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ sum ({m..n}) (λk. f (of_nat k)) ≤ sum ({m..n}) (λk. g (of_nat k + 1) - g (of_nat k))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1))), ∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ sum ({m..n}) (λk. g (of_nat k + 1) - g (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1))), ∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ (∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ⟶ (∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                }
+            ],
             "prop": [
-                "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ",
-                "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. of_nat m ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ",
-                "⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                "m ≤ n ",
+                "⟶ (∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ",
+                "      ⟶ has_real_derivative g (f x) ",
+                "           (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ",
+                "   ⟶ (∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ",
+                "      ⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "sum ({m..n}) (λk. g (of_nat k + 1) - g (of_nat k))",
+                    "theorem": "real_le_trans"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20762,14 +22290,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sum_integral_ubound_decreasing",
             "prop": [
-                "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ",
-                "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ∧ ",
-                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n ⟶ f y ≤ f x) ",
-                "⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
+                "m ≤ n ",
+                "⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ",
+                "      ⟶ has_real_derivative g (f x) ",
+                "           (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ",
+                "   ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f y ≤ f x) ",
+                "      ⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
             ],
             "ty": "thm",
             "vars": {
@@ -20780,14 +22312,116 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sum_integral_lbound_increasing",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n))) ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y ⊢ ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y"
+                },
+                {
+                    "args": "real_sum_integral_ubound_decreasing, {}, {f: λz. -(g z), g: λz. -(f z), m: m, n: n}",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n ⊢ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative (λz. -(f z)) (-(g x)) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ -(g y) ≤ -(g x)) ⟶ sum ({m..n}) (λk. -(g (of_nat k))) ≤ -(f (of_nat n)) - -(f (of_nat m - 1))"
+                },
+                {
+                    "args": "∀x::real. ∀y. -x - -y = -(x - y)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀y. -x - -y = -(x - y)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m ≤ n ⊢ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative (λz. -(f z)) (-(g x)) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ -(g y) ≤ -(g x)) ⟶ sum ({m..n}) (λk. -(g (of_nat k))) ≤ -(f (of_nat n) - f (of_nat m - 1))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y ⊢ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k))"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y) ⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k))"
+                }
+            ],
             "prop": [
-                "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ",
-                "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ∧ ",
-                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n ⟶ f x ≤ f y) ",
-                "⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k))"
+                "m ≤ n ",
+                "⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ",
+                "      ⟶ has_real_derivative g (f x) ",
+                "           (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ",
+                "   ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y) ",
+                "      ⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k))"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(%z. -g z)",
+                    "param_g": "(%z. -f z)",
+                    "theorem": "real_sum_integral_ubound_decreasing"
+                },
+                {
+                    "goal": "!x::real. !y. -x - (-y) = -(x-y)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact_with_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20798,14 +22432,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sum_integral_lbound_decreasing",
             "prop": [
-                "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ",
-                "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. of_nat m ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ",
-                "⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k))"
+                "m ≤ n ",
+                "⟶ (∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ",
+                "      ⟶ has_real_derivative g (f x) ",
+                "           (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ",
+                "   ⟶ (∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ",
+                "      ⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k))"
             ],
             "ty": "thm",
             "vars": {
@@ -20816,15 +22454,421 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sum_integral_bounds_increasing",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))) ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n)",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ real_closed_interval (of_nat m - 1) (of_nat n)"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n}"
+                },
+                {
+                    "args": "x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "x",
+                    "id": "3.5",
+                    "prevs": [
+                        "1",
+                        "3.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), m ≤ n, ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))"
+                },
+                {
+                    "args": "{p::real. of_nat m - 1 ≤ p ∧ p ≤ of_nat n} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "3.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {p::real. of_nat m - 1 ≤ p ∧ p ≤ of_nat n} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval (of_nat m - 1) (of_nat n) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ real_closed_interval (of_nat m - 1) (of_nat n) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "has_real_derivative_within_subset",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.5",
+                        "3.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.8"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y"
+                },
+                {
+                    "args": "real_sum_integral_lbound_increasing",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval (of_nat m) (of_nat n + 1)",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ x ∈ real_closed_interval (of_nat m) (of_nat n + 1)"
+                },
+                {
+                    "args": "{p::real. of_nat m ≤ p ∧ p ≤ of_nat n + 1} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {p::real. of_nat m ≤ p ∧ p ≤ of_nat n + 1} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3",
+                        "6.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "x",
+                    "id": "6.5",
+                    "prevs": [
+                        "1",
+                        "6.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), m ≤ n, ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "6.6",
+                    "prevs": [
+                        "6.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "has_real_derivative_within_subset",
+                    "id": "6.7",
+                    "prevs": [
+                        "6.5",
+                        "6.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "",
+                    "id": "6.8",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.7"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y",
+                    "id": "7",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ ∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y"
+                },
+                {
+                    "args": "real_sum_integral_ubound_increasing",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "5",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y ⊢ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                }
+            ],
             "prop": [
-                "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
-                "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ",
-                "⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ ",
-                "   sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+                "m ≤ n ",
+                "⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
+                "      ⟶ has_real_derivative g (f x) ",
+                "           (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ",
+                "   ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f x ≤ f y) ",
+                "      ⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ ",
+                "         sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_sum_integral_lbound_increasing"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "(real_closed_interval (of_nat m - 1) (of_nat n + 1))",
+                    "theorem": "has_real_derivative_within_subset"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_sum_integral_ubound_increasing"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "theorem": "has_real_derivative_within_subset"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "goal_id": "6.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "6.3"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "z3"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20835,15 +22879,432 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sum_integral_bounds_decreasing",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))) ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval (of_nat m) (of_nat n + 1)",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ x ∈ real_closed_interval (of_nat m) (of_nat n + 1)"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ x ∈ {p. of_nat m ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "x",
+                    "id": "3.5",
+                    "prevs": [
+                        "1",
+                        "3.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), m ≤ n, ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))"
+                },
+                {
+                    "args": "{p::real. of_nat m ≤ p ∧ p ≤ of_nat n + 1} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "3.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {p::real. of_nat m ≤ p ∧ p ≤ of_nat n + 1} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ real_closed_interval (of_nat m) (of_nat n + 1) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "has_real_derivative_within_subset",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.5",
+                        "3.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.8"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. ∀y. of_nat m ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x"
+                },
+                {
+                    "args": "real_sum_integral_lbound_decreasing",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n)",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ real_closed_interval (of_nat m - 1) (of_nat n)"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "6.2",
+                    "prevs": [
+                        "6.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n}"
+                },
+                {
+                    "args": "x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.2"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "x",
+                    "id": "6.5",
+                    "prevs": [
+                        "1",
+                        "6.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), m ≤ n, ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))"
+                },
+                {
+                    "args": "{p::real. of_nat m - 1 ≤ p ∧ p ≤ of_nat n} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}",
+                    "id": "6.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {p::real. of_nat m - 1 ≤ p ∧ p ≤ of_nat n} ⊆ {p. of_nat m - 1 ≤ p ∧ p ≤ of_nat n + 1}"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval (of_nat m - 1) (of_nat n) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "id": "6.7",
+                    "prevs": [
+                        "6.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ real_closed_interval (of_nat m - 1) (of_nat n) ⊆ real_closed_interval (of_nat m - 1) (of_nat n + 1)"
+                },
+                {
+                    "args": "has_real_derivative_within_subset",
+                    "id": "6.8",
+                    "prevs": [
+                        "6.5",
+                        "6.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x, x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "",
+                    "id": "6.9",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.8"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))"
+                },
+                {
+                    "args": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f y ≤ f x",
+                    "id": "7",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f y ≤ f x"
+                },
+                {
+                    "args": "real_sum_integral_ubound_decreasing",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "5",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1))), ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x ⊢ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
+                }
+            ],
             "prop": [
-                "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
-                "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ",
-                "⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ ",
-                "   sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
+                "m ≤ n ",
+                "⟶ (∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
+                "      ⟶ has_real_derivative g (f x) ",
+                "           (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ",
+                "   ⟶ (∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ",
+                "      ⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ ",
+                "         sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_sum_integral_lbound_decreasing"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "theorem": "has_real_derivative_within_subset"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_sum_integral_ubound_decreasing"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "real_closed_interval (of_nat m - 1) (of_nat n + 1)",
+                    "theorem": "has_real_derivative_within_subset"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "6.2"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "z3"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -20854,8 +23315,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_posinfinity_sequentially",
-            "prop": "tendsto_real f l at_posinfinity ⟷ tendsto_real (λn. f (of_nat n)) l sequentially",
+            "prop": "tendsto_real f l at_posinfinity ⟶ tendsto_real (λn. f (of_nat n)) l sequentially",
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
@@ -20863,6 +23328,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_zero_posinfinity",
             "prop": "tendsto_real (λx. f (1 / x)) l (atreal 0) ⟶ tendsto_real f l at_posinfinity",
             "ty": "thm",
@@ -20872,6 +23341,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_zero_neginfinity",
             "prop": "tendsto_real (λx. f (1 / x)) l (atreal 0) ⟶ tendsto_real f l at_neginfinity",
             "ty": "thm",
@@ -21225,12 +23698,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_injective_iff_monotonic",
             "prop": [
-                "real_continuous_on f s ∧ is_realinterval s ",
-                "⟶ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ f x = f y ⟶ x = y) ⟷ ",
-                "   (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x < y ⟶ f x < f y) ∨ ",
-                "   (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x < y ⟶ f y < f x)"
+                "real_continuous_on f s ",
+                "⟶ is_realinterval s ",
+                "   ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ⟷ ",
+                "      (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ x < y ⟶ f x < f y) ∨ ",
+                "      (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ x < y ⟶ f y < f x)"
             ],
             "ty": "thm",
             "vars": {
@@ -21269,7 +23747,7 @@
                 "hint_rewrite"
             ],
             "name": "is_real_interval_contains_segment",
-            "prop": "is_realinterval s ⟷ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s)",
+            "prop": "is_realinterval s ⟷ (∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s)",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -21289,21 +23767,21 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                    "th": "⊢ (∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
                 },
                 {
-                    "args": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s",
+                    "args": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s",
                     "id": "0.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
                 },
                 {
                     "args": "a, real",
@@ -21324,7 +23802,7 @@
                     "id": "0.1.2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟶ a ∈ s ∧ b ∈ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟶ a ∈ s ∧ b ∈ s"
                 },
                 {
                     "args": "closed_real_segment a b ⊆ s",
@@ -21348,7 +23826,7 @@
                         "0.1.2.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s"
+                    "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s"
                 },
                 {
                     "args": "ends_in_real_segment2, {}, {a: a, b: b}",
@@ -21365,7 +23843,7 @@
                         "0.1.2.3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ b ∈ s"
+                    "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ b ∈ s"
                 },
                 {
                     "args": "conjI",
@@ -21375,7 +23853,7 @@
                         "0.1.2.4"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s, closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s, closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s"
                 },
                 {
                     "args": "",
@@ -21385,14 +23863,14 @@
                         "0.1.2.5"
                     ],
                     "rule": "intros",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟶ a ∈ s ∧ b ∈ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟶ a ∈ s ∧ b ∈ s"
                 },
                 {
                     "args": "",
                     "id": "0.1.3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "a ∈ s ∧ b ∈ s",
@@ -21402,24 +23880,43 @@
                     "th": "a ∈ s ∧ b ∈ s ⊢ a ∈ s ∧ b ∈ s"
                 },
                 {
-                    "args": "",
+                    "args": "conjD1",
                     "id": "0.1.3.1",
                     "prevs": [
-                        "0.0",
                         "0.1.3.0"
                     ],
-                    "rule": "apply_fact",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s, a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s"
+                    "rule": "apply_theorem",
+                    "th": "a ∈ s ∧ b ∈ s ⊢ a ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.1.3.2",
+                    "prevs": [
+                        "0.1.3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ∈ s ∧ b ∈ s ⊢ b ∈ s"
+                },
+                {
+                    "args": "a, b",
+                    "id": "0.1.3.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1.3.1",
+                        "0.1.3.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s, a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "",
-                    "id": "0.1.3.2",
+                    "id": "0.1.3.4",
                     "prevs": [
                         "0.1.3.0",
-                        "0.1.3.1"
+                        "0.1.3.3"
                     ],
                     "rule": "intros",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "iffI",
@@ -21429,7 +23926,7 @@
                         "0.1.3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
                 },
                 {
                     "args": "",
@@ -21440,7 +23937,7 @@
                         "0.1.4"
                     ],
                     "rule": "intros",
-                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                    "th": "∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
                 },
                 {
                     "args": "",
@@ -21450,14 +23947,14 @@
                         "0.1"
                     ],
                     "rule": "intros",
-                    "th": "⊢ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                    "th": "⊢ (∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s) ⟶ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s)"
+                    "th": "⊢ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s) ⟶ (∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s)"
                 },
                 {
                     "args": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s",
@@ -21471,7 +23968,7 @@
                     "id": "1.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "a, real",
@@ -21488,11 +23985,11 @@
                     "th": "⊢ _VAR b"
                 },
                 {
-                    "args": "a ∈ s ∧ b ∈ s",
+                    "args": "a ∈ s",
                     "id": "1.1.2",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "a ∈ s ∧ b ∈ s ⊢ a ∈ s ∧ b ∈ s"
+                    "th": "a ∈ s ⊢ a ∈ s"
                 },
                 {
                     "args": "a",
@@ -21513,27 +24010,44 @@
                     "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
                 },
                 {
-                    "args": "closed_real_segment a b ⊆ s",
+                    "args": "b ∈ s",
                     "id": "1.1.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ∈ s ⊢ b ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.2",
+                        "1.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s, a ∈ s, b ∈ s ⊢ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "closed_real_segment a b ⊆ s",
+                    "id": "1.1.7",
                     "prevs": [
                         "1.1.4",
-                        "1.1.2",
-                        "1.0"
+                        "1.1.6"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "a ∈ s ∧ b ∈ s, ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s"
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s, a ∈ s, b ∈ s ⊢ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "",
-                    "id": "1.1.6",
+                    "id": "1.1.8",
                     "prevs": [
                         "1.1.0",
                         "1.1.1",
                         "1.1.2",
-                        "1.1.5"
+                        "1.1.5",
+                        "1.1.7"
                     ],
                     "rule": "intros",
-                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s"
                 },
                 {
                     "args": "",
@@ -21543,7 +24057,7 @@
                         "1.1"
                     ],
                     "rule": "intros",
-                    "th": "⊢ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s) ⟶ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s)"
+                    "th": "⊢ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s) ⟶ (∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s)"
                 },
                 {
                     "args": "iffI",
@@ -21553,7 +24067,7 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                    "th": "⊢ (∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
                 },
                 {
                     "args": "is_real_interval_contains_segment, is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)",
@@ -21562,6 +24076,15 @@
                         "2"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
                 }
             ],
@@ -21638,6 +24161,22 @@
                     "method_name": "apply_prev"
                 },
                 {
+                    "fact_ids": [
+                        "0.1.3.0"
+                    ],
+                    "goal_id": "0.1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3.0"
+                    ],
+                    "goal_id": "0.1.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
                     "goal_id": "1",
                     "method_name": "introduction"
                 },
@@ -21666,8 +24205,13 @@
                     "fact_ids": [
                         "1.1.4"
                     ],
-                    "goal_id": "1.1.5",
+                    "goal_id": "1.1.6",
                     "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
                 }
             ],
             "ty": "thm",
@@ -21847,13 +24391,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "floor_continuous_monotone_floor",
             "prop": [
-                "is_realinterval s ∧ ",
-                "real_continuous_on f s ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x ≤ y ⟶ f x ≤ f y) ∧ ",
-                "(∀x. x ∈ s ∧ integer (f x) ⟶ integer x) ",
-                "⟶ (∀x. floor x ∈ s ∧ x ∈ s ⟶ floor (f (floor x)) = floor (f x))"
+                "is_realinterval s ",
+                "⟶ real_continuous_on f s ",
+                "   ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ x ≤ y ⟶ f x ≤ f y) ∧ ",
+                "      (∀x. x ∈ s ⟶ integer (f x) ⟶ integer x) ",
+                "      ⟶ (∀x. floor x ∈ s ⟶ x ∈ s ⟶ floor (f (floor x)) = floor (f x))"
             ],
             "ty": "thm",
             "vars": {
@@ -21868,13 +24416,16 @@
             "name": "real_convex_on",
             "prop": [
                 "real_convex_on f s ⟷ ",
-                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "         ⟶ f (u * x + v * y) ≤ u * f x + v * f y)"
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ",
+                "         ⟶ y ∈ s ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y)"
             ],
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_convex_on_empty",
             "num_gaps": 0,
             "proof": [
@@ -21883,7 +24434,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y"
+                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ⟶ y ∈ ∅ ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y"
                 },
                 {
                     "args": "x, real",
@@ -21914,43 +24465,66 @@
                     "th": "⊢ _VAR v"
                 },
                 {
-                    "args": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1",
+                    "args": "x ∈ ∅",
                     "id": "0.4",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "conjD1, {}, {A: x ∈ ∅, B: y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1}",
+                    "args": "y ∈ ∅",
                     "id": "0.5",
-                    "prevs": [
-                        "0.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ ∅ ⊢ y ∈ ∅"
+                },
+                {
+                    "args": "0 ≤ u",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ u ⊢ 0 ≤ u"
+                },
+                {
+                    "args": "0 ≤ v",
+                    "id": "0.7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ v ⊢ 0 ≤ v"
+                },
+                {
+                    "args": "u + v = 1",
+                    "id": "0.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "u + v = 1 ⊢ u + v = 1"
                 },
                 {
                     "args": "member_empty, f (u * x + v * y) ≤ u * f x + v * f y",
-                    "id": "0.6",
+                    "id": "0.9",
                     "prevs": [
-                        "0.5"
+                        "0.4"
                     ],
                     "rule": "resolve_theorem",
-                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ f (u * x + v * y) ≤ u * f x + v * f y"
+                    "th": "x ∈ ∅ ⊢ f (u * x + v * y) ≤ u * f x + v * f y"
                 },
                 {
                     "args": "",
-                    "id": "0.7",
+                    "id": "0.10",
                     "prevs": [
                         "0.0",
                         "0.1",
                         "0.2",
                         "0.3",
                         "0.4",
-                        "0.6"
+                        "0.5",
+                        "0.6",
+                        "0.7",
+                        "0.8",
+                        "0.9"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y"
+                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ⟶ y ∈ ∅ ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y"
                 },
                 {
                     "args": "real_convex_on_def, real_convex_on f ∅",
@@ -21959,6 +24533,15 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ real_convex_on f ∅"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ real_convex_on f ∅"
                 }
             ],
@@ -21978,15 +24561,7 @@
                     "fact_ids": [
                         "0.4"
                     ],
-                    "goal_id": "0.5",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "0.5"
-                    ],
-                    "goal_id": "0.6",
+                    "goal_id": "0.9",
                     "method_name": "apply_resolve_step",
                     "theorem": "member_empty"
                 }
@@ -21997,10 +24572,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_eq",
             "prop": [
-                "is_realinterval s ∧ (∀x. x ∈ s ⟶ f x = g x) ∧ real_convex_on f s ",
-                "⟶ real_convex_on g s"
+                "is_realinterval s ",
+                "⟶ (∀x. x ∈ s ⟶ f x = g x) ⟶ real_convex_on f s ⟶ real_convex_on g s"
             ],
             "ty": "thm",
             "vars": {
@@ -22019,8 +24598,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_subset",
-            "prop": "real_convex_on f t ∧ s ⊆ t ⟶ real_convex_on f s",
+            "prop": "real_convex_on f t ⟶ s ⊆ t ⟶ real_convex_on f s",
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
@@ -22038,8 +24621,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_add",
-            "prop": "real_convex_on f s ∧ real_convex_on g s ⟶ real_convex_on (λx. f x + g x) s",
+            "prop": "real_convex_on f s ⟶ real_convex_on g s ⟶ real_convex_on (λx. f x + g x) s",
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
@@ -22049,10 +24636,11 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "real_convex_lmul",
-            "prop": "0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. c * f x) s",
+            "prop": "0 ≤ c ⟶ real_convex_on f s ⟶ real_convex_on (λx. c * f x) s",
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -22061,54 +24649,72 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_rmul",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "0 ≤ c ∧ real_convex_on f s",
+                    "args": "0 ≤ c",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "0 ≤ c ∧ real_convex_on f s ⊢ 0 ≤ c ∧ real_convex_on f s"
+                    "th": "0 ≤ c ⊢ 0 ≤ c"
                 },
                 {
-                    "args": " real_convex_lmul",
+                    "args": "real_convex_on f s",
                     "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_convex_on f s ⊢ real_convex_on f s"
+                },
+                {
+                    "args": "real_convex_lmul",
+                    "id": "2",
                     "prevs": [
-                        "0"
+                        "0",
+                        "1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "0 ≤ c ∧ real_convex_on f s ⊢ real_convex_on (λx. c * f x) s"
+                    "th": "0 ≤ c, real_convex_on f s ⊢ real_convex_on (λx. c * f x) s"
                 },
                 {
                     "args": "real_mult_comm, real_convex_on (λx. f x * c) s",
-                    "id": "2",
+                    "id": "3",
                     "prevs": [
-                        "1"
+                        "2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "0 ≤ c ∧ real_convex_on f s ⊢ real_convex_on (λx. f x * c) s"
+                    "th": "0 ≤ c, real_convex_on f s ⊢ real_convex_on (λx. f x * c) s"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "4",
                     "prevs": [
                         "0",
-                        "2"
+                        "1",
+                        "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ 0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. f x * c) s"
+                    "th": "⊢ 0 ≤ c ⟶ real_convex_on f s ⟶ real_convex_on (λx. f x * c) s"
                 }
             ],
-            "prop": "0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. f x * c) s",
+            "prop": "0 ≤ c ⟶ real_convex_on f s ⟶ real_convex_on (λx. f x * c) s",
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "real_mult_comm"
                 },
                 {
-                    "goal_id": "1",
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "real_convex_lmul"
                 }
@@ -22121,10 +24727,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_on_sum",
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_convex_on (f a) t) ",
-                "⟶ real_convex_on (λx. sum s (λa. f a x)) t"
+                "finite s ",
+                "⟶ (∀a. a ∈ s ⟶ real_convex_on (f a) t) ⟶ real_convex_on (λx. sum s (λa. f a x)) t"
             ],
             "ty": "thm",
             "vars": {
@@ -22134,13 +24744,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_compose",
             "prop": [
-                "real_convex_on f s ∧ ",
-                "real_convex_on g t ∧ ",
-                "is_realinterval s ∧ ",
-                "is_realinterval t ∧ image f s ⊆ t ∧ (∀x. ∀y. x ∈ t ∧ y ∈ t ∧ x ≤ y ⟶ g x ≤ g y) ",
-                "⟶ real_convex_on (g ∘ f) s"
+                "real_convex_on f s ",
+                "⟶ real_convex_on g t ",
+                "   ⟶ is_realinterval s ",
+                "      ⟶ is_realinterval t ",
+                "         ⟶ image f s ⊆ t ",
+                "            ⟶ (∀x. ∀y. x ∈ t ⟶ y ∈ t ⟶ x ≤ y ⟶ g x ≤ g y) ⟶ real_convex_on (g ∘ f) s"
             ],
             "ty": "thm",
             "vars": {
@@ -22151,10 +24766,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_lower",
             "prop": [
-                "real_convex_on f s ∧ x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ",
-                "⟶ f (u * x + v * y) ≤ max (f x) (f y)"
+                "real_convex_on f s ",
+                "⟶ x ∈ s ⟶ y ∈ s ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ f (u * x + v * y) ≤ max (f x) (f y)"
             ],
             "ty": "thm",
             "vars": {
@@ -22168,12 +24787,13 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "real_convex_lower_real_segment",
             "prop": [
-                "real_convex_on f s ∧ a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
-                "⟶ f x ≤ max (f a) (f b)"
+                "real_convex_on f s ",
+                "⟶ a ∈ s ⟶ b ∈ s ⟶ x ∈ closed_real_segment a b ⟶ f x ≤ max (f a) (f b)"
             ],
             "ty": "thm",
             "vars": {
@@ -22185,10 +24805,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_lower_real_interval",
             "prop": [
-                "real_convex_on f (real_closed_interval a b) ∧ x ∈ closed_real_segment a b ",
-                "⟶ f x ≤ max (f a) (f b)"
+                "real_convex_on f (real_closed_interval a b) ",
+                "⟶ x ∈ closed_real_segment a b ⟶ f x ≤ max (f a) (f b)"
             ],
             "ty": "thm",
             "vars": {
@@ -22199,10 +24823,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_convex_local_global_minimum",
             "prop": [
-                "real_convex_on f s ∧ x ∈ t ∧ real_open t ∧ t ⊆ s ∧ (∀y. y ∈ t ⟶ f x ≤ f y) ",
-                "⟶ (∀y. y ∈ s ⟶ f x ≤ f y)"
+                "real_convex_on f s ∧ x ∈ t ",
+                "⟶ real_open t ⟶ t ⊆ s ⟶ (∀y. y ∈ t ⟶ f x ≤ f y) ⟶ (∀y. y ∈ s ⟶ f x ≤ f y)"
             ],
             "ty": "thm",
             "vars": {
@@ -22213,6 +24841,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_convex_distance",
             "prop": "real_convex_on (λx. abs (a - x)) s",
             "ty": "thm",
@@ -22222,12 +24853,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_convex_on_jensen",
             "prop": [
                 "is_realinterval s ",
                 "⟶ real_convex_on f s ⟷ ",
-                "   (∀k. ∀u. ∀x. (∀i. 1 ≤ i ∧ i ≤ k ⟶ 0 < u i ∧ x i ∈ s) ∧ sum ({1..k}) u = 1 ",
-                "          ⟶ f (sum ({1..k}) (λi. u i * x i)) ≤ sum ({1..k}) (λi. u i * f (x i)))"
+                "   (∀k. ∀u. ∀x. (∀i. 1 ≤ i ⟶ i ≤ k ⟶ 0 < u i ∧ x i ∈ s) ",
+                "          ⟶ sum ({1..k}) u = 1 ",
+                "             ⟶ f (sum ({1..k}) (λi. u i * x i)) ≤ sum ({1..k}) (λi. u i * f (x i)))"
             ],
             "ty": "thm",
             "vars": {

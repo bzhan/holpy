@@ -5486,6 +5486,44 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_sub_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_sub_0, x - x = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x - x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x - x = 0"
+                }
+            ],
+            "prop": "x - x = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_abs_zero",
             "num_gaps": 0,
             "proof": [
