@@ -27621,6 +27621,28 @@
                 "f": "real ⇒ real",
                 "g": "real ⇒ real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_monotone_convergence_increasing_ae",
+            "prop": [
+                "(∀k. real_integrable_on (f k) s) ",
+                "⟶ (∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ",
+                "   ⟶ (∃t. real_negligible t ∧ ",
+                "         (∀x. x ∈ diff s t ⟶ tendsto_real (λk. f k x) (g x) sequentially)) ",
+                "      ⟶ real_bounded ({y. ∃k. y = real_integral s (f k)}) ",
+                "         ⟶ real_integrable_on g s ∧ ",
+                "            tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ real ⇒ real",
+                "g": "real ⇒ real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
