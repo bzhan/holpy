@@ -1662,6 +1662,175 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_abs_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ exp x"
+                },
+                {
+                    "args": "if_P, (if 0 ≤ exp x then exp x else -(exp x)) = exp x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if 0 ≤ exp x then exp x else -(exp x)) = exp x"
+                },
+                {
+                    "args": "abs_def, abs (exp x) = exp x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (exp x) = exp x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (exp x) = exp x"
+                }
+            ],
+            "prop": "abs (exp x) = exp x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "abs_def"
+                },
+                {
+                    "goal": "0 ≤ exp x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_exp_pos_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_exp_sum",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ⊢ exp 0 = product ∅ (λx. exp (f x))"
+                },
+                {
+                    "args": "sum_empty, exp (sum ∅ f) = product ∅ (λx. exp (f x))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ exp (sum ∅ f) = product ∅ (λx. exp (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ⊢ ∀x. ∀s1. exp (sum s1 f) = product s1 (λx1. exp (f x1)) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ exp (sum (insert x s1) f) = product (insert x s1) (λx1. exp (f x1))"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ exp (sum s f) = product s (λx. exp (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ exp (sum s f) = product s (λx. exp (f x))"
+                }
+            ],
+            "prop": "finite s ⟶ exp (sum s f) = product s (λx. exp (f x))",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_exp_bound_lemma",
+            "prop": "0 ≤ x ⟶ x ≤ real_inverse 2 ⟶ exp x ≤ 1 + 2 * x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "cos",
             "prop": [
                 "cos x = ",
@@ -1680,6 +1849,870 @@
             ],
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_circle",
+            "prop": "sin x ^ (2::nat) + cos x ^ (2::nat) = 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_add",
+            "prop": "sin (x + y) = sin x * cos y + cos x * sin y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_add",
+            "prop": "cos (x + y) = cos x * cos y - sin x * sin y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_neg",
+            "prop": "sin (-x) = -(sin x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_neg",
+            "prop": "cos (-x) = cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_double",
+            "prop": "sin (2 * x) = 2 * sin x * cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_double",
+            "prop": "cos (2 * x) = cos x ^ (2::nat) - sin x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_double_cos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "sin_circle, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sin x ^ (2::nat) + cos x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ 1 = sin x ^ (2::nat) + cos x ^ (2::nat)"
+                },
+                {
+                    "args": "cos x ^ (2::nat) - sin x ^ (2::nat) = 2 * cos x ^ (2::nat) - (sin x ^ (2::nat) + cos x ^ (2::nat))",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ cos x ^ (2::nat) - sin x ^ (2::nat) = 2 * cos x ^ (2::nat) - (sin x ^ (2::nat) + cos x ^ (2::nat))"
+                },
+                {
+                    "args": "cos x ^ (2::nat) - sin x ^ (2::nat) = 2 * cos x ^ (2::nat) - 1",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ cos x ^ (2::nat) - sin x ^ (2::nat) = 2 * cos x ^ (2::nat) - 1"
+                },
+                {
+                    "args": "cos_double, cos (2 * x) = 2 * cos x ^ (2::nat) - 1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (2 * x) = 2 * cos x ^ (2::nat) - 1"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos (2 * x) = 2 * cos x ^ (2::nat) - 1"
+                }
+            ],
+            "prop": "cos (2 * x) = 2 * cos x ^ (2::nat) - 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_double"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sin_circle"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "real_norm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_bound",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_abs_nat, {}, {n: (1::nat)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs ((of_nat::nat ⇒ real) 1) = of_nat 1"
+                },
+                {
+                    "args": "real_one_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "⊢ abs (1::real) = 1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (1::real) = abs 1"
+                },
+                {
+                    "args": "sin_circle, {}, {x: x}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sin x ^ (2::nat) + cos x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "real_le_square, {}, {x: cos x}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ cos x * cos x"
+                },
+                {
+                    "args": "real_pow_2",
+                    "id": "5",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ sin x * sin x + cos x * cos x = 1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ 1 = sin x * sin x + cos x * cos x"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ sin x * sin x ≤ sin x * sin x + cos x * cos x"
+                },
+                {
+                    "args": "sin x * sin x ≤ 1",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sin x * sin x ≤ 1"
+                },
+                {
+                    "args": "real_mul_lid, sin x * sin x ≤ 1 * 1",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin x * sin x ≤ 1 * 1"
+                },
+                {
+                    "args": "real_pow_2, sin x ^ (2::nat) ≤ 1 ^ (2::nat)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin x ^ (2::nat) ≤ 1 ^ (2::nat)"
+                },
+                {
+                    "args": "real_le_square_abs, abs (sin x) ≤ abs 1",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (sin x) ≤ abs 1"
+                },
+                {
+                    "args": "abs (sin x) ≤ 1",
+                    "id": "12",
+                    "prevs": [
+                        "2",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ abs (sin x) ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (sin x) ≤ 1"
+                }
+            ],
+            "prop": "abs (sin x) ≤ 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "(1::nat)",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_square_abs"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sin_circle"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "param_x": "cos x",
+                    "theorem": "real_le_square"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_bound",
+            "prop": "abs (cos x) ≤ 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_lbound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "sin_bound, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (sin x) ≤ 1"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ -1 ≤ sin x ∧ sin x ≤ 1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ -1 ≤ sin x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -1 ≤ sin x"
+                }
+            ],
+            "prop": "-1 ≤ sin x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sin_bound"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_ubound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "sin_bound, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (sin x) ≤ 1"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ -1 ≤ sin x ∧ sin x ≤ 1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sin x ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin x ≤ 1"
+                }
+            ],
+            "prop": "sin x ≤ 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sin_bound"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_lbound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "cos_bound, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (cos x) ≤ 1"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ -1 ≤ cos x ∧ cos x ≤ 1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ -1 ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -1 ≤ cos x"
+                }
+            ],
+            "prop": "-1 ≤ cos x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "cos_bound"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_ubound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "cos_bound, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (cos x) ≤ 1"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ -1 ≤ cos x ∧ cos x ≤ 1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ cos x ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos x ≤ 1"
+                }
+            ],
+            "prop": "cos x ≤ 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "cos_bound"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_abs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ x ⟶ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "if_P, cos (if 0 ≤ x then x else -x) = cos x",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(0 ≤ x) ⟶ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "¬(0 ≤ x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ x) ⊢ ¬(0 ≤ x)"
+                },
+                {
+                    "args": "cos_neg, cos (-x) = cos x",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (-x) = cos x"
+                },
+                {
+                    "args": "if_not_P, cos (if 0 ≤ x then x else -x) = cos x",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x) ⊢ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(0 ≤ x) ⟶ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ cos (if 0 ≤ x then x else -x) = cos x"
+                },
+                {
+                    "args": "abs_def, cos (abs x) = cos x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (abs x) = cos x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos (abs x) = cos x"
+                }
+            ],
+            "prop": "cos (abs x) = cos x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "abs_def"
+                },
+                {
+                    "case": "0 ≤ x",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         },
         {
             "name": "log",
@@ -2395,10 +3428,22 @@
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "pi",
-            "prop": "pi = (THE p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ∧ x < p ⟶ ¬(sin x = 0)))",
+            "prop": "pi = (THE p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)))",
             "ty": "def",
             "type": "real"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "pi_works",
+            "prop": "0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))",
+            "ty": "thm",
+            "vars": {}
         },
         {
             "name": "tan",
