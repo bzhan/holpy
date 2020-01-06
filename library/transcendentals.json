@@ -3429,6 +3429,729 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "log_inv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "exp_log, {}, {x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ exp (log x) = x"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x ⊢ 0 < real_inverse x"
+                },
+                {
+                    "args": "real_exp_log, exp (log (real_inverse x)) = real_inverse x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ exp (log (real_inverse x)) = real_inverse x"
+                },
+                {
+                    "args": "exp (log (real_inverse x)) = real_inverse (exp (log x))",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < x ⊢ exp (log (real_inverse x)) = real_inverse (exp (log x))"
+                },
+                {
+                    "args": "real_exp_neg, exp (log (real_inverse x)) = exp (-(log x))",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ exp (log (real_inverse x)) = exp (-(log x))"
+                },
+                {
+                    "args": "real_exp_inj, log (real_inverse x) = -(log x)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 < x ⊢ log (real_inverse x) = -(log x)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ log (real_inverse x) = -(log x)"
+                }
+            ],
+            "prop": "0 < x ⟶ log (real_inverse x) = -(log x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_inj"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_neg"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "exp_log"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_log"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "log_div",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "0 < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < y ⊢ 0 < y"
+                },
+                {
+                    "args": "log_inv, {}, {x: y}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < y ⊢ log (real_inverse y) = -(log y)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 < y ⊢ -(log y) = log (real_inverse y)"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < y ⊢ 0 < real_inverse y"
+                },
+                {
+                    "args": "log_mul",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, 0 < y ⊢ log (x * real_inverse y) = log x + log (real_inverse y)"
+                },
+                {
+                    "args": "log (x * real_inverse y) = log x + -(log y)",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < y, 0 < x ⊢ log (x * real_inverse y) = log x + -(log y)"
+                },
+                {
+                    "args": "real_minus_def, log (x * real_inverse y) = log x - log y",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, 0 < y ⊢ log (x * real_inverse y) = log x - log y"
+                },
+                {
+                    "args": "real_divide_def, log (x / y) = log x - log y",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, 0 < y ⊢ log (x / y) = log x - log y"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ 0 < y ⟶ log (x / y) = log x - log y"
+                }
+            ],
+            "prop": "0 < x ⟶ 0 < y ⟶ log (x / y) = log x - log y",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "log_inv"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "log_mul"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "log_mono_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "0 < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < y ⊢ 0 < y"
+                },
+                {
+                    "args": "exp_log, {}, {x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ exp (log x) = x"
+                },
+                {
+                    "args": "exp_log, {}, {x: y}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < y ⊢ exp (log y) = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < x, 0 < y ⊢ log x < log y ⟶ x < y"
+                },
+                {
+                    "args": "log x < log y",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "log x < log y ⊢ log x < log y"
+                },
+                {
+                    "args": "real_exp_mono_lt",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "log x < log y ⊢ exp (log x) < exp (log y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "2",
+                        "4.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < x, log x < log y ⊢ x < exp (log y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "3",
+                        "4.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < y, 0 < x, log x < log y ⊢ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < x, 0 < y ⊢ log x < log y ⟶ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < x, 0 < y ⊢ x < y ⟶ log x < log y"
+                },
+                {
+                    "args": "x < y",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "x < exp (log y)",
+                    "id": "5.1",
+                    "prevs": [
+                        "3",
+                        "5.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < y, 0 < x, x < y ⊢ x < exp (log y)"
+                },
+                {
+                    "args": "exp (log x) < exp (log y)",
+                    "id": "5.2",
+                    "prevs": [
+                        "2",
+                        "5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < x, 0 < y, x < y ⊢ exp (log x) < exp (log y)"
+                },
+                {
+                    "args": "real_exp_mono_lt, log x < log y",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "0 < x, 0 < y, x < y ⊢ log x < log y"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.0",
+                        "5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < x, 0 < y ⊢ x < y ⟶ log x < log y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, 0 < y ⊢ log x < log y ⟷ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ 0 < y ⟶ log x < log y ⟷ x < y"
+                }
+            ],
+            "prop": "0 < x ⟶ 0 < y ⟶ log x < log y ⟷ x < y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "exp_log"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "exp_log"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_exp_mono_lt"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4.2"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_mono_lt"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "log_mono_lt_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "real_lt_trans, {}, {x: (0::real), y: x, z: y}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x, x < y ⊢ 0 < y"
+                },
+                {
+                    "args": "log_mono_lt, {}, {x: x, y: y}",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x, x < y ⊢ log x < log y ⟷ x < y"
+                },
+                {
+                    "args": "log x < log y",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < x, x < y ⊢ log x < log y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ x < y ⟶ log x < log y"
+                }
+            ],
+            "prop": "0 < x ⟶ x < y ⟶ log x < log y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "log_mono_lt"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "log_mono_lt_rev",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "0 < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < y ⊢ 0 < y"
+                },
+                {
+                    "args": "log x < log y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "log x < log y ⊢ log x < log y"
+                },
+                {
+                    "args": "log_mono_lt, {}, {x: x, y: y}",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x, 0 < y ⊢ log x < log y ⟷ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "0 < x, 0 < y, log x < log y ⊢ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ 0 < y ⟶ log x < log y ⟶ x < y"
+                }
+            ],
+            "prop": "0 < x ⟶ 0 < y ⟶ log x < log y ⟶ x < y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "log_mono_lt"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "pi",
@@ -3552,24 +4275,6 @@
             "prop": "cos (pi / 2) = 0",
             "ty": "thm",
             "vars": {}
-        },
-        {
-            "name": "power",
-            "prop": [
-                "x ^ y = ",
-                "(if 0 < x then ",
-                "   exp (y * log x)",
-                " else ",
-                "   if x = 0 then ",
-                "     if y = 0 then 1 else 0",
-                "   else ",
-                "     if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then ",
-                "       -(exp (y * log (-x)))",
-                "     else ",
-                "       exp (y * log (-x)))"
-            ],
-            "ty": "def",
-            "type": "real ⇒ real ⇒ real"
         },
         {
             "attributes": [
@@ -7602,6 +8307,2841 @@
                 "n": "nat",
                 "x": "real",
                 "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_root_pow_gen",
+            "prop": "root n (x ^ m) = root n x ^ m",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_root_pow1",
+            "prop": "odd n ⟶ root n (x ^ n) = x",
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_root_pow2",
+            "prop": "¬(n = 0) ⟶ 0 ≤ x ⟶ root n (x ^ n) = x",
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "root_unique",
+            "prop": "y ^ n = x ⟶ odd n ∨ ¬(n = 0) ∧ 0 ≤ y ⟶ root n x = y",
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "power",
+            "prop": [
+                "x ^ y = ",
+                "(if 0 < x then ",
+                "   exp (y * log x)",
+                " else ",
+                "   if x = 0 then ",
+                "     if y = 0 then 1 else 0",
+                "   else ",
+                "     if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then ",
+                "       -(exp (y * log (-x)))",
+                "     else ",
+                "       exp (y * log (-x)))"
+            ],
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "rpow_pow",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 < x ⟶ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "0 < x",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "exp_log, {}, {x: x}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ exp (log x) = x"
+                },
+                {
+                    "args": "exp (log x) ^ n = x ^ n",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < x ⊢ exp (log x) ^ n = x ^ n"
+                },
+                {
+                    "args": "real_exp_n, exp (of_nat n * log x) = x ^ n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ exp (of_nat n * log x) = x ^ n"
+                },
+                {
+                    "args": "if_P, (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(0 < x) ⟶ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "¬(0 < x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 < x) ⊢ ¬(0 < x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x) ⊢ x = 0 ⟶ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "real_zero_def, (if n = 0 then (1::real) else of_nat 0) = (if n = 0 then 1 else 0)",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if n = 0 then (1::real) else of_nat 0) = (if n = 0 then 1 else 0)"
+                },
+                {
+                    "args": "real_pow_zero, (if n = 0 then (1::real) else of_nat 0) = 0 ^ n",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), x = 0 ⊢ (if n = 0 then (1::real) else of_nat 0) = 0 ^ n"
+                },
+                {
+                    "args": "(if n = 0 then 1 else of_nat 0) = x ^ n",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0, ¬(0 < x) ⊢ (if n = 0 then 1 else of_nat 0) = x ^ n"
+                },
+                {
+                    "args": "real_of_nat_eq, (if (of_nat::nat ⇒ real) n = of_nat 0 then 1 else of_nat 0) = x ^ n",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), x = 0 ⊢ (if (of_nat::nat ⇒ real) n = of_nat 0 then 1 else of_nat 0) = x ^ n"
+                },
+                {
+                    "args": "real_zero_def, (if of_nat n = (0::real) then 1 else 0) = x ^ n",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), x = 0 ⊢ (if of_nat n = (0::real) then 1 else 0) = x ^ n"
+                },
+                {
+                    "args": "if_P, (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, ¬(0 < x) ⊢ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x) ⊢ x = 0 ⟶ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x) ⊢ ¬(x = 0) ⟶ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1) ⟶ odd n"
+                },
+                {
+                    "args": "∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1",
+                    "id": "1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1 ⊢ ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "1.2.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "q, nat",
+                    "id": "1.2.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR q"
+                },
+                {
+                    "args": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q",
+                    "id": "1.2.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q"
+                },
+                {
+                    "args": "conjD1, {}, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
+                    "id": "1.2.1.4",
+                    "prevs": [
+                        "1.2.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd p"
+                },
+                {
+                    "args": "conjD2, {}, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
+                    "id": "1.2.1.5",
+                    "prevs": [
+                        "1.2.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q ∧ of_nat n = of_nat p / of_nat q"
+                },
+                {
+                    "args": "conjD1, {}, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
+                    "id": "1.2.1.6",
+                    "prevs": [
+                        "1.2.1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q"
+                },
+                {
+                    "args": "conjD2, {}, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
+                    "id": "1.2.1.7",
+                    "prevs": [
+                        "1.2.1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ of_nat n = of_nat p / of_nat q"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ q = 0 ⟶ odd n"
+                },
+                {
+                    "args": "q = 0",
+                    "id": "1.2.1.8.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q = 0 ⊢ q = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.8.1",
+                    "prevs": [
+                        "1.2.1.8.0",
+                        "1.2.1.6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "q = 0, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd 0"
+                },
+                {
+                    "args": "odd_def_1",
+                    "id": "1.2.1.8.2",
+                    "prevs": [
+                        "1.2.1.8.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q = 0, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ false"
+                },
+                {
+                    "args": "not_false_res, odd n",
+                    "id": "1.2.1.8.3",
+                    "prevs": [
+                        "1.2.1.8.2"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "q = 0, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.8.4",
+                    "prevs": [
+                        "1.2.1.8.0",
+                        "1.2.1.8.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ q = 0 ⟶ odd n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ ¬(q = 0) ⟶ odd n"
+                },
+                {
+                    "args": "¬(q = 0)",
+                    "id": "1.2.1.9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(q = 0) ⊢ ¬(q = 0)"
+                },
+                {
+                    "args": "real_of_nat_eq",
+                    "id": "1.2.1.9.1",
+                    "prevs": [
+                        "1.2.1.9.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "¬(q = 0) ⊢ ¬((of_nat::nat ⇒ real) q = of_nat 0)"
+                },
+                {
+                    "args": "(of_nat::nat ⇒ real) q * of_nat n = of_nat p",
+                    "id": "1.2.1.9.2",
+                    "prevs": [
+                        "1.2.1.9.1",
+                        "1.2.1.7"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ (of_nat::nat ⇒ real) q * of_nat n = of_nat p"
+                },
+                {
+                    "args": "real_of_nat_mul",
+                    "id": "1.2.1.9.3",
+                    "prevs": [
+                        "1.2.1.9.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ (of_nat::nat ⇒ real) (q * n) = of_nat p"
+                },
+                {
+                    "args": "real_of_nat_eq",
+                    "id": "1.2.1.9.4",
+                    "prevs": [
+                        "1.2.1.9.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ q * n = p"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.2.1.9.5",
+                    "prevs": [
+                        "1.2.1.9.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ p = q * n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.9.6",
+                    "prevs": [
+                        "1.2.1.9.5",
+                        "1.2.1.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd (q * n)"
+                },
+                {
+                    "args": "odd_mult",
+                    "id": "1.2.1.9.7",
+                    "prevs": [
+                        "1.2.1.9.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q ∧ odd n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.1.9.8",
+                    "prevs": [
+                        "1.2.1.9.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(q = 0), odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.9.9",
+                    "prevs": [
+                        "1.2.1.9.0",
+                        "1.2.1.9.8"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ ¬(q = 0) ⟶ odd n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.2.1.10",
+                    "prevs": [
+                        "1.2.1.8",
+                        "1.2.1.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd n"
+                },
+                {
+                    "args": "∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1",
+                    "id": "1.2.1.11",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.0",
+                        "1.2.1.1",
+                        "1.2.1.2",
+                        "1.2.1.3",
+                        "1.2.1.10"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1) ⟶ odd n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ odd n ⟶ (∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1)"
+                },
+                {
+                    "args": "odd n",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "odd n ⊢ odd n"
+                },
+                {
+                    "args": "trueI",
+                    "id": "1.2.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "even_def_1, even 0",
+                    "id": "1.2.2.2",
+                    "prevs": [
+                        "1.2.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ even 0"
+                },
+                {
+                    "args": "not_odd, ¬(odd 0)",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ¬(odd 0)"
+                },
+                {
+                    "args": "odd_def_2, odd (Suc 0)",
+                    "id": "1.2.2.4",
+                    "prevs": [
+                        "1.2.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ odd (Suc 0)"
+                },
+                {
+                    "args": "nat_one_def, odd 1",
+                    "id": "1.2.2.5",
+                    "prevs": [
+                        "1.2.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ odd 1"
+                },
+                {
+                    "args": "of_nat n = of_nat n / of_nat 1",
+                    "id": "1.2.2.6",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ of_nat n = of_nat n / of_nat 1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.2.7",
+                    "prevs": [
+                        "1.2.2.5",
+                        "1.2.2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ odd 1 ∧ of_nat n = of_nat n / of_nat 1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.2.8",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ odd n ∧ odd 1 ∧ of_nat n = of_nat n / of_nat 1"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λn1. odd n ∧ odd n1 ∧ of_nat n = of_nat n / of_nat n1, a: (1::nat)}",
+                    "id": "1.2.2.9",
+                    "prevs": [
+                        "1.2.2.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃a1. odd n ∧ odd a1 ∧ of_nat n = of_nat n / of_nat a1"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λm. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, a: n}",
+                    "id": "1.2.2.10",
+                    "prevs": [
+                        "1.2.2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.11",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.10"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ odd n ⟶ (∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1) ⟷ odd n"
+                },
+                {
+                    "args": "0 < -x",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.0",
+                        "1.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ 0 < -x"
+                },
+                {
+                    "args": "exp_log, {}, {x: -x}",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ exp (log (-x)) = -x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ odd n ⟶ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "odd n",
+                    "id": "1.2.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "odd n ⊢ odd n"
+                },
+                {
+                    "args": "real_neg_neg, --(x ^ n) = x ^ n",
+                    "id": "1.2.6.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ --(x ^ n) = x ^ n"
+                },
+                {
+                    "args": "if_not_P2, -(if ¬(odd n) then x ^ n else -(x ^ n)) = x ^ n",
+                    "id": "1.2.6.2",
+                    "prevs": [
+                        "1.2.6.1",
+                        "1.2.6.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n, ¬(0 < x), ¬(x = 0) ⊢ -(if ¬(odd n) then x ^ n else -(x ^ n)) = x ^ n"
+                },
+                {
+                    "args": "not_odd, -(if even n then x ^ n else -(x ^ n)) = x ^ n",
+                    "id": "1.2.6.3",
+                    "prevs": [
+                        "1.2.6.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ -(if even n then x ^ n else -(x ^ n)) = x ^ n"
+                },
+                {
+                    "args": "real_pow_neg, -(-x ^ n) = x ^ n",
+                    "id": "1.2.6.4",
+                    "prevs": [
+                        "1.2.6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ -(-x ^ n) = x ^ n"
+                },
+                {
+                    "args": "-(exp (log (-x)) ^ n) = x ^ n",
+                    "id": "1.2.6.5",
+                    "prevs": [
+                        "1.2.5",
+                        "1.2.6.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ -(exp (log (-x)) ^ n) = x ^ n"
+                },
+                {
+                    "args": "real_exp_n, -(exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.2.6.6",
+                    "prevs": [
+                        "1.2.6.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ -(exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "if_P, (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.2.6.7",
+                    "prevs": [
+                        "1.2.6.6",
+                        "1.2.6.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd n, ¬(0 < x), ¬(x = 0) ⊢ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.6.8",
+                    "prevs": [
+                        "1.2.6.0",
+                        "1.2.6.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ odd n ⟶ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ ¬(odd n) ⟶ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "¬(odd n)",
+                    "id": "1.2.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(odd n) ⊢ ¬(odd n)"
+                },
+                {
+                    "args": "if_P, (if ¬(odd n) then x ^ n else -(x ^ n)) = x ^ n",
+                    "id": "1.2.7.1",
+                    "prevs": [
+                        "1.2.7.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(odd n) ⊢ (if ¬(odd n) then x ^ n else -(x ^ n)) = x ^ n"
+                },
+                {
+                    "args": "not_odd, (if even n then x ^ n else -(x ^ n)) = x ^ n",
+                    "id": "1.2.7.2",
+                    "prevs": [
+                        "1.2.7.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(0 < x), ¬(x = 0), ¬(odd n) ⊢ (if even n then x ^ n else -(x ^ n)) = x ^ n"
+                },
+                {
+                    "args": "real_pow_neg, -x ^ n = x ^ n",
+                    "id": "1.2.7.3",
+                    "prevs": [
+                        "1.2.7.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), ¬(odd n) ⊢ -x ^ n = x ^ n"
+                },
+                {
+                    "args": "exp (log (-x)) ^ n = x ^ n",
+                    "id": "1.2.7.4",
+                    "prevs": [
+                        "1.2.5",
+                        "1.2.7.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(0 < x), ¬(x = 0), ¬(odd n) ⊢ exp (log (-x)) ^ n = x ^ n"
+                },
+                {
+                    "args": "real_exp_n, exp (of_nat n * log (-x)) = x ^ n",
+                    "id": "1.2.7.5",
+                    "prevs": [
+                        "1.2.7.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), ¬(odd n) ⊢ exp (of_nat n * log (-x)) = x ^ n"
+                },
+                {
+                    "args": "if_not_P, (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.2.7.6",
+                    "prevs": [
+                        "1.2.7.5",
+                        "1.2.7.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(odd n), ¬(0 < x), ¬(x = 0) ⊢ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.7.7",
+                    "prevs": [
+                        "1.2.7.0",
+                        "1.2.7.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ ¬(odd n) ⟶ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.6",
+                        "1.2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (if odd n then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "(if ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.3",
+                        "1.2.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (if ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "real_abs_nat, (if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.2.10",
+                    "prevs": [
+                        "1.2.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "if_not_P, (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.2.11",
+                    "prevs": [
+                        "1.2.10",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), ¬(0 < x) ⊢ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.12",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.11"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x) ⊢ ¬(x = 0) ⟶ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x) ⊢ (if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "if_not_P, (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x) ⊢ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(0 < x) ⟶ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (if 0 < x then exp (of_nat n * log x) else if x = 0 then if of_nat n = (0::real) then 1 else 0 else if ∃m. ∃n1. odd m ∧ odd n1 ∧ abs (of_nat n) = of_nat m / of_nat n1 then -(exp (of_nat n * log (-x))) else exp (of_nat n * log (-x))) = x ^ n"
+                },
+                {
+                    "args": "real_real_power_def, x ^ (of_nat::nat ⇒ real) n = x ^ n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (of_nat::nat ⇒ real) n = x ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ (of_nat::nat ⇒ real) n = x ^ n"
+                }
+            ],
+            "prop": "x ^ (of_nat::nat ⇒ real) n = x ^ n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "real_real_power_def"
+                },
+                {
+                    "case": "0 < x",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_n"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "exp_log"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "case": "x = 0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal": "(∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1) ⟷ odd n",
+                    "goal_id": "1.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.0"
+                    ],
+                    "goal_id": "1.2.1.1",
+                    "method_name": "exists_elim",
+                    "names": "p,q"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.3"
+                    ],
+                    "goal_id": "1.2.1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.3"
+                    ],
+                    "goal_id": "1.2.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.5"
+                    ],
+                    "goal_id": "1.2.1.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.5"
+                    ],
+                    "goal_id": "1.2.1.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "case": "q=0",
+                    "goal_id": "1.2.1.8",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.2.1.8",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.8.0",
+                        "1.2.1.6"
+                    ],
+                    "goal_id": "1.2.1.8.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.8.1"
+                    ],
+                    "goal_id": "1.2.1.8.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "odd_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.8.2"
+                    ],
+                    "goal_id": "1.2.1.8.3",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "1.2.1.9",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "(of_nat::nat=>real) q * of_nat n = of_nat p",
+                    "goal_id": "1.2.1.9.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.0"
+                    ],
+                    "goal_id": "1.2.1.9.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_of_nat_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.1",
+                        "1.2.1.7"
+                    ],
+                    "goal_id": "1.2.1.9.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.2"
+                    ],
+                    "goal_id": "1.2.1.9.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_of_nat_mul"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.3"
+                    ],
+                    "goal_id": "1.2.1.9.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_of_nat_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.4"
+                    ],
+                    "goal_id": "1.2.1.9.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.5",
+                        "1.2.1.4"
+                    ],
+                    "goal_id": "1.2.1.9.6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.6"
+                    ],
+                    "goal_id": "1.2.1.9.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "odd_mult"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.9.7"
+                    ],
+                    "goal_id": "1.2.1.9.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(1::nat)"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "odd_def_2"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_odd"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "1.2.2.6",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.3"
+                    ],
+                    "goal_id": "1.2.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "0 < -x",
+                    "goal_id": "1.2.4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.4"
+                    ],
+                    "goal_id": "1.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "exp_log"
+                },
+                {
+                    "case": "odd n",
+                    "goal_id": "1.2.6",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.6.0"
+                    ],
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_n"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.5"
+                    ],
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_neg"
+                },
+                {
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_odd"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.6.0"
+                    ],
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P2"
+                },
+                {
+                    "goal_id": "1.2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_neg_neg"
+                },
+                {
+                    "goal_id": "1.2.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.7.0"
+                    ],
+                    "goal_id": "1.2.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_n"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.5"
+                    ],
+                    "goal_id": "1.2.7.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_neg"
+                },
+                {
+                    "goal_id": "1.2.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_odd"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.7.0"
+                    ],
+                    "goal_id": "1.2.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "rpow_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_nat_power_def_1, x ^ (0::nat) = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (0::nat) = 1"
+                },
+                {
+                    "args": "rpow_pow, x ^ (of_nat::nat ⇒ real) 0 = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (of_nat::nat ⇒ real) 0 = 1"
+                },
+                {
+                    "args": "real_zero_def, x ^ (0::real) = 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ (0::real) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ (0::real) = 1"
+                }
+            ],
+            "prop": "x ^ (0::real) = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "rpow_pow"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "rpow_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 < x ⟶ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "0 < x",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_exp_neg, exp (-(y * log x)) = real_inverse (exp (y * log x))",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp (-(y * log x)) = real_inverse (exp (y * log x))"
+                },
+                {
+                    "args": "real_mul_lneg, exp (-y * log x) = real_inverse (exp (y * log x))",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ exp (-y * log x) = real_inverse (exp (y * log x))"
+                },
+                {
+                    "args": "if_P, (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(0 < x) ⟶ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "¬(0 < x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 < x) ⊢ ¬(0 < x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x) ⊢ x = 0 ⟶ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), x = 0 ⊢ y = 0 ⟶ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "y = 0",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y = 0 ⊢ y = 0"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "id": "1.1.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "1 = real_inverse 1",
+                    "id": "1.1.1.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 1 = real_inverse 1"
+                },
+                {
+                    "args": "if_P, (if (0::real) = 0 then 1 else 0) = real_inverse 1",
+                    "id": "1.1.1.3",
+                    "prevs": [
+                        "1.1.1.2",
+                        "1.1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), x = 0, y = 0 ⊢ (if (0::real) = 0 then 1 else 0) = real_inverse 1"
+                },
+                {
+                    "args": "real_neg_0, (if -(0::real) = 0 then 1 else 0) = real_inverse 1",
+                    "id": "1.1.1.4",
+                    "prevs": [
+                        "1.1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), x = 0, y = 0 ⊢ (if -(0::real) = 0 then 1 else 0) = real_inverse 1"
+                },
+                {
+                    "args": "(if -y = 0 then 1 else 0) = real_inverse 1",
+                    "id": "1.1.1.5",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "y = 0, ¬(0 < x), x = 0 ⊢ (if -y = 0 then 1 else 0) = real_inverse 1"
+                },
+                {
+                    "args": "if_P, (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)",
+                    "id": "1.1.1.6",
+                    "prevs": [
+                        "1.1.1.5",
+                        "1.1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "y = 0, ¬(0 < x), x = 0 ⊢ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.7",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), x = 0 ⊢ y = 0 ⟶ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), x = 0 ⊢ ¬(y = 0) ⟶ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "¬(y = 0)",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(y = 0) ⊢ ¬(y = 0)"
+                },
+                {
+                    "args": "¬(-y = 0)",
+                    "id": "1.1.2.1",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(y = 0) ⊢ ¬(-y = 0)"
+                },
+                {
+                    "args": "if_not_P, (if -y = 0 then (1::real) else 0) = 0",
+                    "id": "1.1.2.2",
+                    "prevs": [
+                        "1.1.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(y = 0) ⊢ (if -y = 0 then (1::real) else 0) = 0"
+                },
+                {
+                    "args": "real_inv_0, (if -y = 0 then 1 else 0) = real_inverse 0",
+                    "id": "1.1.2.3",
+                    "prevs": [
+                        "1.1.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), x = 0, ¬(y = 0) ⊢ (if -y = 0 then 1 else 0) = real_inverse 0"
+                },
+                {
+                    "args": "if_not_P, (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)",
+                    "id": "1.1.2.4",
+                    "prevs": [
+                        "1.1.2.3",
+                        "1.1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(y = 0), ¬(0 < x), x = 0 ⊢ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.5",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), x = 0 ⊢ ¬(y = 0) ⟶ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), x = 0 ⊢ (if -y = 0 then 1 else 0) = real_inverse (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_P, (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, ¬(0 < x) ⊢ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x) ⊢ x = 0 ⟶ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x) ⊢ ¬(x = 0) ⟶ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n) ⟶ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n",
+                    "id": "1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n ⊢ ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n"
+                },
+                {
+                    "args": "real_mul_lneg, -(exp (-y * log (-x))) = -(exp (-(y * log (-x))))",
+                    "id": "1.2.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(exp (-y * log (-x))) = -(exp (-(y * log (-x))))"
+                },
+                {
+                    "args": "real_exp_neg, -(exp (-y * log (-x))) = -(real_inverse (exp (y * log (-x))))",
+                    "id": "1.2.1.2",
+                    "prevs": [
+                        "1.2.1.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n ⊢ -(exp (-y * log (-x))) = -(real_inverse (exp (y * log (-x))))"
+                },
+                {
+                    "args": "real_inv_neg, -(exp (-y * log (-x))) = real_inverse (-(exp (y * log (-x))))",
+                    "id": "1.2.1.3",
+                    "prevs": [
+                        "1.2.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0), ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n ⊢ -(exp (-y * log (-x))) = real_inverse (-(exp (y * log (-x))))"
+                },
+                {
+                    "args": "if_P, (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "1.2.1.4",
+                    "prevs": [
+                        "1.2.1.3",
+                        "1.2.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n, ¬(0 < x), ¬(x = 0) ⊢ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.5",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n) ⟶ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ ¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n) ⟶ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n)",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n) ⊢ ¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n)"
+                },
+                {
+                    "args": "real_mul_lneg, exp (-y * log (-x)) = exp (-(y * log (-x)))",
+                    "id": "1.2.2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp (-y * log (-x)) = exp (-(y * log (-x)))"
+                },
+                {
+                    "args": "real_exp_neg, exp (-y * log (-x)) = real_inverse (exp (y * log (-x)))",
+                    "id": "1.2.2.2",
+                    "prevs": [
+                        "1.2.2.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(0 < x), ¬(x = 0), ¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n) ⊢ exp (-y * log (-x)) = real_inverse (exp (y * log (-x)))"
+                },
+                {
+                    "args": "if_not_P, (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.2",
+                        "1.2.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n), ¬(0 < x), ¬(x = 0) ⊢ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.4",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ ¬(∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n) ⟶ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "real_abs_neg, (if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x), ¬(x = 0) ⊢ (if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "if_not_P, (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), ¬(0 < x) ⊢ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 < x) ⊢ ¬(x = 0) ⟶ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 < x) ⊢ (if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "if_not_P, (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 < x) ⊢ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(0 < x) ⟶ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (if 0 < x then exp (-y * log x) else if x = 0 then if -y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs (-y) = of_nat m / of_nat n then -(exp (-y * log (-x))) else exp (-y * log (-x))) = real_inverse (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "real_real_power_def, x ^ -y = real_inverse (x ^ y)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ^ -y = real_inverse (x ^ y)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ^ -y = real_inverse (x ^ y)"
+                }
+            ],
+            "prop": "x ^ -y = real_inverse (x ^ y)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_real_power_def"
+                },
+                {
+                    "case": "0 < x",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_neg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "case": "x = 0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "case": "y = 0",
+                    "goal_id": "1.1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_neg_0"
+                },
+                {
+                    "goal": "(0::real) = 0",
+                    "goal_id": "1.1.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.1"
+                    ],
+                    "goal_id": "1.1.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_0"
+                },
+                {
+                    "goal": "~(-y = 0)",
+                    "goal_id": "1.1.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.1"
+                    ],
+                    "goal_id": "1.1.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "case": "∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n",
+                    "goal_id": "1.2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.0"
+                    ],
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_neg"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_neg"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.0"
+                    ],
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_neg"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "rpow_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "¬((0::real) < 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬((0::real) < 0)"
+                },
+                {
+                    "args": "if_not_P, (if (0::real) < 0 then exp (y * log 0) else if y = 0 then 1 else 0) = (if y = 0 then 1 else 0)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if y = 0 then 1 else 0) = (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_P, (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-0))) else exp (y * log (-0))) = (if y = 0 then 1 else 0)",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-0))) else exp (y * log (-0))) = (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "real_real_power_def, (0::real) ^ y = (if y = 0 then 1 else 0)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) ^ y = (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (0::real) ^ y = (if y = 0 then 1 else 0)"
+                }
+            ],
+            "prop": "(0::real) ^ y = (if y = 0 then 1 else 0)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_real_power_def"
+                },
+                {
+                    "goal": "(0::real) = 0 ",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "~((0::real) < 0)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "rpow_pos_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_exp_pos_lt, {}, {x: y * log x}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < exp (y * log x)"
+                },
+                {
+                    "args": "if_P, 0 < (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ 0 < (if 0 < x then exp (y * log x) else if x = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-x))) else exp (y * log (-x)))"
+                },
+                {
+                    "args": "real_real_power_def, 0 < x ^ y",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x ⊢ 0 < x ^ y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ 0 < x ^ y"
+                }
+            ],
+            "prop": "0 < x ⟶ 0 < x ^ y",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_real_power_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_exp_pos_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "rpow_pos_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ 0 < x ∨ 0 = x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x ⊢ 0 < x ⟶ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "0 < x",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "rpow_pos_lt, {}, {x: x, y: y}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x ⊢ 0 < x ^ y"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, 0 < x ⊢ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x ⊢ 0 < x ⟶ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x ⊢ 0 = x ⟶ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "0 = x",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 = x ⊢ 0 = x"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 = x ⊢ x = 0"
+                },
+                {
+                    "args": "(0::real) ≤ (if y = 0 then 1 else 0)",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) ≤ (if y = 0 then 1 else 0)"
+                },
+                {
+                    "args": "rpow_zero, (0::real) ≤ 0 ^ y",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, 0 = x ⊢ (0::real) ≤ 0 ^ y"
+                },
+                {
+                    "args": "0 ≤ x ^ y",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.1",
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 = x, 0 ≤ x ⊢ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x ⊢ 0 = x ⟶ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x ⊢ 0 ≤ x ^ y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ 0 ≤ x ^ y"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ 0 ≤ x ^ y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "rpow_pos_lt"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "rpow_zero"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "rpow_lt2",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "0 < z",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < z ⊢ 0 < z"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ 0 < x ∨ 0 = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x, x < y, 0 < z ⊢ 0 < x ⟶ x ^ z < y ^ z"
+                },
+                {
+                    "args": "0 < x",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "real_lt_trans, {}, {x: (0::real), y: x, z: y}",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < x, x < y ⊢ 0 < y"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 ≤ x, x < y, 0 < z, 0 < x ⊢ log x < log y"
+                },
+                {
+                    "args": "real_lt_lmul:",
+                    "id": "4.3",
+                    "prevs": [
+                        "2",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, x < y, 0 < z, 0 < x ⊢ z * log x < z * log y"
+                },
+                {
+                    "args": "real_exp_mono_lt, exp (z * log x) < exp (z * log y)",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, x < y, 0 < z, 0 < x ⊢ exp (z * log x) < exp (z * log y)"
+                },
+                {
+                    "args": "if_P, exp (z * log x) < (if 0 < y then exp (z * log y) else if y = 0 then if z = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs z = of_nat m / of_nat n then -(exp (z * log (-y))) else exp (z * log (-y)))",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4",
+                        "4.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < y, 0 ≤ x, 0 < z ⊢ exp (z * log x) < (if 0 < y then exp (z * log y) else if y = 0 then if z = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs z = of_nat m / of_nat n then -(exp (z * log (-y))) else exp (z * log (-y)))"
+                },
+                {
+                    "args": "if_P, (if 0 < x then exp (z * log x) else if x = 0 then if z = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs z = of_nat m / of_nat n then -(exp (z * log (-x))) else exp (z * log (-x))) < (if 0 < y then exp (z * log y) else if y = 0 then if z = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs z = of_nat m / of_nat n then -(exp (z * log (-y))) else exp (z * log (-y)))",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5",
+                        "4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, 0 ≤ x, x < y, 0 < z ⊢ (if 0 < x then exp (z * log x) else if x = 0 then if z = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs z = of_nat m / of_nat n then -(exp (z * log (-x))) else exp (z * log (-x))) < (if 0 < y then exp (z * log y) else if y = 0 then if z = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs z = of_nat m / of_nat n then -(exp (z * log (-y))) else exp (z * log (-y)))"
+                },
+                {
+                    "args": "real_real_power_def, x ^ z < y ^ z",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, x < y, 0 < z, 0 < x ⊢ x ^ z < y ^ z"
+                },
+                {
+                    "args": "",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.0",
+                        "4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x, x < y, 0 < z ⊢ 0 < x ⟶ x ^ z < y ^ z"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 ≤ x, x < y, 0 < z ⊢ 0 = x ⟶ x ^ z < y ^ z"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, x < y, 0 < z ⊢ x ^ z < y ^ z"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x < y ⟶ 0 < z ⟶ x ^ z < y ^ z"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ x < y ⟶ 0 < z ⟶ x ^ z < y ^ z",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0",
+                        "1"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_real_power_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_mono_lt"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_lmul:"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
             }
         }
     ],
