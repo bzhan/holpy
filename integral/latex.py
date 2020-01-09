@@ -133,6 +133,8 @@ def convert_expr(e, mode="large"):
                 return "\\sqrt{%s}" % sx
             elif e.func_name == "abs":
                 return "\\left| %s \\right|" % sx
+            elif e.func_name == "atan":
+                return "\\arctan{%s}" % sx
             return "\\%s{(%s)}" % (e.func_name, sx)
         else:
             raise NotImplementedError
