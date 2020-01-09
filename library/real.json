@@ -6507,6 +6507,44 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_lt_min",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "z < min x y ⟷ z < x ∧ z < y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ z < min x y ⟷ z < x ∧ z < y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ z < min x y ⟷ z < x ∧ z < y"
+                }
+            ],
+            "prop": "z < min x y ⟷ z < x ∧ z < y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_min_le",
             "num_gaps": 0,
             "proof": [

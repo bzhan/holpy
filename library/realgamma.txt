@@ -1,0 +1,8 @@
+{
+    "content": [{}
+     ],
+    "description": "Real gamma functions and Euler_Mascheroni const. Refer to gamma.ml from HOL light",
+    "imports": [
+        "realintegral"
+    ],
+    "name": "realgamma"
