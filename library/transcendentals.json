@@ -7657,6 +7657,124 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_pos_pi2",
+            "prop": "0 < x ⟶ x < pi / 2 ⟶ 0 < cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_pos_pi2",
+            "prop": "0 < x ⟶ x < pi / 2 ⟶ 0 < sin x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_pos_pi",
+            "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ 0 < cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_pos_pi_le",
+            "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ 0 ≤ cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_pos_pi_le",
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ sin x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_pimul_eq_0",
+            "prop": "sin (n * pi) = 0 ⟷ integer n",
+            "ty": "thm",
+            "vars": {
+                "n": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_eq_0",
+            "prop": "sin x = 0 ⟷ (∃n. integer n ∧ x = n * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_eq_0",
+            "prop": "cos x = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_zero_pi",
+            "prop": "sin x = 0 ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_zero_pi",
+            "prop": [
+                "cos x = 0 ⟷ ",
+                "(∃n. x = (of_nat n + 1 / 2) * pi) ∨ (∃n. x = -((of_nat n + 1 / 2) * pi))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_sin_0",
@@ -7941,10 +8059,76 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "atn",
-            "prop": "atn y = (THE x. -pi / 2 < x ∧ x < pi / 2 ∧ tan x = y)",
+            "prop": "atn y = (THE x. -(pi / 2) < x ∧ x < pi / 2 ∧ tan x = y)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_tan",
+            "prop": "tan (atn y) = y",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_bound",
+            "prop": "abs (atn y) < pi / 2",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_atn",
+            "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ atn (tan x) = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_0",
+            "prop": "atn 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_1",
+            "prop": "atn 1 = pi / 4",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite_sym"
+            ],
+            "name": "atn_neg",
+            "prop": "atn (-x) = -(atn x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         },
         {
             "name": "asn",
