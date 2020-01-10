@@ -1416,6 +1416,263 @@
             "vars": {
                 "x": "real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_product",
+            "prop": [
+                "tendsto_real ",
+                "  (λn. x * product ({1..n}) (λm. 1 - (x / (pi * of_nat m)) ^ (2::nat))) ",
+                "  (sin x) ",
+                "  sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "wallis_alt",
+            "prop": [
+                "tendsto_real ",
+                "  (λn. product ({1..n}) ",
+                "       (λk. 2 * of_nat k / (2 * of_nat k - 1) * (2 * of_nat k) / (2 * of_nat k + 1))) ",
+                "  (pi / 2) ",
+                "  sequentially"
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "wallis",
+            "prop": [
+                "tendsto_real ",
+                "  (λn. (2 ^ n * of_nat (fact n)) ^ (4::nat) / ",
+                "     (of_nat (fact (2 * n)) * of_nat (fact (2 * n + 1)))) ",
+                "  (pi / 2) ",
+                "  sequentially"
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "gaussian_has_real_integral",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "euler_has_real_integral_gamma, {}, {x: 1 / 2}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < 1 / 2 ⟶ has_real_integral (λt. t ^ (1 / 2 - 1) / exp t) (gamma (1 / 2)) ({t. 0 ≤ t})"
+                },
+                {
+                    "args": "0 < 1 / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 0 < 1 / 2"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ has_real_integral (λt. t ^ (1 / 2 - 1) / exp t) (gamma (1 / 2)) ({t. 0 ≤ t})"
+                },
+                {
+                    "args": "1 / 2 - 1 = -(1 / 2)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ 1 / 2 - 1 = -(1 / 2)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ has_real_integral (λt. t ^ -(1 / 2) / exp t) (gamma (1 / 2)) ({t. 0 ≤ t})"
+                },
+                {
+                    "args": "has_real_integral_rmul, {}, {c: real_inverse 2, f: λt. t ^ -(1 / 2) / exp t, k: gamma (1 / 2), s: {t::real. 0 ≤ t}}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_integral (λx. x ^ -(1 / 2) / exp x * real_inverse 2) (gamma (1 / 2) * real_inverse 2) ({t. 0 ≤ t})"
+                },
+                {
+                    "args": "real_divide_def",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "⊢ has_real_integral (λx. x ^ -(1 / 2) / exp x / 2) (gamma (1 / 2) / 2) ({t. 0 ≤ t})"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. if 0 ≤ x then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)"
+                },
+                {
+                    "args": "member_collect, ∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) - gamma (1 / 2) / 2) < e))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10",
+                    "prevs": [
+                        "8",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) - gamma (1 / 2) / 2) < e)))"
+                },
+                {
+                    "args": "has_real_integral_alt, has_real_integral (λx. exp (-(x ^ (2::nat)))) (gamma (1 / 2) / 2) ({x. 0 ≤ x})",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_integral (λx. exp (-(x ^ (2::nat)))) (gamma (1 / 2) / 2) ({x. 0 ≤ x})"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ has_real_integral (λx. exp (-(x ^ (2::nat)))) (sqrt pi) univ"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_integral (λx. exp (-(x ^ (2::nat)))) (sqrt pi) univ"
+                }
+            ],
+            "prop": "has_real_integral (λx. exp (-(x ^ (2::nat)))) (sqrt pi) univ",
+            "steps": [
+                {
+                    "goal": "has_real_integral (λx. exp (-(x ^ (2::nat)))) (gamma(1/2)/2) {x. 0 <= x}",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "(1::real)/2",
+                    "theorem": "euler_has_real_integral_gamma"
+                },
+                {
+                    "goal": "0 < 1 / 2",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "1 / 2 - 1 = -(1 / 2)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "param_c": "real_inverse 2",
+                    "theorem": "has_real_integral_rmul"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_integral_alt"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Real gamma functions and Euler_Mascheroni const. Refer to gamma.ml from HOL light",
