@@ -141,6 +141,28 @@ class ExprTest(unittest.TestCase):
             t = parse_expr(s)
             self.assertEqual(str(t.normalize()), res)
 
+    def testGetSubExpr(self):
+        test_data = [
+            ("x + y", "0", "x"),
+            ("x + y", "1", "y"),
+            ("x + y + z", "0.0", "x"),
+            ("x + y + z", "0.1", "y"),
+            ("x + sin(x)", "1", "sin(x)"),
+            ("x + sin(x)", "1.0", "x"),
+            ("[sin(x)]_x=2,3", "0", "sin(x)"),
+            ("[sin(x)]_x=2,3", "1", "2"),
+            ("[sin(x) * cos(x)]_x=2,3", "0.1", "cos(x)"),
+            ("D x. 3 * x", "0", "3 * x"),
+            ("D x. 3 * x", "0.1", "x"),
+            ("INT x:[1,2]. 3 * x", "0", "3 * x"),
+            ("INT x:[1,2]. 3 * x", "0.1", "x"),
+        ]
+
+        for s, loc, res in test_data:
+            t = parse_expr(s)
+            res = parse_expr(res)
+            self.assertEqual(t.get_subexpr(loc), res)
+
     def testReplace(self):
         test_data = [
             ("1 / (x ^ 2 + 1)", "x ^ 2 + 1", "u", "1 / u"),

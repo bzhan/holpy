@@ -5,6 +5,7 @@ from fractions import Fraction
 from integral import poly
 from integral.poly import *
 import functools, operator
+from collections.abc import Iterable
 from integral import parser
 from sympy.parsing import sympy_parser
 import copy
@@ -18,6 +19,29 @@ op_priority = {
 }
 
 trig_identity = []
+
+
+class Location:
+    """Location within an expression."""
+    def __init__(self, data):
+        if isinstance(data, Iterable) and all(isinstance(n, int) for n in data):
+            self.data = tuple(data)
+        elif isinstance(data, str):
+            self.data = tuple(int(n) for n in data.split('.'))
+        else:
+            raise TypeError
+
+    def is_empty(self):
+        return len(self.data) == 0
+
+    @property
+    def head(self):
+        return self.data[0]
+
+    @property
+    def rest(self):
+        return Location(self.data[1:])
+
 
 class Expr:
     """Expressions."""
@@ -137,6 +161,32 @@ class Expr:
 
     def __lt__(self, other):
         return self <= other and self != other
+
+    def get_subexpr(self, loc):
+        """Given an expression, return the subexpression at location."""
+        if not isinstance(loc, Location):
+            loc = Location(loc)
+        if loc.is_empty():
+            return self
+        elif self.ty == VAR or self.ty == CONST:
+            raise AssertionError("get_subexpr: invalid location")
+        elif self.ty == OP or self.ty == FUN:
+            assert loc.head < len(self.args), "get_subexpr: invalid location"
+            return self.args[loc.head].get_subexpr(loc.rest)
+        elif self.ty == DERIV:
+            assert loc.head == 0, "get_subexpr: invalid location"
+            return self.body.get_subexpr(loc.rest)
+        elif self.ty == INTEGRAL or self.ty == EVAL_AT:
+            if loc.head == 0:
+                return self.body.get_subexpr(loc.rest)
+            elif loc.head == 1:
+                return self.lower.get_subexpr(loc.rest)
+            elif loc.head == 2:
+                return self.upper.get_subexpr(loc.rest)
+            else:
+                raise AssertionError("get_subexpr: invalid location")
+        else:
+            raise NotImplementedError
 
     def subst(self, var, e):
         """Substitute occurrence of var for e in self."""
