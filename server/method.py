@@ -601,7 +601,7 @@ class forall_elim(Method):
                 raise AssertionError('Forall elimination: extra variable %s' % v.name)
 
         state.add_line_before(id, 1)
-        state.set_line(id, 'forall_elim', args=t, prevs=prevs)
+        state.set_line(id, 'forall_elim_gen', args=t, prevs=prevs)
 
 class inst_exists_goal(Method):
     """Instantiate an exists goal."""

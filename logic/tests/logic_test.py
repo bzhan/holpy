@@ -223,6 +223,15 @@ class LogicTest(unittest.TestCase):
             res='?x. g x = a'
         )
 
+    def testForallElimGen(self):
+        test_macro(
+            self, 'nat', 'forall_elim_gen',
+            vars={'n': 'nat'},
+            assms=['!P::nat => bool. P n'],
+            args="%n::nat. n > 2",
+            res="n > 2"
+        )
+
     def testTrivialMacro(self):
         test_macro(
             self, 'logic_base', 'trivial',

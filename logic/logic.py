@@ -577,6 +577,23 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         cv = then_conv(cv1, beta_norm_conv())
         return pt.on_prop(thy, cv)
 
+class forall_elim_gen_macro(ProofTermMacro):
+    """Apply forall elimination."""
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(self, thy, args, pts):
+        assert len(pts) == 1, "forall_elim_gen"
+        assert isinstance(args, Term), "forall_elim_gen"
+        s = args  # term to instantiate
+
+        pt = ProofTerm.forall_elim(s, pts[0])
+        if pt.prop.beta_norm() != pt.prop:
+            pt = beta_norm_conv().apply_to_pt(thy, pt)
+        return pt
+
 class trivial_macro(ProofTermMacro):
     """Prove a proposition of the form A_1 --> ... --> A_n --> B, where
     B agrees with one of A_i.
@@ -723,6 +740,7 @@ macro.global_macros.update({
     "rewrite_fact": rewrite_fact_macro(),
     "rewrite_fact_sym": rewrite_fact_macro(sym=True),
     "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
+    "forall_elim_gen": forall_elim_gen_macro(),
     "trivial": trivial_macro(),
     "imp_conj": imp_conj_macro(),
 })

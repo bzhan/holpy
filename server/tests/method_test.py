@@ -510,6 +510,18 @@ class MethodTest(unittest.TestCase):
             lines={'1': 'P n --> Q n'}
         )
 
+    def testForallElim2(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['!P. P n'],
+            concl='Q n',
+            method_name='forall_elim',
+            args={'s': '%n::nat. n > 2'},
+            prevs=[0],
+            lines={'1': 'n > 2'}
+        )
+
     def testForallElimFail(self):
         test_method(self,
             'nat',
