@@ -1530,59 +1530,210 @@
                     "th": "⊢ has_real_integral (λx. x ^ -(1 / 2) / exp x / 2) (gamma (1 / 2) / 2) ({t. 0 ≤ t})"
                 },
                 {
-                    "args": "",
+                    "args": "has_real_integral_alt",
                     "id": "7",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. if 0 ≤ x then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)"
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e)))"
                 },
                 {
-                    "args": "member_collect, ∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)",
+                    "args": "conjD1, {}, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))}",
                     "id": "8",
                     "prevs": [
                         "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))}",
+                    "id": "9",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))"
+                },
+                {
+                    "args": "real_integrable_restrict_inter",
+                    "id": "10",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. x ^ -(1 / 2) / exp x / 2) ({t. 0 ≤ t} ∩ real_closed_interval a b)"
+                },
+                {
+                    "args": "inter_def",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. x ^ -(1 / 2) / exp x / 2) ({x. x ∈ {t. 0 ≤ t} ∧ x ∈ real_closed_interval a b})"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. x ^ -(1 / 2) / exp x / 2) ({x. x ∈ {t. 0 ≤ t} ∧ x ∈ {p. a ≤ p ∧ p ≤ b}})"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. x ^ -(1 / 2) / exp x / 2) ({x. 0 ≤ x ∧ a ≤ x ∧ x ≤ b})"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀x. 0 ≤ x ∧ a ≤ x ∧ x ≤ b ⟷ max 0 a ≤ x ∧ x ≤ b",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀x. 0 ≤ x ∧ a ≤ x ∧ x ≤ b ⟷ max 0 a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [
+                        "14",
+                        "13"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. x ^ -(1 / 2) / exp x / 2) ({x. max 0 a ≤ x ∧ x ≤ b})"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. x ^ -(1 / 2) / exp x / 2) (real_closed_interval (max 0 a) b)"
+                },
+                {
+                    "args": "∀P. (∀a::real. P (max 0 a)) ⟷ (∀a. 0 ≤ a ⟶ P a)",
+                    "id": "17",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀P. (∀a::real. P (max 0 a)) ⟷ (∀a. 0 ≤ a ⟶ P a)"
+                },
+                {
+                    "args": "λy. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) (real_closed_interval y b)",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ (∀a. (λy. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) (real_closed_interval y b)) (max 0 a)) ⟷ (∀a. 0 ≤ a ⟶ (λy. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) (real_closed_interval y b)) a)"
+                },
+                {
+                    "args": "",
+                    "id": "19",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) (real_closed_interval (max 0 a) b)"
+                },
+                {
+                    "args": "real_closed_interval_def, ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({p. max 0 a ≤ p ∧ p ≤ b})",
+                    "id": "20",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({p. max 0 a ≤ p ∧ p ≤ b})"
+                },
+                {
+                    "args": "∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. 0 ≤ x ∧ a ≤ x ∧ x ≤ b})",
+                    "id": "21",
+                    "prevs": [
+                        "14",
+                        "20"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. 0 ≤ x ∧ a ≤ x ∧ x ≤ b})"
+                },
+                {
+                    "args": "member_collect, ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. x ∈ {x1. 0 ≤ x1} ∧ x ∈ {p. a ≤ p ∧ p ≤ b}})",
+                    "id": "22",
+                    "prevs": [
+                        "21"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. x ∈ {x1. 0 ≤ x1} ∧ x ∈ {p. a ≤ p ∧ p ≤ b}})"
+                },
+                {
+                    "args": "real_closed_interval_def, ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. x ∈ {x1. 0 ≤ x1} ∧ x ∈ real_closed_interval a b})",
+                    "id": "23",
+                    "prevs": [
+                        "22"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. x ∈ {x1. 0 ≤ x1} ∧ x ∈ real_closed_interval a b})"
+                },
+                {
+                    "args": "inter_def, ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. 0 ≤ x} ∩ real_closed_interval a b)",
+                    "id": "24",
+                    "prevs": [
+                        "23"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. 0 ≤ x} ∩ real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_restrict_inter, ∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)",
+                    "id": "25",
+                    "prevs": [
+                        "24"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)"
                 },
                 {
                     "args": "",
-                    "id": "9",
+                    "id": "26",
                     "prevs": [],
                     "rule": "sorry",
                     "th": "⊢ ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) - gamma (1 / 2) / 2) < e))"
                 },
                 {
                     "args": "conjI",
-                    "id": "10",
+                    "id": "27",
                     "prevs": [
-                        "8",
-                        "9"
+                        "25",
+                        "26"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {x1. 0 ≤ x1} then exp (-(x ^ (2::nat))) else 0) - gamma (1 / 2) / 2) < e)))"
                 },
                 {
                     "args": "has_real_integral_alt, has_real_integral (λx. exp (-(x ^ (2::nat)))) (gamma (1 / 2) / 2) ({x. 0 ≤ x})",
-                    "id": "11",
+                    "id": "28",
                     "prevs": [
-                        "10"
+                        "27"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ has_real_integral (λx. exp (-(x ^ (2::nat)))) (gamma (1 / 2) / 2) ({x. 0 ≤ x})"
                 },
                 {
                     "args": "",
-                    "id": "12",
+                    "id": "29",
                     "prevs": [],
                     "rule": "sorry",
                     "th": "⊢ has_real_integral (λx. exp (-(x ^ (2::nat)))) (sqrt pi) univ"
                 },
                 {
                     "args": "",
-                    "id": "13",
+                    "id": "30",
                     "prevs": [
-                        "12"
+                        "29"
                     ],
                     "rule": "intros",
                     "th": "⊢ has_real_integral (λx. exp (-(x ^ (2::nat)))) (sqrt pi) univ"
@@ -1668,7 +1819,142 @@
                     "goal_id": "7",
                     "method_name": "rewrite_goal",
                     "sym": "false",
+                    "theorem": "real_integrable_restrict_inter"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_real_integral_alt"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_integrable_restrict_inter"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "inter_def"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "sym": "",
+                    "theorem": "inter_def"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal": "!a::real. !b. !x. 0 ≤ x ∧ a ≤ x ∧ x ≤ b <--> max 0 a <= x & x <= b ",
+                    "goal_id": "14",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "14",
+                        "13"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal": "!P. (!a::real. P (max 0 a)) <--> (!a::real. 0 <= a --> P a)",
+                    "goal_id": "17",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "18",
+                    "method_name": "forall_elim",
+                    "s": "(%y. (∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) (real_closed_interval y b)))"
                 }
             ],
             "ty": "thm",
