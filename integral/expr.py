@@ -112,6 +112,27 @@ class Expr:
         else:
             raise NotImplementedError
 
+    def is_var(self):
+        return self.ty == VAR
+
+    def is_const(self):
+        return self.ty == CONST
+
+    def is_op(self):
+        return self.ty == OP
+
+    def is_fun(self):
+        return self.ty == FUN
+
+    def is_deriv(self):
+        return self.ty == DERIV
+
+    def is_integral(self):
+        return self.ty == INTEGRAL
+
+    def is_evalat(self):
+        return self.ty == EVAL_AT
+
     def __le__(self, other):
         if self.size() != other.size():
             return self.size() <= other.size()

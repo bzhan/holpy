@@ -7,6 +7,7 @@ from logic.conv import Conv, ConvException, top_conv, beta_conv, beta_norm_conv,
     arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv
 from logic.logic import apply_theorem, conj_thms
 from logic.proofterm import ProofTerm, ProofTermDeriv, refl
+from logic.context import Context
 from data import set
 from data import nat
 from data import real
@@ -15,8 +16,11 @@ from data.integral import netT, within, atreal
 from util import name
 from prover import z3wrapper
 from syntax import printer
-from integral.expr import Location
+from integral.expr import Expr, Location
+import integral
 
+
+evalat = Const('evalat', TFun(TFun(realT, realT), realT, realT, realT))
 
 def mk_has_real_derivative(f, g, x, S):
     """Construct the term has_real_derivative f g (within (atreal x) S)."""
@@ -27,6 +31,10 @@ def mk_has_real_integral(f, x, a, b):
     """Construct the term has_real_integral f x (real_closed_interval a b)."""
     T = TFun(TFun(realT, realT), realT, set.setT(realT), boolT)
     return Const('has_real_integral', T)(f, x, real.closed_interval(a, b))
+
+def mk_real_integral(f, a, b):
+    T = TFun(set.setT(realT), TFun(realT, realT), realT)
+    return Const('real_integral', T)(real.closed_interval(a, b), f)
 
 def mk_real_continuous_on(f, a, b):
     """Construct the term real_continuous_on f (real_closed_interval a b)."""
@@ -558,3 +566,111 @@ class location_conv(Conv):
                 raise NotImplementedError
         else:
             return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv)).get_proof_term(thy, t)
+
+
+def expr_to_holpy(expr):
+    """Convert an expression to holpy term."""
+    assert isinstance(expr, Expr), "expr_to_holpy"
+    if expr.is_var():
+        return Var(expr.name, real.realT)
+    elif expr.is_const():
+        return real.to_binary_real(expr.val)
+    elif expr.is_op():
+        if expr.op == '-' and len(expr.args) == 1:
+            return real.uminus(expr_to_holpy(expr.args[0]))
+
+        if len(expr.args) != 2:
+            raise NotImplementedError
+
+        a, b = [expr_to_holpy(arg) for arg in expr.args]
+        if expr.op == '+':
+            return real.plus(a, b)
+        elif expr.op == '-':
+            return real.minus(a, b)
+        elif expr.op == '*':
+            return real.times(a, b)
+        elif expr.op == '/':
+            return real.divides(a, b)
+        elif expr.op == '^':
+            if expr.args[1].is_const() and isinstance(expr.args[1].val, int) and expr.args[1].val >= 0:
+                return real.nat_power(a, nat.to_binary_nat(expr.args[1].val))
+            else:
+                return real.real_power(a, b)
+        else:
+            raise NotImplementedError
+    elif expr.is_fun():
+        if expr.op == 'pi':
+            return real.pi
+        
+        if len(expr.args) != 1:
+            raise NotImplementedError
+
+        a = expr_to_holpy(expr.args[0])
+        if expr.op == 'sin':
+            return real.sin(a)
+        elif expr.op == 'cos':
+            return real.cos(a)
+        elif expr.op == 'tan':
+            return real.tan(a)
+        elif expr.op == 'log':
+            return real.log(a)
+        elif expr.op == 'exp':
+            return real.exp(a)
+        elif expr.op == 'abs':
+            return real.abs(a)
+        else:
+            raise NotImplementedError
+    elif expr.is_deriv():
+        raise NotImplementedError
+    elif expr.is_integral():
+        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
+        var = Var(expr.var, real.realT)
+        f = Term.mk_abs(var, expr_to_holpy(expr.body))
+        return mk_real_integral(f, a, b)
+    elif expr.is_evalat():
+        a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
+        var = Var(expr.var, real.realT)
+        f = Term.mk_abs(var, expr_to_holpy(expr.body))
+        return evalat(f, a, b)
+    else:
+        raise NotImplementedError
+
+def translate_item(item, target=None):
+    """Translate a calculation in json into holpy proof."""
+    ctxt = Context('realintegral')
+    thy = ctxt.thy
+
+    problem = integral.parser.parse_expr(item['problem'])
+    init = expr_to_holpy(problem)
+    pt = refl(init)
+
+    for step in item['calc']:
+        reason = step['reason']
+        if reason == 'Linearity':
+            pt = pt.on_rhs(thy, linearity())
+        elif reason == 'Common integrals':
+            pt = pt.on_rhs(thy, top_conv(common_integral()))
+        elif reason == 'Simplification':
+            pt = pt.on_rhs(thy, simplify())
+        elif reason == 'Substitution':
+            assert pt.rhs.head.is_const_name("real_integral"), "translate_item: Substitution"
+            f = integral.parser.parse_expr(step['params']['f'])
+            g = integral.parser.parse_expr(step['params']['g'])
+            ori_name = pt.rhs.arg.var_name
+            ori_var = Var(ori_name, realT)
+            new_name = step['params']['var_name']
+            new_var = Var(new_name, realT)
+            f = Term.mk_abs(new_var, expr_to_holpy(f))
+            g = Term.mk_abs(ori_var, expr_to_holpy(g))
+            pt = pt.on_rhs(thy, substitution(f, g))
+        else:
+            raise NotImplementedError
+
+    assert pt.lhs == init, "translate_item: wrong left side"
+    if target is not None:
+        target = expr_to_holpy(integral.parser.parse_expr(target))
+        assert pt.rhs == target, "translate_item: wrong right side. Expected %s, got %s" % (
+            printer.print_term(thy, target), printer.print_term(thy, pt.rhs)
+        )
+
+    return pt

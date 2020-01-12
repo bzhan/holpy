@@ -15,6 +15,7 @@ from logic.conv import top_conv, arg_conv
 from syntax import parser
 from syntax import printer
 from logic.tests.conv_test import test_conv
+import integral
 
 
 class ProofTest(unittest.TestCase):
@@ -294,6 +295,17 @@ class ProofTest(unittest.TestCase):
             res = parser.parse_term(ctxt, res)
             cv = proof.location_conv(loc, proof.trig_rewr_conv(code))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
+
+    def testExprToHolpy(self):
+        test_data = [
+            ("INT x:[2,3]. 2 * x + x ^ 2", "real_integral (real_closed_interval 2 3) (%x. 2 * x + x ^ (2::nat))"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, res in test_data:
+            s = integral.parser.parse_expr(s)
+            res = parser.parse_term(ctxt, res)
+            self.assertEqual(proof.expr_to_holpy(s), res)
 
     def run_test(self, t, res, cvs, debug=False):
         ctxt = Context('realintegral')

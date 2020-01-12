@@ -92,6 +92,7 @@ def to_binary(n):
 
 def to_binary_nat(n):
     """Convert Python integer n to HOL binary form (appending of_nat)."""
+    assert isinstance(n, int) and n >= 0, "to_binary_nat"
     if n == 0:
         return zero
     elif n == 1:
