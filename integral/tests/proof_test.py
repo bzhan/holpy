@@ -251,6 +251,34 @@ class ProofTest(unittest.TestCase):
             g = parser.parse_term(ctxt, g)
             test_conv(self, 'realintegral', proof.substitution(f, g), t=expr, t_res=res)
 
+    def testSimplifyRewrConv(self):
+        test_data = [
+            ("(sin x) ^ (3::nat)", "sin x * (sin x) ^ (2::nat)"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, t in test_data:
+            s = parser.parse_term(ctxt, s)
+            t = parser.parse_term(ctxt, t)
+            test_conv(self, 'realintegral', proof.simplify_rewr_conv(t), t=s, t_res=t)
+
+    def testLocationConv(self):
+        test_data = [
+            ("(sin x) ^ (3::nat) + (cos x) ^ (3::nat)", "0", "sin x * (sin x) ^ (2::nat)",
+             "(sin x) * (sin x) ^ (2::nat) + (cos x) ^ (3::nat)"),
+
+            ("real_integral (real_closed_interval 0 1) (%x. (sin x) ^ (3::nat))", "0", "sin x * (sin x) ^ (2::nat)",
+             "real_integral (real_closed_interval 0 1) (%x. (sin x) * (sin x) ^ (2::nat))"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, loc, t, res in test_data:
+            s = parser.parse_term(ctxt, s)
+            t = parser.parse_term(ctxt, t)
+            res = parser.parse_term(ctxt, res)
+            cv = proof.simplify_rewr_conv(t)
+            test_conv(self, 'realintegral', proof.location_conv(loc, cv), t=s, t_res=res)
+
     def run_test(self, t, res, cvs, debug=False):
         ctxt = Context('realintegral')
         thy = ctxt.thy

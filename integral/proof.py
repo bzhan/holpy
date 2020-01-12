@@ -15,6 +15,7 @@ from data.integral import netT, within, atreal
 from util import name
 from prover import z3wrapper
 from syntax import printer
+from integral.expr import Location
 
 
 def mk_has_real_derivative(f, g, x, S):
@@ -482,3 +483,49 @@ class substitution(Conv):
         pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
         return pt
+
+
+class simplify_rewr_conv(Conv):
+    """Rewrite the term with a term with the same simplification."""
+    def __init__(self, target):
+        """Initialize with target of the rewrite."""
+        self.target = target
+        self.target_eq = None
+
+    def get_proof_term(self, thy, t):
+        if not self.target_eq:
+            self.target_eq = simplify().get_proof_term(thy, self.target)
+
+        t_eq = simplify().get_proof_term(thy, t)
+        if self.target_eq.rhs != t_eq.rhs:
+            raise ConvException("simplify_rewr_conv")
+
+        return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
+
+
+class location_conv(Conv):
+    """Apply conversion at the given location."""
+    def __init__(self, loc, cv):
+        if not isinstance(loc, Location):
+            loc = Location(loc)
+        assert isinstance(loc, Location) and isinstance(cv, Conv), "location_Conv"
+        self.loc = loc
+        self.cv = cv
+
+    def get_proof_term(self, thy, t):
+        if self.loc.is_empty():
+            return self.cv.get_proof_term(thy, t)
+        elif t.head.is_const_name("evalat"):
+            # Term is of the form evalat f a b
+            if self.loc.head == 0:
+                return argn_conv(0, abs_conv(location_conv(self.loc.rest, self.cv))).get_proof_term(thy, t)
+            else:
+                raise NotImplementedError
+        elif t.head.is_const_name("real_integral"):
+            # Term is of the form real_integral (real_closed_interval a b) f
+            if self.loc.head == 0:
+                return arg_conv(abs_conv(location_conv(self.loc.rest, self.cv))).get_proof_term(thy, t)
+            else:
+                raise NotImplementedError
+        else:
+            return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv)).get_proof_term(thy, t)

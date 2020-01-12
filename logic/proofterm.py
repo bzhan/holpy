@@ -36,6 +36,14 @@ class ProofTerm():
     def concl(self):
         return self.th.concl
 
+    @property
+    def lhs(self):
+        return self.th.prop.lhs
+
+    @property
+    def rhs(self):
+        return self.th.prop.rhs
+
     @staticmethod
     def atom(id, th):
         return ProofTermAtom(id, th)
