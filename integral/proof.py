@@ -4,7 +4,7 @@ from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from logic.conv import Conv, ConvException, top_conv, beta_conv, beta_norm_conv, argn_conv, \
-    arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv
+    arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv, try_conv
 from logic.logic import apply_theorem, conj_thms
 from logic.proofterm import ProofTerm, ProofTermDeriv, refl
 from logic.context import Context
@@ -290,6 +290,9 @@ class linearity(Conv):
                 return pt.on_rhs(thy, rewr_conv('real_integral_lmul', conds=[pt2]), arg_conv(self))
             elif real.is_times(t) and not t2.occurs_var(v):
                 return pt.on_rhs(thy, rewr_conv('real_integral_rmul', conds=[pt1]), arg1_conv(self))
+            elif real.is_divides(t) and real.is_binary_real(t.arg) and real.from_binary_real(t.arg) != 0:
+                neq_zero = real.real_ineq(thy, t.arg, real.zero)
+                return pt.on_rhs(thy, rewr_conv('real_integral_div', conds=[pt1, neq_zero]), arg_conv(self))
             else:
                 return pt
         elif real.is_uminus(t):
@@ -356,31 +359,44 @@ class common_integral(Conv):
             return pt
 
 
-simplify_list = [
-    'real_exp_0',
-    'real_sin_0',
-    'real_sin_pi6',
-    'real_sin_pi4',
-    'real_sin_pi3',
-    'real_sin_pi2',
-    'real_sin_pi',
-    'real_cos_0',
-    'real_cos_pi6',
-    'real_cos_pi4',
-    'real_cos_pi3',
-    'real_cos_pi2',
-    'real_cos_pi',
-]
+class simplify_TR4(Conv):
+    """Simplification of special angles."""
+    def __init__(self):
+        self.simplify_list = [
+            'real_exp_0',
+            'real_sin_0',
+            'real_sin_pi6',
+            'real_sin_pi4',
+            'real_sin_pi3',
+            'real_sin_pi2_alt',
+            'real_sin_pi',
+            'real_cos_0',
+            'real_cos_pi6',
+            'real_cos_pi4',
+            'real_cos_pi3',
+            'real_cos_pi2_alt',
+            'real_cos_pi',
+        ]
+
+    def get_proof_term(self, thy, t):
+        if not t.head in (real.sin, real.cos, real.exp):
+            raise ConvException("simplify_TR4")
+
+        pt = refl(t)
+        pt = pt.on_rhs(thy, arg_conv(real.real_norm_conv()))
+        for th_name in self.simplify_list:
+            pt = pt.on_rhs(thy, try_conv(rewr_conv(th_name)))
+
+        return pt
 
 class simplify(Conv):
     """Simplify evalat as well as arithmetic."""
     def get_proof_term(self, thy, t):
-        cvs = [top_conv(rewr_conv(s)) for s in simplify_list]
         return refl(t).on_rhs(
             thy,
             top_conv(rewr_conv('evalat_def')),
             beta_norm_conv(),
-            every_conv(*cvs),
+            top_conv(simplify_TR4()),
             real.real_norm_conv())
 
 
@@ -536,6 +552,9 @@ class trig_rewr_conv(Conv):
         elif self.code == 'TR6':
             # Substitution of cos square
             return rewr_conv('sin_circle3').get_proof_term(thy, t)
+        elif self.code == 'TR7':
+            # Lowering the degree of cos square
+            return rewr_conv('cos_double_cos2').get_proof_term(thy, t)
         else:
             raise NotImplementedError
 
@@ -717,5 +736,7 @@ def translate_item(item, target=None):
         assert pt.rhs == target, "translate_item: wrong right side. Expected %s, got %s" % (
             printer.print_term(thy, target), printer.print_term(thy, pt.rhs)
         )
+    else:
+        print(printer.print_term(thy, pt.rhs))
 
     return pt
