@@ -43,6 +43,7 @@ sin = Const("sin", TFun(realT, realT))
 cos = Const("cos", TFun(realT, realT))
 tan = Const("tan", TFun(realT, realT))
 abs = Const("abs", TFun(realT, realT))
+sqrt = Const("sqrt", TFun(realT, realT))
 
 # Intervals
 

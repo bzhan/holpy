@@ -37,6 +37,145 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 3",
+            "problem": "INT x:[0,1]. exp(6*x)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "(1/6) * exp(u)",
+                        "g": "6 * x",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 4",
+            "problem": "INT x:[-1,2]. x * exp(x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "x",
+                        "v": "exp(x)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 5",
+            "problem": "INT x:[0,pi/4]. sin(x)",
+            "calc": [
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 7",
+            "problem": "INT x:[1,2]. x^2 + 1/x^4",
+            "calc": [
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 12",
+            "problem": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "- u ^ 3",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 13",
+            "problem": "INT x:[0, pi]. (1 - sin(x)^3)",
+            "calc": [
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "sin(x) ^ 2 * sin(x)"
+                    },
+                    "location": "1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR5"
+                    },
+                    "location": "1.0.0"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "u ^ 2 - 1",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }

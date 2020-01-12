@@ -259,18 +259,18 @@ def real_decreasing_onI(thy, f, a, b):
 class linearity(Conv):
     """Apply linearity to an integral."""
     def get_proof_term(self, thy, expr):
-        if not expr.head.is_const_name('real_integral'):
-            raise ConvException
+        if not (expr.head.is_const_name('real_integral') and len(expr.args) == 2):
+            raise ConvException("linearity")
 
         S, f = expr.args
         if not S.head.is_const_name('real_closed_interval'):
-            raise ConvException
+            raise ConvException("linearity")
 
         a, b = S.args
         pt = refl(expr)
 
         if not f.is_abs():
-            raise ConvException
+            raise ConvException("linearity")
 
         var_names = [v.name for v in term.get_vars(f)]
         nm = name.get_variant_name(f.var_name, var_names)
@@ -568,6 +568,26 @@ class location_conv(Conv):
             return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv)).get_proof_term(thy, t)
 
 
+def get_at_location(loc, t):
+    if loc.is_empty():
+        return t
+    elif t.head.is_const_name("evalat"):
+        if loc.head == 0:
+            f = t.args[0]
+            body = f.subst_bound(f.var_name, realT)
+            return get_at_location(loc.rest, body)
+        else:
+            raise NotImplementedError
+    elif t.head.is_const_name("real_integral"):
+        if loc.head == 0:
+            f = t.args[0]
+            body = f.subst_bound(f.var_name, realT)
+            return get_at_location(loc.rest, body)
+        else:
+            raise NotImplementedError
+    else:
+        return get_at_location(loc.rest, t.args[loc.head])
+
 def expr_to_holpy(expr):
     """Convert an expression to holpy term."""
     assert isinstance(expr, Expr), "expr_to_holpy"
@@ -599,25 +619,27 @@ def expr_to_holpy(expr):
         else:
             raise NotImplementedError
     elif expr.is_fun():
-        if expr.op == 'pi':
+        if expr.func_name == 'pi':
             return real.pi
         
         if len(expr.args) != 1:
             raise NotImplementedError
 
         a = expr_to_holpy(expr.args[0])
-        if expr.op == 'sin':
+        if expr.func_name == 'sin':
             return real.sin(a)
-        elif expr.op == 'cos':
+        elif expr.func_name == 'cos':
             return real.cos(a)
-        elif expr.op == 'tan':
+        elif expr.func_name == 'tan':
             return real.tan(a)
-        elif expr.op == 'log':
+        elif expr.func_name == 'log':
             return real.log(a)
-        elif expr.op == 'exp':
+        elif expr.func_name == 'exp':
             return real.exp(a)
-        elif expr.op == 'abs':
+        elif expr.func_name == 'abs':
             return real.abs(a)
+        elif expr.func_name == 'sqrt':
+            return real.sqrt(a)
         else:
             raise NotImplementedError
     elif expr.is_deriv():
@@ -645,26 +667,49 @@ def translate_item(item, target=None):
     pt = refl(init)
 
     for step in item['calc']:
+        if 'location' in step:
+            loc = Location(step['location'])
+        else:
+            loc = Location("")
         reason = step['reason']
         if reason == 'Linearity':
-            pt = pt.on_rhs(thy, linearity())
+            cv = top_conv(linearity())
         elif reason == 'Common integrals':
-            pt = pt.on_rhs(thy, top_conv(common_integral()))
+            cv = top_conv(common_integral())
         elif reason == 'Simplification':
-            pt = pt.on_rhs(thy, simplify())
+            cv = simplify()
         elif reason == 'Substitution':
-            assert pt.rhs.head.is_const_name("real_integral"), "translate_item: Substitution"
+            rewr_t = get_at_location(loc, pt.rhs)
+            assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution"
             f = integral.parser.parse_expr(step['params']['f'])
             g = integral.parser.parse_expr(step['params']['g'])
-            ori_name = pt.rhs.arg.var_name
+            ori_name = rewr_t.arg.var_name
             ori_var = Var(ori_name, realT)
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
             f = Term.mk_abs(new_var, expr_to_holpy(f))
             g = Term.mk_abs(ori_var, expr_to_holpy(g))
-            pt = pt.on_rhs(thy, substitution(f, g))
+            cv = substitution(f, g)
+        elif reason == 'Integrate by parts':
+            rewr_t = get_at_location(loc, pt.rhs)
+            assert rewr_t.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
+            u = integral.parser.parse_expr(step['params']['u'])
+            v = integral.parser.parse_expr(step['params']['v'])
+            ori_name = rewr_t.arg.var_name
+            ori_var = Var(ori_name, realT)
+            u = Term.mk_abs(ori_var, expr_to_holpy(u))
+            v = Term.mk_abs(ori_var, expr_to_holpy(v))
+            cv = integrate_by_parts(u, v)
+        elif reason == 'Rewrite':
+            rhs = integral.parser.parse_expr(step['params']['rhs'])
+            rhs = expr_to_holpy(rhs)
+            cv = simplify_rewr_conv(rhs)
+        elif reason == 'Rewrite trigonometric':
+            cv = trig_rewr_conv(step['params']['rule'])
         else:
             raise NotImplementedError
+
+        pt = pt.on_rhs(thy, location_conv(loc, cv))
 
     assert pt.lhs == init, "translate_item: wrong left side"
     if target is not None:
