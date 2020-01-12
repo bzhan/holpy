@@ -1862,6 +1862,22 @@
             }
         },
         {
+            "name": "sin_circle2",
+            "prop": "sin x ^ (2::nat) = 1 - cos x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_circle3",
+            "prop": "cos x ^ (2::nat) = 1 - sin x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],

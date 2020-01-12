@@ -242,6 +242,8 @@ def real_decreasing_onI(thy, f, a, b):
     v = Var(nm, f.var_T)
     t = f.subst_bound(v)
     if t == real.cos(v) and a == real.zero and b == real.divides(real.pi, real.to_binary_real(2)):
+        return apply_theorem(thy, 'real_decreasing_on_cos_div2')
+    elif t == real.cos(v) and a == real.zero and b == real.pi:
         return apply_theorem(thy, 'real_decreasing_on_cos')
 
     return z3wrapper.apply_z3(thy, mk_real_decreasing_on(f, a, b))
@@ -353,11 +355,13 @@ simplify_list = [
     'real_sin_pi4',
     'real_sin_pi3',
     'real_sin_pi2',
+    'real_sin_pi',
     'real_cos_0',
     'real_cos_pi6',
     'real_cos_pi4',
     'real_cos_pi3',
     'real_cos_pi2',
+    'real_cos_pi',
 ]
 
 class simplify(Conv):
@@ -482,6 +486,13 @@ class substitution(Conv):
         pt = refl(expr)
         pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+
+        # Simplify two boundaries
+        if pt.rhs.head == real.uminus:
+            pt = pt.on_rhs(thy, arg_conv(arg1_conv(binop_conv(simplify()))))
+        else:
+            pt = pt.on_rhs(thy, arg1_conv(binop_conv(simplify())))
+
         return pt
 
 
@@ -501,6 +512,24 @@ class simplify_rewr_conv(Conv):
             raise ConvException("simplify_rewr_conv")
 
         return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
+
+
+class trig_rewr_conv(Conv):
+    """Apply trignometric rewrites."""
+    def __init__(self, code):
+        """Initialize with code of the trignometric rewrite in Fu's method."""
+        assert isinstance(code, str)
+        self.code = code
+
+    def get_proof_term(self, thy, t):
+        if self.code == 'TR5':
+            # Substitution of sin square
+            return rewr_conv('sin_circle2').get_proof_term(thy, t)
+        elif self.code == 'TR6':
+            # Substitution of cos square
+            return rewr_conv('sin_circle3').get_proof_term(thy, t)
+        else:
+            raise NotImplementedError
 
 
 class location_conv(Conv):

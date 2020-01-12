@@ -279,6 +279,22 @@ class ProofTest(unittest.TestCase):
             cv = proof.simplify_rewr_conv(t)
             test_conv(self, 'realintegral', proof.location_conv(loc, cv), t=s, t_res=res)
 
+    def testTrigRewrConv(self):
+        test_data = [
+            ("sin x ^ (2::nat)", "", "TR5",
+             "1 - cos x ^ (2::nat)"),
+
+            ("real_integral (real_closed_interval 0 pi) (%x. sin x ^ (2::nat) * sin x)", "0.0", "TR5",
+             "real_integral (real_closed_interval 0 pi) (%x. (1 - cos x ^ (2::nat)) * sin x)"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, loc, code, res in test_data:
+            s = parser.parse_term(ctxt, s)
+            res = parser.parse_term(ctxt, res)
+            cv = proof.location_conv(loc, proof.trig_rewr_conv(code))
+            test_conv(self, 'realintegral', cv, t=s, t_res=res)
+
     def run_test(self, t, res, cvs, debug=False):
         ctxt = Context('realintegral')
         thy = ctxt.thy
@@ -384,6 +400,25 @@ class ProofTest(unittest.TestCase):
                 proof.substitution(f, g),
                 arg_conv(proof.linearity()),
                 proof.simplify(),
+                top_conv(proof.common_integral()),
+                proof.simplify()
+            ]
+        )
+
+    def testIntegral13(self):
+        ctxt = Context('realintegral')
+        s1 = parser.parse_term(ctxt, "sin x ^ (2::nat) * sin x")
+        f = parser.parse_term(ctxt, "%x::real. x ^ (2::nat) - 1")
+        g = parser.parse_term(ctxt, "%x. cos x")
+        self.run_test(
+            "real_integral (real_closed_interval 0 pi) (%x. 1 - sin x ^ (3::nat))",
+            "-(4 / 3) + pi",
+            [
+                proof.linearity(),
+                proof.location_conv("1.0", proof.simplify_rewr_conv(s1)),
+                proof.location_conv("1.0.0", proof.trig_rewr_conv("TR5")),
+                proof.location_conv("1", proof.substitution(f, g)),
+                proof.location_conv("1.0", proof.linearity()),
                 top_conv(proof.common_integral()),
                 proof.simplify()
             ], debug=True

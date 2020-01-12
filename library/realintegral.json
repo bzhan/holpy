@@ -27577,8 +27577,14 @@
             "vars": {}
         },
         {
-            "name": "real_decreasing_on_cos",
+            "name": "real_decreasing_on_cos_div2",
             "prop": "real_decreasing_on (λx. cos x) (real_closed_interval 0 (pi / 2))",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_decreasing_on_cos",
+            "prop": "real_decreasing_on (λx. cos x) (real_closed_interval 0 pi)",
             "ty": "thm",
             "vars": {}
         },
