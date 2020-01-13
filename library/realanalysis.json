@@ -5431,7 +5431,7 @@
             }
         },
         {
-            "name": "real_continuou_on_real_pow",
+            "name": "real_continuous_on_real_pow",
             "prop": "0 ≤ p ⟶ real_continuous_on f s ⟶ real_continuous_on (λx. f x ^ p) s",
             "ty": "thm",
             "vars": {

@@ -450,8 +450,51 @@ class integrate_by_parts(Conv):
         return pt
 
 
+def apply_subst_thm(thy, f, g, a, b):
+    """Apply the substitution theorem.
+
+    The returned result is (in the increasing case)
+    real_integral (real_closed_interval a b) (%x. f (g x) * dg x) =
+    real_integral (real_closed_interval (g a) (g b)) f,
+
+    where both f (g x) * dg x and f are normalized.
+
+    """
+    # Form the assumption: a <= b
+    le_pt = real.real_less_eq(thy, a, b)
+
+    # Form the assumption: f is continuous on [g(a), g(b)]
+    cont_f_pt = real_continuous_onI(thy, f, g(a).beta_conv(), g(b).beta_conv())
+
+    # Form the assumption: derivative of g
+    x = Var(g.var_name, realT)
+
+    S = real.closed_interval(a, b)
+    g_deriv = has_real_derivativeI(thy, g, x, S)
+    x_mem = set.mk_mem(x, S)
+    dg_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, g_deriv))
+
+    # Form the assumption: g is increasing or decreasing on [a, b],
+    # then apply the theorem.
+    if real.real_approx_eval(g(a).beta_conv()) <= real.real_approx_eval(g(b).beta_conv()):
+        incr_pt = real_increasing_onI(thy, g, a, b)
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr', cont_f_pt, dg_pt, le_pt, incr_pt)
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())),
+                                    arg1_conv(binop_conv(real.real_norm_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg1_conv(binop_conv(simplify())))
+    else:
+        decr_pt = real_decreasing_onI(thy, g, a, b)
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr', cont_f_pt, dg_pt, le_pt, decr_pt)
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(real.real_norm_conv()))),
+                                    arg_conv(arg1_conv(binop_conv(real.real_norm_conv()))))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg1_conv(binop_conv(simplify()))))
+
+    return eq_pt
+
 class substitution(Conv):
-    """Evaluate using substitution.
+    """Apply substitution rule.
 
     expr is of the form real_integral (real_closed_interval a b) (%x. f (g x) * dg x)
 
@@ -473,52 +516,54 @@ class substitution(Conv):
         assert S.head.is_const_name('real_closed_interval')
         a, b = S.args
 
-        le_pt = real.real_less_eq(thy, a, b)
-
         if not (h.is_abs() and self.f.is_abs() and self.g.is_abs()):
             raise NotImplementedError
 
-        # Form the assumption: f is continuous on [g(a), g(b)]
-        cont_f_pt = real_continuous_onI(thy, self.f, self.g(a).beta_conv(), self.g(b).beta_conv())
-
-        # Form the assumption: derivative of g
-        var_names = [v.name for v in term.get_vars(expr)]
-        nm = name.get_variant_name(h.var_name, var_names)
-        x = Var(nm, h.var_T)
-
-        S = real.closed_interval(a, b)
-        g_deriv = has_real_derivativeI(thy, self.g, x, S)
-        x_mem = set.mk_mem(x, S)
-        dg_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, g_deriv))
-
-        # Form the assumption: g is increasing or decreasing on [a, b],
-        # then apply the theorem.
-        if real.real_approx_eval(self.g(a).beta_conv()) <= real.real_approx_eval(self.g(b).beta_conv()):
-            incr_pt = real_increasing_onI(thy, self.g, a, b)
-            eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr', cont_f_pt, dg_pt, le_pt, incr_pt)
-            eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
-            eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())),
-                                      arg1_conv(binop_conv(real.real_norm_conv())))
-        else:
-            decr_pt = real_decreasing_onI(thy, self.g, a, b)
-            eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr', cont_f_pt, dg_pt, le_pt, decr_pt)
-            eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
-            eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(real.real_norm_conv()))),
-                                      arg_conv(arg1_conv(binop_conv(real.real_norm_conv()))))
+        # Make the equality theorem
+        eq_pt = apply_subst_thm(thy, self.f, self.g, a, b)
 
         # Use the equality to rewrite expression.
         pt = refl(expr)
         pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
 
-        # Simplify two boundaries
-        if pt.rhs.head == real.uminus:
-            pt = pt.on_rhs(thy, arg_conv(arg1_conv(binop_conv(simplify()))))
-        else:
-            pt = pt.on_rhs(thy, arg1_conv(binop_conv(simplify())))
-
         return pt
 
+
+class substitution_inverse(Conv):
+    """Apply inverse substitution rule.
+
+    expr is of the form real_integral (real_closed_interval (g a) (g b)) f
+
+    Conditions include:
+
+    -- f is continuous on [g(a), g(b)]
+    -- g is an increasing function (so that a <= b implies g(a) <= g(b))
+
+    The result is real_integral (real_closed_interval a b) (%u. f (g u) * dg u).
+     
+    """
+    def __init__(self, g, a, b):
+        self.g = g
+        self.a = a
+        self.b = b
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral')
+        _, f = expr.args
+
+        if not (f.is_abs() and self.g.is_abs()):
+            raise NotImplementedError
+
+        # Make the equality theorem
+        eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
+
+        # Use the equality to rewrite expression
+        pt = refl(expr)
+        pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        pt = pt.on_rhs(thy, rewr_conv(eq_pt, sym=True))
+
+        return pt
 
 class simplify_rewr_conv(Conv):
     """Rewrite the term with a term with the same simplification."""
@@ -549,9 +594,13 @@ class trig_rewr_conv(Conv):
         if self.code == 'TR5':
             # Substitution of sin square
             return rewr_conv('sin_circle2').get_proof_term(thy, t)
+        elif self.code == 'TR5_inv':
+            return rewr_conv('sin_circle2', sym=True).get_proof_term(thy, t)
         elif self.code == 'TR6':
             # Substitution of cos square
             return rewr_conv('sin_circle3').get_proof_term(thy, t)
+        elif self.code == 'TR6_inv':
+            return rewr_conv('sin_circle3', sym=True).get_proof_term(thy, t)
         elif self.code == 'TR7':
             # Lowering the degree of cos square
             return rewr_conv('cos_double_cos2').get_proof_term(thy, t)
@@ -709,6 +758,16 @@ def translate_item(item, target=None):
             f = Term.mk_abs(new_var, expr_to_holpy(f))
             g = Term.mk_abs(ori_var, expr_to_holpy(g))
             cv = substitution(f, g)
+        elif reason == 'Substitution inverse':
+            rewr_t = get_at_location(loc, pt.rhs)
+            assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution inverse"
+            g = integral.parser.parse_expr(step['params']['g'])
+            new_name = step['params']['var_name']
+            new_var = Var(new_name, realT)
+            g = Term.mk_abs(new_var, expr_to_holpy(g))
+            a = expr_to_holpy(integral.parser.parse_expr(step['params']['a']))
+            b = expr_to_holpy(integral.parser.parse_expr(step['params']['b']))
+            cv = substitution_inverse(g, a, b)
         elif reason == 'Integrate by parts':
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Integrate by parts"

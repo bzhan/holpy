@@ -14,7 +14,8 @@ test_cases = {
     "Exercise 7": "21 / 8",
     "Exercise 12": "1 / 4",
     "Exercise 13": "-(4 / 3) + pi",
-    "Exercise 14": "1 / 6 * pi + -(1 / 8) * sqrt(3)"
+    "Exercise 14": "1 / 6 * pi + -(1 / 8) * sqrt(3)",
+    "Exercise 15": None,
 }
 
 class RunIntegral(unittest.TestCase):

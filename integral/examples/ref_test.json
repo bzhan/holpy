@@ -210,6 +210,28 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 15",
+            "problem": "INT x:[0, 1]. (1 - x^2) ^ (1/2)",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "sin(u)",
+                        "var_name": "u",
+                        "a": "0",
+                        "b": "pi / 2"
+                    }
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.1.0"
+                }
+            ]
         }
     ]
 }
