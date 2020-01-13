@@ -457,6 +457,17 @@ class simplify_TR4(Conv):
 
         return pt
 
+class simplify_body(Conv):
+    """Simplify body of integral."""
+    def get_proof_term(self, thy, expr):
+        if not (expr.head.is_const_name('real_integral') and len(expr.args) == 2):
+            raise ConvException("simplify_body")
+
+        if not expr.arg.is_abs():
+            raise ConvException("simplify_body")
+
+        return arg_conv(abs_conv(real.real_norm_conv())).get_proof_term(thy, expr)
+
 class simplify(Conv):
     """Simplify evalat as well as arithmetic."""
     def get_proof_term(self, thy, t):
@@ -466,7 +477,8 @@ class simplify(Conv):
             beta_norm_conv(),
             top_conv(simplify_TR4()),
             top_conv(rewr_conv('pow_2_sqrt_abs_alt')),
-            real.real_norm_conv())
+            real.real_norm_conv(),
+            top_conv(simplify_body()))
 
 
 class integrate_by_parts(Conv):
