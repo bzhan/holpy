@@ -265,9 +265,9 @@ class Expr:
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
-                if x.ty == CONST and y.ty == INTEGRAL:
-                    return Integral(y.var, y.lower, y.upper, x * y.body).to_poly()
-                elif y.ty == OP and y.op == "/":
+                # if x.ty == CONST and y.ty == INTEGRAL:
+                #     return Integral(y.var, y.lower, y.upper, x * y.body).to_poly()
+                if y.ty == OP and y.op == "/":
                     return Op("/", x * y.args[0], y.args[1]).to_poly()
                 else:
                     return x.to_poly() * y.to_poly()
@@ -800,7 +800,7 @@ class Op(Expr):
             s1, s2 = str(a), str(b)
             if a.priority() < op_priority[self.op]:
                 s1 = "(%s)" % s1
-            if b.priority() <= op_priority[self.op] and not (b.ty == CONST and b.val < 0):
+            if b.priority() < op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 s2 = "(%s)" % s2
             return "%s %s %s" % (s1, self.op, s2)           
         else:
