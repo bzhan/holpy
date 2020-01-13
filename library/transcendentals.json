@@ -1862,6 +1862,22 @@
             }
         },
         {
+            "name": "sin_circle2",
+            "prop": "sin x ^ (2::nat) = 1 - cos x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_circle3",
+            "prop": "cos x ^ (2::nat) = 1 - sin x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -2023,6 +2039,14 @@
                     "method_name": "real_norm"
                 }
             ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_double_cos2",
+            "prop": "cos x ^ (2::nat) = cos (2 * x) / 2 + 1 / 2",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -7784,19 +7808,25 @@
         },
         {
             "name": "real_sin_pi6",
-            "prop": "sin (pi / 6) = 1 / 2",
+            "prop": "sin (1 / 6 * pi) = 1 / 2",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "real_sin_pi4",
-            "prop": "sin (pi / 4) = sqrt 2 / 2",
+            "prop": "sin (1 / 4 * pi) = sqrt 2 / 2",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "real_sin_pi3",
-            "prop": "sin (pi / 3) = sqrt 3 / 2",
+            "prop": "sin (1 / 3 * pi) = sqrt 3 / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_sin_pi2_alt",
+            "prop": "sin (1 / 2 * pi) = 1",
             "ty": "thm",
             "vars": {}
         },
@@ -7811,19 +7841,25 @@
         },
         {
             "name": "real_cos_pi6",
-            "prop": "cos (pi / 6) = sqrt 3 / 2",
+            "prop": "cos (1 / 6 * pi) = sqrt 3 / 2",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "real_cos_pi4",
-            "prop": "cos (pi / 4) = sqrt 2 / 2",
+            "prop": "cos (1 / 4 * pi) = sqrt 2 / 2",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "real_cos_pi3",
-            "prop": "cos (pi / 3) = 1 / 2",
+            "prop": "cos (1 / 3 * pi) = 1 / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_cos_pi2_alt",
+            "prop": "cos (1 / 2 * pi) = 0",
             "ty": "thm",
             "vars": {}
         },

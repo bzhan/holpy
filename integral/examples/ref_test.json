@@ -1,0 +1,240 @@
+{
+    "content":[
+        {
+            "name": "Exercise 1",
+            "problem": "INT x:[2,3]. 2 * x + x ^ 2",
+            "calc": [
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 2",
+            "problem": "INT x:[0,1]. (3 * x + 1) ^ (-2)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "(1/3) * u ^ -2",
+                        "g": "3 * x + 1",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 3",
+            "problem": "INT x:[0,1]. exp(6*x)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "(1/6) * exp(u)",
+                        "g": "6 * x",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 4",
+            "problem": "INT x:[-1,2]. x * exp(x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "x",
+                        "v": "exp(x)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 5",
+            "problem": "INT x:[0,pi/4]. sin(x)",
+            "calc": [
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 7",
+            "problem": "INT x:[1,2]. x^2 + 1/x^4",
+            "calc": [
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 12",
+            "problem": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "- u ^ 3",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 13",
+            "problem": "INT x:[0, pi]. (1 - sin(x)^3)",
+            "calc": [
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "sin(x) ^ 2 * sin(x)"
+                    },
+                    "location": "1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR5"
+                    },
+                    "location": "1.0.0"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "u ^ 2 - 1",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 14",
+            "problem": "INT x:[pi/6, pi/2]. cos(x) ^ 2",
+            "calc": [
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "0.1"
+                },
+                {
+                    "reason": "Linearity"
+                },
+                {
+                    "reason": "Common integrals"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 15",
+            "problem": "INT x:[0, 1]. (1 - x^2) ^ (1/2)",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "sin(u)",
+                        "var_name": "u",
+                        "a": "0",
+                        "b": "pi / 2"
+                    }
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        }
+    ]
+}

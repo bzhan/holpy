@@ -109,6 +109,7 @@ class ExprTransformer(Transformer):
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 
 def parse_expr(s):
+    """Parse an integral expression."""
     try:
         return expr_parser.parse(s)
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:

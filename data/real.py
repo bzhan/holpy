@@ -37,9 +37,13 @@ pi = Const("pi", realT)
 
 # Transcendental functions
 
+log = Const("log", TFun(realT, realT))
 exp = Const("exp", TFun(realT, realT))
 sin = Const("sin", TFun(realT, realT))
 cos = Const("cos", TFun(realT, realT))
+tan = Const("tan", TFun(realT, realT))
+abs = Const("abs", TFun(realT, realT))
+sqrt = Const("sqrt", TFun(realT, realT))
 
 # Intervals
 
@@ -94,6 +98,7 @@ def is_less(t):
     return t.is_binop() and t.head == less
 
 def to_binary_real(n):
+    """Convert a number n to HOL term of type real."""
     if n < 0:
         return uminus(to_binary_real(-n))
 
@@ -108,6 +113,7 @@ def to_binary_real(n):
         return of_nat(nat.to_binary(n))
 
 def is_binary_real(t):
+    """Determine whether a term of type real is a constant."""
     if t.is_comb() and t.fun.is_const_name("uminus"):
         return is_binary_real(t.arg)
     else:
@@ -116,6 +122,7 @@ def is_binary_real(t):
                 nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)
 
 def from_binary_real(t):
+    """Convert a term of type real to a number."""
     assert isinstance(t, Term), "from_binary_real"
     assert is_binary_real(t), "from_binary_real"
     if t.is_comb() and t.fun.is_const_name("uminus"):
