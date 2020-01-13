@@ -10,10 +10,11 @@ from data.set import setT
 from data.integral import within, atreal
 from integral import proof
 from logic.context import Context
-from logic.proofterm import refl
+from logic.proofterm import refl, ProofTerm
 from logic.conv import top_conv, arg_conv
 from syntax import parser
 from syntax import printer
+from logic.tests.logic_test import test_macro
 from logic.tests.conv_test import test_conv
 import integral
 
@@ -132,6 +133,33 @@ class ProofTest(unittest.TestCase):
             pt2 = proof.real_integrable_onI(thy, f, a, b)
             th2 = thy.check_proof(pt2.export())
             self.assertEqual(pt2.prop, proof.mk_real_integrable_on(f, a, b))
+
+    def testRealIneqOnInterval(self):
+        test_data = [
+            # Nonnegative
+            ("x Mem real_closed_interval 0 pi", "sin x >= 0", True),
+            ("x Mem real_closed_interval 0 (2 * pi)", "sin x >= 0", False),
+            ("x Mem real_closed_interval (-pi / 2) (pi / 2)", "cos x >= 0", True),
+            ("x Mem real_closed_interval 0 pi", "cos x >= 0", False),
+
+            # Nonpositive
+            ("x Mem real_closed_interval (-pi) 0", "sin x <= 0", True),
+            ("x Mem real_closed_interval (-pi) pi", "sin x <= 0", False),
+
+            # Nonzero
+            ("x Mem real_closed_interval (pi / 4) (3 * pi / 4)", "~sin x = 0", True),
+            ("x Mem real_closed_interval 0 pi", "~sin x = 0", False),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        thy = ctxt.thy
+        for assm, goal, success in test_data:
+            if success:
+                test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
+                           assms=[assm], res=goal, args=goal, eval_only=True)
+            else:
+                test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
+                           assms=[assm], failed=AssertionError, args=goal, eval_only=True)
 
     def testRealIncreasingOn(self):
         test_data = [
@@ -295,6 +323,22 @@ class ProofTest(unittest.TestCase):
             res = parser.parse_term(ctxt, res)
             cv = proof.location_conv(loc, proof.trig_rewr_conv(code))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
+
+    def testRealAbsConv(self):
+        test_data = [
+            ("abs (cos x)", "x Mem real_closed_interval 0 (pi / 2)", "cos x"),
+            ("abs (cos x)", "x Mem real_closed_interval (pi / 2) pi", "-cos x"),
+            ("abs (sin x)", "x Mem real_closed_interval 0 (pi / 2)", "sin x"),
+            ("abs (sin x)", "x Mem real_closed_interval (- pi / 2) 0", "-sin x"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, cond, res in test_data:
+            s = parser.parse_term(ctxt, s)
+            cond_t = parser.parse_term(ctxt, cond)
+            res = parser.parse_term(ctxt, res)
+            cv = proof.real_abs_conv(ProofTerm.assume(cond_t))
+            test_conv(self, 'realintegral', cv, t=s, t_res=res, assms=[cond])
 
     def testExprToHolpy(self):
         test_data = [

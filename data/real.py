@@ -31,6 +31,8 @@ times = Const("times", TFun(realT, realT, realT))
 divides = Const("real_divide", TFun(realT, realT, realT))
 less_eq = Const("less_eq", TFun(realT, realT, boolT))
 less = Const("less", TFun(realT, realT, boolT))
+greater_eq = Const("greater_eq", TFun(realT, realT, boolT))
+greater = Const("greater", TFun(realT, realT, boolT))
 nat_power = Const("power", TFun(realT, nat.natT, realT))
 real_power = Const("power", TFun(realT, realT, realT))
 pi = Const("pi", realT)
@@ -151,6 +153,8 @@ def real_approx_eval(t):
             return real_approx_eval(t.arg1) + real_approx_eval(t.arg)
         elif is_minus(t):
             return real_approx_eval(t.arg1) - real_approx_eval(t.arg)
+        elif is_uminus(t):
+            return -real_approx_eval(t.arg)
         elif is_times(t):
             return real_approx_eval(t.arg1) * real_approx_eval(t.arg)
         elif is_divides(t):

@@ -233,6 +233,9 @@
                 },
                 {
                     "reason": "Simplification"
+                },
+                {
+                    "reason": "Elim abs"
                 }
             ]
         }

@@ -1,12 +1,17 @@
 """Proofs for differentiation and integration."""
 
+import math
+
 from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
+from kernel.thm import Thm
+from kernel import macro
 from logic.conv import Conv, ConvException, top_conv, beta_conv, beta_norm_conv, argn_conv, \
     arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv, try_conv
 from logic.logic import apply_theorem, conj_thms
-from logic.proofterm import ProofTerm, ProofTermDeriv, refl
+from logic import logic
+from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
 from logic.context import Context
 from data import set
 from data import nat
@@ -223,6 +228,69 @@ def real_integrable_onI(thy, f, a, b):
     """
     pt = real_continuous_onI(thy, f, a, b)
     return apply_theorem(thy, 'real_integrable_continuous', pt)
+
+class real_ineq_on_interval_macro(ProofTermMacro):
+    """Given a term t(x) and assumption of the form x : real_closed_interval a b,
+    attempt to prove t(x) >= 0, t(x) <= 0, or t(x) != 0.
+    
+    """
+    def __init__(self):
+        self.level = 0  # proof term not implemented
+        self.sig = Term
+        self.limit = 'real_neg_0'
+
+    def can_eval(self, thy, goal, pts):
+        assert len(pts) == 1, "real_ineq_on_interval"
+        pt = pts[0]
+        assert pt.prop.head.is_const_name("member") and pt.prop.arg1.is_var(), "real_ineq_on_interval"
+        var, interval = pt.prop.args
+        assert interval.head.is_const_name("real_closed_interval"), "real_ineq_on_interval"
+        a, b = interval.args
+
+        approx_a, approx_b = real.real_approx_eval(a), real.real_approx_eval(b)
+        if goal.head.is_const_name("greater_eq") and goal.arg == real.zero:
+            f = goal.arg1
+            if f == real.sin(var):
+                if approx_a >= 0.0 and approx_b <= math.pi:
+                    return True
+                return False
+            elif f == real.cos(var):
+                if approx_a >= -math.pi / 2 and approx_b <= math.pi / 2:
+                    return True
+                return False
+            else:
+                return False
+        elif goal.head.is_const_name("less_eq") and goal.arg == real.zero:
+            f = goal.arg1
+            if f == real.sin(var):
+                if approx_a >= -math.pi and approx_b <= 0:
+                    return True
+                return False
+            elif f == real.cos(var):
+                if approx_a >= math.pi / 2 and approx_b <= 3 * math.pi / 2:
+                    return True
+                return False
+            else:
+                return False
+        elif goal.head == logic.neg and goal.arg.is_equals() and goal.arg.arg == real.zero:
+            f = goal.arg.arg1
+            if f == real.sin(var):
+                if approx_a > 0.0 and approx_b < math.pi:
+                    return True
+                return False
+            else:
+                return False
+        else:
+            raise NotImplementedError
+
+        return True
+
+    def eval(self, thy, goal, pts):
+        assert len(pts) == 1, "real_nonneg_on_interval"
+        assert self.can_eval(thy, goal, pts), "real_nonneg_on_interval"
+
+        return Thm(pts[0].hyps, goal)
+
 
 def real_increasing_onI(thy, f, a, b):
     """Prove a theorem of the form real_increasing_on f (real_closed_interval a b).
@@ -609,6 +677,54 @@ class trig_rewr_conv(Conv):
             raise NotImplementedError
 
 
+class real_abs_conv(Conv):
+    """Eliminate absolute value on a given closed interval.
+    
+    cond -- a condition of the form x Mem closed_interval a b.
+
+    """
+    def __init__(self, cond):
+        self.cond = cond
+
+    def get_proof_term(self, thy, t):
+        if not (t.head.is_const_name("abs") and t.get_type() == realT):
+            raise ConvException('real_abs_conv')
+
+        macro = real_ineq_on_interval_macro()
+        t_ge_0 = real.greater_eq(t.arg, real.zero)
+        t_le_0 = real.less_eq(t.arg, real.zero)
+        if macro.can_eval(thy, t_ge_0, [self.cond]):
+            pt = ProofTermDeriv('real_ineq_on_interval', thy, t_ge_0, [self.cond])
+            return apply_theorem(thy, 'real_abs_pos_eq', pt)
+        elif macro.can_eval(thy, t_le_0, [self.cond]):
+            pt = ProofTermDeriv('real_ineq_on_interval', thy, t_le_0, [self.cond])
+            return apply_theorem(thy, 'real_abs_neg_eq', pt)
+        else:
+            raise ConvException('real_abs_conv')
+
+class elim_real_abs_conv(Conv):
+    """Eliminate absolute value in a definite integral.
+    
+    t is of the form real_integral (real_closed_interval a b) f.
+
+    Makes use of the theorem real_integral_eq:
+    (!x. x Mem s --> f x = g x) --> real_integral s f = real_integral s g
+
+    """
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), "elim_real_abs_conv"
+        s, f = expr.args
+        assert f.is_abs(), "elim_real_abs_conv"
+
+        x = Var(f.var_name, realT)
+        fx = f(x).beta_norm()
+        cond = set.mk_mem(x, s)
+        eq_pt = top_conv(real_abs_conv(ProofTerm.assume(cond))).get_proof_term(thy, fx)
+        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+        eq_pt = ProofTerm.forall_intr(x, eq_pt)
+        return apply_theorem(thy, 'real_integral_eq', eq_pt)
+
+
 class location_conv(Conv):
     """Apply conversion at the given location."""
     def __init__(self, loc, cv):
@@ -788,6 +904,8 @@ def translate_item(item, target=None, *, debug=False):
             cv = simplify_rewr_conv(rhs)
         elif reason == 'Rewrite trigonometric':
             cv = trig_rewr_conv(step['params']['rule'])
+        elif reason == 'Elim abs':
+            cv = elim_real_abs_conv()
         else:
             raise NotImplementedError
 
@@ -805,3 +923,8 @@ def translate_item(item, target=None, *, debug=False):
         print(printer.print_term(thy, pt.rhs))
 
     return pt
+
+
+macro.global_macros.update({
+    "real_ineq_on_interval": real_ineq_on_interval_macro(),
+})

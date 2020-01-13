@@ -5670,6 +5670,22 @@
             }
         },
         {
+            "name": "real_abs_pos_eq",
+            "prop": "x ≥ 0 ⟶ abs x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_abs_neg_eq",
+            "prop": "x ≤ 0 ⟶ abs x = -x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite",
                 "hint_rewrite_sym"
