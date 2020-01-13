@@ -21730,6 +21730,14 @@
             }
         },
         {
+            "name": "pow_2_sqrt_abs_alt",
+            "prop": "x ^ (2::nat) ^ (1 / 2) = abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],

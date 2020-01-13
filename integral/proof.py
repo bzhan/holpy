@@ -397,6 +397,7 @@ class simplify(Conv):
             top_conv(rewr_conv('evalat_def')),
             beta_norm_conv(),
             top_conv(simplify_TR4()),
+            top_conv(rewr_conv('pow_2_sqrt_abs_alt')),
             real.real_norm_conv())
 
 
@@ -725,7 +726,7 @@ def expr_to_holpy(expr):
     else:
         raise NotImplementedError
 
-def translate_item(item, target=None):
+def translate_item(item, target=None, *, debug=False):
     """Translate a calculation in json into holpy proof."""
     ctxt = Context('realintegral')
     thy = ctxt.thy
@@ -733,6 +734,9 @@ def translate_item(item, target=None):
     problem = integral.parser.parse_expr(item['problem'])
     init = expr_to_holpy(problem)
     pt = refl(init)
+
+    if debug:
+        print("\n%s: %s" % (item['name'], printer.print_term(thy, pt.rhs)))
 
     for step in item['calc']:
         if 'location' in step:
@@ -788,6 +792,8 @@ def translate_item(item, target=None):
             raise NotImplementedError
 
         pt = pt.on_rhs(thy, location_conv(loc, cv))
+        if debug:
+            print("= %s" % printer.print_term(thy, pt.rhs))
 
     assert pt.lhs == init, "translate_item: wrong left side"
     if target is not None:
