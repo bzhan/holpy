@@ -77,7 +77,9 @@ def has_real_derivativeI(thy, f, x, S):
     nm = name.get_variant_name(f.var_name, var_names)
     v = Var(nm, f.var_T)
     t = f.subst_bound(v)
-    if t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
+    if not t.occurs_var(v):
+        return apply_theorem(thy, 'has_real_derivative_const', inst={'c': t, 'net': net})
+    elif t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
         t1 = Term.mk_abs(v, t.arg1)
         t2 = Term.mk_abs(v, t.arg)
         pt1 = has_real_derivativeI(thy, t1, x, S)
@@ -89,6 +91,7 @@ def has_real_derivativeI(thy, f, x, S):
         elif real.is_times(t):
             return apply_theorem(thy, 'has_real_derivative_mul_within', pt1, pt2)
         else:
+            print(printer.print_term(thy, t))
             raise NotImplementedError
     elif real.is_nat_power(t) and nat.is_binary_nat(t.arg) and nat.from_binary_nat(t.arg) > 0:
         t1 = Term.mk_abs(v, t.arg1)
@@ -113,8 +116,6 @@ def has_real_derivativeI(thy, f, x, S):
             raise NotImplementedError
     elif t == v:
         return apply_theorem(thy, 'has_real_derivative_id', inst={'net': net})
-    elif not t.occurs_var(v):
-        return apply_theorem(thy, 'has_real_derivative_const', inst={'c': t, 'net': net})
     else:
         raise NotImplementedError
 
@@ -212,6 +213,7 @@ def real_continuous_onI(thy, expr, a, b):
             pt2 = apply_theorem(thy, th_name, inst={'s': set.mk_image(f, interval)})
             return apply_theorem(thy, 'real_continuous_on_compose', pt1, pt2)
         else:
+            print(printer.print_term(thy, t))
             raise NotImplementedError
     elif t == v:
         return apply_theorem(thy, 'real_continuous_on_id', inst={'s': interval})

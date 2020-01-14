@@ -269,6 +269,21 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 16",
+            "problem": "INT x:[0, sqrt(2)]. (2 - x^2) ^ (1/2)",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "(2 ^ (1/2)) * sin(u)",
+                        "var_name": "u",
+                        "a": "0",
+                        "b": "pi / 2"
+                    }
+                }
+            ]
         }
     ]
 }
