@@ -6,11 +6,11 @@ on intervals.
 """
 
 import sympy
-from sympy import solveset
-from sympy import Symbol, Interval
 
 from data import nat
 from data import real
+from data import set as hol_set
+import integral
 
 
 class SymPyException(Exception):
@@ -25,9 +25,11 @@ def convert(t):
     """Convert term t to SymPy term."""
     if t.is_var():
         if t.T == real.realT:
-            return Symbol(t.name)
+            return sympy.Symbol(t.name)
         else:
             raise SymPyException("convert: unexpected variable type: %s" % str(t.T))
+    elif t == real.pi:
+        return sympy.pi
     elif real.is_binary_real(t):
         return real.from_binary_real(t)
     elif real.is_plus(t):
@@ -43,7 +45,9 @@ def convert(t):
     elif real.is_real_power(t):
         return convert(t.arg1) ** convert(t.arg)
     elif t.is_comb():
-        if t.head == real.sqrt:
+        if t.head.is_const_name('real_closed_interval'):
+            return sympy.Interval(convert(t.arg1), convert(t.arg))
+        elif t.head == real.sqrt:
             return sympy.sqrt(convert(t.arg))
         elif t.head == real.abs:
             return sympy.Abs(convert(t.arg))
@@ -57,7 +61,35 @@ def convert(t):
             return sympy.cos(convert(t.arg))
         elif t.head == real.tan:
             return sympy.tan(convert(t.arg))
+        elif t.head == real.greater_eq:
+            return convert(t.arg1) >= convert(t.arg)
+        elif t.head == real.greater:
+            return convert(t.arg1) > convert(t.arg)
+        elif t.head == real.less_eq:
+            return convert(t.arg1) <= convert(t.arg)
+        elif t.head == real.less:
+            return convert(t.arg1) < convert(t.arg)
         else:
             raise NotImplementedError
     else:
+        print(str(t))
         raise NotImplementedError
+
+
+def solve(goal, cond):
+    """Attempt to solve goal using sympy's solveset function."""
+    assert hol_set.is_mem(cond) and cond.arg1.is_var() and \
+        cond.arg.head.is_const_name("real_closed_interval"), "sympy_solve"
+
+    var = convert(cond.arg1)
+    interval = convert(cond.arg)
+    
+    assert goal.is_binop() and goal.head.is_const() and \
+        goal.head.name in ('equals', 'greater_eq', 'greater', 'less_eq', 'less'), "sympy_solve"
+
+    if goal.is_equals():
+        res = sympy.solveset(convert(goal.arg1) - convert(goal.arg), var, interval)
+    else:
+        res = sympy.solveset(convert(goal), var, interval)
+
+    return res == interval
