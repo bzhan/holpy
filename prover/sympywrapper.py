@@ -15,6 +15,7 @@ from data import real
 from data import set as hol_set
 from logic import auto
 from logic import logic
+from logic.logic import TacticException
 from logic.proofterm import ProofMacro, ProofTermDeriv
 import integral
 
@@ -37,7 +38,7 @@ def convert(t):
     elif t == real.pi:
         return sympy.pi
     elif real.is_binary_real(t):
-        return real.from_binary_real(t)
+        return sympy.Number(real.from_binary_real(t))
     elif real.is_plus(t):
         return convert(t.arg1) + convert(t.arg)
     elif real.is_minus(t):
@@ -133,24 +134,19 @@ def apply_sympy(thy, t, pts=None):
     return ProofTermDeriv('sympy', thy, args=t, prevs=pts)
 
 
-use_sympy = False
-
 def sympy_solve(thy, goal, pts):
-    if not use_sympy:
-        raise NotImplementedError
-
     macro = SymPyMacro()
     if macro.can_eval(thy, goal, pts):
         return apply_sympy(thy, goal, pts)
     else:
-        raise NotImplementedError
+        raise TacticException
 
 auto.add_global_autos(real.greater_eq, sympy_solve)
 auto.add_global_autos(real.greater, sympy_solve)
 auto.add_global_autos(real.less_eq, sympy_solve)
 auto.add_global_autos(real.less, sympy_solve)
 
-auto.add_global_autos_neg(Term.equals(real.realT), sympy.solve)
+auto.add_global_autos_neg(Term.equals(real.realT), sympy_solve)
 
 global_macros.update({
     "sympy": SymPyMacro(),

@@ -52,13 +52,12 @@ class SymPyWrapperTest(unittest.TestCase):
             ("x Mem real_closed_interval 0 1 --> 1 - x ^ (2::nat) >= 0"),
             ("x Mem real_closed_interval 0 (sqrt 2) --> 2 - x ^ (2::nat) >= 0"),
             ("x Mem real_closed_interval 0 (pi / 2) --> sqrt 2 * cos x >= 0"),
+            ("x Mem real_closed_interval 0 (2 ^ (1 / 2)) --> 2 - x ^ (2::nat) >= 0"),
         ]
 
         vars = {'x': 'real'}
-        sympywrapper.use_sympy = True
         for expr in test_data:
             test_macro(self, 'realintegral', 'auto', vars=vars, args=expr, res=expr)
-        sympywrapper.use_sympy = False
 
 
 if __name__ == "__main__":

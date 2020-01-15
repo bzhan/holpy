@@ -1,11 +1,13 @@
 # Author: Bohua Zhan
 
+from kernel import term
 from kernel.term import Term, Var
 from kernel import macro
 from logic import logic
+from logic.logic import TacticException
 from logic import matcher
 from logic.logic import apply_theorem
-from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from syntax import printer
 from util import name
 
@@ -45,6 +47,7 @@ def solve(thy, goal, pts=None):
     proposition is the goal.
 
     """
+    # print(printer.print_term(thy, goal))
     if pts is None:
         pts = []
 
@@ -83,7 +86,7 @@ def solve(thy, goal, pts=None):
         try:
             pt1 = solve(thy, a1, pts)
             return apply_theorem(thy, 'disjI1', pt1, concl=goal)
-        except Exception:
+        except TacticException:
             pt2 = solve(thy, a2, pts)
             return apply_theorem(thy, 'disjI2', pt2, concl=goal)
     
@@ -95,7 +98,7 @@ def solve(thy, goal, pts=None):
         return pt
     
     if goal.is_all():
-        var_names = [v.name for v in term.get_vars([goal] + [pt.prop for pt in props])]
+        var_names = [v.name for v in term.get_vars([goal] + [pt.prop for pt in pts])]
         nm = name.get_variant_name(goal.arg.var_name, var_names)
         v = Var(nm, goal.arg.var_T)
         t = goal.arg.subst_bound(v)
@@ -109,7 +112,7 @@ def solve(thy, goal, pts=None):
             try:
                 pt = f(thy, goal, pts)
                 return pt
-            except Exception:
+            except TacticException:
                 pass
 
     if goal.head in global_autos:
@@ -117,10 +120,10 @@ def solve(thy, goal, pts=None):
             try:
                 pt = f(thy, goal, pts)
                 return pt
-            except Exception as e:
+            except TacticException:
                 pass
 
-    raise NotImplementedError
+    raise TacticException
 
 
 def solve_rules(th_names):
@@ -130,17 +133,25 @@ def solve_rules(th_names):
     """ 
     def solve_fun(thy, goal, pts):
         for th_name in th_names:
-            try:
+            if thy.has_theorem(th_name):
                 th = thy.get_theorem(th_name, svar=True)
+            try:
                 instsp = matcher.first_order_match(th.concl, goal)
-                As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+            except matcher.MatchException:
+                continue
+
+            As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+            try:
                 pts = [solve(thy, A, pts) for A in As]
-                return apply_theorem(thy, th_name, *pts)
-            except Exception:
-                pass
+            except TacticException:
+                continue
+
+            return apply_theorem(thy, th_name, *pts, concl=goal)
 
         # Not solved
-        raise NotImplementedError
+        raise TacticException
+
+    return solve_fun
 
 class auto_macro(ProofTermMacro):
     """Macro applying auto.solve."""
@@ -151,6 +162,10 @@ class auto_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, args, pts):
         return solve(thy, args, pts)
+
+
+def auto_solve(thy, t, pts=None):
+    return ProofTermDeriv('auto', thy, args=t, prevs=pts)
 
 
 macro.global_macros.update({
