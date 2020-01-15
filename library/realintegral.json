@@ -27205,7 +27205,7 @@
             "prop": [
                 "countable k ",
                 "⟶ real_integrable_on f (real_closed_interval c d) ",
-                "   ⟶ real_integrable_on g (real_closed_interval a b) ",
+                "   ⟶ real_continuous_on g (real_closed_interval a b) ",
                 "      ⟶ image g (real_closed_interval a b) ⊆ real_closed_interval c d ",
                 "         ⟶ (∀x. x ∈ diff (real_closed_interval a b) k ",
                 "               ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)) ∧ ",
