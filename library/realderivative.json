@@ -2828,6 +2828,14 @@
             }
         },
         {
+            "name": "real_derivative_id",
+            "prop": "real_derivative (λx1. x1) x = 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -2953,6 +2961,15 @@
             "vars": {
                 "c": "real",
                 "net": "real net"
+            }
+        },
+        {
+            "name": "real_derivative_const",
+            "prop": "real_derivative (λx1. c) x = 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
             }
         },
         {
@@ -6002,6 +6019,20 @@
             "vars": {
                 "f": "real ⇒ real",
                 "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_real_pow_atreal",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable p (atreal x) ",
+                "   ⟶ f x > 0 ⟶ real_differentiable (λx1. f x1 ^ p x1) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "p": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -9701,6 +9732,18 @@
             }
         },
         {
+            "name": "real_differentiable_at_exp_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. exp (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -10148,6 +10191,18 @@
             ],
             "ty": "thm",
             "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_sin_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. sin (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -10642,6 +10697,18 @@
             ],
             "ty": "thm",
             "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_cos_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. cos (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -11486,6 +11553,19 @@
             }
         },
         {
+            "name": "real_differentiable_at_log_compose",
+            "prop": [
+                "0 < f x ",
+                "⟶ real_differentiable f (atreal x) ",
+                "   ⟶ real_differentiable (λx1. log (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -11913,6 +11993,19 @@
             ],
             "ty": "thm",
             "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_sqrt_compose",
+            "prop": [
+                "0 < f x ",
+                "⟶ real_differentiable f (atreal x) ",
+                "   ⟶ real_differentiable (λx1. sqrt (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },

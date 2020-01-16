@@ -56,6 +56,8 @@ def convert(t):
     elif t.is_comb():
         if t.head.is_const_name('real_closed_interval'):
             return sympy.Interval(convert(t.arg1), convert(t.arg))
+        elif t.head.is_const_name('real_open_interval'):
+            return sympy.Interval.open(convert(t.arg1), convert(t.arg))
         elif t.head == real.sqrt:
             return sympy.sqrt(convert(t.arg))
         elif t.head == real.abs:
@@ -87,7 +89,8 @@ def convert(t):
 def solve(goal, cond):
     """Attempt to solve goal using sympy's solveset function."""
     if not (hol_set.is_mem(cond) and cond.arg1.is_var() and 
-            cond.arg.head.is_const_name("real_closed_interval")):
+            (cond.arg.head.is_const_name("real_closed_interval") or
+             cond.arg.head.is_const_name("real_open_interval"))):
         return False
 
     var = convert(cond.arg1)
@@ -118,7 +121,8 @@ class SymPyMacro(ProofMacro):
         self.limit = None
 
     def can_eval(self, thy, goal, prevs):
-        assert len(prevs) == 1, "SymPyMacro: expect exactly one condition"
+        if len(prevs) != 1:
+            return False
         return solve(goal, prevs[0].prop)
 
     def eval(self, thy, goal, prevs):

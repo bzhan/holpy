@@ -213,6 +213,36 @@ auto.add_global_autos(
     ])
 )
 
+auto.add_global_autos(
+    Const('real_differentiable', TFun(TFun(realT, realT), netT(realT), boolT)),
+    auto.solve_rules([
+        # Differentiable everywhere
+        "real_differentiable_const",
+        "real_differentiable_id",
+        "real_differentiable_add",
+        "real_differentiable_neg",
+        "real_differentiable_sub",
+        "real_differentiable_mul_atreal",
+        "real_differentiable_pow_atreal",
+        "real_differentiable_at_exp",
+        "real_differentiable_at_exp_compose",
+        "real_differentiable_at_sin",
+        "real_differentiable_at_sin_compose",
+        "real_differentiable_at_cos",
+        "real_differentiable_at_cos_compose",
+
+        # Differentiable with conditions
+        "real_differentiable_div_atreal",
+        "real_differentiable_at_log",
+        "real_differentiable_at_log_compose",
+        "real_differentiable_at_sqrt",
+        "real_differentiable_at_sqrt_compose",
+
+        # Real power
+        "real_differentiable_real_pow_atreal",
+    ])
+)
+
 auto.add_global_autos_norm(
     real.sin,
     auto.norm_rules([

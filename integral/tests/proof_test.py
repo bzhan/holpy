@@ -186,6 +186,39 @@ class ProofTest(unittest.TestCase):
         for expr in test_data:
             test_macro(self, 'realintegral', 'auto', args=expr, failed=TacticException)
 
+    def testRealDifferentiable(self):
+        test_data = [
+            "real_differentiable (%x. x) (atreal x)",
+            "real_differentiable (%x. x * x) (atreal x)",
+            "real_differentiable (%x. -x) (atreal x)",
+            "real_differentiable (%x. x ^ (2::nat)) (atreal x)",
+            "real_differentiable (%x. x ^ (3::nat)) (atreal x)",
+            "real_differentiable (%x. (x + 1) ^ (3::nat)) (atreal x)",
+            "real_differentiable (%x. exp x) (atreal x)",
+            "real_differentiable (%x. exp (x ^ (2::nat))) (atreal x)",
+            "real_differentiable (%x. exp (exp x)) (atreal x)",
+            "real_differentiable (%x. sin x) (atreal x)",
+            "real_differentiable (%x. cos x) (atreal x)",
+            "real_differentiable (%x. sin x * cos x) (atreal x)",
+            "real_differentiable (%x. sin (cos x)) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. 1 / x) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. 1 / (x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval (-1) 0 --> real_differentiable (%x. 1 / (x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval (-1) 1 --> real_differentiable (%x. 1 / (x ^ (2::nat) + 1)) (atreal x)",
+            "x Mem real_open_interval 0 (exp 1) --> real_differentiable (%x. log x) (atreal x)",
+            "x Mem real_open_interval (-1) 1 --> real_differentiable (%x. log (x ^ (2::nat) + 1)) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. sqrt x) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. sqrt (1 - x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval 0 (sqrt 2) --> real_differentiable (%x. sqrt (2 - x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. x ^ (-(2::real))) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. (3 * x + 1) ^ (-(2::real))) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. x ^ (1 / 2)) (atreal x)",
+            "x Mem real_open_interval (-1) 1 --> real_differentiable (%x::real. 2 ^ x) (atreal x)",
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+
     def testNormTranscendental(self):
         test_data = [
             ("sin 0", [], "(0::real)"),
