@@ -4,6 +4,7 @@ import unittest
 import json
 
 from integral import proof
+from prover import sympywrapper
 
 test_cases = {
     "Exercise 1": "34 / 3",

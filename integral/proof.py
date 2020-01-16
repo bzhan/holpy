@@ -10,6 +10,7 @@ from kernel import macro
 from logic.conv import Conv, ConvException, top_conv, beta_conv, beta_norm_conv, argn_conv, \
     arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv, try_conv
 from logic.logic import apply_theorem, conj_thms
+from logic import auto
 from logic import logic
 from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
 from logic.context import Context
@@ -142,85 +143,45 @@ def has_real_derivative(thy, goal):
     eq_pt = ProofTermDeriv('real_norm', thy, eq_goal)
     return pt.on_prop(thy, argn_conv(1, rewr_conv(eq_pt)))
 
-def real_continuous_onI(thy, expr, a, b):
-    """Prove a theorem of the form real_continuous_on expr (real_closed_interval a b).
-    
-    Here expr is a function real => real of the form %x. f x,
-    a and b are real numbers. The function can do more if a and b are
-    constants.
+# Introduction rules for real_continuous_on
+auto.add_global_autos(
+    Const('real_continuous_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
+    auto.solve_rules([
+        # Continuous everywhere
+        "real_continuous_on_const",
+        "real_continuous_on_id",
+        "real_continuous_on_add",
+        "real_continuous_on_neg",
+        "real_continuous_on_sub",
+        "real_continuous_on_mul",
+        "real_continuous_on_pow",
+        "real_continuous_on_exp",
+        "real_continuous_on_exp_compose",
+        "real_continuous_on_sin",
+        "real_continuous_on_sin_compose",
+        "real_continuous_on_cos",
+        "real_continuous_on_cos_compose",
+        "real_continuous_on_abs",
 
-    """
-    if not expr.is_abs():
-        raise NotImplementedError
+        # Continuous with conditions
+        "real_continuous_on_div",
+        "real_continuous_on_log",
+        "real_continuous_on_log_compose",
+        "real_continuous_on_sqrt",
+        "real_continuous_on_sqrt_compose",
 
-    interval = real.closed_interval(a, b)
+        # Real power (two options)
+        "real_continuous_on_real_pow",
+        "real_continuous_on_real_pow2",
+    ])
+)
 
-    var_names = [v.name for v in term.get_vars(expr)]
-    nm = name.get_variant_name(expr.var_name, var_names)
-    v = Var(nm, expr.var_T)
-    t = expr.subst_bound(v)
-
-    if real.is_nat_power(t) and not t.arg.occurs_var(v):
-        t1 = Term.mk_abs(v, t.arg1)
-        pt1 = real_continuous_onI(thy, t1, a, b)
-        return apply_theorem(thy, 'real_continuous_on_pow', pt1, inst={'n': t.arg})
-    elif real.is_real_power(t) and not t.arg.occurs_var(v):
-        p = t.arg
-        t1 = Term.mk_abs(v, t.arg1)
-        pt1 = real_continuous_onI(thy, t1, a, b)
-        if real.is_const_less_eq(thy, real.zero, p):
-            return apply_theorem(thy, 'real_continuous_on_real_pow', real.real_less_eq(thy, real.zero, p), pt1)
-        elif real.is_const_less(thy, real.zero, a) and t.arg1 == v:
-            return apply_theorem(thy, 'real_continuous_on_real_pow_pos', real.real_less(thy, real.zero, a), inst={'b': b, 'p': p})
-        elif real.is_const_less(thy, b, real.zero) and t.arg1 == v:
-            return apply_theorem(thy, 'real_continuous_on_real_pow_neg', real.real_less(thy, b, real.zero), inst={'a': a, 'p': p})
-        else:
-            raise NotImplementedError
-    elif t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
-        t1 = Term.mk_abs(v, t.arg1)
-        t2 = Term.mk_abs(v, t.arg)
-        pt1 = real_continuous_onI(thy, t1, a, b)
-        pt2 = real_continuous_onI(thy, t2, a, b)
-        if real.is_plus(t):
-            return apply_theorem(thy, 'real_continuous_on_add', pt1, pt2)
-        elif real.is_minus(t):
-            return apply_theorem(thy, 'real_continuous_on_sub', pt1, pt2)
-        elif real.is_times(t):
-            return apply_theorem(thy, 'real_continuous_on_mul', pt1, pt2)
-        elif real.is_divides(t) and not t.arg.occurs_var(v):
-            return apply_theorem(thy, 'real_continuous_on_div_const', pt1, real.real_ineq(thy, t.arg, real.zero))
-        elif real.is_divides(t) and real.is_nat_power(t.arg) and real.is_const_less(thy, real.zero, a):
-            return apply_theorem(thy, 'real_continuous_on_real_inverse_pow_pos',
-                                 real.real_less(thy, real.zero, a), pt1, inst={'n': t.arg.arg})
-        elif real.is_divides(t) and real.is_nat_power(t.arg) and real.is_const_less(thy, b, real.zero):
-            return apply_theorem(thy, 'real_continuous_on_real_inverse_pow_neg',
-                                 real.real_less(thy, b, real.zero), pt1, inst={'n': t.arg.arg})
-        else:
-            raise NotImplementedError
-    elif t.is_comb() and real.is_real(t.arg):
-        f = Term.mk_abs(v, t.arg)
-        pt = real_continuous_onI(thy, f, a, b)
-        if real.is_uminus(t):
-            return apply_theorem(thy, 'real_continuous_on_neg', pt)
-        elif t.fun in (real.exp, real.sin, real.cos):
-            if t.fun == real.exp:
-                th_name = 'real_continuous_on_exp'
-            elif t.fun == real.sin:
-                th_name = 'real_continuous_on_sin'
-            else:
-                th_name = 'real_continuous_on_cos'
-            pt1 = real_continuous_onI(thy, f, a, b)
-            pt2 = apply_theorem(thy, th_name, inst={'s': set.mk_image(f, interval)})
-            return apply_theorem(thy, 'real_continuous_on_compose', pt1, pt2)
-        else:
-            print(printer.print_term(thy, t))
-            raise NotImplementedError
-    elif t == v:
-        return apply_theorem(thy, 'real_continuous_on_id', inst={'s': interval})
-    elif not t.occurs_var(v):
-        return apply_theorem(thy, 'real_continuous_on_const', inst={'c': t, 's': interval})
-    else:
-        raise NotImplementedError
+auto.add_global_autos(
+    Const('real_integrable_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
+    auto.solve_rules([
+        "real_integrable_continuous"
+    ])
+)
 
 def real_integrable_onI(thy, f, a, b):
     """Prove a theorem of the form real_integrable_on f (real_closed_interval a b).
@@ -228,8 +189,7 @@ def real_integrable_onI(thy, f, a, b):
     Currently, only prove this from continuity of f.
 
     """
-    pt = real_continuous_onI(thy, f, a, b)
-    return apply_theorem(thy, 'real_integrable_continuous', pt)
+    return auto.auto_solve(thy, mk_real_integrable_on(f, a, b))
 
 class real_ineq_on_interval_macro(ProofTermMacro):
     """Given a term t(x) and assumption of the form x : real_closed_interval a b,
@@ -547,7 +507,7 @@ def apply_subst_thm(thy, f, g, a, b):
     le_pt = real.real_less_eq(thy, a, b)
 
     # Form the assumption: f is continuous on [g(a), g(b)]
-    cont_f_pt = real_continuous_onI(thy, f, g(a).beta_conv(), g(b).beta_conv())
+    cont_f_pt = auto.auto_solve(thy, mk_real_continuous_on(f, g(a).beta_conv(), g(b).beta_conv()))
 
     # Form the assumption: derivative of g
     x = Var(g.var_name, realT)

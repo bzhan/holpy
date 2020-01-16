@@ -6,6 +6,7 @@ from sympy import Symbol, sqrt, sin, cos
 from sympy.abc import x
 
 from logic.context import Context
+from logic.tests.logic_test import test_macro
 from syntax import parser
 from prover import sympywrapper
 
@@ -33,6 +34,11 @@ class SymPyWrapperTest(unittest.TestCase):
             ("log x >= 0", "x Mem real_closed_interval 1 (exp 1)", True),
             ("log x <= 0", "x Mem real_closed_interval (exp (-1)) 1", True),
             ("log x >= 0", "x Mem real_closed_interval (exp (-1)) (exp 1)", False),
+            ("~(sin x = 0)", "x Mem real_closed_interval 1 2", True),
+            ("~(sin x = 0)", "x Mem real_closed_interval (-1) 1", False),
+            ("~(sin x = 0)", "x Mem real_closed_interval 0 1", False),
+            ("~(x ^ (2::nat) = 0)", "x Mem real_closed_interval (-1) 1", False),
+            ("~(x ^ (2::nat) + 1 = 0)", "x Mem real_closed_interval (-1) 1", True),
         ]
 
         ctxt = Context('realintegral', vars={'x': 'real'})
@@ -40,6 +46,18 @@ class SymPyWrapperTest(unittest.TestCase):
             goal = parser.parse_term(ctxt, goal)
             cond = parser.parse_term(ctxt, cond)
             self.assertEqual(sympywrapper.solve(goal, cond), res)
+
+    def testAuto(self):
+        test_data = [
+            ("x Mem real_closed_interval 0 1 --> 1 - x ^ (2::nat) >= 0"),
+            ("x Mem real_closed_interval 0 (sqrt 2) --> 2 - x ^ (2::nat) >= 0"),
+            ("x Mem real_closed_interval 0 (pi / 2) --> sqrt 2 * cos x >= 0"),
+            ("x Mem real_closed_interval 0 (2 ^ (1 / 2)) --> 2 - x ^ (2::nat) >= 0"),
+        ]
+
+        vars = {'x': 'real'}
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', vars=vars, args=expr, res=expr)
 
 
 if __name__ == "__main__":
