@@ -254,7 +254,7 @@ class ProofTest(unittest.TestCase):
         test_data = [
             ("real_derivative (%x. x) x", [], "(1::real)"),
             ("real_derivative (%x. 3) x", [], "(0::real)"),
-            ("real_derivative (%x. 3 * x) x", [], "3 * 1 + 0 * x"),
+            ("real_derivative (%x. 3 * x) x", [], "0 * x + 3 * 1"),
             ("real_derivative (%x. x ^ (2::nat)) x", [], "of_nat 2 * x ^ ((2::nat) - 1) * 1"),
         ]
 

@@ -258,6 +258,8 @@ class ProofTermDeriv(ProofTerm):
 
     """
     def __init__(self, rule, thy, args, prevs=None, th=None):
+        typecheck.checkinstance('ProofTermDeriv', rule, str)
+
         self.ty = ProofTerm.DERIV
         self.rule = rule
         if prevs is None:

@@ -6,6 +6,7 @@ from kernel.term import Term, Var, Bound
 from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm, refl
 from logic import matcher
+from syntax import printer
 from util import name
 from util import typecheck
 
@@ -324,7 +325,8 @@ class rewr_conv(Conv):
             matcher.first_order_match_list_incr(self.As, ts, instsp)
             matcher.first_order_match_incr(self.C.lhs, t, instsp)
         except matcher.MatchException:
-            raise ConvException("rewr_conv: cannot match")
+            raise ConvException("rewr_conv: cannot match %s with %s" % (
+                printer.print_term(thy, self.C.lhs), printer.print_term(thy, t)))
 
         # Check that every variable in the theorem has an instantiation
         if set(term.get_svars(self.As + [self.C.lhs])) != set(term.get_svars(self.As + [self.C])):

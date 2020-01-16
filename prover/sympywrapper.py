@@ -6,6 +6,7 @@ on intervals.
 """
 
 import sympy
+from fractions import Fraction
 
 from kernel.term import Term
 from kernel.thm import Thm
@@ -38,7 +39,11 @@ def convert(t):
     elif t == real.pi:
         return sympy.pi
     elif real.is_binary_real(t):
-        return sympy.Number(real.from_binary_real(t))
+        val = real.from_binary_real(t)
+        if isinstance(val, Fraction):
+            return sympy.Number(val.numerator) / sympy.Number(val.denominator)
+        else:
+            return sympy.Number(val)
     elif real.is_plus(t):
         return convert(t.arg1) + convert(t.arg)
     elif real.is_minus(t):
