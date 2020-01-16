@@ -250,6 +250,21 @@ class ProofTest(unittest.TestCase):
             cv = auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
+    def testNormRealDerivative(self):
+        test_data = [
+            ("real_derivative (%x. x) x", [], "(1::real)"),
+            ("real_derivative (%x. 3) x", [], "(0::real)"),
+            ("real_derivative (%x. 3 * x) x", [], "3 * 1 + 0 * x"),
+            ("real_derivative (%x. x ^ (2::nat)) x", [], "of_nat 2 * x ^ ((2::nat) - 1) * 1"),
+        ]
+
+        vars = {'x': 'real'}
+        ctxt = Context('realintegral', vars=vars)
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = auto_conv(conds_pt)
+            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
+
     def testRealIneqOnInterval(self):
         test_data = [
             # Nonnegative

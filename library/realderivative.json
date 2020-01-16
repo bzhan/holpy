@@ -3110,6 +3110,18 @@
             }
         },
         {
+            "name": "real_derivative_neg",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. -(f x1)) x = -(real_derivative f x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
@@ -3300,6 +3312,20 @@
             }
         },
         {
+            "name": "real_derivative_add",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_derivative (λx1. f x1 + g x1) x = real_derivative f x + real_derivative g x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
@@ -3391,6 +3417,20 @@
                 "g": "real ⇒ real",
                 "g1": "real",
                 "net": "real net"
+            }
+        },
+        {
+            "name": "real_derivative_sub",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_derivative (λx1. f x1 - g x1) x = real_derivative f x - real_derivative g x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "x": "real"
             }
         },
         {
@@ -3534,6 +3574,21 @@
                 "f1": "real",
                 "g": "real ⇒ real",
                 "g1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_mul",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_derivative (λx1. f x1 * g x1) x = ",
+                "      f x * real_derivative g x + real_derivative f x * g x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -4263,6 +4318,20 @@
             "vars": {
                 "f": "real ⇒ real",
                 "f1": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_pow",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. f x1 ^ n) x = ",
+                "   of_nat n * f x ^ (n - 1) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "n": "nat",
                 "x": "real"
             }

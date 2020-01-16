@@ -282,6 +282,19 @@ auto.add_global_autos_norm(
     ])
 )
 
+auto.add_global_autos_norm(
+    Const('real_derivative', TFun(TFun(realT, realT), realT, realT)),
+    auto.norm_rules([
+        "real_derivative_const",
+        "real_derivative_id",
+        "real_derivative_add",
+        "real_derivative_neg",
+        "real_derivative_sub",
+        "real_derivative_mul",
+        "real_derivative_pow"
+    ])
+)
+
 def real_integrable_onI(thy, f, a, b):
     """Prove a theorem of the form real_integrable_on f (real_closed_interval a b).
 
