@@ -183,6 +183,45 @@ auto.add_global_autos(
     ])
 )
 
+auto.add_global_autos_norm(
+    real.sin,
+    auto.norm_rules([
+        'real_sin_0',
+        'real_sin_pi6',
+        'real_sin_pi4',
+        'real_sin_pi3',
+        'real_sin_pi2_alt',
+        'real_sin_pi',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.cos,
+    auto.norm_rules([
+        'real_cos_0',
+        'real_cos_pi6',
+        'real_cos_pi4',
+        'real_cos_pi3',
+        'real_cos_pi2_alt',
+        'real_cos_pi',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.exp,
+    auto.norm_rules([
+        'real_exp_0',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.abs,
+    auto.norm_rules([
+        'real_abs_pos_eq',
+        'real_abs_neg_eq',
+    ])
+)
+
 def real_integrable_onI(thy, f, a, b):
     """Prove a theorem of the form real_integrable_on f (real_closed_interval a b).
 

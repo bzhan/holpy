@@ -10,7 +10,7 @@ from logic.proofterm import ProofTerm
 from logic import conv
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     top_sweep_conv, arg_conv, rewr_conv, has_rewrite, ConvException
-from syntax import parser
+from syntax import parser, printer
 from logic.context import Context
 
 def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=None, limit=None):
@@ -33,7 +33,10 @@ def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=Non
         t_res = parser.parse_term(ctxt, t_res)
     assert isinstance(t_res, Term)
 
-    self.assertEqual(cv.eval(thy, t), Thm(assms, Term.mk_equals(t, t_res)))
+    res_th = cv.eval(thy, t)
+    expected_th = Thm(assms, Term.mk_equals(t, t_res))
+    self.assertEqual(res_th, expected_th,
+        msg="\nExpected: %s\nGot %s" % (printer.print_thm(thy, expected_th), printer.print_thm(thy, res_th)))
     pt = cv.get_proof_term(thy, t)
     prf = pt.export()
     self.assertEqual(thy.check_proof(prf), Thm(assms, Term.mk_equals(t, t_res)))

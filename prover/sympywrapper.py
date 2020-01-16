@@ -43,6 +43,8 @@ def convert(t):
         return convert(t.arg1) + convert(t.arg)
     elif real.is_minus(t):
         return convert(t.arg1) - convert(t.arg)
+    elif real.is_uminus(t):
+        return -convert(t.arg)
     elif real.is_times(t):
         return convert(t.arg1) * convert(t.arg)
     elif real.is_divides(t):

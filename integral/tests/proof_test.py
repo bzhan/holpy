@@ -9,6 +9,7 @@ from data.real import realT
 from data.set import setT
 from data.integral import within, atreal
 from integral import proof
+from logic.auto import auto_conv
 from logic.context import Context
 from logic.proofterm import refl, ProofTerm
 from logic.conv import top_conv, arg_conv
@@ -138,6 +139,37 @@ class ProofTest(unittest.TestCase):
 
         for expr in test_data:
             test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
+
+    def testNormTranscendental(self):
+        test_data = [
+            ("sin 0", [], "(0::real)"),
+            ("sin (1 / 6 * pi)", [], "1 / 2"),
+            ("cos 0", [], "(1::real)"),
+            ("cos (1 / 6 * pi)", [], "sqrt 3 / 2"),
+            ("exp 0", [], "(1::real)"),
+        ]
+
+        ctxt = Context('realintegral')
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = auto_conv(conds_pt)
+            test_conv(self, 'realintegral', cv, t=t, t_res=res, assms=conds)
+
+    def testNormAbsoluteValue(self):
+        test_data = [
+            ("abs x", ["x >= 0"], "x"),
+            ("abs x", ["x Mem real_closed_interval 0 1"], "x"),
+            ("abs x", ["x Mem real_closed_interval (-1) 0"], "-x"),
+            ("abs (sin x)", ["x Mem real_closed_interval 0 (pi / 2)"], "sin x"),
+            ("abs (sin x)", ["x Mem real_closed_interval (-pi / 2) 0"], "-sin x"),
+        ]
+
+        vars = {'x': 'real'}
+        ctxt = Context('realintegral', vars=vars)
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = auto_conv(conds_pt)
+            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
     def testRealIneqOnInterval(self):
         test_data = [
