@@ -44,7 +44,10 @@ def convert_expr(e, mode="large"):
                                 return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
                         elif y.val.denominator == 1:
                             return "%s ^ {%s}" % (sx, sy)
-                    elif isinstance(x, expr.Fun) and len(x.args) > 0:
+                    if y.ty == expr.CONST and y.val < 0:
+                        new_expr = expr.Op("/", expr.Const(1), expr.Op("^", x, expr.Const(-y.val)))
+                        return convert_expr(new_expr)
+                    elif isinstance(x, expr.Fun) and len(x.args) > 0 and x.func_name != "abs":
                         return "\%s^{%s}%s" % (x.func_name, sy, x.args[0])
                 elif e.op in ("+", "-"):
                     if y.ty == expr.CONST:
