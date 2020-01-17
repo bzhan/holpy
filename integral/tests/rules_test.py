@@ -89,7 +89,8 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitution(self):
         e = parse_expr("INT x:[0,1]. (3 * x + 1) ^ (-2)")
-        e = rules.Substitution("u", parse_expr("3 * x + 1")).eval(e)
+        e = rules.Substitution1("u", parse_expr("3 * x + 1")).eval(e)
+        print(e)
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
@@ -97,7 +98,7 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitution2(self):
         e = parse_expr("INT x:[0,1]. exp(6*x)")
-        e = rules.Substitution("u", parse_expr("6 * x")).eval(e)
+        e = rules.Substitution1("u", parse_expr("6 * x")).eval(e)
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
@@ -105,32 +106,37 @@ class RulesTest(unittest.TestCase):
 
     def testSubstitution3(self):
         e = parse_expr("INT x:[0, pi].(1 - cos(x)^2)*sin(x)")
-        e = rules.Substitution("u",parse_expr("cos(x)")).eval(e)
-        self.assertEqual(e, parse_expr("INT u:[(-1),1]. -(u ^ 2 - 1)"))
+        e = rules.Substitution1("u",parse_expr("cos(x)")).eval(e)
+        print("e :" , e)
+        self.assertEqual(e, parse_expr("INT u:[-1,1]. -(1 + -1 * u ^ 2)"))
 
     def testSubstitution4(self):
         e = parse_expr("INT x:[1, 4]. 1/(1+sqrt(x))")
-        e = rules.Substitution("u", parse_expr("sqrt(x)")).eval(e)
-        self.assertEqual(e, parse_expr("INT u:[1, 2]. (2 * u) / (u + 1)"))
+        e = rules.Substitution1("u", parse_expr("sqrt(x)")).eval(e)
+        self.assertEqual(e, parse_expr("INT u:[1,2]. 2 * u * 1 / (1 + abs(u))"))
 
     def testSubstitution5(self):
         e = parse_expr("INT t:[0, 1]. t * e^(-(t^2/2))")
-        e = rules.Substitution("u", parse_expr("t^2")).eval(e)
+        e = rules.Substitution1("u", parse_expr("t^2")).eval(e)
+        print(e)
         self.assertEqual(e, parse_expr("INT u:[0,1]. e ^ (-u / 2) / 2"))
 
     def testSubstitution6(self):
         e = parse_expr("INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)")
         e = rules.Equation(e.body, parse_expr("((x+1) + 1)/((x+1)*(x+1) + 1)")).eval(e)
-        e = rules.Substitution("u", parse_expr("x+1")).eval(e)
+        e = rules.Substitution1("u", parse_expr("x+1")).eval(e)
 
     def testSubstitution7(self):
         e = parse_expr("INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)")
-        e = rules.Substitution("u", parse_expr("sqrt(1 - x)")).eval(e)
+        e = rules.Substitution1("u", parse_expr("sqrt(1 - x)")).eval(e)
+        print(e)
         self.assertEqual(e, parse_expr("INT u:[0,1/2]. -((-2) * u / (u - 1))"))
 
     def testSubstitution8(self):
         e = parse_expr("INT x:[1, exp(1)]. sin(log(x))")
-        e = rules.Substitution("u", parse_expr("log(x)")).eval(e)
+        e = rules.Substitution1("u", parse_expr("log(x)")).eval(e)
+        print(e)
+        print([parse_expr("INT u:[0,pi / 2].cos(u) ^ 2 ^ (1/2)")])
         self.assertEqual(e, parse_expr("INT u:[0,1]. exp(u) * sin(u)"))
         
     def testEquation(self):
@@ -140,6 +146,11 @@ class RulesTest(unittest.TestCase):
         e = parse_expr("INT x:[0, pi]. sin(x) ^ 3")
         e = rules.Equation(parse_expr("sin(x) ^ 3"), parse_expr("sin(x) ^ 2 * sin(x)")).eval(e)
         self.assertEqual(e, parse_expr("INT x:[0, pi]. sin(x) ^ 2 * sin(x)"))
+
+    def testSubstitutionInverse(self):
+        e = parse_expr("INT x:[0, sqrt(2)]. sqrt(2 - x^2)")
+        e = rules.Substitution2("u", parse_expr("sqrt(2) * sin(u)")).eval(e)
+        print(e)
 
     def testTrigSubstitution(self):
         test_data = [
@@ -211,6 +222,20 @@ class RulesTest(unittest.TestCase):
             s2 = parse_expr(s2)
             rule = rules.IntegrateByEquation(s)
             self.assertEqual(rule.eval(s1), s2)
+
+    def testTrigSubstitution(self):
+        test_data = [
+            ("INT x:[0, 1]. sqrt(2 - x^2)", "u", "sqrt(2) * sin(u)", "INT u:[0,pi / 4]. sqrt(2 - (sqrt(2) * sin(u)) ^ 2) * 2 ^ (1/2) * cos(u)"),
+            
+        ]
+
+        for s, s1, s2, s3 in test_data:
+            s = parse_expr(s)
+            s2 = parse_expr(s2)
+            s3 = parse_expr(s3)
+            rule = rules.Substitution2(s1, s2)
+            print(rule.eval(s))
+            self.assertEqual(rule.eval(s), s3)
             
 
 
