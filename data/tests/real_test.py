@@ -8,6 +8,7 @@ from logic.tests.conv_test import test_conv
 from logic.tests.logic_test import test_macro
 from logic.context import Context
 from logic.auto import auto_conv
+from logic.proofterm import ProofTerm
 from data import real
 from syntax import parser
 
@@ -72,6 +73,26 @@ class RealTest(unittest.TestCase):
 
         for expr, res in test_data:
             test_conv(self, 'real', real.real_eval_conv(), t=expr, t_res=res)
+
+    def testCombineAtomConv(self):
+        test_data = [
+            ("x ^ (2::nat) * x ^ (3::nat)", [], "x ^ (5::nat)"),
+            ("x ^ (2::nat) * x ^ (1 / 2)", ["x > 0"], "x ^ (5 / 2)"),
+            ("x * x", [], "x ^ (2::nat)"),
+            ("x * (x ^ (2::nat))", [], "x ^ (3::nat)"),
+            ("x * (x ^ (1 / 2))", ["x > 0"], "x ^ (3 / 2)"),
+            ("x ^ (1 / 2) * x ^ (1 / 2)", ["x > 0"], "x"),
+            ("x ^ (1 / 2) * x ^ (3 / 2)", ["x > 0"], "x ^ (2::nat)"),
+            ("x * x ^ (-(1::real))", ["x > 0"], "(1::real)"),
+            ("x ^ (1 / 2) * x ^ (-1 / 2)", ["x > 0"], "(1::real)"),
+        ]
+
+        vars = {'x': 'real'}
+        ctxt = Context('realintegral', vars=vars)
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = real.combine_atom(conds_pt)
+            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
     def testNormPoly(self):
         test_data = [
