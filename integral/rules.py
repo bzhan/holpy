@@ -280,13 +280,10 @@ class Substitution1(Rule):
         gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
         gu = gu[0] if isinstance(gu, list) else gu
         gu = expr.holpy_style(gu)
-        #print("!!!", e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu))
         c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-        #print("###",c, c.normalize())
         new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize()
         var_subst_deriv = expr.deriv(e.var, var_subst)
         up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
-        print("up: ", up, "down: ", down)
         new_integral = []
         if len(up) != 0:
             for l, u in up:
@@ -297,7 +294,7 @@ class Substitution1(Rule):
             for l, u in down:
                 i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
                 j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
-                new_integral.append(expr.Integral(self.var_name, j, i, new_problem_body))
+                new_integral.append(expr.Integral(self.var_name, j, i, expr.Op("-",new_problem_body)))
         return sum(new_integral[1:], new_integral[0])
 
 
@@ -389,13 +386,12 @@ class ElimAbs(Rule):
         abs_expr, norm_expr = e.body.normalize().getAbs()
         greator = [] #collect all abs values greater than 0's set
         smallor = [] #collect all abs values smaller than 0's set
-        g, s = abs_expr.ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
+        g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
         new_integral = []
         for l, h in g:
-            new_integral.append(expr.Integral(e.var, l, h, norm_expr * abs_expr))
+            new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
         for l, h in s:
-            new_integral.append(expr.Integral(e.var, l, h, norm_expr * expr.Op("-", abs_expr)))
-        print(new_integral)
+            new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
         return sum(new_integral[1:], new_integral[0])
 
 class IntegrateByEquation(Rule):
