@@ -44,7 +44,8 @@ class ParserTest(unittest.TestCase):
 
     def testParseTerm3(self):
         test_data = [
-            ("$sin(x)^2$*sin(x)", Op("*", Op("^",Fun("sin",Var("x")),Const(2)), Fun("sin",Var("x"))))
+            ("$sin(x)^2$*sin(x)", Op("*", Op("^",Fun("sin",Var("x")),Const(2)), Fun("sin",Var("x")))),
+            ("x + $x + y$", Op("+", Var("x"), Op("+", Var("x"), Var("y")))),
         ]
         
         for s, e in test_data:
