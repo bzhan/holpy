@@ -59,7 +59,8 @@ class Expr:
         if self.ty == CONST and other.ty == CONST:
             return Const(self.val - other.val)
         elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
-            return Fun("log", self.args[0] / other.args[0])
+            c = (self.args[0]) / (other.args[0])
+            return Fun("log", (self.args[0]) / (other.args[0]))
         else:
             return Op("-", self, other)
 
@@ -209,6 +210,71 @@ class Expr:
         else:
             raise NotImplementedError
 
+    def replace_expr(self, loc, new_expr):
+        """Replace self's subexpr at location."""
+        if not isinstance(loc, Location):
+            loc = Location(loc)
+        if loc.is_empty():
+            return new_expr
+        elif self.ty == VAR or self.ty == CONST:
+            raise AssertionError("replace_expr: invalid location")
+        elif self.ty == OP:
+            assert loc.head < len(self.args), "replace_expr: invalid location"
+            if len(self.args) == 1:
+                return Op(self.op, self.args[0].replace_expr(loc.rest, new_expr))
+            elif len(self.args) == 2:
+                arg1 = self.args[loc.head].replace_expr(loc.rest, new_expr)
+                arg2 = copy.deepcopy(self.args[1 - loc.head])
+                if loc.head == 0:
+                    return Op(self.op, arg1, arg2)
+                else:
+                    return Op(self.op, arg2, arg1)
+            else:
+                raise NotImplementedError
+        elif self.ty == FUN:
+            # Can't resolve pi now.
+            assert loc.head < len(self.args), "get_subexpr: invalid location"
+            arg = self.args[loc.head].replace_expr(loc.rest, new_expr)
+            return Fun(self.func_name, arg)
+        elif self.ty == INTEGRAL or self.ty == EVAL_AT:
+            arg0 = copy.deepcopy(self.body)
+            arg1 = copy.deepcopy(self.lower)
+            arg2 = copy.deepcopy(self.upper)
+            if loc.head == 0:
+                arg0 = self.body.replace_expr(loc.rest, new_expr)
+            elif loc.head == 1:
+                arg1 = self.lower.replace_expr(loc.rest, new_expr)
+            elif loc.head == 2:
+                arg2 = self.upper.replace_expr(loc.rest, new_expr)
+            else:
+                raise AssertionError("get_subexpr: invalid location")
+            return Integral(self.var, arg1, arg2, arg0)
+        elif self.ty == DERIV:      
+            assert loc.head == 0, "get_subexpr: invalid location"
+            return Deriv(self.var, self.body.replace_expr(loc.rest, new_expr))
+        else:
+            raise NotImplementedError
+
+    def get_location(self):
+        """Give an expression, return the sub-expression location which selected field is True."""
+        location = []
+        def get(exp, loc = ''):
+            if hasattr(exp, 'selected') and exp.selected == True:
+                location.append(loc[1:])
+                exp.selected = False #Once it is found, restore it.
+            elif exp.ty == OP or exp.ty == FUN:
+                for i in range(len(exp.args)):
+                    get(exp.args[i], loc+"."+str(i))
+            elif exp.ty == INTEGRAL or exp.ty == EVAL_AT:
+                get(exp.lower, loc+".1")
+                get(exp.upper, loc+".2")
+                get(exp.body, loc+".0")
+            elif exp.ty == DERIV:
+                get(exp.body, loc+".0")
+        get(self)
+        return location[0]
+
+
     def subst(self, var, e):
         """Substitute occurrence of var for e in self."""
         assert isinstance(var, str) and isinstance(e, Expr)
@@ -305,6 +371,9 @@ class Expr:
                 return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
+
+                if x.normalize() != x or y.normalize() != y:
+                    return (x.normalize() / y.normalize()).to_poly()
                 xp = x.to_poly()
                 yp = y.to_poly()
                 if x.ty == CONST and x.val == 0:
@@ -363,6 +432,8 @@ class Expr:
                                 return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                         elif x.ty == FUN and x.func_name == "sqrt":
                             return Op("^", x.args[0], Const(Fraction(y.val*(1/2)))).to_poly()
+                        elif x.ty == FUN and x.func_name in ("sin", "cos", "tan", "asin", "acos", "atan") and x.normalize() != x:
+                            return Op("^", x.normalize(), y).to_poly()
                         else:
                             return poly.Polynomial([poly.Monomial(Const(1), [(x, y.val)])])
                 else:
@@ -376,7 +447,39 @@ class Expr:
                 else:
                     return poly.singleton(Fun("exp", self.args[0].normalize()))
             elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan", "cot", "csc", "sec"):
-                p = sympy_parser.parse_expr(str(self).replace("^", "**"))
+                # if self.func_name == "sin":
+                #     a, = self.args
+                #     sin_flag = True
+                #     while sin_flag:
+                #         if a.ty == OP and len(a.args) == 1:
+                #             return Op("-", self).to_poly()
+                #         elif a.ty == FUN:
+                #             f, = self.args
+                #             if a.func_name == "asin":
+                #                 return f.to_poly()
+                #             elif a.func_name == "acos":
+                #                 return sqrt(Const(1) - (f ^ Const(2))).to_poly()
+                #             elif a.func_name == "atan":
+                #                 return (f / sqrt(Const(1) + (f ^ 2))).to_poly()
+                #             sin_flag = False
+                #         sin_flag = False
+                # elif self.func_name == "cos":
+                #     a, = self.args
+                #     cos_flag = True
+                #     while cos_flag:
+                #         if a.ty == OP and len(a.args) == 1:
+                #             return Op("-", self).to_poly()
+                #         elif a.ty == FUN:
+                #             f, = self.args
+                #             if a.func_name == "acos":
+                #                 return f.to_poly()
+                #             elif a.func_name == "asin":
+                #                 return sqrt(Const(1) - (f ^ Const(2))).to_poly()
+                #             elif a.func_name == "atan":
+                #                 return (Const(1) / sqrt(Const(1) + (f ^ 2))).to_poly()
+                #             cos_flag = False                            
+                #         cos_flag = False
+                p = sympy_parser.parse_expr(str(self).replace("^", "**")).simplify()
                 p = parser.parse_expr(str(p).replace("**", "^"))
                 if p != self:
                     return p.to_poly()
@@ -405,6 +508,11 @@ class Expr:
                 x, =self.args
                 if x.ty == CONST:
                     return poly.constant(Const(abs(x.val)))
+                elif x.is_constant():
+                    if sympy_style(x) > 0:
+                        return poly.constant(x)
+                    else:
+                        return poly.constant(-x)
                 else:
                     return poly.singleton(self)
             else:
@@ -480,7 +588,9 @@ class Expr:
         result = []
         def collect(expr, result):
             if expr.ty == INTEGRAL:
-                result.append(expr)
+                expr.selected = True
+                loc = self.get_location()
+                result.append([expr, loc])
             elif expr.ty == OP:
                 for arg in expr.args:
                     collect(arg, result)
@@ -507,6 +617,7 @@ class Expr:
         return v[0]
 
     def ranges(self, var, lower, upper):
+        """Find expression where greater and smaller than zero in the interval: lower, upper"""
         e = sympy_style(self)
         var = sympy_style(var)
         lower = sympy_style(lower)
@@ -553,6 +664,14 @@ def sympy_style(s):
 def holpy_style(s):
     return parser.parse_expr(str(s).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1)))
 
+
+def valid_expr(s):
+    try:
+        sk = parser.parse_expr(s)
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
+        return False
+    return True
+
 def trig_transform(trig):
     """Compute all possible trig function equal to trig"""
     poss = set()
@@ -561,9 +680,9 @@ def trig_transform(trig):
     for f, rule in trigFun.items():
         j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
         if i != j and j not in poss_expr:
-            poss.add((j, rule))
+            poss.add((holpy_style(j), f.__name__))
             poss_expr.add(j)
-    poss.add((i, "Unchanged"))
+    poss.add((holpy_style(i), "Unchanged"))
     return poss
 
 def from_mono(m):
@@ -745,6 +864,15 @@ def deriv(var, e):
         elif e.func_name == "atan":
             x, = e.args
             return (deriv(var, x) / (Const(1) + (x ^ Const(2)))).normalize()
+        elif e.func_name == "asin":
+            x, = e.args
+            return (deriv(var, x) / sqrt(Const(1) - (x ^ Const(2)))).normalize()
+        elif e.func_name == "acos":
+            x, = e.args
+            return (deriv(var, x) / sqrt(Const(1) - (x ^ Const(2)))).normalize()
+        elif e.func_name == "atan":
+            x, = e.args
+            return (deriv(var, x) / sqrt(Const(1) + x ^ Const(2))).normalize()
         else:
             raise NotImplementedError
     else:
@@ -883,6 +1011,12 @@ def arcsin(e):
 
 def arctan(e):
     return Fun("atan", e)
+
+def arccos(e):
+    return Fun("acos", e)
+
+def sqrt(e):
+    return Fun("sqrt", e)
 
 pi = Fun("pi")
 
