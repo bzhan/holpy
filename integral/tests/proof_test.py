@@ -9,12 +9,16 @@ from data.real import realT
 from data.set import setT
 from data.integral import within, atreal
 from integral import proof
+from logic.auto import auto_conv
 from logic.context import Context
-from logic.proofterm import refl
+from logic.proofterm import refl, ProofTerm
 from logic.conv import top_conv, arg_conv
+from logic.logic import TacticException
 from syntax import parser
 from syntax import printer
+from logic.tests.logic_test import test_macro
 from logic.tests.conv_test import test_conv
+from prover import sympywrapper
 import integral
 
 
@@ -82,56 +86,211 @@ class ProofTest(unittest.TestCase):
 
     def testRealContinuousOn(self):
         test_data = [
-            "y",
-            "x",
-            "x * y",
-            "x * x",
-            "x ^ (2::nat)",
-            "x ^ (3::nat)",
-            "(x + 1) ^ (3::nat)",
-            "exp(x)",
-            "exp(x ^ (2::nat))",
-            "exp(exp(x))",
-            "sin(x)",
-            "cos(x)",
-            "sin(x) * cos(x)",
+            "real_continuous_on (%x. x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. x * x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. -x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. x ^ (2::nat)) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. x ^ (3::nat)) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. (x + 1) ^ (3::nat)) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. exp x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. exp (x ^ (2::nat))) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. exp (exp x)) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. sin x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. cos x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. sin x * cos x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. sin (cos x)) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. 1 / x) (real_closed_interval 1 2)",
+            "real_continuous_on (%x. 1 / (x ^ (2::nat))) (real_closed_interval 1 2)",
+            "real_continuous_on (%x. 1 / (x ^ (2::nat))) (real_closed_interval (-2) (-1))",
+            "real_continuous_on (%x. 1 / (x ^ (2::nat) + 1)) (real_closed_interval (-1) 1)",
+            "real_continuous_on (%x. abs x) (real_closed_interval (-1) 1)",
+            "real_continuous_on (%x. log x) (real_closed_interval (exp (-1)) (exp 1))",
+            "real_continuous_on (%x. log (x ^ (2::nat) + 1)) (real_closed_interval (-1) 1)",
+            "real_continuous_on (%x. sqrt x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. sqrt (1 - x ^ (2::nat))) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. sqrt (2 - x ^ (2::nat))) (real_closed_interval 0 (sqrt 2))",
+            "real_continuous_on (%x. x ^ (-(2::real))) (real_closed_interval 1 2)",
+            "real_continuous_on (%x. (3 * x + 1) ^ (-(2::real))) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. x ^ (1 / 2)) (real_closed_interval 0 1)",
+            "real_continuous_on (%x::real. 2 ^ x) (real_closed_interval 0 1)",
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real'})
-        thy = ctxt.thy
-        x = Var('x', realT)
-        a = Var('a', realT)
-        b = Var('b', realT)
-        for s in test_data:
-            s = parser.parse_term(ctxt, s)
-            f = Term.mk_abs(x, s)
-            pt = proof.real_continuous_onI(thy, f, a, b)
-            th = thy.check_proof(pt.export())
-            self.assertEqual(th.prop, proof.mk_real_continuous_on(f, a, b))
-            pt2 = proof.real_integrable_onI(thy, f, a, b)
-            th2 = thy.check_proof(pt2.export())
-            self.assertEqual(pt2.prop, proof.mk_real_integrable_on(f, a, b))
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
 
-    def testRealContinuousOnRange(self):
+    def testRealContinuousOnFail(self):
         test_data = [
-            ("1 / (x ^ (2::nat))", 1, 2),
-            ("1 / (x ^ (2::nat))", -2, -1),
+            "real_continuous_on (%x. 1 / x) (real_closed_interval (-1) 1)",
+            "real_continuous_on (%x. 1 / x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. log x) (real_closed_interval 0 1)",
+            "real_continuous_on (%x. sqrt x) (real_closed_interval (-1) 1)",
+            "real_continuous_on (%x. sqrt (1 - x ^ (2::nat))) (real_closed_interval 0 (sqrt 2))",
+            "real_continuous_on (%x. sqrt (2 - x ^ (2::nat))) (real_closed_interval 0 2)",
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real'})
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', args=expr, failed=TacticException)
+
+    def testRealIntegrableOn(self):
+        test_data = [
+            "real_integrable_on (%x. x) (real_closed_interval 0 1)",
+            "real_integrable_on (%x. sqrt x) (real_closed_interval 0 1)",
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
+
+    def testRealDifferentiableOn(self):
+        test_data = [
+            "real_differentiable_on (%x. x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. x * x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. -x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. x ^ (2::nat)) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. x ^ (3::nat)) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. (x + 1) ^ (3::nat)) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. exp x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. exp (x ^ (2::nat))) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. exp (exp x)) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. sin x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. cos x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. sin x * cos x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. sin (cos x)) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. 1 / x) (real_closed_interval 1 2)",
+            "real_differentiable_on (%x. 1 / (x ^ (2::nat))) (real_closed_interval 1 2)",
+            "real_differentiable_on (%x. 1 / (x ^ (2::nat))) (real_closed_interval (-2) (-1))",
+            "real_differentiable_on (%x. 1 / (x ^ (2::nat) + 1)) (real_closed_interval (-1) 1)",
+            "real_differentiable_on (%x. log x) (real_closed_interval (exp (-1)) (exp 1))",
+            "real_differentiable_on (%x. log (x ^ (2::nat) + 1)) (real_closed_interval (-1) 1)",
+            "real_differentiable_on (%x. sqrt x) (real_closed_interval 1 2)",
+            "real_differentiable_on (%x. sqrt (1 - x ^ (2::nat))) (real_closed_interval 0 (sqrt 2 / 2))",
+            "real_differentiable_on (%x. sqrt (2 - x ^ (2::nat))) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. x ^ (-(2::real))) (real_closed_interval 1 2)",
+            "real_differentiable_on (%x. (3 * x + 1) ^ (-(2::real))) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. x ^ (1 / 2)) (real_closed_interval 1 2)",
+            "real_differentiable_on (%x::real. 2 ^ x) (real_closed_interval 0 1)",
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
+
+    def testRealDifferentiableOnFail(self):
+        test_data = [
+            "real_differentiable_on (%x. 1 / x) (real_closed_interval (-1) 1)",
+            "real_differentiable_on (%x. 1 / x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. log x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. sqrt x) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. sqrt (1 - x ^ (2::nat))) (real_closed_interval 0 1)",
+            "real_differentiable_on (%x. sqrt (2 - x ^ (2::nat))) (real_closed_interval 0 (sqrt 2))",
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', args=expr, failed=TacticException)
+
+    def testRealDifferentiable(self):
+        test_data = [
+            "real_differentiable (%x. x) (atreal x)",
+            "real_differentiable (%x. x * x) (atreal x)",
+            "real_differentiable (%x. -x) (atreal x)",
+            "real_differentiable (%x. x ^ (2::nat)) (atreal x)",
+            "real_differentiable (%x. x ^ (3::nat)) (atreal x)",
+            "real_differentiable (%x. (x + 1) ^ (3::nat)) (atreal x)",
+            "real_differentiable (%x. exp x) (atreal x)",
+            "real_differentiable (%x. exp (x ^ (2::nat))) (atreal x)",
+            "real_differentiable (%x. exp (exp x)) (atreal x)",
+            "real_differentiable (%x. sin x) (atreal x)",
+            "real_differentiable (%x. cos x) (atreal x)",
+            "real_differentiable (%x. sin x * cos x) (atreal x)",
+            "real_differentiable (%x. sin (cos x)) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. 1 / x) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. 1 / (x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval (-1) 0 --> real_differentiable (%x. 1 / (x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval (-1) 1 --> real_differentiable (%x. 1 / (x ^ (2::nat) + 1)) (atreal x)",
+            "x Mem real_open_interval 0 (exp 1) --> real_differentiable (%x. log x) (atreal x)",
+            "x Mem real_open_interval (-1) 1 --> real_differentiable (%x. log (x ^ (2::nat) + 1)) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. sqrt x) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. sqrt (1 - x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval 0 (sqrt 2) --> real_differentiable (%x. sqrt (2 - x ^ (2::nat))) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. x ^ (-(2::real))) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. (3 * x + 1) ^ (-(2::real))) (atreal x)",
+            "x Mem real_open_interval 0 1 --> real_differentiable (%x. x ^ (1 / 2)) (atreal x)",
+            "x Mem real_open_interval (-1) 1 --> real_differentiable (%x::real. 2 ^ x) (atreal x)",
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+
+    def testNormTranscendental(self):
+        test_data = [
+            ("sin 0", [], "(0::real)"),
+            ("sin (1 / 6 * pi)", [], "1 / 2"),
+            ("cos 0", [], "(1::real)"),
+            ("cos (1 / 6 * pi)", [], "sqrt 3 / 2"),
+            ("exp 0", [], "(1::real)"),
+        ]
+
+        ctxt = Context('realintegral')
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = auto_conv(conds_pt)
+            test_conv(self, 'realintegral', cv, t=t, t_res=res, assms=conds)
+
+    def testNormAbsoluteValue(self):
+        test_data = [
+            ("abs x", ["x >= 0"], "x"),
+            ("abs x", ["x Mem real_closed_interval 0 1"], "x"),
+            ("abs x", ["x Mem real_closed_interval (-1) 0"], "-x"),
+            ("abs (sin x)", ["x Mem real_closed_interval 0 (pi / 2)"], "sin x"),
+            ("abs (sin x)", ["x Mem real_closed_interval (-pi / 2) 0"], "-sin x"),
+        ]
+
+        vars = {'x': 'real'}
+        ctxt = Context('realintegral', vars=vars)
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = auto_conv(conds_pt)
+            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
+
+    def testNormRealDerivative(self):
+        test_data = [
+            ("real_derivative (%x. x) x", [], "(1::real)"),
+            ("real_derivative (%x. 3) x", [], "(0::real)"),
+            ("real_derivative (%x. 3 * x) x", [], "0 * x + 3 * 1"),
+            ("real_derivative (%x. x ^ (2::nat)) x", [], "of_nat 2 * x ^ ((2::nat) - 1) * 1"),
+        ]
+
+        vars = {'x': 'real'}
+        ctxt = Context('realintegral', vars=vars)
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = auto_conv(conds_pt)
+            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
+
+    def testRealIneqOnInterval(self):
+        test_data = [
+            # Nonnegative
+            ("x Mem real_closed_interval 0 pi", "sin x >= 0", True),
+            ("x Mem real_closed_interval 0 (2 * pi)", "sin x >= 0", False),
+            ("x Mem real_closed_interval (-pi / 2) (pi / 2)", "cos x >= 0", True),
+            ("x Mem real_closed_interval 0 pi", "cos x >= 0", False),
+
+            # Nonpositive
+            ("x Mem real_closed_interval (-pi) 0", "sin x <= 0", True),
+            ("x Mem real_closed_interval (-pi) pi", "sin x <= 0", False),
+
+            # Nonzero
+            ("x Mem real_closed_interval (pi / 4) (3 * pi / 4)", "~sin x = 0", True),
+            ("x Mem real_closed_interval 0 pi", "~sin x = 0", False),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
         thy = ctxt.thy
-        x = Var('x', realT)
-        for s, a, b in test_data:
-            s = parser.parse_term(ctxt, s)
-            f = Term.mk_abs(x, s)
-            a = real.to_binary_real(a)
-            b = real.to_binary_real(b)
-            pt = proof.real_continuous_onI(thy, f, a, b)
-            th = thy.check_proof(pt.export())
-            self.assertEqual(th.prop, proof.mk_real_continuous_on(f, a, b))
-            pt2 = proof.real_integrable_onI(thy, f, a, b)
-            th2 = thy.check_proof(pt2.export())
-            self.assertEqual(pt2.prop, proof.mk_real_integrable_on(f, a, b))
+        for assm, goal, success in test_data:
+            if success:
+                test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
+                           assms=[assm], res=goal, args=goal, eval_only=True)
+            else:
+                test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
+                           assms=[assm], failed=AssertionError, args=goal, eval_only=True)
 
     def testRealIncreasingOn(self):
         test_data = [
@@ -295,6 +454,22 @@ class ProofTest(unittest.TestCase):
             res = parser.parse_term(ctxt, res)
             cv = proof.location_conv(loc, proof.trig_rewr_conv(code))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
+
+    def testRealAbsConv(self):
+        test_data = [
+            ("abs (cos x)", "x Mem real_closed_interval 0 (pi / 2)", "cos x"),
+            ("abs (cos x)", "x Mem real_closed_interval (pi / 2) pi", "-cos x"),
+            ("abs (sin x)", "x Mem real_closed_interval 0 (pi / 2)", "sin x"),
+            ("abs (sin x)", "x Mem real_closed_interval (- pi / 2) 0", "-sin x"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, cond, res in test_data:
+            s = parser.parse_term(ctxt, s)
+            cond_t = parser.parse_term(ctxt, cond)
+            res = parser.parse_term(ctxt, res)
+            cv = proof.real_abs_conv(ProofTerm.assume(cond_t))
+            test_conv(self, 'realintegral', cv, t=s, t_res=res, assms=[cond])
 
     def testExprToHolpy(self):
         test_data = [

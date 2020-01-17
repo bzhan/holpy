@@ -38,6 +38,9 @@ def Union(T):
 def mk_mem(x, A):
     return mem(x.get_type())(x, A)
 
+def is_mem(t):
+    return t.is_binop() and t.head.is_const_name("member")
+
 def subset(T):
     return Const("subset", TFun(setT(T), setT(T), boolT))
 

@@ -7,7 +7,7 @@ import traceback2
 from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import ProofItem, Proof, ItemID
+from kernel.proof import ProofItem, Proof, ItemID, ProofStateException
 from kernel import report
 from kernel import theory
 from logic import logic, matcher
@@ -19,9 +19,6 @@ from server import tactic
 from server import method
 from util import typecheck
 
-
-class TacticException(Exception):
-    pass
 
 # Helper functions
 
@@ -52,7 +49,7 @@ class ProofState():
                 prf = prf.items[n].subproof
             return ctxt
         except (AttributeError, IndexError):
-            raise TacticException
+            raise ProofStateException
 
     def __str__(self):
         vars = sorted(self.vars, key = lambda v: v.name)
@@ -150,7 +147,7 @@ class ProofState():
                         return item.id
                 prf = prf.items[n].subproof
         except (AttributeError, IndexError):
-            raise TacticException
+            raise ProofStateException
 
     def apply_search(self, id, method, prevs=None):
         id = ItemID(id)

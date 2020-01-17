@@ -4,6 +4,7 @@ import unittest
 import json
 
 from integral import proof
+from prover import sympywrapper
 
 test_cases = {
     "Exercise 1": "34 / 3",
@@ -15,7 +16,8 @@ test_cases = {
     "Exercise 12": "1 / 4",
     "Exercise 13": "-(4 / 3) + pi",
     "Exercise 14": "1 / 6 * pi + -(1 / 8) * sqrt(3)",
-    "Exercise 15": None,
+    "Exercise 15": "1 / 4 * pi",
+    # "Exercise 16": None
 }
 
 debug = True

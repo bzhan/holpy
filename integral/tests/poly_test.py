@@ -90,7 +90,8 @@ class PolynomialTest(unittest.TestCase):
             ("2", "3", "6"),
             ("2x", "2y", "4xy"),
             ("2x + 2y", "2z", "4xz + 4yz"),
-            ("x + y", "x + y", "x^2 + y^2 + 2xy")
+            ("x + y", "x + y", "x^2 + y^2 + 2xy"),
+            ("x", "x", "x^2")
         ]
 
         for p1, p2, p3 in test_data:
@@ -98,5 +99,7 @@ class PolynomialTest(unittest.TestCase):
             p2 = parse_poly(p2)
             p3 = parse_poly(p3)
             self.assertEqual(p1 * p2, p3)
+
+
 if __name__ == "__main__":
     unittest.main()

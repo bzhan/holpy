@@ -149,7 +149,7 @@ class Thm():
             else:
                 raise InvalidDerivationException("implies_elim: " + str(A) + " != " + str(th2.prop))
         else:
-            raise InvalidDerivationException("implies_elim")
+            raise InvalidDerivationException("implies_elim: " + str(th1.prop) + " is not implies")
 
     @staticmethod
     def reflexive(x):

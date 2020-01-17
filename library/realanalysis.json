@@ -5394,26 +5394,12 @@
             "prop": [
                 "real_continuous_on f s ",
                 "⟶ real_continuous_on g s ",
-                "   ⟶ (∀x. x ∈ s ⟶ ¬(f x = 0)) ⟶ real_continuous_on (λx. f x / g x) s"
+                "   ⟶ (∀x. x ∈ s ⟶ ¬(g x = 0)) ⟶ real_continuous_on (λx. f x / g x) s"
             ],
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
                 "g": "real ⇒ real",
-                "s": "real set"
-            }
-        },
-        {
-            "attributes": [
-                "hint_backward",
-                "hint_backward1"
-            ],
-            "name": "real_continuous_on_div_const",
-            "prop": "real_continuous_on f s ⟶ ¬(c = 0) ⟶ real_continuous_on (λx. f x / c) s",
-            "ty": "thm",
-            "vars": {
-                "c": "real",
-                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -5432,62 +5418,31 @@
         },
         {
             "name": "real_continuous_on_real_pow",
-            "prop": "0 ≤ p ⟶ real_continuous_on f s ⟶ real_continuous_on (λx. f x ^ p) s",
+            "prop": [
+                "real_continuous_on p s ",
+                "⟶ real_continuous_on f s ",
+                "   ⟶ (∀x. x ∈ s ⟶ p x ≥ 0) ",
+                "      ⟶ (∀x. x ∈ s ⟶ f x ≥ 0) ⟶ real_continuous_on (λx. f x ^ p x) s"
+            ],
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
-                "p": "real",
+                "p": "real ⇒ real",
                 "s": "real set"
             }
         },
         {
-            "name": "real_continuous_on_real_pow_pos",
-            "prop": "0 < a ⟶ real_continuous_on (λx. x ^ p) (real_closed_interval a b)",
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "p": "real"
-            }
-        },
-        {
-            "name": "real_continuous_on_real_pow_neg",
-            "prop": "b < 0 ⟶ real_continuous_on (λx. x ^ p) (real_closed_interval a b)",
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "p": "real"
-            }
-        },
-        {
-            "name": "real_continuous_on_real_inverse_pow_pos",
+            "name": "real_continuous_on_real_pow2",
             "prop": [
-                "0 < a ",
-                "⟶ real_continuous_on f (real_closed_interval a b) ",
-                "   ⟶ real_continuous_on (λx. f x / x ^ n) (real_closed_interval a b)"
+                "real_continuous_on f s ",
+                "⟶ real_continuous_on p s ",
+                "   ⟶ (∀x. x ∈ s ⟶ f x > 0) ⟶ real_continuous_on (λx. f x ^ p x) s"
             ],
             "ty": "thm",
             "vars": {
-                "a": "real",
-                "b": "real",
                 "f": "real ⇒ real",
-                "n": "nat"
-            }
-        },
-        {
-            "name": "real_continuous_on_real_inverse_pow_neg",
-            "prop": [
-                "b < 0 ",
-                "⟶ real_continuous_on f (real_closed_interval a b) ",
-                "   ⟶ real_continuous_on (λx. f x / x ^ n) (real_closed_interval a b)"
-            ],
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "f": "real ⇒ real",
-                "n": "nat"
+                "p": "real ⇒ real",
+                "s": "real set"
             }
         },
         {
