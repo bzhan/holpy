@@ -16,6 +16,8 @@ class SymPyWrapperTest(unittest.TestCase):
         test_data = [
             ("1 - x ^ (2::nat)", 1 - x ** 2),
             ("sqrt(2) * sin(x)", sqrt(2) * sin(x)),
+            ("real_closed_interval 0 1", sympy.Interval(0, 1)),
+            ("real_open_interval 0 1", sympy.Interval.open(0, 1)),
         ]
 
         ctxt = Context('realintegral', vars={'x': 'real'})
@@ -27,6 +29,7 @@ class SymPyWrapperTest(unittest.TestCase):
         test_data = [
             ("1 - x ^ (2::nat) >= 0", "x Mem real_closed_interval 0 1", True),
             ("1 - x ^ (2::nat) >= 0", "x Mem real_closed_interval 0 (sqrt 2)", False),
+            ("1 - x ^ (2::nat) > 0", "x Mem real_open_interval 0 1", True),
             ("2 - x ^ (2::nat) >= 0", "x Mem real_closed_interval 0 (sqrt 2)", True),
             ("2 - x ^ (2::nat) >= 0", "x Mem real_closed_interval 0 2", False),
             ("sqrt 2 * cos x >= 0", "x Mem real_closed_interval 0 (pi / 2)", True),
@@ -50,6 +53,7 @@ class SymPyWrapperTest(unittest.TestCase):
     def testAuto(self):
         test_data = [
             ("x Mem real_closed_interval 0 1 --> 1 - x ^ (2::nat) >= 0"),
+            ("x Mem real_open_interval 0 1 --> 1 - x ^ (2::nat) > 0"),
             ("x Mem real_closed_interval 0 (sqrt 2) --> 2 - x ^ (2::nat) >= 0"),
             ("x Mem real_closed_interval 0 (pi / 2) --> sqrt 2 * cos x >= 0"),
             ("x Mem real_closed_interval 0 (2 ^ (1 / 2)) --> 2 - x ^ (2::nat) >= 0"),

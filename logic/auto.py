@@ -4,9 +4,9 @@ from kernel import term
 from kernel.term import Term, Var
 from kernel import macro
 from logic import logic
-from logic.logic import TacticException
+from logic.logic import apply_theorem, TacticException
 from logic import matcher
-from logic.logic import apply_theorem
+from logic.conv import Conv, refl
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from syntax import printer
 from util import name
@@ -28,6 +28,11 @@ global_autos = dict()
 # procedure.
 global_autos_neg = dict()
 
+# Mapping from head term to the normalization / simplification
+# procedure
+global_autos_norm = dict()
+
+
 def add_global_autos(head, f):
     if head not in global_autos:
         global_autos[head] = [f]
@@ -39,6 +44,11 @@ def add_global_autos_neg(head, f):
         global_autos_neg[head] = [f]
     else:
         global_autos_neg[head].append(f)
+
+def add_global_autos_norm(head, f):
+    assert head not in global_autos_norm, "add_global_autos_norm: only one function per head term."
+    global_autos_norm[head] = f
+
 
 def solve(thy, goal, pts=None):
     """The main automation function.
@@ -153,6 +163,61 @@ def solve_rules(th_names):
 
     return solve_fun
 
+
+def norm(thy, t, pts=None):
+    """The main normalization function.
+    
+    The function should always succeed. It returns an equality whose left
+    side is t. If no normalization is available, it returns t = t.
+
+    """
+    eq_pt = refl(t.head)
+
+    # First normalize each argument
+    for arg in t.args:
+        eq_pt = ProofTerm.combination(eq_pt, norm(thy, arg, pts))
+
+    # Next, try to find rules
+    if t.head in global_autos_norm:
+        f = global_autos_norm[t.head]
+        eq_pt = ProofTerm.transitive(eq_pt, f(thy, eq_pt.rhs, pts))
+        if eq_pt.rhs.head == t.head:
+            # Head unchanged, normalization stops here
+            return eq_pt
+        else:
+            # Head changed, continue apply norm
+            return ProofTerm.transitive(eq_pt, norm(thy, eq_pt.rhs, pts))
+    else:
+        # No normalization rule available for this head
+        return eq_pt        
+    
+def norm_rules(th_names):
+    """Return a normalization function that tries to apply each of the
+    rewriting rules.
+
+    """
+    def norm_fun(thy, t, pts):
+        for th_name in th_names:
+            if thy.has_theorem(th_name):
+                th = thy.get_theorem(th_name, svar=True)
+            try:
+                instsp = matcher.first_order_match(th.concl.lhs, t)
+            except matcher.MatchException:
+                continue
+
+            As, C = logic.subst_norm(th.prop, instsp).strip_implies()
+            try:
+                pts = [solve(thy, A, pts) for A in As]
+            except TacticException:
+                continue
+
+            return apply_theorem(thy, th_name, *pts, concl=C)
+
+        # No rewriting available
+        return refl(t)
+
+    return norm_fun
+
 class auto_macro(ProofTermMacro):
     """Macro applying auto.solve."""
     def __init__(self):
@@ -161,11 +226,34 @@ class auto_macro(ProofTermMacro):
         self.limit = None
 
     def get_proof_term(self, thy, args, pts):
-        return solve(thy, args, pts)
+        if args.is_equals():
+            # Equality: use normalization
+            eq1 = norm(thy, args.lhs, pts)
+            eq2 = norm(thy, args.rhs, pts)
+            if eq1.rhs != eq2.rhs:
+                raise TacticException
+            return ProofTerm.transitive(eq1, ProofTerm.symmetric(eq2))
+        else:
+            # Otherwise, use solve function
+            return solve(thy, args, pts)
 
 
 def auto_solve(thy, t, pts=None):
     return ProofTermDeriv('auto', thy, args=t, prevs=pts)
+
+class auto_conv(Conv):
+    """Applies auto macro in conversion."""
+    def __init__(self, conds=None):
+        if conds is None:
+            conds = []
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        eq_t = norm(thy, t, self.conds)
+        if t == eq_t.rhs:
+            return refl(t)
+        else:
+            return ProofTermDeriv('auto', thy, args=eq_t.prop, prevs=self.conds, th=eq_t.th)
 
 
 macro.global_macros.update({

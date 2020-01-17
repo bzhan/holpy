@@ -258,6 +258,8 @@ class ProofTermDeriv(ProofTerm):
 
     """
     def __init__(self, rule, thy, args, prevs=None, th=None):
+        typecheck.checkinstance('ProofTermDeriv', rule, str)
+
         self.ty = ProofTerm.DERIV
         self.rule = rule
         if prevs is None:
@@ -276,7 +278,10 @@ class ProofTermDeriv(ProofTerm):
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
             macro = get_macro(thy, rule)
-            self.th = macro.eval(thy, args, prev_ths)
+            if th is None:
+                self.th = macro.eval(thy, args, prev_ths)
+            else:
+                self.th = th
         self.args = args
         self.prevs = prevs
 

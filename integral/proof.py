@@ -183,6 +183,118 @@ auto.add_global_autos(
     ])
 )
 
+auto.add_global_autos(
+    Const('real_differentiable_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
+    auto.solve_rules([
+        # Differentiable everywhere
+        "real_differentiable_on_const",
+        "real_differentiable_on_id",
+        "real_differentiable_on_add",
+        "real_differentiable_on_neg",
+        "real_differentiable_on_sub",
+        "real_differentiable_on_mul",
+        "real_differentiable_on_pow",
+        "real_differentiable_on_exp",
+        "real_differentiable_on_exp_compose",
+        "real_differentiable_on_sin",
+        "real_differentiable_on_sin_compose",
+        "real_differentiable_on_cos",
+        "real_differentiable_on_cos_compose",
+
+        # Differentiable with conditions
+        "real_differentiable_on_div",
+        "real_differentiable_on_log",
+        "real_differentiable_on_log_compose",
+        "real_differentiable_on_sqrt",
+        "real_differentiable_on_sqrt_compose",
+
+        # Real power
+        "real_differentiable_on_real_pow",
+    ])
+)
+
+auto.add_global_autos(
+    Const('real_differentiable', TFun(TFun(realT, realT), netT(realT), boolT)),
+    auto.solve_rules([
+        # Differentiable everywhere
+        "real_differentiable_const",
+        "real_differentiable_id",
+        "real_differentiable_add",
+        "real_differentiable_neg",
+        "real_differentiable_sub",
+        "real_differentiable_mul_atreal",
+        "real_differentiable_pow_atreal",
+        "real_differentiable_at_exp",
+        "real_differentiable_at_exp_compose",
+        "real_differentiable_at_sin",
+        "real_differentiable_at_sin_compose",
+        "real_differentiable_at_cos",
+        "real_differentiable_at_cos_compose",
+
+        # Differentiable with conditions
+        "real_differentiable_div_atreal",
+        "real_differentiable_at_log",
+        "real_differentiable_at_log_compose",
+        "real_differentiable_at_sqrt",
+        "real_differentiable_at_sqrt_compose",
+
+        # Real power
+        "real_differentiable_real_pow_atreal",
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.sin,
+    auto.norm_rules([
+        'real_sin_0',
+        'real_sin_pi6',
+        'real_sin_pi4',
+        'real_sin_pi3',
+        'real_sin_pi2_alt',
+        'real_sin_pi',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.cos,
+    auto.norm_rules([
+        'real_cos_0',
+        'real_cos_pi6',
+        'real_cos_pi4',
+        'real_cos_pi3',
+        'real_cos_pi2_alt',
+        'real_cos_pi',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.exp,
+    auto.norm_rules([
+        'real_exp_0',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real.abs,
+    auto.norm_rules([
+        'real_abs_pos_eq',
+        'real_abs_neg_eq',
+    ])
+)
+
+auto.add_global_autos_norm(
+    Const('real_derivative', TFun(TFun(realT, realT), realT, realT)),
+    auto.norm_rules([
+        "real_derivative_const",
+        "real_derivative_id",
+        "real_derivative_add",
+        "real_derivative_neg",
+        "real_derivative_sub",
+        "real_derivative_mul",
+        "real_derivative_pow"
+    ])
+)
+
 def real_integrable_onI(thy, f, a, b):
     """Prove a theorem of the form real_integrable_on f (real_closed_interval a b).
 

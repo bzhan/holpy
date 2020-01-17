@@ -2828,6 +2828,14 @@
             }
         },
         {
+            "name": "real_derivative_id",
+            "prop": "real_derivative (λx1. x1) x = 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -2953,6 +2961,15 @@
             "vars": {
                 "c": "real",
                 "net": "real net"
+            }
+        },
+        {
+            "name": "real_derivative_const",
+            "prop": "real_derivative (λx1. c) x = 0",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
             }
         },
         {
@@ -3090,6 +3107,18 @@
                 "f": "real ⇒ real",
                 "f1": "real",
                 "net": "real net"
+            }
+        },
+        {
+            "name": "real_derivative_neg",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. -(f x1)) x = -(real_derivative f x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
             }
         },
         {
@@ -3283,6 +3312,20 @@
             }
         },
         {
+            "name": "real_derivative_add",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_derivative (λx1. f x1 + g x1) x = real_derivative f x + real_derivative g x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
@@ -3374,6 +3417,20 @@
                 "g": "real ⇒ real",
                 "g1": "real",
                 "net": "real net"
+            }
+        },
+        {
+            "name": "real_derivative_sub",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_derivative (λx1. f x1 - g x1) x = real_derivative f x - real_derivative g x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "x": "real"
             }
         },
         {
@@ -3517,6 +3574,21 @@
                 "f1": "real",
                 "g": "real ⇒ real",
                 "g1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_mul",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ real_derivative (λx1. f x1 * g x1) x = ",
+                "      f x * real_derivative g x + real_derivative f x * g x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -4246,6 +4318,20 @@
             "vars": {
                 "f": "real ⇒ real",
                 "f1": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_pow",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. f x1 ^ n) x = ",
+                "   of_nat n * f x ^ (n - 1) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "n": "nat",
                 "x": "real"
             }
@@ -6003,6 +6089,34 @@
                 "f": "real ⇒ real",
                 "n": "nat",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_real_pow_atreal",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable p (atreal x) ",
+                "   ⟶ f x > 0 ⟶ real_differentiable (λx1. f x1 ^ p x1) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "p": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_real_pow",
+            "prop": [
+                "real_differentiable_on f s ",
+                "⟶ real_differentiable_on p s ",
+                "   ⟶ (∀x. x ∈ s ⟶ f x > 0) ⟶ real_differentiable_on (λx. f x ^ p x) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "p": "real ⇒ real",
+                "s": "real set"
             }
         },
         {
@@ -8175,7 +8289,7 @@
             ],
             "prop": [
                 "real_differentiable_on f s ",
-                "⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (g ∘ f) s"
+                "⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (λx. g (f x)) s"
             ],
             "steps": [
                 {
@@ -9687,6 +9801,18 @@
             }
         },
         {
+            "name": "real_differentiable_at_exp_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. exp (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -9736,6 +9862,72 @@
             "vars": {
                 "s": "real set",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_exp",
+            "prop": "real_differentiable_on exp s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_differentiable_on_exp_compose",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on_exp, {}, {s: image f s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable_on exp (image f s)"
+                },
+                {
+                    "args": "real_differentiable_on_compose",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on (λx. exp (f x)) s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on (λx. exp (f x)) s"
+                }
+            ],
+            "prop": "real_differentiable_on f s ⟶ real_differentiable_on (λx. exp (f x)) s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_compose"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_exp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
             }
         },
         {
@@ -10072,6 +10264,18 @@
             }
         },
         {
+            "name": "real_differentiable_at_sin_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. sin (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "name": "real_differentiable_within_sin",
             "num_gaps": 0,
             "proof": [
@@ -10118,6 +10322,72 @@
             "vars": {
                 "s": "real set",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_sin",
+            "prop": "real_differentiable_on sin s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_differentiable_on_sin_compose",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on_sin, {}, {s: image f s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable_on sin (image f s)"
+                },
+                {
+                    "args": "real_differentiable_on_compose",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on (λx. sin (f x)) s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on (λx. sin (f x)) s"
+                }
+            ],
+            "prop": "real_differentiable_on f s ⟶ real_differentiable_on (λx. sin (f x)) s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_compose"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_sin"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
             }
         },
         {
@@ -10500,6 +10770,18 @@
             }
         },
         {
+            "name": "real_differentiable_at_cos_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. cos (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "name": "real_differentiable_within_cos",
             "num_gaps": 0,
             "proof": [
@@ -10546,6 +10828,72 @@
             "vars": {
                 "s": "real set",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_cos",
+            "prop": "real_differentiable_on cos s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_differentiable_on_cos_compose",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_differentiable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on f s"
+                },
+                {
+                    "args": "real_differentiable_on_cos, {}, {s: image f s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_differentiable_on cos (image f s)"
+                },
+                {
+                    "args": "real_differentiable_on_compose",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_differentiable_on f s ⊢ real_differentiable_on (λx. cos (f x)) s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on (λx. cos (f x)) s"
+                }
+            ],
+            "prop": "real_differentiable_on f s ⟶ real_differentiable_on (λx. cos (f x)) s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_compose"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_differentiable_on_cos"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
             }
         },
         {
@@ -11274,6 +11622,19 @@
             }
         },
         {
+            "name": "real_differentiable_at_log_compose",
+            "prop": [
+                "0 < f x ",
+                "⟶ real_differentiable f (atreal x) ",
+                "   ⟶ real_differentiable (λx1. log (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -11333,6 +11694,26 @@
             "vars": {
                 "s": "real set",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_log",
+            "prop": "(∀x. x ∈ s ⟶ 0 < x) ⟶ real_differentiable_on log s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_differentiable_on_log_compose",
+            "prop": [
+                "(∀x. x ∈ s ⟶ 0 < f x) ",
+                "⟶ real_differentiable_on f s ⟶ real_differentiable_on (λx. log (f x)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
             }
         },
         {
@@ -11685,6 +12066,19 @@
             }
         },
         {
+            "name": "real_differentiable_at_sqrt_compose",
+            "prop": [
+                "0 < f x ",
+                "⟶ real_differentiable f (atreal x) ",
+                "   ⟶ real_differentiable (λx1. sqrt (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -11744,6 +12138,23 @@
             "vars": {
                 "s": "real set",
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_sqrt",
+            "prop": "(∀x. x ∈ s ⟶ 0 < x) ⟶ real_differentiable_on sqrt s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_differentiable_on_sqrt_compose",
+            "prop": "(∀x. x ∈ s ⟶ 0 < f x) ⟶ real_differentiable_on (λx. sqrt (f x)) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
             }
         },
         {

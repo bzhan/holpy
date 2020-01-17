@@ -155,7 +155,6 @@ class NatTest(unittest.TestCase):
             ("z + y + x", "x + y + z"),
             ("1 + y", "y + 1"),
             ("Suc (x + y)", "x + y + 1"),
-            ("2 + 3 + x", "x + 2 + 3"),
         ]
 
         cv = nat.norm_full()
