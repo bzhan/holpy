@@ -649,7 +649,7 @@ class Expr:
         b = []
         for f in p.monomials[0].factors:
             if f[0].ty == FUN and f[0].func_name == "abs":
-                a.append((f[0].args[0], 1))
+                a.append((f[0], 1))
             else:
                 b.append(f)
         am = from_mono(poly.Monomial(Const(1), a)) #terms with abs
