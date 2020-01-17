@@ -196,15 +196,16 @@ class RulesTest(unittest.TestCase):
     def testElimAbs(self):
         test_data = [
             ("INT x:[-pi/2, pi/2]. sqrt(cos(x))*abs(sin(x))",
-            "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) + (INT x:[-pi / 2,0]. cos(x) ^ (1/2) * -sin(x))"),
-            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))", "(INT x:[0,pi / 2]. 2 ^ (1/2) * cos(x)) + (INT x:[pi / 2,pi]. 2 ^ (1/2) * -cos(x))")
+            "(INT x:[0,pi / 2]. sqrt(cos(x)) * sin(x)) + (INT x:[-pi / 2,0]. sqrt(cos(x)) * sin(x))"),
+            ("INT x:[0, pi]. sqrt(2) * abs(cos(x))", "(INT x:[0,pi / 2]. sqrt(2) * cos(x)) + (INT x:[pi / 2,pi]. sqrt(2) * cos(x))"),
+            ("INT u:[1,3]. u * abs(u) ^ -1", "INT u:[1,3]. u * u ^ -1")
         ]
 
         for s, s1 in test_data:
             s = parse_expr(s)
             s1 = parse_expr(s1)
             rule = rules.ElimAbs()
-            self.assertEqual(rules.OnSubterm(rules.ElimAbs()).eval(s), s1)
+            self.assertEqual(rules.OnSubterm(rules.ElimAbs()).eval(s).normalize(), s1.normalize())
     
     def testIntegrateByEquation(self):
         test_data = [
