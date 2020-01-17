@@ -245,6 +245,10 @@ class from_coeff_form(Conv):
             return pt.on_rhs(thy, rewr_conv('real_mul_rid'))
         elif t.arg1 == one:
             return pt.on_rhs(thy, rewr_conv('real_mul_lid'))
+        elif t.arg == zero:
+            return pt.on_rhs(thy, rewr_conv('real_mul_rzero'))
+        elif t.arg1 == zero:
+            return pt.on_rhs(thy, rewr_conv('real_mul_lzero'))
         else:
             return pt
 
@@ -271,9 +275,9 @@ class norm_add_monomial(Conv):
     def get_proof_term(self, thy, t):
         pt = refl(t)
         if t.arg1 == zero:
-            return pt.on_rhs(thy, rewr_conv("real_add_rid"))
-        elif t.arg == zero:
             return pt.on_rhs(thy, rewr_conv("real_add_lid"))
+        elif t.arg == zero:
+            return pt.on_rhs(thy, rewr_conv("real_add_rid"))
         elif is_plus(t.arg1):
             # Left side has more than one term. Compare last term with a
             m1, m2 = dest_monomial(t.arg1.arg), dest_monomial(t.arg)
@@ -281,8 +285,8 @@ class norm_add_monomial(Conv):
                 pt = pt.on_rhs(thy,
                     rewr_conv('real_add_assoc', sym=True),
                     arg_conv(combine_monomial()))
-                if pt.rhs.arg.arg1 == zero:
-                    pt = pt.on_rhs(thy, arg_conv(rewr_conv('real_mul_lzero')), rewr_conv('real_add_rid'))
+                if pt.rhs.arg == zero:
+                    pt = pt.on_rhs(thy, rewr_conv('real_add_rid'))
                 return pt
             elif m1 < m2:
                 return pt
@@ -295,10 +299,7 @@ class norm_add_monomial(Conv):
             # Left side is an atom. Compare two sides
             m1, m2 = dest_monomial(t.arg1), dest_monomial(t.arg)
             if m1 == m2:
-                pt = pt.on_rhs(thy, combine_monomial())
-                if pt.rhs.arg1 == zero:
-                    pt = pt.on_rhs(thy, rewr_conv('real_mul_lzero'))
-                return pt
+                return pt.on_rhs(thy, combine_monomial())
             elif m1 < m2:
                 return pt
             else:
@@ -395,6 +396,14 @@ class combine_atom(Conv):
 
             return pt.on_rhs(thy, from_exponent_form())
 
+class swap_mult_r(Conv):
+    """Rewrite (a * b) * c to (a * c) * b."""
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        return pt.on_rhs(thy,
+            rewr_conv('real_mult_assoc', sym=True),
+            arg_conv(rewr_conv('real_mult_comm')),
+            rewr_conv('real_mult_assoc'))
 
 class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * b.
@@ -403,6 +412,9 @@ class norm_mult_atom(Conv):
     any other constant number.
     
     """
+    def __init__(self, conds):
+        self.conds = conds
+
     def get_proof_term(self, thy, t):
         pt = refl(t)
         if t.arg1 == one:
@@ -411,8 +423,68 @@ class norm_mult_atom(Conv):
             return pt.on_rhs(thy, rewr_conv('real_mul_rid'))
         elif is_times(t.arg1):
             # Left side has more than one atom. Compare last atom with b
-            if t.arg1.arg == t.arg:
-                pass
+            m1, m2 = dest_atom(t.arg1.arg), dest_atom(t.arg)
+            if m1 == m2:
+                pt = pt.on_rhs(thy,
+                    rewr_conv('real_mult_assoc', sym=True),
+                    arg_conv(combine_atom(self.conds)))
+                if pt.rhs.arg == one:
+                    pt = pt.on_rhs(thy, arg_conv('real_mul_rid'))
+                return pt
+            elif m1 < m2:
+                return pt
+            else:
+                pt = pt.on_rhs(thy, swap_mult_r(), arg1_conv(self))
+                if pt.rhs.arg1 == one:
+                    pt = pt.on_rhs(thy, rewr_conv('real_mul_lid'))
+                return pt
+        else:
+            # Left side is an atom. Compare two sides
+            m1, m2 = dest_atom(t.arg1), dest_atom(t.arg)
+            if m1 == m2:
+                return pt.on_rhs(thy, combine_atom(self.conds))
+            elif m1 < m2:
+                return pt
+            else:
+                return pt.on_rhs(thy, rewr_conv('real_add_comm'))
+
+class norm_mult_monomial(Conv):
+    """Normalize expression of the form (a_1 * ... * a_n) * (b_1 * ... * b_m)."""
+    def __init__(self, conds):
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        if is_times(t.arg):
+            return pt.on_rhs(thy, rewr_conv('real_mult_assoc'), arg1_conv(self), norm_mult_atom(self.conds))
+        else:
+            return pt.on_rhs(thy, norm_mult_atom(self.conds))
+
+class norm_mult_monomials(Conv):
+    """Normalize (c_1 * m_1) * (c_2 * m_2), where c_1, c_2 are constants,
+    and m_1, m_2 are monomials.
+
+    """
+    def __init__(self, conds):
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        return pt.on_rhs(thy,
+            binop_conv(to_coeff_form()),
+            rewr_conv('real_mult_assoc'),  # (c_1 * m_1 * c_2) * m_2
+            arg1_conv(swap_mult_r()),  # (c_1 * c_2 * m_1) * m_2
+            arg1_conv(arg1_conv(real_eval_conv())),  # (c_1c_2 * m_1) * m_2
+            rewr_conv('real_mult_assoc', sym=True),  # c_1c_2 * (m_1 * m_2)
+            arg_conv(norm_mult_monomial(self.conds)),
+            from_coeff_form())
+
+def norm_mult(thy, t, pts):
+    """Normalization of mult. Assume two sides are in normal form."""
+    return norm_mult_monomials(pts).get_proof_term(thy, t)
+
+auto.add_global_autos_norm(times, norm_mult)
+
 
 def real_approx_eval(t):
     """Approximately evaluate t as a constant.

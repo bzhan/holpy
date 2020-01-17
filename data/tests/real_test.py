@@ -94,6 +94,29 @@ class RealTest(unittest.TestCase):
             cv = real.combine_atom(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
+    def testNormMultMonomials(self):
+        test_data = [
+            ("x * y", [], "x * y"),
+            ("(1 / 2 * x) * (1 / 2 * y)", [], "1 / 4 * (x * y)"),
+            ("x * (1 / 2 * y)", [], "1 / 2 * (x * y)"),
+            ("(1 / 2 * x) * y", [], "1 / 2 * (x * y)"),
+            ("(1 / 2 * x) * (2 * y)", [], "x * y"),
+            ("(x * y) * (x * y)", [], "x ^ (2::nat) * y ^ (2::nat)"),
+            ("(x * y) * (1 / 2 * x ^ (-(1::real)))", ["x > 0"], "1 / 2 * y"),
+            ("(x * y) * (x ^ (-(1::real)) * y ^ (-(1::real)))", ["x > 0", "y > 0"], "(1::real)"),
+            ("(1 / 2) * x", [], "1 / 2 * x"),
+            ("(1 / 2) * (1 / 2 * x)", [], "1 / 4 * x"),
+            ("(1 / 2) * (2 * x)", [], "x"),
+            ("0 * x", [], "(0::real)"),
+        ]
+
+        vars = {'x': 'real', 'y': 'real'}
+        ctxt = Context('realintegral', vars=vars)
+        for t, conds, res in test_data:
+            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            cv = real.norm_mult_monomials(conds_pt)
+            test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
+
     def testNormPoly(self):
         test_data = [
             ("x + x", "2 * x"),
