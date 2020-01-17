@@ -29,6 +29,9 @@ class Simplify(Rule):
     expression as a polynomial, and normalizes the polynomial.
 
     """
+    def __init__(self):
+        self.name = "Simplify"
+    
     def eval(self, e):
         e = e.normalize()
         if e.ty == expr.INTEGRAL and e.body.ty == expr.OP and e.body.op == "/":
@@ -61,6 +64,9 @@ class Linearity(Rule):
     INT (c * a) = c * INT a  (where c is a constant).
     INT (c / a) = c * INT 1 / a (where c is a contant)
     """
+    def __init__(self):
+        self.name = "Linearity"
+    
     def eval(self, e):
         def eval1(e):
             if e.ty != expr.INTEGRAL:
@@ -80,9 +86,9 @@ class Linearity(Rule):
             integrals = c.separate_integral()
             result = []
             for i in integrals:
-                result.append(eval1(i))
+                result.append(eval1(i[0]))
             for i in range(len(integrals)):
-                c = c.replace_trig(integrals[i], result[i]) # e = a * b * INT c
+                c = c.replace_trig(integrals[i][0], result[i]) # e = a * b * INT c
             return c
         c = eval2(e).normalize().normalize()
         return eval2(c)
@@ -101,6 +107,10 @@ class CommonIntegral(Rule):
     INT sec(x)^2 = tan(x)
     INT csc(x)^2 = -cot(x)
     """
+    def __init__(self):
+        self.name = "CommonIntegral"
+
+
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
@@ -218,6 +228,7 @@ class Substitution(Rule):
         assert isinstance(var_name, str) and isinstance(var_subst, expr.Expr)
         self.var_name = var_name
         self.var_subst = var_subst
+        self.name = "Substitution"
 
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -242,7 +253,7 @@ class Substitution(Rule):
             lower2 = parser.parse_expr(str(lower2).replace("**", "^"))
             upper2 = parser.parse_expr(str(upper2).replace("**", "^"))
         var_subst_subst = expr.deriv(e.var, self.var_subst)
-        g,l = var_subst_subst.ranges(e.var, e.lower, e.upper)
+        g, l = var_subst_subst.ranges(e.var, e.lower, e.upper)
         new_integral = []
         var = parser.parse_expr(str(e.var))
         if len(g) != 0:
@@ -255,12 +266,69 @@ class Substitution(Rule):
                 new_integral.append(expr.Integral(str(self.var_name.findVar()), y, x, expr.Op("-", body2)))
         return sum(new_integral[1:], new_integral[0])
 
+class Substitution1(Rule):
+    """Apply substitution u = g(x) x = y(u)  f(x) = x+5  u=>x+1   (x+1)+4 """
+    """INT x:[a, b]. f(g(x))*g(x)' = INT u:[g(a), g(b)].f(u)"""
+    def __init__(self, var_name, var_subst):
+        self.name = "Substitution"
+        self.var_name = var_name
+        self.var_subst = var_subst
+
+    def eval(self, e):
+        var_name = parser.parse_expr(self.var_name)
+        var_subst = self.var_subst
+        gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
+        gu = gu[0] if isinstance(gu, list) else gu
+        gu = expr.holpy_style(gu)
+        #print("!!!", e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu))
+        c = e.body.replace_trig(parser.parse_expr(e.var), gu)
+        #print("###",c, c.normalize())
+        new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize()
+        var_subst_deriv = expr.deriv(e.var, var_subst)
+        up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
+        print("up: ", up, "down: ", down)
+        new_integral = []
+        if len(up) != 0:
+            for l, u in up:
+                i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
+                j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
+                new_integral.append(expr.Integral(self.var_name, i, j, new_problem_body))
+        if len(down) != 0:
+            for l, u in down:
+                i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
+                j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
+                new_integral.append(expr.Integral(self.var_name, j, i, new_problem_body))
+        return sum(new_integral[1:], new_integral[0])
+
+
+
+class Substitution2(Rule):
+    """Apply substitution x = f(u)"""
+    def __init__(self, var_name, var_subst):
+        #such as var_name: "u" var_subst: "sin(u)"
+        self.var_name = var_name
+        self.var_subst = var_subst
+        self.name = "Substitution inverse"
+
+    def eval(self, e):
+        subst_deriv = expr.deriv(self.var_name, self.var_subst) #dx = d(x(u)) = x'(u) *du
+        new_e_body = e.body.replace_trig(expr.holpy_style(str(e.var)), self.var_subst) #replace all x with x(u)
+        new_e_body = expr.Op("*", new_e_body, subst_deriv) # g(x) = g(x(u)) * x'(u)
+        lower = solvers.solve(expr.sympy_style(self.var_subst - e.lower))[0]
+        upper = solvers.solve(expr.sympy_style(self.var_subst - e.upper))[0]
+        return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
+        
+
+
+
+
 class Equation(Rule):
     """Apply substitution for equal expressions"""
     def __init__(self, old_expr, new_expr):
         assert isinstance(old_expr, Expr) and isinstance(new_expr, Expr)
         self.old_expr = old_expr
         self.new_expr = new_expr
+        self.name = "Equation"
     
     def eval(self, e):
         if self.new_expr.normalize() != self.old_expr.normalize():
@@ -284,6 +352,7 @@ class IntegrationByParts(Rule):
         assert isinstance(u, expr.Expr) and isinstance(v, expr.Expr)
         self.u = u
         self.v = v
+        self.name = "Integrate by parts"
 
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -302,6 +371,8 @@ class IntegrationByParts(Rule):
 class PolynomialDivision(Rule):
     """Simplify the representation of polynomial divided by polinomial.
     """
+    def __init__(self):
+        self.name = "Fraction Division"
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
@@ -310,6 +381,8 @@ class PolynomialDivision(Rule):
 
 class ElimAbs(Rule):
     """Eliminate abstract value."""
+    def __init__(self):
+        self.name = "Elimate abs"
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
@@ -322,6 +395,7 @@ class ElimAbs(Rule):
             new_integral.append(expr.Integral(e.var, l, h, norm_expr * abs_expr))
         for l, h in s:
             new_integral.append(expr.Integral(e.var, l, h, norm_expr * expr.Op("-", abs_expr)))
+        print(new_integral)
         return sum(new_integral[1:], new_integral[0])
 
 class IntegrateByEquation(Rule):
@@ -329,6 +403,7 @@ class IntegrateByEquation(Rule):
     def __init__(self, lhs):
         assert isinstance(lhs, expr.Expr)
         self.lhs = lhs
+        self.name = "Integrate by equation"
     
     def eval(self, e):
         integral_in_e = e.separate_integral()
