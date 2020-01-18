@@ -193,7 +193,7 @@ class RulesTest(unittest.TestCase):
             s2 = parse_expr(e2)
             self.assertEqual(rule.eval(s1), s2)
 
-    def testElimAbs(self):
+    def testElimAbsByMonomial(self):
         test_data = [
             ("INT x:[-pi/2, pi/2]. sqrt(cos(x))*abs(sin(x))",
             "(INT x:[0,pi / 2]. sqrt(cos(x)) * sin(x)) + (INT x:[-pi / 2,0]. sqrt(cos(x)) * sin(x))"),
@@ -207,6 +207,17 @@ class RulesTest(unittest.TestCase):
             rule = rules.ElimAbs()
             self.assertEqual(rules.OnSubterm(rules.ElimAbs()).eval(s).normalize(), s1.normalize())
     
+    def testElimAbs(self):
+        test_data = [
+            ("INT u:[1, 4]. 2*u/(1 + abs(u))", "INT u:[1, 4]. 2*u/(1 + u)"),
+            ("INT u:[-2, 3]. 2*u/(abs(u) + abs(u + 1))", "(INT u:[-2,-1]. 2 * u / (-u + -(u + 1))) + (INT u:[-1,0]. 2 * u / (-u + u + 1)) + (INT u:[0,3]. 2 * u / (u + u + 1))")
+        ]
+
+        for s, s1 in test_data:
+            s = parse_expr(s)
+            s1 = parse_expr(s1)
+            self.assertEqual(rules.ElimAbs().eval(s).normalize(), s1.normalize())
+
     def testIntegrateByEquation(self):
         test_data = [
             ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)", 

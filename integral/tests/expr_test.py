@@ -269,7 +269,7 @@ class ExprTest(unittest.TestCase):
             "2 + 2*log(2)"
         ]
 
-    def testGetAbs(self):
+    def testGetAbsByMonomial(self):
         test_data = [
             ("x * abs(x)", ["x","x"]),
             ("sqrt(cos(x)) * abs(sin(x))", ["sin(x)", "cos(x)^(1/2)"]),
@@ -280,7 +280,16 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             for i in range(len(s2)):
                 s2[i] = parse_expr(s2[i])
-            self.assertEqual(s.getAbs(), tuple(s2))
+            self.assertEqual(s.getAbsByMonomial(), tuple(s2))
+
+    def testGetAbs(self):
+        test_data = [
+            ("2 * u / (1 + abs(u))", ["u"])
+        ]
+
+        for s, s1 in test_data:
+            s = parse_expr(s)
+            s.getAbs()
 
     def testPriority(self):
         x = parse_expr("x")
