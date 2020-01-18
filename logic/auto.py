@@ -20,6 +20,8 @@ current theory, a term (the goal), and a list of conditions
 (as proof terms), and either returns a proof term or fails.
 
 """
+# Turn on / off debugging information
+debug_auto = False
 
 # Mapping from head terms to the corresponding automatic procedure.
 global_autos = dict()
@@ -57,7 +59,9 @@ def solve(thy, goal, pts=None):
     proposition is the goal.
 
     """
-    # print(printer.print_term(thy, goal))
+    if debug_auto:
+        print("Solve:", printer.print_term(thy, goal))
+
     if pts is None:
         pts = []
 
@@ -171,6 +175,9 @@ def norm(thy, t, pts=None):
     side is t. If no normalization is available, it returns t = t.
 
     """
+    if debug_auto:
+        print("Norm:", printer.print_term(thy, t))
+
     eq_pt = refl(t.head)
 
     # First normalize each argument
@@ -180,7 +187,10 @@ def norm(thy, t, pts=None):
     # Next, try to find rules
     if t.head in global_autos_norm:
         f = global_autos_norm[t.head]
-        eq_pt = ProofTerm.transitive(eq_pt, f(thy, eq_pt.rhs, pts))
+        if isinstance(f, Conv):
+            eq_pt = eq_pt.on_rhs(thy, f)
+        else:
+            eq_pt = ProofTerm.transitive(eq_pt, f(thy, eq_pt.rhs, pts))
         if eq_pt.rhs.head == t.head:
             # Head unchanged, normalization stops here
             return eq_pt

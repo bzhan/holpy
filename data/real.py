@@ -513,6 +513,24 @@ auto.add_global_autos_norm(
         'real_of_nat_mul'
     ]))
 
+auto.add_global_autos_norm(
+    nat_power,
+    auto.norm_rules([
+        'real_nat_power_def_1',
+        'real_nat_pwoer_def_2',
+        'real_pow_1',
+        'real_pow_one',
+    ])
+)
+
+auto.add_global_autos_norm(
+    real_power,
+    auto.norm_rules([
+        'rpow_pow',
+        'rpow_0',
+        'rpow_1',
+    ])
+)
 
 def real_approx_eval(t):
     """Approximately evaluate t as a constant.

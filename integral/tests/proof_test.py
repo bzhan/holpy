@@ -9,7 +9,7 @@ from data.real import realT
 from data.set import setT
 from data.integral import within, atreal
 from integral import proof
-from logic.auto import auto_conv
+from logic import auto
 from logic.context import Context
 from logic.proofterm import refl, ProofTerm
 from logic.conv import top_conv, arg_conv
@@ -231,7 +231,7 @@ class ProofTest(unittest.TestCase):
         ctxt = Context('realintegral')
         for t, conds, res in test_data:
             conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
-            cv = auto_conv(conds_pt)
+            cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, t=t, t_res=res, assms=conds)
 
     def testNormAbsoluteValue(self):
@@ -247,22 +247,46 @@ class ProofTest(unittest.TestCase):
         ctxt = Context('realintegral', vars=vars)
         for t, conds, res in test_data:
             conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
-            cv = auto_conv(conds_pt)
+            cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
     def testNormRealDerivative(self):
         test_data = [
+            # Differentiable everywhere
             ("real_derivative (%x. x) x", [], "(1::real)"),
             ("real_derivative (%x. 3) x", [], "(0::real)"),
             ("real_derivative (%x. 3 * x) x", [], "(3::real)"),
-            ("real_derivative (%x. x ^ (2::nat)) x", [], "2 * x ^ ((2::nat) - 1)"),
+            ("real_derivative (%x. x ^ (2::nat)) x", [], "2 * x"),
+            ("real_derivative (%x. x ^ (3::nat)) x", [], "3 * x ^ (2::nat)"),
+            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 * (x + 1) ^ (2::nat)"),
+            ("real_derivative (%x. exp x) x", [], "exp x"),
+            ("real_derivative (%x. exp (x ^ (2::nat))) x", [], "2 * (x * exp (x ^ (2::nat)))"),
+            ("real_derivative (%x. exp (exp x)) x", [], "exp x * exp (exp x)"),
+            ("real_derivative (%x. sin x) x", [], "cos x"),
+            ("real_derivative (%x. cos x) x", [], "-1 * sin x"),
+            ("real_derivative (%x. sin x * cos x) x", [], "(cos x) ^ (2::nat) + -1 * (sin x) ^ (2::nat)"),
+
+            # Differentiable with conditions
+            ("real_derivative (%x. 1 / x) x", ["x Mem real_open_interval 0 1"], "-1 / x ^ (2::nat)"),
+            ("real_derivative (%x. 1 / (x ^ (2::nat) + 1)) x", ["x Mem real_open_interval (-1) 1"],
+             "-2 * x / (1 + x ^ (2::nat)) ^ (2::nat)"),
+            ("real_derivative (%x. log x) x", ["x Mem real_open_interval 0 1"], "1 / x"),
+            ("real_derivative (%x. log (sin x)) x", ["x Mem real_open_interval 0 1"], "cos x / sin x"),
+            ("real_derivative (%x. sqrt x) x", ["x Mem real_open_interval 0 1"], "1 / (2 * sqrt x)"),
+            ("real_derivative (%x. sqrt (x ^ (2::nat) + 1)) x", ["x Mem real_open_interval (-1) 1"],
+             "2 * x / (2 * sqrt (1 + x ^ (2::nat)))"),
+
+            # Real power
+            ("real_derivative (%x. x ^ (1 / 3)) x", ["x Mem real_open_interval 0 1"],
+             "1 / 3 * x ^ -(2 / 3)"),
+            ("real_derivative (%x. 2 ^ x) x", ["x Mem real_open_interval (-1) 1"], "log 2 * 2 ^ x"),
         ]
 
         vars = {'x': 'real'}
         ctxt = Context('realintegral', vars=vars)
         for t, conds, res in test_data:
             conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
-            cv = auto_conv(conds_pt)
+            cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
     def testRealIneqOnInterval(self):

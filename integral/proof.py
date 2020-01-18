@@ -285,13 +285,31 @@ auto.add_global_autos_norm(
 auto.add_global_autos_norm(
     Const('real_derivative', TFun(TFun(realT, realT), realT, realT)),
     auto.norm_rules([
+        # Differentiable everywhere
         "real_derivative_const",
         "real_derivative_id",
         "real_derivative_add",
         "real_derivative_neg",
         "real_derivative_sub",
         "real_derivative_mul",
-        "real_derivative_pow"
+        "real_derivative_pow",
+        "real_derivative_exp",
+        "real_derivative_exp_compose",
+        "real_derivative_sin",
+        "real_derivative_sin_compose",
+        "real_derivative_cos",
+        "real_derivative_cos_compose",
+
+        # Differentiable with conditions
+        "real_derivative_div_atreal",
+        "real_derivative_log",
+        "real_derivative_log_compose",
+        "real_derivative_sqrt",
+        "real_derivative_sqrt_compose",
+
+        # Real power
+        "real_derivative_rpow",
+        "real_derivative_rpow_right",
     ])
 )
 

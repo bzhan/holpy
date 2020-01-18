@@ -8,7 +8,8 @@ from kernel.theory import Method, global_methods
 from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
+from logic.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
+from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
@@ -259,6 +260,12 @@ def nat_eval(t):
             return nat_eval(t.arg) + 1
         elif t.head == plus:
             return nat_eval(t.arg1) + nat_eval(t.arg)
+        elif t.head == minus:
+            m, n = nat_eval(t.arg1), nat_eval(t.arg)
+            if m <= n:
+                return 0
+            else:
+                return m - n
         elif t.head == times:
             return nat_eval(t.arg1) * nat_eval(t.arg)
         else:
@@ -293,6 +300,31 @@ class nat_conv(Conv):
                                  rewr_of_nat_conv(sym=True))
             else:
                 raise ConvException("nat_conv")
+
+# Conversion using a macro
+class nat_eval_macro(ProofMacro):
+    """Simplify all arithmetic operations."""
+    def __init__(self):
+        self.level = 0  # No expand implemented
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, thy, goal, prevs):
+        assert len(prevs) == 0, "nat_eval_macro: no conditions expected"
+        assert goal.is_equals(), "nat_eval_macro: goal must be an equality"
+        assert nat_eval(goal.lhs) == nat_eval(goal.rhs), "nat_eval_macro: two sides are not equal"
+
+        return Thm([], goal)
+
+class nat_eval_conv(Conv):
+    """Simplify all arithmetic operations."""
+    def get_proof_term(self, thy, t):
+        simp_t = to_binary_nat(nat_eval(t))
+        if simp_t == t:
+            return refl(t)
+        return ProofTermDeriv('nat_eval', thy, Term.mk_equals(t, simp_t))
+
+auto.add_global_autos_norm(minus, nat_eval_conv())
 
 # Normalization on the semiring.
 
@@ -790,6 +822,7 @@ class nat_eq_conv(Conv):
 
 
 macro.global_macros.update({
+    "nat_eval": nat_eval_macro(),
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
     "nat_const_less_eq": nat_const_less_eq_macro(),
