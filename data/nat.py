@@ -6,9 +6,12 @@ from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
+from data import binary
+from data.binary import bit0, bit1, to_binary, from_binary, is_binary
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
+from logic.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
+from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
@@ -21,17 +24,19 @@ from util import poly
 
 # Basic definitions
 
-natT = Type("nat")
-zero = Const("zero", natT)
+natT = binary.natT
+zero = binary.zero
+one = binary.one
 Suc = Const("Suc", TFun(natT, natT))
 Pre = Const("Pre", TFun(natT, natT))
-one = Const("one", natT)
 of_nat = Const("of_nat", TFun(natT, natT))
 plus = Const("plus", TFun(natT, natT, natT))
 minus = Const("minus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 less_eq = Const("less_eq", TFun(natT, natT, boolT))
 less = Const("less", TFun(natT, natT, boolT))
+greater_eq = Const("greater_eq", TFun(natT, natT, boolT))
+greater = Const("greater", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc
@@ -72,24 +77,6 @@ def is_less(t):
 
 # Arithmetic on binary numbers
 
-bit0 = Const("bit0", TFun(natT, natT))
-bit1 = Const("bit1", TFun(natT, natT))
-    
-def to_binary(n):
-    """Convert Python integer n to HOL binary form (without
-    appending of_nat).
-    
-    """
-    assert isinstance(n, int), "to_binary"
-    if n == 0:
-        return zero
-    elif n == 1:
-        return one
-    elif n % 2 == 0:
-        return bit0(to_binary(n // 2))
-    else:
-        return bit1(to_binary(n // 2))
-
 def to_binary_nat(n):
     """Convert Python integer n to HOL binary form (appending of_nat)."""
     assert isinstance(n, int) and n >= 0, "to_binary_nat"
@@ -100,34 +87,10 @@ def to_binary_nat(n):
     else:
         return of_nat(to_binary(n))
 
-def is_binary(t):
-    """Whether the term t is in standard binary form."""
-    assert isinstance(t, Term), "is_binary"
-    if t == zero or t == one or t.is_const_name("zero") or t.is_const_name("one"):
-        return True
-    elif not t.is_comb():
-        return False
-    elif t.head == bit0 or t.head == bit1:
-        return is_binary(t.arg)
-    else:
-        return False
-
 def is_binary_nat(t):
     return t == zero or t == one or \
            (t.is_comb() and t.fun.is_const_name("of_nat") and
             is_binary(t.arg) and from_binary(t.arg) >= 2)
-
-def from_binary(t):
-    """Convert HOL binary form (without of_nat) to Python integer."""
-    assert isinstance(t, Term), "from_binary"
-    if t == zero or t.is_const_name("zero"):
-        return 0
-    elif t == one or t.is_const_name("one"):
-        return 1
-    elif t.head == bit0:
-        return 2 * from_binary(t.arg)
-    else:
-        return 2 * from_binary(t.arg) + 1
 
 def from_binary_nat(t):
     """Convert HOL binary form (with of_nat) to Python integer."""
@@ -259,6 +222,12 @@ def nat_eval(t):
             return nat_eval(t.arg) + 1
         elif t.head == plus:
             return nat_eval(t.arg1) + nat_eval(t.arg)
+        elif t.head == minus:
+            m, n = nat_eval(t.arg1), nat_eval(t.arg)
+            if m <= n:
+                return 0
+            else:
+                return m - n
         elif t.head == times:
             return nat_eval(t.arg1) * nat_eval(t.arg)
         else:
@@ -293,6 +262,31 @@ class nat_conv(Conv):
                                  rewr_of_nat_conv(sym=True))
             else:
                 raise ConvException("nat_conv")
+
+# Conversion using a macro
+class nat_eval_macro(ProofMacro):
+    """Simplify all arithmetic operations."""
+    def __init__(self):
+        self.level = 0  # No expand implemented
+        self.sig = Term
+        self.limit = None
+
+    def eval(self, thy, goal, prevs):
+        assert len(prevs) == 0, "nat_eval_macro: no conditions expected"
+        assert goal.is_equals(), "nat_eval_macro: goal must be an equality"
+        assert nat_eval(goal.lhs) == nat_eval(goal.rhs), "nat_eval_macro: two sides are not equal"
+
+        return Thm([], goal)
+
+class nat_eval_conv(Conv):
+    """Simplify all arithmetic operations."""
+    def get_proof_term(self, thy, t):
+        simp_t = to_binary_nat(nat_eval(t))
+        if simp_t == t:
+            return refl(t)
+        return ProofTermDeriv('nat_eval', thy, Term.mk_equals(t, simp_t))
+
+auto.add_global_autos_norm(minus, nat_eval_conv())
 
 # Normalization on the semiring.
 
@@ -790,6 +784,7 @@ class nat_eq_conv(Conv):
 
 
 macro.global_macros.update({
+    "nat_eval": nat_eval_macro(),
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
     "nat_const_less_eq": nat_const_less_eq_macro(),

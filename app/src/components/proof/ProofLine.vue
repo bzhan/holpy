@@ -24,9 +24,8 @@
       <Expression v-bind:line="line.th_hl"/>
       <span class="item-text keyword3"> by </span>
       <span v-if="line.rule === 'sorry' && is_goal" class="item-text" style="background-color:red">sorry</span>
-      <span v-else class="item-text">{{line.rule}}</span>
+      <span v-else class="item-text">{{line.rule}} </span>
       <span v-if="line.args_hl.length > 0">
-        <span class="item-text">&nbsp;</span>
         <Expression v-bind:line="line.args_hl"/>
       </span>
       <span v-if="line.prevs.length > 0">

@@ -5,6 +5,7 @@ from copy import copy
 from kernel.type import HOLType
 from kernel import term
 from kernel import extension
+from data import binary
 from syntax import settings
 from syntax import infertype
 from syntax import operator
@@ -309,14 +310,14 @@ def get_ast_term(thy, t):
         # Natural numbers:
         if t.is_const_name("zero") or t.is_const_name("one") or \
            (t.is_comb() and t.fun.is_const_name("of_nat") and
-            nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2):
+            binary.is_binary(t.arg) and binary.from_binary(t.arg) >= 2):
             # First find the number
             if t.is_const_name("zero"):
                 n = 0
             elif t.is_const_name("one"):
                 n = 1
             else:
-                n = nat.from_binary(t.arg)
+                n = binary.from_binary(t.arg)
             res = Number(n, t.get_type())
             if (t.is_const() and hasattr(t, "print_type")) or \
                (t.is_comb() and hasattr(t.fun, "print_type")):

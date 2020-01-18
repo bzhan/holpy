@@ -4982,6 +4982,22 @@
             }
         },
         {
+            "name": "real_derivative_div_atreal",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x) ",
+                "   ⟶ ¬(g x = 0) ",
+                "      ⟶ real_derivative (λx1. f x1 / g x1) x = ",
+                "         (real_derivative f x * g x - f x * real_derivative g x) / g x ^ (2::nat)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
@@ -9735,6 +9751,26 @@
             }
         },
         {
+            "name": "real_derivative_exp",
+            "prop": "real_derivative exp x = exp x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_exp_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. exp (f x1)) x = exp (f x) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -10194,6 +10230,26 @@
             "ty": "thm",
             "vars": {
                 "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_sin",
+            "prop": "real_derivative sin x = cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_sin_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. sin (f x1)) x = cos (f x) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -10700,6 +10756,26 @@
             "ty": "thm",
             "vars": {
                 "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_cos",
+            "prop": "real_derivative cos x = -(sin x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_cos_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. cos (f x1)) x = -(sin (f x)) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -11717,6 +11793,26 @@
             }
         },
         {
+            "name": "real_derivative_log",
+            "prop": "x > 0 ⟶ real_derivative log x = 1 / x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_log_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ 0 < f x ⟶ real_derivative (λx1. log (f x1)) x = real_derivative f x / f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -12155,6 +12251,27 @@
             "vars": {
                 "f": "real ⇒ real",
                 "s": "real set"
+            }
+        },
+        {
+            "name": "real_derivative_sqrt",
+            "prop": "0 < x ⟶ real_derivative sqrt x = 1 / (2 * sqrt x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_sqrt_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ 0 < f x ",
+                "   ⟶ real_derivative (λx1. sqrt (f x1)) x = real_derivative f x / (2 * sqrt (f x))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
             }
         },
         {
@@ -14287,6 +14404,20 @@
             }
         },
         {
+            "name": "real_derivative_rpow",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ 0 < f x ",
+                "   ⟶ real_derivative (λx1. f x1 ^ y) x = y * x ^ (y - 1) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -14295,6 +14426,20 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_rpow_right",
+            "prop": [
+                "real_differentiable f (atreal a) ",
+                "⟶ 0 < f a ",
+                "   ⟶ real_derivative (λx1. a ^ f x1) x = log a * a ^ f x * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },

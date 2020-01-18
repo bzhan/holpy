@@ -38,6 +38,8 @@ def convert(t):
             raise SymPyException("convert: unexpected variable type: %s" % str(t.T))
     elif t == real.pi:
         return sympy.pi
+    elif nat.is_binary_nat(t):
+        return sympy.Number(nat.from_binary_nat(t))
     elif real.is_binary_real(t):
         val = real.from_binary_real(t)
         if isinstance(val, Fraction):
@@ -77,21 +79,37 @@ def convert(t):
             return sympy.cos(convert(t.arg))
         elif t.head == real.tan:
             return sympy.tan(convert(t.arg))
-        elif t.head == real.greater_eq:
+        elif t.head.is_const_name('greater_eq'):
             return convert(t.arg1) >= convert(t.arg)
-        elif t.head == real.greater:
+        elif t.head.is_const_name('greater'):
             return convert(t.arg1) > convert(t.arg)
-        elif t.head == real.less_eq:
+        elif t.head.is_const_name('less_eq'):
             return convert(t.arg1) <= convert(t.arg)
-        elif t.head == real.less:
+        elif t.head.is_const_name('less'):
             return convert(t.arg1) < convert(t.arg)
         else:
             raise SymPyException("Unable to convert " + str(t))
     else:
         raise SymPyException("Unable to convert " + str(t))
 
+def solve_goal(goal):
+    """Attempt to solve goal using sympy."""
+    if logic.is_neg(goal) and goal.arg.is_equals():
+        try:
+            lhs, rhs = convert(goal.arg.lhs), convert(goal.arg.rhs)
+        except SymPyException:
+            return False
 
-def solve(goal, cond):
+        return lhs != rhs
+    else:
+        try:
+            sympy_goal = convert(goal)
+        except SymPyException:
+            return False
+
+        return sympy_goal == True
+
+def solve_with_interval(goal, cond):
     """Attempt to solve goal using sympy's solveset function."""
     if not (hol_set.is_mem(cond) and cond.arg1.is_var() and 
             (cond.arg.head.is_const_name("real_closed_interval") or
@@ -126,13 +144,15 @@ class SymPyMacro(ProofMacro):
         self.limit = None
 
     def can_eval(self, thy, goal, prevs):
-        if len(prevs) != 1:
+        if len(prevs) == 0:
+            return solve_goal(goal)
+        elif len(prevs) == 1:
+            return solve_with_interval(goal, prevs[0].prop)
+        else:
             return False
-        return solve(goal, prevs[0].prop)
 
     def eval(self, thy, goal, prevs):
-        assert len(prevs) == 1, "SymPyMacro: expect exactly one condition"
-        assert solve(goal, prevs[0].prop), "sympy: not solved."
+        assert self.can_eval(thy, goal, prevs), "sympy: not solved."
 
         return Thm(sum([th.hyps for th in prevs], ()), goal)
 
@@ -158,6 +178,13 @@ auto.add_global_autos(real.less_eq, sympy_solve)
 auto.add_global_autos(real.less, sympy_solve)
 
 auto.add_global_autos_neg(Term.equals(real.realT), sympy_solve)
+
+auto.add_global_autos(nat.greater_eq, sympy_solve)
+auto.add_global_autos(nat.greater, sympy_solve)
+auto.add_global_autos(nat.less_eq, sympy_solve)
+auto.add_global_autos(nat.less, sympy_solve)
+
+auto.add_global_autos_neg(Term.equals(nat.natT), sympy_solve)
 
 global_macros.update({
     "sympy": SymPyMacro(),
