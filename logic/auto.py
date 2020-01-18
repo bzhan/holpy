@@ -6,7 +6,7 @@ from kernel import macro
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
-from logic.conv import Conv, refl
+from logic.conv import Conv, ConvException, refl
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from syntax import printer
 from util import name
@@ -48,8 +48,10 @@ def add_global_autos_neg(head, f):
         global_autos_neg[head].append(f)
 
 def add_global_autos_norm(head, f):
-    assert head not in global_autos_norm, "add_global_autos_norm: only one function per head term."
-    global_autos_norm[head] = f
+    if head not in global_autos_norm:
+        global_autos_norm[head] = [f]
+    else:
+        global_autos_norm[head].append(f)
 
 
 def solve(thy, goal, pts=None):
@@ -184,22 +186,27 @@ def norm(thy, t, pts=None):
     for arg in t.args:
         eq_pt = ProofTerm.combination(eq_pt, norm(thy, arg, pts))
 
-    # Next, try to find rules
+    # Next, apply each normalization rule
     if t.head in global_autos_norm:
-        f = global_autos_norm[t.head]
-        if isinstance(f, Conv):
-            eq_pt = eq_pt.on_rhs(thy, f)
-        else:
-            eq_pt = ProofTerm.transitive(eq_pt, f(thy, eq_pt.rhs, pts))
-        if eq_pt.rhs.head == t.head:
-            # Head unchanged, normalization stops here
+        ori_rhs = eq_pt.rhs
+        for f in global_autos_norm[t.head]:
+            try:
+                if isinstance(f, Conv):
+                    eq_pt = eq_pt.on_rhs(thy, f)
+                else:
+                    eq_pt = ProofTerm.transitive(eq_pt, f(thy, eq_pt.rhs, pts))
+            except ConvException:
+                continue
+
+        if eq_pt.rhs == ori_rhs:
+            # Unchanged, normalization stops here
             return eq_pt
         else:
             # Head changed, continue apply norm
             return ProofTerm.transitive(eq_pt, norm(thy, eq_pt.rhs, pts))
     else:
         # No normalization rule available for this head
-        return eq_pt        
+        return eq_pt
     
 def norm_rules(th_names):
     """Return a normalization function that tries to apply each of the
@@ -210,6 +217,9 @@ def norm_rules(th_names):
         for th_name in th_names:
             if thy.has_theorem(th_name):
                 th = thy.get_theorem(th_name, svar=True)
+            else:
+                continue
+
             try:
                 instsp = matcher.first_order_match(th.concl.lhs, t)
             except matcher.MatchException:

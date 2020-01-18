@@ -7,7 +7,7 @@ from fractions import Fraction
 from logic.tests.conv_test import test_conv
 from logic.tests.logic_test import test_macro
 from logic.context import Context
-from logic.auto import auto_conv
+from logic import auto
 from logic.proofterm import ProofTerm
 from data import real
 from syntax import parser
@@ -58,12 +58,16 @@ class RealTest(unittest.TestCase):
             ("(2::real) / 1", 2),
             ("(1::real) / 3", Fraction(1,3)),
             ("(2 + 3) / (3::real)", Fraction(5,3)),
+            ("(2::real) ^ (3::nat)", 8),
+            ("(2::real) ^ (-(1::real))", Fraction(1,2)),
         ]
 
         for expr, res in test_data:
             ctxt = Context('real')
             t = parser.parse_term(ctxt, expr)
-            self.assertEqual(real.real_eval(t), res)
+            eval_res = real.real_eval(t)
+            self.assertEqual(type(eval_res), type(res))
+            self.assertEqual(eval_res, res)
 
     def testRealEvalConv(self):
         test_data = [
@@ -128,11 +132,13 @@ class RealTest(unittest.TestCase):
             ("x + y + (-1) * x", "y"),
             ("(x + y) * (x + y)", "x ^ (2::nat) + y ^ (2::nat) + 2 * (x * y)"),
             ("(x + y) * (x - y)", "x ^ (2::nat) + -1 *  y ^ (2::nat)"),
+            ("(2::real) ^ (3::nat)", "(8::real)"),
+            ("(2::real) ^ (-(1::real))", "1 / 2"),
         ]
 
         vars = {'x': 'real', 'y': 'real'}
         for expr, res in test_data:
-            test_conv(self, 'real', auto_conv(), vars=vars, t=expr, t_res=res)
+            test_conv(self, 'real', auto.auto_conv(), vars=vars, t=expr, t_res=res)
 
     def testRealApproxEval(self):
         test_data = [

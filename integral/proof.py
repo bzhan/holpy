@@ -519,36 +519,6 @@ class common_integral(Conv):
             return pt
 
 
-class simplify_TR4(Conv):
-    """Simplification of special angles."""
-    def __init__(self):
-        self.simplify_list = [
-            'real_exp_0',
-            'real_sin_0',
-            'real_sin_pi6',
-            'real_sin_pi4',
-            'real_sin_pi3',
-            'real_sin_pi2_alt',
-            'real_sin_pi',
-            'real_cos_0',
-            'real_cos_pi6',
-            'real_cos_pi4',
-            'real_cos_pi3',
-            'real_cos_pi2_alt',
-            'real_cos_pi',
-        ]
-
-    def get_proof_term(self, thy, t):
-        if not t.head in (real.sin, real.cos, real.exp):
-            raise ConvException("simplify_TR4")
-
-        pt = refl(t)
-        pt = pt.on_rhs(thy, arg_conv(real.real_norm_conv()))
-        for th_name in self.simplify_list:
-            pt = pt.on_rhs(thy, try_conv(rewr_conv(th_name)))
-
-        return pt
-
 class simplify_body(Conv):
     """Simplify body of integral."""
     def get_proof_term(self, thy, expr):
@@ -558,7 +528,7 @@ class simplify_body(Conv):
         if not expr.arg.is_abs():
             raise ConvException("simplify_body")
 
-        return arg_conv(abs_conv(real.real_norm_conv())).get_proof_term(thy, expr)
+        return arg_conv(abs_conv(auto.auto_conv())).get_proof_term(thy, expr)
 
 class simplify(Conv):
     """Simplify evalat as well as arithmetic."""
@@ -567,9 +537,8 @@ class simplify(Conv):
             thy,
             top_conv(rewr_conv('evalat_def')),
             beta_norm_conv(),
-            top_conv(simplify_TR4()),
             top_conv(rewr_conv('pow_2_sqrt_abs_alt')),
-            real.real_norm_conv(),
+            auto.auto_conv(),
             top_conv(simplify_body()))
 
 

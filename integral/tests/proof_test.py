@@ -224,8 +224,9 @@ class ProofTest(unittest.TestCase):
             ("sin 0", [], "(0::real)"),
             ("sin (1 / 6 * pi)", [], "1 / 2"),
             ("cos 0", [], "(1::real)"),
-            ("cos (1 / 6 * pi)", [], "sqrt 3 / 2"),
+            ("cos (1 / 6 * pi)", [], "1 / 2 * sqrt 3"),
             ("exp 0", [], "(1::real)"),
+            ("cos (pi / 4)", [], "1 / 2 * sqrt 2"),
         ]
 
         ctxt = Context('realintegral')
@@ -267,14 +268,15 @@ class ProofTest(unittest.TestCase):
             ("real_derivative (%x. sin x * cos x) x", [], "(cos x) ^ (2::nat) + -1 * (sin x) ^ (2::nat)"),
 
             # Differentiable with conditions
-            ("real_derivative (%x. 1 / x) x", ["x Mem real_open_interval 0 1"], "-1 / x ^ (2::nat)"),
+            ("real_derivative (%x. 1 / x) x", ["x Mem real_open_interval 0 1"], "-1 * x ^ -(2::real)"),
             ("real_derivative (%x. 1 / (x ^ (2::nat) + 1)) x", ["x Mem real_open_interval (-1) 1"],
-             "-2 * x / (1 + x ^ (2::nat)) ^ (2::nat)"),
-            ("real_derivative (%x. log x) x", ["x Mem real_open_interval 0 1"], "1 / x"),
-            ("real_derivative (%x. log (sin x)) x", ["x Mem real_open_interval 0 1"], "cos x / sin x"),
-            ("real_derivative (%x. sqrt x) x", ["x Mem real_open_interval 0 1"], "1 / (2 * sqrt x)"),
+             "-2 * (x * (1 + x ^ (2::nat)) ^ -(2::real))"),
+            ("real_derivative (%x. log x) x", ["x Mem real_open_interval 0 1"], "x ^ -(1::real)"),
+            ("real_derivative (%x. log (sin x)) x", ["x Mem real_open_interval 0 1"],
+             "cos x * (sin x) ^ -(1::real)"),
+            ("real_derivative (%x. sqrt x) x", ["x Mem real_open_interval 0 1"], "1 / 2 * x ^ -(1 / 2)"),
             ("real_derivative (%x. sqrt (x ^ (2::nat) + 1)) x", ["x Mem real_open_interval (-1) 1"],
-             "2 * x / (2 * sqrt (1 + x ^ (2::nat)))"),
+             "x * (1 + x ^ (2::nat)) ^ -(1 / 2)"),
 
             # Real power
             ("real_derivative (%x. x ^ (1 / 3)) x", ["x Mem real_open_interval 0 1"],
