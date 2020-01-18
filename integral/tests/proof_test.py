@@ -163,9 +163,9 @@ class ProofTest(unittest.TestCase):
             ("sin 0", [], "(0::real)"),
             ("sin (1 / 6 * pi)", [], "1 / 2"),
             ("cos 0", [], "(1::real)"),
-            ("cos (1 / 6 * pi)", [], "1 / 2 * sqrt 3"),
+            ("cos (1 / 6 * pi)", [], "1 / 2 * 3 ^ (1 / 2)"),
             ("exp 0", [], "(1::real)"),
-            ("cos (pi / 4)", [], "1 / 2 * sqrt 2"),
+            ("cos (pi / 4)", [], "1 / 2 * 2 ^ (1 / 2)"),
         ]
 
         ctxt = Context('realintegral')
@@ -230,6 +230,14 @@ class ProofTest(unittest.TestCase):
             cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
+    def testRealIncreasing(self):
+        test_data = [
+            "real_derivative (%x. x) x >= 0",
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+
     def testRealIneqOnInterval(self):
         test_data = [
             # Nonnegative
@@ -256,42 +264,6 @@ class ProofTest(unittest.TestCase):
             else:
                 test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
                            assms=[assm], failed=AssertionError, args=goal, eval_only=True)
-
-    def testRealIncreasingOn(self):
-        test_data = [
-            ("6 * x", "a", "b"),
-            ("sin x", "(0::real)", "pi / 2"),
-        ]
-
-        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real', 'a': 'real', 'b': 'real'})
-        thy = ctxt.thy
-        x = Var('x', realT)
-        for s, a, b in test_data:
-            s = parser.parse_term(ctxt, s)
-            f = Term.mk_abs(x, s)
-            a = parser.parse_term(ctxt, a)
-            b = parser.parse_term(ctxt, b)
-            pt = proof.real_increasing_onI(thy, f, a, b)
-            th = thy.check_proof(pt.export())
-            self.assertEqual(th.prop, proof.mk_real_increasing_on(f, a, b))
-
-    def testRealDecreasingOn(self):
-        test_data = [
-            ("- 6 * x", "a", "b"),
-            ("cos x", "(0::real)", "pi / 2"),
-        ]
-
-        ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real', 'a': 'real', 'b': 'real'})
-        thy = ctxt.thy
-        x = Var('x', realT)
-        for s, a, b in test_data:
-            s = parser.parse_term(ctxt, s)
-            f = Term.mk_abs(x, s)
-            a = parser.parse_term(ctxt, a)
-            b = parser.parse_term(ctxt, b)
-            pt = proof.real_decreasing_onI(thy, f, a, b)
-            th = thy.check_proof(pt.export())
-            self.assertEqual(th.prop, proof.mk_real_decreasing_on(f, a, b))
 
     def testLinearityConv(self):
         test_data = [

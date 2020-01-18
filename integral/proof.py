@@ -47,16 +47,6 @@ def mk_real_integrable_on(f, a, b):
     T = TFun(TFun(realT, realT), set.setT(realT), boolT)
     return Const('real_integrable_on', T)(f, real.closed_interval(a, b))
 
-def mk_real_increasing_on(f, a, b):
-    """Construct the term real_increasing_on f (real_closed_interval a b)."""
-    T = TFun(TFun(realT, realT), set.setT(realT), boolT)
-    return Const('real_increasing_on', T)(f, real.closed_interval(a, b))
-    
-def mk_real_decreasing_on(f, a, b):
-    """Construct the term real_decreasing_on f (real_closed_interval a b)."""
-    T = TFun(TFun(realT, realT), set.setT(realT), boolT)
-    return Const('real_decreasing_on', T)(f, real.closed_interval(a, b))
-
 def has_real_derivativeI(thy, f, x, S):
     """Prove a theorem of the form has_real_derivative f f' (within (atreal x) S).
     
@@ -357,38 +347,6 @@ class real_ineq_on_interval_macro(ProofTermMacro):
         return Thm(pts[0].hyps, goal)
 
 
-def real_increasing_onI(thy, f, a, b):
-    """Prove a theorem of the form real_increasing_on f (real_closed_interval a b).
-
-    Currently invokes the SMT solver.
-
-    """
-    var_names = [v.name for v in term.get_vars(f)]
-    nm = name.get_variant_name(f.var_name, var_names)
-    v = Var(nm, f.var_T)
-    t = f.subst_bound(v)
-    if t == real.sin(v) and a == real.zero and b == real.divides(real.pi, real.to_binary_real(2)):
-        return apply_theorem(thy, 'real_increasing_on_sin')
-
-    return z3wrapper.apply_z3(thy, mk_real_increasing_on(f, a, b))
-
-def real_decreasing_onI(thy, f, a, b):
-    """Prove a theorem of the form real_decreasing_on f (real_closed_interval a b).
-
-    Currently invokes the SMT solver.
-
-    """
-    var_names = [v.name for v in term.get_vars(f)]
-    nm = name.get_variant_name(f.var_name, var_names)
-    v = Var(nm, f.var_T)
-    t = f.subst_bound(v)
-    if t == real.cos(v) and a == real.zero and b == real.divides(real.pi, real.to_binary_real(2)):
-        return apply_theorem(thy, 'real_decreasing_on_cos_div2')
-    elif t == real.cos(v) and a == real.zero and b == real.pi:
-        return apply_theorem(thy, 'real_decreasing_on_cos')
-
-    return z3wrapper.apply_z3(thy, mk_real_decreasing_on(f, a, b))
-
 class linearity(Conv):
     """Apply linearity to an integral."""
     def get_proof_term(self, thy, expr):
@@ -567,36 +525,32 @@ def apply_subst_thm(thy, f, g, a, b):
     where both f (g x) * dg x and f are normalized.
 
     """
-    # Form the assumption: a <= b
-    le_pt = real.real_less_eq(thy, a, b)
-
-    # Form the assumption: f is continuous on [g(a), g(b)]
-    cont_f_pt = auto.auto_solve(thy, mk_real_continuous_on(f, g(a).beta_conv(), g(b).beta_conv()))
-
-    # Form the assumption: derivative of g
-    x = Var(g.var_name, realT)
-
-    S = real.closed_interval(a, b)
-    g_deriv = has_real_derivativeI(thy, g, x, S)
-    x_mem = set.mk_mem(x, S)
-    dg_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, g_deriv))
-
     # Form the assumption: g is increasing or decreasing on [a, b],
     # then apply the theorem.
     if real.real_approx_eval(g(a).beta_conv()) <= real.real_approx_eval(g(b).beta_conv()):
-        incr_pt = real_increasing_onI(thy, g, a, b)
-        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr', cont_f_pt, dg_pt, le_pt, incr_pt)
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr',
+            inst={'a': a, 'b': b, 'f': f, 'g': g})
+        
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+
         eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
         eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())),
                                     arg1_conv(binop_conv(auto.auto_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg1_conv(binop_conv(simplify())))
     else:
-        decr_pt = real_decreasing_onI(thy, g, a, b)
-        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr', cont_f_pt, dg_pt, le_pt, decr_pt)
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
+            inst={'a': a, 'b': b, 'f': f, 'g': g})
+        
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+
         eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
         eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))),
                                     arg_conv(arg1_conv(binop_conv(auto.auto_conv()))))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg1_conv(binop_conv(simplify()))))
 
     return eq_pt
 

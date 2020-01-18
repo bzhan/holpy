@@ -66,6 +66,8 @@ def solve(thy, goal, pts=None):
 
     if pts is None:
         pts = []
+    elif isinstance(pts, tuple):
+        pts = list(pts)
 
     # First handle the case where goal matches one of the conditions.
     for pt in pts:
@@ -122,12 +124,16 @@ def solve(thy, goal, pts=None):
         pt = ProofTerm.forall_intr(v, pt)
         return pt
 
+    # Normalize goal
+    eq_pt = norm(thy, goal, pts)
+    goal = eq_pt.rhs
+
     # Call registered functions
     if logic.is_neg(goal) and goal.arg.head in global_autos_neg:
         for f in global_autos_neg[goal.arg.head]:
             try:
                 pt = f(thy, goal, pts)
-                return pt
+                return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
             except TacticException:
                 pass
 
@@ -135,7 +141,7 @@ def solve(thy, goal, pts=None):
         for f in global_autos[goal.head]:
             try:
                 pt = f(thy, goal, pts)
-                return pt
+                return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
             except TacticException:
                 pass
 

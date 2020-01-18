@@ -26598,8 +26598,6 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "du": "real ⇒ real",
-                "dv": "real ⇒ real",
                 "u": "real ⇒ real",
                 "v": "real ⇒ real"
             }
@@ -27568,54 +27566,19 @@
             }
         },
         {
-            "name": "real_increasing_on",
-            "prop": "real_increasing_on f S ⟷ (∀x. ∀y. x ∈ S ⟶ y ∈ S ⟶ x ≤ y ⟶ f x ≤ f y)",
-            "ty": "def",
-            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_decreasing_on",
-            "prop": "real_decreasing_on f S ⟷ (∀x. ∀y. x ∈ S ⟶ y ∈ S ⟶ x ≤ y ⟶ f x ≥ f y)",
-            "ty": "def",
-            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
-        },
-        {
-            "name": "real_increasing_on_sin",
-            "prop": "real_increasing_on (λx. sin x) (real_closed_interval 0 (pi / 2))",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_decreasing_on_cos_div2",
-            "prop": "real_decreasing_on (λx. cos x) (real_closed_interval 0 (pi / 2))",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_decreasing_on_cos",
-            "prop": "real_decreasing_on (λx. cos x) (real_closed_interval 0 pi)",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
             "name": "real_integral_substitution_simple_incr",
             "prop": [
                 "real_continuous_on f (real_closed_interval (g a) (g b)) ",
-                "⟶ (∀x. x ∈ real_closed_interval a b ",
-                "      ⟶ has_real_derivative g (dg x) (within (atreal x) (real_closed_interval a b))) ",
+                "⟶ (∀x. x ∈ real_open_interval a b ",
+                "      ⟶ real_differentiable g (atreal x) ∧ real_derivative g x ≥ 0) ",
                 "   ⟶ a ≤ b ",
-                "      ⟶ real_increasing_on g (real_closed_interval a b) ",
-                "         ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * dg x) = ",
-                "            real_integral (real_closed_interval (g a) (g b)) f"
+                "      ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * real_derivative g x) = ",
+                "         real_integral (real_closed_interval (g a) (g b)) f"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "dg": "real ⇒ real",
                 "f": "real ⇒ real",
                 "g": "real ⇒ real"
             }
@@ -27624,18 +27587,16 @@
             "name": "real_integral_substitution_simple_decr",
             "prop": [
                 "real_continuous_on f (real_closed_interval (g a) (g b)) ",
-                "⟶ (∀x. x ∈ real_closed_interval a b ",
-                "      ⟶ has_real_derivative g (dg x) (within (atreal x) (real_closed_interval a b))) ",
+                "⟶ (∀x. x ∈ real_open_interval a b ",
+                "      ⟶ real_differentiable g (atreal x) ∧ real_derivative g x ≤ 0) ",
                 "   ⟶ a ≤ b ",
-                "      ⟶ real_decreasing_on g (real_closed_interval a b) ",
-                "         ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * dg x) = ",
-                "            -(real_integral (real_closed_interval (g b) (g a)) f)"
+                "      ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * real_derivative g x) = ",
+                "         -(real_integral (real_closed_interval (g b) (g a)) f)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "dg": "real ⇒ real",
                 "f": "real ⇒ real",
                 "g": "real ⇒ real"
             }
