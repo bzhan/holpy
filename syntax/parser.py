@@ -11,6 +11,7 @@ from kernel import term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from kernel import extension
+from data import binary
 from syntax import infertype
 
 
@@ -192,22 +193,20 @@ class HOLTransformer(Transformer):
             return Var(s, None)
 
     def typed_term(self, t, T):
-        from data import nat
         if t.is_comb() and t.fun.is_const_name("of_nat") and \
-           nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2:
-            t.fun.T = TFun(nat.natT, T)
+           binary.is_binary(t.arg) and binary.from_binary(t.arg) >= 2:
+            t.fun.T = TFun(binary.natT, T)
         else:
             t.T = T
         return t
 
     def number(self, n):
-        from data import nat
         if int(n) == 0:
             return Const("zero", None)
         elif int(n) == 1:
             return Const("one", None)
         else:
-            return Const("of_nat", None)(nat.to_binary(int(n)))
+            return Const("of_nat", None)(binary.to_binary(int(n)))
 
     def literal_list(self, *args):
         from data import list

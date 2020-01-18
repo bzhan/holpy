@@ -6,6 +6,8 @@ from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
+from data import binary
+from data.binary import bit0, bit1, to_binary, from_binary, is_binary
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
@@ -22,11 +24,11 @@ from util import poly
 
 # Basic definitions
 
-natT = Type("nat")
-zero = Const("zero", natT)
+natT = binary.natT
+zero = binary.zero
+one = binary.one
 Suc = Const("Suc", TFun(natT, natT))
 Pre = Const("Pre", TFun(natT, natT))
-one = Const("one", natT)
 of_nat = Const("of_nat", TFun(natT, natT))
 plus = Const("plus", TFun(natT, natT, natT))
 minus = Const("minus", TFun(natT, natT, natT))
@@ -73,24 +75,6 @@ def is_less(t):
 
 # Arithmetic on binary numbers
 
-bit0 = Const("bit0", TFun(natT, natT))
-bit1 = Const("bit1", TFun(natT, natT))
-    
-def to_binary(n):
-    """Convert Python integer n to HOL binary form (without
-    appending of_nat).
-    
-    """
-    assert isinstance(n, int), "to_binary"
-    if n == 0:
-        return zero
-    elif n == 1:
-        return one
-    elif n % 2 == 0:
-        return bit0(to_binary(n // 2))
-    else:
-        return bit1(to_binary(n // 2))
-
 def to_binary_nat(n):
     """Convert Python integer n to HOL binary form (appending of_nat)."""
     assert isinstance(n, int) and n >= 0, "to_binary_nat"
@@ -101,34 +85,10 @@ def to_binary_nat(n):
     else:
         return of_nat(to_binary(n))
 
-def is_binary(t):
-    """Whether the term t is in standard binary form."""
-    assert isinstance(t, Term), "is_binary"
-    if t == zero or t == one or t.is_const_name("zero") or t.is_const_name("one"):
-        return True
-    elif not t.is_comb():
-        return False
-    elif t.head == bit0 or t.head == bit1:
-        return is_binary(t.arg)
-    else:
-        return False
-
 def is_binary_nat(t):
     return t == zero or t == one or \
            (t.is_comb() and t.fun.is_const_name("of_nat") and
             is_binary(t.arg) and from_binary(t.arg) >= 2)
-
-def from_binary(t):
-    """Convert HOL binary form (without of_nat) to Python integer."""
-    assert isinstance(t, Term), "from_binary"
-    if t == zero or t.is_const_name("zero"):
-        return 0
-    elif t == one or t.is_const_name("one"):
-        return 1
-    elif t.head == bit0:
-        return 2 * from_binary(t.arg)
-    else:
-        return 2 * from_binary(t.arg) + 1
 
 def from_binary_nat(t):
     """Convert HOL binary form (with of_nat) to Python integer."""

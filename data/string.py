@@ -2,7 +2,8 @@
 
 from kernel.type import TFun, Type
 from kernel.term import Term, Const
-from data.nat import natT, to_binary, is_binary, from_binary
+from data.binary import to_binary, is_binary, from_binary
+from data.nat import natT
 from data.list import listT, mk_literal_list, is_literal_list, dest_literal_list
 
 """Utility functions for characters and strings."""
