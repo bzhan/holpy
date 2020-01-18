@@ -28,11 +28,6 @@ import integral
 
 evalat = Const('evalat', TFun(TFun(realT, realT), realT, realT, realT))
 
-def mk_has_real_derivative(f, g, x, S):
-    """Construct the term has_real_derivative f g (within (atreal x) S)."""
-    T = TFun(TFun(realT, realT), realT, netT(realT), boolT)
-    return Const('has_real_derivative', T)(f, g, within(atreal(x), S))
-
 def mk_has_real_integral(f, x, a, b):
     """Construct the term has_real_integral f x (real_closed_interval a b)."""
     T = TFun(TFun(realT, realT), realT, set.setT(realT), boolT)
@@ -120,28 +115,6 @@ def has_real_derivativeI(thy, f, x, S):
     else:
         raise NotImplementedError
 
-def has_real_derivative(thy, goal):
-    """Prove goal of the form has_real_derivative f f' (within (atreal x) S).
-
-    This is achieved by first using has_real_derivativeI to compute
-    some g such that has_real_derivative f g (within (atreal x) S) holds,
-    then attempts to derive equation f' = g.
-
-    """
-    assert goal.head.is_const_name('has_real_derivative')
-    f, f2, net = goal.args
-    assert net.head.is_const_name('within')
-    atreal_x, S = net.args
-    assert atreal_x.head.is_const_name('atreal')
-    x = atreal_x.arg
-
-    pt = has_real_derivativeI(thy, f, x, S)
-    g = pt.prop.args[1]
-    eq_goal = Term.mk_equals(g, f2)
-    assert real.real_norm_macro().can_eval(thy, eq_goal), "has_real_derivative"
-
-    eq_pt = ProofTermDeriv('real_norm', thy, eq_goal)
-    return pt.on_prop(thy, argn_conv(1, rewr_conv(eq_pt)))
 
 # Introduction rules for real_continuous_on
 auto.add_global_autos(
@@ -575,19 +548,19 @@ class integrate_by_parts(Conv):
         x = Var(nm, f.var_T)
 
         u_deriv = has_real_derivativeI(thy, self.u, x, S)
-        u_deriv = u_deriv.on_prop(thy, argn_conv(1, real.real_norm_conv()))
+        u_deriv = u_deriv.on_prop(thy, argn_conv(1, auto.auto_conv()))
         v_deriv = has_real_derivativeI(thy, self.v, x, S)
-        v_deriv = v_deriv.on_prop(thy, argn_conv(1, real.real_norm_conv()))
+        v_deriv = v_deriv.on_prop(thy, argn_conv(1, auto.auto_conv()))
         x_mem = set.mk_mem(x, S)
         cond_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, conj_thms(thy, u_deriv, v_deriv)))
 
         # Apply the theorem
         eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat', le_pt, cond_pt)
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(real.real_norm_conv()))))
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))))
 
         pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
         return pt
 
@@ -621,16 +594,16 @@ def apply_subst_thm(thy, f, g, a, b):
     if real.real_approx_eval(g(a).beta_conv()) <= real.real_approx_eval(g(b).beta_conv()):
         incr_pt = real_increasing_onI(thy, g, a, b)
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr', cont_f_pt, dg_pt, le_pt, incr_pt)
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())),
-                                    arg1_conv(binop_conv(real.real_norm_conv())))
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())),
+                                    arg1_conv(binop_conv(auto.auto_conv())))
         eq_pt = eq_pt.on_rhs(thy, arg1_conv(binop_conv(simplify())))
     else:
         decr_pt = real_decreasing_onI(thy, g, a, b)
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr', cont_f_pt, dg_pt, le_pt, decr_pt)
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(real.real_norm_conv()))),
-                                    arg_conv(arg1_conv(binop_conv(real.real_norm_conv()))))
+        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))),
+                                    arg_conv(arg1_conv(binop_conv(auto.auto_conv()))))
         eq_pt = eq_pt.on_rhs(thy, arg_conv(arg1_conv(binop_conv(simplify()))))
 
     return eq_pt
@@ -666,7 +639,7 @@ class substitution(Conv):
 
         # Use the equality to rewrite expression.
         pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
 
         return pt
@@ -702,7 +675,7 @@ class substitution_inverse(Conv):
 
         # Use the equality to rewrite expression
         pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(real.real_norm_conv())))
+        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt, sym=True))
 
         return pt
