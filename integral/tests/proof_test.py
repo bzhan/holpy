@@ -238,9 +238,9 @@ class ProofTest(unittest.TestCase):
         test_data = [
             ("abs x", ["x >= 0"], "x"),
             ("abs x", ["x Mem real_closed_interval 0 1"], "x"),
-            ("abs x", ["x Mem real_closed_interval (-1) 0"], "-x"),
+            ("abs x", ["x Mem real_closed_interval (-1) 0"], "-1 * x"),
             ("abs (sin x)", ["x Mem real_closed_interval 0 (pi / 2)"], "sin x"),
-            ("abs (sin x)", ["x Mem real_closed_interval (-pi / 2) 0"], "-sin x"),
+            ("abs (sin x)", ["x Mem real_closed_interval (-pi / 2) 0"], "-1 * sin x"),
         ]
 
         vars = {'x': 'real'}
@@ -255,7 +255,7 @@ class ProofTest(unittest.TestCase):
             ("real_derivative (%x. x) x", [], "(1::real)"),
             ("real_derivative (%x. 3) x", [], "(0::real)"),
             ("real_derivative (%x. 3 * x) x", [], "(3::real)"),
-            ("real_derivative (%x. x ^ (2::nat)) x", [], "of_nat 2 * x ^ ((2::nat) - 1)"),
+            ("real_derivative (%x. x ^ (2::nat)) x", [], "2 * x ^ ((2::nat) - 1)"),
         ]
 
         vars = {'x': 'real'}

@@ -203,6 +203,8 @@ class real_eval_conv(Conv):
     """Simplify all arithmetic operations."""
     def get_proof_term(self, thy, t):
         simp_t = to_binary_real(real_eval(t))
+        if simp_t == t:
+            return refl(t)
         return ProofTermDeriv('real_eval', thy, Term.mk_equals(t, simp_t))
 
 
@@ -446,7 +448,7 @@ class norm_mult_atom(Conv):
             elif m1 < m2:
                 return pt
             else:
-                return pt.on_rhs(thy, rewr_conv('real_add_comm'))
+                return pt.on_rhs(thy, rewr_conv('real_mult_comm'))
 
 class norm_mult_monomial(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * (b_1 * ... * b_m)."""
@@ -481,9 +483,35 @@ class norm_mult_monomials(Conv):
 
 def norm_mult(thy, t, pts):
     """Normalization of mult. Assume two sides are in normal form."""
-    return norm_mult_monomials(pts).get_proof_term(thy, t)
+    pt = refl(t)
+    if is_plus(t.arg1):
+        return pt.on_rhs(thy, rewr_conv('real_add_rdistrib'))
+    elif is_plus(t.arg):
+        return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'))
+    else:
+        return pt.on_rhs(thy, norm_mult_monomials(pts))
 
 auto.add_global_autos_norm(times, norm_mult)
+
+def norm_uminus(thy, t, pts):
+    """Normalization of uminus."""
+    pt = refl(t)
+    if is_binary_real(t):
+        return pt.on_rhs(thy, real_eval_conv())
+    else:
+        return pt.on_rhs(thy, rewr_conv('real_poly_neg1'))
+
+auto.add_global_autos_norm(uminus, norm_uminus)
+
+auto.add_global_autos_norm(minus, auto.norm_rules(['real_poly_neg2']))
+
+auto.add_global_autos_norm(
+    of_nat,
+    auto.norm_rules([
+        'real_of_nat_id',
+        'real_of_nat_add',
+        'real_of_nat_mul'
+    ]))
 
 
 def real_approx_eval(t):
