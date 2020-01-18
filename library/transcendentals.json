@@ -13704,6 +13704,24 @@
             }
         },
         {
+            "name": "rpow_1",
+            "prop": "x ^ (1::real) = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "rpow_add",
+            "prop": "x > 0 ⟶ x ^ (m + n) = x ^ m * x ^ n",
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "n": "real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite",
                 "hint_rewrite_sym"

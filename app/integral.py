@@ -5,6 +5,7 @@
 import json
 from flask import request
 from flask.json import jsonify
+from lark import Lark, Transformer, v_args, exceptions
 
 import integral
 from app.app import app
@@ -108,9 +109,10 @@ def integral_separate_integrals():
     n = []
     for i in integrals:
         n.append({
-            "text": str(i),
-            "body": str(i.body),
-            "latex": integral.latex.convert_expr(i)
+            "text": str(i[0]),
+            "body": str(i[0].body),
+            "latex": integral.latex.convert_expr(i[0]),
+            "location": str(i[1])
         })
     return json.dumps(n)
 
@@ -118,25 +120,53 @@ def integral_separate_integrals():
 def integral_compose_integral():
     data = json.loads(request.get_data().decode('utf-8'))
     new_integral = []
+    latex_reason = ""
     reason = ""
+    location = ""
+    params = {}
     for d in data['problem']:
-        new_integral.append(integral.parser.parse_expr(str(d['text'])))
+        new_integral.append(integral.parser.parse_expr(d['text']))
         if '_latex_reason' in d:
-            reason += d['_latex_reason']
-            reason += "."
-        elif 'reason' in d:
+            latex_reason += d['_latex_reason']
+        if 'reason' in d:
             reason += d['reason']
-            reason += "."
+        if 'params' in d:
+            params = d['params']
+        if 'location' in d:
+            location = d['location']
     curr = integral.parser.parse_expr(data['cur_calc'])
     new_expr = curr
     old_integral = curr.separate_integral()
     for i in range(len(old_integral)):
-        new_expr = new_expr.replace_trig(old_integral[i], new_integral[i])
-    return jsonify({
+        new_expr = new_expr.replace_trig(old_integral[i][0], new_integral[i])
+    info = {
         'text': str(new_expr),
         'latex': integral.latex.convert_expr(new_expr),
-        '_latex_reason': reason
-    })
+        'reason': reason,
+        '_latex_reason': latex_reason,
+    }
+    if location != "":
+        info.update({'location': location})
+    if params:
+        info.update({'params': params})
+    return json.dumps(info)
+    # if params:
+    #     return jsonify({
+    #         'text': str(new_expr),
+    #         'latex': integral.latex.convert_expr(new_expr),
+    #         'reason': reason,
+    #         '_latex_reason': latex_reason,
+    #         'location': location,
+    #         'params': params
+    #     })
+    # else:
+    #     return jsonify({
+    #         'text': str(new_expr),
+    #         '_latex_reason': latex_reason,
+    #         'latex': integral.latex.convert_expr(new_expr),
+    #         'reason': reason,
+    #         'location': location,
+    #     })
     
 
 @app.route("/api/integral-trig-transformation", methods=['POST'])
@@ -173,21 +203,160 @@ def integral_trig_transformation():
 def integral_substitution():
     data = json.loads(request.get_data().decode('utf-8'))
     expr = integral.parser.parse_expr(data['expr'])
-    rule = integral.rules.Substitution(data['var_name'], expr)
+    rule = integral.rules.Substitution1(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Substitution",
+        'location': data['location'],
         'params': {
-            'var_name': data['var_name'],
-            'expr': data['expr'],
+            'f': str(new_problem.body),
+            'g': str(expr),
+            'var_name': str(data['var_name'])
         },
         '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
             integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
         )
     })
+
+@app.route("/api/integral-substitution2", methods=['POST'])
+def integral_substitution2():
+    data = json.loads(request.get_data().decode('utf-8'))
+    expr = integral.parser.parse_expr(data['expr'])
+    rule = integral.rules.Substitution2(data['var_name'], expr)
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Substitution inverse",
+        'params': {
+            'g': str(expr),
+            'var_name': str(data['var_name']),
+            "a": str(new_problem.lower),
+            "b": str(new_problem.upper)
+        },
+        '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
+            integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
+        )
+    })
+
+@app.route("/api/integral-validate-expr", methods=['POST'])
+def integral_validate_expr():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    flag = None # if dollar is valid, flag = true
+    try:
+        dollar = integral.parser.parse_expr(data['dollar'])
+        if dollar.normalize() != problem.body.normalize():
+            return jsonify({
+                'flag': False
+            })
+        else:
+            # Do trig transform
+            select = integral.parser.parse_expr(data['select'])
+            dollar_location = dollar.get_location()
+            location = ""
+            if data["integral_location"] != "":
+                location = data["integral_location"] + ".0"
+            else:
+                location = "0"
+            if dollar_location != "":
+                location += "." + dollar_location
+            
+            # location = data["integral_location"] + ".0." + dollar_location if data["integral_location"] != "" else "0." + dollar_location
+            new_trig_set = tuple(integral.expr.trig_transform(select))
+            new_integral_set = [integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(dollar_location, t[0])) for t in new_trig_set]
+            transform_info = []
+            for i in range(len(new_integral_set)):
+                transform_info.append({
+                    "reason": "Rewrite trigonometric",
+                    'text': str(new_integral_set[i]),
+                    'latex': integral.latex.convert_expr(new_integral_set[i]),
+                    "params":{
+                        "rule": new_trig_set[i][1]
+                    },
+                    '_latex_reason': "Rewrite trigonometric \\(%s\\) to \\(%s\\)" % 
+                                (integral.latex.convert_expr(select), integral.latex.convert_expr(new_trig_set[i][0])), 
+                    # If there is only one integral in the full expression, location begins from the body;
+                    # Else from the integral
+                    "location": location
+                })
+            return jsonify({
+                "flag": True,
+                "content": transform_info
+            })
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
+        return jsonify({
+                'flag': False
+            })
+    
+
+@app.route("/api/integral-validate-rewrite", methods=['POST'])
+def integral_validate_rewrite():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    flag = None # if dollar is valid, flag = true
+    try:
+        dollar = integral.parser.parse_expr(data['dollar'])
+        if dollar.normalize() != problem.body.normalize():
+            return jsonify({
+                'flag': False
+            })
+        else:
+            # Do trig transform
+            select = integral.parser.parse_expr(data['select'])
+            dollar_location = dollar.get_location()
+            location = ""
+            if data["integral_location"] != "":
+                location = data["integral_location"] + ".0"
+            else:
+                location = "0"
+            if dollar_location != "":
+                location += "." + dollar_location
+            return jsonify({
+                "rewrite": str(dollar),
+                "flag": True,
+                "absolute_location": location, #location in the whole Integral
+                "relative_location": dollar_location # location in its own integral
+            })
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
+        return jsonify({
+                'flag': False
+            })
+
+@app.route("/api/integral-rewrite-expr", methods=['POST'])
+def integral_rewrite_expr():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    
+    old_expr = integral.parser.parse_expr(data['old_expr'])
+    try:
+        new_expr = integral.parser.parse_expr(data['new_expr'])
+        location = data['relative_location']
+        if new_expr.normalize() != old_expr.normalize():
+            return jsonify({
+                'flag': False
+            })
+        new_problem = integral.expr.Integral(problem.var, problem.lower, problem.upper, old_expr.replace_expr(location, new_expr))
+        return jsonify({
+            'flag': True,
+            'text': str(new_problem),
+            'latex': integral.latex.convert_expr(new_problem),
+            'reason': "Rewrite",
+            '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
+                                                            integral.latex.convert_expr(new_expr)),
+            'params': {
+                'rhs': data['new_expr']
+            },
+            "location": data['absolute_location']
+        })
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
+        return jsonify({
+                'flag': False
+            })
 
 @app.route("/api/integral-integrate-by-parts", methods=['POST'])
 def integral_integrate_by_parts():
@@ -253,6 +422,17 @@ def integral_save_file():
     with open(file_name, 'w', encoding='utf-8') as f:
         json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    return jsonify({
+        'status': 'success'
+    })
+
+@app.route("/api/integral-save-format-file", methods=['POST'])
+def integral_save_format_file():
+    data = json.loads(request.get_data().decode('utf-8'))
+    file_name = "integral/examples/%s.json" % data['filename']
+    with open(file_name, 'w', encoding='utf-8') as f:
+        json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_key=True)
+    
     return jsonify({
         'status': 'success'
     })

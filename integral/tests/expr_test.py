@@ -86,15 +86,15 @@ class ExprTest(unittest.TestCase):
             ("x^(1.5)","x ^ (3/2)"),
             ("(x + y) * (x - y)", "x ^ 2 + -1 * y ^ 2"),
             ("[x]_x=a,b", "-1 * a + b"),
-            ("[x ^ 2 * y]_x=a,b", "-1 * a ^ (2) * y + b ^ (2) * y"),
+            ("[x ^ 2 * y]_x=a,b", "-1 * a ^ 2 * y + b ^ 2 * y"),
             ("[x ^ 2]_x=3,4", "7"),
             ("cos(x ^ 2)", "cos(x ^ 2)"),
             ("cos(pi/4)", "1/2 * 2 ^ (1/2)"),
             ("-(-x)", "x"),
-            ("cos(0) - cos(pi/4)", "1 + -1 * (1/2 * 2 ^ (1/2))"),
+            ("cos(0) - cos(pi/4)", "1 + -1 * 1/2 * 2 ^ (1/2)"),
             ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
-             "-1 * a + -1 * a ^ (2) + -1/3 * a ^ (3) + b + b ^ (2) + 1/3 * b ^ (3)"),
+             "-1 * a + -1 * a ^ 2 + -1/3 * a ^ 3 + b + b ^ 2 + 1/3 * b ^ 3"),
             ("x ^ (1/2) * x ^ (1/2) ", "x"),
             ("2 * (1 + 3)", "8"),
             ("atan(1)", "1/4 * pi"),
@@ -103,18 +103,17 @@ class ExprTest(unittest.TestCase):
             ("sin(3/4 * pi)", "1/2 * 2 ^ (1/2)"),
             ("pi + pi / 3", "4/3 * pi"),
             ("1 - cos(x) ^ 2", "1 + -1 * cos(x) ^ 2"),
-            ("x^2 * 6", "6 * x ^ (2)"),
-            ("((-1)) * INT x:[0, 2].(1 - x)", "INT x:[0,2]. -1 + x"),
-            ("(x * y)^2", "x ^ (2) * y ^ (2)"),
+            ("x^2 * 6", "6 * x ^ 2"),
+            ("(x * y)^2", "x ^ 2 * y ^ 2"),
             ("(2*sin(x))^2", "4 * sin(x) ^ 2"),
             ("(2^(1/2)*sin(x))^(2)", "2 * sin(x) ^ 2"),
             ("2 * 8 ^ (1/2) * 1 * cos(t) ^ 2", "2 * 8 ^ (1/2) * cos(t) ^ 2"),
             ("8 ^ (1/2) * cos(t) ^ 2 * 1", "8 ^ (1/2) * cos(t) ^ 2"),
-            ("1/3 * 3 ^ (3)", "9"),
-            ("(-1) * (1/3 * 2 ^ (3))", "-8/3"),
-            ("5 + (1/3 * 3 ^ (3) + (-1) * (1/3 * 2 ^ (3)))", "34/3"),
+            ("1/3 * 3 ^ 3", "9"),
+            ("(-1) * (1/3 * 2 ^ 3)", "-8/3"),
+            ("5 + (1/3 * 3 ^ 3 + (-1) * (1/3 * 2 ^ 3))", "34/3"),
             ("2 * 8 ^ (1/2) * (1/2)", "2 * 2 ^ (1/2)"),
-            ("x / sqrt(5 - 4 * x)", "x * (5 + -4 * x) ^ -1/2"),
+            ("x / sqrt(5 - 4 * x)", "x * (5 + -4 * x) ^ (-1/2)"),
             ("1/(1+sqrt(x))", "1 / (1 + x ^ (1/2))"),
             ("log(2) - log(3)", "log(2/3)"),
             ("log(2) + log(x)", "log(2 * x)"),
@@ -126,14 +125,17 @@ class ExprTest(unittest.TestCase):
             ("sqrt(cos(x) - cos(x)^3)", "(cos(x) + -1 * cos(x) ^ 3) ^ (1/2)"),
             ("sqrt(cos(x) * (1 - cos(x)^2))","(cos(x) + -1 * cos(x) ^ 3) ^ (1/2)"),
             ("1/2 * u ^ ((-1)) * 2 * u", "1"),
-            ("1/2 * u ^ ((-1)) * (2 * u / (1 + u ^ (2)))", "1 / (1 + u ^ (2))"),
+            ("1/2 * u ^ ((-1)) * (2 * u / (1 + u ^ (2)))", "1 / (1 + u ^ 2)"),
             # ("[log(1 + u ^ 2)]_u=(-1),1", "0"),
             ("sqrt(x ^ 2)", "abs(x)"),
             ("[abs(x)]_x=-2,3", "1"),
-            ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "log(1/2 * 6 ^ (1/2))"),
+            ("abs(sqrt(3) / 2) / 2", "1/4 * 3 ^ (1/2)"),
+            ("abs(sqrt(3) / 2) / abs(sqrt(2) / 2)", "6 ^ (1/2) / 2"),
+            ("([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))", "log(1/4 * 6 ^ (1/2))"),
             ("exp(1)", "exp(1)"),
             ("[exp(u) * sin(u)]_u=0,1", "sin(1) * exp(1)"),
-            ("exp(1) ^ 2", "exp(2)")
+            ("exp(1) ^ 2", "exp(2)"),
+            ("cos(acos(u)) ^ 2 ", "u ^ 2")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
 
@@ -156,6 +158,7 @@ class ExprTest(unittest.TestCase):
             ("D x. 3 * x", "0.1", "x"),
             ("INT x:[1,2]. 3 * x", "0", "3 * x"),
             ("INT x:[1,2]. 3 * x", "0.1", "x"),
+            ("INT u:[0,pi / 2]. sqrt(1 - sin(u) ^ 2) * cos(u)","0.1.0", "u")
         ]
 
         for s, loc, res in test_data:
@@ -266,7 +269,7 @@ class ExprTest(unittest.TestCase):
             "2 + 2*log(2)"
         ]
 
-    def testGetAbs(self):
+    def testGetAbsByMonomial(self):
         test_data = [
             ("x * abs(x)", ["x","x"]),
             ("sqrt(cos(x)) * abs(sin(x))", ["sin(x)", "cos(x)^(1/2)"]),
@@ -277,7 +280,16 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             for i in range(len(s2)):
                 s2[i] = parse_expr(s2[i])
-            self.assertEqual(s.getAbs(), tuple(s2))
+            self.assertEqual(s.getAbsByMonomial(), tuple(s2))
+
+    def testGetAbs(self):
+        test_data = [
+            ("2 * u / (1 + abs(u))", ["u"])
+        ]
+
+        for s, s1 in test_data:
+            s = parse_expr(s)
+            s.getAbs()
 
     def testPriority(self):
         x = parse_expr("x")
@@ -287,6 +299,45 @@ class ExprTest(unittest.TestCase):
 
         for s, s2 in test_data:
             self.assertEqual(s, parse_expr(s2))
+
+    def testReplaceExpr(self):
+        test_data = [
+            ("x + y", ".1", "x + y", "x + (x + y)"),
+            ("x + y + z", "0.1", "sin(x)", "x + sin(x) + z"),
+            ("x + 2", "", "x + 1 + 1", "x + 1 + 1"),
+            ("sin(x) ^ 2 * sin(x) + sin(x) ^ 2", "0.0", "1 - cos(x) ^ 2", "(1 - cos(x) ^ 2) * sin(x) + sin(x) ^ 2"),
+            ("INT u:[0,pi / 2]. sqrt(1 - sin(u) ^ 2) * cos(u)", "0.0.0", "cos(u) ^ 2", "INT u:[0,pi / 2]. sqrt(cos(u) ^ 2) * cos(u)")
+        ]
+
+        for s, s1, s2, s3 in test_data:
+            s = parse_expr(s)
+            s2 = parse_expr(s2)
+            s3 = parse_expr(s3)
+            print(s.replace_expr(s1, s2), s3)
+            self.assertEqual(s.replace_expr(s1, s2), s3)
+        
+    def testValidExpr(self):
+        test_data = [
+            ("1 + ", False),
+            ("2 * x", True),
+            ("sin(x) ^ 2 /", False)
+        ]
+
+        for s, s1 in test_data:
+            self.assertEqual(expr.valid_expr(s), s1)
+
+    def testGetLocation(self):
+        test_data = [
+            ("$x$ + y", "0"),
+            ("$x + y$", ''),
+            ("$sin(x)^2$*sin(x)", "0"),
+            ("INT x:[0, 1]. $sin(x)$ + x - 1", "0.0.0")
+        ]
+
+        for s, s1 in test_data:
+            s = parse_expr(s)
+            print(s)
+            self.assertEqual(s.get_location(), s1)
 
 if __name__ == "__main__":
     unittest.main()

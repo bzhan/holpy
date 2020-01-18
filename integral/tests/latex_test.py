@@ -9,13 +9,13 @@ class LatexTest(unittest.TestCase):
         test_data = [
             ("sqrt(2)", "\\sqrt{2}"),
             ("1/3", "\\frac{1}{3}"),
-            ("x^-2", "x ^ {-2}"),
+            ("x^-2", "\\frac{1}{x ^ 2}"),
             ("-t^2", "-t ^ 2"),
             ("exp(-1)", "e^{-1}"),
             ("-(x + y)", "-(x + y)"),
             ("[3 * x]_x=1,2", "\\left. 3 x \\right\\vert_{x=1}^{2}"),
             ("INT x:[2,3]. 2 * x + x ^ 2", "\int_{2}^{3} 2 x + x ^ 2 \,\mathrm{dx}"),
-            ("(3 * x + 1) ^ -2", "(3 x + 1) ^ {-2}"),
+            ("(3 * x + 1) ^ -2", "\\frac{1}{(3 x + 1) ^ 2}"),
             ("INT x:[0,pi / 4]. sin(x)", "\int_{0}^{\pi/4} \sin{(x)} \,\mathrm{dx}"),
             ("x^(1/2)","\sqrt{x}"),
             ("x * (1 + x)", "x (1 + x)"),
@@ -24,6 +24,7 @@ class LatexTest(unittest.TestCase):
             ("exp(-(t^2/2))", "e^{-\\frac{1}{2} * t ^ 2}"),
             ("2 * 2 ^ (1/2)", "2 \\sqrt{2}"),
             ("(-1) * exp((-1))", "-e^{-1}"),
+            ("abs(u) ^ -1", "\frac{1}{\left| u \right| ^ 1}")
         ]
 
         for e, res in test_data:

@@ -17,11 +17,12 @@
           <b-dropdown-item href="#" v-on:click='simplify'>Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyLinearity'>Apply linearity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyCommonIntegrals'>Apply common integrals</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='substitution'>Substitution1</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='substitution1'>Substitution2</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByParts'>Integrate by parts</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Polynomial division</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyElimAbs'>Elim Abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -40,14 +41,14 @@
       <div v-for="(step, index) in cur_calc" :key="index">
         <span>Step {{index+1}}:&nbsp;&nbsp;</span>
         <MathEquation v-bind:data="'\\(' + step.latex + '\\)'"/>
-        <MathEquation class="calc-reason" v-if="'_latex_reason' in step" v-bind:data="step._latex_reason"/>
+        <MathEquation class="calc-reason" v-if="'_latex_reason' in step && step._latex_reason !== ''" v-bind:data="step._latex_reason"/>
         <span class="calc-reason" v-else>{{step.reason}}</span>
       </div>
     </div>
     <div id="dialog">
       <div v-if="r_query_mode === 'substitution'">
         <div>
-          <span>The initial text is {{cur_calc[cur_calc.length - 1].text}}</span>
+          <span>The initial text is {{sep_int[integral_index].text}}</span>
         </div>
         <div>
           <label>Substitute</label>
@@ -59,8 +60,27 @@
           <button v-on:click="doSubstitution">OK</button>
         </div>
       </div>
+      <div v-if="r_query_mode === 'substitution1'">
+        <div>
+          <span>The initial text is {{sep_int[integral_index].text}}</span>
+        </div>
+        <div>
+          <label>The variable name: </label>
+          <input v-model="subst_data.var_name" style="margin:0px 5px;width:200px">
+          <label>The expression: </label>
+          <input v-model="subst_data.expr" style="margin:0px 5px;width:200px">
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="doSubstitution1">OK</button>
+        </div>
+      </div>
       <div v-if="r_query_mode === 'trig'">
-        <label>The initial expression text is {{sep_int[integral_index].body}}.</label>
+        <label>Select the part you wish to transform to other trignometric functions.</label>
+        <br>
+        <input id="cloned" ref="mycloned" style="width:200px" disabled="disabled" v-model="this.sep_int[integral_index].body">
+        <button v-on:click="validation">OK</button>
+        <br>
+        <p v-if="seen === true" color="red">Illegal!</p>
         <div>
           <label>Write the expression equal to initial ones and make the trig you want to transform surrounded by '$'</label>
           <input v-model="trig_identities_data.old_expr" style="margin:0px 5px;width:200px">
@@ -93,6 +113,15 @@
         </div>
       </div>
       <div v-if="r_query_mode === 'eqsubst'">
+        <div>Select the part you want to transform to new expression.</div>
+        <input ref="rewriten" style="width: 200px" disabled="disabled" v-model="this.sep_int[integral_index].body">
+        <button v-on:click="validation1">Validate</button>
+        <p v-if="seen === true">Illegal</p>
+        <br/>
+        <span>{{equation_data.rewrite_part}}=</span>
+        <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 200px">
+        <button v-on:click="rewrite">Rewrite</button>
+        <p v-if="rewrite_error_flag === true" color="red">The rewrite is invalid.</p>
         <div>
           <MathEquation v-bind:data="'Write the expression that you think is equal to the ' + this.sep_int[integral_index].body + '.'"/>
         </div>
@@ -139,7 +168,6 @@
 <script>
 import axios from 'axios'
 import MathEquation from './util/MathEquation'
-
 export default {
   name: 'Integral',
   components: {
@@ -148,6 +176,8 @@ export default {
 
   props: [
   ],
+
+
 
   data: function () {
     return {
@@ -162,6 +192,9 @@ export default {
       integral_index: undefined, //integral on processing
       take_effect: 0,     //Flag for whether a rule takes effect or close on halfway.
 
+      seen: false, //When an error occurs, make the error message can be seen.
+      rewrite_error_flag: false, //When the rewrite is invalid, display error warning.
+
       subst_data: {
         var_name: '',  // name of new variable u
         expr: ''       // expression to substitute for u
@@ -173,6 +206,9 @@ export default {
       },
 
       equation_data: {
+        rewrite_part: undefined, //the expr want to rewrite
+        relative_location: undefined,
+        absolute_location: undefined,
         new_expr: '',  //new expression
         fail_reason: undefined
       },
@@ -183,7 +219,6 @@ export default {
       },
 
       lhs: undefined, //equation left hand side
-
     }
   },
 
@@ -227,6 +262,84 @@ export default {
       this.cur_calc = Array.from(this.content[this.cur_id].calc)  // create copy
       this.query_mode = undefined
     },
+
+    validation: async function() {
+      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionStart, this.$refs.mycloned.selectionEnd);
+      let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.mycloned.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionEnd);
+      const data = {
+        integral_location: this.sep_int[this.integral_index].location,
+        problem: this.sep_int[this.integral_index].text,
+        dollar: expr_with_dollar,
+        select: selected
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-expr", JSON.stringify(data))
+      if(response.data.flag === true){
+        for(var i=0; i < response.data["content"].length; ++i){
+          this.trig_identities_data.new_expr.push(response.data["content"][i])
+        }
+        this.r_query_mode = 'display_trig'
+        this.take_effect = 1
+      }else{
+        this.seen = true;
+      }
+    },
+
+    validation1: async function() {
+      //Check if the selected rewrite part is a valid expression, and find the location
+      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.rewriten.selectionStart, this.$refs.rewriten.selectionEnd);
+      let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.rewriten.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.rewriten.selectionEnd);
+      const data = {
+        //The first two items can be one thing.
+        integral_location: this.sep_int[this.integral_index].location,
+        problem: this.sep_int[this.integral_index].text,
+        dollar: expr_with_dollar,
+        select: selected
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-rewrite", JSON.stringify(data))
+      if(response.data.flag === true){
+        this.seen = false;
+        this.equation_data.rewrite_part = response.data["rewrite"];
+        this.equation_data.relative_location = response.data["relative_location"];
+        this.equation_data.absolute_location = response.data["absolute_location"];
+      }else{
+        this.seen = true;
+      }
+    },
+
+    rewrite: async function() {
+      const data = {
+        old_expr: this.equation_data.rewrite_part,
+        new_expr: this.equation_data.new_expr,
+        relative_location: this.equation_data.relative_location,
+        absolute_location: this.equation_data.absolute_location,
+        problem: this.sep_int[this.integral_index].text
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-rewrite-expr", JSON.stringify(data));
+      if(response.data.flag === true){
+        this.sep_int[this.integral_index] = response.data;
+        this.r_query_mode = undefined;
+        this.take_effect = 1;
+      }else{
+        this.rewrite_error_flag = true;
+      }
+    },
+
+    addstar: function(){
+      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionStart, this.$refs.mycloned.selectionEnd);
+      this.sep_int[this.integral_index].body = this.sep_int[this.integral_index].body.slice(0, this.$refs.mycloned.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionEnd);
+
+      //alert(this.sep_int[this.integral_index].setRangeText(this.sep_int[this.integral_index].body.setRangeText(`$${selected}$`)));
+      alert(this.sep_int[this.integral_index].body)
+      // if (this.$refs.mycloned.selectionStart === this.$ref.mycloned.selectionEnd){
+      //    alert(1);
+      //    return;
+      //  }
+      // // alert(this.$refs.mycloned.selectionStart);
+      // k = this.$refs.mycloned.value.slice(this.$refs.mycloned.selectionStart,
+      //                                                    this.$refs.mycloned.selectionEnd);
+                                              
+      // this.$refs.mycloned.setRangeText(`$${selected}$`);
+    }, 
 
     save: async function () {
       if (this.filename === undefined)
@@ -382,10 +495,34 @@ export default {
     doSubstitution: async function () {
       const data = {
         problem: this.sep_int[this.integral_index].text,
+        location: this.sep_int[this.integral_index].location,
         var_name: this.subst_data.var_name,
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution", JSON.stringify(data))
+      this.sep_int[this.integral_index] = response.data
+      this.r_query_mode = undefined
+      this.subst_data = {var_name: '', expr: ''}
+      this.integral_index = undefined
+      this.take_effect = 1
+    },
+
+    substitution1: function () {
+      if (this.cur_calc.length === 0)
+        return;
+      this.sep_int = []
+      this.query_mode = 'substitution1'
+      this.displaySeparateIntegrals()
+    },
+
+    doSubstitution1: async function () {
+      const data = {
+        problem: this.sep_int[this.integral_index].text,
+        location: this.sep_int[this.integral_index].location,
+        var_name: this.subst_data.var_name,
+        expr: this.subst_data.expr
+      }
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution2", JSON.stringify(data))
       this.sep_int[this.integral_index] = response.data
       this.r_query_mode = undefined
       this.subst_data = {var_name: '', expr: ''}

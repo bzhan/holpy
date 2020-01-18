@@ -308,8 +308,6 @@ class rewr_conv(Conv):
                 self.eq_pt = ProofTerm.theorem(thy, self.pt)
             else:
                 self.eq_pt = self.pt
-            if self.sym:
-                self.eq_pt = ProofTerm.symmetric(self.eq_pt)
 
             self.As, self.C = self.eq_pt.prop.strip_implies()
 
@@ -321,15 +319,19 @@ class rewr_conv(Conv):
 
         instsp = dict(), dict()
         ts = [cond.prop for cond in self.conds]
+        if not self.sym:
+            lhs = self.C.lhs
+        else:
+            lhs = self.C.rhs
         try:
             matcher.first_order_match_list_incr(self.As, ts, instsp)
-            matcher.first_order_match_incr(self.C.lhs, t, instsp)
+            matcher.first_order_match_incr(lhs, t, instsp)
         except matcher.MatchException:
             raise ConvException("rewr_conv: cannot match %s with %s" % (
-                printer.print_term(thy, self.C.lhs), printer.print_term(thy, t)))
+                printer.print_term(thy, lhs), printer.print_term(thy, t)))
 
         # Check that every variable in the theorem has an instantiation
-        if set(term.get_svars(self.As + [self.C.lhs])) != set(term.get_svars(self.As + [self.C])):
+        if set(term.get_svars(self.As + [lhs])) != set(term.get_svars(self.As + [self.C])):
             raise ConvException("rewr_conv: unmatched vars")
 
         pt = self.eq_pt
@@ -340,6 +342,8 @@ class rewr_conv(Conv):
             pt = ProofTerm.substitution(inst, pt)
         if self.conds:
             pt = ProofTerm.implies_elim(pt, *self.conds)
+        if self.sym:
+            pt = ProofTerm.symmetric(pt)
 
         assert pt.th.is_equals(), "rewr_conv: wrong result."
 

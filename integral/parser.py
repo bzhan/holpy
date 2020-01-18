@@ -22,7 +22,7 @@ grammar = r"""
 
     ?uminus: "-" uminus -> uminus_expr | atom  // priority 80
 
-    ?pow: atom "^" uminus -> pow_expr          // priority 75
+    ?pow: pow "^" uminus -> pow_expr          // priority 75
         | "-" atom "^" uminus -> uminus_pow_expr
         | uminus
 
@@ -102,6 +102,7 @@ class ExprTransformer(Transformer):
         return expr.EvalAt(var, lower, upper, body)
     
     def trig_expr(self, e):
+        e.selected = True
         expr.trig_identity.append(e)
         return e
         
