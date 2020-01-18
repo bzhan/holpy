@@ -3,7 +3,7 @@
 import unittest
 from fractions import Fraction
 
-from integral.expr import Const
+from integral.expr import Const,deriv
 from integral.parser import parse_expr
 from integral import rules
 from sympy.parsing import sympy_parser
@@ -105,10 +105,11 @@ class RulesTest(unittest.TestCase):
         self.assertEqual(e, parse_expr("-1/6 + 1/6 * exp(6)"))
 
     def testSubstitution3(self):
-        e = parse_expr("INT x:[0, pi].(1 - cos(x)^2)*sin(x)")
-        e = rules.Substitution1("u",parse_expr("cos(x)")).eval(e)
-        print("e :" , e)
-        self.assertEqual(e, parse_expr("INT u:[-1,1]. -(1 + -1 * u ^ 2)"))
+        e = parse_expr("INT x:[0, pi/2].sqrt(cos(x))*sin(x)")
+        e,d = rules.Substitution1("u",parse_expr("cos(x)")).eval(e)
+        e1 = parse_expr("-acos(u) + 2*pi")
+        print(deriv("u", e1))
+        print("e :" , e, d)
 
     def testSubstitution4(self):
         e = parse_expr("INT x:[1, 4]. 1/(1+sqrt(x))")
@@ -138,6 +139,10 @@ class RulesTest(unittest.TestCase):
         print(e)
         print([parse_expr("INT u:[0,pi / 2].cos(u) ^ 2 ^ (1/2)")])
         self.assertEqual(e, parse_expr("INT u:[0,1]. exp(u) * sin(u)"))
+
+    def testSubstitution9(self):
+        e = parse_expr("INT x:[1, exp(2)]. 1/(x * sqrt(1 + log(x)))")
+        e = rules.Substitution1("u", parse_expr("1 + log(x)")).eval(e)
         
     def testEquation(self):
         test_data = [
