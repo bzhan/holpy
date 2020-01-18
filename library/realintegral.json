@@ -26588,12 +26588,11 @@
             "name": "real_integration_by_parts_simple_evalat",
             "prop": [
                 "a ≤ b ",
-                "⟶ (∀x. x ∈ real_closed_interval a b ",
-                "      ⟶ has_real_derivative u (du x) (within (atreal x) (real_closed_interval a b)) ∧ ",
-                "         has_real_derivative v (dv x) (within (atreal x) (real_closed_interval a b))) ",
-                "   ⟶ real_integral (real_closed_interval a b) (λx. u x * dv x) = ",
+                "⟶ (∀x. x ∈ real_open_interval a b ",
+                "      ⟶ real_differentiable u (atreal x) ∧ real_differentiable v (atreal x)) ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. u x * real_derivative v x) = ",
                 "      evalat (λx. u x * v x) a b - ",
-                "      real_integral (real_closed_interval a b) (λx. du x * v x)"
+                "      real_integral (real_closed_interval a b) (λx. real_derivative u x * v x)"
             ],
             "ty": "thm",
             "vars": {

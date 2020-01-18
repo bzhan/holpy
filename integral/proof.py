@@ -537,25 +537,17 @@ class integrate_by_parts(Conv):
         assert S.head.is_const_name('real_closed_interval')
         a, b = S.args
 
-        le_pt = real.real_less_eq(thy, a, b)
-
         if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
             raise NotImplementedError
 
-        # Form the assumption: derivatives of u and v
-        var_names = [v.name for v in term.get_vars(expr)]
-        nm = name.get_variant_name(f.var_name, var_names)
-        x = Var(nm, f.var_T)
+        eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat',
+            inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
 
-        u_deriv = has_real_derivativeI(thy, self.u, x, S)
-        u_deriv = u_deriv.on_prop(thy, argn_conv(1, auto.auto_conv()))
-        v_deriv = has_real_derivativeI(thy, self.v, x, S)
-        v_deriv = v_deriv.on_prop(thy, argn_conv(1, auto.auto_conv()))
-        x_mem = set.mk_mem(x, S)
-        cond_pt = ProofTerm.forall_intr(x, ProofTerm.implies_intr(x_mem, conj_thms(thy, u_deriv, v_deriv)))
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
 
-        # Apply the theorem
-        eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat', le_pt, cond_pt)
         eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
         eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))))
 

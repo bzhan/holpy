@@ -90,8 +90,16 @@ def convert(t):
     else:
         raise SymPyException("Unable to convert " + str(t))
 
+def solve_goal(goal):
+    """Attempt to solve goal using sympy."""
+    try:
+        sympy_goal = convert(goal)
+    except SymPyException:
+        return False
 
-def solve(goal, cond):
+    return sympy_goal == True
+
+def solve_with_interval(goal, cond):
     """Attempt to solve goal using sympy's solveset function."""
     if not (hol_set.is_mem(cond) and cond.arg1.is_var() and 
             (cond.arg.head.is_const_name("real_closed_interval") or
@@ -126,13 +134,15 @@ class SymPyMacro(ProofMacro):
         self.limit = None
 
     def can_eval(self, thy, goal, prevs):
-        if len(prevs) != 1:
+        if len(prevs) == 0:
+            return solve_goal(goal)
+        elif len(prevs) == 1:
+            return solve_with_interval(goal, prevs[0].prop)
+        else:
             return False
-        return solve(goal, prevs[0].prop)
 
     def eval(self, thy, goal, prevs):
-        assert len(prevs) == 1, "SymPyMacro: expect exactly one condition"
-        assert solve(goal, prevs[0].prop), "sympy: not solved."
+        assert self.can_eval(thy, goal, prevs), "sympy: not solved."
 
         return Thm(sum([th.hyps for th in prevs], ()), goal)
 

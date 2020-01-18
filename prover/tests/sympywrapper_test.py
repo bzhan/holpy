@@ -27,6 +27,18 @@ class SymPyWrapperTest(unittest.TestCase):
 
     def testSymPySolve(self):
         test_data = [
+            # No conditions
+            ("sqrt 2 >= 1", True),
+        ]
+
+        ctxt = Context('transcendentals')
+        for goal, res in test_data:
+            goal = parser.parse_term(ctxt, goal)
+            self.assertEqual(sympywrapper.solve_goal(goal), res)
+
+    def testSymPySolve2(self):
+        test_data = [
+            # Interval condition
             ("1 - x ^ (2::nat) >= 0", "x Mem real_closed_interval 0 1", True),
             ("1 - x ^ (2::nat) >= 0", "x Mem real_closed_interval 0 (sqrt 2)", False),
             ("1 - x ^ (2::nat) > 0", "x Mem real_open_interval 0 1", True),
@@ -44,14 +56,18 @@ class SymPyWrapperTest(unittest.TestCase):
             ("~(x ^ (2::nat) + 1 = 0)", "x Mem real_closed_interval (-1) 1", True),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        ctxt = Context('transcendentals', vars={'x': 'real'})
         for goal, cond, res in test_data:
             goal = parser.parse_term(ctxt, goal)
             cond = parser.parse_term(ctxt, cond)
-            self.assertEqual(sympywrapper.solve(goal, cond), res)
+            self.assertEqual(sympywrapper.solve_with_interval(goal, cond), res)
 
     def testAuto(self):
         test_data = [
+            # No conditions
+            ("sqrt 2 >= 1"),
+
+            # Interval condition
             ("x Mem real_closed_interval 0 1 --> 1 - x ^ (2::nat) >= 0"),
             ("x Mem real_open_interval 0 1 --> 1 - x ^ (2::nat) > 0"),
             ("x Mem real_closed_interval 0 (sqrt 2) --> 2 - x ^ (2::nat) >= 0"),
