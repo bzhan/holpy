@@ -641,7 +641,7 @@ class Expr:
         s = [(e_exp(i), e_exp(j)) for i, j in s]
         return g, s
 
-    def getAbs(self):
+    def getAbsByMonomial(self):
         """Separate abs from monomial"""
         p = self.to_poly()
         assert len(p.monomials) == 1 #Only separate 
@@ -655,6 +655,20 @@ class Expr:
         am = from_mono(poly.Monomial(Const(1), a)) #terms with abs
         bm = from_mono(poly.Monomial(p.monomials[0].coeff, b)) #terms not with abs
         return am, bm
+
+    def getAbs(self):
+        """Collect all absolute value in expression."""
+        abs_value = []
+        def abs_collect(expr):
+            if expr.ty == FUN and expr.func_name == "abs":
+                abs_value.append(expr)
+            elif expr.ty == OP or expr.ty == FUN and expr.func_name != "abs":
+                for arg in expr.args:
+                    abs_collect(arg)
+            elif expr.ty == INTEGRAL or expr.ty == EVAL_AT or expr.ty == DERIV:
+                abs_collect(expr.body)
+        abs_collect(self)
+        return abs_value
 
 def sympy_style(s):
         """Transform expr to sympy object.

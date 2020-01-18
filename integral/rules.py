@@ -2,11 +2,11 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity, sympy_style, holpy_style
 import functools, operator
 from sympy import apart
 from sympy.parsing import sympy_parser
-from sympy import solvers
+from sympy import solvers, Interval, solveset
 from integral import parser
 from fractions import Fraction
 import copy
@@ -383,16 +383,53 @@ class ElimAbs(Rule):
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-        abs_expr, norm_expr = e.body.normalize().getAbs()
-        greator = [] #collect all abs values greater than 0's set
-        smallor = [] #collect all abs values smaller than 0's set
-        g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
-        new_integral = []
-        for l, h in g:
-            new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
-        for l, h in s:
-            new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
-        return sum(new_integral[1:], new_integral[0])
+        abs_expr, norm_expr = e.body.normalize().getAbsByMonomial()
+        if abs_expr != Const(1):
+            greator = [] #collect all abs values greater than 0's set
+            smallor = [] #collect all abs values smaller than 0's set
+            g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
+            new_integral = []
+            for l, h in g:
+                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
+            for l, h in s:
+                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
+            return sum(new_integral[1:], new_integral[0])
+        else:
+            abs_expr = e.body.getAbs()
+            zero_point = []
+            for a in abs_expr:
+                arg = a.args[0]
+                zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
+                zero_point += zeros
+                # zero_point += [holpy_style(c) for c in zeros]
+            body = e.body
+            new_integral = []
+            #print("!!!!", abs_expr, zero_point)
+            if not zero_point:
+                for a in abs_expr:
+                    body.replace_trig(a, a.args[0])
+                return expr.Integral(e.var, e.lower, e.upper, body)
+            else:
+                zero_point += [sympy_style(e.upper), sympy_style(e.lower)]
+                zero_point.sort()
+                # print("zero_point: ", zero_point)
+                for i in range(len(zero_point) - 1):
+                    body = copy.deepcopy(e.body)
+                    integer = expr.Integral(e.var, holpy_style(zero_point[i]), holpy_style(zero_point[i + 1]), body)
+                    for a in abs_expr:
+                        arg = a.args[0]
+                        g, l = arg.ranges(e.var, zero_point[i], zero_point[i + 1])
+                        # print("!!!",g, l)
+                        if g:
+                            integer.body = integer.body.replace_trig(a, a.args[0])
+                            # print("+++++",integer)
+                        if l:
+                            integer.body = body.replace_trig(a, Op("-",a.args[0]))
+                            # print("-----", integer)
+                    new_integral.append(integer)
+                        #if Interval(sympy_style(zero_point[i]), sympy_style(zero_point[i + 1]))
+                # print("????????", sum(new_integral[1:], new_integral[0]))
+                return sum(new_integral[1:], new_integral[0])
 
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
