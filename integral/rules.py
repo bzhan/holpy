@@ -281,7 +281,7 @@ class Substitution1(Rule):
         gu = gu[0] if isinstance(gu, list) else gu
         gu = expr.holpy_style(gu)
         c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-        new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize()
+        new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize().normalize()
         var_subst_deriv = expr.deriv(e.var, var_subst)
         up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
         new_integral = []
@@ -294,8 +294,8 @@ class Substitution1(Rule):
             for l, u in down:
                 i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
                 j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
-                new_integral.append(expr.Integral(self.var_name, j, i, expr.Op("-",new_problem_body)))
-        return sum(new_integral[1:], new_integral[0])
+                new_integral.append(expr.Integral(self.var_name, j, i, expr.Op("-",new_problem_body).normalize()))
+        return sum(new_integral[1:], new_integral[0]), new_problem_body
 
 
 
@@ -390,9 +390,11 @@ class ElimAbs(Rule):
             g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
             new_integral = []
             for l, h in g:
-                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, abs_expr.args[0])))
+                body1 = copy.deepcopy(e.body)
+                new_integral.append(expr.Integral(e.var, l, h, body1.replace_trig(abs_expr, abs_expr.args[0])))
             for l, h in s:
-                new_integral.append(expr.Integral(e.var, l, h, e.body.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
+                body2 = copy.deepcopy(e.body)
+                new_integral.append(expr.Integral(e.var, l, h, body2.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
             return sum(new_integral[1:], new_integral[0])
         else:
             abs_expr = e.body.getAbs()
@@ -401,10 +403,8 @@ class ElimAbs(Rule):
                 arg = a.args[0]
                 zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
                 zero_point += zeros
-                # zero_point += [holpy_style(c) for c in zeros]
             body = e.body
             new_integral = []
-            #print("!!!!", abs_expr, zero_point)
             if not zero_point:
                 for a in abs_expr:
                     body.replace_trig(a, a.args[0])
@@ -412,23 +412,18 @@ class ElimAbs(Rule):
             else:
                 zero_point += [sympy_style(e.upper), sympy_style(e.lower)]
                 zero_point.sort()
-                # print("zero_point: ", zero_point)
                 for i in range(len(zero_point) - 1):
                     body = copy.deepcopy(e.body)
                     integer = expr.Integral(e.var, holpy_style(zero_point[i]), holpy_style(zero_point[i + 1]), body)
                     for a in abs_expr:
                         arg = a.args[0]
                         g, l = arg.ranges(e.var, zero_point[i], zero_point[i + 1])
-                        # print("!!!",g, l)
                         if g:
                             integer.body = integer.body.replace_trig(a, a.args[0])
-                            # print("+++++",integer)
                         if l:
                             integer.body = body.replace_trig(a, Op("-",a.args[0]))
-                            # print("-----", integer)
                     new_integral.append(integer)
                         #if Interval(sympy_style(zero_point[i]), sympy_style(zero_point[i + 1]))
-                # print("????????", sum(new_integral[1:], new_integral[0]))
                 return sum(new_integral[1:], new_integral[0])
 
 class IntegrateByEquation(Rule):
@@ -444,14 +439,34 @@ class IntegrateByEquation(Rule):
         if integral_in_e == []:
             return e
         same_integral = []
+        print("----", e)
+        print("integral_in_e: ", integral_in_e)
+        print("self.lhs", self.lhs)
         for i in integral_in_e:
-            if i.normalize() == self.lhs.normalize():
-                same_integral.append(i)
+            if i[0].normalize() == self.lhs.normalize():
+                same_integral.append(i[0])
         if len(same_integral) == 0:
             return e
-        v = expr.Var("I")
-        new_e = copy.deepcopy(e)
-        for i in same_integral:
-            new_e = new_e.replace_trig(i, v)
-        s = solvers.solve(expr.sympy_style(new_e - v), expr.sympy_style(v))
-        return expr.holpy_style(s[0])
+        same_integral = same_integral[0]
+        body = copy.deepcopy(e)
+        temp_body = copy.deepcopy(body)
+        temp_body = temp_body.replace_trig(same_integral, Const(0)).normalize()
+        g = expr.Var("G")
+        i = expr.Var("I")
+        body = body.replace_trig(temp_body, g).replace(same_integral, i)
+        print("temp:", temp_body)
+        print("body: ", body)
+        k = same_integral - self.lhs
+        print("same: ", same_integral)
+        print("k: ", k.normalize())
+        s = solvers.solve(expr.sympy_style(body - i), expr.sympy_style(i))
+        print("s: ", s, temp_body)
+        s = holpy_style(s[0]).replace_trig(g, temp_body)
+        return s
+        # print("final: ", s.replace_trig(g, ))
+        # v = expr.Var("I")
+        # new_e = copy.deepcopy(e)
+        # for i in same_integral:
+        #     new_e = new_e.replace_trig(i[0], v)
+        # s = solvers.solve(expr.sympy_style(new_e - v), expr.sympy_style(v))
+        # return expr.holpy_style(s[0])
