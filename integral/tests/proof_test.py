@@ -233,92 +233,25 @@ class ProofTest(unittest.TestCase):
     def testRealIncreasing(self):
         test_data = [
             "real_derivative (%x. x) x >= 0",
+            "real_derivative (%x. 3 * x + 1) x >= 0",
         ]
 
         for expr in test_data:
             test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
 
-    def testRealIneqOnInterval(self):
+    def testNormRealIntegral(self):
         test_data = [
-            # Nonnegative
-            ("x Mem real_closed_interval 0 pi", "sin x >= 0", True),
-            ("x Mem real_closed_interval 0 (2 * pi)", "sin x >= 0", False),
-            ("x Mem real_closed_interval (-pi / 2) (pi / 2)", "cos x >= 0", True),
-            ("x Mem real_closed_interval 0 pi", "cos x >= 0", False),
-
-            # Nonpositive
-            ("x Mem real_closed_interval (-pi) 0", "sin x <= 0", True),
-            ("x Mem real_closed_interval (-pi) pi", "sin x <= 0", False),
-
-            # Nonzero
-            ("x Mem real_closed_interval (pi / 4) (3 * pi / 4)", "~sin x = 0", True),
-            ("x Mem real_closed_interval 0 pi", "~sin x = 0", False),
+            ("real_integral (real_closed_interval 0 1) (%x. 1)", "(1::real)"),
+            ("real_integral (real_closed_interval 0 1) (%x. 2 * x)", "(1::real)"),
+            ("real_integral (real_closed_interval 0 1) (%x. x + 1)", "3 / 2"),
+            ("real_integral (real_closed_interval 0 1) (%x. x ^ (2::nat))", "1 / 3"),
+            ("real_integral (real_closed_interval 0 1) (%x. exp x)", "-1 + exp 1"),
+            ("real_integral (real_closed_interval 0 1) (%x. sin x)", "1 + -1 * cos 1"),
+            ("real_integral (real_closed_interval 0 1) (%x. cos x)", "sin 1"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
-        thy = ctxt.thy
-        for assm, goal, success in test_data:
-            if success:
-                test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
-                           assms=[assm], res=goal, args=goal, eval_only=True)
-            else:
-                test_macro(self, 'realintegral', 'real_ineq_on_interval', vars={'x': 'real'},
-                           assms=[assm], failed=AssertionError, args=goal, eval_only=True)
-
-    def testLinearityConv(self):
-        test_data = [
-            ("real_integral (real_closed_interval a b) (%x. 2 * x)",
-             "2 * real_integral (real_closed_interval a b) (%x. x)"),
-
-            ("real_integral (real_closed_interval a b) (%x. x + y)",
-             "real_integral (real_closed_interval a b) (%x. x) + real_integral (real_closed_interval a b) (%x. y)"),
-
-            ("real_integral (real_closed_interval a b) (%x. -x - y)",
-             "-real_integral (real_closed_interval a b) (%x. x) - real_integral (real_closed_interval a b) (%x. y)"),
-        ]
-
-        vars = {'x': 'real', 'y': 'real', 'a': 'real', 'b': 'real'}
         for expr, res in test_data:
-            test_conv(self, 'realintegral', proof.linearity(), vars=vars, t=expr, t_res=res)
-
-    def testCommonIntegralConv(self):
-        test_data = [
-            ("real_integral (real_closed_interval 1 2) (%x. c)",
-             "evalat (%x. c * x) 1 2"),
-
-            ("real_integral (real_closed_interval 1 2) (%x. x)",
-             "evalat (%x. x ^ (2::nat) / 2) 1 2"),
-
-            ("real_integral (real_closed_interval 1 2) (%x. x ^ (2::nat))",
-             "evalat (%x. x ^ ((2::nat) + 1) / (of_nat 2 + 1)) 1 2"),
-
-            ("real_integral (real_closed_interval 1 2) (%x. exp x)",
-             "evalat (%x. exp x) 1 2"),
-
-            ("real_integral (real_closed_interval 1 2) (%x. sin x)",
-             "evalat (%x. -cos x) 1 2"),
-
-            ("real_integral (real_closed_interval 1 2) (%x. cos x)",
-             "evalat (%x. sin x) 1 2"),
-        ]
-
-        vars = {'c': 'real'}
-        for expr, res in test_data:
-            test_conv(self, 'realintegral', proof.common_integral(), vars=vars, t=expr, t_res=res)
-
-    def testSimplify(self):
-        test_data = [
-            ("evalat (%x. c * x) 1 2", "c"),
-            ("evalat (%x. x ^ (2::nat) / 2) 1 2", "(3::real) / 2"),
-            ("evalat (%x. x ^ ((2::nat) + 1) / (of_nat 2 + 1)) 1 2", "(7::real) / 3"),
-            ("evalat (%x. exp x) 1 2", "-1 * exp 1 + exp 2"),
-            ("evalat (%x. -cos x) 1 2", "cos 1 + -1 * cos 2"),
-            ("evalat (%x. sin x) 1 2", "-1 * sin 1 + sin 2"),
-        ]
-
-        vars = {'c': 'real'}
-        for expr, res in test_data:
-            test_conv(self, 'realintegral', proof.simplify(), vars=vars, t=expr, t_res=res)
+            test_conv(self, 'realintegral', auto.auto_conv(), t=expr, t_res=res)
 
     def testIntegrateByParts(self):
         test_data = [
@@ -391,22 +324,6 @@ class ProofTest(unittest.TestCase):
             res = parser.parse_term(ctxt, res)
             cv = proof.location_conv(loc, proof.trig_rewr_conv(code))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
-
-    def testRealAbsConv(self):
-        test_data = [
-            ("abs (cos x)", "x Mem real_closed_interval 0 (pi / 2)", "cos x"),
-            ("abs (cos x)", "x Mem real_closed_interval (pi / 2) pi", "-cos x"),
-            ("abs (sin x)", "x Mem real_closed_interval 0 (pi / 2)", "sin x"),
-            ("abs (sin x)", "x Mem real_closed_interval (- pi / 2) 0", "-sin x"),
-        ]
-
-        ctxt = Context('realintegral', vars={'x': 'real'})
-        for s, cond, res in test_data:
-            s = parser.parse_term(ctxt, s)
-            cond_t = parser.parse_term(ctxt, cond)
-            res = parser.parse_term(ctxt, res)
-            cv = proof.real_abs_conv(ProofTerm.assume(cond_t))
-            test_conv(self, 'realintegral', cv, t=s, t_res=res, assms=[cond])
 
     def testExprToHolpy(self):
         test_data = [

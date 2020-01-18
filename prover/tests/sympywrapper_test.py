@@ -29,6 +29,8 @@ class SymPyWrapperTest(unittest.TestCase):
         test_data = [
             # No conditions
             ("sqrt 2 >= 1", True),
+            ("~((1::real) = 2)", True),
+            ("(4::nat) > 2", True),
         ]
 
         ctxt = Context('transcendentals')
@@ -66,6 +68,8 @@ class SymPyWrapperTest(unittest.TestCase):
         test_data = [
             # No conditions
             ("sqrt 2 >= 1"),
+            ("~((1::real) = 2)"),
+            ("(4::nat) > 2"),
 
             # Interval condition
             ("x Mem real_closed_interval 0 1 --> 1 - x ^ (2::nat) >= 0"),

@@ -1486,35 +1486,47 @@
                     "th": "real_integrable_on f s ⊢ has_real_integral f (real_integral s f) s"
                 },
                 {
-                    "args": "has_real_integral_lmul, {}, {c: c, f: f, k: real_integral s f, s: s}",
+                    "args": "eta_conversion, has_real_integral f (real_integral s (λx. f x)) s",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_integrable_on f s ⊢ has_real_integral (λx. c * f x) (c * real_integral s f) s"
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f s ⊢ has_real_integral f (real_integral s (λx. f x)) s"
                 },
                 {
-                    "args": "real_integral_unique",
+                    "args": "has_real_integral_lmul, {}, {c: c, f: f, k: real_integral s (λx. f x), s: s}",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f s ⊢ has_real_integral (λx. c * f x) (c * real_integral s (λx. f x)) s"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ⊢ real_integral s (λx. c * f x) = c * real_integral s f"
+                    "th": "real_integrable_on f s ⊢ real_integral s (λx. c * f x) = c * real_integral s (λx. f x)"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "3"
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_integrable_on f s ⟶ real_integral s (λx. c * f x) = c * real_integral s f"
+                    "th": "⊢ real_integrable_on f s ⟶ real_integral s (λx. c * f x) = c * real_integral s (λx. f x)"
                 }
             ],
-            "prop": "real_integrable_on f s ⟶ real_integral s (λx. c * f x) = c * real_integral s f",
+            "prop": [
+                "real_integrable_on f s ",
+                "⟶ real_integral s (λx. c * f x) = c * real_integral s (λx. f x)"
+            ],
             "steps": [
                 {
                     "goal_id": "1",
@@ -1525,6 +1537,12 @@
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_lmul"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
                 },
                 {
                     "goal_id": "1",
@@ -1582,7 +1600,10 @@
                     "th": "⊢ real_integrable_on f s ⟶ real_integral s (λx. f x * c) = real_integral s f * c"
                 }
             ],
-            "prop": "real_integrable_on f s ⟶ real_integral s (λx. f x * c) = real_integral s f * c",
+            "prop": [
+                "real_integrable_on f s ",
+                "⟶ real_integral s (λx. f x * c) = real_integral s (λx. f x) * c"
+            ],
             "steps": [
                 {
                     "goal_id": "1",

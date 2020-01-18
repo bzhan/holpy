@@ -35,6 +35,8 @@ minus = Const("minus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 less_eq = Const("less_eq", TFun(natT, natT, boolT))
 less = Const("less", TFun(natT, natT, boolT))
+greater_eq = Const("greater_eq", TFun(natT, natT, boolT))
+greater = Const("greater", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc

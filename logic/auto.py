@@ -186,6 +186,9 @@ def norm(thy, t, pts=None):
     if debug_auto:
         print("Norm:", printer.print_term(thy, t))
 
+    if not t.is_comb():
+        return refl(t)
+
     eq_pt = refl(t.head)
 
     # First normalize each argument
