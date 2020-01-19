@@ -57,31 +57,31 @@ class ExprTransformer(Transformer):
         return expr.Const(Decimal(n))
         
     def plus_expr(self, a, b):
-        return a + b
+        return expr.Op("+", a, b)
 
     def minus_expr(self, a, b):
-        return a - b
+        return expr.Op("-", a, b)
 
     def times_expr(self, a, b):
-        return a * b
+        return expr.Op("*", a, b)
 
     def divides_expr(self, a, b):
         if a.ty == expr.CONST and b.ty == expr.CONST:
             return expr.Const(Fraction(a.val) / Fraction(b.val))
         else:
-            return a / b
+            return expr.Op("/", a, b)
 
     def pow_expr(self, a, b):
-        return a ^ b
+        return expr.Op("^", a, b)
 
     def uminus_expr(self, a):
         if a.ty == expr.CONST:
             return expr.Const(-a.val)
         else:
-            return -a
+            return expr.Op("-", a)
     
     def uminus_pow_expr(self, a, b):
-        return -(a ^ b)
+        return expr.Op("-", expr.Op("^", a, b))
 
     def pi_expr(self):
         return expr.pi

@@ -59,9 +59,11 @@ def convert_expr(e, mode="large"):
                     sy = "(%s)" % sy
                 if e.op == "^" and len(sy) > 1:
                     sy = "{%s}" % sy
+                if y.ty == expr.OP and y.op == e.op and y.op in ("-", "/"):
+                    sy = "(%s)" % sy
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
-                if not x.is_constant() and not y.is_constant():
+                if not x.is_constant() and not y.is_constant() or x == expr.Fun("pi") or y == expr.Fun("pi"):
                     if x.ty == expr.OP and x.op != "^":
                         sx = "(" + sx + ")"
                     if y.ty == expr.OP and y.op != "^":
@@ -83,6 +85,8 @@ def convert_expr(e, mode="large"):
                     elif y.ty in (expr.VAR, expr.FUN):
                         return "%s %s" % (sx, sy)
                     elif not y.is_constant():
+                        if y.ty == OP:
+                            return "%s (%s)" % (sx, sy)
                         return "%s %s" % (sx, sy)    
                     else:
                         if x.priority() < expr.op_priority[e.op]:

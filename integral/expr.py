@@ -52,6 +52,15 @@ class Expr:
             return Fun("log", self.args[0] * other.args[0])
         # elif self.ty == OP and self.op == "/" and other.ty == OP and other.op == "/" and self.args[1] == other.args[1]:
         #     return (self.args[0] + other.args[0]) / self.args[1]
+        elif other.ty == OP:
+            if other.args[0].ty == CONST and other.args[0].val < 0:
+                return self - Op(other.op, Const(-other.args[0].val), other.args[1])
+            elif other.args[0].ty == OP and len(other.args[0].args) == 1 and other.args[0].args[0].ty == CONST and other.args[0].args[0].val > 0:
+                return self - Op(other.op, Const(other.args[0].args[0].val), other.args[1])
+            elif len(other.args) == 1:
+                return self - other.args[0]
+            else:
+                return Op("+", self, other)
         elif other.ty == OP and len(other.args) == 1:
             return self - other.args[0]
         else:
@@ -74,9 +83,19 @@ class Expr:
         if other == Const(1):
             return self
         if self.ty == CONST and self.val == -1:
-            return Op("-", other)
+            if other.ty == CONST and other.val < 0:
+                return Const(-other.val)
+            if not (other.ty == OP and len(other.args) == 1):
+                return Op("-", other)
+            else:
+                return Op("*", self, other)
         elif other.ty == CONST and other.val == -1:
-            return Op("-", self)
+            if self.ty == CONST and self.val < 0:
+                return Const(-self.val)
+            elif not (self.ty == OP and len(self.args) == 1):
+                return Op("-", self)
+            else:
+                return Op("*", self, other)
         elif self.ty == CONST and other.ty == CONST:
             return Const(self.val * other.val)
         elif self.ty == FUN and self.func_name == "exp" and other.ty == FUN and other.func_name == "exp":
@@ -357,22 +376,27 @@ class Expr:
                 x, y = self.args
                 if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
                     return (x.normalize()+y.normalize()).to_poly()
-                # elif x.ty == OP and x.op == "/" and y.ty == OP and y.op == "/" and x.args[1] == y.args[1]:
-                #     # 1 / x + 1 / x = 2 / x
-                #     return Op("/", x.args[0] + y.args[0], x.args[1]).to_poly()
                 elif y.ty == OP and len(y.args) == 1:
                     # x + (-y) => x - y
                     return Op("-", x, y.args[0]).to_poly()
+                elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "sin" and x.args[1].ty == CONST and x.args[1].val == 2\
+                    and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "cos" and y.args[1].ty == CONST and y.args[1].val == 2\
+                    and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
+                    return poly.singleton(Const(1))
+                elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "cos" and x.args[1].ty == CONST and x.args[1].val == 2\
+                    and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "sin" and y.args[1].ty == CONST and y.args[1].val == 2\
+                    and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
+                    return poly.singleton(Const(1))
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
-                # if x.ty == CONST and y.ty == INTEGRAL:
-                #     return Integral(y.var, y.lower, y.upper, x * y.body).to_poly()
                 if y.ty == OP and y.op == "/":
                     return Op("/", x * y.args[0], y.args[1]).to_poly()
                 elif x.ty == FUN and x.func_name == "exp" and y.ty == FUN and y.func_name == "exp":
                     arg = x.args[0] + y.args[0]
                     return Fun("exp", arg.normalize()).to_poly()
+                elif y.ty == OP and y.op == "^" and y.args[0].normalize() == x.normalize():
+                    return Op("^", y.args[0], Const(1) + y.args[1]).to_poly()
                 else:
                     return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
@@ -385,13 +409,21 @@ class Expr:
                 if x.ty == OP and x.op == "-" and len(x.args) == 1:
                     # --x => x
                     return x.args[0].to_poly()
+                elif x.ty == CONST:
+                    return Const(-x.val).to_poly()
                 return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
+                #c = copy.deepcopy(y)
                 if x.normalize() == y.normalize():
                     return poly.singleton(Const(1))
+                # if y.ty == OP and y.op == "*" and c.replace_trig(x.normalize(), Const(0)) != y:
+                #     print("---", x, y, x * (y.args[0]^(Const(-1))) * (y.args[1]^(Const(-1))))
+                #     return (x * (y.args[0]^(Const(-1))) * (y.args[1]^(Const(-1)))).to_poly()
                 if x.ty == OP and x.op in ("+", "-") and len(x.args) == 2:
                     return Op(x.op, Op("/", x.args[0], y), Op("/", x.args[1], y)).to_poly()
+                # if x.ty == CONST:
+                #     return (x * (y ^ Const(-1))).to_poly()
                 xp = x.to_poly()
                 yp = y.to_poly()
                 if x.ty == CONST and x.val == 0:
@@ -426,7 +458,7 @@ class Expr:
                     else:
                         if x.ty == CONST:
                             if isinstance(x.val, int) and (isinstance(y.val, Fraction) and y.val.denominator == 1 or isinstance(y.val, int)):
-                                return poly.constant(Const(x.val**y.val))
+                                return poly.constant(Const(Fraction(x.val**y.val)))
                             else:
                                 return poly.constant(Op("^", x, y))
                         elif x.ty == VAR:
@@ -438,14 +470,16 @@ class Expr:
                             elif x.op == "^":
                                 #(x^(1/2))^2 = x only consider two pow are both constant
                                 #(x^2)^(1/2) = abs(x)
-                                if x.args[1].val % 2 == 0:
+                                if x.args[1].ty == CONST and x.args[1].val % 2 == 0:
                                     if x.args[1] * y == Const(1):
                                         return Fun("abs", x.args[0]).to_poly()
                                     return Fun("abs", Op("^", x.args[0], y * x.args[1])).to_poly()
                                 else:
                                     return Op("^", x.args[0], y * x.args[1]).to_poly()
                             elif x.op == "/":
-                                return Op("*", x.args[0], Op("^", x.args[1], Const(-1))).to_poly()
+                                return (x.normalize() ^ y).to_poly()
+                            elif len(x.args) == 1:
+                                return Op("^", x.args[0], y).to_poly() 
                             else:
                                 return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                         elif x.ty == FUN and x.func_name == "sqrt":
@@ -469,7 +503,8 @@ class Expr:
                 else:
                     return poly.singleton(Fun("exp", self.args[0].normalize()))
             elif self.func_name in ("sin", "cos", "tan", "asin", "acos", "atan", "cot", "csc", "sec"):
-                p = sympy_style(self).simplify()
+                p = Fun(self.func_name, self.args[0].normalize())
+                p = sympy_style(p).simplify()
                 p = holpy_style(p)
                 if p != self:
                     return p.to_poly()
@@ -493,7 +528,7 @@ class Expr:
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
             elif self.func_name == "sqrt":
-                return Op("^", self.args[0].normalize(), Const(Fraction(1/2))).to_poly()
+                return Op("^", self.args[0], Const(Fraction(1/2))).to_poly()
             elif self.func_name == "abs":
                 x, =self.args
                 if x.ty == CONST:
@@ -634,17 +669,19 @@ class Expr:
     def getAbsByMonomial(self):
         """Separate abs from monomial"""
         p = self.to_poly()
-        assert len(p.monomials) == 1 #Only separate 
-        a = []
-        b = []
-        for f in p.monomials[0].factors:
-            if f[0].ty == FUN and f[0].func_name == "abs":
-                a.append((f[0], 1))
-            else:
-                b.append(f)
-        am = from_mono(poly.Monomial(Const(1), a)) #terms with abs
-        bm = from_mono(poly.Monomial(p.monomials[0].coeff, b)) #terms not with abs
-        return am, bm
+        if len(p.monomials) == 1: #Only separate 
+            a = []
+            b = []
+            for f in p.monomials[0].factors:
+                if f[0].ty == FUN and f[0].func_name == "abs":
+                    a.append((f[0], 1))
+                else:
+                    b.append(f)
+            am = from_mono(poly.Monomial(Const(1), a)) #terms with abs
+            bm = from_mono(poly.Monomial(p.monomials[0].coeff, b)) #terms not with abs
+            return am
+        else:
+            return Const(1)
 
     def getAbs(self):
         """Collect all absolute value in expression."""
@@ -944,7 +981,7 @@ class Op(Expr):
         self.args = tuple(args)
 
     def __hash__(self):
-        return hash((OP, self.op, self.args))
+        return hash((OP, self.op, tuple(self.args)))
 
     def __eq__(self, other):
         return isinstance(other, Op) and self.op == other.op and self.args == other.args
@@ -964,9 +1001,9 @@ class Op(Expr):
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 s2 = "(%s)" % s2
             if self.op == "^":
-                if b.ty == CONST and b.val < 0:
+                if b.ty == CONST and b.val < 0 or b.ty == OP and len(b.args) == 1:
                     s2 = "(%s)" % s2
-                if a.ty == CONST and a.val < 0:
+                if a.ty == CONST and a.val < 0 or a.ty == OP and len(a.args) == 1:
                     s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)           
         else:

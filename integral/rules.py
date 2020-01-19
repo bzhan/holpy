@@ -146,9 +146,12 @@ class CommonIntegral(Rule):
                         if a.func_name == "sec":
                             return EvalAt(e.var, e.lower, e.upper, expr.Fun("tan", *a.args))
                         elif a.func_name == "csc":
+                            print("wow")
                             return EvalAt(e.var, e.lower, e.upper, -expr.Fun("cot", *a.args))
                         else:
-                            raise NotImplementedError
+                            return e
+                    else:
+                        return e
                 else:
                     return e
             elif e.body.op == "/":
@@ -162,6 +165,8 @@ class CommonIntegral(Rule):
                             #Integral of 1 / (x + c) ^ n is (-1) / (n - 1) * x ^ (n - 1)
                             integral = a * Const(-1) / (Const(d.val - 1) * (c ^ Const(d.val - 1)))
                             return EvalAt(e.var, e.lower, e.upper, integral)
+                        else:
+                            return e
                     elif b.op in ("+", "-"):
                         if c == Var(e.var) and d.ty == expr.CONST:
                             #Integral of 1 / (x + c) is log(x + c)
@@ -171,8 +176,14 @@ class CommonIntegral(Rule):
                                 c == expr.Const(1):
                             #Integral of 1 / x ^ 2 + 1 is arctan(x)
                             return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
+                        else:
+                            return e
+                    else:
+                        return e
                 elif b == Var(e.var):
                     return EvalAt(e.var, e.lower, e.upper, a * expr.log(Fun("abs", b)))
+                else:
+                    return e
             else:
                 return e
 
@@ -280,8 +291,11 @@ class Substitution1(Rule):
         gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
         gu = gu[0] if isinstance(gu, list) else gu
         gu = expr.holpy_style(gu)
+        print("gu: ", gu)
         c = e.body.replace_trig(parser.parse_expr(e.var), gu)
+        print("c: ", c, expr.deriv(str(var_name), gu), c * expr.deriv(str(var_name), gu))
         new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize().normalize()
+        print("new_problem_body: ", new_problem_body)
         var_subst_deriv = expr.deriv(e.var, var_subst)
         up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
         new_integral = []
@@ -383,7 +397,7 @@ class ElimAbs(Rule):
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-        abs_expr, norm_expr = e.body.normalize().getAbsByMonomial()
+        abs_expr = e.body.normalize().getAbsByMonomial()
         if abs_expr != Const(1):
             greator = [] #collect all abs values greater than 0's set
             smallor = [] #collect all abs values smaller than 0's set
@@ -432,41 +446,36 @@ class IntegrateByEquation(Rule):
         assert isinstance(lhs, expr.Expr)
         self.lhs = lhs
         self.name = "Integrate by equation"
+
+    def find_same_integral(self, e):
+        """Find the integrals exists both in lhs and rhs."""
+        rhs_integral = set([i[0].normalize() for i in e.separate_integral()])
+        lhs_integral = set([i[0].normalize() for i in self.lhs.separate_integral()])
+        return lhs_integral.union(rhs_integral)
     
-    def eval(self, e):
-        integral_in_e = e.separate_integral()
-        flag = 0 # If e have integral same as lhs
-        if integral_in_e == []:
-            return e
-        same_integral = []
-        print("----", e)
-        print("integral_in_e: ", integral_in_e)
-        print("self.lhs", self.lhs)
-        for i in integral_in_e:
-            if i[0].normalize() == self.lhs.normalize():
-                same_integral.append(i[0])
-        if len(same_integral) == 0:
-            return e
-        same_integral = same_integral[0]
+    def eval(self, e, equation_part):
+        same_integral = equation_part
         body = copy.deepcopy(e)
         temp_body = copy.deepcopy(body)
         temp_body = temp_body.replace_trig(same_integral, Const(0)).normalize()
+        first_lhs = copy.deepcopy(self.lhs)
+        second_lhs = copy.deepcopy(first_lhs)
+        first_lhs = first_lhs.replace_trig(same_integral, Const(0)).normalize()
         g = expr.Var("G")
         i = expr.Var("I")
+        r = expr.Var("R")
         body = body.replace_trig(temp_body, g).replace(same_integral, i)
+        second_lhs = second_lhs.replace_trig(first_lhs, r).replace_trig(same_integral, i)
         print("temp:", temp_body)
         print("body: ", body)
-        k = same_integral - self.lhs
+        print("first rhs: ", first_lhs)
+        print("second rhs: ", second_lhs)
+        k = same_integral - second_lhs
         print("same: ", same_integral)
         print("k: ", k.normalize())
-        s = solvers.solve(expr.sympy_style(body - i), expr.sympy_style(i))
-        print("s: ", s, temp_body)
-        s = holpy_style(s[0]).replace_trig(g, temp_body)
-        return s
-        # print("final: ", s.replace_trig(g, ))
-        # v = expr.Var("I")
-        # new_e = copy.deepcopy(e)
-        # for i in same_integral:
-        #     new_e = new_e.replace_trig(i[0], v)
-        # s = solvers.solve(expr.sympy_style(new_e - v), expr.sympy_style(v))
-        # return expr.holpy_style(s[0])
+        s = solvers.solve(expr.sympy_style(body - second_lhs), expr.sympy_style(i))
+        s = holpy_style(s[0]).replace_trig(g, temp_body).replace_trig(r, first_lhs)
+        print("s: ", s, temp_body, first_lhs)
+        new_problem = e.replace_trig(equation_part, s).normalize()
+        print("------------new problem: ", new_problem)
+        return new_problem.normalize()

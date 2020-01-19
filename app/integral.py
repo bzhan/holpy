@@ -58,6 +58,44 @@ def integral_simplify():
         'reason': "Simplification"
     })
 
+@app.route("/api/integral-super-simplify", methods=['POST'])
+def integral_super_simplify():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rules_set = [integral.rules.OnSubterm(integral.rules.ElimAbs()), 
+                        integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    def simplify(problem):
+        for i in range(3):
+            for r in rules_set:
+                problem = r.eval(problem)
+                try:
+                    problem = integral.rules.OnSubterm(integral.rules.PolynomialDivision()).eval(problem)
+                except:
+                    pass
+        return problem
+    problem = simplify(integral.parser.parse_expr(data['problem']))
+    return jsonify({
+        'text': str(problem),
+        'latex': integral.latex.convert_expr(problem),
+        'reason': "Simplification"
+    })
+
+@app.route("/api/integral-same-integral", methods=['POST'])
+def integral_same_integral():
+    data = json.loads(request.get_data().decode('utf-8'))
+    lhs = integral.parser.parse_expr(data['lhs'])
+    rhs = integral.parser.parse_expr(data['rhs'])
+    rule = integral.rules.IntegrateByEquation(lhs)
+    same_integral = rule.find_same_integral(rhs)
+    s = []
+    for i in same_integral:
+        s.append({
+            'text': str(i),
+            'latex': integral.latex.convert_expr(i)
+        })
+
+    return json.dumps(s)
+    
+
 @app.route("/api/integral-common-integral", methods=['POST'])
 def integral_common_integral():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -95,6 +133,26 @@ def integrate_by_equation():
         "params": {
             "lhs": data['left'],
             "rhs": data['problem']
+        },
+        "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
+            integral.latex.convert_expr(lhs), integral.latex.convert_expr(problem)
+        )
+    })
+
+@app.route("/api/integral-integrate-by-equation1", methods=['POST'])
+def integrate_by_equation1():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['equation_part'])
+    lhs = integral.parser.parse_expr(data['lhs'])
+    rhs = integral.parser.parse_expr(data['rhs'])
+    rule = integral.rules.IntegrateByEquation(lhs)
+    result = rule.eval(rhs, problem)
+    return jsonify({
+        "text": str(result),
+        "latex": integral.latex.convert_expr(result),
+        "params": {
+            "lhs": data['lhs'],
+            "rhs": data['equation_part']
         },
         "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
             integral.latex.convert_expr(lhs), integral.latex.convert_expr(problem)
@@ -318,7 +376,7 @@ def integral_rewrite_expr():
     try:
         new_expr = integral.parser.parse_expr(data['new_expr'])
         location = data['relative_location']
-        if new_expr.normalize() != old_expr.normalize():
+        if new_expr.normalize() != old_expr.normalize() or new_expr.findVar().name != problem.var:
             return jsonify({
                 'flag': False
             })
