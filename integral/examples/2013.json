@@ -9,18 +9,13 @@
                     "text": "INT x:[1,exp(1)]. log(x ^ 2) - 2 * log(2 * x)"
                 },
                 {
-                    "latex": "\\int_{1}^{e} 2 \\log{(x)} - 2 \\log{(2 x)} \\,\\mathrm{dx}",
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - 2 \\int_{1}^{e} \\log{(2 x)} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "INT x:[1,exp(1)]. 2 * log(x) + -2 * log(2 * x)"
-                },
-                {
-                    "latex": "2 * \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - 2 * \\int_{1}^{e} \\log{(2 x)} \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + -2 * (INT x:[1,exp(1)]. log(2 * x))"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) - 2 * (INT x:[1,exp(1)]. log(2 * x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(2 x\\)",
-                    "latex": "2 * \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - 2 * \\int_{2}^{2 e} \\frac{\\log{(u)}}{2} \\,\\mathrm{du}",
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - 2 \\int_{2}^{2 e} \\frac{\\log{(u)}}{2} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
                         "f": "(1/2) * log(u)",
@@ -28,37 +23,27 @@
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + -2 * (INT u:[2,2 * exp(1)]. (1/2) * log(u))"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) - 2 * (INT u:[2,2 * exp(1)]. (1/2) * log(u))"
                 },
                 {
-                    "latex": "2 * \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - \\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du}",
-                    "reason": "Linearity",
-                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + (-1) * (INT u:[2,2 * exp(1)]. log(u))"
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} - (\\int_{2}^{2 e} \\log{(u)} \\,\\mathrm{du})",
+                    "reason": "Simplification",
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) - (INT u:[2,2 * exp(1)]. log(u))"
                 },
                 {
                     "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)Integrate by parts, \\(u = \\log{(u)}, v = u\\)",
-                    "latex": "2 * ((\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx})) + -((\\left. u \\log{(u)} \\right\\vert_{u=2}^{2 e}) - (\\int_{2}^{2 e} 1 \\,\\mathrm{du}))",
+                    "latex": "2 (\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx}) - ((\\left. u \\log{(u)} \\right\\vert_{u=2}^{2 e}) - (\\int_{2}^{2 e} 1 \\,\\mathrm{du}))",
                     "params": {
                         "parts_u": "log(u)",
                         "parts_v": "u"
                     },
                     "reason": "Integrate by partsIntegrate by parts",
-                    "text": "2 * (([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1)) + -1 * (([u * log(u)]_u=2,2 * exp(1)) - (INT u:[2,2 * exp(1)]. 1))"
+                    "text": "2 * (([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1)) - (([u * log(u)]_u=2,2 * exp(1)) - (INT u:[2,2 * exp(1)]. 1))"
                 },
                 {
-                    "latex": "2 \\log{(2)} + 2 e + -2 e * \\log{(2 e)} + -2 * (\\int_{1}^{e} 1 \\,\\mathrm{dx}) + (\\int_{2}^{2 e} 1 \\,\\mathrm{du})",
+                    "latex": "-3 + 2 \\log{(2)} + 5 e + -2 \\log{(2 e)} * e",
                     "reason": "Simplification",
-                    "text": "(((2 * log(2) + 2 * exp(1)) + (-2 * exp(1)) * log(2 * exp(1))) + -2 * (INT x:[1,exp(1)]. 1)) + (INT u:[2,2 * exp(1)]. 1)"
-                },
-                {
-                    "latex": "2 \\log{(2)} + 2 e + -2 e * \\log{(2 e)} + -2 * (\\left. x \\right\\vert_{x=1}^{e}) + (\\left. u \\right\\vert_{u=2}^{2 e})",
-                    "reason": "Common integrals",
-                    "text": "(((2 * log(2) + 2 * exp(1)) + (-2 * exp(1)) * log(2 * exp(1))) + -2 * ([x]_x=1,exp(1))) + ([u]_u=2,2 * exp(1))"
-                },
-                {
-                    "latex": "2 \\log{(2)} + 2 e + -2 e * \\log{(2 e)}",
-                    "reason": "Simplification",
-                    "text": "(2 * log(2) + 2 * exp(1)) + (-2 * exp(1)) * log(2 * exp(1))"
+                    "text": "((-3 + 2 * log(2)) + 5 * exp(1)) + (-2 * log(2 * exp(1))) * exp(1)"
                 }
             ],
             "name": "Exercise 1",
@@ -79,25 +64,15 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(-x\\)",
-                    "latex": "(\\int_{0}^{1} --e^{u} \\,\\mathrm{du}) + (\\int_{0}^{3} e^{x} \\,\\mathrm{dx})",
+                    "latex": "(\\int_{0}^{1} e^{u} \\,\\mathrm{du}) + (\\int_{0}^{3} e^{x} \\,\\mathrm{dx})",
                     "location": "1",
                     "params": {
-                        "f": "-1 * exp(u)",
+                        "f": "-exp(u)",
                         "g": "-x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "(INT u:[0,1]. -(-1 * exp(u))) + (INT x:[0,3]. exp(x))"
-                },
-                {
-                    "latex": "(\\int_{0}^{1} e^{u} \\,\\mathrm{du}) + (\\int_{0}^{3} e^{x} \\,\\mathrm{dx})",
-                    "reason": "Simplification",
                     "text": "(INT u:[0,1]. exp(u)) + (INT x:[0,3]. exp(x))"
-                },
-                {
-                    "latex": "(\\left. e^{u} \\right\\vert_{u=0}^{1}) + (\\left. e^{x} \\right\\vert_{x=0}^{3})",
-                    "reason": "Common integrals",
-                    "text": "([exp(u)]_u=0,1) + ([exp(x)]_x=0,3)"
                 },
                 {
                     "latex": "-2 + e + e^{3}",
@@ -181,22 +156,12 @@
             "problem": "INT x:[exp(1), exp(2)].((log(x) * cos(x)) - (sin(x)*(1/x)))/log(x)^2"
         },
         {
-            "_problem_latex": "\\int_{1}^{11} x ^ 3 - 3 x ^ 2 + 3 x - 1 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{1}^{11} x ^ 3 - 3 (x ^ 2) + 3 x - 1 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{1}^{11} x ^ 3 - 3 x ^ 2 + 3 x - 1 \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[1,11]. ((x ^ 3 - 3 * x ^ 2) + 3 * x) - 1"
-                },
-                {
-                    "latex": "3 \\int_{1}^{11} x \\,\\mathrm{dx} - (\\int_{1}^{11} 1 \\,\\mathrm{dx}) + -3 * (\\int_{1}^{11} x ^ {2} \\,\\mathrm{dx}) + (\\int_{1}^{11} x ^ {3} \\,\\mathrm{dx})",
-                    "reason": "Linearity",
-                    "text": "((3 * (INT x:[1,11]. x) - (INT x:[1,11]. 1)) + -3 * (INT x:[1,11]. x ^ 2)) + (INT x:[1,11]. x ^ 3)"
-                },
-                {
-                    "latex": "3 \\left. \\frac{1}{2} * x ^ 2 \\right\\vert_{x=1}^{11} - (\\left. x \\right\\vert_{x=1}^{11}) + -3 \\left. \\frac{1}{3} * x ^ 3 \\right\\vert_{x=1}^{11} + (\\left. \\frac{1}{4} * x ^ 4 \\right\\vert_{x=1}^{11})",
-                    "reason": "Common integrals",
-                    "text": "((3 * ([x ^ 2 / 2]_x=1,11) - ([x]_x=1,11)) + -3 * ([x ^ 3 / 3]_x=1,11)) + ([x ^ 4 / 4]_x=1,11)"
                 },
                 {
                     "latex": "2500",
@@ -208,7 +173,7 @@
             "problem": "INT x:[1, 11].x^3 - 3*x^2 + 3*x - 1"
         },
         {
-            "_problem_latex": "\\int_{0}^{2} \\sqrt{12 - 3 x ^ 2} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{2} \\sqrt{12 - 3 (x ^ 2)} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{2} \\sqrt{12 - 3 x ^ 2} \\,\\mathrm{dx}",
@@ -228,38 +193,23 @@
                     "text": "INT u:[0,pi / 2]. sqrt(12 - 3 * (2 * sin(u)) ^ 2) * (2 * cos(u))"
                 },
                 {
-                    "latex": "\\int_{0}^{\\pi/2} (2 \\cos{(u)}) \\sqrt{12 + -12 * \\sin^{2}u} \\,\\mathrm{du}",
+                    "latex": "2 \\int_{0}^{\\pi/2} \\cos{(u)} \\sqrt{12 - 12 \\sin^{2}u} \\,\\mathrm{du}",
                     "reason": "Simplification",
-                    "text": "INT u:[0,pi / 2]. (2 * cos(u)) * (12 + -12 * sin(u) ^ 2) ^ (1/2)"
+                    "text": "2 * (INT u:[0,pi / 2]. cos(u) * (12 - (12) * sin(u) ^ 2) ^ (1/2))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(12 + -12 \\sin^{2}u\\) to \\(12 \\cos^{2}u\\)",
-                    "latex": "\\int_{0}^{\\pi/2} (2 \\cos{(u)}) \\sqrt{12 \\cos^{2}u} \\,\\mathrm{du}",
-                    "location": "0.1.0",
+                    "_latex_reason": "Rewrite trigonometric \\(12 - 12 \\sin^{2}u\\) to \\(12 \\cos^{2}u\\)",
+                    "latex": "2 \\int_{0}^{\\pi/2} \\cos{(u)} \\sqrt{12 \\cos^{2}u} \\,\\mathrm{du}",
+                    "location": "1.0.1.0",
                     "params": {
                         "rule": "TR5"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT u:[0,pi / 2]. (2 * cos(u)) * (12 * cos(u) ^ 2) ^ (1/2)"
-                },
-                {
-                    "latex": "\\int_{0}^{\\pi/2} (2 * \\sqrt{12} * \\cos{(u)}) \\left| \\cos{(u)} \\right| \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "INT u:[0,pi / 2]. ((2 * 12 ^ (1/2)) * cos(u)) * abs(cos(u))"
-                },
-                {
-                    "latex": "\\int_{0}^{\\pi/2} (2 * \\sqrt{12} * \\cos{(u)}) \\cos{(u)} \\,\\mathrm{du}",
-                    "reason": "Eliminate abs",
-                    "text": "INT u:[0,pi / 2]. ((2 * 12 ^ (1/2)) * cos(u)) * cos(u)"
-                },
-                {
-                    "latex": "\\int_{0}^{\\pi/2} 2 * \\sqrt{12} * \\cos^{2}u \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "INT u:[0,pi / 2]. (2 * 12 ^ (1/2)) * cos(u) ^ 2"
+                    "text": "2 * (INT u:[0,pi / 2]. cos(u) * (12 * cos(u) ^ 2) ^ (1/2))"
                 },
                 {
                     "latex": "2 * \\sqrt{12} * (\\int_{0}^{\\pi/2} \\cos^{2}u \\,\\mathrm{du})",
-                    "reason": "Linearity",
+                    "reason": "Simplification",
                     "text": "(2 * 12 ^ (1/2)) * (INT u:[0,pi / 2]. cos(u) ^ 2)"
                 },
                 {
@@ -273,34 +223,19 @@
                     "text": "(2 * 12 ^ (1/2)) * (INT u:[0,pi / 2]. cos(2 * u) / 2 + 1/2)"
                 },
                 {
-                    "latex": "2 * \\sqrt{12} * \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du}) + 2 * \\sqrt{12} * \\frac{1}{2} * (\\int_{0}^{\\pi/2} \\cos{(2 u)} \\,\\mathrm{du})",
-                    "reason": "Linearity",
-                    "text": "((2 * 12 ^ (1/2)) * (1/2)) * (INT u:[0,pi / 2]. 1) + ((2 * 12 ^ (1/2)) * (1/2)) * (INT u:[0,pi / 2]. cos(2 * u))"
-                },
-                {
                     "_latex_reason": "Substitute \\(t\\) for \\(2 u\\)",
-                    "latex": "2 * \\sqrt{12} * \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du}) + 2 * \\sqrt{12} * \\frac{1}{2} * (\\int_{0}^{\\pi} \\frac{\\cos{(t)}}{2} \\,\\mathrm{dt})",
-                    "location": "1.1",
+                    "latex": "2 * \\sqrt{12} * (\\int_{0}^{\\pi} \\frac{1}{4} + \\frac{\\cos{(t)}}{4} \\,\\mathrm{dt})",
+                    "location": "1",
                     "params": {
-                        "f": "(1/2) * cos(t)",
+                        "f": "1/4 + (1/4) * cos(t)",
                         "g": "2 * u",
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "((2 * 12 ^ (1/2)) * (1/2)) * (INT u:[0,pi / 2]. 1) + ((2 * 12 ^ (1/2)) * (1/2)) * (INT t:[0,pi]. (1/2) * cos(t))"
+                    "text": "(2 * 12 ^ (1/2)) * (INT t:[0,pi]. 1/4 + (1/4) * cos(t))"
                 },
                 {
-                    "latex": "2 * \\sqrt{12} * \\frac{1}{2} * \\frac{1}{2} * (\\int_{0}^{\\pi} \\cos{(t)} \\,\\mathrm{dt}) + 2 * \\sqrt{12} * \\frac{1}{2} * (\\int_{0}^{\\pi/2} 1 \\,\\mathrm{du})",
-                    "reason": "Linearity",
-                    "text": "(((2 * 12 ^ (1/2)) * (1/2)) * (1/2)) * (INT t:[0,pi]. cos(t)) + ((2 * 12 ^ (1/2)) * (1/2)) * (INT u:[0,pi / 2]. 1)"
-                },
-                {
-                    "latex": "2 * \\sqrt{12} * \\frac{1}{2} * \\frac{1}{2} * (\\left. \\sin{(t)} \\right\\vert_{t=0}^{\\pi}) + 2 * \\sqrt{12} * \\frac{1}{2} * (\\left. u \\right\\vert_{u=0}^{\\pi/2})",
-                    "reason": "Common integrals",
-                    "text": "(((2 * 12 ^ (1/2)) * (1/2)) * (1/2)) * ([sin(t)]_t=0,pi) + ((2 * 12 ^ (1/2)) * (1/2)) * ([u]_u=0,pi / 2)"
-                },
-                {
-                    "latex": "\\sqrt{3} * \\pi",
+                    "latex": "\\sqrt{3} \\pi",
                     "reason": "Simplification",
                     "text": "3 ^ (1/2) * pi"
                 }
@@ -317,38 +252,15 @@
                     "text": "INT x:[0,6]. (x + (x - 3) ^ 7) + sin(x - 3)"
                 },
                 {
-                    "latex": "(\\int_{0}^{6} x \\,\\mathrm{dx}) + (\\int_{0}^{6} \\sin{(x - 3)} \\,\\mathrm{dx}) + (\\int_{0}^{6} (-3 + x) ^ 7 \\,\\mathrm{dx})",
-                    "reason": "Linearity",
-                    "text": "((INT x:[0,6]. x) + (INT x:[0,6]. sin(x - 3))) + (INT x:[0,6]. (-3 + x) ^ 7)"
-                },
-                {
                     "_latex_reason": "Substitute \\(u\\) for \\(x - 3\\)",
-                    "latex": "(\\int_{0}^{6} x \\,\\mathrm{dx}) + (\\int_{-3}^{3} \\sin{(u)} \\,\\mathrm{du}) + (\\int_{0}^{6} (-3 + x) ^ 7 \\,\\mathrm{dx})",
-                    "location": "1",
+                    "latex": "\\int_{-3}^{3} 3 + u + u ^ 7 + \\sin{(u)} \\,\\mathrm{du}",
                     "params": {
-                        "f": "sin(u)",
+                        "f": "((3 + u) + u ^ 7) + sin(u)",
                         "g": "x - 3",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "((INT x:[0,6]. x) + (INT u:[-3,3]. sin(u))) + (INT x:[0,6]. (-3 + x) ^ 7)"
-                },
-                {
-                    "_latex_reason": "Substitute \\(u\\) for \\(-3 + x\\)",
-                    "latex": "(\\int_{0}^{6} x \\,\\mathrm{dx}) + (\\int_{-3}^{3} \\sin{(u)} \\,\\mathrm{du}) + (\\int_{-3}^{3} u ^ 7 \\,\\mathrm{du})",
-                    "location": "1",
-                    "params": {
-                        "f": "u ^ 7",
-                        "g": "-3 + x",
-                        "var_name": "u"
-                    },
-                    "reason": "Substitution",
-                    "text": "((INT x:[0,6]. x) + (INT u:[-3,3]. sin(u))) + (INT u:[-3,3]. u ^ 7)"
-                },
-                {
-                    "latex": "(\\left. \\frac{1}{2} * x ^ 2 \\right\\vert_{x=0}^{6}) + (\\left. -\\cos{(u)} \\right\\vert_{u=-3}^{3}) + (\\left. \\frac{1}{8} * u ^ 8 \\right\\vert_{u=-3}^{3})",
-                    "reason": "Common integrals",
-                    "text": "(([x ^ 2 / 2]_x=0,6) + ([-cos(u)]_u=-3,3)) + ([u ^ 8 / 8]_u=-3,3)"
+                    "text": "INT u:[-3,3]. ((3 + u) + u ^ 7) + sin(u)"
                 },
                 {
                     "latex": "18",
@@ -388,35 +300,20 @@
                     "text": "INT x:[0,pi / 3]. sin(x) * sqrt(cos(x) ^ (-2))"
                 },
                 {
+                    "latex": "\\int_{0}^{\\pi/3} \\cos{(x)} ^ {-1} \\sin{(x)} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,pi / 3]. cos(x) ^ (-1) * sin(x)"
+                },
+                {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
-                    "latex": "\\int_{1/2}^{1} --\\left| \\frac{1}{u} \\right| \\,\\mathrm{du}",
+                    "latex": "\\int_{1/2}^{1} \\frac{1}{u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "-abs(u ^ (-1))",
+                        "f": "-(u ^ (-1))",
                         "g": "cos(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1/2,1]. --abs(u ^ (-1))"
-                },
-                {
-                    "latex": "\\int_{1/2}^{1} \\left| \\frac{1}{u} \\right| \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "INT u:[1/2,1]. abs(u ^ (-1))"
-                },
-                {
-                    "latex": "\\int_{1/2}^{1} \\left| \\frac{1}{u} \\right| \\,\\mathrm{du}",
-                    "reason": "Common integrals",
-                    "text": "INT u:[1/2,1]. abs(u ^ (-1))"
-                },
-                {
-                    "latex": "\\int_{1/2}^{1} \\frac{1}{u} \\,\\mathrm{du}",
-                    "reason": "Eliminate abs",
                     "text": "INT u:[1/2,1]. u ^ (-1)"
-                },
-                {
-                    "latex": "\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=1/2}^{1}",
-                    "reason": "Common integrals",
-                    "text": "[log(abs(u))]_u=1/2,1"
                 },
                 {
                     "latex": "\\log{(2)}",
@@ -536,8 +433,547 @@
             "problem": "INT x:[1, 2]. 1 / (1 - exp(-x))"
         },
         {
+            "_problem_latex": "\\int_{0}^{\\pi} \\sin^{2}x \\cos^{2}x \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi} \\sin^{2}x \\cos^{2}x \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi]. sin(x) ^ 2 * cos(x) ^ 2"
+                },
+                {
+                    "latex": "\\int_{0}^{\\pi} \\cos^{2}x \\sin^{2}x \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,pi]. cos(x) ^ 2 * sin(x) ^ 2"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\sin^{2}x\\) to \\(1 - \\cos^{2}x\\)",
+                    "latex": "\\int_{0}^{\\pi} \\cos^{2}x (1 - \\cos^{2}x) \\,\\mathrm{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "rule": "TR5"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[0,pi]. cos(x) ^ 2 * (1 - cos(x) ^ 2)"
+                },
+                {
+                    "latex": "(\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}) - (\\int_{0}^{\\pi} \\cos^{4}x \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(INT x:[0,pi]. cos(x) ^ 2) - (INT x:[0,pi]. cos(x) ^ 4)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\cos^{3}x, v = \\sin{(x)}\\)",
+                    "latex": "(\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}) - ((\\left. \\cos^{3}x \\sin{(x)} \\right\\vert_{x=0}^{\\pi}) - (\\int_{0}^{\\pi} (-3 \\cos^{2}x) \\sin^{2}x \\,\\mathrm{dx}))",
+                    "location": "0",
+                    "params": {
+                        "parts_u": "cos(x)^3",
+                        "parts_v": "sin(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "(INT x:[0,pi]. cos(x) ^ 2) - (([cos(x) ^ 3 * sin(x)]_x=0,pi) - (INT x:[0,pi]. (-3 * cos(x) ^ 2) * sin(x) ^ 2))"
+                },
+                {
+                    "latex": "(\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}) + --1 * -3 * (\\int_{0}^{\\pi} \\cos^{2}x \\sin^{2}x \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(INT x:[0,pi]. cos(x) ^ 2) + (--1 * -3) * (INT x:[0,pi]. cos(x) ^ 2 * sin(x) ^ 2)"
+                },
+                {
+                    "latex": "(\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}) + -3 \\int_{0}^{\\pi} \\cos^{2}x \\sin^{2}x \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "(INT x:[0,pi]. cos(x) ^ 2) + -3 * (INT x:[0,pi]. cos(x) ^ 2 * sin(x) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\sin^{2}x\\) to \\(1 - \\cos^{2}x\\)",
+                    "latex": "(\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}) + -3 \\int_{0}^{\\pi} \\cos^{2}x (1 - \\cos^{2}x) \\,\\mathrm{dx}",
+                    "location": "1.1.0.1",
+                    "params": {
+                        "rule": "TR5"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "(INT x:[0,pi]. cos(x) ^ 2) + -3 * (INT x:[0,pi]. cos(x) ^ 2 * (1 - cos(x) ^ 2))"
+                },
+                {
+                    "latex": "-2 \\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx} + --3 * (\\int_{0}^{\\pi} \\cos^{4}x \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "-2 * (INT x:[0,pi]. cos(x) ^ 2) + --3 * (INT x:[0,pi]. cos(x) ^ 4)"
+                },
+                {
+                    "latex": "-2 \\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx} + 3 \\int_{0}^{\\pi} \\cos^{4}x \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "-2 * (INT x:[0,pi]. cos(x) ^ 2) + 3 * (INT x:[0,pi]. cos(x) ^ 4)"
+                },
+                {
+                    "_latex_reason": "By solving equation: \\((\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}) - (\\int_{0}^{\\pi} \\cos^{4}x \\,\\mathrm{dx}) = \\int_{0}^{\\pi} \\cos^{4}x \\,\\mathrm{dx}\\)",
+                    "latex": "(-2 + 3 * (\\frac{1}{4} * --2 + \\frac{1}{4})) * (\\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx})",
+                    "params": {
+                        "lhs": "(INT x:[0,pi]. cos(x) ^ 2) - (INT x:[0,pi]. cos(x) ^ 4)",
+                        "rhs": "INT x:[0,pi]. cos(x) ^ 4"
+                    },
+                    "text": "(-2 + 3 * ((1/4) * --2 + 1/4)) * (INT x:[0,pi]. cos(x) ^ 2)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\int_{0}^{\\pi} \\cos^{2}x \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "(1/4) * (INT x:[0,pi]. cos(x) ^ 2)"
+                }
+            ],
             "name": "Exercise 11",
             "problem": "INT x:[0, pi].sin(x)^2*cos(x)^2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{441} \\frac{\\pi \\sin{(\\pi \\sqrt{x})}}{\\sqrt{x}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{441} \\frac{\\pi \\sin{(\\pi \\sqrt{x})}}{\\sqrt{x}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,441]. (pi * sin(pi * sqrt(x))) / sqrt(x)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\pi \\sqrt{x}\\)",
+                    "latex": "\\int_{0}^{21 \\pi} ((2 u * \\frac{1}{\\pi}) \\frac{1}{\\left| \\frac{u}{\\pi} \\right|}) \\sin{(\\pi \\left| \\frac{u}{\\pi} \\right|)} \\,\\mathrm{du}",
+                    "params": {
+                        "f": "(((2 * u) * pi ^ (-1)) * abs(u / pi) ^ (-1)) * sin(pi * abs(u / pi))",
+                        "g": "pi * sqrt(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[0,21 * pi]. (((2 * u) * pi ^ (-1)) * abs(u / pi) ^ (-1)) * sin(pi * abs(u / pi))"
+                },
+                {
+                    "latex": "4",
+                    "reason": "Simplification",
+                    "text": "4"
+                }
+            ],
+            "name": "Exercise 12",
+            "problem": "INT x:[0, 441]. (pi * sin(pi*sqrt(x))) / sqrt(x)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/4} \\tan^{2}x \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} \\tan^{2}x \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. tan(x) ^ 2"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\tan^{2}x\\) to \\(\\sec^{2}x - 1\\)",
+                    "latex": "\\int_{0}^{\\pi/4} \\sec^{2}x - 1 \\,\\mathrm{dx}",
+                    "location": "0",
+                    "params": {
+                        "rule": "TR22"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[0,pi / 4]. sec(x) ^ 2 - 1"
+                },
+                {
+                    "latex": "1 - \\frac{1}{4} \\pi",
+                    "reason": "Simplification",
+                    "text": "1 - (1/4) * pi"
+                }
+            ],
+            "name": "Exercise 13",
+            "problem": "INT x:[0, pi/4]. tan(x) ^ 2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} e^{\\sqrt[4]{x}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} e^{\\sqrt[4]{x}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. exp(x ^ (1/4))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt[4]{x}\\)",
+                    "latex": "\\int_{0}^{1} (4 u ^ 3) e^{\\left| u \\right|} \\,\\mathrm{du}",
+                    "params": {
+                        "f": "(4 * u ^ 3) * exp(abs(u))",
+                        "g": "x ^ (1/4)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[0,1]. (4 * u ^ 3) * exp(abs(u))"
+                },
+                {
+                    "latex": "4 \\int_{0}^{1} u ^ {3} e^{u} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "4 * (INT u:[0,1]. u ^ 3 * exp(u))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = u ^ 3, v = e^{u}\\)",
+                    "latex": "4 (\\left. u ^ 3 e^{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} (3 u ^ 2) e^{u} \\,\\mathrm{du})",
+                    "params": {
+                        "parts_u": "u^3",
+                        "parts_v": "exp(u)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "4 * (([u ^ 3 * exp(u)]_u=0,1) - (INT u:[0,1]. (3 * u ^ 2) * exp(u)))"
+                },
+                {
+                    "latex": "4 e - 12 \\int_{0}^{1} u ^ {2} e^{u} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "4 * exp(1) - 12 * (INT u:[0,1]. u ^ 2 * exp(u))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = u ^ 2, v = e^{u}\\)",
+                    "latex": "4 e - 12 (\\left. u ^ 2 e^{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} (2 u) e^{u} \\,\\mathrm{du})",
+                    "params": {
+                        "parts_u": "u^2",
+                        "parts_v": "exp(u)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "4 * exp(1) - 12 * (([u ^ 2 * exp(u)]_u=0,1) - (INT u:[0,1]. (2 * u) * exp(u)))"
+                },
+                {
+                    "latex": "-8 e + 24 \\int_{0}^{1} u e^{u} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "-8 * exp(1) + 24 * (INT u:[0,1]. u * exp(u))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = u, v = e^{u}\\)",
+                    "latex": "-8 e + 24 (\\left. u e^{u} \\right\\vert_{u=0}^{1}) - (\\int_{0}^{1} e^{u} \\,\\mathrm{du})",
+                    "params": {
+                        "parts_u": "u",
+                        "parts_v": "exp(u)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "-8 * exp(1) + 24 * (([u * exp(u)]_u=0,1) - (INT u:[0,1]. exp(u)))"
+                },
+                {
+                    "latex": "24 - 8 e",
+                    "reason": "Simplification",
+                    "text": "24 - 8 * exp(1)"
+                }
+            ],
+            "name": "Exercise 14",
+            "problem": "INT x:[0, 1].exp(x ^ (1/4))"
+        },
+        {
+            "_problem_latex": "\\int_{\\pi/4}^{\\pi/3} \\cos{(x)} \\cot{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{\\pi/4}^{\\pi/3} \\cos{(x)} \\cot{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[pi / 4,pi / 3]. cos(x) * cot(x)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos{(x)} \\cot{(x)}\\) to \\(\\frac{\\cos^{2}x}{\\sin{(x)}}\\)",
+                    "latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{\\cos^{2}x}{\\sin{(x)}} \\,\\mathrm{dx}",
+                    "location": "0",
+                    "params": {
+                        "rule": "TR2"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[pi / 4,pi / 3]. cos(x) ^ 2 / sin(x)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\cos^{2}x}{\\sin{(x)}}\\) to \\(\\frac{1 - \\sin^{2}x}{\\sin{(x)}}\\)",
+                    "latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{1 - \\sin^{2}x}{\\sin{(x)}} \\,\\mathrm{dx}",
+                    "location": "0",
+                    "params": {
+                        "rule": "TR6"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[pi / 4,pi / 3]. (1 - sin(x) ^ 2) / sin(x)"
+                },
+                {
+                    "latex": "\\int_{\\pi/4}^{\\pi/3} -\\sin{(x)} + \\frac{1}{\\sin{(x)}} \\,\\mathrm{dx}",
+                    "reason": "Polynomial division",
+                    "text": "INT x:[pi / 4,pi / 3]. -sin(x) + 1 / sin(x)"
+                },
+                {
+                    "latex": "-(-\\frac{1}{2} - \\frac{1}{2} * -\\sqrt{2}) + (\\int_{\\pi/4}^{\\pi/3} \\frac{1}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "-(-1/2 - (1/2) * -(2 ^ (1/2))) + (INT x:[pi / 4,pi / 3]. sin(x) ^ (-1))"
+                }
+            ],
+            "name": "Exercise 15",
+            "problem": "INT x:[pi/4, pi/3]. cos(x) * cot(x)"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{e} 2 \\log{(x)} + \\log^{2}x \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} 2 \\log{(x)} + \\log^{2}x \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,e]. 2 * log(x) + log(x) ^ 2"
+                },
+                {
+                    "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} + (\\int_{1}^{e} \\log^{2}x \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "2 * (INT x:[1,e]. log(x)) + (INT x:[1,e]. log(x) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)Integrate by parts, \\(u = \\log^{2}x, v = x\\)",
+                    "latex": "2 (\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx}) + (\\left. x \\log^{2}x \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 2 \\log{(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)^2",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by partsIntegrate by parts",
+                    "text": "2 * (([x * log(x)]_x=1,e) - (INT x:[1,e]. 1)) + (([x * log(x) ^ 2]_x=1,e) - (INT x:[1,e]. 2 * log(x)))"
+                },
+                {
+                    "latex": "2 - 2 e + (2 e) \\log{(e)} + e \\log^{2}e - 2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "(((2 - 2 * e) + (2 * e) * log(e)) + e * log(e) ^ 2) - 2 * (INT x:[1,e]. log(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
+                    "latex": "2 - 2 e + (2 e) \\log{(e)} + e \\log^{2}e - 2 (\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "(((2 - 2 * e) + (2 * e) * log(e)) + e * log(e) ^ 2) - 2 * (([x * log(x)]_x=1,e) - (INT x:[1,e]. 1))"
+                },
+                {
+                    "latex": "e \\log^{2}e",
+                    "reason": "Simplification",
+                    "text": "e * log(e) ^ 2"
+                }
+            ],
+            "name": "Exercise 16",
+            "problem": "INT x:[1, e]. 2*log(x) + log(x) ^ 2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x ^ 3}{1 + x ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x ^ 3}{1 + x ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x ^ 3 / (1 + x ^ 2)"
+                },
+                {
+                    "latex": "\\int_{0}^{1} x - \\frac{x}{x ^ 2 + 1} \\,\\mathrm{dx}",
+                    "reason": "Polynomial division",
+                    "text": "INT x:[0,1]. x - x / (x ^ 2 + 1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} - (\\int_{0}^{1} \\frac{x}{1 + x ^ {2}} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "1/2 - (INT x:[0,1]. x / (1 + x ^ 2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(1 + x ^ 2\\)",
+                    "latex": "\\frac{1}{2} - (\\int_{1}^{2} \\frac{1}{2} (\\frac{1}{1 + -\\sqrt{-1 + u} ^ 2}) \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "(1/2) * (1 / (1 + (-((-1 + u) ^ (1/2))) ^ 2))",
+                        "g": "1 + x ^ 2",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/2 - (INT u:[1,2]. (1/2) * (1 / (1 + (-((-1 + u) ^ (1/2))) ^ 2)))"
+                },
+                {
+                    "latex": "\\frac{1}{2} - \\frac{\\log{(2)}}{2}",
+                    "reason": "Simplification",
+                    "text": "1/2 - (1/2) * log(2)"
+                }
+            ],
+            "name": "Exercise 18",
+            "problem": "INT x:[0, 1]. x^3/(1 + x^2)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{1}{2 - 2 x + x ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{2 - 2 x + x ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 1 / ((2 - 2 * x) + x ^ 2)"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(2 - 2 x + x ^ 2\\) to \\((x - 1) (x - 1) + 1\\)",
+                    "latex": "\\int_{0}^{1} \\frac{1}{(x - 1) (x - 1) + 1} \\,\\mathrm{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "rhs": "(x - 1) * (x - 1) + 1"
+                    },
+                    "reason": "Rewrite",
+                    "text": "INT x:[0,1]. 1 / ((x - 1) * (x - 1) + 1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(x - 1\\)",
+                    "latex": "\\int_{-1}^{0} \\frac{1}{1 + u ^ 2} \\,\\mathrm{du}",
+                    "params": {
+                        "f": "1 / (1 + u ^ 2)",
+                        "g": "x - 1",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[-1,0]. 1 / (1 + u ^ 2)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\pi",
+                    "reason": "Simplification",
+                    "text": "(1/4) * pi"
+                }
+            ],
+            "name": "Exercise 19",
+            "problem": "INT x:[0, 1].1/(2 - 2*x + x^2)"
+        },
+        {
+            "_problem_latex": "\\int_{\\pi/3}^{2/3 \\pi} \\sin{(x)} \\log{(\\sin{(x)})} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{\\pi/3}^{2/3 \\pi} \\sin{(x)} \\log{(\\sin{(x)})} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[pi / 3,(2/3) * pi]. sin(x) * log(sin(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(\\sin{(x)})}, v = -\\cos{(x)}\\)",
+                    "latex": "(\\left. (-\\cos{(x)}) \\log{(\\sin{(x)})} \\right\\vert_{x=\\pi/3}^{2/3 \\pi}) - (\\int_{\\pi/3}^{2/3 \\pi} (-\\cos^{2}x) \\frac{1}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(sin(x))",
+                        "parts_v": "-cos(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-cos(x) * log(sin(x))]_x=pi / 3,(2/3) * pi) - (INT x:[pi / 3,(2/3) * pi]. -(cos(x) ^ 2) * sin(x) ^ (-1))"
+                },
+                {
+                    "latex": "\\log{(\\frac{1}{2} * \\sqrt{3})} + (\\int_{\\pi/3}^{2/3 \\pi} \\cos^{2}x \\frac{1}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "log((1/2) * 3 ^ (1/2)) + (INT x:[pi / 3,(2/3) * pi]. cos(x) ^ 2 * sin(x) ^ (-1))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}x \\frac{1}{\\sin{(x)}}\\) to \\(\\frac{1 - \\sin^{2}x}{\\sin{(x)}}\\)",
+                    "latex": "\\log{(\\frac{1}{2} * \\sqrt{3})} + (\\int_{\\pi/3}^{2/3 \\pi} \\frac{1 - \\sin^{2}x}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "location": "1.0",
+                    "params": {
+                        "rule": "TR6"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "log((1/2) * 3 ^ (1/2)) + (INT x:[pi / 3,(2/3) * pi]. (1 - sin(x) ^ 2) / sin(x))"
+                },
+                {
+                    "latex": "\\log{(\\frac{1}{2} * \\sqrt{3})} + (\\int_{\\pi/3}^{2/3 \\pi} -\\sin{(x)} + \\frac{1}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "reason": "Polynomial division",
+                    "text": "log((1/2) * 3 ^ (1/2)) + (INT x:[pi / 3,(2/3) * pi]. -sin(x) + 1 / sin(x))"
+                },
+                {
+                    "latex": "\\log{(\\frac{1}{2} * \\sqrt{3})} - (\\int_{\\pi/3}^{2/3 \\pi} \\sin{(x)} \\,\\mathrm{dx}) + (\\int_{\\pi/3}^{2/3 \\pi} \\frac{1}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "(log((1/2) * 3 ^ (1/2)) - (INT x:[pi / 3,(2/3) * pi]. sin(x))) + (INT x:[pi / 3,(2/3) * pi]. sin(x) ^ (-1))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\frac{x}{2}\\)",
+                    "latex": "\\log{(\\frac{1}{2} * \\sqrt{3})} - (\\int_{\\pi/3}^{2/3 \\pi} \\sin{(x)} \\,\\mathrm{dx}) + (\\int_{\\pi/6}^{\\pi/3} 2 (\\frac{1}{\\sin{(2 u)}}) \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "2 * sin(2 * u) ^ (-1)",
+                        "g": "x / 2",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(log((1/2) * 3 ^ (1/2)) - (INT x:[pi / 3,(2/3) * pi]. sin(x))) + (INT u:[pi / 6,pi / 3]. 2 * sin(2 * u) ^ (-1))"
+                },
+                {
+                    "latex": "-1 + \\log{(\\frac{1}{2} * \\sqrt{3})} + 2 \\int_{\\pi/6}^{\\pi/3} \\frac{1}{\\sin{(2 u)}} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "(-1 + log((1/2) * 3 ^ (1/2))) + 2 * (INT u:[pi / 6,pi / 3]. 1 / sin(2 * u))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{1}{\\sin{(2 u)}}\\) to \\(\\frac{1}{(2 \\sin{(u)}) \\cos{(u)}}\\)",
+                    "latex": "-1 + \\log{(\\frac{1}{2} * \\sqrt{3})} + 2 \\int_{\\pi/6}^{\\pi/3} \\frac{1}{(2 \\sin{(u)}) \\cos{(u)}} \\,\\mathrm{du}",
+                    "location": "1.1.0",
+                    "params": {
+                        "rule": "TR11"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "(-1 + log((1/2) * 3 ^ (1/2))) + 2 * (INT u:[pi / 6,pi / 3]. 1 / ((2 * sin(u)) * cos(u)))"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(1\\) to \\(\\sin^{2}u + \\cos^{2}u\\)",
+                    "latex": "-1 + \\log{(\\frac{1}{2} * \\sqrt{3})} + 2 \\int_{\\pi/6}^{\\pi/3} \\frac{\\sin^{2}u + \\cos^{2}u}{(2 \\sin{(u)}) \\cos{(u)}} \\,\\mathrm{du}",
+                    "location": "1.1.0.0",
+                    "params": {
+                        "rhs": "sin(u)^2 + cos(u)^2"
+                    },
+                    "reason": "Rewrite",
+                    "text": "(-1 + log((1/2) * 3 ^ (1/2))) + 2 * (INT u:[pi / 6,pi / 3]. (sin(u) ^ 2 + cos(u) ^ 2) / ((2 * sin(u)) * cos(u)))"
+                },
+                {
+                    "latex": "-1 + \\log{(\\frac{1}{2} * \\sqrt{3})} + (\\int_{\\pi/6}^{\\pi/3} \\cos{(u)} \\frac{1}{\\sin{(u)}} \\,\\mathrm{du}) + (\\int_{\\pi/6}^{\\pi/3} \\frac{1}{\\cos{(u)}} \\sin{(u)} \\,\\mathrm{du})",
+                    "reason": "Linearity",
+                    "text": "((-1 + log((1/2) * 3 ^ (1/2))) + (INT u:[pi / 6,pi / 3]. cos(u) * sin(u) ^ (-1))) + (INT u:[pi / 6,pi / 3]. cos(u) ^ (-1) * sin(u))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(\\sin{(u)}\\)Substitute \\(t\\) for \\(\\cos{(u)}\\)",
+                    "latex": "-1 + \\log{(\\frac{1}{2} * \\sqrt{3})} + (\\int_{1/2}^{\\sqrt{3}/2} \\frac{1}{t} \\,\\mathrm{dt}) + (\\int_{1/2}^{\\sqrt{3}/2} \\frac{1}{t} \\,\\mathrm{dt})",
+                    "location": "1",
+                    "params": {
+                        "f": "-(t ^ (-1))",
+                        "g": "cos(u)",
+                        "var_name": "t"
+                    },
+                    "reason": "SubstitutionSubstitution",
+                    "text": "((-1 + log((1/2) * 3 ^ (1/2))) + (INT t:[1/2,sqrt(3) / 2]. t ^ (-1))) + (INT t:[1/2,sqrt(3) / 2]. t ^ (-1))"
+                },
+                {
+                    "latex": "-1 + 2 \\log{(\\sqrt{3})} + \\log{(\\frac{1}{2} * \\sqrt{3})}",
+                    "reason": "Simplification",
+                    "text": "(-1 + 2 * log(3 ^ (1/2))) + log((1/2) * 3 ^ (1/2))"
+                }
+            ],
+            "name": "Exercise 20",
+            "problem": "INT x:[pi/3, (2/3)*pi]. sin(x)*log(sin(x))"
+        },
+        {
+            "_problem_latex": "\\int_{1/3}^{1/2} \\frac{x}{1 - x ^ 4} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1/3}^{1/2} \\frac{x}{1 - x ^ 4} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1/3,1/2]. x / (1 - x ^ 4)"
+                },
+                {
+                    "latex": "-(\\int_{1/3}^{1/2} \\frac{1}{4 (x - 1)} \\,\\mathrm{dx}) - (\\int_{1/3}^{1/2} \\frac{1}{4 (x + 1)} \\,\\mathrm{dx}) + (\\int_{1/3}^{1/2} \\frac{x}{2 (x ^ 2 + 1)} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(-(INT x:[1/3,1/2]. 1 / (4 * (x - 1))) - (INT x:[1/3,1/2]. 1 / (4 * (x + 1)))) + (INT x:[1/3,1/2]. x / (2 * (x ^ 2 + 1)))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(x - 1\\)Substitute \\(u\\) for \\(x + 1\\)Substitute \\(u\\) for \\(x ^ 2 + 1\\)",
+                    "latex": "-(\\int_{-2/3}^{-1/2} \\frac{1}{4} (\\frac{1}{u}) \\,\\mathrm{du}) - (\\int_{4/3}^{3/2} \\frac{1}{4} (\\frac{1}{u}) \\,\\mathrm{du}) + (\\int_{10/9}^{5/4} \\frac{1}{4} (\\frac{1}{u}) \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "(1/4) * u ^ (-1)",
+                        "g": "x ^ 2 + 1",
+                        "var_name": "u"
+                    },
+                    "reason": "SubstitutionSubstitutionSubstitution",
+                    "text": "(-(INT u:[-2/3,-1/2]. (1/4) * u ^ (-1)) - (INT u:[4/3,3/2]. (1/4) * u ^ (-1))) + (INT u:[10/9,5/4]. (1/4) * u ^ (-1))"
+                },
+                {
+                    "latex": "-\\frac{1}{4} * \\log{(\\frac{3}{4})}",
+                    "reason": "Simplification",
+                    "text": "-(1/4) * log(3/4)"
+                }
+            ],
+            "name": "Exercise 21",
+            "problem": "INT x:[1/3, 1/2].x/(1 - x^4)"
+        },
+        {
+            "_problem_latex": "\\int_{-\\pi/4}^{\\pi/4} \\frac{1}{1 - \\sin{(x)}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\frac{1}{1 - \\sin{(x)}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[-pi / 4,pi / 4]. 1 / (1 - sin(x))"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(\\frac{1}{1 - \\sin{(x)}}\\) to \\(\\frac{1 + \\sin{(x)}}{(1 + \\sin{(x)}) (1 - \\sin{(x)})}\\)",
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\frac{1 + \\sin{(x)}}{(1 + \\sin{(x)}) (1 - \\sin{(x)})} \\,\\mathrm{dx}",
+                    "location": "0",
+                    "params": {
+                        "rhs": "(1 + sin(x)) / ((1 + sin(x)) * (1 - sin(x)))"
+                    },
+                    "reason": "Rewrite",
+                    "text": "INT x:[-pi / 4,pi / 4]. (1 + sin(x)) / ((1 + sin(x)) * (1 - sin(x)))"
+                }
+            ],
+            "name": "Exercise 24",
+            "problem": "INT x:[-pi/4, pi/4]. 1 / (1 - sin(x))"
         }
     ]
 }
