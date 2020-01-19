@@ -1486,35 +1486,47 @@
                     "th": "real_integrable_on f s ⊢ has_real_integral f (real_integral s f) s"
                 },
                 {
-                    "args": "has_real_integral_lmul, {}, {c: c, f: f, k: real_integral s f, s: s}",
+                    "args": "eta_conversion, has_real_integral f (real_integral s (λx. f x)) s",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_integrable_on f s ⊢ has_real_integral (λx. c * f x) (c * real_integral s f) s"
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f s ⊢ has_real_integral f (real_integral s (λx. f x)) s"
                 },
                 {
-                    "args": "real_integral_unique",
+                    "args": "has_real_integral_lmul, {}, {c: c, f: f, k: real_integral s (λx. f x), s: s}",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f s ⊢ has_real_integral (λx. c * f x) (c * real_integral s (λx. f x)) s"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ⊢ real_integral s (λx. c * f x) = c * real_integral s f"
+                    "th": "real_integrable_on f s ⊢ real_integral s (λx. c * f x) = c * real_integral s (λx. f x)"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "3"
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_integrable_on f s ⟶ real_integral s (λx. c * f x) = c * real_integral s f"
+                    "th": "⊢ real_integrable_on f s ⟶ real_integral s (λx. c * f x) = c * real_integral s (λx. f x)"
                 }
             ],
-            "prop": "real_integrable_on f s ⟶ real_integral s (λx. c * f x) = c * real_integral s f",
+            "prop": [
+                "real_integrable_on f s ",
+                "⟶ real_integral s (λx. c * f x) = c * real_integral s (λx. f x)"
+            ],
             "steps": [
                 {
                     "goal_id": "1",
@@ -1525,6 +1537,12 @@
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_lmul"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
                 },
                 {
                     "goal_id": "1",
@@ -1582,7 +1600,10 @@
                     "th": "⊢ real_integrable_on f s ⟶ real_integral s (λx. f x * c) = real_integral s f * c"
                 }
             ],
-            "prop": "real_integrable_on f s ⟶ real_integral s (λx. f x * c) = real_integral s f * c",
+            "prop": [
+                "real_integrable_on f s ",
+                "⟶ real_integral s (λx. f x * c) = real_integral s (λx. f x) * c"
+            ],
             "steps": [
                 {
                     "goal_id": "1",
@@ -26588,19 +26609,16 @@
             "name": "real_integration_by_parts_simple_evalat",
             "prop": [
                 "a ≤ b ",
-                "⟶ (∀x. x ∈ real_closed_interval a b ",
-                "      ⟶ has_real_derivative u (du x) (within (atreal x) (real_closed_interval a b)) ∧ ",
-                "         has_real_derivative v (dv x) (within (atreal x) (real_closed_interval a b))) ",
-                "   ⟶ real_integral (real_closed_interval a b) (λx. u x * dv x) = ",
+                "⟶ (∀x. x ∈ real_open_interval a b ",
+                "      ⟶ real_differentiable u (atreal x) ∧ real_differentiable v (atreal x)) ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. u x * real_derivative v x) = ",
                 "      evalat (λx. u x * v x) a b - ",
-                "      real_integral (real_closed_interval a b) (λx. du x * v x)"
+                "      real_integral (real_closed_interval a b) (λx. real_derivative u x * v x)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "du": "real ⇒ real",
-                "dv": "real ⇒ real",
                 "u": "real ⇒ real",
                 "v": "real ⇒ real"
             }
@@ -27569,54 +27587,19 @@
             }
         },
         {
-            "name": "real_increasing_on",
-            "prop": "real_increasing_on f S ⟷ (∀x. ∀y. x ∈ S ⟶ y ∈ S ⟶ x ≤ y ⟶ f x ≤ f y)",
-            "ty": "def",
-            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_decreasing_on",
-            "prop": "real_decreasing_on f S ⟷ (∀x. ∀y. x ∈ S ⟶ y ∈ S ⟶ x ≤ y ⟶ f x ≥ f y)",
-            "ty": "def",
-            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
-        },
-        {
-            "name": "real_increasing_on_sin",
-            "prop": "real_increasing_on (λx. sin x) (real_closed_interval 0 (pi / 2))",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_decreasing_on_cos_div2",
-            "prop": "real_decreasing_on (λx. cos x) (real_closed_interval 0 (pi / 2))",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_decreasing_on_cos",
-            "prop": "real_decreasing_on (λx. cos x) (real_closed_interval 0 pi)",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
             "name": "real_integral_substitution_simple_incr",
             "prop": [
                 "real_continuous_on f (real_closed_interval (g a) (g b)) ",
-                "⟶ (∀x. x ∈ real_closed_interval a b ",
-                "      ⟶ has_real_derivative g (dg x) (within (atreal x) (real_closed_interval a b))) ",
+                "⟶ (∀x. x ∈ real_open_interval a b ",
+                "      ⟶ real_differentiable g (atreal x) ∧ real_derivative g x ≥ 0) ",
                 "   ⟶ a ≤ b ",
-                "      ⟶ real_increasing_on g (real_closed_interval a b) ",
-                "         ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * dg x) = ",
-                "            real_integral (real_closed_interval (g a) (g b)) f"
+                "      ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * real_derivative g x) = ",
+                "         real_integral (real_closed_interval (g a) (g b)) f"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "dg": "real ⇒ real",
                 "f": "real ⇒ real",
                 "g": "real ⇒ real"
             }
@@ -27625,18 +27608,16 @@
             "name": "real_integral_substitution_simple_decr",
             "prop": [
                 "real_continuous_on f (real_closed_interval (g a) (g b)) ",
-                "⟶ (∀x. x ∈ real_closed_interval a b ",
-                "      ⟶ has_real_derivative g (dg x) (within (atreal x) (real_closed_interval a b))) ",
+                "⟶ (∀x. x ∈ real_open_interval a b ",
+                "      ⟶ real_differentiable g (atreal x) ∧ real_derivative g x ≤ 0) ",
                 "   ⟶ a ≤ b ",
-                "      ⟶ real_decreasing_on g (real_closed_interval a b) ",
-                "         ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * dg x) = ",
-                "            -(real_integral (real_closed_interval (g b) (g a)) f)"
+                "      ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * real_derivative g x) = ",
+                "         -(real_integral (real_closed_interval (g b) (g a)) f)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "dg": "real ⇒ real",
                 "f": "real ⇒ real",
                 "g": "real ⇒ real"
             }

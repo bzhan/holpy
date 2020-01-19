@@ -31,12 +31,14 @@ minus = Const("minus", TFun(realT, realT, realT))
 uminus = Const("uminus", TFun(realT, realT))
 times = Const("times", TFun(realT, realT, realT))
 divides = Const("real_divide", TFun(realT, realT, realT))
+inverse = Const("real_inverse", TFun(realT, realT))
 less_eq = Const("less_eq", TFun(realT, realT, boolT))
 less = Const("less", TFun(realT, realT, boolT))
 greater_eq = Const("greater_eq", TFun(realT, realT, boolT))
 greater = Const("greater", TFun(realT, realT, boolT))
 nat_power = Const("power", TFun(realT, nat.natT, realT))
 real_power = Const("power", TFun(realT, realT, realT))
+sqrt = Const("sqrt", TFun(realT, realT))
 pi = Const("pi", realT)
 
 # Transcendental functions
@@ -175,7 +177,14 @@ def real_eval(t):
         elif is_nat_power(t):
             return rec(t.arg1) ** nat.nat_eval(t.arg)
         elif is_real_power(t):
-            return rec(t.arg1) ** rec(t.arg)
+            p = rec(t.arg)
+            if isinstance(p, int):
+                if p >= 0:
+                    return rec(t.arg1) ** p
+                else:
+                    return Fraction(1) / (rec(t.arg1) ** (-p))
+            else:
+                raise ConvException('real_eval: %s' % str(t))
         else:
             raise ConvException('real_eval: %s' % str(t))
     
@@ -203,6 +212,8 @@ class real_eval_conv(Conv):
     """Simplify all arithmetic operations."""
     def get_proof_term(self, thy, t):
         simp_t = to_binary_real(real_eval(t))
+        if simp_t == t:
+            return refl(t)
         return ProofTermDeriv('real_eval', thy, Term.mk_equals(t, simp_t))
 
 
@@ -446,7 +457,7 @@ class norm_mult_atom(Conv):
             elif m1 < m2:
                 return pt
             else:
-                return pt.on_rhs(thy, rewr_conv('real_add_comm'))
+                return pt.on_rhs(thy, rewr_conv('real_mult_comm'))
 
 class norm_mult_monomial(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * (b_1 * ... * b_m)."""
@@ -481,9 +492,85 @@ class norm_mult_monomials(Conv):
 
 def norm_mult(thy, t, pts):
     """Normalization of mult. Assume two sides are in normal form."""
-    return norm_mult_monomials(pts).get_proof_term(thy, t)
+    pt = refl(t)
+    if is_plus(t.arg1):
+        return pt.on_rhs(thy, rewr_conv('real_add_rdistrib'))
+    elif is_plus(t.arg):
+        return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'))
+    else:
+        return pt.on_rhs(thy, norm_mult_monomials(pts))
 
 auto.add_global_autos_norm(times, norm_mult)
+
+def norm_uminus(thy, t, pts):
+    """Normalization of uminus."""
+    pt = refl(t)
+    if is_binary_real(t):
+        return pt.on_rhs(thy, real_eval_conv())
+    else:
+        return pt.on_rhs(thy, rewr_conv('real_poly_neg1'))
+
+auto.add_global_autos_norm(uminus, norm_uminus)
+
+auto.add_global_autos_norm(minus, auto.norm_rules(['real_poly_neg2']))
+
+def norm_divides(thy, t, pts):
+    """Normalization of divides."""
+    pt = refl(t)
+    if is_binary_real(t):
+        return pt.on_rhs(thy, real_eval_conv())
+    else:
+        return pt.on_rhs(thy, rewr_conv('real_divide_def'))
+
+auto.add_global_autos_norm(divides, norm_divides)
+
+auto.add_global_autos_norm(
+    inverse,
+    auto.norm_rules([
+        'rpow_neg_one'
+    ]))
+
+auto.add_global_autos_norm(
+    of_nat,
+    auto.norm_rules([
+        'real_of_nat_id',
+        'real_of_nat_add',
+        'real_of_nat_mul'
+    ]))
+
+auto.add_global_autos_norm(
+    nat_power,
+    auto.norm_rules([
+        'real_nat_power_def_1',
+        'real_nat_power_def_2',
+        'real_pow_1',
+        'real_pow_one',
+        'real_pow_mul',
+        'rpow_mult_nat2',
+    ])
+)
+
+auto.add_global_autos_norm(nat_power, real_eval_conv())
+
+auto.add_global_autos_norm(
+    real_power,
+    auto.norm_rules([
+        'rpow_pow',
+        'rpow_0',
+        'rpow_1',
+        'rpow_mult',
+        'rpow_mult_nat1',
+        'rpow_base_mult',
+    ])
+)
+
+auto.add_global_autos_norm(real_power, real_eval_conv())
+
+auto.add_global_autos_norm(
+    sqrt,
+    auto.norm_rules([
+        'rpow_sqrt'
+    ]))
 
 
 def real_approx_eval(t):

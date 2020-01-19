@@ -149,25 +149,7 @@ def integral_compose_integral():
         info.update({'location': location})
     if params:
         info.update({'params': params})
-    return json.dumps(info)
-    # if params:
-    #     return jsonify({
-    #         'text': str(new_expr),
-    #         'latex': integral.latex.convert_expr(new_expr),
-    #         'reason': reason,
-    #         '_latex_reason': latex_reason,
-    #         'location': location,
-    #         'params': params
-    #     })
-    # else:
-    #     return jsonify({
-    #         'text': str(new_expr),
-    #         '_latex_reason': latex_reason,
-    #         'latex': integral.latex.convert_expr(new_expr),
-    #         'reason': reason,
-    #         'location': location,
-    #     })
-    
+    return json.dumps(info)    
 
 @app.route("/api/integral-trig-transformation", methods=['POST'])
 def integral_trig_transformation():
@@ -205,14 +187,14 @@ def integral_substitution():
     expr = integral.parser.parse_expr(data['expr'])
     rule = integral.rules.Substitution1(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
-    new_problem = rule.eval(problem)
+    new_problem, new_problem_body = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Substitution",
         'location': data['location'],
         'params': {
-            'f': str(new_problem.body),
+            'f': str(new_problem_body),
             'g': str(expr),
             'var_name': str(data['var_name'])
         },
@@ -317,7 +299,7 @@ def integral_validate_rewrite():
             if dollar_location != "":
                 location += "." + dollar_location
             return jsonify({
-                "rewrite": str(dollar),
+                "rewrite": str(select),
                 "flag": True,
                 "absolute_location": location, #location in the whole Integral
                 "relative_location": dollar_location # location in its own integral
@@ -340,7 +322,7 @@ def integral_rewrite_expr():
             return jsonify({
                 'flag': False
             })
-        new_problem = integral.expr.Integral(problem.var, problem.lower, problem.upper, old_expr.replace_expr(location, new_expr))
+        new_problem = integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(location, new_expr))
         return jsonify({
             'flag': True,
             'text': str(new_problem),

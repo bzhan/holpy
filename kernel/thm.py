@@ -188,7 +188,7 @@ class Thm():
             if y1 == y2:
                 return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(x, z))
             else:
-                raise InvalidDerivationException("transitive: middle term")
+                raise InvalidDerivationException("transitive: %s != %s" % (str(y1), str(y2)))
         else:
             raise InvalidDerivationException("transitive: not equalities")
 

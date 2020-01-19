@@ -3,6 +3,7 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import expr
+from integral.expr import OP
 
 def convert_expr(e, mode="large"):
     if e.ty == expr.VAR:
@@ -45,27 +46,13 @@ def convert_expr(e, mode="large"):
                         elif y.val.denominator == 1:
                             return "%s ^ {%s}" % (sx, sy)
                     if y.ty == expr.CONST and y.val < 0:
-                        new_expr = expr.Op("/", expr.Const(1), expr.Op("^", x, expr.Const(-y.val)))
+                        if y.val != -1:
+                            new_expr = expr.Op("/", expr.Const(1), expr.Op("^", x, expr.Const(-y.val)))
+                        else:
+                            new_expr = expr.Op("/", expr.Const(1), x)
                         return convert_expr(new_expr)
                     elif isinstance(x, expr.Fun) and len(x.args) > 0 and x.func_name != "abs":
-                        return "\%s^{%s}%s" % (x.func_name, sy, x.args[0])
-                elif e.op in ("+", "-"):
-                    if y.ty == expr.CONST:
-                        if y.val < 0:
-                            new_y = expr.Const(0 - y.val)
-                            return "%s %s %s" % (sx, "-", convert_expr(new_y))
-                    if y.ty == expr.OP:
-                        y1, y2 = y.args
-                        if isinstance(y1, expr.Const):
-                            new_y = y
-                            if y1.val < 0:
-                                new_y = expr.Op(y.op, expr.Const(0 - y1.val), y2)                            
-                                if y.op == "*":
-                                    if y1.val == -1:
-                                        new_y = y2
-                                sy = convert_expr(new_y, mode)
-                                new_op = "-" if e.op == "+" else "+"
-                                return "%s %s %s" % (sx, new_op, sy)                    
+                        return "\%s^{%s}%s" % (x.func_name, sy, x.args[0])                    
                 if x.priority() < expr.op_priority[e.op]:
                     sx = "(%s)" % sx
                 if y.priority() < expr.op_priority[e.op]:
@@ -82,20 +69,27 @@ def convert_expr(e, mode="large"):
                     return "%s %s" % (sx, sy)
                 elif x.ty == expr.CONST:
                     if x.val == -1:
-                        return "-%s" % sy
-                    elif x.val == 1:
-                        return "%s" % sy
+                        if y.ty == OP:
+                            return "-(%s)" % sy
+                        else:
+                            return "-%s" % sy
+                    elif x.val == 1 and not y.ty == OP:
+                        if y.ty == OP:
+                            return "(%s)" % sy
+                        else:
+                            return "%s" % sy
                     elif isinstance(x.val, Fraction) and x.val.numerator == 1 and y.ty not in (expr.INTEGRAL, expr.OP, expr.EVAL_AT):
                         return "\\frac{%s}{%s}" % (sy, convert_expr(expr.Const(x.val.denominator)))
                     elif y.ty in (expr.VAR, expr.FUN):
                         return "%s %s" % (sx, sy)
-                    elif y.ty == expr.OP:
-                        if y.op == "^" and (y.args[0].ty == expr.VAR or y.args[1].val == 1/2):
-                            return "%s %s" % (sx, sy)
-                        else:
-                            return "%s * %s" % (sx, sy)
+                    elif not y.is_constant():
+                        return "%s %s" % (sx, sy)    
                     else:
-                        return "%s * %s" % (sx, sy)
+                        if x.priority() < expr.op_priority[e.op]:
+                            sx = "(%s)" % sx
+                        if y.priority() < expr.op_priority[e.op]:
+                            sy = "(%s)" % sy
+                        return "%s %s %s" % (sx, e.op, sy)
                 else:
                     if x.priority() < expr.op_priority[e.op]:
                         sx = "(%s)" % sx

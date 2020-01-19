@@ -1863,7 +1863,7 @@
         },
         {
             "name": "sin_circle2",
-            "prop": "sin x ^ (2::nat) = 1 - cos x ^ (2::nat)",
+            "prop": "sin x ^ (2::nat) = 1 + -1 * cos x ^ (2::nat)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -1871,7 +1871,7 @@
         },
         {
             "name": "sin_circle3",
-            "prop": "cos x ^ (2::nat) = 1 - sin x ^ (2::nat)",
+            "prop": "cos x ^ (2::nat) = 1 + -1 * sin x ^ (2::nat)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -2046,7 +2046,7 @@
         },
         {
             "name": "cos_double_cos2",
-            "prop": "cos x ^ (2::nat) = cos (2 * x) / 2 + 1 / 2",
+            "prop": "cos x ^ (2::nat) = 1 / 2 * cos (2 * x) + 1 / 2",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -13722,6 +13722,14 @@
             }
         },
         {
+            "name": "rpow_neg_one",
+            "prop": "real_inverse x = x ^ -(1::real)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite",
                 "hint_rewrite_sym"
@@ -14442,6 +14450,54 @@
             ],
             "ty": "thm",
             "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "rpow_sqrt",
+            "prop": "x ≥ 0 ⟶ sqrt x = x ^ (1 / 2)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "rpow_mult",
+            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (m * n)",
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "n": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "rpow_mult_nat1",
+            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (of_nat m * n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "rpow_mult_nat2",
+            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (m * of_nat n)",
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "name": "rpow_base_mult",
+            "prop": "x > 0 ⟶ y > 0 ⟶ (x * y) ^ p = x ^ p * y ^ p",
+            "ty": "thm",
+            "vars": {
+                "p": "real",
                 "x": "real",
                 "y": "real"
             }
