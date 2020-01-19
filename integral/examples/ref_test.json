@@ -214,7 +214,7 @@
                     "location": "0"
                 },
                 {
-                    "reason": "Linearity"
+                    "reason": "Simplification"
                 },
                 {
                     "reason": "Substitution",
@@ -223,7 +223,7 @@
                         "g": "2 * x",
                         "var_name": "u"
                     },
-                    "location": "0.1"
+                    "location": "1.1"
                 },
                 {
                     "reason": "Simplification"

@@ -491,14 +491,14 @@ def get_at_location(loc, t):
     elif t.head.is_const_name("evalat"):
         if loc.head == 0:
             f = t.args[0]
-            body = f.subst_bound(f.var_name, realT)
+            body = f.subst_bound(Var(f.var_name, realT))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
     elif t.head.is_const_name("real_integral"):
         if loc.head == 0:
-            f = t.args[0]
-            body = f.subst_bound(f.var_name, realT)
+            f = t.args[1]
+            body = f.subst_bound(Var(f.var_name, realT))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
