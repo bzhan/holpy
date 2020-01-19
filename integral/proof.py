@@ -165,6 +165,14 @@ auto.add_global_autos_norm(
 )
 
 auto.add_global_autos_norm(
+    real.log,
+    auto.norm_rules([
+        'log_1',
+        'log_exp'
+    ])
+)
+
+auto.add_global_autos_norm(
     real.abs,
     auto.norm_rules([
         'real_abs_pos_eq',

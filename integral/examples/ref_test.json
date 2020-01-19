@@ -331,7 +331,7 @@
                         "g": "2 * x",
                         "var_name": "u"
                     },
-                    "location": "1.1"
+                    "location": "1.1.1"
                 },
                 {
                     "reason": "Simplification"
@@ -340,7 +340,7 @@
         },
         {
             "name": "Exercise 18",
-            "problem": "INT x:[sqrt(2)/2, 1]. sqrt(1 - x^2) / x ^ 2",
+            "problem": "INT x:[1/sqrt(2), 1]. sqrt(1 - x^2) / x ^ 2",
             "calc": [
                 {
                     "reason": "Substitution inverse",

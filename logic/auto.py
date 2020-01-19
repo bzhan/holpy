@@ -3,6 +3,7 @@
 from kernel import term
 from kernel.term import Term, Var
 from kernel import macro
+from data import binary
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
@@ -191,6 +192,10 @@ def norm(thy, t, pts=None):
 
     # Do not normalize variables and abstractions
     if t.is_var() or t.is_abs():
+        return refl(t)
+
+    # No further work for binary numbers
+    if binary.is_binary(t):
         return refl(t)
 
     eq_pt = refl(t.head)
