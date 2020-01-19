@@ -407,8 +407,8 @@ class substitution_inverse(Conv):
 
         # Use the equality to rewrite expression
         pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt, sym=True))
+        pt = pt.on_rhs(thy, auto.auto_conv())
+        pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
 
         return pt
 
@@ -440,16 +440,29 @@ class trig_rewr_conv(Conv):
         self.code = code
 
     def get_proof_term(self, thy, t):
+        # Obtain the only variable in t
+        xs = term.get_vars(t)
+        assert len(xs) == 1, "trig_rewr_conv"
+        x = xs[0]
+
         if self.code == 'TR5':
-            # Substitution of sin square
-            return rewr_conv('sin_circle2').get_proof_term(thy, t)
+            # Substitution (sin x) ^ 2 = 1 - (cos x) ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
         elif self.code == 'TR5_inv':
-            return rewr_conv('sin_circle2', sym=True).get_proof_term(thy, t)
+            # Substitution 1 - (cos x) ^ 2 = (sin x) ^ 2
+            eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
+            eq_pt = ProofTerm.symmetric(eq_pt)
+            eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+            return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR6':
-            # Substitution of cos square
-            return rewr_conv('sin_circle3').get_proof_term(thy, t)
+            # Substitution (cos x) ^ 2 = 1 - (sin x) ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
         elif self.code == 'TR6_inv':
-            return rewr_conv('sin_circle3', sym=True).get_proof_term(thy, t)
+            # Substitution 1 - (sin x) ^ 2 = (cos x) ^ 2
+            eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
+            eq_pt = ProofTerm.symmetric(eq_pt)
+            eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+            return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR7':
             # Lowering the degree of cos square
             return rewr_conv('cos_double_cos2').get_proof_term(thy, t)

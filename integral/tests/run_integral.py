@@ -19,7 +19,7 @@ test_cases = {
     "Exercise 13": "-(4 / 3) + pi",
     "Exercise 14": "1 / 6 * pi + -(1 / 8) * 3 ^ (1/2)",
     "Exercise 15": "1 / 4 * pi",
-    # "Exercise 16": None
+    "Exercise 16": "1 / 2 * pi"
 }
 
 debug = True

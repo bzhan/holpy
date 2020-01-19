@@ -242,6 +242,45 @@
                         "a": "0",
                         "b": "pi / 2"
                     }
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "2 * (1 - sin(x) ^ 2)"
+                    },
+                    "location": "0.1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.1.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
                 }
             ]
         }
