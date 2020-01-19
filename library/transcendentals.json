@@ -7837,8 +7837,77 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "real_sin_0",
-            "prop": "sin 0 = 0",
+            "name": "sin_zero",
+            "prop": [
+                "sin x = 0 ⟷ ",
+                "(∃n. even n ∧ x = of_nat n * (pi / 2)) ∨ ",
+                "(∃n. even n ∧ x = -(of_nat n * (pi / 2)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_zero",
+            "prop": [
+                "cos x = 0 ⟷ ",
+                "(∃n. ¬(even n) ∧ x = of_nat n * (pi / 2)) ∨ ",
+                "(∃n. ¬(even n) ∧ x = -(of_nat n * (pi / 2)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_one_2pi",
+            "prop": "cos x = 1 ⟷ (∃n. x = of_nat n * 2 * pi) ∨ (∃n. x = -(of_nat n * 2 * pi))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_cos_sqrt",
+            "prop": "0 ≤ sin x ⟶ sin x = sqrt (1 - cos x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_eq_0_pi",
+            "prop": "-pi < x ⟶ x < pi ⟶ sin x = 0 ⟶ x = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_treble_cos",
+            "prop": "cos (3 * x) = 4 * cos x ^ (3::nat) - 3 * cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_cos_pi6",
+            "prop": "cos (1 / 6 * pi) = sqrt 3 / 2",
             "ty": "thm",
             "vars": {}
         },
@@ -7849,14 +7918,254 @@
             "vars": {}
         },
         {
-            "name": "real_sin_pi4",
-            "prop": "sin (1 / 4 * pi) = sqrt 2 / 2",
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_pos_pi_rev",
+            "prop": "0 ≤ x ⟶ x ≤ 2 * pi ⟶ 0 < sin x ⟶ 0 < x ∧ x < pi",
             "ty": "thm",
-            "vars": {}
+            "vars": {
+                "x": "real"
+            }
         },
         {
             "name": "real_sin_pi3",
             "prop": "sin (1 / 3 * pi) = sqrt 3 / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_cos_pi3",
+            "prop": "cos (1 / 3 * pi) = 1 / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_sin_minus_pi4",
+            "prop": "sin (-(1 / 4) * pi) = -(sqrt 2) / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_total_pos",
+            "prop": "0 ≤ y ⟶ y ≤ 1 ⟶ (∃x. 0 ≤ x ∧ x ≤ pi / 2 ∧ sin x = y)",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_total_pi2",
+            "prop": [
+                "0 ≤ x ",
+                "⟶ 0 ≤ y ",
+                "   ⟶ x ^ (2::nat) + y ^ (2::nat) = 1 ",
+                "      ⟶ (∃t. 0 ≤ t ∧ t ≤ pi / 2 ∧ x = cos t ∧ y = sin t)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_total_pi",
+            "prop": [
+                "0 ≤ y ",
+                "⟶ x ^ (2::nat) + y ^ (2::nat) = 1 ⟶ (∃t. 0 ≤ t ∧ t ≤ pi ∧ x = cos t ∧ y = sin t)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_total_2pi",
+            "prop": "x ^ (2::nat) + y ^ (2::nat) = 1 ⟶ (∃t. 0 ≤ t ∧ t < pi ∧ x = cos t ∧ y = sin t)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "circle_sincos",
+            "prop": "x ^ (2::nat) + y ^ (2::nat) = 1 ⟶ (∃t. x = cos t ∧ y = sin t)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_integer_2pi",
+            "prop": "integer n ⟶ sin (2 * pi * n) = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_integer_pi",
+            "prop": "integer n ⟶ sin (n * pi) = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_integer_2pi",
+            "prop": "integer n ⟶ cos (2 * pi * n) = 1",
+            "ty": "thm",
+            "vars": {
+                "n": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sincos_principal_value",
+            "prop": "∃y. (-pi < y ∧ y ≤ pi) ∧ sin y = sin x ∧ cos y = cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_cos_eq",
+            "prop": "sin y = sin x ∧ cos y = cos x ⟷ (∃n. integer n ∧ y = x + 2 * n * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_cos_inj",
+            "prop": "sin x = sin y ⟶ cos x = cos y ⟶ abs (x - y) < 2 * pi ⟶ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_eq_1",
+            "prop": "cos x = 1 ⟷ (∃n. integer n ∧ x = 2 * n * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_eq_1",
+            "prop": "sin x = 1 ⟷ (∃n. integer n ∧ x = (2 * n + 1 / 2) * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_eq_minus1",
+            "prop": "sin x = -1 ⟷ (∃n. integer n ∧ x = (2 * n + 3 / 2) * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_eq_minus1",
+            "prop": "cos x = -1 ⟷ (∃n. integer n ∧ x = (2 * n + 1) * pi)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_eq",
+            "prop": [
+                "sin x = sin y ⟷ ",
+                "(∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "cos_eq",
+            "prop": "cos x = cos y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sin_0",
+            "prop": "sin 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_sin_pi4",
+            "prop": "sin (1 / 4 * pi) = sqrt 2 / 2",
             "ty": "thm",
             "vars": {}
         },
@@ -7882,20 +8191,8 @@
             "vars": {}
         },
         {
-            "name": "real_cos_pi6",
-            "prop": "cos (1 / 6 * pi) = sqrt 3 / 2",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
             "name": "real_cos_pi4",
             "prop": "cos (1 / 4 * pi) = sqrt 2 / 2",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_cos_pi3",
-            "prop": "cos (1 / 3 * pi) = 1 / 2",
             "ty": "thm",
             "vars": {}
         },

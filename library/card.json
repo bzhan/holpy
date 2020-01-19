@@ -1,0 +1,692 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nat_countable",
+            "prop": "countable (univ::nat set)",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "countable_subset",
+            "prop": "countable t ⟶ s ⊆ t ⟶ countable s",
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_restrict",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "countable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "countable s ⊢ countable s"
+                },
+                {
+                    "args": "{x. x ∈ s ∧ P x} ⊆ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {x. x ∈ s ∧ P x} ⊆ s"
+                },
+                {
+                    "args": "countable_subset",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable s ⊢ countable ({x. x ∈ s ∧ P x})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable s ⟶ countable ({x. x ∈ s ∧ P x})"
+                }
+            ],
+            "prop": "countable s ⟶ countable ({x. x ∈ s ∧ P x})",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "countable_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_subset_nat",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nat_countable",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ countable (univ::nat set)"
+                },
+                {
+                    "args": "subset_univ, {a: nat}, {A: s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s ⊆ univ"
+                },
+                {
+                    "args": "countable_subset",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ countable s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable s"
+                }
+            ],
+            "prop": "countable s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "param_t": "(univ::nat set)",
+                    "theorem": "countable_subset"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_countable"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_univ"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_imp_countable",
+            "prop": "finite s ⟶ countable s",
+            "ty": "thm",
+            "vars": {
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_image",
+            "prop": "countable s ⟶ countable (image f s)",
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_empty",
+            "prop": "countable (∅::'a set)",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_inter",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "countable s ∨ countable t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "countable s ∨ countable t ⊢ countable s ∨ countable t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "countable s ∨ countable t ⊢ countable s ⟶ countable (s ∩ t)"
+                },
+                {
+                    "args": "countable s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "countable s ⊢ countable s"
+                },
+                {
+                    "args": "inter_subset_id, {a: 'a}, {A: s, B: t}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s ∩ t ⊆ s"
+                },
+                {
+                    "args": "countable_subset",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable s, countable s ∨ countable t ⊢ countable (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "countable s ∨ countable t ⊢ countable s ⟶ countable (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "countable s ∨ countable t ⊢ countable t ⟶ countable (s ∩ t)"
+                },
+                {
+                    "args": "countable t",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "countable t ⊢ countable t"
+                },
+                {
+                    "args": "inter_subset_id, {a: 'a}, {A: t, B: s}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ t ∩ s ⊆ t"
+                },
+                {
+                    "args": "inter_comm, s ∩ t ⊆ t",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "countable s ∨ countable t, countable t ⊢ s ∩ t ⊆ t"
+                },
+                {
+                    "args": "countable_subset",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable t, countable s ∨ countable t ⊢ countable (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "countable s ∨ countable t ⊢ countable t ⟶ countable (s ∩ t)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable s ∨ countable t ⊢ countable (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable s ∨ countable t ⟶ countable (s ∩ t)"
+                }
+            ],
+            "prop": "countable s ∨ countable t ⟶ countable (s ∩ t)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "countable_subset"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "inter_subset_id"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "countable_subset"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "inter_comm"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "inter_subset_id"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_union_imp",
+            "prop": "countable s ⟶ countable t ⟶ countable (s ∪ t)",
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "countable_union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ countable (s ∪ t) ⟶ countable s ∧ countable t"
+                },
+                {
+                    "args": "countable (s ∪ t)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "countable (s ∪ t) ⊢ countable (s ∪ t)"
+                },
+                {
+                    "args": "subset_union_id, {a: 'a}, {A: s, B: t}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s ⊆ s ∪ t"
+                },
+                {
+                    "args": "countable_subset",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable (s ∪ t) ⊢ countable s"
+                },
+                {
+                    "args": "subset_union_id, {a: 'a}, {A: t, B: s}",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ t ⊆ t ∪ s"
+                },
+                {
+                    "args": "union_comm, t ⊆ s ∪ t",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "countable (s ∪ t) ⊢ t ⊆ s ∪ t"
+                },
+                {
+                    "args": "countable_subset",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable (s ∪ t) ⊢ countable t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.2",
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable (s ∪ t) ⊢ countable s ∧ countable t"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable (s ∪ t) ⟶ countable s ∧ countable t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ countable s ∧ countable t ⟶ countable (s ∪ t)"
+                },
+                {
+                    "args": "countable s ∧ countable t",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "countable s ∧ countable t ⊢ countable s ∧ countable t"
+                },
+                {
+                    "args": "conjD1, {}, {A: countable s, B: countable t}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "countable s ∧ countable t ⊢ countable s"
+                },
+                {
+                    "args": "conjD2, {}, {A: countable s, B: countable t}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "countable s ∧ countable t ⊢ countable t"
+                },
+                {
+                    "args": "countable_union_imp",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "countable s ∧ countable t ⊢ countable (s ∪ t)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable s ∧ countable t ⟶ countable (s ∪ t)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ countable (s ∪ t) ⟷ countable s ∧ countable t"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable (s ∪ t) ⟷ countable s ∧ countable t"
+                }
+            ],
+            "prop": "countable (s ∪ t) ⟷ countable s ∧ countable t",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "countable_subset"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "countable_subset"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "union_comm"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "countable_union_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "countable_sing",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_empty, {a: 'a}, {}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::'a set)"
+                },
+                {
+                    "args": "finite_insert, {a: 'a}, {A: (∅::'a set), x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({x})"
+                },
+                {
+                    "args": "finite_imp_countable",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ countable ({x})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ countable ({x})"
+                }
+            ],
+            "prop": "countable ({x})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_imp_countable"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_insert"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        }
+    ],
+    "description": "Basic notions of cardinal arithmetic. Refer to card.ml from HOL Light.",
+    "imports": [
+        "iterate"
+    ],
+    "name": "card"
+}
