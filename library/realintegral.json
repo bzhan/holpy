@@ -1391,40 +1391,59 @@
                     "th": "real_integrable_on g s ⊢ has_real_integral g (real_integral s g) s"
                 },
                 {
-                    "args": "has_real_integral_add",
+                    "args": "eta_conversion, has_real_integral f (real_integral s (λx. f x)) s",
                     "id": "4",
                     "prevs": [
-                        "2",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral f (real_integral s (λx. f x)) s"
+                },
+                {
+                    "args": "eta_conversion, has_real_integral g (real_integral s (λx. g x)) s",
+                    "id": "5",
+                    "prevs": [
                         "3"
                     ],
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral g (real_integral s (λx. g x)) s"
+                },
+                {
+                    "args": "has_real_integral_add",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral (λx. f x + g x) (real_integral s f + real_integral s g) s"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral (λx. f x + g x) (real_integral s (λx. f x) + real_integral s (λx. g x)) s"
                 },
                 {
                     "args": "real_integral_unique",
-                    "id": "5",
+                    "id": "7",
                     "prevs": [
-                        "4"
+                        "6"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ real_integral s (λx. f x + g x) = real_integral s (λx. f x) + real_integral s (λx. g x)"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "8",
                     "prevs": [
                         "0",
                         "1",
-                        "5"
+                        "7"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_integrable_on f s ⟶ real_integrable_on g s ⟶ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
+                    "th": "⊢ real_integrable_on f s ⟶ real_integrable_on g s ⟶ real_integral s (λx. f x + g x) = real_integral s (λx. f x) + real_integral s (λx. g x)"
                 }
             ],
             "prop": [
                 "real_integrable_on f s ",
                 "⟶ real_integrable_on g s ",
-                "   ⟶ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
+                "   ⟶ real_integral s (λx. f x + g x) = ",
+                "      real_integral s (λx. f x) + real_integral s (λx. g x)"
             ],
             "steps": [
                 {
@@ -1452,6 +1471,18 @@
                     "goal_id": "4",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_add"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
                 }
             ],
             "ty": "thm",

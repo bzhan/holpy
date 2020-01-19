@@ -283,6 +283,95 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 17",
+            "problem": "INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "2 * sin(u)",
+                        "var_name": "u",
+                        "a": "-pi / 4",
+                        "b": "pi / 4"
+                    }
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "8 * (1 - sin(x) ^ 2)"
+                    },
+                    "location": "1.0.1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "1.0.1.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "1.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 18",
+            "problem": "INT x:[sqrt(2)/2, 1]. sqrt(1 - x^2) / x ^ 2",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "sin(u)",
+                        "var_name": "u",
+                        "a": "pi / 4",
+                        "b": "pi / 2"
+                    }
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6"
+                    },
+                    "location": "0.0"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }

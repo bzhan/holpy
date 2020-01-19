@@ -4,6 +4,7 @@ from fractions import Fraction
 import math
 
 from kernel.type import Type, TFun, boolT
+from kernel import term
 from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
@@ -287,6 +288,15 @@ class swap_add_r(Conv):
             arg_conv(rewr_conv('real_add_comm')),
             rewr_conv('real_add_assoc'))
 
+def atom_less(t1, t2):
+    """Compare two atoms, put constants in front."""
+    if not term.has_var(t1) and term.has_var(t2):
+        return True
+    elif not term.has_var(t2) and term.has_var(t1):
+        return False
+    else:
+        return t1 < t2
+
 class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + b."""
     def get_proof_term(self, thy, t):
@@ -305,7 +315,7 @@ class norm_add_monomial(Conv):
                 if pt.rhs.arg == zero:
                     pt = pt.on_rhs(thy, rewr_conv('real_add_rid'))
                 return pt
-            elif m1 < m2:
+            elif atom_less(m1, m2):
                 return pt
             else:
                 pt = pt.on_rhs(thy, swap_add_r(), arg1_conv(self))
@@ -317,7 +327,7 @@ class norm_add_monomial(Conv):
             m1, m2 = dest_monomial(t.arg1), dest_monomial(t.arg)
             if m1 == m2:
                 return pt.on_rhs(thy, combine_monomial())
-            elif m1 < m2:
+            elif atom_less(m1, m2):
                 return pt
             else:
                 return pt.on_rhs(thy, rewr_conv('real_add_comm'))
@@ -444,7 +454,7 @@ class norm_mult_atom(Conv):
                 if pt.rhs.arg == one:
                     pt = pt.on_rhs(thy, arg_conv('real_mul_rid'))
                 return pt
-            elif m1 < m2:
+            elif atom_less(m1, m2):
                 return pt
             else:
                 pt = pt.on_rhs(thy, swap_mult_r(), arg1_conv(self))
@@ -456,7 +466,7 @@ class norm_mult_atom(Conv):
             m1, m2 = dest_atom(t.arg1), dest_atom(t.arg)
             if m1 == m2:
                 return pt.on_rhs(thy, combine_atom(self.conds))
-            elif m1 < m2:
+            elif atom_less(m1, m2):
                 return pt
             else:
                 return pt.on_rhs(thy, rewr_conv('real_mult_comm'))

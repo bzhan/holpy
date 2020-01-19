@@ -198,7 +198,7 @@ class ProofTest(unittest.TestCase):
             ("real_derivative (%x. 3 * x) x", [], "(3::real)"),
             ("real_derivative (%x. x ^ (2::nat)) x", [], "2 * x"),
             ("real_derivative (%x. x ^ (3::nat)) x", [], "3 * x ^ (2::nat)"),
-            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 * (x + 1) ^ (2::nat)"),
+            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 * (1 + x) ^ (2::nat)"),
             ("real_derivative (%x. exp x) x", [], "exp x"),
             ("real_derivative (%x. exp (x ^ (2::nat))) x", [], "2 * (x * exp (x ^ (2::nat)))"),
             ("real_derivative (%x. exp (exp x)) x", [], "exp x * exp (exp x)"),

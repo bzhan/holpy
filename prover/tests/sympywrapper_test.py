@@ -31,6 +31,7 @@ class SymPyWrapperTest(unittest.TestCase):
             ("sqrt 2 >= 1", True),
             ("~((1::real) = 2)", True),
             ("(4::nat) > 2", True),
+            ("1 / 2 * 2 ^ (1 / 2) = 2 ^ -(1 / 2)", True),
         ]
 
         ctxt = Context('transcendentals')

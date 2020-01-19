@@ -101,6 +101,13 @@ def solve_goal(goal):
             return False
 
         return lhs != rhs
+    elif goal.is_equals():
+        try:
+            lhs, rhs = convert(goal.lhs), convert(goal.rhs)
+        except SymPyException:
+            return False
+
+        return lhs == rhs
     else:
         try:
             sympy_goal = convert(goal)

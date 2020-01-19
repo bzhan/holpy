@@ -140,6 +140,7 @@ auto.add_global_autos_norm(
         'real_sin_pi3',
         'real_sin_pi2_alt',
         'real_sin_pi',
+        'real_sin_minus_pi4',
     ])
 )
 
@@ -320,10 +321,6 @@ def apply_subst_thm(thy, f, g, a, b):
         for A in As:
             A_pt = auto.auto_solve(thy, A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())),
-                                    arg1_conv(binop_conv(auto.auto_conv())))
     else:
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
@@ -332,10 +329,6 @@ def apply_subst_thm(thy, f, g, a, b):
         for A in As:
             A_pt = auto.auto_solve(thy, A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))),
-                                    arg_conv(arg1_conv(binop_conv(auto.auto_conv()))))
 
     return eq_pt
 
@@ -370,9 +363,9 @@ class substitution(Conv):
         eq_pt = apply_subst_thm(thy, self.f, self.g, a, b)
 
         # Use the equality to rewrite expression.
-        pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+        pt = refl(expr).on_rhs(thy, auto.auto_conv())
+        pt = pt.on_rhs(thy, rewr_conv(eq_pt.on_lhs(thy, auto.auto_conv())))
+        pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
 
         return pt
 
@@ -406,9 +399,13 @@ class substitution_inverse(Conv):
         eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
 
         # Use the equality to rewrite expression
-        pt = refl(expr)
-        pt = pt.on_rhs(thy, auto.auto_conv())
+        pt = refl(expr).on_rhs(thy, auto.auto_conv())
+        eq_pt = eq_pt.on_rhs(thy, auto.auto_conv())
+        if eq_pt.rhs != pt.rhs:
+            raise ConvException("Substitution inverse: %s != %s" % (
+                printer.print_term(thy, eq_pt.rhs), printer.print_term(thy, pt.rhs)))
         pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
+        pt = pt.on_rhs(thy, auto.auto_conv())
 
         return pt
 
@@ -671,7 +668,7 @@ def translate_item(item, target=None, *, debug=False):
         assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
             printer.print_term(thy, target), printer.print_term(thy, pt.rhs)
         )
-    else:
+    elif not debug:
         print(printer.print_term(thy, pt.rhs))
 
     return pt
