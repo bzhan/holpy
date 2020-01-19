@@ -1940,7 +1940,7 @@
     "description": "Various convenient background stuff. Refer to misc.ml from HOL Light.",
     "imports": [
         "floor",
-        "iterate"
+        "card"
     ],
     "name": "misc"
 }

@@ -11,6 +11,7 @@ from logic import auto
 from logic.proofterm import ProofTerm
 from data import real
 from syntax import parser
+from prover import sympywrapper
 
 
 class RealTest(unittest.TestCase):
@@ -60,6 +61,9 @@ class RealTest(unittest.TestCase):
             ("(2 + 3) / (3::real)", Fraction(5,3)),
             ("(2::real) ^ (3::nat)", 8),
             ("(2::real) ^ (-(1::real))", Fraction(1,2)),
+            ("(0::real) ^ (0::real)", 1),
+            ("(0::real) ^ (0::nat)", 1),
+            ("(1::real) ^ (1 / 2)", 1),
         ]
 
         for expr, res in test_data:
@@ -132,13 +136,18 @@ class RealTest(unittest.TestCase):
             ("x + y + (-1) * x", "y"),
             ("(x + y) * (x + y)", "x ^ (2::nat) + y ^ (2::nat) + 2 * (x * y)"),
             ("(x + y) * (x - y)", "x ^ (2::nat) + -1 *  y ^ (2::nat)"),
+            ("x ^ (3::real)", "x ^ (3::nat)"),
             ("(2::real) ^ (3::nat)", "(8::real)"),
             ("(2::real) ^ (-(1::real))", "1 / 2"),
+            ("(9::real) ^ (1 / 2)", "(3::real)"),
+            ("(9::real) ^ (1 / 3)", "(3::real) ^ (2 / 3)"),
+            ("(3::real) ^ (4 / 3)", "3 * (3::real) ^ (1 / 3)"),
+            ("(2::real) ^ -(1 / 2)", "1 / 2 * 2 ^ (1 / 2)"),
         ]
 
         vars = {'x': 'real', 'y': 'real'}
         for expr, res in test_data:
-            test_conv(self, 'real', auto.auto_conv(), vars=vars, t=expr, t_res=res)
+            test_conv(self, 'transcendentals', auto.auto_conv(), vars=vars, t=expr, t_res=res)
 
     def testRealApproxEval(self):
         test_data = [

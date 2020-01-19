@@ -78,6 +78,32 @@
             ]
         },
         {
+            "name": "Exercise 8",
+            "problem": "INT x:[pi/3, pi]. sin(2*x+pi/3)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * sin(u)",
+                        "g": "2*x + pi/3",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 9",
+            "problem": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)",
+            "calc": [
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
             "name": "Exercise 12",
             "problem": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3",
             "calc": [
@@ -188,7 +214,7 @@
                     "location": "0"
                 },
                 {
-                    "reason": "Linearity"
+                    "reason": "Simplification"
                 },
                 {
                     "reason": "Substitution",
@@ -197,7 +223,7 @@
                         "g": "2 * x",
                         "var_name": "u"
                     },
-                    "location": "0.1"
+                    "location": "1.1"
                 },
                 {
                     "reason": "Simplification"
@@ -216,6 +242,308 @@
                         "a": "0",
                         "b": "pi / 2"
                     }
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "2 * (1 - sin(x) ^ 2)"
+                    },
+                    "location": "0.1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.1.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 17",
+            "problem": "INT y:[-sqrt(2), sqrt(2)]. sqrt(8 - 2*y^2)",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "2 * sin(u)",
+                        "var_name": "u",
+                        "a": "-pi / 4",
+                        "b": "pi / 4"
+                    }
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "8 * (1 - sin(x) ^ 2)"
+                    },
+                    "location": "1.0.1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "1.0.1.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "1.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "1.1.1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 18",
+            "problem": "INT x:[1/sqrt(2), 1]. sqrt(1 - x^2) / x ^ 2",
+            "calc": [
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "sin(u)",
+                        "var_name": "u",
+                        "a": "pi / 4",
+                        "b": "pi / 2"
+                    }
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6"
+                    },
+                    "location": "0.0"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 19",
+            "problem": "INT x:[-1, 1]. x / sqrt(5 - 4 * x)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-5/8 + 1/8 * u^2",
+                        "g": "sqrt(5 - 4 * x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 20",
+            "problem": "INT x:[1,4]. 1/(1+sqrt(x))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "2 * u / (1 + u)",
+                        "g": "sqrt(x)",
+                        "var_name": "u"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Exercise 21",
+            "problem": "INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-2 * u / (-1 + u)",
+                        "g": "sqrt(1 - x)",
+                        "var_name": "u"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Exercise 22",
+            "problem": "INT t:[0, 1]. t * exp(-(t^2/2))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * exp(-u / 2)",
+                        "g": "t^2",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-exp(t)",
+                        "g": "-1/2 * u",
+                        "var_name": "t"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 23",
+            "problem": "INT x:[1, exp(2)]. 1 / (x*sqrt(1+log(x)))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/sqrt(u)",
+                        "g": "1 + log(x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 24",
+            "problem": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)",
+            "calc": [
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "((x + 1) + 1) / ((x + 1) * (x + 1) + 1)"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "(1 + u) / (1 + u * u)",
+                        "g": "x + 1",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 28",
+            "problem": "INT x:[0, 1].x*exp(-x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "x",
+                        "v": "-exp(-x)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-exp(u)",
+                        "g": "-x",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 29",
+            "problem": "INT x:[1, exp(1)]. x * log(x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "log(x) / 2",
+                        "v": "x^2"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 31",
+            "problem": "INT x:[1, 4]. log(x) / sqrt(x)",
+            "calc": [
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "2 * log(x)",
+                        "v": "x ^ (1/2)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
                 }
             ]
         }

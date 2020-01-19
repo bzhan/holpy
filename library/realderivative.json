@@ -3122,6 +3122,14 @@
             }
         },
         {
+            "name": "real_derivative_uminus",
+            "prop": "real_derivative uminus x = -1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1",
@@ -5145,6 +5153,14 @@
                     "theorem": "has_real_derivative_id"
                 }
             ],
+            "ty": "thm",
+            "vars": {
+                "net": "real net"
+            }
+        },
+        {
+            "name": "real_differentiable_uminus",
+            "prop": "real_differentiable uminus net",
             "ty": "thm",
             "vars": {
                 "net": "real net"

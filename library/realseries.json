@@ -22116,7 +22116,7 @@
             "prop": [
                 "is_realinterval s ",
                 "⟶ (∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s) ⟶ abs (f1 x) ≤ B) ",
-                "   ⟶ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ abs (f x - f y) ≤ B * abs (x - y))"
+                "   ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ abs (f x - f y) ≤ B * abs (x - y))"
             ],
             "ty": "thm",
             "vars": {

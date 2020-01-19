@@ -39,6 +39,7 @@ auto.add_global_autos(
         "real_continuous_on_const",
         "real_continuous_on_id",
         "real_continuous_on_add",
+        "real_continuous_on_uminus",
         "real_continuous_on_neg",
         "real_continuous_on_sub",
         "real_continuous_on_mul",
@@ -108,6 +109,7 @@ auto.add_global_autos(
         "real_differentiable_const",
         "real_differentiable_id",
         "real_differentiable_add",
+        "real_differentiable_uminus",
         "real_differentiable_neg",
         "real_differentiable_sub",
         "real_differentiable_mul_atreal",
@@ -140,6 +142,7 @@ auto.add_global_autos_norm(
         'real_sin_pi3',
         'real_sin_pi2_alt',
         'real_sin_pi',
+        'real_sin_minus_pi4',
     ])
 )
 
@@ -163,6 +166,14 @@ auto.add_global_autos_norm(
 )
 
 auto.add_global_autos_norm(
+    real.log,
+    auto.norm_rules([
+        'log_1',
+        'log_exp'
+    ])
+)
+
+auto.add_global_autos_norm(
     real.abs,
     auto.norm_rules([
         'real_abs_pos_eq',
@@ -177,6 +188,7 @@ auto.add_global_autos_norm(
         "real_derivative_const",
         "real_derivative_id",
         "real_derivative_add",
+        "real_derivative_uminus",
         "real_derivative_neg",
         "real_derivative_sub",
         "real_derivative_mul",
@@ -214,9 +226,6 @@ auto.add_global_autos_norm(
         # Linearity rules
         "real_integral_add",
         "real_integral_lmul",
-        "real_integral_div",
-        "real_integral_neg",
-        "real_integral_sub",
 
         # Common integrals
         "real_integral_0",
@@ -232,6 +241,31 @@ auto.add_global_autos_norm(
         "real_integral_exp_evalat",
     ])
 )
+
+class real_integral_cong(Conv):
+    """Apply auto to the body of an integral."""
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), 'real_integral_cong'
+        S, f = expr.args
+        
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+        a, b = S.args
+        le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+
+        interval = real.open_interval(a, b)
+        v = Var(f.var_name, realT)
+        cond = set.mk_mem(v, interval)
+        body = f.subst_bound(v)
+
+        cv = auto.auto_conv(conds=[ProofTerm.assume(cond)])
+        eq_pt = cv.get_proof_term(thy, body)
+        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+        eq_pt = ProofTerm.forall_intr(v, eq_pt)
+        return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+
+auto.add_global_autos_norm(real_integral, real_integral_cong())
+
 
 class integrate_by_parts(Conv):
     """Evaluate using integration by parts.
@@ -266,11 +300,11 @@ class integrate_by_parts(Conv):
             A_pt = auto.auto_solve(thy, A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
 
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
         eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))))
 
         pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        pt = pt.on_rhs(thy, auto.auto_conv())
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
         return pt
 
@@ -295,10 +329,6 @@ def apply_subst_thm(thy, f, g, a, b):
         for A in As:
             A_pt = auto.auto_solve(thy, A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())),
-                                    arg1_conv(binop_conv(auto.auto_conv())))
     else:
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
@@ -307,10 +337,6 @@ def apply_subst_thm(thy, f, g, a, b):
         for A in As:
             A_pt = auto.auto_solve(thy, A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))),
-                                    arg_conv(arg1_conv(binop_conv(auto.auto_conv()))))
 
     return eq_pt
 
@@ -345,9 +371,17 @@ class substitution(Conv):
         eq_pt = apply_subst_thm(thy, self.f, self.g, a, b)
 
         # Use the equality to rewrite expression.
-        pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        pt = refl(expr).on_rhs(thy, auto.auto_conv())
+        eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+        if eq_pt.lhs != pt.rhs:
+            raise ConvException("Substitution: %s != %s" % (
+                printer.print_term(thy, eq_pt.lhs), printer.print_term(thy, pt.rhs)))
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+
+        if pt.rhs.head == real.uminus:
+            pt = pt.on_rhs(thy, arg_conv(arg1_conv(auto.auto_conv())))
+        else:
+            pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
 
         return pt
 
@@ -381,9 +415,13 @@ class substitution_inverse(Conv):
         eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
 
         # Use the equality to rewrite expression
-        pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt, sym=True))
+        pt = refl(expr).on_rhs(thy, auto.auto_conv())
+        eq_pt = eq_pt.on_rhs(thy, auto.auto_conv())
+        if eq_pt.rhs != pt.rhs:
+            raise ConvException("Substitution inverse: %s != %s" % (
+                printer.print_term(thy, eq_pt.rhs), printer.print_term(thy, pt.rhs)))
+        pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
+        pt = pt.on_rhs(thy, auto.auto_conv())
 
         return pt
 
@@ -415,16 +453,29 @@ class trig_rewr_conv(Conv):
         self.code = code
 
     def get_proof_term(self, thy, t):
+        # Obtain the only variable in t
+        xs = term.get_vars(t)
+        assert len(xs) == 1, "trig_rewr_conv"
+        x = xs[0]
+
         if self.code == 'TR5':
-            # Substitution of sin square
-            return rewr_conv('sin_circle2').get_proof_term(thy, t)
+            # Substitution (sin x) ^ 2 = 1 - (cos x) ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
         elif self.code == 'TR5_inv':
-            return rewr_conv('sin_circle2', sym=True).get_proof_term(thy, t)
+            # Substitution 1 - (cos x) ^ 2 = (sin x) ^ 2
+            eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
+            eq_pt = ProofTerm.symmetric(eq_pt)
+            eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+            return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR6':
-            # Substitution of cos square
-            return rewr_conv('sin_circle3').get_proof_term(thy, t)
+            # Substitution (cos x) ^ 2 = 1 - (sin x) ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
         elif self.code == 'TR6_inv':
-            return rewr_conv('sin_circle3', sym=True).get_proof_term(thy, t)
+            # Substitution 1 - (sin x) ^ 2 = (cos x) ^ 2
+            eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
+            eq_pt = ProofTerm.symmetric(eq_pt)
+            eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+            return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR7':
             # Lowering the degree of cos square
             return rewr_conv('cos_double_cos2').get_proof_term(thy, t)
@@ -466,14 +517,14 @@ def get_at_location(loc, t):
     elif t.head.is_const_name("evalat"):
         if loc.head == 0:
             f = t.args[0]
-            body = f.subst_bound(f.var_name, realT)
+            body = f.subst_bound(Var(f.var_name, realT))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
     elif t.head.is_const_name("real_integral"):
         if loc.head == 0:
-            f = t.args[0]
-            body = f.subst_bound(f.var_name, realT)
+            f = t.args[1]
+            body = f.subst_bound(Var(f.var_name, realT))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
@@ -633,7 +684,7 @@ def translate_item(item, target=None, *, debug=False):
         assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
             printer.print_term(thy, target), printer.print_term(thy, pt.rhs)
         )
-    else:
+    elif not debug:
         print(printer.print_term(thy, pt.rhs))
 
     return pt
