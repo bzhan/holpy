@@ -14,7 +14,7 @@
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
-          <b-dropdown-item href="#" v-on:click='simplify'>Simplify</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyLinearity'>Apply linearity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyCommonIntegrals'>Apply common integrals</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='substitution'>Substitution1</b-dropdown-item>
@@ -98,6 +98,15 @@
             style="cursor:pointer"/>
         </div>
       </div>
+      <div v-if="r_query_mode === 'same_integral'">
+        <div v-for="(step, index) in sep_int" :key="index">
+          <span>{{index+1}}:</span>
+          <MathEquation
+            v-on:click.native="doIntegrateByEquation(step)"
+            v-bind:data="'\\(' + step.latex + '\\)'"
+            style="cursor:pointer"/>
+        </div>
+      </div>
       <div v-if="r_query_mode === 'byparts'">
         <div>
           <MathEquation data="Choose \(u\) and \(v\) such that \(u\cdot\mathrm{d}v\) is the integrand."/>
@@ -144,7 +153,7 @@
           <input v-model.number="lhs" type="number" style="margin:0px 5px;width:50px">
         </div>
         <div style="margin-top:10px">
-          <button v-on:click="doIntegrateByEquation">OK</button>
+          <button v-on:click="doIntegrateByEquation1">OK</button>
         </div>
       </div>
     </div>
@@ -181,7 +190,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'test',    // Currently opened file
+      filename: '2013',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -219,6 +228,7 @@ export default {
       },
 
       lhs: undefined, //equation left hand side
+      same_integral: []
     }
   },
 
@@ -226,7 +236,7 @@ export default {
     openFile: async function () {
       const data = {
         filename: this.filename
-      }
+      };
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
     },
@@ -324,23 +334,6 @@ export default {
       }
     },
 
-    addstar: function(){
-      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionStart, this.$refs.mycloned.selectionEnd);
-      this.sep_int[this.integral_index].body = this.sep_int[this.integral_index].body.slice(0, this.$refs.mycloned.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.mycloned.selectionEnd);
-
-      //alert(this.sep_int[this.integral_index].setRangeText(this.sep_int[this.integral_index].body.setRangeText(`$${selected}$`)));
-      alert(this.sep_int[this.integral_index].body)
-      // if (this.$refs.mycloned.selectionStart === this.$ref.mycloned.selectionEnd){
-      //    alert(1);
-      //    return;
-      //  }
-      // // alert(this.$refs.mycloned.selectionStart);
-      // k = this.$refs.mycloned.value.slice(this.$refs.mycloned.selectionStart,
-      //                                                    this.$refs.mycloned.selectionEnd);
-                                              
-      // this.$refs.mycloned.setRangeText(`$${selected}$`);
-    }, 
-
     save: async function () {
       if (this.filename === undefined)
         return;
@@ -361,10 +354,10 @@ export default {
     },
 
     clear_separate_integral: function(){
-      this.display_integral = undefined
-      this.sep_int = []
-      this.integral_index = undefined
-      this.r_query_mode = undefined
+      this.display_integral = undefined;
+      this.sep_int = [];
+      this.integral_index = undefined;
+      this.r_query_mode = undefined;
     },
 
     clear_input_info: function() {
@@ -375,26 +368,55 @@ export default {
     },
 
     simplify: async function () {
-      this.clear_separate_integral()
+      this.clear_separate_integral();
       if (this.cur_calc.length === 0)
         return;
       const data = {
         problem: this.cur_calc[this.cur_calc.length - 1].text
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-simplify", JSON.stringify(data));
+      this.cur_calc.push(response.data);
+    },
+
+    superSimplify: async function (){
+      this.clear_separate_integral();
+      if (this.cur_calc.length === 0){
+        return;
       }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-simplify", JSON.stringify(data))
-      this.cur_calc.push(response.data)
+      const data = {
+        problem: this.cur_calc[this.cur_calc.length - 1].text
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-super-simplify", JSON.stringify(data));
+      this.cur_calc.push(response.data);
     },
 
     applyLinearity: async function () {
-      this.clear_separate_integral()
+      this.clear_separate_integral();
       if (this.cur_calc.length === 0)
         return;
 
       const data = {
         problem: this.cur_calc[this.cur_calc.length - 1].text
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-linearity", JSON.stringify(data));
+      this.cur_calc.push(response.data);
+    },
+
+    displaySameIntegral: async function() {
+      this.same_integral = [];
+      if (this.cur_calc.length <= 1){
+        return;
       }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-linearity", JSON.stringify(data))
-      this.cur_calc.push(response.data)
+
+      const data = {
+        lhs: this.cur_calc[this.lhs - 1].text,
+        rhs: this.cur_calc[this.cur_calc.length - 1].text
+      };
+      
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-same-integral", JSON.stringify(data));
+      for(let i = 0; i < response.data.length; ++i){
+        this.same_integral.push(response.data[i]);
+      }
     },
 
     applyElimAbs: async function () {
@@ -410,7 +432,7 @@ export default {
     },
 
     applyCommonIntegrals: async function () {
-      this.clear_separate_integral()
+      this.clear_separate_integral();
       if (this.cur_calc.length === 0)
         return;
 
@@ -560,16 +582,31 @@ export default {
       this.r_query_mode = "byequation"
     },
 
-    doIntegrateByEquation: async function(){
+    doIntegrateByEquation: async function(item){
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text,
-        left: this.cur_calc[this.lhs - 1].text
+        equation_part: item.text,
+        lhs: this.cur_calc[this.lhs - 1].text,
+        rhs: this.cur_calc[this.cur_calc.length - 1].text
       }
 
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation", JSON.stringify(data))
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation1", JSON.stringify(data))
       this.cur_calc.push(response.data)
       this.r_query_mode = undefined
             
+    }, 
+
+    doIntegrateByEquation1: async function(){
+      this.clear_separate_integral();
+      const data = {
+        rhs: this.cur_calc[this.cur_calc.length - 1].text,
+        lhs: this.cur_calc[this.lhs - 1].text
+      }
+
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-same-integral", JSON.stringify(data))
+      for(var i = 0; i < response.data.length; ++i){
+        this.sep_int.push(response.data[i]);
+      }
+      this.r_query_mode = "same_integral";
     }, 
 
     polynomialDivision: async function () {
