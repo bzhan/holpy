@@ -39,6 +39,7 @@ auto.add_global_autos(
         "real_continuous_on_const",
         "real_continuous_on_id",
         "real_continuous_on_add",
+        "real_continuous_on_uminus",
         "real_continuous_on_neg",
         "real_continuous_on_sub",
         "real_continuous_on_mul",
@@ -164,6 +165,14 @@ auto.add_global_autos_norm(
 )
 
 auto.add_global_autos_norm(
+    real.log,
+    auto.norm_rules([
+        'log_1',
+        'log_exp'
+    ])
+)
+
+auto.add_global_autos_norm(
     real.abs,
     auto.norm_rules([
         'real_abs_pos_eq',
@@ -215,9 +224,6 @@ auto.add_global_autos_norm(
         # Linearity rules
         "real_integral_add",
         "real_integral_lmul",
-        "real_integral_div",
-        "real_integral_neg",
-        "real_integral_sub",
 
         # Common integrals
         "real_integral_0",
@@ -364,8 +370,16 @@ class substitution(Conv):
 
         # Use the equality to rewrite expression.
         pt = refl(expr).on_rhs(thy, auto.auto_conv())
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt.on_lhs(thy, auto.auto_conv())))
-        pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
+        eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+        if eq_pt.lhs != pt.rhs:
+            raise ConvException("Substitution: %s != %s" % (
+                printer.print_term(thy, eq_pt.lhs), printer.print_term(thy, pt.rhs)))
+        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+
+        if pt.rhs.head == real.uminus:
+            pt = pt.on_rhs(thy, arg_conv(arg1_conv(auto.auto_conv())))
+        else:
+            pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
 
         return pt
 

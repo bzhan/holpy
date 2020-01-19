@@ -3,6 +3,7 @@
 from kernel import term
 from kernel.term import Term, Var
 from kernel import macro
+from data import binary
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
@@ -141,6 +142,9 @@ def solve(thy, goal, pts=None):
         for f in global_autos[goal.head]:
             try:
                 pt = f(thy, goal, pts)
+                if eq_pt.rhs != pt.prop:
+                    raise AssertionError("auto solve: %s != %s" % (
+                        printer.print_term(thy, eq_pt.prop), printer.print_term(thy, pt.prop)))
                 return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
             except TacticException:
                 pass
@@ -188,6 +192,10 @@ def norm(thy, t, pts=None):
 
     # Do not normalize variables and abstractions
     if t.is_var() or t.is_abs():
+        return refl(t)
+
+    # No further work for binary numbers
+    if binary.is_binary(t):
         return refl(t)
 
     eq_pt = refl(t.head)

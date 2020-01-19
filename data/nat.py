@@ -286,7 +286,9 @@ class nat_eval_conv(Conv):
             return refl(t)
         return ProofTermDeriv('nat_eval', thy, Term.mk_equals(t, simp_t))
 
+auto.add_global_autos_norm(plus, nat_eval_conv())
 auto.add_global_autos_norm(minus, nat_eval_conv())
+auto.add_global_autos_norm(times, nat_eval_conv())
 
 # Normalization on the semiring.
 

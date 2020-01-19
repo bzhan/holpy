@@ -2,6 +2,7 @@
 
 from fractions import Fraction
 import math
+import sympy
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
@@ -9,6 +10,7 @@ from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
+from data import binary
 from data import nat
 from data.set import setT
 from logic import logic
@@ -567,7 +569,6 @@ auto.add_global_autos_norm(nat_power, real_eval_conv())
 auto.add_global_autos_norm(
     real_power,
     auto.norm_rules([
-        'rpow_pow',
         'rpow_0',
         'rpow_1',
         'rpow_mult',
@@ -576,6 +577,47 @@ auto.add_global_autos_norm(
     ])
 )
 
+class real_power_conv(Conv):
+    def get_proof_term(self, thy, t):
+        a, p = t.args
+
+        # Apply rpow_pow
+        if is_binary_real(p) and p.is_comb() and binary.is_binary(p.arg):
+            pt = refl(t)
+            pt = pt.on_rhs(thy, arg_conv(rewr_conv('real_of_nat_id', sym=True)),
+                                rewr_conv('rpow_pow'))
+            return pt
+
+        if not (is_binary_real(a) and is_binary_real(p)):
+            raise ConvException
+
+        a, p = from_binary_real(a), from_binary_real(p)
+        if a <= 0:
+            raise ConvException
+
+        # Case 1: base is a perfect power
+        perfect_pow = sympy.perfect_power(a)
+        if perfect_pow:
+            b, e = perfect_pow
+            eq_th = refl(nat_power(to_binary_real(b), nat.to_binary_nat(e))).on_rhs(thy, real_eval_conv())
+            pt = refl(t).on_rhs(thy, arg1_conv(rewr_conv(eq_th, sym=True)))
+            b_gt_0 = auto.auto_solve(thy, greater(to_binary_real(b), zero))
+            pt = pt.on_rhs(thy, rewr_conv('rpow_mult_nat1', conds=[b_gt_0]), arg_conv(real_eval_conv()))
+            return pt
+
+        # Case 2: exponent is not between 0 and 1
+        if isinstance(p, Fraction) and p.numerator // p.denominator != 0:
+            div, mod = divmod(p.numerator, p.denominator)
+            eq_th = refl(plus(to_binary_real(div), divides(to_binary_real(mod), to_binary_real(p.denominator))))
+            eq_th = eq_th.on_rhs(thy, real_eval_conv())
+            pt = refl(t).on_rhs(thy, arg_conv(rewr_conv(eq_th, sym=True)))
+            a_gt_0 = auto.auto_solve(thy, greater(to_binary_real(a), zero))
+            pt = pt.on_rhs(thy, rewr_conv('rpow_add', conds=[a_gt_0]))
+            return pt
+
+        return refl(t)
+
+auto.add_global_autos_norm(real_power, real_power_conv())
 auto.add_global_autos_norm(real_power, real_eval_conv())
 
 auto.add_global_autos_norm(
@@ -625,6 +667,8 @@ def real_approx_eval(t):
         elif t.fun.is_const_name('log'):
             return math.log(real_approx_eval(t.arg))
         elif t.fun.is_const_name('exp'):
+            return math.exp(real_approx_eval(t.arg))
+        elif t.fun.is_const_name('sqrt'):
             return math.exp(real_approx_eval(t.arg))
         else:
             raise ConvException('real_approx_eval: %s' % str(t))
