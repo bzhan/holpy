@@ -8637,6 +8637,22 @@
             }
         },
         {
+            "name": "real_integral_eq_closed_interval",
+            "prop": [
+                "a ≤ b ",
+                "⟶ (∀x. x ∈ real_open_interval a b ⟶ f x = g x) ",
+                "   ⟶ real_integral (real_closed_interval a b) f = ",
+                "      real_integral (real_closed_interval a b) g"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_forward"

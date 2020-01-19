@@ -13,6 +13,8 @@ test_cases = {
     "Exercise 4": "exp(2) + 2 * exp(-1)",
     "Exercise 5": "1 + -1/2 * 2 ^ (1/2)",
     "Exercise 7": "21 / 8",
+    "Exercise 8": None,
+    "Exercise 9": None,
     "Exercise 12": "1 / 4",
     "Exercise 13": "-(4 / 3) + pi",
     "Exercise 14": "1 / 6 * pi + -(1 / 8) * 3 ^ (1/2)",

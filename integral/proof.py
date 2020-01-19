@@ -233,6 +233,31 @@ auto.add_global_autos_norm(
     ])
 )
 
+class real_integral_cong(Conv):
+    """Apply auto to the body of an integral."""
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), 'real_integral_cong'
+        S, f = expr.args
+        
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+        a, b = S.args
+        le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+
+        interval = real.open_interval(a, b)
+        v = Var(f.var_name, realT)
+        cond = set.mk_mem(v, interval)
+        body = f.subst_bound(v)
+
+        cv = auto.auto_conv(conds=[ProofTerm.assume(cond)])
+        eq_pt = cv.get_proof_term(thy, body)
+        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+        eq_pt = ProofTerm.forall_intr(v, eq_pt)
+        return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+
+auto.add_global_autos_norm(real_integral, real_integral_cong())
+
+
 class integrate_by_parts(Conv):
     """Evaluate using integration by parts.
     

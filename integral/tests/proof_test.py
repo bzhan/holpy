@@ -241,6 +241,7 @@ class ProofTest(unittest.TestCase):
 
     def testNormRealIntegral(self):
         test_data = [
+            # Linearity and common integrals
             ("real_integral (real_closed_interval 0 1) (%x. 1)", "(1::real)"),
             ("real_integral (real_closed_interval 0 1) (%x. 2 * x)", "(1::real)"),
             ("real_integral (real_closed_interval 0 1) (%x. x + 1)", "3 / 2"),
@@ -248,6 +249,10 @@ class ProofTest(unittest.TestCase):
             ("real_integral (real_closed_interval 0 1) (%x. exp x)", "-1 + exp 1"),
             ("real_integral (real_closed_interval 0 1) (%x. sin x)", "1 + -1 * cos 1"),
             ("real_integral (real_closed_interval 0 1) (%x. cos x)", "sin 1"),
+
+            # Normalize body
+            ("real_integral (real_closed_interval 0 1) (%x. x ^ (2::nat) * x)", "1 / 4"),
+            ("real_integral (real_closed_interval 0 1) (%x. x ^ (1 / 3) * (x ^ (1 / 2) + 1))", "57 / 44"),
         ]
 
         for expr, res in test_data:

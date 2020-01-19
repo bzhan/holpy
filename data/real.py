@@ -177,8 +177,14 @@ def real_eval(t):
         elif is_nat_power(t):
             return rec(t.arg1) ** nat.nat_eval(t.arg)
         elif is_real_power(t):
-            p = rec(t.arg)
-            if isinstance(p, int):
+            x, p = rec(t.arg1), rec(t.arg)
+            if p == 0:
+                return 1
+            elif x == 0:
+                return 0
+            elif x == 1:
+                return 1
+            elif isinstance(p, int):
                 if p >= 0:
                     return rec(t.arg1) ** p
                 else:
@@ -325,11 +331,7 @@ class norm_add_polynomial(Conv):
         else:
             return pt.on_rhs(thy, norm_add_monomial())
 
-def norm_add(thy, t, pts):
-    """Normalization of plus. Assume two sides are in normal form."""
-    return norm_add_polynomial().get_proof_term(thy, t)
-
-auto.add_global_autos_norm(plus, norm_add)
+auto.add_global_autos_norm(plus, norm_add_polynomial())
 
 
 def dest_atom(t):
