@@ -7,7 +7,7 @@ from data import binary
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
-from logic.conv import Conv, ConvException, refl
+from logic.conv import Conv, ConvException, refl, eta_conv, top_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from syntax import printer
 from util import name
@@ -225,7 +225,10 @@ def norm(thy, t, pts=None):
             return eq_pt
         else:
             # Head changed, continue apply norm
-            return ProofTerm.transitive(eq_pt, norm(thy, eq_pt.rhs, pts))
+            eq_pt2 = norm(thy, eq_pt.rhs, pts)
+            if eq_pt2.lhs != eq_pt.rhs:
+                eq_pt2 = eq_pt2.on_lhs(thy, top_conv(eta_conv()))
+            return ProofTerm.transitive(eq_pt, eq_pt2)
     else:
         # No normalization rule available for this head
         return eq_pt

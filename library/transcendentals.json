@@ -671,6 +671,42 @@
             }
         },
         {
+            "name": "real_exp_n_sym",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_exp_n, exp x ^ n = exp (of_nat n * x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ exp x ^ n = exp (of_nat n * x)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exp x ^ n = exp (of_nat n * x)"
+                }
+            ],
+            "prop": "exp x ^ n = exp (of_nat n * x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_n"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite",
                 "hint_rewrite_sym"
@@ -7832,7 +7868,7 @@
         },
         {
             "name": "real_sin_minus_pi4",
-            "prop": "sin (-(1 / 4) * pi) = - sqrt 2 / 2",
+            "prop": "sin (-(1 / 4) * pi) = -(sqrt 2) / 2",
             "ty": "thm",
             "vars": {}
         },

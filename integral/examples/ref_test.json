@@ -459,6 +459,93 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 24",
+            "problem": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)",
+            "calc": [
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "((x + 1) + 1) / ((x + 1) * (x + 1) + 1)"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "(1 + u) / (1 + u * u)",
+                        "g": "x + 1",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 28",
+            "problem": "INT x:[0, 1].x*exp(-x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "x",
+                        "v": "-exp(-x)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-exp(u)",
+                        "g": "-x",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 29",
+            "problem": "INT x:[1, exp(1)]. x * log(x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "log(x) / 2",
+                        "v": "x^2"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 31",
+            "problem": "INT x:[1, 4]. log(x) / sqrt(x)",
+            "calc": [
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "2 * log(x)",
+                        "v": "x ^ (1/2)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }

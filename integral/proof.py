@@ -109,6 +109,7 @@ auto.add_global_autos(
         "real_differentiable_const",
         "real_differentiable_id",
         "real_differentiable_add",
+        "real_differentiable_uminus",
         "real_differentiable_neg",
         "real_differentiable_sub",
         "real_differentiable_mul_atreal",
@@ -187,6 +188,7 @@ auto.add_global_autos_norm(
         "real_derivative_const",
         "real_derivative_id",
         "real_derivative_add",
+        "real_derivative_uminus",
         "real_derivative_neg",
         "real_derivative_sub",
         "real_derivative_mul",
@@ -298,11 +300,11 @@ class integrate_by_parts(Conv):
             A_pt = auto.auto_solve(thy, A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
 
-        eq_pt = eq_pt.on_lhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
         eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))))
 
         pt = refl(expr)
-        pt = pt.on_rhs(thy, arg_conv(abs_conv(auto.auto_conv())))
+        pt = pt.on_rhs(thy, auto.auto_conv())
         pt = pt.on_rhs(thy, rewr_conv(eq_pt))
         return pt
 

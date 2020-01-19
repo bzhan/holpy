@@ -26,7 +26,11 @@ test_cases = {
     "Exercise 20": None,
     "Exercise 21": None,
     "Exercise 22": "1 + -1 * exp (-1/2)",
-    "Exercise 23": "-2 + 2 * 3 ^ (1/2)"
+    "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
+    "Exercise 24": None,
+    "Exercise 28": "1 + -2 * exp(-1)",
+    "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
+    "Exercise 31": "-4 + 4 * log(4)",
 }
 
 
