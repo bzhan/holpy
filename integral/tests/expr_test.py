@@ -139,13 +139,24 @@ class ExprTest(unittest.TestCase):
             # ("log(exp(t)) ^ (-2)", "t ^ (-2)"),
             # ("exp(-t) * exp(t)", "1"),
             # ("(u ^ (-2) * exp(u)) * exp(-u)", "u ^ (-2)"),
-            ("[u ^ 8 / 8]_u=-3,3", "0"),
-            ("(1 - exp(-x)) / (1 - exp(-x))", "1")
+            # ("[u ^ 8 / 8]_u=-3,3", "0"),
+            # ("(1 - exp(-x)) / (1 - exp(-x))", "1"),
+            # ("sin(sqrt(x ^ 2))", "sin(abs(x))"),
+            # ("sqrt((u/pi)^2)", "abs(u / pi)"),
+            # ("sin(sqrt((u/pi)^2))", "sin(abs(u / pi))"),
+            # ("u*pi^(-1) * (u/pi)^(-1)", "1"),
+            # ("(2 * u) * pi ^ (-1) *(1/pi)^(-1)", "2 * u"),
+            # ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
+            # ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))", "2*log(x) - 2*exp(1)"),
+            # ("sin(x)^2+cos(x)^2", "1"),
+            ("(1 + sin(x)) / ((1 + sin(x)) * (1 - sin(x)))", "1")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
 
         for s, res in test_data:
             t = parse_expr(s)
+            print([t])
+            print(t.normalize())
             self.assertEqual(str(t.normalize()), res)
 
     def testGetSubExpr(self):
