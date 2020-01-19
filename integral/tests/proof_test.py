@@ -198,7 +198,7 @@ class ProofTest(unittest.TestCase):
             ("real_derivative (%x. 3 * x) x", [], "(3::real)"),
             ("real_derivative (%x. x ^ (2::nat)) x", [], "2 * x"),
             ("real_derivative (%x. x ^ (3::nat)) x", [], "3 * x ^ (2::nat)"),
-            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 * (x + 1) ^ (2::nat)"),
+            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 * (1 + x) ^ (2::nat)"),
             ("real_derivative (%x. exp x) x", [], "exp x"),
             ("real_derivative (%x. exp (x ^ (2::nat))) x", [], "2 * (x * exp (x ^ (2::nat)))"),
             ("real_derivative (%x. exp (exp x)) x", [], "exp x * exp (exp x)"),
@@ -241,6 +241,7 @@ class ProofTest(unittest.TestCase):
 
     def testNormRealIntegral(self):
         test_data = [
+            # Linearity and common integrals
             ("real_integral (real_closed_interval 0 1) (%x. 1)", "(1::real)"),
             ("real_integral (real_closed_interval 0 1) (%x. 2 * x)", "(1::real)"),
             ("real_integral (real_closed_interval 0 1) (%x. x + 1)", "3 / 2"),
@@ -248,6 +249,10 @@ class ProofTest(unittest.TestCase):
             ("real_integral (real_closed_interval 0 1) (%x. exp x)", "-1 + exp 1"),
             ("real_integral (real_closed_interval 0 1) (%x. sin x)", "1 + -1 * cos 1"),
             ("real_integral (real_closed_interval 0 1) (%x. cos x)", "sin 1"),
+
+            # Normalize body
+            ("real_integral (real_closed_interval 0 1) (%x. x ^ (2::nat) * x)", "1 / 4"),
+            ("real_integral (real_closed_interval 0 1) (%x. x ^ (1 / 3) * (x ^ (1 / 2) + 1))", "57 / 44"),
         ]
 
         for expr, res in test_data:
@@ -311,11 +316,12 @@ class ProofTest(unittest.TestCase):
 
     def testTrigRewrConv(self):
         test_data = [
-            ("sin x ^ (2::nat)", "", "TR5",
-             "1 + -1 * cos x ^ (2::nat)"),
+            ("sin x ^ (2::nat)", "", "TR5", "1 - cos x ^ (2::nat)"),
+            ("1 - cos x ^ (2::nat)", "", "TR5_inv", "sin x ^ (2::nat)"),
+            ("1 + -1 * cos x ^ (2::nat)", "", "TR5_inv", "sin x ^ (2::nat)"),
 
             ("real_integral (real_closed_interval 0 pi) (%x. sin x ^ (2::nat) * sin x)", "0.0", "TR5",
-             "real_integral (real_closed_interval 0 pi) (%x. (1 + -1 * cos x ^ (2::nat)) * sin x)"),
+             "real_integral (real_closed_interval 0 pi) (%x. (1 - cos x ^ (2::nat)) * sin x)"),
         ]
 
         ctxt = Context('realintegral', vars={'x': 'real'})

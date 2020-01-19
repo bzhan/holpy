@@ -186,7 +186,8 @@ def norm(thy, t, pts=None):
     if debug_auto:
         print("Norm:", printer.print_term(thy, t))
 
-    if not t.is_comb():
+    # Do not normalize variables and abstractions
+    if t.is_var() or t.is_abs():
         return refl(t)
 
     eq_pt = refl(t.head)
@@ -206,6 +207,10 @@ def norm(thy, t, pts=None):
                     eq_pt = ProofTerm.transitive(eq_pt, f(thy, eq_pt.rhs, pts))
             except ConvException:
                 continue
+
+            if eq_pt.rhs.head != t.head:
+                # Head changed, should try something else
+                break
 
         if eq_pt.rhs == ori_rhs:
             # Unchanged, normalization stops here

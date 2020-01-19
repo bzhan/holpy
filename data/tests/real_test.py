@@ -60,6 +60,9 @@ class RealTest(unittest.TestCase):
             ("(2 + 3) / (3::real)", Fraction(5,3)),
             ("(2::real) ^ (3::nat)", 8),
             ("(2::real) ^ (-(1::real))", Fraction(1,2)),
+            ("(0::real) ^ (0::real)", 1),
+            ("(0::real) ^ (0::nat)", 1),
+            ("(1::real) ^ (1 / 2)", 1),
         ]
 
         for expr, res in test_data:

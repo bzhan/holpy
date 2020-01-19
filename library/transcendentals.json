@@ -1863,7 +1863,7 @@
         },
         {
             "name": "sin_circle2",
-            "prop": "sin x ^ (2::nat) = 1 + -1 * cos x ^ (2::nat)",
+            "prop": "sin x ^ (2::nat) = 1 - cos x ^ (2::nat)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -1871,7 +1871,7 @@
         },
         {
             "name": "sin_circle3",
-            "prop": "cos x ^ (2::nat) = 1 + -1 * sin x ^ (2::nat)",
+            "prop": "cos x ^ (2::nat) = 1 - sin x ^ (2::nat)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -7827,6 +7827,12 @@
         {
             "name": "real_sin_pi2_alt",
             "prop": "sin (1 / 2 * pi) = 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "real_sin_minus_pi4",
+            "prop": "sin (-(1 / 4) * pi) = - sqrt 2 / 2",
             "ty": "thm",
             "vars": {}
         },
