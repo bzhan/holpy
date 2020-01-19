@@ -141,6 +141,9 @@ def solve(thy, goal, pts=None):
         for f in global_autos[goal.head]:
             try:
                 pt = f(thy, goal, pts)
+                if eq_pt.rhs != pt.prop:
+                    raise AssertionError("auto solve: %s != %s" % (
+                        printer.print_term(thy, eq_pt.prop), printer.print_term(thy, pt.prop)))
                 return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
             except TacticException:
                 pass

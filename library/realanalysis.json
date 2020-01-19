@@ -5302,6 +5302,14 @@
             }
         },
         {
+            "name": "real_continuous_on_uminus",
+            "prop": "real_continuous_on uminus s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],

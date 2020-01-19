@@ -626,6 +626,8 @@ def real_approx_eval(t):
             return math.log(real_approx_eval(t.arg))
         elif t.fun.is_const_name('exp'):
             return math.exp(real_approx_eval(t.arg))
+        elif t.fun.is_const_name('sqrt'):
+            return math.exp(real_approx_eval(t.arg))
         else:
             raise ConvException('real_approx_eval: %s' % str(t))
     else:

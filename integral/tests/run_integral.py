@@ -21,7 +21,12 @@ test_cases = {
     "Exercise 15": "1 / 4 * pi",
     "Exercise 16": "1 / 2 * pi",
     "Exercise 17": None,
-    "Exercise 18": None
+    "Exercise 18": None,
+    "Exercise 19": None,
+    "Exercise 20": None,
+    "Exercise 21": None,
+    "Exercise 22": None,
+    "Exercise 23": None
 }
 
 

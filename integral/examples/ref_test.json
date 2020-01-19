@@ -372,6 +372,93 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 19",
+            "problem": "INT x:[-1, 1]. x / sqrt(5 - 4 * x)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-5/8 + 1/8 * u^2",
+                        "g": "sqrt(5 - 4 * x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 20",
+            "problem": "INT x:[1,4]. 1/(1+sqrt(x))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "2 * u / (1 + u)",
+                        "g": "sqrt(x)",
+                        "var_name": "u"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Exercise 21",
+            "problem": "INT x:[3/4, 1]. 1/(sqrt(1-x) - 1)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-2 * u / (-1 + u)",
+                        "g": "sqrt(1 - x)",
+                        "var_name": "u"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Exercise 22",
+            "problem": "INT t:[0, 1]. t * exp(-(t^2/2))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * exp(-u / 2)",
+                        "g": "t^2",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-exp(t)",
+                        "g": "-1/2 * u",
+                        "var_name": "t"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 23",
+            "problem": "INT x:[1, exp(2)]. 1 / (x*sqrt(1+log(x)))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/sqrt(u)",
+                        "g": "1 + log(x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }
