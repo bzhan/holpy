@@ -617,6 +617,82 @@
             ]
         },
         {
+            "name": "Exercise 33",
+            "problem": "INT x:[0, pi/2]. exp(2*x)*cos(x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "exp(2 * x)",
+                        "v": "sin(x)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "exp(2 * x)",
+                        "v": "-cos(x)"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Solve equation",
+                    "params": {
+                        "factor": "4",
+                        "prev_id": "0"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Exercise 35",
+            "problem": "INT x:[1, exp(1)]. sin(log(x))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "exp(u) * sin(u)",
+                        "g": "log(x)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "sin(u)",
+                        "v": "exp(u)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "cos(x)",
+                        "v": "exp(x)"
+                    },
+                    "location": "0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Solve equation",
+                    "params": {
+                        "factor": "1",
+                        "prev_id": "1"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Exercise 36",
             "problem": "INT x:[1/exp(1), exp(1)].abs(log(x))",
             "calc": [

@@ -1,6 +1,7 @@
 """Proofs for differentiation and integration."""
 
 import math
+from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, boolT
@@ -163,6 +164,7 @@ auto.add_global_autos_norm(
     real.exp,
     auto.norm_rules([
         'real_exp_0',
+        'exp_log',
     ])
 )
 
@@ -690,6 +692,8 @@ def translate_item(item, target=None, *, debug=False):
     init = expr_to_holpy(problem)
     pt = refl(init)
 
+    prev_pts = [pt]
+
     if debug:
         print("\n%s: %s" % (item['name'], printer.print_term(thy, pt.rhs)))
 
@@ -766,19 +770,36 @@ def translate_item(item, target=None, *, debug=False):
             c = expr_to_holpy(c)
             cv = split_region_conv(c)
 
+        elif reason == 'Solve equation':
+            # Solving equation
+            factor = int(step['params']['factor'])
+            prev_id = int(step['params']['prev_id'])
+            prev_pt = prev_pts[prev_id]
+
+
+            t1 = real.times(real.to_binary_real(Fraction(1, factor+1)),
+                            real.plus(prev_pt.rhs, real.times(real.to_binary_real(factor), prev_pt.rhs)))
+            t1_pt = auto.auto_solve(thy, Term.mk_equals(prev_pt.rhs, t1))
+            t1_pt = t1_pt.on_rhs(thy, arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
+                                      arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
+            pt = ProofTerm.transitive(prev_pt, t1_pt)
+            if debug:
+                print("= %s (solve %d)" % (printer.print_term(thy, pt.rhs), prev_id))
+            prev_pts.append(pt)
+            continue
         else:
             raise NotImplementedError
 
         pt = pt.on_rhs(thy, location_conv(loc, cv))
         if debug:
             print("= %s" % printer.print_term(thy, pt.rhs))
+        prev_pts.append(pt)
 
     assert pt.lhs == init, "translate_item: wrong left side."
     if target is not None:
         target = expr_to_holpy(integral.parser.parse_expr(target))
         assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
-            printer.print_term(thy, target), printer.print_term(thy, pt.rhs)
-        )
+            printer.print_term(thy, target), printer.print_term(thy, pt.rhs))
     elif not debug:
         print(printer.print_term(thy, pt.rhs))
 
