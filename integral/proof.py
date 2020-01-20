@@ -390,10 +390,16 @@ def apply_subst_thm(thy, f, g, a, b):
     """
     # Form the assumption: g is increasing or decreasing on [a, b],
     # then apply the theorem.
-    if real.real_approx_eval(g(a).beta_conv()) <= real.real_approx_eval(g(b).beta_conv()):
+    try:
+        auto.auto_solve(thy, real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
+        is_le = True
+    except logic.TacticException:
+        is_le = False
+
+    if is_le:
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
-        
+
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
             A_pt = auto.auto_solve(thy, A)
@@ -401,7 +407,7 @@ def apply_subst_thm(thy, f, g, a, b):
     else:
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
-        
+
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
             A_pt = auto.auto_solve(thy, A)

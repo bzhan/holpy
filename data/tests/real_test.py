@@ -150,49 +150,6 @@ class RealTest(unittest.TestCase):
         for expr, res in test_data:
             test_conv(self, 'transcendentals', auto.auto_conv(), vars=vars, t=expr, t_res=res)
 
-    def testRealApproxEval(self):
-        test_data = [
-            ("(0::real)", 0),
-            ("(1::real) / 3", 1.0/3),
-            ("(2::real) ^ (3::nat)", 8),
-            ("(2::real) ^ (-(3::real))", 0.125),
-            ("sin(0)", 0),
-            ("sin(pi/2)", 1),
-            ("sin(pi/4)", math.sqrt(2)/2),
-            ("cos(0)", 1),
-            ("cos(pi/3)", 0.5),
-            ("cos(pi/2)", 0),
-            ("log(1)", 0),
-            ("log(2)", math.log(2)),
-            ("exp(0)", 1),
-            ("exp(1)", math.exp(1)),
-        ]
-
-        for expr, res in test_data:
-            ctxt = Context('transcendentals')
-            t = parser.parse_term(ctxt, expr)
-            self.assertAlmostEqual(real.real_approx_eval(t), res)
-
-    def testRealIneq(self):
-        test_data = [
-            ("(1::real) <= 2", True),
-            ("(2::real) <= 1", False),
-            ("(1::real) <= 1", True),
-            ("(1::real) < 2", True),
-            ("(2::real) < 1", False),
-            ("(1::real) < 1", False),
-            ("~(1::real) = 2", True),
-            ("~(2::real) = 1", True),
-            ("~(1::real) = 1", False),
-            ("(1::real) / 3 < 1 / 2", True),
-        ]
-
-        for expr, res in test_data:
-            if res:
-                test_macro(self, 'real', 'real_ineq', args=expr, res=expr, eval_only=True)
-            else:
-                test_macro(self, 'real', 'real_ineq', args=expr, failed=AssertionError, eval_only=True)
-
 
 if __name__ == "__main__":
     unittest.main()
