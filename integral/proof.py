@@ -59,9 +59,10 @@ auto.add_global_autos(
         "real_continuous_on_sqrt",
         "real_continuous_on_sqrt_compose",
 
-        # Real power (two options)
+        # Real power (three options)
         "real_continuous_on_real_pow",
         "real_continuous_on_real_pow2",
+        "real_continuous_on_real_neg1_pow",
     ])
 )
 
@@ -445,6 +446,63 @@ class simplify_rewr_conv(Conv):
         return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
 
 
+class clear_denom_conv(Conv):
+    def __init__(self, conds):
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        if real.is_plus(t.arg):
+            return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'), arg1_conv(self),
+                             arg_conv(real.norm_mult_monomials(self.conds)))
+        else:
+            return pt.on_rhs(thy, real.norm_mult_monomials(self.conds))
+
+class fraction_rewr_conv(Conv):
+    """Rewrite two fractions that should be equal after multiplying
+    by some denominator.
+
+    The starting term should be an integral.
+
+    """
+    def __init__(self, target, denom):
+        """Initialize with denominator and target of the rewrite."""
+        self.target = target
+        self.denom = denom
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), 'fraction_rewr_conv'
+        S, f = expr.args
+        
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+        a, b = S.args
+        le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+
+        interval = real.open_interval(a, b)
+        v = Var(f.var_name, realT)
+        cond = set.mk_mem(v, interval)
+        body = f.subst_bound(v)
+
+        cond_pt = ProofTerm.assume(cond)
+
+        cv = auto.auto_conv(conds=[cond_pt])
+        lhs_eq = refl(real.times(self.denom, body))
+        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(cv), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        rhs_eq = refl(real.times(self.denom, self.target))
+        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(cv), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        if lhs_eq.rhs != rhs_eq.rhs:
+            raise AssertionError("fraction_rewr_conv: %s != %s" % (
+                printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))
+        eq = ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
+        x_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(self.denom, real.zero)), pts=[cond_pt])
+
+        eq_pt = apply_theorem(thy, 'real_eq_lcancel', x_neq_0, eq)
+        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+        eq_pt = ProofTerm.forall_intr(v, eq_pt)
+        return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+
+
 class trig_rewr_conv(Conv):
     """Apply trignometric rewrites."""
     def __init__(self, code):
@@ -666,6 +724,14 @@ def translate_item(item, target=None, *, debug=False):
             rhs = integral.parser.parse_expr(step['params']['rhs'])
             rhs = expr_to_holpy(rhs)
             cv = simplify_rewr_conv(rhs)
+
+        elif reason == 'Rewrite fraction':
+            # Rewrite by multiplying a denominator
+            rhs = integral.parser.parse_expr(step['params']['rhs'])
+            rhs = expr_to_holpy(rhs)
+            denom = integral.parser.parse_expr(step['params']['denom'])
+            denom = expr_to_holpy(denom)
+            cv = fraction_rewr_conv(rhs, denom)
 
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity

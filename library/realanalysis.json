@@ -5454,6 +5454,18 @@
             }
         },
         {
+            "name": "real_continuous_on_real_neg1_pow",
+            "prop": [
+                "real_continuous_on f s ",
+                "⟶ (∀x. x ∈ s ⟶ f x < 0) ⟶ real_continuous_on (λx. f x ^ -(1::real)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
+            }
+        },
+        {
             "name": "real_continuous_on_abs",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. abs (f x)) s",
             "ty": "thm",

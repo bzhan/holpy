@@ -7942,12 +7942,6 @@
             "vars": {}
         },
         {
-            "name": "real_sin_minus_pi4",
-            "prop": "sin (-(1 / 4) * pi) = -(sqrt 2) / 2",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1"
@@ -14839,6 +14833,16 @@
                 "p": "real",
                 "x": "real",
                 "y": "real"
+            }
+        },
+        {
+            "name": "rpow_base_divide",
+            "prop": "x > 0 ⟶ y > 0 ⟶ (x / y) ^ z = x ^ z / y ^ z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
             }
         },
         {

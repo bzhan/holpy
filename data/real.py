@@ -454,7 +454,7 @@ class norm_mult_atom(Conv):
                     rewr_conv('real_mult_assoc', sym=True),
                     arg_conv(combine_atom(self.conds)))
                 if pt.rhs.arg == one:
-                    pt = pt.on_rhs(thy, arg_conv('real_mul_rid'))
+                    pt = pt.on_rhs(thy, rewr_conv('real_mul_rid'))
                 return pt
             elif atom_less(m1, m2):
                 return pt
@@ -575,6 +575,7 @@ auto.add_global_autos_norm(
         'rpow_mult',
         'rpow_mult_nat1',
         'rpow_base_mult',
+        'rpow_base_divide',
     ])
 )
 
@@ -582,7 +583,7 @@ class real_power_conv(Conv):
     def get_proof_term(self, thy, t):
         a, p = t.args
 
-        # Apply rpow_pow
+        # Exponent is an integer: apply rpow_pow
         if is_binary_real(p) and p.is_comb() and binary.is_binary(p.arg):
             pt = refl(t)
             pt = pt.on_rhs(thy, arg_conv(rewr_conv('real_of_nat_id', sym=True)),
