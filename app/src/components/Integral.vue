@@ -272,10 +272,11 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-expr", JSON.stringify(data))
       if(response.data.flag === true){
         for(var i=0; i < response.data["content"].length; ++i){
-          this.trig_identities_data.new_expr.push(response.data["content"][i])
+          this.trig_identities_data.new_expr.push(response.data["content"][i]);
         }
-        this.r_query_mode = 'display_trig'
-        this.take_effect = 1
+        this.r_query_mode = 'display_trig';
+        this.take_effect = 1;
+        this.closeIntegral();
       }else{
         this.seen = true;
       }
@@ -336,6 +337,7 @@ export default {
         this.sep_int[this.integral_index] = response.data;
         this.r_query_mode = undefined;
         this.take_effect = 1;
+        this.closeIntegral();
       }else{
         this.rewrite_error_flag = true;
       }
@@ -529,11 +531,12 @@ export default {
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.r_query_mode = undefined
-      this.subst_data = {var_name: '', expr: ''}
-      this.integral_index = undefined
-      this.take_effect = 1
+      this.sep_int[this.integral_index] = response.data;
+      this.r_query_mode = undefined;
+      this.subst_data = {var_name: '', expr: ''};
+      this.integral_index = undefined;
+      this.take_effect = 1;
+      this.closeIntegral();
     },
 
     substitution1: function () {
@@ -552,11 +555,11 @@ export default {
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution2", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.r_query_mode = undefined
-      this.subst_data = {var_name: '', expr: ''}
-      this.integral_index = undefined
-      this.take_effect = 1
+      this.sep_int[this.integral_index] = response.data;
+      this.r_query_mode = undefined;
+      this.subst_data = {var_name: '', expr: ''};
+      this.integral_index = undefined;
+      this.take_effect = 1;
     },
 
     unfoldPower: function () {
@@ -584,11 +587,12 @@ export default {
       }
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.r_query_mode = undefined
-      this.integral_index = undefined
-      this.byparts_data = {parts_u: '', parts_v: ''}
-      this.take_effect = 1
+      this.sep_int[this.integral_index] = response.data;
+      this.r_query_mode = undefined;
+      this.integral_index = undefined;
+      this.byparts_data = {parts_u: '', parts_v: ''};
+      this.take_effect = 1;
+      this.closeIntegral();
     },
 
     integrateByEquation: function(){
