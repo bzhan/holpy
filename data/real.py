@@ -575,6 +575,7 @@ auto.add_global_autos_norm(
         'rpow_mult',
         'rpow_mult_nat1',
         'rpow_base_mult',
+        'rpow_base_mult2',
         'rpow_base_divide',
         'rpow_exp',
         'rpow_abs',
@@ -605,8 +606,8 @@ class real_power_conv(Conv):
             b, e = perfect_pow
             eq_th = refl(nat_power(to_binary_real(b), nat.to_binary_nat(e))).on_rhs(thy, real_eval_conv())
             pt = refl(t).on_rhs(thy, arg1_conv(rewr_conv(eq_th, sym=True)))
-            b_ge_0 = auto.auto_solve(thy, greater_eq(to_binary_real(b), zero))
-            pt = pt.on_rhs(thy, rewr_conv('rpow_mult_nat1', conds=[b_ge_0]), arg_conv(real_eval_conv()))
+            b_gt_0 = auto.auto_solve(thy, greater(to_binary_real(b), zero))
+            pt = pt.on_rhs(thy, rewr_conv('rpow_mult_nat1', conds=[b_gt_0]), arg_conv(real_eval_conv()))
             return pt
 
         # Case 2: exponent is not between 0 and 1
