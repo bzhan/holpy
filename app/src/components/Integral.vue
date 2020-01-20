@@ -127,23 +127,10 @@
         <button v-on:click="validation1">Validate</button>
         <p v-if="seen === true">Illegal</p>
         <br/>
-        <span>{{equation_data.rewrite_part}}=</span>
-        <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 200px">
+        <span v-if="seen === false">{{equation_data.rewrite_part}}=</span>
+        <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 400px">
         <button v-on:click="rewrite">Rewrite</button>
         <p v-if="rewrite_error_flag === true" color="red">The rewrite is invalid.</p>
-        <div>
-          <MathEquation v-bind:data="'Write the expression that you think is equal to the ' + this.sep_int[integral_index].body + '.'"/>
-        </div>
-        <div>
-          <MathEquation data="new expr ="/>
-          <input v-model="equation_data.new_expr" style="margin:0px 5px;width:300px">
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doEquationSubst">OK</button>
-        </div>
-        <div v-if="equation_data.fail_reason !== undefined">
-          <MathEquation v-bind:data=equation_data.fail_reason style="color:#FF0000"/>
-        </div>
       </div>
       <div v-if="r_query_mode === 'byequation'">
         <div>
