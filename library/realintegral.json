@@ -11553,6 +11553,19 @@
             }
         },
         {
+            "name": "real_integral_to_atn_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ real_integral (real_closed_interval a b) (λx. (1 + x ^ (2::nat)) ^ -(1::real)) = ",
+                "   evalat (λx. atn x) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_forward"

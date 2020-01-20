@@ -550,6 +550,34 @@
                 },
                 {
                     "reason": "Simplification"
+                },
+                {
+                    "reason": "Split region",
+                    "params": {
+                        "c": "0"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1 / 2 * u^-1",
+                        "g": "1 + x ^ 2",
+                        "var_name": "u"
+                    },
+                    "location": "1.0"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1 / 2 * u^-1",
+                        "g": "1 + x ^ 2",
+                        "var_name": "u"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
                 }
             ]
         },
@@ -703,6 +731,33 @@
                         "u": "2 * log(x)",
                         "v": "x ^ (1/2)"
                     }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 32",
+            "problem": "INT x:[0,1]. x * atan(x)",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "atan(x) / 2",
+                        "v": "x ^ 2"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite fraction",
+                    "params": {
+                        "denom": "1 + x ^ 2",
+                        "rhs": "1 - 1 / (1 + x ^ 2)"
+                    },
+                    "location": "1.1"
                 },
                 {
                     "reason": "Simplification"

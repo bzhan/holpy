@@ -47,6 +47,8 @@ auto.add_global_autos(
         "real_continuous_on_cos",
         "real_continuous_on_cos_compose",
         "real_continuous_on_abs",
+        "real_continuous_on_atn",
+        "real_continuous_on_atn_compose",
 
         # Continuous with conditions
         "real_continuous_on_div",
@@ -87,6 +89,8 @@ auto.add_global_autos(
         "real_differentiable_at_sin_compose",
         "real_differentiable_at_cos",
         "real_differentiable_at_cos_compose",
+        "real_differentiable_at_atn",
+        "real_differentiable_at_atn_compose",
 
         # Differentiable with conditions
         "real_differentiable_div_atreal",
@@ -241,6 +245,15 @@ auto.add_global_autos_norm(
 )
 
 auto.add_global_autos_norm(
+    real.atn,
+    auto.norm_rules([
+        'atn_0',
+        'atn_1',
+        'atn_neg',
+    ])
+)
+
+auto.add_global_autos_norm(
     real_derivative,
     auto.norm_rules([
         # Differentiable everywhere
@@ -258,6 +271,8 @@ auto.add_global_autos_norm(
         "real_derivative_sin_compose",
         "real_derivative_cos",
         "real_derivative_cos_compose",
+        "real_derivative_atn",
+        "real_derivative_atn_compose",
 
         # Differentiable with conditions
         "real_derivative_div_atreal",
@@ -298,6 +313,9 @@ auto.add_global_autos_norm(
         "real_integral_sin_evalat",
         "real_integral_cos_evalat",
         "real_integral_exp_evalat",
+
+        # Special trigonometric functions
+        "real_integral_to_atn_evalat",
     ])
 )
 
@@ -748,6 +766,8 @@ def expr_to_holpy(expr):
             return real.abs(a)
         elif expr.func_name == 'sqrt':
             return real.sqrt(a)
+        elif expr.func_name == 'atan':
+            return real.atn(a)
         else:
             raise NotImplementedError
     elif expr.is_deriv():
