@@ -79,52 +79,6 @@ class ProofTest(unittest.TestCase):
         for expr in test_data:
             test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
 
-    def testRealDifferentiableOn(self):
-        test_data = [
-            "real_differentiable_on (%x. x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. x * x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. -x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. x ^ (2::nat)) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. x ^ (3::nat)) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. (x + 1) ^ (3::nat)) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. exp x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. exp (x ^ (2::nat))) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. exp (exp x)) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. sin x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. cos x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. sin x * cos x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. sin (cos x)) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. 1 / x) (real_closed_interval 1 2)",
-            "real_differentiable_on (%x. 1 / (x ^ (2::nat))) (real_closed_interval 1 2)",
-            "real_differentiable_on (%x. 1 / (x ^ (2::nat))) (real_closed_interval (-2) (-1))",
-            "real_differentiable_on (%x. 1 / (x ^ (2::nat) + 1)) (real_closed_interval (-1) 1)",
-            "real_differentiable_on (%x. log x) (real_closed_interval (exp (-1)) (exp 1))",
-            "real_differentiable_on (%x. log (x ^ (2::nat) + 1)) (real_closed_interval (-1) 1)",
-            "real_differentiable_on (%x. sqrt x) (real_closed_interval 1 2)",
-            "real_differentiable_on (%x. sqrt (1 - x ^ (2::nat))) (real_closed_interval 0 (sqrt 2 / 2))",
-            "real_differentiable_on (%x. sqrt (2 - x ^ (2::nat))) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. x ^ (-(2::real))) (real_closed_interval 1 2)",
-            "real_differentiable_on (%x. (3 * x + 1) ^ (-(2::real))) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. x ^ (1 / 2)) (real_closed_interval 1 2)",
-            "real_differentiable_on (%x::real. 2 ^ x) (real_closed_interval 0 1)",
-        ]
-
-        for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', args=expr, res=expr)
-
-    def testRealDifferentiableOnFail(self):
-        test_data = [
-            "real_differentiable_on (%x. 1 / x) (real_closed_interval (-1) 1)",
-            "real_differentiable_on (%x. 1 / x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. log x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. sqrt x) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. sqrt (1 - x ^ (2::nat))) (real_closed_interval 0 1)",
-            "real_differentiable_on (%x. sqrt (2 - x ^ (2::nat))) (real_closed_interval 0 (sqrt 2))",
-        ]
-
-        for expr in test_data:
-            test_macro(self, 'realintegral', 'auto', args=expr, failed=TacticException)
-
     def testRealDifferentiable(self):
         test_data = [
             "real_differentiable (%x. x) (atreal x)",
@@ -160,19 +114,21 @@ class ProofTest(unittest.TestCase):
 
     def testNormTranscendental(self):
         test_data = [
-            ("sin 0", [], "(0::real)"),
-            ("sin (1 / 6 * pi)", [], "1 / 2"),
-            ("cos 0", [], "(1::real)"),
-            ("cos (1 / 6 * pi)", [], "1 / 2 * 3 ^ (1 / 2)"),
-            ("exp 0", [], "(1::real)"),
-            ("cos (pi / 4)", [], "1 / 2 * 2 ^ (1 / 2)"),
+            ("sin 0", "(0::real)"),
+            ("sin (1 / 6 * pi)", "1 / 2"),
+            ("cos 0", "(1::real)"),
+            ("cos (1 / 6 * pi)", "1 / 2 * 3 ^ (1 / 2)"),
+            ("exp 0", "(1::real)"),
+            ("cos (pi / 4)", "1 / 2 * 2 ^ (1 / 2)"),
+            ("sin (13 / 6 * pi)", "1 / 2"),
+            ("sin (7 / 6 * pi)", "-(1 / 2)"),
+            ("sin (5 / 6 * pi)", "1 / 2"),
+            ("cos (7 / 6 * pi)", "-(1 / 2) * 3 ^ (1 / 2)"),
+            ("cos (-pi / 2)", "(0::real)"),
         ]
 
-        ctxt = Context('realintegral')
-        for t, conds, res in test_data:
-            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
-            cv = auto.auto_conv(conds_pt)
-            test_conv(self, 'realintegral', cv, t=t, t_res=res, assms=conds)
+        for t, res in test_data:
+            test_conv(self, 'realintegral', auto.auto_conv(), t=t, t_res=res)
 
     def testNormAbsoluteValue(self):
         test_data = [

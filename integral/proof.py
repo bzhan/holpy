@@ -1,30 +1,25 @@
 """Proofs for differentiation and integration."""
 
-import math
 from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from kernel import macro
-from logic.conv import Conv, ConvException, top_conv, beta_conv, beta_norm_conv, argn_conv, \
-    arg_conv, arg1_conv, rewr_conv, binop_conv, abs_conv, every_conv, try_conv
-from logic.logic import apply_theorem, conj_thms
+from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, rewr_conv, abs_conv
+from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
+from logic.proofterm import ProofTerm, refl
 from logic.context import Context
 from data import set
 from data import nat
 from data import real
 from data.real import realT
-from data.integral import netT, within, atreal
-from util import name
-from prover import z3wrapper
+from data.integral import netT
 from syntax import printer
 from integral.expr import Expr, Location
-import integral
+from integral.parser import parse_expr
 
 
 evalat = Const('evalat', TFun(TFun(realT, realT), realT, realT, realT))
@@ -75,36 +70,6 @@ auto.add_global_autos(
 )
 
 auto.add_global_autos(
-    Const('real_differentiable_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
-    auto.solve_rules([
-        # Differentiable everywhere
-        "real_differentiable_on_const",
-        "real_differentiable_on_id",
-        "real_differentiable_on_add",
-        "real_differentiable_on_neg",
-        "real_differentiable_on_sub",
-        "real_differentiable_on_mul",
-        "real_differentiable_on_pow",
-        "real_differentiable_on_exp",
-        "real_differentiable_on_exp_compose",
-        "real_differentiable_on_sin",
-        "real_differentiable_on_sin_compose",
-        "real_differentiable_on_cos",
-        "real_differentiable_on_cos_compose",
-
-        # Differentiable with conditions
-        "real_differentiable_on_div",
-        "real_differentiable_on_log",
-        "real_differentiable_on_log_compose",
-        "real_differentiable_on_sqrt",
-        "real_differentiable_on_sqrt_compose",
-
-        # Real power
-        "real_differentiable_on_real_pow",
-    ])
-)
-
-auto.add_global_autos(
     Const('real_differentiable', TFun(TFun(realT, realT), netT(realT), boolT)),
     auto.solve_rules([
         # Differentiable everywhere
@@ -141,10 +106,7 @@ auto.add_global_autos_norm(
         'real_sin_0',
         'real_sin_pi6',
         'real_sin_pi4',
-        'real_sin_pi3',
-        'real_sin_pi2_alt',
         'real_sin_pi',
-        'real_sin_minus_pi4',
     ])
 )
 
@@ -154,11 +116,105 @@ auto.add_global_autos_norm(
         'real_cos_0',
         'real_cos_pi6',
         'real_cos_pi4',
-        'real_cos_pi3',
-        'real_cos_pi2_alt',
         'real_cos_pi',
     ])
 )
+
+class norm_sin_conv(Conv):
+    """Normalization of an expression sin (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.sin):
+            raise ConvException('norm_sin_conv')
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_sin_conv')
+
+        r = real.from_binary_real(t.arg.arg1)
+        if r < 0:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.uminus(real.times(real.to_binary_real(-r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_neg'))
+
+        if r >= 2:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-2), real.pi),
+                          real.times(real.to_binary_real(2), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic'))
+
+        if r >= 1:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-1), real.pi),
+                          real.pi),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi'))
+
+        if r >= Fraction(1,2):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-Fraction(1,2)), real.pi),
+                          real.divides(real.pi, real.to_binary_real(2))),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
+
+        if r > Fraction(1,4):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.minus(real.divides(real.pi, real.to_binary_real(2)),
+                           real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_sin'))
+
+        return refl(t)
+
+auto.add_global_autos_norm(real.sin, norm_sin_conv())
+
+class norm_cos_conv(Conv):
+    """Normalization of an expression cos (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.cos):
+            raise ConvException('norm_cos_conv')
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_cos_conv')
+
+        r = real.from_binary_real(t.arg.arg1)
+        if r < 0:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.uminus(real.times(real.to_binary_real(-r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_neg'))
+
+        if r >= 2:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-2), real.pi),
+                          real.times(real.to_binary_real(2), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic'))
+
+        if r >= 1:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-1), real.pi),
+                          real.pi),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi'))
+
+        if r >= Fraction(1,2):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-Fraction(1,2)), real.pi),
+                          real.divides(real.pi, real.to_binary_real(2))),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
+
+        if r > Fraction(1,4):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.minus(real.divides(real.pi, real.to_binary_real(2)),
+                           real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_cos'))
+
+        return refl(t)
+
+auto.add_global_autos_norm(real.cos, norm_cos_conv())
 
 auto.add_global_autos_norm(
     real.exp,
@@ -329,10 +385,16 @@ def apply_subst_thm(thy, f, g, a, b):
     """
     # Form the assumption: g is increasing or decreasing on [a, b],
     # then apply the theorem.
-    if real.real_approx_eval(g(a).beta_conv()) <= real.real_approx_eval(g(b).beta_conv()):
+    try:
+        auto.auto_solve(thy, real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
+        is_le = True
+    except logic.TacticException:
+        is_le = False
+
+    if is_le:
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
-        
+
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
             A_pt = auto.auto_solve(thy, A)
@@ -340,7 +402,7 @@ def apply_subst_thm(thy, f, g, a, b):
     else:
         eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
-        
+
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
             A_pt = auto.auto_solve(thy, A)
@@ -708,7 +770,7 @@ def translate_item(item, target=None, *, debug=False):
     ctxt = Context('realintegral')
     thy = ctxt.thy
 
-    problem = integral.parser.parse_expr(item['problem'])
+    problem = parse_expr(item['problem'])
     init = expr_to_holpy(problem)
     pt = refl(init)
 
@@ -732,8 +794,8 @@ def translate_item(item, target=None, *, debug=False):
             # Perform substitution u = g(x)
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution"
-            f = integral.parser.parse_expr(step['params']['f'])
-            g = integral.parser.parse_expr(step['params']['g'])
+            f = parse_expr(step['params']['f'])
+            g = parse_expr(step['params']['g'])
             ori_name = rewr_t.arg.var_name
             ori_var = Var(ori_name, realT)
             new_name = step['params']['var_name']
@@ -746,20 +808,20 @@ def translate_item(item, target=None, *, debug=False):
             # Perform substitution x = g(u)
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution inverse"
-            g = integral.parser.parse_expr(step['params']['g'])
+            g = parse_expr(step['params']['g'])
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
             g = Term.mk_abs(new_var, expr_to_holpy(g))
-            a = expr_to_holpy(integral.parser.parse_expr(step['params']['a']))
-            b = expr_to_holpy(integral.parser.parse_expr(step['params']['b']))
+            a = expr_to_holpy(parse_expr(step['params']['a']))
+            b = expr_to_holpy(parse_expr(step['params']['b']))
             cv = substitution_inverse(g, a, b)
 
         elif reason == 'Integrate by parts':
             # Integration by parts using u and v
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
-            u = integral.parser.parse_expr(step['params']['u'])
-            v = integral.parser.parse_expr(step['params']['v'])
+            u = parse_expr(step['params']['u'])
+            v = parse_expr(step['params']['v'])
             ori_name = rewr_t.arg.var_name
             ori_var = Var(ori_name, realT)
             u = Term.mk_abs(ori_var, expr_to_holpy(u))
@@ -768,15 +830,15 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Rewrite':
             # Rewrite to another expression
-            rhs = integral.parser.parse_expr(step['params']['rhs'])
+            rhs = parse_expr(step['params']['rhs'])
             rhs = expr_to_holpy(rhs)
             cv = simplify_rewr_conv(rhs)
 
         elif reason == 'Rewrite fraction':
             # Rewrite by multiplying a denominator
-            rhs = integral.parser.parse_expr(step['params']['rhs'])
+            rhs = parse_expr(step['params']['rhs'])
             rhs = expr_to_holpy(rhs)
-            denom = integral.parser.parse_expr(step['params']['denom'])
+            denom = parse_expr(step['params']['denom'])
             denom = expr_to_holpy(denom)
             cv = fraction_rewr_conv(rhs, denom)
 
@@ -786,7 +848,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Split region':
             # Split region of integration
-            c = integral.parser.parse_expr(step['params']['c'])
+            c = parse_expr(step['params']['c'])
             c = expr_to_holpy(c)
             cv = split_region_conv(c)
 
@@ -817,7 +879,7 @@ def translate_item(item, target=None, *, debug=False):
 
     assert pt.lhs == init, "translate_item: wrong left side."
     if target is not None:
-        target = expr_to_holpy(integral.parser.parse_expr(target))
+        target = expr_to_holpy(parse_expr(target))
         assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
             printer.print_term(thy, target), printer.print_term(thy, pt.rhs))
     elif not debug:

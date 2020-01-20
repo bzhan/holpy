@@ -575,6 +575,7 @@ auto.add_global_autos_norm(
         'rpow_mult',
         'rpow_mult_nat1',
         'rpow_base_mult',
+        'rpow_base_mult2',
         'rpow_base_divide',
         'rpow_exp',
         'rpow_abs',
@@ -605,8 +606,8 @@ class real_power_conv(Conv):
             b, e = perfect_pow
             eq_th = refl(nat_power(to_binary_real(b), nat.to_binary_nat(e))).on_rhs(thy, real_eval_conv())
             pt = refl(t).on_rhs(thy, arg1_conv(rewr_conv(eq_th, sym=True)))
-            b_ge_0 = auto.auto_solve(thy, greater_eq(to_binary_real(b), zero))
-            pt = pt.on_rhs(thy, rewr_conv('rpow_mult_nat1', conds=[b_ge_0]), arg_conv(real_eval_conv()))
+            b_gt_0 = auto.auto_solve(thy, greater(to_binary_real(b), zero))
+            pt = pt.on_rhs(thy, rewr_conv('rpow_mult_nat1', conds=[b_gt_0]), arg_conv(real_eval_conv()))
             return pt
 
         # Case 2: exponent is not between 0 and 1
@@ -643,54 +644,6 @@ auto.add_global_autos_norm(
         'log_le_zero'
     ])
 )
-
-def real_approx_eval(t):
-    """Approximately evaluate t as a constant.
-
-    Return a floating point number.
-
-    """
-    if is_binary_real(t):
-        return from_binary_real(t)
-    elif t == pi:
-        return math.pi
-    elif t.is_comb():
-        if t.fun.is_const_name('of_nat'):
-            return nat.nat_eval(t.arg)
-        elif is_plus(t):
-            return real_approx_eval(t.arg1) + real_approx_eval(t.arg)
-        elif is_minus(t):
-            return real_approx_eval(t.arg1) - real_approx_eval(t.arg)
-        elif is_uminus(t):
-            return -real_approx_eval(t.arg)
-        elif is_times(t):
-            return real_approx_eval(t.arg1) * real_approx_eval(t.arg)
-        elif is_divides(t):
-            denom = real_approx_eval(t.arg)
-            if denom == 0.0:
-                raise ConvException('real_approx_eval: divide by zero')
-            else:
-                return real_approx_eval(t.arg1) / denom
-        elif is_nat_power(t):
-            return real_approx_eval(t.arg1) ** nat.nat_eval(t.arg)
-        elif is_real_power(t):
-            return real_approx_eval(t.arg1) ** real_approx_eval(t.arg)
-        elif t.fun.is_const_name('sin'):
-            return math.sin(real_approx_eval(t.arg))
-        elif t.fun.is_const_name('cos'):
-            return math.cos(real_approx_eval(t.arg))
-        elif t.fun.is_const_name('tan'):
-            return math.tan(real_approx_eval(t.arg))
-        elif t.fun.is_const_name('log'):
-            return math.log(real_approx_eval(t.arg))
-        elif t.fun.is_const_name('exp'):
-            return math.exp(real_approx_eval(t.arg))
-        elif t.fun.is_const_name('sqrt'):
-            return math.exp(real_approx_eval(t.arg))
-        else:
-            raise ConvException('real_approx_eval: %s' % str(t))
-    else:
-        raise ConvException('real_approx_eval: %s' % str(t))
 
 def convert_to_poly(t):
     """Convert a term t to polynomial normal form."""
@@ -755,65 +708,6 @@ def from_poly(p):
     """Convert a polynomial to a term t."""
     return mk_plus(*(from_mono(m) for m in p.monomials))
 
-
-class real_ineq_macro(ProofTermMacro):
-    """Attempt to prove a <= b, where a and b are real constants."""
-    def __init__(self):
-        self.level = 0  # proof term not implemented
-        self.sig = Term
-        self.limit = 'real_neg_0'
-
-    def eval(self, thy, goal, pts):
-        assert len(pts) == 0, "real_ineq_macro"
-        assert self.can_eval(thy, goal), "real_ineq_macro"
-
-        return Thm([], goal)
-
-    def can_eval(self, thy, goal):
-        assert isinstance(goal, Term), "real_ineq_macro"
- 
-        if goal.is_binop():
-            t1, t2 = goal.args
-        elif logic.is_neg(goal) and goal.is_binop:
-            t1, t2 = goal.arg.args
-        else:
-            return False
-
-        try:
-            val1 = real_approx_eval(t1)
-            val2 = real_approx_eval(t2)
-        except ConvException:
-            return False
-
-        if is_less_eq(goal):
-            return val1 <= val2
-        elif is_less(goal):
-            return val1 < val2
-        elif logic.is_neg(goal) and goal.arg.is_equals():
-            return val1 != val2
-        else:
-            return False
-
-    def get_proof_term(self, thy, goal, pts):
-        raise NotImplementedError
-
-def is_const_less_eq(thy, t1, t2):
-    return real_ineq_macro().can_eval(thy, less_eq(t1, t2))
-
-def is_const_less(thy, t1, t2):
-    return real_ineq_macro().can_eval(thy, less(t1, t2))
-
-def is_const_ineq(thy, t1, t2):
-    return real_ineq_macro().can_eval(thy, logic.neg(Term.mk_equals(t1, t2)))
-
-def real_less_eq(thy, t1, t2):
-    return ProofTermDeriv("real_ineq", thy, less_eq(t1, t2))
-
-def real_less(thy, t1, t2):
-    return ProofTermDeriv("real_ineq", thy, less(t1, t2))
-
-def real_ineq(thy, t1, t2):
-    return ProofTermDeriv("real_ineq", thy, logic.neg(Term.mk_equals(t1, t2)))
 
 class real_norm_macro(ProofTermMacro):
     """Attempt to prove goal by normalization."""
@@ -881,7 +775,6 @@ class real_norm_method(Method):
 
 macro.global_macros.update({
     "real_eval": real_eval_macro(),
-    "real_ineq": real_ineq_macro(),
     "real_norm": real_norm_macro()
 })
 

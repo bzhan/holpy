@@ -777,7 +777,7 @@
                         "u": "-x / 2",
                         "v": "cos (2 * x)"
                     },
-                    "location": "0.1.1"
+                    "location": "1.1"
                 },
                 {
                     "reason": "Simplification"
@@ -789,7 +789,7 @@
                         "g": "2 * x",
                         "var_name": "u"
                     },
-                    "location": "0.0.1.1"
+                    "location": "1.1"
                 },
                 {
                     "reason": "Simplification"
