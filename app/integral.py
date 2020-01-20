@@ -6,6 +6,8 @@ import json
 from flask import request
 from flask.json import jsonify
 from lark import Lark, Transformer, v_args, exceptions
+from fractions import Fraction
+from sympy import expand_multinomial
 
 import integral
 from app.app import app
@@ -65,12 +67,8 @@ def integral_super_simplify():
                         integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     def simplify(problem):
         for i in range(3):
-            for r in rules_set:
+            for r in rules_set:               
                 problem = r.eval(problem)
-                try:
-                    problem = integral.rules.OnSubterm(integral.rules.PolynomialDivision()).eval(problem)
-                except:
-                    pass
         return problem
     problem = simplify(integral.parser.parse_expr(data['problem']))
     return jsonify({
@@ -333,6 +331,45 @@ def integral_validate_expr():
                 'flag': False
             })
     
+@app.route("/api/integral-validate-power-expr", methods=['POST'])
+def integral_validate_power_expr():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    flag = None # if dollar is valid, flag = true
+    try:
+        dollar = integral.parser.parse_expr(data['dollar'])
+        if dollar.normalize() != problem.body.normalize():
+            return jsonify({
+                'flag': False
+            })
+        else:
+            select = integral.parser.parse_expr(data['select'])
+            if not (select.ty == integral.expr.OP and select.op == "^" and select.args[1].ty == integral.expr.CONST and Fraction(select.args[1].val).denominator == 1):
+                return jsonify({
+                    'flag': False
+                })
+            dollar_location = dollar.get_location()
+            location = ""
+            if data["integral_location"] != "":
+                location = data["integral_location"] + ".0"
+            else:
+                location = "0"
+            if dollar_location != "":
+                location += "." + dollar_location
+            body = problem.body
+            body = body.replace_expr(dollar_location, integral.expr.holpy_style(expand_multinomial(integral.expr.sympy_style(select))))
+            new_integral = integral.expr.Integral(problem.var, problem.lower, problem.upper, body)
+            return jsonify({
+                "flag": True,
+                "text": str(new_integral),
+                "latex":  integral.latex.convert_expr(new_integral),
+                "location": location,
+                "reason": "Unfold power"
+            })
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
+        return jsonify({
+                'flag': False
+            })
 
 @app.route("/api/integral-validate-rewrite", methods=['POST'])
 def integral_validate_rewrite():
