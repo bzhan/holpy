@@ -9699,6 +9699,64 @@
             }
         },
         {
+            "name": "real_eq_lcancel",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "x * y = x * z",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x * y = x * z ⊢ x * y = x * z"
+                },
+                {
+                    "args": "y = z",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "x * y = x * z, ¬(x = 0) ⊢ y = z"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = 0) ⟶ x * y = x * z ⟶ y = z"
+                }
+            ],
+            "prop": "¬(x = 0) ⟶ x * y = x * z ⟶ y = z",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_forward"
