@@ -1,6 +1,7 @@
 """Proofs for differentiation and integration."""
 
 import math
+from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, boolT
@@ -59,9 +60,10 @@ auto.add_global_autos(
         "real_continuous_on_sqrt",
         "real_continuous_on_sqrt_compose",
 
-        # Real power (two options)
+        # Real power (three options)
         "real_continuous_on_real_pow",
         "real_continuous_on_real_pow2",
+        "real_continuous_on_real_neg1_pow",
     ])
 )
 
@@ -162,6 +164,7 @@ auto.add_global_autos_norm(
     real.exp,
     auto.norm_rules([
         'real_exp_0',
+        'exp_log',
     ])
 )
 
@@ -305,7 +308,12 @@ class integrate_by_parts(Conv):
 
         pt = refl(expr)
         pt = pt.on_rhs(thy, auto.auto_conv())
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+
+        if eq_pt.lhs != pt.rhs:
+            raise ConvException("Integration by parts: %s != %s" % (
+                printer.print_term(thy, eq_pt.lhs), printer.print_term(thy, pt.rhs)))
+
+        pt = ProofTerm.transitive(pt, eq_pt)
         return pt
 
 
@@ -445,6 +453,63 @@ class simplify_rewr_conv(Conv):
         return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
 
 
+class clear_denom_conv(Conv):
+    def __init__(self, conds):
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        if real.is_plus(t.arg):
+            return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'), arg1_conv(self),
+                             arg_conv(real.norm_mult_monomials(self.conds)))
+        else:
+            return pt.on_rhs(thy, real.norm_mult_monomials(self.conds))
+
+class fraction_rewr_conv(Conv):
+    """Rewrite two fractions that should be equal after multiplying
+    by some denominator.
+
+    The starting term should be an integral.
+
+    """
+    def __init__(self, target, denom):
+        """Initialize with denominator and target of the rewrite."""
+        self.target = target
+        self.denom = denom
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), 'fraction_rewr_conv'
+        S, f = expr.args
+        
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+        a, b = S.args
+        le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+
+        interval = real.open_interval(a, b)
+        v = Var(f.var_name, realT)
+        cond = set.mk_mem(v, interval)
+        body = f.subst_bound(v)
+
+        cond_pt = ProofTerm.assume(cond)
+
+        cv = auto.auto_conv(conds=[cond_pt])
+        lhs_eq = refl(real.times(self.denom, body))
+        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(cv), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        rhs_eq = refl(real.times(self.denom, self.target))
+        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(cv), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        if lhs_eq.rhs != rhs_eq.rhs:
+            raise AssertionError("fraction_rewr_conv: %s != %s" % (
+                printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))
+        eq = ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
+        x_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(self.denom, real.zero)), pts=[cond_pt])
+
+        eq_pt = apply_theorem(thy, 'real_eq_lcancel', x_neq_0, eq)
+        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+        eq_pt = ProofTerm.forall_intr(v, eq_pt)
+        return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+
+
 class trig_rewr_conv(Conv):
     """Apply trignometric rewrites."""
     def __init__(self, code):
@@ -459,28 +524,66 @@ class trig_rewr_conv(Conv):
         x = xs[0]
 
         if self.code == 'TR5':
-            # Substitution (sin x) ^ 2 = 1 - (cos x) ^ 2
+            # (sin x) ^ 2 = 1 - (cos x) ^ 2
             return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
         elif self.code == 'TR5_inv':
-            # Substitution 1 - (cos x) ^ 2 = (sin x) ^ 2
+            # 1 - (cos x) ^ 2 = (sin x) ^ 2
             eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
             eq_pt = ProofTerm.symmetric(eq_pt)
             eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
             return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR6':
-            # Substitution (cos x) ^ 2 = 1 - (sin x) ^ 2
+            # (cos x) ^ 2 = 1 - (sin x) ^ 2
             return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
         elif self.code == 'TR6_inv':
-            # Substitution 1 - (sin x) ^ 2 = (cos x) ^ 2
+            # 1 - (sin x) ^ 2 = (cos x) ^ 2
             eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
             eq_pt = ProofTerm.symmetric(eq_pt)
             eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
             return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR7':
-            # Lowering the degree of cos square
-            return rewr_conv('cos_double_cos2').get_proof_term(thy, t)
+            # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
+            return refl(t).on_rhs(thy, rewr_conv('cos_lower_degree'))
+        elif self.code == 'TR7b':
+            # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
+            return refl(t).on_rhs(thy, rewr_conv('sin_lower_degree'))
+        elif self.code == 'TR11a':
+            # sin (2 * x) = 2 * sin x * cos x
+            return refl(t).on_rhs(thy, rewr_conv('sin_double'))
+        elif self.code == 'TR11b':
+            # cos (2 * x) = cos x ^ 2 - sin x ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('cos_double'))
+        elif self.code == 'TR11c':
+            # cos (2 * x) = 2 * cos x ^ 2 - 1
+            return refl(t).on_rhs(thy, rewr_conv('cos_double_cos'))
+        elif self.code == 'TR11d':
+            # cos (2 * x) = 1 - 2 * sin x ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('cos_double_sin'))
         else:
             raise NotImplementedError
+
+
+class split_region_conv(Conv):
+    """Split region of integral into two parts."""
+    def __init__(self, c):
+        self.c = c
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), 'split_region'
+        S, f = expr.args
+        
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+        a, b = S.args
+
+        eq_pt = apply_theorem(thy, 'real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
+
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+
+        return ProofTerm.symmetric(eq_pt)
 
 
 class location_conv(Conv):
@@ -609,6 +712,8 @@ def translate_item(item, target=None, *, debug=False):
     init = expr_to_holpy(problem)
     pt = refl(init)
 
+    prev_pts = [pt]
+
     if debug:
         print("\n%s: %s" % (item['name'], printer.print_term(thy, pt.rhs)))
 
@@ -667,23 +772,54 @@ def translate_item(item, target=None, *, debug=False):
             rhs = expr_to_holpy(rhs)
             cv = simplify_rewr_conv(rhs)
 
+        elif reason == 'Rewrite fraction':
+            # Rewrite by multiplying a denominator
+            rhs = integral.parser.parse_expr(step['params']['rhs'])
+            rhs = expr_to_holpy(rhs)
+            denom = integral.parser.parse_expr(step['params']['denom'])
+            denom = expr_to_holpy(denom)
+            cv = fraction_rewr_conv(rhs, denom)
+
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity
             cv = trig_rewr_conv(step['params']['rule'])
 
+        elif reason == 'Split region':
+            # Split region of integration
+            c = integral.parser.parse_expr(step['params']['c'])
+            c = expr_to_holpy(c)
+            cv = split_region_conv(c)
+
+        elif reason == 'Solve equation':
+            # Solving equation
+            factor = int(step['params']['factor'])
+            prev_id = int(step['params']['prev_id'])
+            prev_pt = prev_pts[prev_id]
+
+
+            t1 = real.times(real.to_binary_real(Fraction(1, factor+1)),
+                            real.plus(prev_pt.rhs, real.times(real.to_binary_real(factor), prev_pt.rhs)))
+            t1_pt = auto.auto_solve(thy, Term.mk_equals(prev_pt.rhs, t1))
+            t1_pt = t1_pt.on_rhs(thy, arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
+                                      arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
+            pt = ProofTerm.transitive(prev_pt, t1_pt)
+            if debug:
+                print("= %s (solve %d)" % (printer.print_term(thy, pt.rhs), prev_id))
+            prev_pts.append(pt)
+            continue
         else:
             raise NotImplementedError
 
         pt = pt.on_rhs(thy, location_conv(loc, cv))
         if debug:
             print("= %s" % printer.print_term(thy, pt.rhs))
+        prev_pts.append(pt)
 
     assert pt.lhs == init, "translate_item: wrong left side."
     if target is not None:
         target = expr_to_holpy(integral.parser.parse_expr(target))
         assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
-            printer.print_term(thy, target), printer.print_term(thy, pt.rhs)
-        )
+            printer.print_term(thy, target), printer.print_term(thy, pt.rhs))
     elif not debug:
         print(printer.print_term(thy, pt.rhs))
 

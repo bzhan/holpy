@@ -129,6 +129,10 @@ def solve(thy, goal, pts=None):
     eq_pt = norm(thy, goal, pts)
     goal = eq_pt.rhs
 
+    if logic.is_conj(goal):
+        pt = solve(thy, goal, pts)
+        return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
+
     # Call registered functions
     if logic.is_neg(goal) and goal.arg.head in global_autos_neg:
         for f in global_autos_neg[goal.arg.head]:

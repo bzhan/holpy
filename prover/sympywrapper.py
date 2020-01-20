@@ -140,7 +140,9 @@ def solve_with_interval(goal, cond):
     except SymPyException:
         return False
 
+    # print("Sympy solve: ", sympy_goal, " on interval ", interval)
     res = sympy.solveset(sympy_goal, var, interval)
+    # print("Result: ", res)
     return res == interval
 
 class SymPyMacro(ProofMacro):
@@ -166,16 +168,15 @@ class SymPyMacro(ProofMacro):
     def expand(self, prefix, thy, args, prevs):
         raise NotImplementedError
 
-def apply_sympy(thy, t, pts=None):
-    if pts is None:
-        pts = []
-    return ProofTermDeriv('sympy', thy, args=t, prevs=pts)
-
 
 def sympy_solve(thy, goal, pts):
+    if pts is None:
+        pts = []
+
     macro = SymPyMacro()
     if macro.can_eval(thy, goal, pts):
-        return apply_sympy(thy, goal, pts)
+        th = Thm(sum([th.hyps for th in pts], ()), goal)
+        return ProofTermDeriv('sympy', thy, args=goal, prevs=pts, th=th)
     else:
         raise TacticException
 

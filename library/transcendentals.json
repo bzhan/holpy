@@ -2081,8 +2081,16 @@
             }
         },
         {
-            "name": "cos_double_cos2",
+            "name": "cos_lower_degree",
             "prop": "cos x ^ (2::nat) = 1 / 2 * cos (2 * x) + 1 / 2",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_lower_degree",
+            "prop": "sin x ^ (2::nat) = 1 / 2 - 1 / 2 * cos (2 * x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -5478,6 +5486,22 @@
             }
         },
         {
+            "name": "log_ge_zero",
+            "prop": "log x ≥ 0 ⟷ x ≥ 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "log_le_zero",
+            "prop": "log x ≤ 0 ⟷ x > 0 ∧ x ≤ 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1"
@@ -7938,12 +7962,6 @@
         {
             "name": "real_cos_pi3",
             "prop": "cos (1 / 3 * pi) = 1 / 2",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_sin_minus_pi4",
-            "prop": "sin (-(1 / 4) * pi) = -(sqrt 2) / 2",
             "ty": "thm",
             "vars": {}
         },
@@ -15253,7 +15271,7 @@
         },
         {
             "name": "rpow_mult",
-            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (m * n)",
+            "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (m * n)",
             "ty": "thm",
             "vars": {
                 "m": "real",
@@ -15263,7 +15281,7 @@
         },
         {
             "name": "rpow_mult_nat1",
-            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (of_nat m * n)",
+            "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (of_nat m * n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -15273,7 +15291,7 @@
         },
         {
             "name": "rpow_mult_nat2",
-            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (m * of_nat n)",
+            "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (m * of_nat n)",
             "ty": "thm",
             "vars": {
                 "m": "real",
@@ -15283,12 +15301,22 @@
         },
         {
             "name": "rpow_base_mult",
-            "prop": "x > 0 ⟶ y > 0 ⟶ (x * y) ^ p = x ^ p * y ^ p",
+            "prop": "x ≥ 0 ⟶ y ≥ 0 ⟶ (x * y) ^ p = x ^ p * y ^ p",
             "ty": "thm",
             "vars": {
                 "p": "real",
                 "x": "real",
                 "y": "real"
+            }
+        },
+        {
+            "name": "rpow_base_divide",
+            "prop": "x ≥ 0 ⟶ y > 0 ⟶ (x / y) ^ z = x ^ z / y ^ z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
             }
         },
         {
@@ -15931,6 +15959,23 @@
                 "x": "real",
                 "y": "real",
                 "z": "real"
+            }
+        },
+        {
+            "name": "rpow_exp",
+            "prop": "exp x ^ p = exp (x * p)",
+            "ty": "thm",
+            "vars": {
+                "p": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "rpow_abs",
+            "prop": "x ^ (2::nat) ^ (1 / 2) = abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
             }
         }
     ],

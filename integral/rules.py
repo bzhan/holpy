@@ -2,11 +2,10 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity, sympy_style, holpy_style
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity, sympy_style, holpy_style, OP, CONST
 import functools, operator
-from sympy import apart
 from sympy.parsing import sympy_parser
-from sympy import solvers, Interval, solveset
+from sympy import solvers, Interval, solveset, expand_multinomial, apart
 from integral import parser
 from fractions import Fraction
 import copy
@@ -33,29 +32,29 @@ class Simplify(Rule):
         self.name = "Simplify"
     
     def eval(self, e):
-        e = e.normalize()
-        if e.ty == expr.INTEGRAL and e.body.ty == expr.OP and e.body.op == "/":
-            old = e
-            up_monos, up_common     = expr.extract(e.body.args[0].to_poly())
-            down_monos, down_common = expr.extract(e.body.args[1].to_poly())
-            common_item = up_common.keys() & down_common.keys()
-            min_value = {}
-            for key in common_item:
-                min_value[key]    = up_common[key] if up_common[key] < down_common[key] else down_common[key]
-                up_common[key]   -= min_value[key]
-                down_common[key] -= min_value[key]
-            if len(min_value) != 0:
-                #numerartor and denominator have same element.
-                upp   = [(k ^ Const(v)).normalize() for k, v in up_common.items()]
-                dpp   = [(k ^ Const(v)).normalize() for k, v in down_common.items()]
-                upp_1 = functools.reduce(operator.mul, upp[1:], upp[0])
-                dpp_1 = functools.reduce(operator.mul, dpp[1:], dpp[0])
-                simp  = (sum(up_monos[1:], up_monos[0]) * upp_1).normalize() / (sum(down_monos[1:], down_monos[0]) * dpp_1).normalize()
-                return Integral(old.var, old.lower, old.upper, simp.normalize())
-            else:
-                return Integral(old.var, old.lower, old.upper, old.body.args[0].normalize()/old.body.args[1].normalize())
-        else:
-            return e.normalize()
+        # e = e.normalize()
+        # if e.ty == expr.INTEGRAL and e.body.ty == expr.OP and e.body.op == "/":
+        #     old = e
+        #     up_monos, up_common     = expr.extract(e.body.args[0].to_poly())
+        #     down_monos, down_common = expr.extract(e.body.args[1].to_poly())
+        #     common_item = up_common.keys() & down_common.keys()
+        #     min_value = {}
+        #     for key in common_item:
+        #         min_value[key]    = up_common[key] if up_common[key] < down_common[key] else down_common[key]
+        #         up_common[key]   -= min_value[key]
+        #         down_common[key] -= min_value[key]
+        #     if len(min_value) != 0:
+        #         #numerartor and denominator have same element.
+        #         upp   = [(k ^ Const(v)).normalize() for k, v in up_common.items()]
+        #         dpp   = [(k ^ Const(v)).normalize() for k, v in down_common.items()]
+        #         upp_1 = functools.reduce(operator.mul, upp[1:], upp[0])
+        #         dpp_1 = functools.reduce(operator.mul, dpp[1:], dpp[0])
+        #         simp  = (sum(up_monos[1:], up_monos[0]) * upp_1).normalize() / (sum(down_monos[1:], down_monos[0]) * dpp_1).normalize()
+        #         return Integral(old.var, old.lower, old.upper, simp.normalize())
+        #     else:
+        #         return Integral(old.var, old.lower, old.upper, old.body.args[0].normalize()/old.body.args[1].normalize())
+        # else:
+        return e.normalize()
 
 class Linearity(Rule):
     """Applies linearity rules:
@@ -330,7 +329,14 @@ class Substitution2(Rule):
         return expr.Integral(self.var_name, expr.holpy_style(lower), expr.holpy_style(upper), new_e_body)
         
 
-
+class unfoldPower(Rule):
+    def eval(self, e):
+        assert isinstance(e, expr.Integral)
+        body = e.body
+        if body.ty != OP or not (body.op == "^" and body.args[1].ty == CONST and Fraction(body.args[1].val).denominator == 1):
+            return e
+        unfold = holpy_style(expand_multinomial(sympy_style(body)))
+        return Integral(e.var, e.lower, e.upper, unfold)
 
 
 class Equation(Rule):

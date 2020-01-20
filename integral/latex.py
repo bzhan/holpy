@@ -52,7 +52,7 @@ def convert_expr(e, mode="large"):
                             new_expr = expr.Op("/", expr.Const(1), x)
                         return convert_expr(new_expr)
                     elif isinstance(x, expr.Fun) and len(x.args) > 0 and x.func_name != "abs":
-                        return "\%s^{%s}%s" % (x.func_name, sy, x.args[0])                    
+                        return "\%s^{%s}(%s)" % (x.func_name, sy, convert_expr(x.args[0]))                    
                 if x.priority() < expr.op_priority[e.op]:
                     sx = "(%s)" % sx
                 if y.priority() < expr.op_priority[e.op]:
