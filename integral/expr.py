@@ -10,7 +10,7 @@ from integral import parser
 from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
-from sympy import solveset, Interval, Eq, Union, EmptySet
+from sympy import solveset, Interval, Eq, Union, EmptySet, apart
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS = range(8)
 
@@ -414,16 +414,20 @@ class Expr:
                 return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
-                #c = copy.deepcopy(y)
                 if x.normalize() == y.normalize():
                     return poly.singleton(Const(1))
-                # if y.ty == OP and y.op == "*" and c.replace_trig(x.normalize(), Const(0)) != y:
-                #     print("---", x, y, x * (y.args[0]^(Const(-1))) * (y.args[1]^(Const(-1))))
-                #     return (x * (y.args[0]^(Const(-1))) * (y.args[1]^(Const(-1)))).to_poly()
+                if y.ty == OP and y.op == "*":
+                    a, b = y.args
+                    c = (x * (a ^ (Const(-1)))).normalize()
+                    d = (x * (b ^ (Const(-1)))).normalize()
+                    if c.ty == CONST:
+                        return (c / b).to_poly()
+                    elif d.ty == CONST:
+                        return (c / a).to_poly()
+                    else:
+                        pass
                 if x.ty == OP and x.op in ("+", "-") and len(x.args) == 2:
                     return Op(x.op, Op("/", x.args[0], y), Op("/", x.args[1], y)).to_poly()
-                # if x.ty == CONST:
-                #     return (x * (y ^ Const(-1))).to_poly()
                 xp = x.to_poly()
                 yp = y.to_poly()
                 if x.ty == CONST and x.val == 0:
