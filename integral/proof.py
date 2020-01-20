@@ -308,7 +308,12 @@ class integrate_by_parts(Conv):
 
         pt = refl(expr)
         pt = pt.on_rhs(thy, auto.auto_conv())
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
+
+        if eq_pt.lhs != pt.rhs:
+            raise ConvException("Integration by parts: %s != %s" % (
+                printer.print_term(thy, eq_pt.lhs), printer.print_term(thy, pt.rhs)))
+
+        pt = ProofTerm.transitive(pt, eq_pt)
         return pt
 
 
@@ -519,26 +524,41 @@ class trig_rewr_conv(Conv):
         x = xs[0]
 
         if self.code == 'TR5':
-            # Substitution (sin x) ^ 2 = 1 - (cos x) ^ 2
+            # (sin x) ^ 2 = 1 - (cos x) ^ 2
             return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
         elif self.code == 'TR5_inv':
-            # Substitution 1 - (cos x) ^ 2 = (sin x) ^ 2
+            # 1 - (cos x) ^ 2 = (sin x) ^ 2
             eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
             eq_pt = ProofTerm.symmetric(eq_pt)
             eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
             return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR6':
-            # Substitution (cos x) ^ 2 = 1 - (sin x) ^ 2
+            # (cos x) ^ 2 = 1 - (sin x) ^ 2
             return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
         elif self.code == 'TR6_inv':
-            # Substitution 1 - (sin x) ^ 2 = (cos x) ^ 2
+            # 1 - (sin x) ^ 2 = (cos x) ^ 2
             eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
             eq_pt = ProofTerm.symmetric(eq_pt)
             eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
             return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR7':
-            # Lowering the degree of cos square
-            return rewr_conv('cos_double_cos2').get_proof_term(thy, t)
+            # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
+            return refl(t).on_rhs(thy, rewr_conv('cos_lower_degree'))
+        elif self.code == 'TR7b':
+            # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
+            return refl(t).on_rhs(thy, rewr_conv('sin_lower_degree'))
+        elif self.code == 'TR11a':
+            # sin (2 * x) = 2 * sin x * cos x
+            return refl(t).on_rhs(thy, rewr_conv('sin_double'))
+        elif self.code == 'TR11b':
+            # cos (2 * x) = cos x ^ 2 - sin x ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('cos_double'))
+        elif self.code == 'TR11c':
+            # cos (2 * x) = 2 * cos x ^ 2 - 1
+            return refl(t).on_rhs(thy, rewr_conv('cos_double_cos'))
+        elif self.code == 'TR11d':
+            # cos (2 * x) = 1 - 2 * sin x ^ 2
+            return refl(t).on_rhs(thy, rewr_conv('cos_double_sin'))
         else:
             raise NotImplementedError
 
@@ -549,7 +569,7 @@ class split_region_conv(Conv):
         self.c = c
 
     def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral'), 'fraction_rewr_conv'
+        assert expr.head.is_const_name('real_integral'), 'split_region'
         S, f = expr.args
         
         if not S.head.is_const_name('real_closed_interval'):

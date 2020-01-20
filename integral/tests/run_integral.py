@@ -30,10 +30,13 @@ test_cases = {
     "Exercise 22": "1 + -1 * exp (-1/2)",
     "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
     "Exercise 24": None,
+    "Exercise 26": None,
+    "Exercise 27": "2 * 2 ^ (1 / 2)",
     "Exercise 28": "1 + -2 * exp(-1)",
     "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
     "Exercise 31": "-4 + 4 * log(4)",
     "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
+    "Exercise 34": None,
     "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
     "Exercise 36": "2 + -2 * exp (-1)",
 }

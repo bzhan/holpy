@@ -554,6 +554,99 @@
             ]
         },
         {
+            "name": "Exercise 26",
+            "problem": "INT x:[-pi/2, pi/2]. sqrt(cos(x) - cos(x)^3)",
+            "calc": [
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "cos(x) * (1 - cos(x)^2)"
+                    },
+                    "location": "0.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR5_inv"
+                    },
+                    "location": "0.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Split region",
+                    "params": {
+                        "c": "0"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-sqrt(u)",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-sqrt(u)",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "Exercise 27",
+            "problem": "INT x:[0, pi]. sqrt(1 + cos(2*x))",
+            "calc": [
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR11b"
+                    },
+                    "location": "0.0.1"
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "cos(x) ^ 2 + (1 - sin(x) ^ 2)"
+                    },
+                    "location": "0.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6_inv"
+                    },
+                    "location": "0.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Split region",
+                    "params": {
+                        "c": "pi / 2"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
             "name": "Exercise 28",
             "problem": "INT x:[0, 1].x*exp(-x)",
             "calc": [
@@ -647,6 +740,59 @@
                         "factor": "4",
                         "prev_id": "0"
                     }
+                }
+            ]
+        },
+        {
+            "name": "Exercise 34",
+            "problem": "INT x:[0,pi]. (x*sin(x))^2",
+            "calc": [
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7b"
+                    },
+                    "location": "0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "x ^ 2 / 2",
+                        "v": "sin (2 * x)"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "-x / 2",
+                        "v": "cos (2 * x)"
+                    },
+                    "location": "0.1.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "cos(u) / 2",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "0.0.1.1"
+                },
+                {
+                    "reason": "Simplification"
                 }
             ]
         },
