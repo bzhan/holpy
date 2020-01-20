@@ -966,10 +966,57 @@
                     "latex": "\\int_{-\\pi/4}^{\\pi/4} \\frac{1 + \\sin{(x)}}{(1 + \\sin{(x)}) (1 - \\sin{(x)})} \\,\\mathrm{dx}",
                     "location": "0",
                     "params": {
-                        "rhs": "(1 + sin(x)) / ((1 + sin(x)) * (1 - sin(x)))"
+                        "rhs": "(1 + sin(x))/((1 + sin(x))*(1 - sin(x)))"
                     },
                     "reason": "Rewrite",
                     "text": "INT x:[-pi / 4,pi / 4]. (1 + sin(x)) / ((1 + sin(x)) * (1 - sin(x)))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\((1 + \\sin{(x)}) (1 - \\sin{(x)})\\) to \\(\\cos^{2}x\\)",
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\frac{1 + \\sin{(x)}}{\\cos^{2}x} \\,\\mathrm{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "rule": "TR14"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[-pi / 4,pi / 4]. (1 + sin(x)) / cos(x) ^ 2"
+                },
+                {
+                    "latex": "(\\int_{-\\pi/4}^{\\pi/4} \\frac{1}{\\cos^{2}x} \\,\\mathrm{dx}) + (\\int_{-\\pi/4}^{\\pi/4} \\frac{1}{\\cos^{2}x} \\sin{(x)} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(INT x:[-pi / 4,pi / 4]. cos(x) ^ (-2)) + (INT x:[-pi / 4,pi / 4]. cos(x) ^ (-2) * sin(x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                    "latex": "(\\int_{-\\pi/4}^{\\pi/4} \\frac{1}{\\cos^{2}x} \\,\\mathrm{dx}) + (\\int_{\\sqrt{2}/2}^{1} -\\frac{1}{u ^ 2} \\,\\mathrm{du}) + (\\int_{\\sqrt{2}/2}^{1} \\frac{1}{u ^ 2} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "-(u ^ (-2))",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(INT x:[-pi / 4,pi / 4]. cos(x) ^ (-2)) + ((INT u:[sqrt(2) / 2,1]. -(u ^ (-2))) + (INT u:[sqrt(2) / 2,1]. u ^ (-2)))"
+                },
+                {
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\frac{1}{\\cos^{2}x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[-pi / 4,pi / 4]. cos(x) ^ (-2)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{1}{\\cos^{2}x}\\) to \\(\\sec^{2}x\\)",
+                    "latex": "\\int_{-\\pi/4}^{\\pi/4} \\sec^{2}x \\,\\mathrm{dx}",
+                    "location": "0",
+                    "params": {
+                        "rule": "TR111"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[-pi / 4,pi / 4]. sec(x) ^ 2"
+                },
+                {
+                    "latex": "2",
+                    "reason": "Simplification",
+                    "text": "2"
                 }
             ],
             "name": "Exercise 24",
