@@ -75,36 +75,6 @@ auto.add_global_autos(
 )
 
 auto.add_global_autos(
-    Const('real_differentiable_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
-    auto.solve_rules([
-        # Differentiable everywhere
-        "real_differentiable_on_const",
-        "real_differentiable_on_id",
-        "real_differentiable_on_add",
-        "real_differentiable_on_neg",
-        "real_differentiable_on_sub",
-        "real_differentiable_on_mul",
-        "real_differentiable_on_pow",
-        "real_differentiable_on_exp",
-        "real_differentiable_on_exp_compose",
-        "real_differentiable_on_sin",
-        "real_differentiable_on_sin_compose",
-        "real_differentiable_on_cos",
-        "real_differentiable_on_cos_compose",
-
-        # Differentiable with conditions
-        "real_differentiable_on_div",
-        "real_differentiable_on_log",
-        "real_differentiable_on_log_compose",
-        "real_differentiable_on_sqrt",
-        "real_differentiable_on_sqrt_compose",
-
-        # Real power
-        "real_differentiable_on_real_pow",
-    ])
-)
-
-auto.add_global_autos(
     Const('real_differentiable', TFun(TFun(realT, realT), netT(realT), boolT)),
     auto.solve_rules([
         # Differentiable everywhere
