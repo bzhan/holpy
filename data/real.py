@@ -576,6 +576,7 @@ auto.add_global_autos_norm(
         'rpow_mult_nat1',
         'rpow_base_mult',
         'rpow_base_divide',
+        'rpow_exp',
     ])
 )
 
@@ -628,6 +629,19 @@ auto.add_global_autos_norm(
         'rpow_sqrt'
     ]))
 
+auto.add_global_autos_norm(
+    greater_eq,
+    auto.norm_rules([
+        'log_ge_zero'
+    ])
+),
+
+auto.add_global_autos_norm(
+    less_eq,
+    auto.norm_rules([
+        'log_le_zero'
+    ])
+)
 
 def real_approx_eval(t):
     """Approximately evaluate t as a constant.

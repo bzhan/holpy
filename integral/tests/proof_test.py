@@ -181,6 +181,7 @@ class ProofTest(unittest.TestCase):
             ("abs x", ["x Mem real_closed_interval (-1) 0"], "-1 * x"),
             ("abs (sin x)", ["x Mem real_closed_interval 0 (pi / 2)"], "sin x"),
             ("abs (sin x)", ["x Mem real_closed_interval (-pi / 2) 0"], "-1 * sin x"),
+            ("abs (log x)", ["x Mem real_open_interval (exp (-1)) 1"], "-1 * log x"),
         ]
 
         vars = {'x': 'real'}
@@ -253,6 +254,8 @@ class ProofTest(unittest.TestCase):
             # Normalize body
             ("real_integral (real_closed_interval 0 1) (%x. x ^ (2::nat) * x)", "1 / 4"),
             ("real_integral (real_closed_interval 0 1) (%x. x ^ (1 / 3) * (x ^ (1 / 2) + 1))", "57 / 44"),
+            ("real_integral (real_closed_interval (exp (-1)) 1) (%x. abs (log x))",
+             "-1 * real_integral (real_closed_interval (exp (-1)) 1) (%x. log x)"),
         ]
 
         for expr, res in test_data:

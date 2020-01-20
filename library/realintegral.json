@@ -8672,8 +8672,8 @@
             "prop": [
                 "a ≤ b ",
                 "⟶ (∀x. x ∈ real_open_interval a b ⟶ f x = g x) ",
-                "   ⟶ real_integral (real_closed_interval a b) f = ",
-                "      real_integral (real_closed_interval a b) g"
+                "   ⟶ real_integral (real_closed_interval a b) (λx. f x) = ",
+                "      real_integral (real_closed_interval a b) (λx. g x)"
             ],
             "ty": "thm",
             "vars": {

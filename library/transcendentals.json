@@ -5478,6 +5478,22 @@
             }
         },
         {
+            "name": "log_ge_zero",
+            "prop": "log x ≥ 0 ⟷ x ≥ 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "log_le_zero",
+            "prop": "log x ≤ 0 ⟷ x > 0 ∧ x ≤ 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1"
@@ -15485,6 +15501,15 @@
                 "x": "real",
                 "y": "real",
                 "z": "real"
+            }
+        },
+        {
+            "name": "rpow_exp",
+            "prop": "exp x ^ p = exp (x * p)",
+            "ty": "thm",
+            "vars": {
+                "p": "real",
+                "x": "real"
             }
         }
     ],

@@ -615,6 +615,43 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "Exercise 36",
+            "problem": "INT x:[1/exp(1), exp(1)].abs(log(x))",
+            "calc": [
+                {
+                    "reason": "Split region",
+                    "params": {
+                        "c": "1"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "log(x)",
+                        "v": "x"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "log(x)",
+                        "v": "x"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }

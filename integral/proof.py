@@ -541,6 +541,29 @@ class trig_rewr_conv(Conv):
             raise NotImplementedError
 
 
+class split_region_conv(Conv):
+    """Split region of integral into two parts."""
+    def __init__(self, c):
+        self.c = c
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral'), 'fraction_rewr_conv'
+        S, f = expr.args
+        
+        if not S.head.is_const_name('real_closed_interval'):
+            raise ConvException
+        a, b = S.args
+
+        eq_pt = apply_theorem(thy, 'real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
+
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+
+        return ProofTerm.symmetric(eq_pt)
+
+
 class location_conv(Conv):
     """Apply conversion at the given location."""
     def __init__(self, loc, cv):
@@ -736,6 +759,12 @@ def translate_item(item, target=None, *, debug=False):
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity
             cv = trig_rewr_conv(step['params']['rule'])
+
+        elif reason == 'Split region':
+            # Split region of integration
+            c = integral.parser.parse_expr(step['params']['c'])
+            c = expr_to_holpy(c)
+            cv = split_region_conv(c)
 
         else:
             raise NotImplementedError
