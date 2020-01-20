@@ -143,6 +143,32 @@ class RulesTest(unittest.TestCase):
         e = parse_expr("INT x:[0, 441]. (pi * sin(pi*sqrt(x))) / sqrt(x)")
         e = rules.Substitution1("u", parse_expr("pi * sqrt(x)")).eval(e)
         
+    def testSubstitution11(self):
+        rules_set = [rules.OnSubterm(rules.ElimAbs()), 
+                            rules.Simplify(), rules.Linearity(), rules.OnSubterm(rules.CommonIntegral())]
+        def simplify(problem):
+            for i in range(3):
+                for r in rules_set:                   
+                    problem = r.eval(problem)
+                    # problem = rules.OnSubterm(rules.PolynomialDivision()).eval(problem)
+
+        problem = parse_expr("([((-1/2015) * x) * (1 - x) ^ 2015]_x=0,1) - (INT x:[0,1]. (-1/2015) * (1 - x) ^ 2015)")
+        simplify(problem)
+
+    def testUnfoldPower(self):
+        test_data = [
+            ("INT x:[1, 2].(x + y) ^ 3", "1"),
+            ("INT x:[1, 2].(x + y) ^ (1/2)", "(x + y) ^ (1/2)"),
+            ("INT x:[1, 2].(1 + cos(2*x)) ^ 2", "1")
+        ]
+
+        for s, s1 in test_data:
+            s = parse_expr(s)
+            s1 = parse_expr(s1)
+            rule = rules.unfoldPower()
+            print(rule.eval(s))
+
+
     def testEquation(self):
         test_data = [
             "sin(x) ^ 3", "sin(x)^2 * sin(x)"

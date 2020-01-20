@@ -101,6 +101,7 @@ class Expr:
         elif self.ty == FUN and self.func_name == "exp" and other.ty == FUN and other.func_name == "exp":
             power = self.args[0] + other.args[0]
             return Fun("exp", power).normalize()
+        # elif 
         else:
             return Op("*", self, other)
 
@@ -397,6 +398,14 @@ class Expr:
                     return Fun("exp", arg.normalize()).to_poly()
                 elif y.ty == OP and y.op == "^" and y.args[0].normalize() == x.normalize():
                     return Op("^", y.args[0], Const(1) + y.args[1]).to_poly()
+                elif y.ty == OP and y.op in ("+", "-"):
+                    if len(y.args) == 1:
+                        return Op(y.op, (x *  y.args[0]).normalize()).to_poly()
+                    else:
+                        return Op(y.op, (x*y.args[0]).normalize(), (x * y.args[1]).normalize()).to_poly()
+                # elif x.ty == CONST and y.ty == OP and y.op == "*":
+                #     a, b = y.args
+                    # if (x
                 else:
                     return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
@@ -407,7 +416,7 @@ class Expr:
             elif self.op == "-" and len(self.args) == 1:
                 x, = self.args
                 if x.ty == OP and x.op == "-" and len(x.args) == 1:
-                    # --x => x
+                   # --x => x
                     return x.args[0].to_poly()
                 elif x.ty == CONST:
                     return Const(-x.val).to_poly()
@@ -1001,9 +1010,11 @@ class Op(Expr):
             a, b = self.args
             s1, s2 = str(a), str(b)
             if a.priority() <= op_priority[self.op]:
-                s1 = "(%s)" % s1
+                if a.ty == OP and a.op != self.op:
+                    s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
-                s2 = "(%s)" % s2
+                if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):
+                    s2 = "(%s)" % s2
             if self.op == "^":
                 if b.ty == CONST and b.val < 0 or b.ty == OP and len(b.args) == 1:
                     s2 = "(%s)" % s2

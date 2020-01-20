@@ -8451,6 +8451,392 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_sub",
+            "prop": [
+                "¬(cos x = 0) ",
+                "⟶ ¬(cos y = 0) ",
+                "   ⟶ ¬(cos (x - y) = 0) ⟶ tan (x - y) = (tan x - tan y) / (1 + tan x * tan y)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tan_double",
+            "prop": "tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cot_double",
+            "prop": "real_inverse (tan (2 * x)) = (real_inverse (tan x) - tan x) / 2",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tan_cot_double",
+            "prop": "tan x = 1 / tan x - 2 / tan (2 * x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_add_tan",
+            "prop": "¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ tan x + tan y = sin (x + y) / (cos x * cos y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_sub_tan",
+            "prop": "¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ tan x - tan y = sin (x - y) / (cos x * cos y)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tan_pi4",
+            "prop": "tan (pi / 4) = 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_pos_pi2",
+            "prop": "0 < x ⟶ x < pi / 2 ⟶ 0 < tan x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_pos_pi2_le",
+            "prop": "0 ≤ x ⟶ x < pi / 2 ⟶ 0 ≤ tan x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_tan",
+            "prop": "abs x < pi / 2 ⟶ cos x = 1 / sqrt (1 + tan x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sin_tan",
+            "prop": "abs x < pi / 2 ⟶ cos x = tan x / sqrt (1 + tan x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_mono_lt",
+            "prop": "-(pi / 2) ≤ x ⟶ x < y ⟶ y ≤ pi / 2 ⟶ sin x < sin y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_mono_le",
+            "prop": "-(pi / 2) ≤ x ⟶ x ≤ y ⟶ y ≤ pi / 2 ⟶ sin x ≤ sin y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_mono_lt_eq",
+            "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x < sin y ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_mono_le_eq",
+            "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x ≤ sin y ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_inj_pi",
+            "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x = sin y ⟶ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_mono_lt",
+            "prop": "0 ≤ x ⟶ x < y ⟶ y ≤ pi ⟶ cos x < cos y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_mono_le",
+            "prop": "0 ≤ x ⟶ x ≤ y ⟶ y ≤ pi ⟶ cos x ≤ cos y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_mono_lt_eq",
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x < cos y ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_mono_le_eq",
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x ≤ cos y ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_inj_pi",
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x = cos y ⟶ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "real_abs_cos_mono_le_eq",
+            "prop": "abs x ≤ pi / 2 ⟶ abs y ≤ pi / 2 ⟶ abs (cos x) ≤ abs (cos y) ⟷ abs y ≤ abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_mono_lt",
+            "prop": "-(pi / 2) < x ⟶ x < y ⟶ y < pi / 2 ⟶ tan x < tan y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_mono_le",
+            "prop": "-(pi / 2) < x ⟶ x ≤ y ⟶ y < pi / 2 ⟶ tan x ≤ tan y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_mono_lt_eq",
+            "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ -(pi / 2) < y ⟶ y < pi / 2 ⟶ tan x < tan y ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "tan_mono_le_eq",
+            "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ -(pi / 2) < y ⟶ y < pi / 2 ⟶ tan x ≤ tan y ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "tan_bound_pi2",
+            "prop": "abs x < pi / 4 ⟶ abs (tan x) < 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tan_cot",
+            "prop": "tan (pi / 2 - x) = real_inverse (tan x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_abs_sin_bound_lt",
+            "prop": "¬(x = 0) ⟶ abs (sin x) < abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_abs_sin_bound_le",
+            "prop": "abs (sin x) ≤ abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_pi6_straddle",
+            "prop": [
+                "0 ≤ a ",
+                "⟶ a ≤ b ⟶ b ≤ 4 ⟶ sin (a / 6) ≤ 1 / 2 ⟶ 1 / 2 ≤ sin (b / 6) ⟶ a ≤ pi ∧ pi ≤ b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "atn",
@@ -8516,6 +8902,76 @@
             ],
             "name": "atn_neg",
             "prop": "atn (-x) = -(atn x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_mono_lt",
+            "prop": "x < y ⟶ atn x < atn y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_mono_lt_eq",
+            "prop": "atn x < atn y ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_mono_le_eq",
+            "prop": "atn x ≤ atn y ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_inj",
+            "prop": "atn x = atn y ⟷ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_pos_lt",
+            "prop": "0 < atn x ⟷ 0 < x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_pos_le",
+            "prop": "0 ≤ atn x ⟷ 0 ≤ x",
             "ty": "thm",
             "vars": {
                 "x": "real"

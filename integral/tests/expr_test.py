@@ -149,12 +149,15 @@ class ExprTest(unittest.TestCase):
             # ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
             # ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))", "2*log(x) - 2*exp(1)"),
             # ("sin(x)^2+cos(x)^2", "1"),
-            ("(1 + sin(x)) / ((1 + sin(x)) * (1 - sin(x)))", "1")
+            ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
+            ("2 * ((1/2) * 3 ^ (1/2))", "3 ^ (1/2)")
+            #("2 * (-((1/2) * -(3 ^ (1/2))) + 1)", "1")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
 
         for s, res in test_data:
             t = parse_expr(s)
+            print(t.to_poly().monomials[0].coeff)
             print([t])
             print(t.normalize())
             self.assertEqual(str(t.normalize()), res)
@@ -281,8 +284,8 @@ class ExprTest(unittest.TestCase):
     
     def testExtract(self):
         # test_data = parse_expr("1 / (1 + u ^ 2) + u / (1 + u ^ 2)")
-        test_data = parse_expr("(1 + / (1 + u ^ 2)")
-        print(test_data.normalize())
+        test_data = parse_expr("([((-1/2015) * x) * (1 - x) ^ 2015]_x=0,1) - (INT x:[0,1]. (-1/2015) * (1 - x) ^ 2015)")
+        print(test_data.to_poly())
 
 
     def testGetAbsByMonomial(self):

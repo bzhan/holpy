@@ -25,6 +25,7 @@
           <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='applyElimAbs'>Elim Abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -74,6 +75,12 @@
           <button v-on:click="doSubstitution1">OK</button>
         </div>
       </div>
+      <div v-if="r_query_mode === 'unfoldpower'">
+        <lable>Select the power expression you want to unfold.</lable>
+        <br>
+        <input ref="power" style="width:400px" disabled="disabled" v-model="this.sep_int[integral_index].body">
+        <button v-on:click="validation_power">OK</button>  
+      </div>
       <div v-if="r_query_mode === 'trig'">
         <label>Select the part you wish to transform to other trignometric functions.</label>
         <br>
@@ -81,13 +88,6 @@
         <button v-on:click="validation">OK</button>
         <br>
         <p v-if="seen === true" color="red">Illegal!</p>
-        <div>
-          <label>Write the expression equal to initial ones and make the trig you want to transform surrounded by '$'</label>
-          <input v-model="trig_identities_data.old_expr" style="margin:0px 5px;width:200px">
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doTrigSubstitution">OK</button>
-        </div>
       </div>
       <div v-if="r_query_mode === 'display_trig'">
         <div v-for="(step, index) in trig_identities_data.new_expr" :key="index">
@@ -127,23 +127,10 @@
         <button v-on:click="validation1">Validate</button>
         <p v-if="seen === true">Illegal</p>
         <br/>
-        <span>{{equation_data.rewrite_part}}=</span>
-        <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 200px">
-        <button v-on:click="rewrite">Rewrite</button>
+        <span v-if="seen === false">{{equation_data.rewrite_part}}=</span>
+        <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 400px">
+        <button v-on:click="rewrite" color="red">Rewrite</button>
         <p v-if="rewrite_error_flag === true" color="red">The rewrite is invalid.</p>
-        <div>
-          <MathEquation v-bind:data="'Write the expression that you think is equal to the ' + this.sep_int[integral_index].body + '.'"/>
-        </div>
-        <div>
-          <MathEquation data="new expr ="/>
-          <input v-model="equation_data.new_expr" style="margin:0px 5px;width:300px">
-        </div>
-        <div style="margin-top:10px">
-          <button v-on:click="doEquationSubst">OK</button>
-        </div>
-        <div v-if="equation_data.fail_reason !== undefined">
-          <MathEquation v-bind:data=equation_data.fail_reason style="color:#FF0000"/>
-        </div>
       </div>
       <div v-if="r_query_mode === 'byequation'">
         <div>
@@ -190,7 +177,7 @@ export default {
 
   data: function () {
     return {
-      filename: '2013',    // Currently opened file
+      filename: 'test',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -285,14 +272,35 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-expr", JSON.stringify(data))
       if(response.data.flag === true){
         for(var i=0; i < response.data["content"].length; ++i){
-          this.trig_identities_data.new_expr.push(response.data["content"][i])
+          this.trig_identities_data.new_expr.push(response.data["content"][i]);
         }
-        this.r_query_mode = 'display_trig'
-        this.take_effect = 1
+        this.r_query_mode = 'display_trig';
+        this.take_effect = 1;
+        this.closeIntegral();
       }else{
         this.seen = true;
       }
     },
+
+    validation_power: async function() {
+      let selected = this.sep_int[this.integral_index].body.slice(this.$refs.power.selectionStart, this.$refs.power.selectionEnd);
+      let expr_with_dollar = this.sep_int[this.integral_index].body.slice(0, this.$refs.power.selectionStart) + '$' + selected + '$' + this.sep_int[this.integral_index].body.slice(this.$refs.power.selectionEnd);
+      const data = {
+        integral_location: this.sep_int[this.integral_index].location,
+        problem: this.sep_int[this.integral_index].text,
+        dollar: expr_with_dollar,
+        select: selected
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-validate-power-expr", JSON.stringify(data))
+      if(response.data.flag === true){
+        this.sep_int[this.integral_index] = response.data;
+        this.take_effect = 1;
+        this.r_query_mode = undefined;
+        this.closeIntegral();
+      }else{
+        this.seen = true;
+      }
+    },    
 
     validation1: async function() {
       //Check if the selected rewrite part is a valid expression, and find the location
@@ -329,6 +337,7 @@ export default {
         this.sep_int[this.integral_index] = response.data;
         this.r_query_mode = undefined;
         this.take_effect = 1;
+        this.closeIntegral();
       }else{
         this.rewrite_error_flag = true;
       }
@@ -522,11 +531,12 @@ export default {
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.r_query_mode = undefined
-      this.subst_data = {var_name: '', expr: ''}
-      this.integral_index = undefined
-      this.take_effect = 1
+      this.sep_int[this.integral_index] = response.data;
+      this.r_query_mode = undefined;
+      this.subst_data = {var_name: '', expr: ''};
+      this.integral_index = undefined;
+      this.take_effect = 1;
+      this.closeIntegral();
     },
 
     substitution1: function () {
@@ -545,11 +555,19 @@ export default {
         expr: this.subst_data.expr
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-substitution2", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.r_query_mode = undefined
-      this.subst_data = {var_name: '', expr: ''}
-      this.integral_index = undefined
-      this.take_effect = 1
+      this.sep_int[this.integral_index] = response.data;
+      this.r_query_mode = undefined;
+      this.subst_data = {var_name: '', expr: ''};
+      this.integral_index = undefined;
+      this.take_effect = 1;
+    },
+
+    unfoldPower: function () {
+      if (this.cur_calc.length === 0)
+        return;
+      this.sep_int = []
+      this.query_mode = 'unfoldpower'
+      this.displaySeparateIntegrals()
     },
 
     integrateByParts: function () {
@@ -569,11 +587,12 @@ export default {
       }
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
-      this.sep_int[this.integral_index] = response.data
-      this.r_query_mode = undefined
-      this.integral_index = undefined
-      this.byparts_data = {parts_u: '', parts_v: ''}
-      this.take_effect = 1
+      this.sep_int[this.integral_index] = response.data;
+      this.r_query_mode = undefined;
+      this.integral_index = undefined;
+      this.byparts_data = {parts_u: '', parts_v: ''};
+      this.take_effect = 1;
+      this.closeIntegral();
     },
 
     integrateByEquation: function(){
