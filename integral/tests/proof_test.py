@@ -160,19 +160,21 @@ class ProofTest(unittest.TestCase):
 
     def testNormTranscendental(self):
         test_data = [
-            ("sin 0", [], "(0::real)"),
-            ("sin (1 / 6 * pi)", [], "1 / 2"),
-            ("cos 0", [], "(1::real)"),
-            ("cos (1 / 6 * pi)", [], "1 / 2 * 3 ^ (1 / 2)"),
-            ("exp 0", [], "(1::real)"),
-            ("cos (pi / 4)", [], "1 / 2 * 2 ^ (1 / 2)"),
+            ("sin 0", "(0::real)"),
+            ("sin (1 / 6 * pi)", "1 / 2"),
+            ("cos 0", "(1::real)"),
+            ("cos (1 / 6 * pi)", "1 / 2 * 3 ^ (1 / 2)"),
+            ("exp 0", "(1::real)"),
+            ("cos (pi / 4)", "1 / 2 * 2 ^ (1 / 2)"),
+            ("sin (13 / 6 * pi)", "1 / 2"),
+            ("sin (7 / 6 * pi)", "-(1 / 2)"),
+            ("sin (5 / 6 * pi)", "1 / 2"),
+            ("cos (7 / 6 * pi)", "-(1 / 2) * 3 ^ (1 / 2)"),
+            ("cos (-pi / 2)", "(0::real)"),
         ]
 
-        ctxt = Context('realintegral')
-        for t, conds, res in test_data:
-            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
-            cv = auto.auto_conv(conds_pt)
-            test_conv(self, 'realintegral', cv, t=t, t_res=res, assms=conds)
+        for t, res in test_data:
+            test_conv(self, 'realintegral', auto.auto_conv(), t=t, t_res=res)
 
     def testNormAbsoluteValue(self):
         test_data = [

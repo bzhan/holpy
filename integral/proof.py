@@ -141,10 +141,7 @@ auto.add_global_autos_norm(
         'real_sin_0',
         'real_sin_pi6',
         'real_sin_pi4',
-        'real_sin_pi3',
-        'real_sin_pi2_alt',
         'real_sin_pi',
-        'real_sin_minus_pi4',
     ])
 )
 
@@ -154,11 +151,105 @@ auto.add_global_autos_norm(
         'real_cos_0',
         'real_cos_pi6',
         'real_cos_pi4',
-        'real_cos_pi3',
-        'real_cos_pi2_alt',
         'real_cos_pi',
     ])
 )
+
+class norm_sin_conv(Conv):
+    """Normalization of an expression sin (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.sin):
+            raise ConvException('norm_sin_conv')
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_sin_conv')
+
+        r = real.from_binary_real(t.arg.arg1)
+        if r < 0:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.uminus(real.times(real.to_binary_real(-r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_neg'))
+
+        if r >= 2:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-2), real.pi),
+                          real.times(real.to_binary_real(2), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic'))
+
+        if r >= 1:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-1), real.pi),
+                          real.pi),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi'))
+
+        if r >= Fraction(1,2):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-Fraction(1,2)), real.pi),
+                          real.divides(real.pi, real.to_binary_real(2))),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
+
+        if r > Fraction(1,4):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.minus(real.divides(real.pi, real.to_binary_real(2)),
+                           real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_sin'))
+
+        return refl(t)
+
+auto.add_global_autos_norm(real.sin, norm_sin_conv())
+
+class norm_cos_conv(Conv):
+    """Normalization of an expression cos (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.cos):
+            raise ConvException('norm_cos_conv')
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_cos_conv')
+
+        r = real.from_binary_real(t.arg.arg1)
+        if r < 0:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.uminus(real.times(real.to_binary_real(-r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_neg'))
+
+        if r >= 2:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-2), real.pi),
+                          real.times(real.to_binary_real(2), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic'))
+
+        if r >= 1:
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-1), real.pi),
+                          real.pi),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi'))
+
+        if r >= Fraction(1,2):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.plus(real.times(real.to_binary_real(r-Fraction(1,2)), real.pi),
+                          real.divides(real.pi, real.to_binary_real(2))),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
+
+        if r > Fraction(1,4):
+            eq = auto.auto_solve(thy, Term.mk_equals(
+                real.minus(real.divides(real.pi, real.to_binary_real(2)),
+                           real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
+                real.times(real.to_binary_real(r), real.pi)))
+            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_cos'))
+
+        return refl(t)
+
+auto.add_global_autos_norm(real.cos, norm_cos_conv())
 
 auto.add_global_autos_norm(
     real.exp,

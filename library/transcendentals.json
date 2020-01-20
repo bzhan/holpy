@@ -7674,6 +7674,22 @@
             }
         },
         {
+            "name": "sin_periodic_pi_div2",
+            "prop": "sin (x + pi / 2) = cos x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_periodic_pi_div2",
+            "prop": "cos (x + pi / 2) = -(sin x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -8188,18 +8204,6 @@
             "vars": {}
         },
         {
-            "name": "real_sin_pi2_alt",
-            "prop": "sin (1 / 2 * pi) = 1",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_sin_minus_pi4",
-            "prop": "sin (-(1 / 4) * pi) = -(sqrt 2) / 2",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -8211,12 +8215,6 @@
         {
             "name": "real_cos_pi4",
             "prop": "cos (1 / 4 * pi) = sqrt 2 / 2",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
-            "name": "real_cos_pi2_alt",
-            "prop": "cos (1 / 2 * pi) = 0",
             "ty": "thm",
             "vars": {}
         },
