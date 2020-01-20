@@ -483,12 +483,22 @@ def integral_equation_substitution():
 @app.route("/api/integral-polynomial-division", methods=['POST'])
 def integral_polynomial_division():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.OnSubterm(integral.rules.PolynomialDivision())
+    rule = integral.rules.PolynomialDivision()
     problem = integral.parser.parse_expr(data['problem'])
+    body = problem.body
+    if not (body.ty == integral.expr.OP and body.op == "/"):
+        return jsonify({
+            'flag': False
+        })
+    denom = body.args[1]
     new_problem = rule.eval(problem)
+    rhs = new_problem.body
     return jsonify({
+        'flag': True,
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
+        'denom': str(denom),
+        'rhs': str(rhs),
         'reason': "Polynomial division"
     })
 

@@ -157,6 +157,18 @@
           <button v-on:click="closeIntegral">Close</button>
         </div>  
       </div>
+      <div v-if="display_integral === 'division'">
+        <div v-for="(step, index) in sep_int" :key="index">
+          <span>{{index+1}}:</span>
+          <MathEquation
+          v-on:click.native="doPolynomialDivision(index)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="closeIntegral">Close</button>
+        </div>  
+      </div>
     </div>
   </div>
 </template>
@@ -177,7 +189,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'test',    // Currently opened file
+      filename: '2013',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -477,6 +489,16 @@ export default {
       this.display_integral = 'separate'
     },
 
+    displaySeparateIntegrals_division: async function(){
+      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
+      for(var i = 0; i < response.data.length; ++i){
+        this.sep_int.push(response.data[i])
+      }
+      this.display_integral = 'division'
+    },
+
+
     operate: function(index){
       this.clear_input_info()
       this.r_query_mode = this.query_mode
@@ -628,15 +650,26 @@ export default {
       this.r_query_mode = "same_integral";
     }, 
 
-    polynomialDivision: async function () {
+    polynomialDivision: async function() {
       if (this.cur_calc.length === 0)
         return;
+      this.sep_int = [];
+      this.displaySeparateIntegrals_division();
+      this.display_integral = "division";
+    },
 
+    doPolynomialDivision: async function (index) {
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
+        problem: this.sep_int[index].text
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data));
+      if(response.data.flag === true){
+        this.sep_int[index] = response.data;
+        this.take_effect = 1;
+        this.closeIntegral();
+      }else{
+        this.closeIntegral();
       }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data))
-      this.cur_calc.push(response.data)
     },
 
     equationSubst: function() {
