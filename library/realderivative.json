@@ -12477,6 +12477,27 @@
             }
         },
         {
+            "name": "real_derivative_atn",
+            "prop": "real_derivative atn x = real_inverse (1 + x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_atn_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_derivative (λx1. atn (f x1)) x = ",
+                "   real_inverse (1 + f x ^ (2::nat)) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -12539,6 +12560,18 @@
             ],
             "ty": "thm",
             "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_atn_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable (λx1. atn (f x1)) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -12783,6 +12816,15 @@
             ],
             "ty": "thm",
             "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_atn_compose",
+            "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. atn (f x)) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
