@@ -486,6 +486,8 @@ class Expr:
                                 if x.args[1].ty == CONST and x.args[1].val % 2 == 0:
                                     if x.args[1] * y == Const(1):
                                         return Fun("abs", x.args[0]).to_poly()
+                                    elif y.ty == CONST and Fraction(y.val).denominator == 1:
+                                        return Op("^", x.args[0], y * x.args[1]).to_poly()
                                     return Fun("abs", Op("^", x.args[0], y * x.args[1])).to_poly()
                                 else:
                                     return Op("^", x.args[0], y * x.args[1]).to_poly()
