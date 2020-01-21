@@ -179,6 +179,8 @@ def integral_compose_integral():
     latex_reason = ""
     reason = ""
     location = ""
+    denom = ""
+    rhs = ""
     params = {}
     for d in data['problem']:
         new_integral.append(integral.parser.parse_expr(d['text']))
@@ -190,6 +192,10 @@ def integral_compose_integral():
             params = d['params']
         if 'location' in d:
             location = d['location']
+        if 'denom' in d:
+            denom = d['denom']
+        if 'rhs' in d:
+            rhs = d['rhs']
     curr = integral.parser.parse_expr(data['cur_calc'])
     new_expr = curr
     old_integral = curr.separate_integral()
@@ -205,7 +211,13 @@ def integral_compose_integral():
         info.update({'location': location})
     if params:
         info.update({'params': params})
-    return json.dumps(info)    
+    if denom:
+        info.update({'denom': denom})
+    if rhs:
+        info.update({'rhs': rhs})
+    return json.dumps(info)
+
+    
 
 @app.route("/api/integral-trig-transformation", methods=['POST'])
 def integral_trig_transformation():
