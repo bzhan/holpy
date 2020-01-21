@@ -1166,44 +1166,29 @@
                         "parts_v": "-exp(-x)"
                     },
                     "reason": "Integrate by parts",
-                    "text": "([(-1 * x) * exp(-1 * x)]_x=0,1) - (INT x:[0,1]. -1 * exp(-1 * x))"
-                },
-                {
-                    "latex": "-e^{-1} - \\int_{0}^{1} -e^{-x} \\,\\mathrm{dx}",
-                    "reason": "Simplification",
-                    "text": "-1 * exp(-1) + -1 * (INT x:[0,1]. -1 * exp(-1 * x))"
+                    "text": "([-x * exp(-x)]_x=0,1) - (INT x:[0,1]. -exp(-x))"
                 },
                 {
                     "latex": "-e^{-1} + (\\int_{0}^{1} e^{-x} \\,\\mathrm{dx})",
-                    "reason": "Linearity",
-                    "text": "-1 * exp(-1) + (INT x:[0,1]. exp(-1 * x))"
+                    "reason": "Simplification",
+                    "text": "-exp(-1) + (INT x:[0,1]. exp(-x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(-x\\)",
-                    "latex": "-e^{-1} + (\\int_{-1}^{0} --e^{u} \\,\\mathrm{du})",
+                    "latex": "-e^{-1} + (\\int_{-1}^{0} e^{u} \\,\\mathrm{du})",
                     "location": "1",
                     "params": {
-                        "f": "-1 * exp(u)",
+                        "f": "-exp(u)",
                         "g": "-x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "-1 * exp(-1) + (INT u:[-1,0]. -(-1 * exp(u)))"
-                },
-                {
-                    "latex": "-e^{-1} + (\\int_{-1}^{0} e^{u} \\,\\mathrm{du})",
-                    "reason": "Simplification",
-                    "text": "-1 * exp(-1) + (INT u:[-1,0]. exp(u))"
-                },
-                {
-                    "latex": "-e^{-1} + (\\left. e^{u} \\right\\vert_{u=-1}^{0})",
-                    "reason": "Common integrals",
-                    "text": "-1 * exp(-1) + ([exp(u)]_u=-1,0)"
+                    "text": "-exp(-1) + (INT u:[-1,0]. exp(u))"
                 },
                 {
                     "latex": "1 - 2 e^{-1}",
                     "reason": "Simplification",
-                    "text": "1 + -2 * exp(-1)"
+                    "text": "1 - 2 * exp(-1)"
                 }
             ],
             "name": "Exercise 28",
@@ -1225,27 +1210,12 @@
                         "parts_v": "x^2"
                     },
                     "reason": "Integrate by parts",
-                    "text": "([((1/2) * x ^ 2) * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. (1/2) * x)"
-                },
-                {
-                    "latex": "\\frac{e^{2}}{2} - \\int_{1}^{e} \\frac{x}{2} \\,\\mathrm{dx}",
-                    "reason": "Simplification",
-                    "text": "(1/2) * exp(2) + -1 * (INT x:[1,exp(1)]. (1/2) * x)"
-                },
-                {
-                    "latex": "\\frac{e^{2}}{2} - \\frac{1}{2} * \\int_{1}^{e} x \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "(1/2) * exp(2) + (-1/2) * (INT x:[1,exp(1)]. x)"
-                },
-                {
-                    "latex": "\\frac{e^{2}}{2} - \\frac{1}{2} * \\left. \\frac{1}{2} * x ^ 2 \\right\\vert_{x=1}^{e}",
-                    "reason": "Common integrals",
-                    "text": "(1/2) * exp(2) + (-1/2) * ([x ^ 2 / 2]_x=1,exp(1))"
+                    "text": "([1/2 * x ^ 2 * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1/2 * x)"
                 },
                 {
                     "latex": "\\frac{1}{4} + \\frac{e^{2}}{4}",
                     "reason": "Simplification",
-                    "text": "1/4 + (1/4) * exp(2)"
+                    "text": "1/4 + 1/4 * exp(2)"
                 }
             ],
             "name": "Exercise 29",
@@ -1312,29 +1282,19 @@
                     "text": "INT x:[1,4]. log(x) / sqrt(x)"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = 2 \\log{(x)}, v = \\sqrt{x}\\).",
-                    "latex": "(\\left. (2 \\sqrt{x}) \\log{(x)} \\right\\vert_{x=1}^{4}) - (\\int_{1}^{4} 2 x ^ {(-\\frac{1}{2})} \\,\\mathrm{dx})",
-                    "text": "([2 * x ^ (1/2) * log(x)]_x=1,4) - (INT x:[1,4]. 2 * x ^ (-1/2))"
-                },
-                {
-                    "latex": "4 \\log{(4)} + (\\int_{1}^{4} -2 x ^ {(-\\frac{1}{2})} \\,\\mathrm{dx})",
-                    "reason": "Simplification",
-                    "text": "4 * log(4) + (INT x:[1,4]. (-2) * x ^ (-1/2))"
-                },
-                {
-                    "latex": "4 \\log{(4)} - 2 * \\int_{1}^{4} x ^ {(-\\frac{1}{2})} \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "4 * log(4) + (-2) * (INT x:[1,4]. x ^ (-1/2))"
-                },
-                {
-                    "latex": "4 \\log{(4)} - 2 * \\left. \\frac{\\sqrt{x}}{\\frac{1}{2}} \\right\\vert_{x=1}^{4}",
-                    "reason": "Common integrals",
-                    "text": "4 * log(4) + (-2) * ([x ^ (1/2) / (1/2)]_x=1,4)"
+                    "_latex_reason": "Integrate by parts, \\(u = 2 \\log{(x)}, v = \\sqrt{x}\\)",
+                    "latex": "(\\left. (2 \\sqrt{x}) \\log{(x)} \\right\\vert_{x=1}^{4}) - (\\int_{1}^{4} 2 \\frac{1}{\\sqrt{x}} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "2*log(x)",
+                        "parts_v": "sqrt(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([2 * x ^ (1/2) * log(x)]_x=1,4) - (INT x:[1,4]. 2 * x ^ ((-1/2)))"
                 },
                 {
                     "latex": "-4 + 4 \\log{(4)}",
                     "reason": "Simplification",
-                    "text": "(-4) + 4 * log(4)"
+                    "text": "-4 + 4 * log(4)"
                 }
             ],
             "name": "Exercise 31",
@@ -1344,44 +1304,40 @@
             "_problem_latex": "\\int_{0}^{1} x \\arctan{x} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{1} x \\atan{(x)} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{1} x \\arctan{x} \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[0,1]. x * atan(x)"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = \\frac{\\atan{(x)}}{2}, v = x ^ 2\\).",
-                    "latex": "(\\left. (\\frac{x ^ 2}{2}) \\atan{(x)} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} (\\frac{x ^ 2}{4}) (\\frac{2}{1 + x ^ 2}) \\,\\mathrm{dx})",
-                    "text": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/4 * x ^ 2 * (2 / (1 + x ^ 2)))"
+                    "_latex_reason": "Integrate by parts, \\(u = \\frac{\\arctan{x}}{2}, v = x ^ 2\\)",
+                    "latex": "(\\left. (\\frac{1}{2} x ^ 2) \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} (\\frac{1}{2} x ^ 2) (\\frac{1}{1 + x ^ 2}) \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "atan(x)/2",
+                        "parts_v": "x^2"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (1 / (1 + x ^ 2)))"
                 },
                 {
-                    "latex": "\\frac{\\pi}{8} + (\\int_{0}^{1} -\\frac{1}{2} * \\frac{x ^ {(2)}}{1 + x ^ {(2)}} \\,\\mathrm{dx})",
+                    "latex": "\\frac{1}{8} \\pi - \\frac{1}{2} \\int_{0}^{1} \\frac{x ^ {2}}{1 + x ^ {2}} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "1/8 * pi + (INT x:[0,1]. (-1/2) * (x ^ (2) / (1 + x ^ (2))))"
+                    "text": "1/8 * pi - 1/2 * (INT x:[0,1]. x ^ 2 / (1 + x ^ 2))"
                 },
                 {
-                    "latex": "\\frac{\\pi}{8} - \\frac{1}{2} * \\int_{0}^{1} \\frac{x ^ {(2)}}{1 + x ^ {(2)}} \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "1/8 * pi + (-1/2) * (INT x:[0,1]. x ^ (2) / (1 + x ^ (2)))"
+                    "_latex_reason": "",
+                    "latex": "\\frac{1}{8} \\pi - \\frac{1}{2} \\int_{0}^{1} 1 - \\frac{1}{x ^ 2 + 1} \\,\\mathrm{dx}",
+                    "location": "1.1",
+                    "params": {
+                        "denom": "1 + x ^ 2",
+                        "rhs": "1 - 1 / (x ^ 2 + 1)"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "1/8 * pi - 1/2 * (INT x:[0,1]. 1 - 1 / (x ^ 2 + 1))"
                 },
                 {
-                    "latex": "\\frac{\\pi}{8} - \\frac{1}{2} * \\int_{0}^{1} 1 - \\frac{1}{x ^ 2 + 1} \\,\\mathrm{dx}",
-                    "reason": "Polynomial division",
-                    "text": "1/8 * pi + (-1/2) * (INT x:[0,1]. 1 - 1 / (x ^ 2 + 1))"
-                },
-                {
-                    "latex": "\\frac{\\pi}{8} - \\frac{1}{2} * \\int_{0}^{1} 1 \\,\\mathrm{dx} + \\frac{1}{2} * \\int_{0}^{1} \\frac{1}{1 + x ^ {(2)}} \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "1/8 * pi + (-1/2) * (INT x:[0,1]. 1) + 1/2 * (INT x:[0,1]. 1 / (1 + x ^ (2)))"
-                },
-                {
-                    "latex": "\\frac{\\pi}{8} - \\frac{\\left. x \\right\\vert_{x=0}^{1}}{2} + \\frac{\\left. \\atan{(x)} \\right\\vert_{x=0}^{1}}{2}",
-                    "reason": "Common integrals",
-                    "text": "1/8 * pi + (-1/2) * ([x]_x=0,1) + 1/2 * ([atan(x)]_x=0,1)"
-                },
-                {
-                    "latex": "-\\frac{1}{2} + \\frac{\\pi}{4}",
+                    "latex": "-\\frac{1}{2} + \\frac{1}{4} \\pi",
                     "reason": "Simplification",
-                    "text": "(-1/2) + 1/4 * pi"
+                    "text": "-1/2 + 1/4 * pi"
                 }
             ],
             "name": "Exercise 32",
@@ -1396,43 +1352,34 @@
                     "text": "INT x:[0,pi / 2]. exp(2 * x) * cos(x)"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = e^{2 x}, v = \\sin{(x)}\\).",
+                    "_latex_reason": "Integrate by parts, \\(u = e^{2 x}, v = \\sin{(x)}\\)",
                     "latex": "(\\left. \\sin{(x)} e^{2 x} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} (2 \\sin{(x)}) e^{2 x} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "exp(2*x)",
+                        "parts_v": "sin(x)"
+                    },
+                    "reason": "Integrate by parts",
                     "text": "([sin(x) * exp(2 * x)]_x=0,pi / 2) - (INT x:[0,pi / 2]. 2 * sin(x) * exp(2 * x))"
                 },
                 {
-                    "latex": "e^{\\pi} + (\\int_{0}^{\\pi/2} (-2 \\sin{(x)}) e^{2 x} \\,\\mathrm{dx})",
+                    "latex": "e^{\\pi} - 2 \\int_{0}^{\\pi/2} \\sin{(x)} e^{2 x} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "exp(pi) + (INT x:[0,pi / 2]. (-2) * sin(x) * exp(2 * x))"
+                    "text": "exp(pi) - 2 * (INT x:[0,pi / 2]. sin(x) * exp(2 * x))"
                 },
                 {
-                    "latex": "e^{\\pi} - 2 * \\int_{0}^{\\pi/2} \\sin{(x)} e^{2 x} \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "exp(pi) + (-2) * (INT x:[0,pi / 2]. sin(x) * exp(2 * x))"
-                },
-                {
-                    "_latex_reason": "Integrate by parts, \\(u = e^{2 x}, v = -\\cos{(x)}\\).",
-                    "latex": "e^{\\pi} - 2 * (\\left. (-\\cos{(x)}) e^{2 x} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} (-2 \\cos{(x)}) e^{2 x} \\,\\mathrm{dx})",
-                    "text": "exp(pi) + (-2) * (([(-1) * cos(x) * exp(2 * x)]_x=0,pi / 2) - (INT x:[0,pi / 2]. (-2) * cos(x) * exp(2 * x)))"
-                },
-                {
-                    "latex": "-2 + e^{\\pi} + (\\int_{0}^{\\pi/2} (-4 \\cos{(x)}) e^{2 x} \\,\\mathrm{dx})",
-                    "reason": "Simplification",
-                    "text": "(-2) + exp(pi) + (INT x:[0,pi / 2]. (-4) * cos(x) * exp(2 * x))"
-                },
-                {
-                    "latex": "-2 + e^{\\pi} - 4 * \\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx}",
-                    "reason": "Linearity",
-                    "text": "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))"
-                },
-                {
-                    "_latex_reason": "By solving equation: \\(\\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx} = -2 + e^{\\pi} - 4 * \\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx}\\)",
-                    "latex": "-\\frac{2}{5} + \\frac{e^{\\pi}}{5}",
+                    "_latex_reason": "Integrate by parts, \\(u = e^{2 x}, v = -\\cos{(x)}\\)",
+                    "latex": "e^{\\pi} - 2 ((\\left. (-\\cos{(x)}) e^{2 x} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} (-2 \\cos{(x)}) e^{2 x} \\,\\mathrm{dx}))",
                     "params": {
-                        "lhs": "INT x:[0,pi / 2]. exp(2 * x) * cos(x)",
-                        "rhs": "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))"
+                        "parts_u": "exp(2*x)",
+                        "parts_v": "-cos(x)"
                     },
-                    "text": "(-2/5) + exp(pi) / 5"
+                    "reason": "Integrate by parts",
+                    "text": "exp(pi) - 2 * (([-cos(x) * exp(2 * x)]_x=0,pi / 2) - (INT x:[0,pi / 2]. -2 * cos(x) * exp(2 * x)))"
+                },
+                {
+                    "latex": "-2 + e^{\\pi} - 4 \\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "(-2 + exp(pi)) - 4 * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))"
                 }
             ],
             "name": "Exercise 33",
