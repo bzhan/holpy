@@ -362,7 +362,7 @@ class Expr:
         else:
             raise NotImplementedError
 
-    def to_poly(self, simp = 0):
+    def to_poly(self, simp = 1):
         """Convert expression to a polynomial."""
         p = self
         if self.is_constant() and simp == 0:
@@ -567,7 +567,7 @@ class Expr:
             a.body = a.body.normalize()
             return poly.singleton(a) 
         else:
-            return poly.singleton(self) 
+            return poly.singleton(self)
 
     def normalize(self):
         """Normalizes an expression."""
@@ -973,7 +973,7 @@ class Const(Expr):
         return other.ty == CONST and self.val == other.val
 
     def __str__(self):
-            return str(self.val)
+        return str(self.val)
 
     def __repr__(self):
         return "Const(%s)" % str(self.val)
@@ -1009,31 +1009,17 @@ class Op(Expr):
         elif len(self.args) == 2:
             a, b = self.args
             s1, s2 = str(a), str(b)
-            if a.ty == CONST and a.val < 0:
-                s1 = "(%s)" % s1
-            if b.ty == CONST and b.val < 0:
-                s2 = "(%s)" % s2
-            if self.op == "+":
-                if b.priority() <= op_priority[self.op]:
-                    s2 = "(%s)" % s2
-            elif self.op == "-":
-                if b.priority() <= op_priority[self.op]:
-                    s2 = "(%s)" % s2
-            elif self.op in "*":
-                if a.priority() < op_priority[self.op]:
+            if a.priority() <= op_priority[self.op]:
+                if a.ty == OP and a.op != self.op:
                     s1 = "(%s)" % s1
-                if b.priority() < op_priority[self.op]:
+            if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
+                if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):
                     s2 = "(%s)" % s2
-            elif self.op == "/":
-                if a.priority() < op_priority[self.op]:
+            if self.op == "^":
+                if b.ty == CONST and b.val < 0 or b.ty == OP and len(b.args) == 1:
+                    s2 = "(%s)" % s2
+                if a.ty == CONST and a.val < 0 or a.ty == OP and len(a.args) == 1:
                     s1 = "(%s)" % s1
-                if b.priority() <= op_priority[self.op]:
-                    s2 = "(%s)" % s2
-            elif self.op in "^":
-                if a.priority() <= op_priority[self.op]:
-                    s1 = "(%s)" % s1
-                if b.priority() <= op_priority[self.op]:
-                    s2 = "(%s)" % s2
             return "%s %s %s" % (s1, self.op, s2)           
         else:
             raise NotImplementedError

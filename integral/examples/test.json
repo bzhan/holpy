@@ -105,34 +105,19 @@
             "_problem_latex": "\\int_{-1}^{2} x e^{x} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
+                    "latex": "\\int_{-1}^{2} x e^{x} \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[-1,2]. x * exp(x)"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = x, v = \\exp{x}\\)",
-                    "latex": "(\\left. x \\exp{x} \\right\\vert_{x=-1}^{2}) - (\\int_{x=-1}^{2} \\exp{x} \\,\\mathrm{dx})",
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = e^{x}\\)",
+                    "latex": "\\left. x e^{x} \\right\\vert_{x=-1}^{2 - (\\int_{-1}^{2} e^{x} \\,\\mathrm{dx})}",
                     "params": {
                         "parts_u": "x",
                         "parts_v": "exp(x)"
                     },
                     "reason": "Integrate by parts",
-                    "text": "([x * exp(x)]_x=-1,2) - (INT x:[-1,2]. exp(x))"
-                },
-                {
-                    "latex": "-1 * (\\int_{-1}^{2} \\exp{x} \\,\\mathrm{dx}) + 2 \\exp{2} + \\exp{(-1)}",
-                    "reason": "Simplification",
-                    "text": "-1 * (INT x:[-1,2]. exp(x)) + 2 * exp(2) + exp(-1)"
-                },
-                {
-                    "latex": "-1 * (\\left. \\exp{x} \\right\\vert_{x=-1}^{2}) + 2 \\exp{2} + \\exp{(-1)}",
-                    "reason": "Common integrals",
-                    "text": "-1 * ([exp(x)]_x=-1,2) + 2 * exp(2) + exp(-1)"
-                },
-                {
-                    "latex": "\\exp{2} + 2 \\exp{(-1)}",
-                    "reason": "Simplification",
-                    "text": "exp(2) + 2 * exp(-1)"
+                    "text": "[x * exp(x)]_x=-1,2 - (INT x:[-1,2]. exp(x))"
                 }
             ],
             "name": "Exercise 4",
@@ -161,7 +146,7 @@
             "problem": "INT x:[0,pi/4]. sin(x)"
         },
         {
-            "_problem_latex": "\\int_{0}^{a} 3 x ^ 2 - x + 1 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{a} 3 (x ^ 2) - x + 1 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{a} 3 * x ^ 2 - x + 1 \\,\\mathrm{dx}",
@@ -279,7 +264,7 @@
             "problem": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)"
         },
         {
-            "_problem_latex": "\\int_{-1}^{0} \\frac{3 x ^ 4 + 3 x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{0} \\frac{3 (x ^ 4) + 3 (x ^ 2) + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{-1}^{0} \\frac{3 x ^ 4 + 3 x ^ 2 + 1}{x ^ 2 + 1} \\,\\mathrm{dx}",
@@ -311,7 +296,7 @@
             "problem": "INT x:[-1, 0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)"
         },
         {
-            "_problem_latex": "\\int_{4}^{e + 3} \\frac{x ^ 3 - 12 x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{4}^{e + 3} \\frac{x ^ 3 - 12 (x ^ 2) - 42}{x - 3} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{4}^{\\exp + 3} \\frac{x ^ 3 - 12 x ^ 2 - 42}{x - 3} \\,\\mathrm{dx}",
@@ -343,7 +328,7 @@
             "problem": "INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} \\sin{(x)} \\cos^{3}x \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/2} \\sin{(x)} \\cos^{3}(x) \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{\\pi/2} \\sin{(x)} \\cos^{3}x \\,\\mathrm{dx}",
@@ -375,7 +360,7 @@
             "problem": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi} 1 - \\sin^{3}x \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi} 1 - \\sin^{3}(x) \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{\\pi} 1 - \\sin^{3}x \\,\\mathrm{dx}",
@@ -439,7 +424,7 @@
             "problem": "INT x:[0, pi]. (1 - sin(x)^3)"
         },
         {
-            "_problem_latex": "\\int_{\\pi/6}^{\\pi/2} \\cos^{2}x \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{\\pi/6}^{\\pi/2} \\cos^{2}(x) \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{\\pi/6}^{\\pi/2} \\cos^{2}x \\,\\mathrm{dx}",
@@ -675,7 +660,7 @@
             "problem": "INT x:[0, sqrt(2)]. sqrt(2 - x^2)"
         },
         {
-            "_problem_latex": "\\int_{-\\sqrt{2}}^{\\sqrt{2}} \\sqrt{8 - 2 y ^ 2} \\,\\mathrm{dy}",
+            "_problem_latex": "\\int_{-\\sqrt{2}}^{\\sqrt{2}} \\sqrt{8 - 2 (y ^ 2)} \\,\\mathrm{dy}",
             "calc": [
                 {
                     "latex": "\\int_{-\\sqrt{2}}^{\\sqrt{2}} \\sqrt{8 - 2 y ^ 2} \\,\\mathrm{dy}",
@@ -1151,7 +1136,7 @@
             "problem": "INT x:[-2, 0]. (x + 2)/(x^2 + 2*x + 2)"
         },
         {
-            "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\cos^{4}x \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\cos^{4}(x) \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{-\\pi/2}^{\\pi/2} \\cos^{4}x \\,\\mathrm{dx}",
@@ -1254,7 +1239,7 @@
             "problem": "INT x:[-pi/2,pi/2]. cos(x)^4"
         },
         {
-            "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}(x)} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}x} \\,\\mathrm{dx}",
@@ -1481,7 +1466,7 @@
             "problem": "INT x:[1, exp(1)]. x * log(x)"
         },
         {
-            "_problem_latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{x}{\\sin^{2}x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{x}{\\sin^{2}(x)} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{x}{\\sin^{2}x} \\,\\mathrm{dx}",
