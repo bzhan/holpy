@@ -26,6 +26,7 @@
           <b-dropdown-item href="#" v-on:click='applyElimAbs'>Elim Abs</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='split'>Split Integral</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -144,6 +145,13 @@
         </div>
       </div>
     </div>
+    <div v-if="r_query_mode === 'split'">
+      <div>
+        <MathEquation data="Choose the point to split the integral."/>
+          <input v-model="split_point" style="margin:0px 5px;width:100px">
+          <button v-on:click="doSplitIntegral">OK</button>
+      </div>
+    </div>
     <div id="select">
       <div v-if="display_integral === 'separate'">
         <div v-for="(step, index) in sep_int" :key="index">
@@ -227,7 +235,8 @@ export default {
       },
 
       lhs: undefined, //equation left hand side
-      same_integral: []
+      same_integral: [],
+      split_point: undefined
     }
   },
 
@@ -288,8 +297,8 @@ export default {
         }
         this.r_query_mode = 'display_trig';
         this.take_effect = 1;
-        // this.closeIntegral();
-      } else {
+        this.closeIntegral();
+      }else{
         this.seen = true;
       }
     },
@@ -473,7 +482,8 @@ export default {
       if (this.take_effect == 1){
         const data = {
           problem: integrals,
-          cur_calc: this.cur_calc[this.cur_calc.length - 1].text
+          cur_calc: this.cur_calc[this.cur_calc.length - 1].text,
+          index:  this.integral_index
         }
         const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
         this.cur_calc.push(response.data)        
@@ -556,9 +566,9 @@ export default {
       this.sep_int[this.integral_index] = response.data;
       this.r_query_mode = undefined;
       this.subst_data = {var_name: '', expr: ''};
-      this.integral_index = undefined;
       this.take_effect = 1;
       this.closeIntegral();
+      this.integral_index = undefined;
     },
 
     substitution1: function () {
@@ -582,7 +592,7 @@ export default {
       this.subst_data = {var_name: '', expr: ''};
       this.integral_index = undefined;
       this.take_effect = 1;
-    },
+    },  
 
     unfoldPower: function () {
       if (this.cur_calc.length === 0)
