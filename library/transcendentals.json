@@ -8978,6 +8978,178 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_lt_pi4_pos",
+            "prop": "x < 1 ⟶ atn x < pi / 4",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_lt_pi4_neg",
+            "prop": "-1 < x ⟶ -(pi / 4) < atn x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_lt_pi4",
+            "prop": "abs x < 1 ⟶ abs (atn x) < pi / 4",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_le_pi4",
+            "prop": "abs x ≤ 1 ⟶ abs (atn x) ≤ pi / 4",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "cos_atn_nz",
+            "prop": "¬(cos (atn x) = 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "tan_sec",
+            "prop": "¬(cos x = 0) ⟶ 1 + tan x ^ (2::nat) = real_inverse (cos x) ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "cos_atn",
+            "prop": "cos (atn x) = 1 / sqrt (1 + x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sin_atn",
+            "prop": "sin (atn x) = 1 / sqrt (x + x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "atn_abs",
+            "prop": "atn (abs x) = abs (atn x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_add",
+            "prop": "abs (atn x + atn y) < pi / 2 ⟶ atn x + atn y = atn ((x + y) / (1 - x * y))",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_inv",
+            "prop": "0 < x ⟶ atn (real_inverse x) = pi / 2 - atn x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_add_small",
+            "prop": "abs (x * y) < 1 ⟶ atn x + atn y = atn ((x + y) / (1 - x * y))",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mathin",
+            "prop": "4 * atn (1 / 5) - atn (1 / 239) = pi / 4",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mathin_euler",
+            "prop": "5 * atn (1 / 7) + 2 * atn (3 / 79) = pi / 4",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mathin_gauss",
+            "prop": "12 * atn (1 / 18) + 8 * atn (1 / 57) - 5 * atn (1 / 239) = pi / 4",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_abs_le_x",
+            "prop": "abs (atn x) ≤ abs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "asn",
             "prop": "asn y = (THE x. -pi / 2 ≤ x ∧ x ≤ pi / 2 ∧ sin x = y)",
             "ty": "def",

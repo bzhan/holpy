@@ -8179,7 +8179,7 @@
                     "id": "4",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ (∃f1. has_real_derivative (g ∘ f) f1 (within (atreal x) s))"
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ (∃f1. has_real_derivative (λx1. g (f x1)) f1 (within (atreal x) s))"
                 },
                 {
                     "args": "x, real",
@@ -8279,33 +8279,42 @@
                     "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ real_differentiable (g ∘ f) (within (atreal x) s)"
                 },
                 {
-                    "args": "real_differentiable_def, ∃f1. has_real_derivative (g ∘ f) f1 (within (atreal x) s)",
+                    "args": "comp_fun_def, real_differentiable (λx1. g (f x1)) (within (atreal x) s)",
                     "id": "4.11",
                     "prevs": [
                         "4.10"
                     ],
                     "rule": "rewrite_goal_sym",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ ∃f1. has_real_derivative (g ∘ f) f1 (within (atreal x) s)"
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ real_differentiable (λx1. g (f x1)) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_differentiable_def, ∃f1. has_real_derivative (λx1. g (f x1)) f1 (within (atreal x) s)",
+                    "id": "4.12",
+                    "prevs": [
+                        "4.11"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s), x ∈ s ⊢ ∃f1. has_real_derivative (λx1. g (f x1)) f1 (within (atreal x) s)"
                 },
                 {
                     "args": "",
-                    "id": "4.12",
+                    "id": "4.13",
                     "prevs": [
                         "4.0",
                         "4.1",
-                        "4.11"
+                        "4.12"
                     ],
                     "rule": "intros",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ (∃f1. has_real_derivative (g ∘ f) f1 (within (atreal x) s))"
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ ∀x. x ∈ s ⟶ (∃f1. has_real_derivative (λx1. g (f x1)) f1 (within (atreal x) s))"
                 },
                 {
-                    "args": "real_differentiable_on_def, real_differentiable_on (g ∘ f) s",
+                    "args": "real_differentiable_on_def, real_differentiable_on (λx. g (f x)) s",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ real_differentiable_on (g ∘ f) s"
+                    "th": "real_differentiable_on f s, real_differentiable_on g (image f s) ⊢ real_differentiable_on (λx. g (f x)) s"
                 },
                 {
                     "args": "",
@@ -8316,7 +8325,7 @@
                         "5"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (g ∘ f) s"
+                    "th": "⊢ real_differentiable_on f s ⟶ real_differentiable_on g (image f s) ⟶ real_differentiable_on (λx. g (f x)) s"
                 }
             ],
             "prop": [
@@ -8384,6 +8393,12 @@
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "comp_fun_def"
                 },
                 {
                     "goal_id": "4.5",
