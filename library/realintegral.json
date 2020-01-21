@@ -1589,6 +1589,21 @@
             }
         },
         {
+            "name": "real_integral_lmul2",
+            "prop": [
+                "real_integrable_on f s ",
+                "⟶ real_integrable_on g s ",
+                "   ⟶ real_integral s (λx. c * f x * g x) = c * real_integral s (λx. f x * g x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "s": "real set"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],

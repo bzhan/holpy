@@ -296,6 +296,7 @@ auto.add_global_autos_norm(
         # Linearity rules
         "real_integral_add",
         "real_integral_lmul",
+        "real_integral_lmul2",
 
         # Common integrals
         "real_integral_0",
@@ -585,8 +586,12 @@ class fraction_rewr_conv(Conv):
         le_pt = auto.auto_solve(thy, real.less_eq(a, b))
 
         interval = real.open_interval(a, b)
-        v = Var(f.var_name, realT)
+
+        vs = term.get_vars([self.denom, self.target])
+        assert len(vs) == 1
+        v = vs[0]
         cond = set.mk_mem(v, interval)
+        f.var_name = v.name
         body = f.subst_bound(v)
 
         cond_pt = ProofTerm.assume(cond)
@@ -626,29 +631,31 @@ class trig_rewr_conv(Conv):
             x = Var(self.var_name, realT)
 
         if self.code == 'TR5':
-            # (sin x) ^ 2 = 1 - (cos x) ^ 2
-            return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
+            try:
+                # (sin x) ^ 2 = 1 - (cos x) ^ 2
+                return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
+            except ConvException:
+                # 1 - (sin x) ^ 2 = (cos x) ^ 2
+                eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
+                eq_pt = ProofTerm.symmetric(eq_pt)
+                eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+                return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR5b':
             # (sin x) ^ 2 + (cos x) ^ 2 = 1
             return refl(t).on_rhs(thy, rewr_conv('sin_circle'))
         elif self.code == 'TR5c':
             # 1 = (sin x) ^ 2 + (cos x) ^ 2
             return ProofTerm.symmetric(apply_theorem(thy, 'sin_circle', inst={'x': x}))
-        elif self.code == 'TR5_inv':
-            # 1 - (cos x) ^ 2 = (sin x) ^ 2
-            eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
-            eq_pt = ProofTerm.symmetric(eq_pt)
-            eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
-            return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR6':
-            # (cos x) ^ 2 = 1 - (sin x) ^ 2
-            return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
-        elif self.code == 'TR6_inv':
-            # 1 - (sin x) ^ 2 = (cos x) ^ 2
-            eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
-            eq_pt = ProofTerm.symmetric(eq_pt)
-            eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
-            return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
+            try:
+                # (cos x) ^ 2 = 1 - (sin x) ^ 2
+                return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
+            except ConvException:
+                # 1 - (cos x) ^ 2 = (sin x) ^ 2
+                eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
+                eq_pt = ProofTerm.symmetric(eq_pt)
+                eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
+                return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
         elif self.code == 'TR7':
             # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
             return refl(t).on_rhs(thy, rewr_conv('cos_lower_degree'))
@@ -846,7 +853,10 @@ def translate_item(item, target=None, *, debug=False):
             loc = Location("")
         reason = step['reason']
 
-        if reason == 'Simplification':
+        if reason == 'Initial':
+            continue
+
+        elif reason == 'Simplification':
             # Simplify the expression
             cv = auto.auto_conv()
 
@@ -854,14 +864,13 @@ def translate_item(item, target=None, *, debug=False):
             # Perform substitution u = g(x)
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution"
-            f = parse_expr(step['params']['f'])
-            g = parse_expr(step['params']['g'])
-            ori_name = rewr_t.arg.var_name
-            ori_var = Var(ori_name, realT)
+            f = expr_to_holpy(parse_expr(step['params']['f']))
+            g = expr_to_holpy(parse_expr(step['params']['g']))
+            ori_var = term.get_vars(g)[0]
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
-            f = Term.mk_abs(new_var, expr_to_holpy(f))
-            g = Term.mk_abs(ori_var, expr_to_holpy(g))
+            f = Term.mk_abs(new_var, f)
+            g = Term.mk_abs(ori_var, g)
             cv = substitution(f, g)
 
         elif reason == 'Substitution inverse':
@@ -880,8 +889,8 @@ def translate_item(item, target=None, *, debug=False):
             # Integration by parts using u and v
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
-            u = parse_expr(step['params']['u'])
-            v = parse_expr(step['params']['v'])
+            u = parse_expr(step['params']['parts_u'])
+            v = parse_expr(step['params']['parts_v'])
             ori_name = rewr_t.arg.var_name
             ori_var = Var(ori_name, realT)
             u = Term.mk_abs(ori_var, expr_to_holpy(u))
@@ -940,7 +949,23 @@ def translate_item(item, target=None, *, debug=False):
         else:
             raise NotImplementedError
 
+        # Obtain result on proof side
         pt = pt.on_rhs(thy, location_conv(loc, cv))
+
+        if 'text' in step:
+            expected = expr_to_holpy(parse_expr(step['text']))
+
+            eq_pt1 = refl(expected).on_rhs(thy, auto.auto_conv())
+            eq_pt2 = refl(pt.rhs).on_rhs(thy, auto.auto_conv())
+            if eq_pt1.rhs != eq_pt2.rhs:
+                print("Unequal right side.\nExpected: %s\nGot:      %s" % (
+                    printer.print_term(thy, eq_pt1.rhs), printer.print_term(thy, eq_pt2.rhs)
+                ))
+                raise AssertionError
+            else:
+                pt = ProofTerm.transitive(pt, eq_pt2)
+                pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt1))
+
         if debug:
             print("= %s" % printer.print_term(thy, pt.rhs))
         prev_pts.append(pt)

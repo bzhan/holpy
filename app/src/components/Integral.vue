@@ -288,8 +288,8 @@ export default {
         }
         this.r_query_mode = 'display_trig';
         this.take_effect = 1;
-        this.closeIntegral();
-      }else{
+        // this.closeIntegral();
+      } else {
         this.seen = true;
       }
     },
@@ -660,7 +660,8 @@ export default {
 
     doPolynomialDivision: async function (index) {
       const data = {
-        problem: this.sep_int[index].text
+        problem: this.sep_int[index].text,
+        location: this.sep_int[index].location
       };
       const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data));
       if(response.data.flag === true){

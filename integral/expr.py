@@ -48,8 +48,8 @@ class Expr:
     def __add__(self, other):
         if self.ty == CONST and other.ty == CONST:
                 return Const(self.val + other.val)
-        elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
-            return Fun("log", self.args[0] * other.args[0])
+        # elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
+        #     return Fun("log", self.args[0] * other.args[0])
         # elif self.ty == OP and self.op == "/" and other.ty == OP and other.op == "/" and self.args[1] == other.args[1]:
         #     return (self.args[0] + other.args[0]) / self.args[1]
         elif other.ty == OP:
@@ -69,9 +69,9 @@ class Expr:
     def __sub__(self, other):
         if self.ty == CONST and other.ty == CONST:
             return Const(self.val - other.val)
-        elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
-            c = (self.args[0]) / (other.args[0])
-            return Fun("log", (self.args[0]) / (other.args[0]))
+        # elif self.ty == FUN and self.func_name == "log" and other.ty == FUN and other.func_name == "log":
+        #     c = (self.args[0]) / (other.args[0])
+        #     return Fun("log", (self.args[0]) / (other.args[0]))
         elif other.ty == OP and len(other.args) == 1:
             return self + other.args[0]
         else:
@@ -375,9 +375,9 @@ class Expr:
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
-                if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
-                    return (x.normalize()+y.normalize()).to_poly()
-                elif y.ty == OP and len(y.args) == 1:
+                # if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
+                #     return (x.normalize()+y.normalize()).to_poly()
+                if y.ty == OP and len(y.args) == 1:
                     # x + (-y) => x - y
                     return Op("-", x, y.args[0]).to_poly()
                 elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "sin" and x.args[1].ty == CONST and x.args[1].val == 2\
@@ -410,8 +410,8 @@ class Expr:
                     return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
-                if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
-                    return (x-y).to_poly()
+                # if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
+                #     return (x-y).to_poly()
                 return x.to_poly() - y.to_poly()
             elif self.op == "-" and len(self.args) == 1:
                 x, = self.args
@@ -1011,6 +1011,8 @@ class Op(Expr):
             s1, s2 = str(a), str(b)
             if a.priority() <= op_priority[self.op]:
                 if a.ty == OP and a.op != self.op:
+                    s1 = "(%s)" % s1
+                elif a.ty == EVAL_AT:
                     s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):

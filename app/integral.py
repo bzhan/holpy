@@ -509,9 +509,12 @@ def integral_polynomial_division():
         'flag': True,
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
-        'denom': str(denom),
-        'rhs': str(rhs),
-        'reason': "Polynomial division"
+        'params': {
+            'denom': str(denom),
+            'rhs': str(rhs)
+        },
+        'reason': "Rewrite fraction",
+        "location": data['location']
     })
 
 @app.route("/api/integral-save-file", methods=['POST'])

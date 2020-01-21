@@ -213,6 +213,8 @@ class ProofTest(unittest.TestCase):
             ("real_integral (real_closed_interval 0 1) (%x. x ^ (1 / 3) * (x ^ (1 / 2) + 1))", "57 / 44"),
             ("real_integral (real_closed_interval (exp (-1)) 1) (%x. abs (log x))",
              "-1 * real_integral (real_closed_interval (exp (-1)) 1) (%x. log x)"),
+            ("real_integral (real_closed_interval 0 (1 / 2 * pi)) (%x. 2 ^ (1 / 2) * cos x * (2 + -2 * sin x ^ (2::nat)) ^ (1 / 2))",
+             "2 ^ (1 / 2) * real_integral (real_closed_interval 0 (1 / 2 * pi)) (%x. cos x * (2 + -2 * sin x ^ (2::nat)) ^ (1 / 2))")
         ]
 
         for expr, res in test_data:
@@ -277,8 +279,8 @@ class ProofTest(unittest.TestCase):
     def testTrigRewrConv(self):
         test_data = [
             ("sin x ^ (2::nat)", "", "TR5", "1 - cos x ^ (2::nat)"),
-            ("1 - cos x ^ (2::nat)", "", "TR5_inv", "sin x ^ (2::nat)"),
-            ("1 + -1 * cos x ^ (2::nat)", "", "TR5_inv", "sin x ^ (2::nat)"),
+            ("1 - cos x ^ (2::nat)", "", "TR6", "sin x ^ (2::nat)"),
+            ("1 + -1 * cos x ^ (2::nat)", "", "TR6", "sin x ^ (2::nat)"),
 
             ("real_integral (real_closed_interval 0 pi) (%x. sin x ^ (2::nat) * sin x)", "0.0", "TR5",
              "real_integral (real_closed_interval 0 pi) (%x. (1 - cos x ^ (2::nat)) * sin x)"),

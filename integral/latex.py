@@ -85,7 +85,7 @@ def convert_expr(e, mode="large"):
                     elif y.ty in (expr.VAR, expr.FUN):
                         return "%s %s" % (sx, sy)
                     elif not y.is_constant():
-                        if y.ty == OP:
+                        if y.ty == OP and y.op != '^':
                             return "%s (%s)" % (sx, sy)
                         return "%s %s" % (sx, sy)    
                     else:
