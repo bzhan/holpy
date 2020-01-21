@@ -582,6 +582,64 @@
             ]
         },
         {
+            "name": "Exercise 25",
+            "problem": "INT x:[-pi/2,pi/2]. cos(x)^4",
+            "calc": [
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "(cos(x)^2)^2"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "0.0"
+                },
+                {
+                    "reason": "Rewrite power",
+                    "location": "0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "location": "0.1.1"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "1.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/4 * cos(u)",
+                        "g": "4 * x",
+                        "var_name": "u"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
             "name": "Exercise 26",
             "problem": "INT x:[-pi/2, pi/2]. sqrt(cos(x) - cos(x)^3)",
             "calc": [

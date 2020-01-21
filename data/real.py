@@ -570,6 +570,7 @@ auto.add_global_autos_norm(
         'real_pow_1',
         'real_pow_one',
         'real_pow_mul',
+        'real_pow_pow',
         'rpow_mult_nat2',
         'real_exp_n_sym',
     ])
