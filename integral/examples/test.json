@@ -1023,7 +1023,7 @@
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(2 x\\)",
                     "latex": "\\frac{3}{8} \\pi + \\frac{1}{2} \\int_{-\\pi}^{\\pi} \\frac{\\cos{(u)}}{2} \\,\\mathrm{du} + \\frac{1}{8} \\int_{-\\pi/2}^{\\pi/2} \\cos{(4 x)} \\,\\mathrm{dx}",
-                    "location": "1.1",
+                    "location": "0.1.1",
                     "params": {
                         "f": "1/2 * cos(u)",
                         "g": "2 * x",
@@ -1031,6 +1031,23 @@
                     },
                     "reason": "Substitution",
                     "text": "3/8 * pi + 1/2 * (INT u:[-pi,pi]. 1/2 * cos(u)) + 1/8 * (INT x:[-pi / 2,pi / 2]. cos(4 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(4 x\\)",
+                    "latex": "\\frac{3}{8} \\pi + \\frac{1}{2} \\int_{-\\pi}^{\\pi} \\frac{\\cos{(u)}}{2} \\,\\mathrm{du} + \\frac{1}{8} \\int_{-2 \\pi}^{2 \\pi} \\frac{\\cos{(u)}}{4} \\,\\mathrm{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "1/4 * cos(u)",
+                        "g": "4 * x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "3/8 * pi + 1/2 * (INT u:[-pi,pi]. 1/2 * cos(u)) + 1/8 * (INT u:[-2 * pi,2 * pi]. 1/4 * cos(u))"
+                },
+                {
+                    "latex": "\\frac{3}{8} \\pi",
+                    "reason": "Simplification",
+                    "text": "3/8 * pi"
                 }
             ],
             "name": "Exercise 25",
@@ -1550,24 +1567,9 @@
                     "text": "INT x:[1 / exp(1),exp(1)]. abs(log(x))"
                 },
                 {
-                    "latex": "(\\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}) + (\\int_{e^{-1}}^{1} -\\log{(x)} \\,\\mathrm{dx})",
-                    "reason": "Eliminate abs",
-                    "text": "(INT x:[1,exp(1)]. log(x)) + (INT x:[exp((-1)),1]. -log(x))"
-                },
-                {
-                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\).Integrate by parts, \\(u = -\\log{(x)}, v = x\\).",
-                    "latex": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx}) + (\\left. (-x) \\log{(x)} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} -1 \\,\\mathrm{dx})",
-                    "text": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) + (([(-1) * x * log(x)]_x=exp((-1)),1) - (INT x:[exp((-1)),1]. (-1)))"
-                },
-                {
-                    "latex": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\left. x \\right\\vert_{x=1}^{e}) + (\\left. (-x) \\log{(x)} \\right\\vert_{x=e^{-1}}^{1}) - (\\left. -x \\right\\vert_{x=e^{-1}}^{1})",
-                    "reason": "Common integrals",
-                    "text": "([x * log(x)]_x=1,exp(1)) - ([x]_x=1,exp(1)) + (([(-1) * x * log(x)]_x=exp((-1)),1) - ([(-1) * x]_x=exp((-1)),1))"
-                },
-                {
-                    "latex": "2 - 2 e^{-1}",
+                    "latex": "(\\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}) - (\\int_{e^{-1}}^{1} \\log{(x)} \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "2 + (-2) * exp((-1))"
+                    "text": "INT x:[1,exp(1)]. log(x) - (INT x:[exp(-1),1]. log(x))"
                 }
             ],
             "name": "Exercise 36",

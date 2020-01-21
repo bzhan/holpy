@@ -31,7 +31,7 @@ test_cases = {
     "Exercise 22": "1 - exp (-1/2)",
     "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
 # need test (split)   # "Exercise 24": "1 / 2 * pi",
-# need test (wrong location)  # "Exercise 25": "3 / 8 * pi",
+    "Exercise 25": "3 / 8 * pi",
 # need test (split)   # "Exercise 26": "4 / 3",
 # need test (split)   # "Exercise 27": "2 * 2 ^ (1 / 2)",
     "Exercise 28": "1 - 2 * exp(-1)",
