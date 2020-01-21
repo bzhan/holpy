@@ -48,6 +48,7 @@ auto.add_global_autos(
         "real_continuous_on_cos",
         "real_continuous_on_cos_compose",
         "real_continuous_on_abs",
+        "real_continuous_on_abs_compose",
         "real_continuous_on_atn",
         "real_continuous_on_atn_compose",
 
@@ -112,6 +113,7 @@ auto.add_global_autos_norm(
         'real_sin_pi6',
         'real_sin_pi4',
         'real_sin_pi',
+        'sin_neg',
         'sin_neg_alt',
     ])
 )
@@ -123,7 +125,8 @@ auto.add_global_autos_norm(
         'real_cos_pi6',
         'real_cos_pi4',
         'real_cos_pi',
-        'cos_neg_alt'
+        'cos_neg',
+        'cos_neg_alt',
     ])
 )
 

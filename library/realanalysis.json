@@ -5467,6 +5467,14 @@
         },
         {
             "name": "real_continuous_on_abs",
+            "prop": "real_continuous_on abs s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_abs_compose",
             "prop": "real_continuous_on f s ⟶ real_continuous_on (λx. abs (f x)) s",
             "ty": "thm",
             "vars": {

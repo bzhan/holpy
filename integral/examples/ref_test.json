@@ -989,6 +989,66 @@
             ]
         },
         {
+            "name": "2013 - Exercise 2",
+            "problem": "INT x:[-1,3]. exp(abs(x))",
+            "calc": [
+                {
+                    "reason": "Split region",
+                    "params": {
+                        "c": "0"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-exp(u)",
+                        "g": "-x",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "2013 - Exercise 6",
+            "problem": "INT x:[0,6]. x + (x-3)^7 + sin(x-3)",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "u + 3 + u^7 + sin(u)",
+                        "g": "x - 3",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "2013 - Exercise 8",
+            "problem": "INT x:[2,3]. (x^5-x^3+x^2-1) / (x^4-x^3+x-1)",
+            "calc": [
+                {
+                    "reason": "Rewrite fraction",
+                    "params": {
+                        "denom": "x^4-x^3+x-1",
+                        "rhs": "x+1"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
             "name": "2013 - Exercise 10",
             "problem": "INT x:[1, 2]. 1 / (1 - exp(-x))",
             "calc": [
