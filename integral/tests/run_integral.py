@@ -45,7 +45,10 @@ test_cases = {
     "Exercise 36": "2 + -2 * exp (-1)",
 
     "2013 - Exercise 10": "-1 * log (-1 + exp(1)) + log (-1 + exp(2))",
+    "2013 - Exercise 11": "1 / 8 * pi",
+    "2013 - Exercise 20": "-1 + -2 * log (1 / 2) + 3 * log (1 / 2 * 3 ^ (1 / 2))",
     "2013 - Exercise 25": "1 / 24 * (pi * 2 ^ (1 / 2))",
+    "2014 - Exercise 6": "-(4 / 5)",
 }
 
 

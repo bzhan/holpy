@@ -1949,6 +1949,15 @@
             }
         },
         {
+            "name": "sin_neg_alt",
+            "prop": "sin (-c * x) = -(sin (c * x))",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -1956,6 +1965,15 @@
             "prop": "cos (-x) = cos x",
             "ty": "thm",
             "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_neg_alt",
+            "prop": "cos (-c * x) = cos (c * x)",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
                 "x": "real"
             }
         },

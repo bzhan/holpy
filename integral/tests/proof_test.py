@@ -206,6 +206,7 @@ class ProofTest(unittest.TestCase):
             ("real_integral (real_closed_interval 0 1) (%x. exp x)", "-1 + exp 1"),
             ("real_integral (real_closed_interval 0 1) (%x. sin x)", "1 + -1 * cos 1"),
             ("real_integral (real_closed_interval 0 1) (%x. cos x)", "sin 1"),
+            ("1/2 * (-2 * real_integral (real_closed_interval 0 (1/2)) (%x. exp x))", "1 + -1 * exp (1 / 2)"),
 
             # Normalize body
             ("real_integral (real_closed_interval 0 1) (%x. x ^ (2::nat) * x)", "1 / 4"),
@@ -287,7 +288,7 @@ class ProofTest(unittest.TestCase):
         for s, loc, code, res in test_data:
             s = parser.parse_term(ctxt, s)
             res = parser.parse_term(ctxt, res)
-            cv = proof.location_conv(loc, proof.trig_rewr_conv(code))
+            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, var_name="x"))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
 
     def testExprToHolpy(self):

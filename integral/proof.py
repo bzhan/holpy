@@ -112,6 +112,7 @@ auto.add_global_autos_norm(
         'real_sin_pi6',
         'real_sin_pi4',
         'real_sin_pi',
+        'sin_neg_alt',
     ])
 )
 
@@ -122,6 +123,7 @@ auto.add_global_autos_norm(
         'real_cos_pi6',
         'real_cos_pi4',
         'real_cos_pi',
+        'cos_neg_alt'
     ])
 )
 
@@ -135,12 +137,6 @@ class norm_sin_conv(Conv):
             raise ConvException('norm_sin_conv')
 
         r = real.from_binary_real(t.arg.arg1)
-        if r < 0:
-            eq = auto.auto_solve(thy, Term.mk_equals(
-                real.uminus(real.times(real.to_binary_real(-r), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_neg'))
-
         if r >= 2:
             eq = auto.auto_solve(thy, Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(r-2), real.pi),
@@ -183,12 +179,6 @@ class norm_cos_conv(Conv):
             raise ConvException('norm_cos_conv')
 
         r = real.from_binary_real(t.arg.arg1)
-        if r < 0:
-            eq = auto.auto_solve(thy, Term.mk_equals(
-                real.uminus(real.times(real.to_binary_real(-r), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_neg'))
-
         if r >= 2:
             eq = auto.auto_solve(thy, Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(r-2), real.pi),
@@ -617,20 +607,30 @@ class fraction_rewr_conv(Conv):
 
 class trig_rewr_conv(Conv):
     """Apply trignometric rewrites."""
-    def __init__(self, code):
+    def __init__(self, code, var_name):
         """Initialize with code of the trignometric rewrite in Fu's method."""
         assert isinstance(code, str)
         self.code = code
+        self.var_name = var_name
 
     def get_proof_term(self, thy, t):
         # Obtain the only variable in t
-        xs = term.get_vars(t)
-        assert len(xs) == 1, "trig_rewr_conv"
-        x = xs[0]
+        if self.var_name == "":
+            xs = term.get_vars(t)
+            assert len(xs) == 1, "trig_rewr_conv"
+            x = xs[0]
+        else:
+            x = Var(self.var_name, realT)
 
         if self.code == 'TR5':
             # (sin x) ^ 2 = 1 - (cos x) ^ 2
             return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
+        elif self.code == 'TR5b':
+            # (sin x) ^ 2 + (cos x) ^ 2 = 1
+            return refl(t).on_rhs(thy, rewr_conv('sin_circle'))
+        elif self.code == 'TR5c':
+            # 1 = (sin x) ^ 2 + (cos x) ^ 2
+            return ProofTerm.symmetric(apply_theorem(thy, 'sin_circle', inst={'x': x}))
         elif self.code == 'TR5_inv':
             # 1 - (cos x) ^ 2 = (sin x) ^ 2
             eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
@@ -652,6 +652,18 @@ class trig_rewr_conv(Conv):
         elif self.code == 'TR7b':
             # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
             return refl(t).on_rhs(thy, rewr_conv('sin_lower_degree'))
+        elif self.code == 'TR8a':
+            # sin x * cos y = 1/2 * (sin (x + y) + sin (x - y))
+            return refl(t).on_rhs(thy, rewr_conv('real_mul_sin_cos'))
+        elif self.code == 'TR8b':
+            # cos x * sin y = 1/2 * (sin (x + y) - sin (x - y))
+            return refl(t).on_rhs(thy, rewr_conv('real_mul_cos_sin'))
+        elif self.code == 'TR8c':
+            # cos x * cos y = 1/2 * (cos (x + y) + cos (x - y))
+            return refl(t).on_rhs(thy, rewr_conv('real_mul_cos_cos'))
+        elif self.code == 'TR8d':
+            # sin x * sin y = -1/2 * (cos (x + y) - cos (x - y))
+            return refl(t).on_rhs(thy, rewr_conv('real_mul_sin_sin'))
         elif self.code == 'TR11a':
             # sin (2 * x) = 2 * sin x * cos x
             return refl(t).on_rhs(thy, rewr_conv('sin_double'))
@@ -889,7 +901,11 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity
-            cv = trig_rewr_conv(step['params']['rule'])
+            if 'var_name' in step['params']:
+                var_name = step['params']['var_name']
+            else:
+                var_name = ""
+            cv = trig_rewr_conv(step['params']['rule'], var_name)
 
         elif reason == 'Rewrite power':
             # Rewrite x ^ 2 to x * x.

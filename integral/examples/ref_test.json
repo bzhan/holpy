@@ -1013,6 +1013,135 @@
             ]
         },
         {
+            "name": "2013 - Exercise 11",
+            "problem": "INT x:[0, pi]. sin(x)^2 * cos(x)^2",
+            "calc": [
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7b"
+                    },
+                    "location": "0.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR7"
+                    },
+                    "location": "1.1.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/4 * cos(u)",
+                        "g": "4 * x",
+                        "var_name": "u"
+                    },
+                    "location": "1.1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "2013 - Exercise 20",
+            "problem": "INT x:[pi/3, 2/3*pi]. sin(x) * log(sin(x))",
+            "calc": [
+                {
+                    "reason": "Integrate by parts",
+                    "params": {
+                        "u": "log (sin (x))",
+                        "v": "-cos(x)"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR6"
+                    },
+                    "location": "1.0.0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "2 / sin(2*u)",
+                        "g": "x / 2",
+                        "var_name": "u"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Rewrite",
+                    "params": {
+                        "rhs": "1 / sin (2 * x)"
+                    },
+                    "location": "1.1.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR5c",
+                        "var_name": "x"
+                    },
+                    "location": "1.1.0.0"
+                },
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR11a"
+                    },
+                    "location": "1.1.0.1"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/t",
+                        "g": "sin(x)",
+                        "var_name": "t"
+                    },
+                    "location": "0.1"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "-1/t",
+                        "g": "cos(x)",
+                        "var_name": "t"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
             "name": "2013 - Exercise 25",
             "problem": "INT x:[2,2*sqrt(2)]. 1 / (x * sqrt (x ^ 2 - 2))",
             "calc": [
@@ -1040,6 +1169,34 @@
                         "rhs": "1/2 * (1 + x ^ 2)^-1"
                     },
                     "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
+        },
+        {
+            "name": "2014 - Exercise 6",
+            "problem": "INT x:[0,pi]. sin(2*x) * cos(3*x)",
+            "calc": [
+                {
+                    "reason": "Rewrite trigonometric",
+                    "params": {
+                        "rule": "TR8a"
+                    },
+                    "location": "0"
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/5*sin(u)",
+                        "g": "5*x",
+                        "var_name": "u"
+                    },
+                    "location": "1.1"
                 },
                 {
                     "reason": "Simplification"
