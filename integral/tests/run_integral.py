@@ -12,6 +12,7 @@ test_cases = {
     "Exercise 3": "-(1 / 6) + (1 / 6) * exp(6)",
     "Exercise 4": "exp(2) + 2 * exp(-1)",
     "Exercise 5": "1 + -1/2 * 2 ^ (1/2)",
+    # "Exercise 6": None,
     "Exercise 7": "21 / 8",
     "Exercise 8": "-(3 / 4)",
     "Exercise 9": "-(81 / 11) * 2 ^ (2 / 3) + 945 / 44 * 3 ^ (2 / 3)",
@@ -30,16 +31,20 @@ test_cases = {
     "Exercise 22": "1 + -1 * exp (-1/2)",
     "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
     "Exercise 24": "1 / 2 * pi",
+    # "Exercise 25": None,
     "Exercise 26": "4 / 3",
     "Exercise 27": "2 * 2 ^ (1 / 2)",
     "Exercise 28": "1 + -2 * exp(-1)",
     "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
+    # "Exercise 30": None,
     "Exercise 31": "-4 + 4 * log(4)",
     "Exercise 32": "-(1 / 2) + 1 / 4 * pi",
     "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
     "Exercise 34": "-(1 / 4) * pi + 1 / 6 * pi ^ 3",
     "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
     "Exercise 36": "2 + -2 * exp (-1)",
+
+    "2013 - Exercise 10": None
 }
 
 

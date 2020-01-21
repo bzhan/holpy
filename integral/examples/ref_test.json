@@ -929,6 +929,30 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "2013 - Exercise 10",
+            "problem": "INT x:[1, 2]. 1 / (1 - exp(-x))",
+            "calc": [
+                {
+                    "reason": "Rewrite fraction",
+                    "params": {
+                        "denom": "(-1 + exp(x)) * (1 + -1 * exp(-1 * x))",
+                        "rhs": "exp(x) / (exp(x) - 1)"
+                    }
+                },
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1/u",
+                        "g": "exp(x) - 1",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }

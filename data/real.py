@@ -349,7 +349,9 @@ auto.add_global_autos_norm(plus, norm_add_polynomial())
 
 def dest_atom(t):
     """Remove power part of an atom t."""
-    if is_nat_power(t) and nat.is_binary_nat(t.arg):
+    if t.head == exp:
+        return exp(one)
+    elif is_nat_power(t) and nat.is_binary_nat(t.arg):
         return t.arg1
     elif is_real_power(t) and is_binary_real(t.arg):
         return t.arg1
@@ -360,7 +362,9 @@ class to_exponent_form(Conv):
     """Convert x to x ^ 1, and leave x ^ n or x ^ r unchanged."""
     def get_proof_term(self, thy, t):
         pt = refl(t)
-        if is_nat_power(t) and nat.is_binary_nat(t.arg):
+        if t.head == exp:
+            return pt
+        elif is_nat_power(t) and nat.is_binary_nat(t.arg):
             return pt
         elif is_real_power(t) and is_binary_real(t.arg):
             return pt
@@ -371,7 +375,9 @@ class from_exponent_form(Conv):
     """Convert x ^ 1 to x, and leave x ^ n or x ^ r unchanged."""
     def get_proof_term(self, thy, t):
         pt = refl(t)
-        if is_nat_power(t) and t.arg == nat.one:
+        if t.head == exp:
+            return pt
+        elif is_nat_power(t) and t.arg == nat.one:
             return pt.on_rhs(thy, rewr_conv('real_pow_1'))
         elif is_real_power(t) and t.arg == one:
             return pt.on_rhs(thy, rewr_conv('rpow_1'))
@@ -395,7 +401,10 @@ class combine_atom(Conv):
 
     def get_proof_term(self, thy, t):
         pt = refl(t).on_rhs(thy, binop_conv(to_exponent_form()))
-        if is_nat_power(pt.rhs.arg1) and is_nat_power(pt.rhs.arg):
+        if pt.rhs.arg1.head == exp and pt.rhs.arg.head == exp:
+            # Both sides are exponentials
+            return pt.on_rhs(thy, rewr_conv('real_exp_add', sym=True), arg_conv(auto.auto_conv(self.conds)))
+        elif is_nat_power(pt.rhs.arg1) and is_nat_power(pt.rhs.arg):
             # Both sides are natural number powers, simply add
             return pt.on_rhs(thy, rewr_conv('real_pow_add', sym=True), arg_conv(nat.nat_conv()))
         else:

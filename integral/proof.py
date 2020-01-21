@@ -6,7 +6,7 @@ from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, rewr_conv, abs_conv
+from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, rewr_conv, abs_conv, binop_conv
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
@@ -533,6 +533,28 @@ class simplify_rewr_conv(Conv):
         return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
 
 
+class norm_monomial_all_conv(Conv):
+    def __init__(self, conds):
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        if real.is_times(t):
+            return pt.on_rhs(thy, binop_conv(self), real.norm_mult_monomials(self.conds))
+        else:
+            return pt
+
+class norm_denom_conv(Conv):
+    def __init__(self, conds):
+        self.conds = conds
+
+    def get_proof_term(self, thy, t):
+        pt = refl(t)
+        if real.is_times(t):
+            return pt.on_rhs(thy, arg1_conv(self), arg_conv(auto.auto_conv(self.conds)))
+        else:
+            return pt.on_rhs(thy, auto.auto_conv(self.conds))
+
 class clear_denom_conv(Conv):
     def __init__(self, conds):
         self.conds = conds
@@ -541,9 +563,9 @@ class clear_denom_conv(Conv):
         pt = refl(t)
         if real.is_plus(t.arg):
             return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'), arg1_conv(self),
-                             arg_conv(real.norm_mult_monomials(self.conds)))
+                             arg_conv(norm_monomial_all_conv(self.conds)))
         else:
-            return pt.on_rhs(thy, real.norm_mult_monomials(self.conds))
+            return pt.on_rhs(thy, norm_monomial_all_conv(self.conds))
 
 class fraction_rewr_conv(Conv):
     """Rewrite two fractions that should be equal after multiplying
@@ -575,9 +597,9 @@ class fraction_rewr_conv(Conv):
 
         cv = auto.auto_conv(conds=[cond_pt])
         lhs_eq = refl(real.times(self.denom, body))
-        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(cv), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv([cond_pt])), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
         rhs_eq = refl(real.times(self.denom, self.target))
-        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(cv), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv([cond_pt])), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
         if lhs_eq.rhs != rhs_eq.rhs:
             raise AssertionError("fraction_rewr_conv: %s != %s" % (
                 printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))
