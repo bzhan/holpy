@@ -178,7 +178,8 @@ def integral_compose_integral():
     new_integral = []
     latex_reason = ""
     reason = ""
-    location = ""
+    modified_index = int(data['index'])
+    location = data['problem'][modified_index]['location']
     denom = ""
     rhs = ""
     params = {}
@@ -190,8 +191,6 @@ def integral_compose_integral():
             reason += d['reason']
         if 'params' in d:
             params = d['params']
-        if 'location' in d:
-            location = d['location']
         if 'denom' in d:
             denom = d['denom']
         if 'rhs' in d:
@@ -256,6 +255,8 @@ def integral_substitution():
     rule = integral.rules.Substitution1(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
     new_problem, new_problem_body = rule.eval(problem)
+    print("problem: ", problem)
+    print("loaction:", data['location'])
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
