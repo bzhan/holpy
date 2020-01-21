@@ -459,6 +459,24 @@
             }
         },
         {
+            "name": "real_ge_mul",
+            "prop": "x ≥ 0 ⟶ y ≥ 0 ⟶ x * y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_ge_divide",
+            "prop": "x ≥ 0 ⟶ y > 0 ⟶ x / y ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],

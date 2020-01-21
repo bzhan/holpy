@@ -1011,6 +1011,20 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "2013 - Exercise 25",
+            "problem": "INT x:[2,2*sqrt(2)]. 1 / (x * sqrt (x ^ 2 - 2))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1 / (u ^ 2 + 2)",
+                        "g": "sqrt(x ^ 2 - 2)",
+                        "var_name": "u"
+                    }
+                }
+            ]
         }
     ]
 }

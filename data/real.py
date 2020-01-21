@@ -656,6 +656,14 @@ auto.add_global_autos_norm(
     ])
 )
 
+auto.add_global_autos(
+    greater_eq,
+    auto.solve_rules([
+        'real_ge_mul',
+        'real_ge_divide'
+    ])
+)
+
 def convert_to_poly(t):
     """Convert a term t to polynomial normal form."""
     if t.is_var():
