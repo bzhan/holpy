@@ -570,6 +570,7 @@ auto.add_global_autos_norm(
         'real_pow_1',
         'real_pow_one',
         'real_pow_mul',
+        'real_pow_pow',
         'rpow_mult_nat2',
         'real_exp_n_sym',
     ])
@@ -652,6 +653,14 @@ auto.add_global_autos_norm(
     less_eq,
     auto.norm_rules([
         'log_le_zero'
+    ])
+)
+
+auto.add_global_autos(
+    greater_eq,
+    auto.solve_rules([
+        'real_ge_mul',
+        'real_ge_divide'
     ])
 )
 

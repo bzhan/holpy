@@ -6,7 +6,8 @@ from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, rewr_conv, abs_conv, binop_conv
+from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, \
+    rewr_conv, abs_conv, binop_conv, every_conv
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
@@ -887,6 +888,10 @@ def translate_item(item, target=None, *, debug=False):
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity
             cv = trig_rewr_conv(step['params']['rule'])
+
+        elif reason == 'Rewrite power':
+            # Rewrite x ^ 2 to x * x.
+            cv = rewr_conv('real_pow_2')
 
         elif reason == 'Split region':
             # Split region of integration

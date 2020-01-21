@@ -31,7 +31,7 @@ test_cases = {
     "Exercise 22": "1 + -1 * exp (-1/2)",
     "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
     "Exercise 24": "1 / 2 * pi",
-    # "Exercise 25": None,
+    "Exercise 25": "3 / 8 * pi",
     "Exercise 26": "4 / 3",
     "Exercise 27": "2 * 2 ^ (1 / 2)",
     "Exercise 28": "1 + -2 * exp(-1)",
@@ -44,7 +44,8 @@ test_cases = {
     "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
     "Exercise 36": "2 + -2 * exp (-1)",
 
-    "2013 - Exercise 10": None
+    "2013 - Exercise 10": "-1 * log (-1 + exp(1)) + log (-1 + exp(2))",
+    "2013 - Exercise 25": None
 }
 
 
