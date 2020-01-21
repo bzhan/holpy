@@ -3,6 +3,7 @@
 from fractions import Fraction
 import math
 import sympy
+from sympy.ntheory.factor_ import factorint
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
@@ -611,14 +612,17 @@ class real_power_conv(Conv):
         if a <= 0:
             raise ConvException
 
-        # Case 1: base is a perfect power
-        perfect_pow = sympy.perfect_power(a)
-        if perfect_pow:
-            b, e = perfect_pow
-            eq_th = refl(nat_power(to_binary_real(b), nat.to_binary_nat(e))).on_rhs(thy, real_eval_conv())
+        # Case 1: base is a composite number
+        factors = factorint(a)
+        keys = list(factors.keys())
+        if len(keys) > 1 or (len(keys) == 1 and keys[0] != a):
+            b1 = list(factors.keys())[0]
+            b2 = a // b1
+            eq_th = refl(times(to_binary_real(b1), to_binary_real(b2))).on_rhs(thy, real_eval_conv())
             pt = refl(t).on_rhs(thy, arg1_conv(rewr_conv(eq_th, sym=True)))
-            b_gt_0 = auto.auto_solve(thy, greater(to_binary_real(b), zero))
-            pt = pt.on_rhs(thy, rewr_conv('rpow_mult_nat1', conds=[b_gt_0]), arg_conv(real_eval_conv()))
+            b1_gt_0 = auto.auto_solve(thy, greater(to_binary_real(b1), zero))
+            b2_gt_0 = auto.auto_solve(thy, greater(to_binary_real(b2), zero))
+            pt = pt.on_rhs(thy, rewr_conv('rpow_base_mult', conds=[b1_gt_0, b2_gt_0]))
             return pt
 
         # Case 2: exponent is not between 0 and 1
@@ -653,6 +657,14 @@ auto.add_global_autos_norm(
     less_eq,
     auto.norm_rules([
         'log_le_zero'
+    ])
+)
+
+auto.add_global_autos(
+    greater_eq,
+    auto.solve_rules([
+        'real_ge_mul',
+        'real_ge_divide'
     ])
 )
 

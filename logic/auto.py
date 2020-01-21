@@ -63,7 +63,8 @@ def solve(thy, goal, pts=None):
 
     """
     if debug_auto:
-        print("Solve:", printer.print_term(thy, goal))
+        print("Solve:", printer.print_term(thy, goal),
+              [printer.print_term(thy, pt.prop) for pt in pts])
 
     if pts is None:
         pts = []
@@ -192,7 +193,8 @@ def norm(thy, t, pts=None):
 
     """
     if debug_auto:
-        print("Norm:", printer.print_term(thy, t))
+        print("Norm:", printer.print_term(thy, t),
+              [printer.print_term(thy, pt.prop) for pt in pts])
 
     # Do not normalize variables and abstractions
     if t.is_var() or t.is_abs():

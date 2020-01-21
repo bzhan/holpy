@@ -44,7 +44,8 @@ test_cases = {
     "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
     "Exercise 36": "2 + -2 * exp (-1)",
 
-    "2013 - Exercise 10": None
+    "2013 - Exercise 10": "-1 * log (-1 + exp(1)) + log (-1 + exp(2))",
+    "2013 - Exercise 25": "1 / 24 * (pi * 2 ^ (1 / 2))",
 }
 
 

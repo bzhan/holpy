@@ -250,6 +250,8 @@ auto.add_global_autos_norm(
     auto.norm_rules([
         'atn_0',
         'atn_1',
+        'atn_sqrt_3',
+        'atn_inv_sqrt_3',
         'atn_neg',
     ])
 )

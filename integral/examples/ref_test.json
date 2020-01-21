@@ -1011,6 +1011,40 @@
                     "reason": "Simplification"
                 }
             ]
+        },
+        {
+            "name": "2013 - Exercise 25",
+            "problem": "INT x:[2,2*sqrt(2)]. 1 / (x * sqrt (x ^ 2 - 2))",
+            "calc": [
+                {
+                    "reason": "Substitution",
+                    "params": {
+                        "f": "1 / (u ^ 2 + 2)",
+                        "g": "sqrt(x ^ 2 - 2)",
+                        "var_name": "u"
+                    }
+                },
+                {
+                    "reason": "Substitution inverse",
+                    "params": {
+                        "g": "sqrt(2) * v",
+                        "var_name": "v",
+                        "a": "1",
+                        "b": "sqrt(3)"
+                    }
+                },
+                {
+                    "reason": "Rewrite fraction",
+                    "params": {
+                        "denom": "(2 + 2 * x^2) * (1 + x^2)",
+                        "rhs": "1/2 * (1 + x ^ 2)^-1"
+                    },
+                    "location": "1"
+                },
+                {
+                    "reason": "Simplification"
+                }
+            ]
         }
     ]
 }
