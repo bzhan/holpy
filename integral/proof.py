@@ -919,7 +919,7 @@ def translate_item(item, target=None, *, debug=False):
                 var_name = ""
             cv = trig_rewr_conv(step['params']['rule'], var_name)
 
-        elif reason == 'Rewrite power':
+        elif reason == 'Unfold power':
             # Rewrite x ^ 2 to x * x.
             cv = rewr_conv('real_pow_2')
 
