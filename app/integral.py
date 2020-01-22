@@ -444,7 +444,7 @@ def integral_split():
     data = json.loads(request.get_data().decode('utf-8'))
     problem = integral.parser.parse_expr(data['problem'])
     point  = integral.parser.parse_expr(data['point'])
-    assert isinstance(point, integral.expr.Const)
+    assert  integral.parser.parse_expr(problem.var) not in point.findVar()
     upper = problem.upper
     lower = problem.lower
     if integral.expr.sympy_style(upper) <= integral.expr.sympy_style(point) or integral.expr.sympy_style(lower) >= integral.expr.sympy_style(point):

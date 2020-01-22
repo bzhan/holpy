@@ -654,7 +654,7 @@ class Expr:
                 for arg in e.args:
                     findv(arg, v)
         findv(self, v)
-        return v[0]
+        return v
 
     def ranges(self, var, lower, upper):
         """Find expression where greater and smaller than zero in the interval: lower, upper"""
