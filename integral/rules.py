@@ -287,28 +287,41 @@ class Substitution1(Rule):
     def eval(self, e):
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
-        gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-        gu = gu[0] if isinstance(gu, list) else gu
-        gu = expr.holpy_style(gu)
-        print("gu: ", gu)
-        c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-        print("c: ", c, expr.deriv(str(var_name), gu), c * expr.deriv(str(var_name), gu))
-        new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize().normalize()
-        print("new_problem_body: ", new_problem_body)
-        var_subst_deriv = expr.deriv(e.var, var_subst)
-        up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
-        new_integral = []
-        if len(up) != 0:
-            for l, u in up:
-                i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
-                j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
-                new_integral.append(expr.Integral(self.var_name, i, j, new_problem_body))
-        if len(down) != 0:
-            for l, u in down:
-                i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
-                j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
-                new_integral.append(expr.Integral(self.var_name, j, i, expr.Op("-",new_problem_body).normalize()))
-        return sum(new_integral[1:], new_integral[0]), new_problem_body
+        try:
+            gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
+        
+            gu = gu[0] if isinstance(gu, list) else gu
+            gu = expr.holpy_style(gu)
+            print("gu: ", gu)
+            c = e.body.replace_trig(parser.parse_expr(e.var), gu)
+            print("c: ", c, expr.deriv(str(var_name), gu), c * expr.deriv(str(var_name), gu))
+            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize().normalize()
+            print("new_problem_body: ", new_problem_body)
+            var_subst_deriv = expr.deriv(e.var, var_subst)
+            print("var_subst_deriv: ", var_subst_deriv)
+            up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
+            new_integral = []
+            if len(up) != 0:
+                for l, u in up:
+                    i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
+                    j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
+                    new_integral.append(expr.Integral(self.var_name, i, j, new_problem_body))
+            if len(down) != 0:
+                for l, u in down:
+                    i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
+                    j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
+                    new_integral.append(expr.Integral(self.var_name, j, i, expr.Op("-",new_problem_body).normalize()))
+            print("!!!!!", sum(new_integral[1:], new_integral[0]), new_problem_body)
+            return sum(new_integral[1:], new_integral[0]), new_problem_body
+        except NotImplementedError as err:
+            dfx = expr.deriv(e.var, var_subst)
+            body =holpy_style(sympy_style((e.body/dfx)))
+            body = body.normalize().replace_trig(var_subst.normalize(), var_name)
+            lower = var_subst.subst(e.var, e.lower).normalize()
+            upper = var_subst.subst(e.var, e.upper).normalize()
+            print(body)
+            return Integral(self.var_name, lower, upper, body), body
+            #return sum(new_integral[1:], new_integral[0])
 
 
 

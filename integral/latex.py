@@ -3,7 +3,7 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import expr
-from integral.expr import OP
+from integral.expr import OP, CONST
 
 def convert_expr(e, mode="large"):
     if e.ty == expr.VAR:
@@ -88,6 +88,8 @@ def convert_expr(e, mode="large"):
                         if y.ty == OP and y.op != '^':
                             return "%s (%s)" % (sx, sy)
                         return "%s %s" % (sx, sy)    
+                    elif y.ty != CONST and y.is_constant():
+                        return "%s %s"%(sx, sy)
                     else:
                         if x.priority() < expr.op_priority[e.op]:
                             sx = "(%s)" % sx

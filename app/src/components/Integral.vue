@@ -81,7 +81,7 @@
       <div v-if="r_query_mode === 'trig'">
         <label>Select the part you wish to transform to other trignometric functions.</label>
         <br>
-        <input id="cloned" ref="mycloned" style="width:200px" disabled="disabled" v-model="this.sep_int[integral_index].body">
+        <input id="cloned" ref="mycloned" style="width:500px" disabled="disabled" v-model="this.sep_int[integral_index].body">
         <button v-on:click="validation">OK</button>
         <br>
         <p v-if="seen === true" color="red">Illegal!</p>
@@ -521,7 +521,10 @@ export default {
 
     transform: function(item){
       //this.cur_calc.push(item)
-      this.sep_int[this.integral_index] = item
+      this.sep_int[this.integral_index] = item;
+      this.process_index = this.integral_index;
+      this.take_effect = 1;
+      this.closeIntegral();
       this.query_mode = undefined
       this.trig_identities_data.old_expr = ''
       this.trig_identities_data.new_expr = []
