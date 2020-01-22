@@ -14,17 +14,12 @@
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
-          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='applyLinearity'>Apply linearity</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='applyCommonIntegrals'>Apply common integrals</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='substitution'>Substitution1</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='substitution1'>Substitution2</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>          <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='substitution1'>Substitution inverse</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByParts'>Integrate by parts</b-dropdown-item>          
-          <b-dropdown-item href="#" v-on:click='polynomialDivision'>Polynomial division</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='polynomialDivision'>Rewrite fraction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='applyElimAbs'>Elim Abs</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Split Integral</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -130,8 +125,8 @@
         <br/>
         <span v-if="seen === false">{{equation_data.rewrite_part}}=</span>
         <input v-if="seen === false" v-model="equation_data.new_expr" style="width: 400px">
-        <button v-on:click="rewrite" color="red">Rewrite</button>
-        <p v-if="rewrite_error_flag === true" color="red">The rewrite is invalid.</p>
+        <button v-on:click="rewrite" style="color:red">Rewrite</button>
+        <p v-if="rewrite_error_flag === true" style="color:red">The rewrite is invalid.</p>
       </div>
       <div v-if="r_query_mode === 'byequation'">
         <div>
@@ -144,12 +139,15 @@
           <button v-on:click="doIntegrateByEquation1">OK</button>
         </div>
       </div>
-    </div>
-    <div v-if="r_query_mode === 'split'">
-      <div>
-        <MathEquation data="Choose the point to split the integral."/>
-          <input v-model="split_point" style="margin:0px 5px;width:100px">
-          <button v-on:click="doSplitIntegral">OK</button>
+      <div v-if="r_query_mode === 'split'">
+        <div>
+          <MathEquation v-bind:data="'\\(Write\\ the\\ point\\ you\\ want\\ to\\ split\\ in\\ ' + sep_int[integral_index].latex + '\\)'" />
+        </div>
+        <div>   
+            <input v-model="split_point" style="margin:0px 5px;width:100px">
+            <button v-on:click="doSplitIntegral">OK</button>
+            <label v-if="split_success === false" style="color:red">Invalid split!</label>
+        </div>
       </div>
     </div>
     <div id="select">
@@ -236,7 +234,8 @@ export default {
 
       lhs: undefined, //equation left hand side
       same_integral: [],
-      split_point: undefined
+      split_point: undefined,
+      split_success: undefined
     }
   },
 
@@ -592,7 +591,33 @@ export default {
       this.subst_data = {var_name: '', expr: ''};
       this.integral_index = undefined;
       this.take_effect = 1;
-    },  
+    },
+    
+    split: function(){
+      if(this.cur_calc.length == 0)
+        return;
+      this.sep_int = []
+      this.query_mode = 'split';
+      this.displaySeparateIntegrals();
+    },
+
+    doSplitIntegral: async function() {
+      const data = {
+        problem: this.sep_int[this.integral_index].text,
+        point: this.split_point,
+        location: this.sep_int[this.integral_index].location
+      };
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-split", JSON.stringify(data));
+      if(response.data.flag == "success"){
+        this.sep_int[this.integral_index] = response.data;
+        this.split_success = true;
+        this.take_effect = 1;
+        this.closeIntegral();
+      }else{
+        this.split_success = false;
+      }
+    },
+    
 
     unfoldPower: function () {
       if (this.cur_calc.length === 0)
@@ -669,6 +694,7 @@ export default {
     },
 
     doPolynomialDivision: async function (index) {
+      this.integral_index = index;
       const data = {
         problem: this.sep_int[index].text,
         location: this.sep_int[index].location
@@ -676,11 +702,9 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data));
       if(response.data.flag === true){
         this.sep_int[index] = response.data;
-        this.take_effect = 1;
-        this.closeIntegral();
-      }else{
-        this.closeIntegral();
       }
+      this.take_effect = 1;
+      this.closeIntegral();
     },
 
     equationSubst: function() {

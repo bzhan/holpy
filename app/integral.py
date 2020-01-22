@@ -204,7 +204,6 @@ def integral_compose_integral():
         'text': str(new_expr),
         'latex': integral.latex.convert_expr(new_expr),
         'reason': reason,
-        '_latex_reason': latex_reason,
     }
     if location != "":
         info.update({'location': location})
@@ -214,6 +213,8 @@ def integral_compose_integral():
         info.update({'denom': denom})
     if rhs:
         info.update({'rhs': rhs})
+    if latex_reason:
+        info.update({'_latex_reason': latex_reason})
     return json.dumps(info)
 
     
@@ -447,6 +448,32 @@ def integral_rewrite_expr():
         return jsonify({
                 'flag': False
             })
+
+@app.route("/api/integral-split", methods=['POST'])
+def integral_split():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    point  = integral.parser.parse_expr(data['point'])
+    assert isinstance(point, integral.expr.Const)
+    upper = problem.upper
+    lower = problem.lower
+    if integral.expr.sympy_style(upper) <= integral.expr.sympy_style(point) or integral.expr.sympy_style(lower) >= integral.expr.sympy_style(point):
+        return jsonify({
+            "flag": 'fail'
+        })
+    new_integral1 = integral.expr.Integral(problem.var, problem.lower, point, problem.body)
+    new_integral2 = integral.expr.Integral(problem.var, point, problem.upper, problem.body)
+    return jsonify({
+        "flag": 'success',
+        "reason": "Split region",
+        "location": data['location'],
+        "params": {
+            "c": str(point)
+        },
+        "text": str(new_integral1 + new_integral2),
+        "latex": integral.latex.convert_expr(new_integral1 + new_integral2) 
+    })
+    
 
 @app.route("/api/integral-integrate-by-parts", methods=['POST'])
 def integral_integrate_by_parts():
