@@ -2,6 +2,8 @@
 
 import unittest
 import json
+from pstats import Stats
+import cProfile
 
 from integral import proof
 from prover import sympywrapper
@@ -69,6 +71,12 @@ class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = ["test", "2019"]
         test_only = None
+        profile = False
+
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
         for filename in filenames:
             with open('integral/examples/%s.json' % filename, 'r', encoding='utf-8') as f:
                 f_data = json.load(f)
@@ -78,6 +86,12 @@ class RunIntegral(unittest.TestCase):
                    (not test_only and item['name'] in test_cases[filename]):
                     target = test_cases[filename][item['name']]
                     proof.translate_item(item, target, debug=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
 
 
 if __name__ == "__main__":
