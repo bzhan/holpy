@@ -203,6 +203,7 @@ export default {
       r_query_mode: undefined, //record query mode
       display_integral: undefined, //display the separate integral
       sep_int: [], //all separate integrals
+      process_index: undefined,
       integral_index: undefined, //integral on processing
       take_effect: 0,     //Flag for whether a rule takes effect or close on halfway.
 
@@ -295,8 +296,6 @@ export default {
           this.trig_identities_data.new_expr.push(response.data["content"][i]);
         }
         this.r_query_mode = 'display_trig';
-        this.take_effect = 1;
-        this.closeIntegral();
       }else{
         this.seen = true;
       }
@@ -316,6 +315,7 @@ export default {
         this.sep_int[this.integral_index] = response.data;
         this.take_effect = 1;
         this.r_query_mode = undefined;
+        this.process_index = this.integral_index;
         this.closeIntegral();
       }else{
         this.seen = true;
@@ -357,6 +357,7 @@ export default {
         this.sep_int[this.integral_index] = response.data;
         this.r_query_mode = undefined;
         this.take_effect = 1;
+        this.process_index = this.integral_index;
         this.closeIntegral();
       }else{
         this.rewrite_error_flag = true;
@@ -387,6 +388,7 @@ export default {
       this.sep_int = [];
       this.integral_index = undefined;
       this.r_query_mode = undefined;
+      this.process_index = undefined;
     },
 
     clear_input_info: function() {
@@ -418,19 +420,6 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-super-simplify", JSON.stringify(data));
       this.cur_calc.push(response.data);
     },
-
-    applyLinearity: async function () {
-      this.clear_separate_integral();
-      if (this.cur_calc.length === 0)
-        return;
-
-      const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
-      };
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-linearity", JSON.stringify(data));
-      this.cur_calc.push(response.data);
-    },
-
     displaySameIntegral: async function() {
       this.same_integral = [];
       if (this.cur_calc.length <= 1){
@@ -482,7 +471,7 @@ export default {
         const data = {
           problem: integrals,
           cur_calc: this.cur_calc[this.cur_calc.length - 1].text,
-          index:  this.integral_index
+          index:  this.process_index
         }
         const response = await axios.post("http://127.0.0.1:5000/api/integral-compose-integral", JSON.stringify(data))
         this.cur_calc.push(response.data)        
@@ -566,6 +555,7 @@ export default {
       this.r_query_mode = undefined;
       this.subst_data = {var_name: '', expr: ''};
       this.take_effect = 1;
+      this.process_index = this.integral_index;
       this.closeIntegral();
       this.integral_index = undefined;
     },
@@ -589,8 +579,10 @@ export default {
       this.sep_int[this.integral_index] = response.data;
       this.r_query_mode = undefined;
       this.subst_data = {var_name: '', expr: ''};
-      this.integral_index = undefined;
       this.take_effect = 1;
+      this.process_index = this.integral_index;
+      this.closeIntegral();
+      this.integral_index = undefined;
     },
     
     split: function(){
@@ -612,6 +604,7 @@ export default {
         this.sep_int[this.integral_index] = response.data;
         this.split_success = true;
         this.take_effect = 1;
+        this.process_index = this.integral_index;
         this.closeIntegral();
       }else{
         this.split_success = false;
@@ -650,6 +643,7 @@ export default {
       this.integral_index = undefined;
       this.byparts_data = {parts_u: '', parts_v: ''};
       this.take_effect = 1;
+      this.process_index = this.integral.index;
       this.closeIntegral();
     },
 
@@ -705,6 +699,7 @@ export default {
         this.sep_int[index] = response.data;
       }
       this.take_effect = 1;
+      this.process_index = index;
       this.closeIntegral();
     },
 

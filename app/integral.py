@@ -280,10 +280,12 @@ def integral_substitution2():
     rule = integral.rules.Substitution2(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
+    print(":!!!!!!", new_problem)
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Substitution inverse",
+        'location': data['location'],
         'params': {
             'g': str(expr),
             'var_name': str(data['var_name']),
@@ -291,7 +293,7 @@ def integral_substitution2():
             "b": str(new_problem.upper)
         },
         '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
-            integral.latex.convert_expr(integral.parser.parse_expr(data['var_name'])), integral.latex.convert_expr(expr)
+            integral.latex.convert_expr(integral.parser.parse_expr(problem.var)), integral.latex.convert_expr(expr)
         )
     })
 
@@ -487,7 +489,6 @@ def integral_integrate_by_parts():
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Integrate by parts",
-        'location': data['location'],
         'params': {
             'parts_u': data['parts_u'],
             'parts_v': data['parts_v'],
