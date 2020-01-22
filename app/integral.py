@@ -417,7 +417,7 @@ def integral_rewrite_expr():
     try:
         new_expr = integral.parser.parse_expr(data['new_expr'])
         location = data['relative_location']
-        if new_expr.normalize() != old_expr.normalize() or new_expr.findVar().name != problem.var:
+        if new_expr.normalize() != old_expr.normalize() or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False
             })
