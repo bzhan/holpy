@@ -448,40 +448,63 @@ class ElimAbs(Rule):
 
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
-    def __init__(self, lhs):
-        assert isinstance(lhs, expr.Expr)
-        self.lhs = lhs
-        self.name = "Integrate by equation"
+    def __init__(self, lhs, rhs):
+        self.lhs = lhs.normalize()
+        self.rhs = rhs.normalize()
 
-    def find_same_integral(self, e):
-        """Find the integrals exists both in lhs and rhs."""
-        rhs_integral = set([i[0].normalize() for i in e.separate_integral()])
-        lhs_integral = set([i[0].normalize() for i in self.lhs.separate_integral()])
-        return lhs_integral.union(rhs_integral)
+    def validate(self):
+        """Determine whether the lhs exists in rhs"""
+        integrals = self.rhs.separate_integral()
+        if not integrals:
+            return False
+        for i,j in integrals:
+            if i.normalize() == self.lhs:
+                return True
+        return False
     
-    def eval(self, e, equation_part):
-        same_integral = equation_part
-        body = copy.deepcopy(e)
-        temp_body = copy.deepcopy(body)
-        temp_body = temp_body.replace_trig(same_integral, Const(0)).normalize()
-        first_lhs = copy.deepcopy(self.lhs)
-        second_lhs = copy.deepcopy(first_lhs)
-        first_lhs = first_lhs.replace_trig(same_integral, Const(0)).normalize()
-        g = expr.Var("G")
-        i = expr.Var("I")
-        r = expr.Var("R")
-        body = body.replace_trig(temp_body, g).replace(same_integral, i)
-        second_lhs = second_lhs.replace_trig(first_lhs, r).replace_trig(same_integral, i)
-        print("temp:", temp_body)
-        print("body: ", body)
-        print("first rhs: ", first_lhs)
-        print("second rhs: ", second_lhs)
-        k = same_integral - second_lhs
-        print("same: ", same_integral)
-        print("k: ", k.normalize())
-        s = solvers.solve(expr.sympy_style(body - second_lhs), expr.sympy_style(i))
-        s = holpy_style(s[0]).replace_trig(g, temp_body).replace_trig(r, first_lhs)
-        print("s: ", s, temp_body, first_lhs)
-        new_problem = e.replace_trig(equation_part, s).normalize()
-        print("------------new problem: ", new_problem)
-        return new_problem.normalize()
+    def getCoeff(self):
+        """Get coeff of the lhs integral in the rhs."""
+        coeff = Const(1)
+        def coe(e, uminus = 1):
+            nonlocal coeff
+            if e.ty == expr.OP:
+                if len(e.args) == 1:
+                    if e.args[0].normalize() == self.lhs:
+                        coeff = coeff * Const(-uminus)
+                    else:
+                        coe(e.arg[0], uminus=-uminus)
+                else:
+                    if e.op == "+":
+                        if e.args[0].normalize() == self.lhs or e.args[1].normalize() == self.lhs:
+                            coeff = coeff * Const(uminus)
+                        else:
+                            coe(e.args[0],uminus=uminus)
+                            coe(e.args[1],uminus=uminus)
+                    elif e.op == "-":
+                        if e.args[0].normalize() == self.lhs:
+                            coeff = coeff * Const(uminus)
+                        elif e.args[1].normalize() == self.lhs:
+                            coeff = coeff * Const(-uminus)
+                        else:
+                            coe(e.args[0],uminus=uminus)
+                            coe(e.args[1], uminus=-uminus)
+                    elif e.op == "*":
+                        if e.args[1].normalize() == self.lhs:
+                            coeff = e.args[0]*Const(uminus)
+                        else:
+                            coe(e.args[0],uminus=uminus)
+                            coe(e.args[1],uminus=uminus)
+        coe(self.rhs)
+        if self.validate():
+            return coeff
+        else:
+            return Const(0)
+                
+    def eval(self):
+        """Eliminate the lhs's integral in rhs by solving equation."""
+        coeff = self.getCoeff()
+        if coeff == Const(0):
+            return self.rhs
+        new_rhs = (self.rhs+((-coeff)*self.lhs)).normalize().normalize()
+        return (new_rhs/(Const(1) - coeff)).normalize()
+        

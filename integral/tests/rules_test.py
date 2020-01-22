@@ -249,20 +249,26 @@ class RulesTest(unittest.TestCase):
 
     def testIntegrateByEquation(self):
         test_data = [
-            ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)", 
-            "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))", 
-            "-2/5 + exp(pi)/5"),
-            ("INT u:[0,1]. exp(u) * sin(u)",
-            "1 + (-1) * cos(1) * exp(1) + sin(1) * exp(1) + (-1) * (INT u:[0,1]. exp(u) * sin(u))",
-            "(1/2 + (-(1/2) * cos(1)) * exp(1)) + ((1/2) * sin(1)) * exp(1)")
+            # ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)", 
+            # "(-2) + exp(pi) + (-4) * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))", 
+            # "-2/5 + exp(pi)/5"),
+            # ("INT u:[0,1]. exp(u) * sin(u)",
+            # "1 + (-1) * cos(1) * exp(1) + sin(1) * exp(1) + (-1) * (INT u:[0,1]. exp(u) * sin(u))",
+            # "(1/2 + (-(1/2) * cos(1)) * exp(1)) + ((1/2) * sin(1)) * exp(1)"),
+            ("INT x:[0,pi / 2]. exp(2 * x) * cos(x)",
+            "(-2 + exp(pi)) - 4 * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))",
+            "-2/5 + 1/5 * exp(pi)")
         ]
 
         for s, s1, s2 in test_data:
             s = parse_expr(s)
             s1 = parse_expr(s1)
             s2 = parse_expr(s2)
-            rule = rules.IntegrateByEquation(s)
-            self.assertEqual(rule.eval(s1).normalize(), s2.normalize())
+            rule = rules.IntegrateByEquation(s, s1)
+            print(rule.getCoeff())
+            self.assertEqual(rule.eval().normalize(), s2.normalize())
+
+    
 
     def testTrigSubstitution(self):
         test_data = [

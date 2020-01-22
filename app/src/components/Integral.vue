@@ -22,6 +22,7 @@
           <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Split Integral</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -94,15 +95,6 @@
             style="cursor:pointer"/>
         </div>
       </div>
-      <div v-if="r_query_mode === 'same_integral'">
-        <div v-for="(step, index) in sep_int" :key="index">
-          <span>{{index+1}}:</span>
-          <MathEquation
-            v-on:click.native="doIntegrateByEquation(step)"
-            v-bind:data="'\\(' + step.latex + '\\)'"
-            style="cursor:pointer"/>
-        </div>
-      </div>
       <div v-if="r_query_mode === 'byparts'">
         <div>
           <MathEquation data="Choose \(u\) and \(v\) such that \(u\cdot\mathrm{d}v\) is the integrand."/>
@@ -136,7 +128,7 @@
           <input v-model.number="lhs" type="number" style="margin:0px 5px;width:50px">
         </div>
         <div style="margin-top:10px">
-          <button v-on:click="doIntegrateByEquation1">OK</button>
+          <button v-on:click="doIntegrateByEquation">OK</button>
         </div>
       </div>
       <div v-if="r_query_mode === 'split'">
@@ -640,10 +632,10 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))
       this.sep_int[this.integral_index] = response.data;
       this.r_query_mode = undefined;
-      this.integral_index = undefined;
       this.byparts_data = {parts_u: '', parts_v: ''};
       this.take_effect = 1;
-      this.process_index = this.integral.index;
+      this.process_index = this.integral_index;
+      this.integral_index = undefined;
       this.closeIntegral();
     },
 
@@ -653,31 +645,15 @@ export default {
       this.r_query_mode = "byequation"
     },
 
-    doIntegrateByEquation: async function(item){
+    doIntegrateByEquation: async function(){
       const data = {
-        equation_part: item.text,
         lhs: this.cur_calc[this.lhs - 1].text,
-        rhs: this.cur_calc[this.cur_calc.length - 1].text
+        rhs: this.cur_calc[this.cur_calc.length - 1].text,
+        prev_id: this.lhs
       }
-
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation1", JSON.stringify(data))
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation", JSON.stringify(data))
       this.cur_calc.push(response.data)
       this.r_query_mode = undefined
-            
-    }, 
-
-    doIntegrateByEquation1: async function(){
-      this.clear_separate_integral();
-      const data = {
-        rhs: this.cur_calc[this.cur_calc.length - 1].text,
-        lhs: this.cur_calc[this.lhs - 1].text
-      }
-
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-same-integral", JSON.stringify(data))
-      for(var i = 0; i < response.data.length; ++i){
-        this.sep_int.push(response.data[i]);
-      }
-      this.r_query_mode = "same_integral";
     }, 
 
     polynomialDivision: async function() {
