@@ -880,12 +880,11 @@ def translate_item(item, target=None, *, debug=False):
             # Integration by parts using u and v
             rewr_t = get_at_location(loc, pt.rhs)
             assert rewr_t.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
-            u = parse_expr(step['params']['parts_u'])
-            v = parse_expr(step['params']['parts_v'])
-            ori_name = rewr_t.arg.var_name
-            ori_var = Var(ori_name, realT)
-            u = Term.mk_abs(ori_var, expr_to_holpy(u))
-            v = Term.mk_abs(ori_var, expr_to_holpy(v))
+            u = expr_to_holpy(parse_expr(step['params']['parts_u']))
+            v = expr_to_holpy(parse_expr(step['params']['parts_v']))
+            ori_var = term.get_vars([u, v])[0]
+            u = Term.mk_abs(ori_var, u)
+            v = Term.mk_abs(ori_var, v)
             cv = integrate_by_parts(u, v)
 
         elif reason == 'Rewrite':

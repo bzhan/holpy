@@ -1151,14 +1151,6 @@
                     "text": "INT x:[0,pi]. sqrt(2) * sqrt(cos(x) ^ 2)"
                 },
                 {
-                    "latex": "(\\int_{0}^{\\pi/2} \\sqrt{2} * \\sqrt{\\cos^{2}(x)} \\,\\mathrm{dx}) + (\\int_{\\pi/2}^{\\pi} \\sqrt{2} * \\sqrt{\\cos^{2}(x)} \\,\\mathrm{dx})",
-                    "params": {
-                        "c": "pi / 2"
-                    },
-                    "reason": "Split region",
-                    "text": "(INT x:[0,pi / 2]. sqrt(2) * sqrt(cos(x) ^ 2)) + (INT x:[pi / 2,pi]. sqrt(2) * sqrt(cos(x) ^ 2))"
-                },
-                {
                     "latex": "2 \\sqrt{2}",
                     "reason": "Simplification",
                     "text": "2 * 2 ^ (1/2)"
@@ -1386,6 +1378,7 @@
                 {
                     "_latex_reason": "Integrate by parts, \\(u = e^{2 x}, v = -\\cos{(x)}\\)",
                     "latex": "e^{\\pi} - 2 ((\\left. (-\\cos{(x)}) e^{2 x} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} (-2 \\cos{(x)}) e^{2 x} \\,\\mathrm{dx}))",
+                    "location": "1.1",
                     "params": {
                         "parts_u": "exp(2*x)",
                         "parts_v": "-cos(x)"
@@ -1397,6 +1390,16 @@
                     "latex": "-2 + e^{\\pi} - 4 \\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx}",
                     "reason": "Simplification",
                     "text": "(-2 + exp(pi)) - 4 * (INT x:[0,pi / 2]. cos(x) * exp(2 * x))"
+                },
+                {
+                    "_latex_reason": "By solving equation: \\(\\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx} = -2 + e^{\\pi} - 4 \\int_{0}^{\\pi/2} \\cos{(x)} e^{2 x} \\,\\mathrm{dx}\\)",
+                    "latex": "-\\frac{2}{5} + \\frac{e^{\\pi}}{5}",
+                    "params": {
+                        "factor": "4",
+                        "prev_id": "0"
+                    },
+                    "reason": "Solve equation",
+                    "text": "-2/5 + 1/5 * exp(pi)"
                 }
             ],
             "name": "Exercise 33",
@@ -1534,12 +1537,13 @@
                     "text": "(1 + -cos(1) * exp(1) + sin(1) * exp(1)) - (INT u:[0,1]. sin(u) * exp(u))"
                 },
                 {
-                    "_latex_reason": "By solving equation: \\(\\int_{0}^{1} \\sin{(u)} e^{u} \\,\\mathrm{du} = \\int_{0}^{1} \\sin{(u)} e^{u} \\,\\mathrm{du}\\)",
+                    "_latex_reason": "By solving equation: \\(\\int_{0}^{1} \\sin{(u)} e^{u} \\,\\mathrm{du} = 1 + -\\cos{(1)} * e + \\sin{(1)} * e - (\\int_{0}^{1} \\sin{(u)} e^{u} \\,\\mathrm{du})\\)",
                     "latex": "\\frac{1}{2} + -\\frac{1}{2} * \\cos{(1)} * e + \\frac{\\sin{(1)}}{2} * e",
                     "params": {
-                        "lhs": "INT u:[0,1]. sin(u) * exp(u)",
-                        "rhs": "INT u:[0,1]. sin(u) * exp(u)"
+                        "factor": "1",
+                        "prev_id": "1"
                     },
+                    "reason": "Solve equation",
                     "text": "1/2 + -(1/2) * cos(1) * exp(1) + 1/2 * sin(1) * exp(1)"
                 }
             ],
@@ -1562,6 +1566,11 @@
             ],
             "name": "Exercise 36",
             "problem": "INT x:[1/exp(1), exp(1)].abs(log(x))"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(x)}}}{\\sqrt{\\sin{(x)}} + \\sqrt{\\cos{(x)}}} \\,\\mathrm{dx}",
+            "name": "Interesting 1",
+            "problem": "INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))"
         }
     ]
 }
