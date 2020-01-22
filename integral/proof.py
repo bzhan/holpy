@@ -6,7 +6,7 @@ from kernel import term
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, \
+from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv
 from logic.logic import apply_theorem
 from logic import auto
@@ -631,15 +631,8 @@ class trig_rewr_conv(Conv):
             x = Var(self.var_name, realT)
 
         if self.code == 'TR5':
-            try:
-                # (sin x) ^ 2 = 1 - (cos x) ^ 2
-                return refl(t).on_rhs(thy, rewr_conv('sin_circle2'))
-            except ConvException:
-                # 1 - (sin x) ^ 2 = (cos x) ^ 2
-                eq_pt = apply_theorem(thy, 'sin_circle3', inst={'x': x})
-                eq_pt = ProofTerm.symmetric(eq_pt)
-                eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
-                return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
+            # (sin x) ^ 2 = 1 - (cos x) ^ 2
+            return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
         elif self.code == 'TR5b':
             # (sin x) ^ 2 + (cos x) ^ 2 = 1
             return refl(t).on_rhs(thy, rewr_conv('sin_circle'))
@@ -647,18 +640,11 @@ class trig_rewr_conv(Conv):
             # 1 = (sin x) ^ 2 + (cos x) ^ 2
             return ProofTerm.symmetric(apply_theorem(thy, 'sin_circle', inst={'x': x}))
         elif self.code == 'TR6':
-            try:
-                # (cos x) ^ 2 = 1 - (sin x) ^ 2
-                return refl(t).on_rhs(thy, rewr_conv('sin_circle3'))
-            except ConvException:
-                # 1 - (cos x) ^ 2 = (sin x) ^ 2
-                eq_pt = apply_theorem(thy, 'sin_circle2', inst={'x': x})
-                eq_pt = ProofTerm.symmetric(eq_pt)
-                eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
-                return refl(t).on_rhs(thy, auto.auto_conv(), rewr_conv(eq_pt))
+            # (cos x) ^ 2 = 1 - (sin x) ^ 2
+            return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle3')))
         elif self.code == 'TR7':
             # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
-            return refl(t).on_rhs(thy, rewr_conv('cos_lower_degree'))
+            return refl(t).on_rhs(thy, top_conv(rewr_conv('cos_lower_degree')))
         elif self.code == 'TR8':
             rewr_ths = [
                 'sin_lower_degree',  # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
@@ -667,24 +653,30 @@ class trig_rewr_conv(Conv):
                 'real_mul_cos_cos',  # cos x * cos y = 1/2 * (cos (x + y) + cos (x - y))
                 'real_mul_sin_sin',  # sin x * sin y = -1/2 * (cos (x + y) - cos (x - y))
             ]
+            pt = refl(t)
             for rewr_th in rewr_ths:
-                try:
-                    return refl(t).on_rhs(thy, rewr_conv('sin_lower_degree'))
-                except ConvException:
-                    pass
-            raise ConvException
-        elif self.code == 'TR11a':
-            # sin (2 * x) = 2 * sin x * cos x
-            return refl(t).on_rhs(thy, rewr_conv('sin_double'))
-        elif self.code == 'TR11b':
-            # cos (2 * x) = cos x ^ 2 - sin x ^ 2
-            return refl(t).on_rhs(thy, rewr_conv('cos_double'))
-        elif self.code == 'TR11c':
-            # cos (2 * x) = 2 * cos x ^ 2 - 1
-            return refl(t).on_rhs(thy, rewr_conv('cos_double_cos'))
-        elif self.code == 'TR11d':
-            # cos (2 * x) = 1 - 2 * sin x ^ 2
-            return refl(t).on_rhs(thy, rewr_conv('cos_double_sin'))
+                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+            return pt
+        elif self.code == 'TR9':
+            rewr_ths = [
+                'real_add_sin',
+                'real_sub_sin',
+                'real_add_cos',
+                'real_sub_cos'
+            ]
+            pt = refl(t)
+            for rewr_th in rewr_ths:
+                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+            return pt
+        elif self.code == 'TR11':
+            rewr_ths = [
+                'sin_double',  # sin (2 * x) = 2 * sin x * cos x
+                'cos_double',  # cos (2 * x) = cos x ^ 2 - sin x ^ 2
+            ]
+            pt = refl(t)
+            for rewr_th in rewr_ths:
+                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+            return pt
         else:
             raise NotImplementedError
 

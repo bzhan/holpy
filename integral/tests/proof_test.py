@@ -279,8 +279,7 @@ class ProofTest(unittest.TestCase):
     def testTrigRewrConv(self):
         test_data = [
             ("sin x ^ (2::nat)", "", "TR5", "1 - cos x ^ (2::nat)"),
-            ("1 - cos x ^ (2::nat)", "", "TR6", "sin x ^ (2::nat)"),
-            ("1 + -1 * cos x ^ (2::nat)", "", "TR6", "sin x ^ (2::nat)"),
+            ("1 - cos x ^ (2::nat)", "", "TR6", "1 - (1 - sin x ^ (2::nat))"),
 
             ("real_integral (real_closed_interval 0 pi) (%x. sin x ^ (2::nat) * sin x)", "0.0", "TR5",
              "real_integral (real_closed_interval 0 pi) (%x. (1 - cos x ^ (2::nat)) * sin x)"),

@@ -586,6 +586,7 @@ auto.add_global_autos_norm(
         'rpow_1',
         'rpow_mult',
         'rpow_mult_nat1',
+        'rpow_base_mult_neg1',
         'rpow_base_mult',
         'rpow_base_mult2',
         'rpow_base_divide',

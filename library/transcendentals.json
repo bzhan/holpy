@@ -15506,6 +15506,16 @@
             }
         },
         {
+            "name": "rpow_base_mult_neg1",
+            "prop": "¬(x = 0) ⟶ ¬(y = 0) ⟶ (x * y) ^ -(1::real) = x ^ -(1::real) * y ^ -(1::real)",
+            "ty": "thm",
+            "vars": {
+                "p": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "rpow_base_mult",
             "prop": "x > 0 ⟶ y > 0 ⟶ (x * y) ^ p = x ^ p * y ^ p",
             "ty": "thm",

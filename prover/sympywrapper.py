@@ -132,7 +132,9 @@ def solve_with_interval(goal, cond):
         except SymPyException:
             return False
 
+        # print("Sympy solve: ", sympy_goal, " on interval ", interval)
         res = sympy.solveset(sympy_goal, var, interval)
+        # print("Result: ", res)
         return res == sympy.EmptySet
 
     try:

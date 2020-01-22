@@ -1131,44 +1131,32 @@
                     "text": "INT x:[0,pi]. sqrt(1 + cos(2 * x))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(1 + \\cos{(2 x)}\\) to \\(-\\sin^{2}x + \\cos^{2}x + 1\\)",
-                    "latex": "\\int_{0}^{\\pi} \\sqrt{-\\sin^{2}x + \\cos^{2}x + 1} \\,\\mathrm{dx}",
-                    "location": "0.0",
+                    "_latex_reason": "Rewrite trigonometric \\(\\sqrt{1 + \\cos{(2 x)}}\\) to \\(\\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1}\\)",
+                    "latex": "\\int_{0}^{\\pi} \\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
                         "rule": "TR11"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi]. sqrt((-(sin(x) ^ 2) + cos(x) ^ 2) + 1)"
+                    "text": "INT x:[0,pi]. sqrt(-(sin(x) ^ 2) + cos(x) ^ 2 + 1)"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(-\\sin^{2}x + \\cos^{2}x + 1\\) to \\(2 * \\cos^{2}x\\)",
-                    "latex": "\\int_{0}^{\\pi} \\sqrt{2 * \\cos^{2}x} \\,\\mathrm{dx}",
-                    "location": "0.0",
+                    "_latex_reason": "Rewrite trigonometric \\(\\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1}\\) to \\(\\sqrt{2} * \\sqrt{\\cos^{2}(x)}\\)",
+                    "latex": "\\int_{0}^{\\pi} \\sqrt{2} * \\sqrt{\\cos^{2}(x)} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
                         "rule": "TR5"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi]. sqrt(2 * cos(x) ^ 2)"
+                    "text": "INT x:[0,pi]. sqrt(2) * sqrt(cos(x) ^ 2)"
                 },
                 {
-                    "latex": "\\int_{0}^{\\pi} \\sqrt{2} * \\left| \\cos{(x)} \\right| \\,\\mathrm{dx}",
-                    "reason": "Simplification",
-                    "text": "INT x:[0,pi]. 2 ^ (1/2) * abs(cos(x))"
-                },
-                {
-                    "latex": "(\\int_{0}^{\\pi/2} \\sqrt{2} * \\cos{(x)} \\,\\mathrm{dx}) + (\\int_{\\pi/2}^{\\pi} \\sqrt{2} * -\\cos{(x)} \\,\\mathrm{dx})",
-                    "reason": "Eliminate abs",
-                    "text": "(INT x:[0,pi / 2]. 2 ^ (1/2) * cos(x)) + (INT x:[pi / 2,pi]. 2 ^ (1/2) * -cos(x))"
-                },
-                {
-                    "latex": "\\sqrt{2} * (\\int_{0}^{\\pi/2} \\cos{(x)} \\,\\mathrm{dx}) + \\sqrt{2} * -1 * (\\int_{\\pi/2}^{\\pi} \\cos{(x)} \\,\\mathrm{dx})",
-                    "reason": "Linearity",
-                    "text": "2 ^ (1/2) * (INT x:[0,pi / 2]. cos(x)) + (2 ^ (1/2) * -1) * (INT x:[pi / 2,pi]. cos(x))"
-                },
-                {
-                    "latex": "\\sqrt{2} * (\\left. \\sin{(x)} \\right\\vert_{x=0}^{\\pi/2}) + \\sqrt{2} * -1 * (\\left. \\sin{(x)} \\right\\vert_{x=\\pi/2}^{\\pi})",
-                    "reason": "Common integrals",
-                    "text": "2 ^ (1/2) * ([sin(x)]_x=0,pi / 2) + (2 ^ (1/2) * -1) * ([sin(x)]_x=pi / 2,pi)"
+                    "latex": "(\\int_{0}^{\\pi/2} \\sqrt{2} * \\sqrt{\\cos^{2}(x)} \\,\\mathrm{dx}) + (\\int_{\\pi/2}^{\\pi} \\sqrt{2} * \\sqrt{\\cos^{2}(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "c": "pi / 2"
+                    },
+                    "reason": "Split region",
+                    "text": "(INT x:[0,pi / 2]. sqrt(2) * sqrt(cos(x) ^ 2)) + (INT x:[pi / 2,pi]. sqrt(2) * sqrt(cos(x) ^ 2))"
                 },
                 {
                     "latex": "2 \\sqrt{2}",
