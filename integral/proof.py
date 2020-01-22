@@ -659,21 +659,20 @@ class trig_rewr_conv(Conv):
         elif self.code == 'TR7':
             # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
             return refl(t).on_rhs(thy, rewr_conv('cos_lower_degree'))
-        elif self.code == 'TR7b':
-            # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
-            return refl(t).on_rhs(thy, rewr_conv('sin_lower_degree'))
-        elif self.code == 'TR8a':
-            # sin x * cos y = 1/2 * (sin (x + y) + sin (x - y))
-            return refl(t).on_rhs(thy, rewr_conv('real_mul_sin_cos'))
-        elif self.code == 'TR8b':
-            # cos x * sin y = 1/2 * (sin (x + y) - sin (x - y))
-            return refl(t).on_rhs(thy, rewr_conv('real_mul_cos_sin'))
-        elif self.code == 'TR8c':
-            # cos x * cos y = 1/2 * (cos (x + y) + cos (x - y))
-            return refl(t).on_rhs(thy, rewr_conv('real_mul_cos_cos'))
-        elif self.code == 'TR8d':
-            # sin x * sin y = -1/2 * (cos (x + y) - cos (x - y))
-            return refl(t).on_rhs(thy, rewr_conv('real_mul_sin_sin'))
+        elif self.code == 'TR8':
+            rewr_ths = [
+                'sin_lower_degree',  # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
+                'real_mul_sin_cos',  # sin x * cos y = 1/2 * (sin (x + y) + sin (x - y))
+                'real_mul_cos_sin',  # cos x * sin y = 1/2 * (sin (x + y) - sin (x - y))
+                'real_mul_cos_cos',  # cos x * cos y = 1/2 * (cos (x + y) + cos (x - y))
+                'real_mul_sin_sin',  # sin x * sin y = -1/2 * (cos (x + y) - cos (x - y))
+            ]
+            for rewr_th in rewr_ths:
+                try:
+                    return refl(t).on_rhs(thy, rewr_conv('sin_lower_degree'))
+                except ConvException:
+                    pass
+            raise ConvException
         elif self.code == 'TR11a':
             # sin (2 * x) = 2 * sin x * cos x
             return refl(t).on_rhs(thy, rewr_conv('sin_double'))

@@ -640,7 +640,8 @@ export default {
         //problem: this.cur_calc[this.cur_calc.length - 1].text,
         problem: this.sep_int[this.integral_index].text,
         parts_u: this.byparts_data.parts_u,
-        parts_v: this.byparts_data.parts_v
+        parts_v: this.byparts_data.parts_v,
+        location: this.sep_int[this.integral_index].location
       }
 
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-parts", JSON.stringify(data))

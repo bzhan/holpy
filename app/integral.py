@@ -487,6 +487,7 @@ def integral_integrate_by_parts():
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
         'reason': "Integrate by parts",
+        'location': data['location'],
         'params': {
             'parts_u': data['parts_u'],
             'parts_v': data['parts_v'],
