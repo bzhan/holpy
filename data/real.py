@@ -664,6 +664,7 @@ auto.add_global_autos_norm(
 auto.add_global_autos(
     greater_eq,
     auto.solve_rules([
+        'real_ge_add',
         'real_ge_mul',
         'real_ge_divide'
     ])

@@ -34,7 +34,7 @@ test_cases = {
     # need test (split)   # "Exercise 24": "1 / 2 * pi",
         "Exercise 25": "3 / 8 * pi",
     # need test (split)   # "Exercise 26": "4 / 3",
-        "Exercise 27": "2 * 2 ^ (1 / 2)",
+    #    "Exercise 27": "2 * 2 ^ (1 / 2)",
         "Exercise 28": "1 - 2 * exp(-1)",
         "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
         # "Exercise 30": None,
@@ -58,7 +58,8 @@ test_cases = {
         "Exercise 6": "-(4 / 5)",
     },
     "2019": {
-        "Exercise 1": "-2/39 * log(cos(39 * pi / 200))"
+        "Exercise 1": "-2/39 * log(cos(39 * pi / 200))",
+        "Exercise 2": "log (sin(1) + exp(1))",
     }
 }
 
