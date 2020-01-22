@@ -115,6 +115,7 @@ auto.add_global_autos_norm(
         'real_sin_pi',
         'sin_neg',
         'sin_neg_alt',
+        'sin_periodic_pi_div2',
     ])
 )
 
@@ -127,6 +128,7 @@ auto.add_global_autos_norm(
         'real_cos_pi',
         'cos_neg',
         'cos_neg_alt',
+        'cos_periodic_pi_div2',
     ])
 )
 
@@ -156,8 +158,8 @@ class norm_sin_conv(Conv):
 
         if r >= Fraction(1,2):
             eq = auto.auto_solve(thy, Term.mk_equals(
-                real.plus(real.times(real.to_binary_real(r-Fraction(1,2)), real.pi),
-                          real.divides(real.pi, real.to_binary_real(2))),
+                real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
+                          real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
 
@@ -198,8 +200,8 @@ class norm_cos_conv(Conv):
 
         if r >= Fraction(1,2):
             eq = auto.auto_solve(thy, Term.mk_equals(
-                real.plus(real.times(real.to_binary_real(r-Fraction(1,2)), real.pi),
-                          real.divides(real.pi, real.to_binary_real(2))),
+                real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
+                          real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
 

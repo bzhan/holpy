@@ -1569,6 +1569,41 @@
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(x)}}}{\\sqrt{\\sin{(x)}} + \\sqrt{\\cos{(x)}}} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(x)}}}{\\sqrt{\\sin{(x)}} + \\sqrt{\\cos{(x)}}} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(y\\) for \\(\\frac{\\pi}{2} - x\\)",
+                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\cos{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}} \\,\\mathrm{dy}",
+                    "params": {
+                        "f": "-(cos(y) ^ (1/2) / (cos(y) ^ (1/2) + sin(y) ^ (1/2)))",
+                        "g": "pi / 2 - x",
+                        "var_name": "y"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT y:[0,pi / 2]. cos(y) ^ (1/2) / (cos(y) ^ (1/2) + sin(y) ^ (1/2))"
+                },
+                {
+                    "reason": "Rewrite fraction",
+                    "params": {
+                        "rhs": "1 - sqrt (sin(x)) / (sqrt (sin(x)) + sqrt (cos(x)))",
+                        "denom": "sqrt (sin(x)) + sqrt (cos(x))"
+                    }
+                },
+                {
+                    "reason": "Simplification"
+                },
+                {
+                    "reason": "Solve equation",
+                    "params": {
+                        "factor": "1",
+                        "prev_id": "0"
+                    }
+                }
+            ],
             "name": "Interesting 1",
             "problem": "INT x:[0,pi/2]. sqrt(sin(x)) / (sqrt(sin(x)) + sqrt(cos(x)))"
         }

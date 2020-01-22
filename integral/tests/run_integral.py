@@ -44,6 +44,7 @@ test_cases = {
         "Exercise 34": "-(1 / 4) * pi + 1 / 6 * pi ^ 3",
         "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
     # need test (split)    # "Exercise 36": "2 + -2 * exp (-1)",
+        "Interesting 1": "1 / 4 * pi",
     },
     "2013": {
         "Exercise 2": "-2 + exp 1 + exp 3",
