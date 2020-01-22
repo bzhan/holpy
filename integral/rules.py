@@ -289,7 +289,6 @@ class Substitution1(Rule):
         var_subst = self.var_subst
         try:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-        
             gu = gu[0] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             print("gu: ", gu)

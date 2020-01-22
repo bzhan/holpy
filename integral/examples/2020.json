@@ -1,0 +1,71 @@
+{
+    "content": [
+        {
+            "_problem_latex": "\\int_{e}^{e^{e}} \\frac{\\log{(x)} \\log{(\\log{(x)})}}{x} \\,\\mathrm{dx}",
+            "name": "Exercise 3",
+            "problem": "INT x:[exp(1), exp(exp(1))]. (log(x)*log(log(x)))/x"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{1}{x ^ 2 + (x - 1) ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{x ^ 2 + (x - 1) ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 1 / (x ^ 2 + (x - 1) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(x ^ 2 + (x - 1) ^ 2\\) to \\(x ^ 2 + (x - 1) (x - 1)\\)",
+                    "latex": "\\int_{0}^{1} \\frac{1}{x ^ 2 + (x - 1) (x - 1)} \\,\\mathrm{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "rhs": "x^2+(x-1)*(x-1)"
+                    },
+                    "reason": "Rewrite",
+                    "text": "INT x:[0,1]. 1 / (x ^ 2 + (x - 1) * (x - 1))"
+                },
+                {
+                    "latex": "\\int_{0}^{1} \\frac{1}{1 - 2 x + 2 x ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,1]. 1 / ((1 - 2 * x) + 2 * x ^ 2)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 x - 1\\)",
+                    "latex": "\\int_{-1}^{1} \\frac{1}{2} (\\frac{1}{\\frac{1}{2} + \\frac{1}{2} u ^ 2}) \\,\\mathrm{du}",
+                    "params": {
+                        "f": "1/2 * (1 / (1/2 + 1/2 * u ^ 2))",
+                        "g": "2 * x - 1",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[-1,1]. 1/2 * (1 / (1/2 + 1/2 * u ^ 2))"
+                },
+                {
+                    "latex": "\\frac{1}{2} \\int_{-1}^{1} \\frac{1}{\\frac{1}{2} + \\frac{1}{2} u ^ 2} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "1/2 * (INT u:[-1,1]. 1 / (1/2 + 1/2 * u ^ 2))"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(\\frac{1}{2} + \\frac{1}{2} u ^ 2\\) to \\(\\frac{1}{2} (1 + u ^ 2)\\)",
+                    "latex": "\\frac{1}{2} \\int_{-1}^{1} \\frac{1}{\\frac{1}{2} (1 + u ^ 2)} \\,\\mathrm{du}",
+                    "location": "1.0.1",
+                    "params": {
+                        "rhs": "1/2*(1 + u^2)"
+                    },
+                    "reason": "Rewrite",
+                    "text": "1/2 * (INT u:[-1,1]. 1 / (1/2 * (1 + u ^ 2)))"
+                },
+                {
+                    "latex": "\\frac{1}{2} \\pi",
+                    "reason": "Simplification",
+                    "text": "1/2 * pi"
+                }
+            ],
+            "name": "Exercise 5",
+            "problem": "INT x:[0, 1].1/(x^2+(x-1)^2)"
+        },
+        {
+            "name": "Exercise 7",
+            "problem": "INT x:[0, pi/4]. sin(x)^4*cos(x)^4*(cos(x) + sin(x))*(cos(x) - sin(x))"
+        }
+    ]
+}

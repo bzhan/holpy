@@ -468,6 +468,8 @@ class Expr:
                         return poly.constant(Const(1))
                     elif y.val == 1:
                         return x.to_poly()
+                    elif y.val == 2:
+                        return x.to_poly()*x.to_poly()
                     else:
                         if x.ty == CONST:
                             if isinstance(x.val, int) and (isinstance(y.val, Fraction) and y.val.denominator == 1 or isinstance(y.val, int)):

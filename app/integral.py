@@ -121,6 +121,7 @@ def integrate_by_equation():
             "factor": str(coeff),
             "prev_id": str(int(data['prev_id']) - 1)
         },
+        "reason": "Solve equation",
         "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
             integral.latex.convert_expr(lhs), integral.latex.convert_expr(rhs)
         )
@@ -417,6 +418,8 @@ def integral_rewrite_expr():
     try:
         new_expr = integral.parser.parse_expr(data['new_expr'])
         location = data['relative_location']
+        print(new_expr.normalize())
+        print(old_expr.normalize())
         if new_expr.normalize() != old_expr.normalize() or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False

@@ -14,12 +14,13 @@
           <b-dropdown-item href="#" v-on:click='save'>Save</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Actions" left>
-          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>          <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='superSimplify'>Simplify</b-dropdown-item>          
+          <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='substitution1'>Substitution inverse</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByParts'>Integrate by parts</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Rewrite fraction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>          <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='trigtransform'>Trig Identity</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Split Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
@@ -187,7 +188,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'test',    // Currently opened file
+      filename: '2019',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
