@@ -1057,23 +1057,23 @@
             "_problem_latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}(x)} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}x} \\,\\mathrm{dx}",
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} - \\cos^{3}(x)} \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) - cos(x) ^ 3)"
                 },
                 {
-                    "_latex_reason": "Rewrite \\(\\cos{(x)} - \\cos^{3}x\\) to \\(\\cos{(x)} (1 - \\cos^{2}x)\\)",
-                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}x)} \\,\\mathrm{dx}",
+                    "_latex_reason": "Rewrite \\(\\cos{(x)} - \\cos^{3}(x)\\) to \\(\\cos{(x)} (1 - \\cos^{2}(x))\\)",
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} (1 - \\cos^{2}(x))} \\,\\mathrm{dx}",
                     "location": "0.0",
                     "params": {
                         "rhs": "cos(x)*(1 - cos(x)^2)"
                     },
-                    "reason": "Rewrite",
+                    "reason": "Rewrite fraction",
                     "text": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(1 - \\cos^{2}x\\) to \\(\\sin^{2}x\\)",
-                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}x} \\,\\mathrm{dx}",
+                    "_latex_reason": "Rewrite trigonometric \\(1 - \\cos^{2}(x)\\) to \\(\\sin^{2}(x)\\)",
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,\\mathrm{dx}",
                     "location": "0.0.1",
                     "params": {
                         "rule": "TR6"
@@ -1087,31 +1087,41 @@
                     "text": "INT x:[-pi / 2,pi / 2]. cos(x) ^ (1/2) * abs(sin(x))"
                 },
                 {
-                    "latex": "(\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx}) + (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} (-\\sin{(x)}) \\,\\mathrm{dx})",
-                    "reason": "Eliminate abs",
-                    "text": "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) + (INT x:[-pi / 2,0]. cos(x) ^ (1/2) * -sin(x))"
+                    "latex": "(\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} (-\\sin{(x)}) \\,\\mathrm{dx}) + (\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "c": "0"
+                    },
+                    "reason": "Split region",
+                    "text": "(INT x:[-pi / 2,0]. cos(x) ^ (1/2) * -sin(x)) + (INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)Substitute \\(u\\) for \\(\\cos{(x)}\\)",
-                    "latex": "(\\int_{0}^{1} --\\sqrt{u} \\,\\mathrm{du}) + (\\int_{0}^{1} \\sqrt{u} \\,\\mathrm{du})",
-                    "location": "1",
+                    "latex": "(\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx}) - (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) - (INT x:[-pi / 2,0]. cos(x) ^ (1/2) * sin(x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                    "latex": "(\\int_{0}^{1} \\sqrt{u} \\,\\mathrm{du}) - (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx})",
+                    "location": "0",
                     "params": {
-                        "f": "u ^ (1/2)",
+                        "f": "-(u ^ (1/2))",
                         "g": "cos(x)",
                         "var_name": "u"
                     },
-                    "reason": "SubstitutionSubstitution",
-                    "text": "(INT u:[0,1]. -(-1 * u ^ (1/2))) + (INT u:[0,1]. u ^ (1/2))"
+                    "reason": "Substitution",
+                    "text": "(INT u:[0,1]. u ^ (1/2)) - (INT x:[-pi / 2,0]. cos(x) ^ (1/2) * sin(x))"
                 },
                 {
-                    "latex": "2 * \\int_{0}^{1} \\sqrt{u} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "2 * (INT u:[0,1]. u ^ (1/2))"
-                },
-                {
-                    "latex": "2 * \\left. \\frac{1}{\\frac{3}{2}} * u ^ {(\\frac{3}{2})} \\right\\vert_{u=0}^{1}",
-                    "reason": "Common integrals",
-                    "text": "2 * ([u ^ (3/2) / (3/2)]_u=0,1)"
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                    "latex": "(\\int_{0}^{1} \\sqrt{u} \\,\\mathrm{du}) - (\\int_{0}^{1} -\\sqrt{u} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "-(u ^ (1/2))",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(INT u:[0,1]. u ^ (1/2)) - (INT u:[0,1]. -(u ^ (1/2)))"
                 },
                 {
                     "latex": "\\frac{4}{3}",
@@ -1587,21 +1597,30 @@
                     "text": "INT y:[0,pi / 2]. cos(y) ^ (1/2) / (cos(y) ^ (1/2) + sin(y) ^ (1/2))"
                 },
                 {
-                    "reason": "Rewrite fraction",
+                    "_latex_reason": "Rewrite \\(\\frac{\\sqrt{\\cos{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}}\\) to \\(1 - \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}}\\)",
+                    "latex": "\\int_{0}^{\\pi/2} 1 - \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}} \\,\\mathrm{dy}",
+                    "location": "0",
                     "params": {
-                        "rhs": "1 - sqrt (sin(x)) / (sqrt (sin(x)) + sqrt (cos(x)))",
-                        "denom": "sqrt (sin(x)) + sqrt (cos(x))"
-                    }
+                        "denom": "cos(y) ^ (1/2) + sin(y) ^ (1/2)",
+                        "rhs": "1 - sin(y) ^ (1/2) / (cos(y) ^ (1/2) + sin(y) ^ (1/2))"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "INT y:[0,pi / 2]. 1 - sin(y) ^ (1/2) / (cos(y) ^ (1/2) + sin(y) ^ (1/2))"
                 },
                 {
-                    "reason": "Simplification"
+                    "latex": "\\frac{1}{2} \\pi - (\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}} \\,\\mathrm{dy})",
+                    "reason": "Simplification",
+                    "text": "1/2 * pi - (INT y:[0,pi / 2]. sin(y) ^ (1/2) / (cos(y) ^ (1/2) + sin(y) ^ (1/2)))"
                 },
                 {
-                    "reason": "Solve equation",
+                    "_latex_reason": "By solving equation: \\(\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(x)}}}{\\sqrt{\\cos{(x)}} + \\sqrt{\\sin{(x)}}} \\,\\mathrm{dx} = \\frac{1}{2} \\pi - (\\int_{0}^{\\pi/2} \\frac{\\sqrt{\\sin{(y)}}}{\\sqrt{\\cos{(y)}} + \\sqrt{\\sin{(y)}}} \\,\\mathrm{dy})\\)",
+                    "latex": "\\frac{1}{4} \\pi",
                     "params": {
                         "factor": "1",
                         "prev_id": "0"
-                    }
+                    },
+                    "reason": "Solve equation",
+                    "text": "1/4 * pi"
                 }
             ],
             "name": "Interesting 1",

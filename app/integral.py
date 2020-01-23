@@ -445,23 +445,42 @@ def integral_rewrite_expr():
         location = data['relative_location']
         print(new_expr.normalize())
         print(old_expr.normalize())
-        if new_expr.normalize() != old_expr.normalize() or new_expr.findVar()[0].name != problem.var:
+        if integral.expr.sympy_style(new_expr).simplify() != integral.expr.sympy_style(old_expr).simplify() or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False
             })
         new_problem = integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(location, new_expr))
-        return jsonify({
-            'flag': True,
-            'text': str(new_problem),
-            'latex': integral.latex.convert_expr(new_problem),
-            'reason': "Rewrite",
-            '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
-                                                            integral.latex.convert_expr(new_expr)),
-            'params': {
-                'rhs': data['new_expr']
-            },
-            "location": data['absolute_location']
-        })
+        if old_expr.ty == integral.expr.OP and old_expr.op == "/" or\
+            old_expr.ty == integral.expr.OP and old_expr.op == "*" and\
+                old_expr.args[1].ty == integral.expr.OP and old_expr.args[1].op == "^" and\
+                    old_expr.args[1].args[1] == integral.expr.Const(-1):
+            denom = old_expr.args[1]
+            return jsonify({
+                'flag': True,
+                'text': str(new_problem),
+                'latex': integral.latex.convert_expr(new_problem),
+                'reason': "Rewrite fraction",
+                '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
+                                                                integral.latex.convert_expr(new_expr)),
+                'params': {
+                    'rhs': data['new_expr'],
+                    'denom': str(denom)
+                },
+                "location": data['absolute_location']
+             })
+        else:
+            return jsonify({
+                'flag': True,
+                'text': str(new_problem),
+                'latex': integral.latex.convert_expr(new_problem),
+                'reason': "Rewrite fraction",
+                '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
+                                                                integral.latex.convert_expr(new_expr)),
+                'params': {
+                    'rhs': data['new_expr']
+                },
+                "location": data['absolute_location']
+            })
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         return jsonify({
                 'flag': False

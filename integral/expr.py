@@ -1132,14 +1132,21 @@ class Integral(Expr):
         return hash((INTEGRAL, self.var, self.lower, self.upper, self.body))
 
     def __eq__(self, other):
-        return other.ty == INTEGRAL and self.var == other.var and \
-            self.lower == other.lower and self.upper == other.upper and self.body == other.body
+        if other.ty != INTEGRAL:
+            return False
+        condition1 = other.ty == INTEGRAL and other.lower == self.lower and other.upper == self.upper
+        other_copy = copy.deepcopy(other).alpha_convert(self.var) 
+        return other.ty == INTEGRAL and self.lower == other.lower and self.upper == other.upper and self.body == other_copy.body
 
     def __str__(self):
         return "INT %s:[%s,%s]. %s" % (self.var, str(self.lower), str(self.upper), str(self.body))
 
     def __repr__(self):
         return "Integral(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+
+    def alpha_convert(self, alpha):
+        alpha_eq_integral = copy.deepcopy(self)
+        return Integral(alpha, alpha_eq_integral.lower, alpha_eq_integral.upper, alpha_eq_integral.body.replace_trig(parser.parse_expr(self.var), parser.parse_expr(alpha)))
 
 class EvalAt(Expr):
     """Evaluation at upper and lower, then subtract."""

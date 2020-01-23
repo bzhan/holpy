@@ -480,8 +480,10 @@ class ElimAbs(Rule):
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
     def __init__(self, lhs, rhs):
+        assert isinstance(lhs, Integral)
         self.lhs = lhs.normalize()
         self.rhs = rhs.normalize()
+        self.var = lhs.var
 
     def validate(self):
         """Determine whether the lhs exists in rhs"""
@@ -492,7 +494,7 @@ class IntegrateByEquation(Rule):
             if i.normalize() == self.lhs:
                 return True
         return False
-    
+
     def getCoeff(self):
         """Get coeff of the lhs integral in the rhs."""
         coeff = Const(1)
@@ -501,26 +503,31 @@ class IntegrateByEquation(Rule):
             if e.ty == expr.OP:
                 if len(e.args) == 1:
                     if e.args[0].normalize() == self.lhs:
+                        self.var = e.args[0].var
                         coeff = coeff * Const(-uminus)
                     else:
                         coe(e.arg[0], uminus=-uminus)
                 else:
                     if e.op == "+":
                         if e.args[0].normalize() == self.lhs or e.args[1].normalize() == self.lhs:
+                            self.var = e.args[0].var
                             coeff = coeff * Const(uminus)
                         else:
                             coe(e.args[0],uminus=uminus)
                             coe(e.args[1],uminus=uminus)
                     elif e.op == "-":
                         if e.args[0].normalize() == self.lhs:
+                            self.var = e.args[0].var
                             coeff = coeff * Const(uminus)
                         elif e.args[1].normalize() == self.lhs:
+                            self.var = e.args[1].var
                             coeff = coeff * Const(-uminus)
                         else:
                             coe(e.args[0],uminus=uminus)
                             coe(e.args[1], uminus=-uminus)
                     elif e.op == "*":
                         if e.args[1].normalize() == self.lhs:
+                            self.var = e.args[1].var
                             coeff = e.args[0]*Const(uminus)
                         else:
                             coe(e.args[0],uminus=uminus)
@@ -536,6 +543,6 @@ class IntegrateByEquation(Rule):
         coeff = self.getCoeff()
         if coeff == Const(0):
             return self.rhs
-        new_rhs = (self.rhs+((-coeff)*self.lhs)).normalize().normalize()
+        new_rhs = (self.rhs+((-coeff)*self.lhs.alpha_convert(self.var))).normalize().normalize()
         return (new_rhs/(Const(1) - coeff)).normalize()
         
