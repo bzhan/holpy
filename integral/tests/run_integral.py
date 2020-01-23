@@ -2,6 +2,8 @@
 
 import unittest
 import json
+from pstats import Stats
+import cProfile
 
 from integral import proof
 from prover import sympywrapper
@@ -34,16 +36,17 @@ test_cases = {
     # need test (split)   # "Exercise 24": "1 / 2 * pi",
         "Exercise 25": "3 / 8 * pi",
     # need test (split)   # "Exercise 26": "4 / 3",
-        "Exercise 27": "2 * 2 ^ (1 / 2)",
+    #    "Exercise 27": "2 * 2 ^ (1 / 2)",
         "Exercise 28": "1 - 2 * exp(-1)",
         "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
         # "Exercise 30": None,
         "Exercise 31": "-4 + 4 * log(4)",
         "Exercise 32": "-(1 / 2) + 1 / 4 * pi",
-    # need test (solve equation)    # "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
+        "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
         "Exercise 34": "-(1 / 4) * pi + 1 / 6 * pi ^ 3",
-    # need test (solve equation)    # "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
+        "Exercise 35": "1 / 2 + -(1 / 2) * (cos(1) * exp(1)) + 1 / 2 * (exp(1) * sin(1))",
     # need test (split)    # "Exercise 36": "2 + -2 * exp (-1)",
+        "Interesting 1": "1 / 4 * pi",
     },
     "2013": {
         "Exercise 2": "-2 + exp 1 + exp 3",
@@ -58,7 +61,8 @@ test_cases = {
         "Exercise 6": "-(4 / 5)",
     },
     "2019": {
-        "Exercise 1": "-2/39 * log(cos(39 * pi / 200))"
+        "Exercise 1": "-2/39 * log(cos(39 * pi / 200))",
+        "Exercise 2": "log (sin(1) + exp(1))",
     }
 }
 
@@ -66,14 +70,28 @@ test_cases = {
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = ["test", "2019"]
+        test_only = None
+        profile = False
+
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
         for filename in filenames:
             with open('integral/examples/%s.json' % filename, 'r', encoding='utf-8') as f:
                 f_data = json.load(f)
 
             for item in f_data['content']:
-                if item['name'] in test_cases[filename]:
+                if (test_only and test_only[0] == filename and test_only[1] == item['name']) or \
+                   (not test_only and item['name'] in test_cases[filename]):
                     target = test_cases[filename][item['name']]
                     proof.translate_item(item, target, debug=True)
+
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
 
 
 if __name__ == "__main__":

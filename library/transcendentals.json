@@ -7693,7 +7693,7 @@
         },
         {
             "name": "sin_periodic_pi_div2",
-            "prop": "sin (x + pi / 2) = cos x",
+            "prop": "sin (1 / 2 * pi + x) = cos x",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -7701,7 +7701,7 @@
         },
         {
             "name": "cos_periodic_pi_div2",
-            "prop": "cos (x + pi / 2) = -(sin x)",
+            "prop": "cos (1 / 2 * pi + x) = -(sin x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
