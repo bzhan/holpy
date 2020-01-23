@@ -445,7 +445,7 @@ def integral_rewrite_expr():
         location = data['relative_location']
         print(new_expr.normalize())
         print(old_expr.normalize())
-        if integral.expr.sympy_style(new_expr).simplify() != integral.expr.sympy_style(old_expr).simplify() or new_expr.findVar()[0].name != problem.var:
+        if integral.expr.sympy_style(new_expr.normalize()).simplify() != integral.expr.sympy_style(old_expr.normalize()).simplify() or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False
             })
