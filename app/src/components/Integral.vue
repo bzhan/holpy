@@ -24,6 +24,7 @@
           <b-dropdown-item href="#" v-on:click='unfoldPower'>Unfold power</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='split'>Split Integral</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByEquation'>Integrate by equation</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='elimAbs'>Eliminate Abs</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -168,6 +169,18 @@
           <button v-on:click="closeIntegral">Close</button>
         </div>  
       </div>
+      <div v-if="display_integral === 'abs'">
+        <div v-for="(step, index) in sep_int" :key="index">
+          <span>{{index+1}}:</span>
+          <MathEquation
+          v-on:click.native="doElimAbs(index)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="closeIntegral">Close</button>
+        </div>  
+      </div>
     </div>
   </div>
 </template>
@@ -188,7 +201,7 @@ export default {
 
   data: function () {
     return {
-      filename: '2019',    // Currently opened file
+      filename: 'test',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -382,6 +395,7 @@ export default {
       this.integral_index = undefined;
       this.r_query_mode = undefined;
       this.process_index = undefined;
+      this.take_effect = 0;
     },
 
     clear_input_info: function() {
@@ -430,16 +444,27 @@ export default {
       }
     },
 
-    applyElimAbs: async function () {
-      this.clear_separate_integral()
-      if (this.cur_calc.length === 0)
+    elimAbs: function() {
+      if(this.cur_calc.length == 0){
         return;
+      }
+      this.query_mode = 'abs';
+      this.displaySeparateIntegrals_abs();
+    },
 
+    doElimAbs: async function (index) {
+      this.integral_index = index;
       const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
+        problem: this.sep_int[this.integral_index].text,
+        location: this.sep_int[this.integral_index].location
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-elim-abs", JSON.stringify(data))
-      this.cur_calc.push(response.data)
+      this.sep_int[this.integral_index] = response.data;
+      this.process_index = this.integral_index;
+      this.take_effect = 1;
+      this.closeIntegral();
+      this.query_mode = undefined;
+      
     },
 
     applyCommonIntegrals: async function () {
@@ -489,6 +514,15 @@ export default {
       this.display_integral = 'division'
     },
 
+
+  displaySeparateIntegrals_abs: async function(){
+      const data = {problem: this.cur_calc[this.cur_calc.length - 1].text}
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-separate-integrals", JSON.stringify(data))
+      for(var i = 0; i < response.data.length; ++i){
+        this.sep_int.push(response.data[i])
+      }
+      this.display_integral = 'abs'
+    },
 
     operate: function(index){
       this.clear_input_info()
