@@ -153,17 +153,18 @@ class ExprTest(unittest.TestCase):
             # ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
             # ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))", "2*log(x) - 2*exp(1)"),
             # ("sin(x)^2+cos(x)^2", "1"),
-            ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
-            ("2 * ((1/2) * 3 ^ (1/2))", "3 ^ (1/2)")
+            # ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
+            # ("2 * ((1/2) * 3 ^ (1/2))", "3 ^ (1/2)"),
+            # ("exp(5 * x) * 3 / exp(3 * x)",  "3 * exp(2 * x)"),
+            # ("exp(5 * x) * exp(2 * x) / 7", "1/7 * exp(7 * x)"),
+            # ("(exp(4 * x) -1) * exp(4 * x)  ", "-exp(4 * x) + exp(8 * x)"),
+            ("(-u + 1) ^ 3 * (1 - u) ^ 2 ^ (-1)", "1 - u")
             #("2 * (-((1/2) * -(3 ^ (1/2))) + 1)", "1")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
 
         for s, res in test_data:
             t = parse_expr(s)
-            print(t.to_poly().monomials[0].coeff)
-            print([t])
-            print(t.normalize())
             self.assertEqual(str(t.normalize()), res)
 
     def testGetSubExpr(self):
