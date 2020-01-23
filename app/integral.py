@@ -63,8 +63,7 @@ def integral_simplify():
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
-    rules_set = [integral.rules.OnSubterm(integral.rules.ElimAbs()), 
-                        integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    rules_set = [integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     def simplify(problem):
         for i in range(3):
             for r in rules_set:               
@@ -89,16 +88,40 @@ def integral_common_integral():
         'reason': "Common integrals"
     })
 
+# @app.route("/api/integral-elim-abs", methods=["POST"])
+# def integral_elim_abs():
+#     data = json.loads(request.get_data().decode('utf-8'))
+#     rule = integral.rules.OnSubterm(integral.rules.ElimAbs())
+#     problem = integral.parser.parse_expr(data['problem'])
+#     new_problem = rule.eval(problem)
+#     return jsonify({
+#         'text': str(new_problem),
+#         'latex': integral.latex.convert_expr(new_problem),
+#         'reason': "Eliminate abs"
+#     })
+
 @app.route("/api/integral-elim-abs", methods=["POST"])
 def integral_elim_abs():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.OnSubterm(integral.rules.ElimAbs())
+    rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
+    if not rule.check_zero_point(problem):
+        new_problem = rule.eval(problem)
+        return jsonify({
+            'reason': "Simplification",
+            'text': str(new_problem),
+            'latex': integral.latex.convert_expr(new_problem)
+        })
+    c = rule.get_zero_point(problem)
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
-        'reason': "Eliminate abs"
+        'reason': "Split region",
+        'params': {
+            'c': str(c)
+        },
+        'location': data['location']
     })
 
 @app.route("/api/integral-integrate-by-equation", methods=['POST'])
@@ -169,7 +192,9 @@ def integral_compose_integral():
     latex_reason = ""
     reason = ""
     modified_index = int(data['index'])
-    location = data['problem'][modified_index]['location']
+    location = ""
+    if 'location' in data['problem'][modified_index]:
+        location = data['problem'][modified_index]['location']
     denom = ""
     rhs = ""
     params = {}
@@ -420,23 +445,42 @@ def integral_rewrite_expr():
         location = data['relative_location']
         print(new_expr.normalize())
         print(old_expr.normalize())
-        if new_expr.normalize() != old_expr.normalize() or new_expr.findVar()[0].name != problem.var:
+        if integral.expr.sympy_style(new_expr).simplify() != integral.expr.sympy_style(old_expr).simplify() or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False
             })
         new_problem = integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(location, new_expr))
-        return jsonify({
-            'flag': True,
-            'text': str(new_problem),
-            'latex': integral.latex.convert_expr(new_problem),
-            'reason': "Rewrite",
-            '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
-                                                            integral.latex.convert_expr(new_expr)),
-            'params': {
-                'rhs': data['new_expr']
-            },
-            "location": data['absolute_location']
-        })
+        if old_expr.ty == integral.expr.OP and old_expr.op == "/" or\
+            old_expr.ty == integral.expr.OP and old_expr.op == "*" and\
+                old_expr.args[1].ty == integral.expr.OP and old_expr.args[1].op == "^" and\
+                    old_expr.args[1].args[1] == integral.expr.Const(-1):
+            denom = old_expr.args[1]
+            return jsonify({
+                'flag': True,
+                'text': str(new_problem),
+                'latex': integral.latex.convert_expr(new_problem),
+                'reason': "Rewrite fraction",
+                '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
+                                                                integral.latex.convert_expr(new_expr)),
+                'params': {
+                    'rhs': data['new_expr'],
+                    'denom': str(denom)
+                },
+                "location": data['absolute_location']
+             })
+        else:
+            return jsonify({
+                'flag': True,
+                'text': str(new_problem),
+                'latex': integral.latex.convert_expr(new_problem),
+                'reason': "Rewrite fraction",
+                '_latex_reason': "Rewrite \\(%s\\) to \\(%s\\)"%(integral.latex.convert_expr(old_expr),
+                                                                integral.latex.convert_expr(new_expr)),
+                'params': {
+                    'rhs': data['new_expr']
+                },
+                "location": data['absolute_location']
+            })
     except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         return jsonify({
                 'flag': False
