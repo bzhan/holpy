@@ -74,6 +74,8 @@ def convert_expr(e, mode="large"):
                         sx = "(" + sx + ")"
                     if y.ty == expr.OP and y.op != "^":
                         sy = "(" + sy + ")"
+                    if x.ty == expr.CONST and isinstance(x.val, Fraction) and mode == "short":
+                        sx = "(" + sx + ")"
                     return "%s %s" % (sx, sy)
                 elif x.ty == expr.CONST:
                     if x.val == -1:
@@ -89,7 +91,10 @@ def convert_expr(e, mode="large"):
                     elif isinstance(x.val, Fraction) and x.val.numerator == 1 and y.ty not in (expr.INTEGRAL, expr.OP, expr.EVAL_AT):
                         return "\\frac{%s}{%s}" % (sy, convert_expr(expr.Const(x.val.denominator)))
                     elif y.ty in (expr.VAR, expr.FUN):
-                        return "%s %s" % (sx, sy)
+                        if isinstance(x.val, Fraction):
+                            return "(%s) %s" % (sx, sy)
+                        else:
+                            return "%s %s" % (sx, sy)
                     elif not y.is_constant():
                         if y.ty == OP and y.op != '^':
                             return "%s (%s)" % (sx, sy)
