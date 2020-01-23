@@ -124,6 +124,8 @@ class Expr:
     def __xor__(self, other):
         if other == Const(1):
             return self
+        elif self.ty == FUN and self.func_name == "exp":
+            return Fun("exp", (self.args[0]*other).normalize())
         else:
             return Op("^", self, other)
 
@@ -403,11 +405,8 @@ class Expr:
                         return Op(y.op, (x *  y.args[0]).normalize()).to_poly()
                     else:
                         return Op(y.op, (x*y.args[0]).normalize(), (x * y.args[1]).normalize()).to_poly()
-                # elif x.ty == CONST and y.ty == OP and y.op == "*":
-                #     a, b = y.args
-                    # if (x
                 else:
-                    return x.to_poly() * y.to_poly()
+                    return x.normalize().to_poly() * y.normalize().to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
                 # if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
@@ -425,45 +424,51 @@ class Expr:
                 x, y = self.args
                 if x.normalize() == y.normalize():
                     return poly.singleton(Const(1))
-                if y.ty == OP and y.op == "*":
-                    a, b = y.args
-                    c = (x * (a ^ (Const(-1)))).normalize()
-                    d = (x * (b ^ (Const(-1)))).normalize()
-                    if c.ty == CONST:
-                        return (c / b).to_poly()
-                    elif d.ty == CONST:
-                        return (c / a).to_poly()
-                    else:
-                        pass
-                if x.ty == OP and x.op in ("+", "-") and len(x.args) == 2:
-                    return Op(x.op, Op("/", x.args[0], y), Op("/", x.args[1], y)).to_poly()
-                xp = x.to_poly()
-                yp = y.to_poly()
-                if x.ty == CONST and x.val == 0:
-                    return poly.constant(Const(0))
-                elif y.ty == CONST and y.val != 0:
-                    return xp.scale(Const(Fraction(1, y.val)))                
-                if len(yp.monomials) == 1:
-                    k = yp.monomials[0]
-                    k.coeff = Const(Fraction(1, k.coeff.normalize().val))
-                    k_factor = list(k.factors)
-                    k_factor = [(f1, -f2) for (f1, f2) in k_factor]
-                    k.factors = tuple(k_factor)
-                    return poly.Polynomial([m*k for m in xp.monomials])
+                if x.ty == FUN and x.func_name == "exp" and y.ty == FUN and y.func_name == "exp":
+                    return Fun("exp", (x.args[0] - y.args[0]).normalize()).to_poly()
                 else:
-                    c = Const(1)
-                    if len(yp.monomials) == 1:
-                        c *= yp.monomials[0].coeff
-                        yp.monomials[0].coeff = Const(1)
-                    if len(xp.monomials) == 1:
-                        c *= xp.monomials[0].coeff
-                        xp.monomials[0].coeff = Const(1)
-                    return poly.singleton(Op("/", from_poly(xp), from_poly(yp))).scale(c)
+                    return Op("*", x, Op("^", y, Const(-1))).to_poly()
+                # if y.ty == OP and y.op == "*":
+                #     a, b = y.args
+                #     c = (x * (a ^ (Const(-1)))).normalize()
+                #     d = (x * (b ^ (Const(-1)))).normalize()
+                #     if c.ty == CONST:
+                #         return (c / b).to_poly()
+                #     elif d.ty == CONST:
+                #         return (c / a).to_poly()
+                #     else:
+                #         pass
+                # if x.ty == OP and x.op in ("+", "-") and len(x.args) == 2:
+                #     return Op(x.op, Op("/", x.args[0], y), Op("/", x.args[1], y)).to_poly()
+                # xp = x.to_poly()
+                # yp = y.to_poly()
+                # if x.ty == CONST and x.val == 0:
+                #     return poly.constant(Const(0))
+                # elif y.ty == CONST and y.val != 0:
+                #     return xp.scale(Const(Fraction(1, y.val)))                
+                # if len(yp.monomials) == 1:
+                #     k = yp.monomials[0]
+                #     k.coeff = Const(Fraction(1, k.coeff.normalize().val))
+                #     k_factor = list(k.factors)
+                #     k_factor = [(f1, -f2) for (f1, f2) in k_factor]
+                #     k.factors = tuple(k_factor)
+                #     return poly.Polynomial([m*k for m in xp.monomials])
+                # else:
+                #     c = Const(1)
+                #     if len(yp.monomials) == 1:
+                #         c *= yp.monomials[0].coeff
+                #         yp.monomials[0].coeff = Const(1)
+                #     if len(xp.monomials) == 1:
+                #         c *= xp.monomials[0].coeff
+                #         xp.monomials[0].coeff = Const(1)
+                #     return poly.singleton(Op("/", from_poly(xp), from_poly(yp))).scale(c)
             elif self.op == "^":
                 x, y = self.args
                 if x.ty == FUN and x.func_name == "exp":
                     return Fun("exp", y * x.args[0]).to_poly()
-                if y.ty == CONST:
+                if y.ty == CONST or y.ty == OP and len(y.args) == 1 and y.args[0].ty == CONST:
+                    if y.ty == OP and len(y.args) == 1 and y.args[0].ty == CONST:
+                        y = Const(-y.args[0].val)
                     if y.val == Fraction(0):
                         return poly.constant(Const(1))
                     elif y.val == 1:
@@ -473,7 +478,10 @@ class Expr:
                     else:
                         if x.ty == CONST:
                             if isinstance(x.val, int) and (isinstance(y.val, Fraction) and y.val.denominator == 1 or isinstance(y.val, int)):
-                                return poly.constant(Const(Fraction(x.val**y.val)))
+                                if y.val > 0:
+                                    return poly.constant(Const(x.val ** y.val))
+                                else:
+                                    return poly.constant(Const(Fraction(1, x.val ** (-y.val))))
                             else:
                                 return poly.constant(Op("^", x, y))
                         elif x.ty == VAR:
@@ -751,7 +759,7 @@ def from_mono(m):
     exps = []
     for factor, pow in m.factors:
         if factor.ty == FUN and factor.func_name == "exp":
-            exps.append(factor.args[0])   
+            exps.append(factor.args[0]*Const(pow))   
         elif pow == 1:
             factors.append(factor)
         else:

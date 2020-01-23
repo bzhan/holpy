@@ -203,7 +203,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'UCDAVIS/usubstitution',    // Currently opened file
+      filename: 'UCDAVIS/Exponentials',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -399,6 +399,8 @@ export default {
       this.r_query_mode = undefined;
       this.process_index = undefined;
       this.take_effect = 0;
+      this.rewrite_error_flag = undefined;
+      this.split_success = undefined;
     },
 
     clear_input_info: function() {
