@@ -9180,10 +9180,194 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "atn_le_x",
+            "prop": "0 ≤ x ⟶ atn x ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "tan_abs_ge_x",
+            "prop": "abs x < pi / 2 ⟶ abs x ≤ abs (tan x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "asn",
             "prop": "asn y = (THE x. -pi / 2 ≤ x ∧ x ≤ pi / 2 ∧ sin x = y)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_asn",
+            "prop": "-1 ≤ y ⟶ y ≤ 1 ⟶ sin (asn y) = y",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_sin",
+            "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ asn (sin x) = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "ans_bounds_lt",
+            "prop": "-1 < y ⟶ y < 1 ⟶ -(pi / 2) < asn y ∧ asn y < pi / 2",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "asn_0",
+            "prop": "asn 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "asn_1",
+            "prop": "asn 1 = pi / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "asn_neg_1",
+            "prop": "asn (-1) = -(pi / 2)",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_bounds",
+            "prop": "-1 ≤ y ⟶ y ≤ 1 ⟶ -(pi / 2) ≤ asn y ∧ asn y ≤ pi / 2",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "asn_bounds_pi2",
+            "prop": "0 ≤ x ⟶ x ≤ 1 ⟶ 0 ≤ asn x ∧ asn x ≤ pi / 2",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_neg",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ asn (-x) = -(asn x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_asn_nz",
+            "prop": "-1 < x ⟶ x < 1 ⟶ ¬(cos (asn x) = 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_mono_lt_eq",
+            "prop": "abs x ≤ 1 ⟶ abs y ≤ 1 ⟶ asn x < asn y ⟷ x < y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_mono_le_eq",
+            "prop": "abs x ≤ 1 ⟶ abs y ≤ 1 ⟶ asn x ≤ asn y ⟷ x ≤ y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_mono_lt",
+            "prop": "-1 ≤ x ⟶ x < y ⟶ y ≤ 1 ⟶ asn x < asn y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_mono_le",
+            "prop": "-1 ≤ x ⟶ x ≤ y ⟶ y ≤ 1 ⟶ asn x ≤ asn y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
         },
         {
             "attributes": [
