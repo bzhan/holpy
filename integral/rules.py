@@ -232,50 +232,6 @@ class OnSubterm(Rule):
         else:
             raise NotImplementedError
 
-class Substitution(Rule):
-    """Apply substitution."""
-    def __init__(self, var_name, var_subst):
-        assert isinstance(var_name, str) and isinstance(var_subst, expr.Expr)
-        self.var_name = var_name
-        self.var_subst = var_subst
-        self.name = "Substitution"
-
-    def eval(self, e):
-        if e.ty != expr.INTEGRAL:
-            return e
-        self.var_name = parser.parse_expr(self.var_name)
-        d_name = expr.deriv(str(self.var_name.findVar()), self.var_name) # Derivates substitute expr
-        d_subst = expr.deriv(e.var, self.var_subst) #Derivates initial expr
-        d_subst = d_subst.replace_trig(self.var_subst.normalize(), self.var_subst)
-        div = d_name / d_subst
-        body2 = (e.body * div).replace_trig(self.var_subst, self.var_name)
-        body2 = parser.parse_expr(str(sympy_parser.parse_expr(str(body2).replace("^","**"))).replace("**","^"))
-        sol = solvers.solve(expr.sympy_style(self.var_name - self.var_subst), expr.sympy_style(str(e.var)))
-        body2 = body2.replace_trig(expr.holpy_style(str(e.var)), expr.holpy_style(sol[0]))
-        if self.var_name.ty == expr.VAR:
-            #u subsitutes f(x)
-            lower2 = self.var_subst.subst(e.var, e.lower).normalize()
-            upper2 = self.var_subst.subst(e.var, e.upper).normalize()
-        else:
-            #x substitue g(u)
-            lower2 = solvers.solve(sympy_parser.parse_expr(str(self.var_name - e.lower).replace("^","**")), sympy_parser.parse_expr(str(self.var_name.findVar())))[0]
-            upper2 = solvers.solve(sympy_parser.parse_expr(str(self.var_name - e.upper).replace("^","**")), sympy_parser.parse_expr(str(self.var_name.findVar())))[0]
-            lower2 = parser.parse_expr(str(lower2).replace("**", "^"))
-            upper2 = parser.parse_expr(str(upper2).replace("**", "^"))
-        var_subst_subst = expr.deriv(e.var, self.var_subst)
-        g, l = var_subst_subst.ranges(e.var, e.lower, e.upper)
-        new_integral = []
-        var = parser.parse_expr(str(e.var))
-        if len(g) != 0:
-            for i, j in g:
-                x, y = self.var_subst.replace(var, i).normalize(), self.var_subst.replace(var, j).normalize()
-                new_integral.append(expr.Integral(str(self.var_name.findVar()), x, y, body2))
-        if len(l) != 0:
-            for i, j in l:
-                x, y = self.var_subst.replace(var, i).normalize(), self.var_subst.replace(var, j).normalize()
-                new_integral.append(expr.Integral(str(self.var_name.findVar()), y, x, expr.Op("-", body2)))
-        return sum(new_integral[1:], new_integral[0])
-
 class Substitution1(Rule):
     """Apply substitution u = g(x) x = y(u)  f(x) = x+5  u=>x+1   (x+1)+4 """
     """INT x:[a, b]. f(g(x))*g(x)' = INT u:[g(a), g(b)].f(u)"""
@@ -289,40 +245,33 @@ class Substitution1(Rule):
         var_subst = self.var_subst
         try:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-            gu = gu[-1  ] if isinstance(gu, list) else gu
+            print(gu)
+            gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
             print("gu: ", gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
             print("c: ", c, expr.deriv(str(var_name), gu), c * expr.deriv(str(var_name), gu))
-            new_problem_body = (e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)).normalize().normalize()
+            new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
             print("new_problem_body: ", new_problem_body)
-            var_subst_deriv = expr.deriv(e.var, var_subst)
-            print("var_subst_deriv: ", var_subst_deriv)
-            up, down = var_subst_deriv.ranges(e.var, e.lower, e.upper)
-            new_integral = []
-            if len(up) != 0:
-                for l, u in up:
-                    i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
-                    j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
-                    new_integral.append(expr.Integral(self.var_name, i, j, new_problem_body))
-            if len(down) != 0:
-                for l, u in down:
-                    i = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(l)))
-                    j = expr.holpy_style(expr.sympy_style(var_subst).subs(expr.sympy_style(e.var), expr.sympy_style(u)))
-                    new_integral.append(expr.Integral(self.var_name, j, i, expr.Op("-",new_problem_body).normalize()))
-            print("!!!!!", sum(new_integral[1:], new_integral[0]), new_problem_body)
-            return sum(new_integral[1:], new_integral[0]), new_problem_body
-        except NotImplementedError as err:
+            lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
+            upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
+            if sympy_style(lower) < sympy_style(upper):
+                return Integral(self.var_name, lower, upper, new_problem_body), new_problem_body
+            else:
+                return Integral(self.var_name, upper, lower, Op("-", new_problem_body).normalize()), new_problem_body
+        except NotImplementedError as ex:
             dfx = expr.deriv(e.var, var_subst)
             body =holpy_style(sympy_style((e.body/dfx)))
             body = body.normalize().replace_trig(var_subst.normalize(), var_name)
             lower = var_subst.subst(e.var, e.lower).normalize()
             upper = var_subst.subst(e.var, e.upper).normalize()
-            print(body)
-            return Integral(self.var_name, lower, upper, body), body
-            #return sum(new_integral[1:], new_integral[0])
-
-
+            if var_subst not in body.findVar():
+                if sympy_style(lower) < sympy_style(upper):
+                    return Integral(self.var_name, lower, upper, body), body
+                else:
+                    return Integral(self.var_name, upper, lower, Op("-", body).normalize()), body
+            else:
+                raise NotImplementedError
 
 class Substitution2(Rule):
     """Apply substitution x = f(u)"""
@@ -433,20 +382,6 @@ class ElimAbs(Rule):
 
     def eval(self, e):
         assert e.ty == expr.INTEGRAL
-        # abs_expr = e.body.normalize().getAbsByMonomial()
-        # if abs_expr != Const(1):
-        #     greator = [] #collect all abs values greater than 0's set
-        #     smallor = [] #collect all abs values smaller than 0's set
-        #     g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
-        #     new_integral = []
-        #     for l, h in g:
-        #         body1 = copy.deepcopy(e.body)
-        #         new_integral.append(expr.Integral(e.var, l, h, body1.replace_trig(abs_expr, abs_expr.args[0])))
-        #     for l, h in s:
-        #         body2 = copy.deepcopy(e.body)
-        #         new_integral.append(expr.Integral(e.var, l, h, body2.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
-        #     return sum(new_integral[1:], new_integral[0])
-        # else:
         abs_expr = e.body.getAbs()
         zero_point = []
         for a in abs_expr:

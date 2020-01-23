@@ -100,6 +100,8 @@
       <div v-if="r_query_mode === 'byparts'">
         <div>
           <MathEquation data="Choose \(u\) and \(v\) such that \(u\cdot\mathrm{d}v\) is the integrand."/>
+          <br/>
+          <span>{{sep_int[integral_index].text}}</span>
         </div>
         <div>
           <MathEquation data="u ="/>
@@ -201,7 +203,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'test',    // Currently opened file
+      filename: 'UCDAVIS/usubstitution',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -258,6 +260,7 @@ export default {
     initialize: async function (index) {
       this.query_mode = undefined
       this.r_query_mode = undefined
+      this.display_integral = undefined
       this.cur_id = index
       this.take_effect = 0
       if ('calc' in this.content[index]) {
