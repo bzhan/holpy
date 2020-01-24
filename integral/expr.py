@@ -919,6 +919,15 @@ def deriv(var, e):
         elif e.func_name == "tan":
             x, = e.args
             return (sec(x) ^ Const(2) * deriv(var, x)).normalize()
+        elif e.func_name == "sec":
+            x, = e.args
+            return (sec(x) * tan(x) * deriv(var, x)).normalize()
+        elif e.func_name == "csc":
+            x, = e.args
+            return (-csc(x) * cot(x) * deriv(var, x)).normalize()
+        elif e.func_name == "cot":
+            x,  = e.args
+            return -(csc(x) ^ 2).normalize()
         elif e.func_name == "cot":
             x, = e.args
             return (-(sin(x) ^ Const(-2)) * deriv(var, x)).normalize()
@@ -1077,11 +1086,20 @@ class Fun(Expr):
 def sin(e):
     return Fun("sin", e)
 
+def sec(e):
+    return Fun("sec", e)
+
 def cos(e):
     return Fun("cos", e)
 
+def csc(e):
+    return Fun("csc", e)
+
 def tan(e):
     return Fun("tan", e)
+
+def cot(e):
+    return Fun("cot", e)
 
 def log(e):
     return Fun("log", e)

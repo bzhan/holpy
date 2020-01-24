@@ -158,7 +158,8 @@ class ExprTest(unittest.TestCase):
             # ("exp(5 * x) * 3 / exp(3 * x)",  "3 * exp(2 * x)"),
             # ("exp(5 * x) * exp(2 * x) / 7", "1/7 * exp(7 * x)"),
             # ("(exp(4 * x) -1) * exp(4 * x)  ", "-exp(4 * x) + exp(8 * x)"),
-            ("(-u + 1) ^ 3 * (1 - u) ^ 2 ^ (-1)", "1 - u")
+            # ("(-u + 1) ^ 3 * (1 - u) ^ 2 ^ (-1)", "1 - u"),
+            ("(2 + tan(x)) ^ 2", "1")
             #("2 * (-((1/2) * -(3 ^ (1/2))) + 1)", "1")
             # ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "(INT t:[0,(-1)/2]. (-1) * exp(t)))")
         ]
@@ -289,8 +290,7 @@ class ExprTest(unittest.TestCase):
     
     def testExtract(self):
         # test_data = parse_expr("1 / (1 + u ^ 2) + u / (1 + u ^ 2)")
-        test_data = parse_expr("([((-1/2015) * x) * (1 - x) ^ 2015]_x=0,1) - (INT x:[0,1]. (-1/2015) * (1 - x) ^ 2015)")
-        print(test_data.to_poly())
+        test_data = parse_expr("")
 
 
     def testGetAbsByMonomial(self):
