@@ -203,7 +203,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'UCDAVIS/Exponentials',    // Currently opened file
+      filename: 'UCDAVIS/Trignometric',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -695,8 +695,9 @@ export default {
         prev_id: this.lhs
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-integrate-by-equation", JSON.stringify(data))
-      this.cur_calc.push(response.data)
-      this.r_query_mode = undefined
+      this.cur_calc.push(response.data);
+      this.lhs = undefined;
+      this.r_query_mode = undefined;
     }, 
 
     polynomialDivision: async function() {
