@@ -277,7 +277,7 @@ class Substitution1(Rule):
         body = body.normalize().replace_trig(var_subst.normalize(), var_name)
         lower = var_subst.subst(e.var, e.lower).normalize()
         upper = var_subst.subst(e.var, e.upper).normalize()
-        if var_subst not in body.findVar():
+        if parser.parse_expr(e.var) not in body.findVar():
             if sympy_style(lower) < sympy_style(upper):
                 return Integral(self.var_name, lower, upper, body), body
             else:
