@@ -3,7 +3,7 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import expr
-from integral.expr import OP, CONST
+from integral.expr import OP, CONST, FUN, Const
 
 def convert_expr(e, mode="large"):
     if e.ty == expr.VAR:
@@ -43,8 +43,7 @@ def convert_expr(e, mode="large"):
                                 return "\\sqrt{%s}" % sx
                             else:
                                 return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
-                        elif y.val.denominator == 1:
-                            return "%s ^ {%s}" % (sx, sy)
+                        return "%s ^ {%s}" % (sx, sy)
                     if y.ty == expr.CONST and y.val < 0:
                         if y.val != -1:
                             new_expr = expr.Op("/", expr.Const(1), expr.Op("^", x, expr.Const(-y.val)))
@@ -64,19 +63,23 @@ def convert_expr(e, mode="large"):
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
                 if not x.is_constant() and not y.is_constant() or x == expr.Fun("pi") or y == expr.Fun("pi"):
-                    if x.ty == expr.OP and x.op != "^":
+                    if x.ty == expr.OP and (x.op not in ("^", "*")) and not len(x.args) == 1:
+                        print("wowow", x)
                         sx = "(" + sx + ")"
                     if y.ty == expr.OP and y.op != "^":
                         sy = "(" + sy + ")"
                     return "%s %s" % (sx, sy)
-                elif x.is_constant() and y.is_constant() and (y.ty != CONST or not (y.ty == OP and y.op in ("+", "-"))):
+                elif x.is_constant() and y.is_constant() and (y.ty != CONST or not (y.ty == OP and y.op in ("+", "-") or y.ty == CONST and isinstance(y.val, Fraction))):
                     if x.ty == expr.OP and x.op != "^" and len(x.args) != 1:
                         sx = "(" + sx + ")"
-                    if y.ty == expr.OP and y.op != "^":
+                    if y.ty == expr.OP and not (len(y.args) == 2 and y.op == "^" and y.args[0].ty != OP or y.args[1].ty == CONST and y.args[1].val == Fraction(1/2)):
+                        print("woowww", y,type(y.args[1].val), y.args[1].val == Fraction(1/2))
                         sy = "(" + sy + ")"
                     if x.ty == expr.CONST and isinstance(x.val, Fraction) and mode == "short":
                         sx = "(" + sx + ")"
                     return "%s %s" % (sx, sy)
+                elif x.is_constant() and y.ty == CONST and isinstance(y.val, Fraction) and y.val.numerator == 1 and y.val.denominator != 1:
+                    return "\\frac{%s}{%s}" % (sx, convert_expr(expr.Const(y.val.denominator)))
                 elif x.ty == expr.CONST:
                     if x.val == -1:
                         if y.ty == OP:
@@ -110,6 +113,7 @@ def convert_expr(e, mode="large"):
                             sy = "(%s)" % sy
                         return "%s %s %s" % (sx, e.op, sy)
                 else:
+                    print("wowowow", x)
                     if x.priority() < expr.op_priority[e.op]:
                         sx = "(%s)" % sx
                     if y.priority() < expr.op_priority[e.op]:
