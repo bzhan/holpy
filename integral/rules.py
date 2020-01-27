@@ -145,7 +145,6 @@ class CommonIntegral(Rule):
                         if a.func_name == "sec":
                             return EvalAt(e.var, e.lower, e.upper, expr.Fun("tan", *a.args))
                         elif a.func_name == "csc":
-                            print("wow")
                             return EvalAt(e.var, e.lower, e.upper, -expr.Fun("cot", *a.args))
                         else:
                             return e
@@ -411,36 +410,50 @@ class ElimAbs(Rule):
         return zero_point[0]
 
     def eval(self, e):
-        assert e.ty == expr.INTEGRAL
-        abs_expr = e.body.getAbs()
-        zero_point = []
-        for a in abs_expr:
-            arg = a.args[0]
-            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
-            zero_point += zeros
-        body = e.body
-        new_integral = []
-        if not zero_point:
-            for a in abs_expr:
-                body.replace_trig(a, a.args[0])
-            return expr.Integral(e.var, e.lower, e.upper, body)
-        else:
-            zero = zero_point[0]
-            zero_point += [sympy_style(e.upper), sympy_style(e.lower)]
-            zero_point.sort()
-            for i in range(len(zero_point) - 1):
-                body = copy.deepcopy(e.body)
-                integer = expr.Integral(e.var, holpy_style(zero_point[i]), holpy_style(zero_point[i + 1]), body)
-                for a in abs_expr:
-                    arg = a.args[0]
-                    g, l = arg.ranges(e.var, zero_point[i], zero_point[i + 1])
-                    if g:
-                        integer.body = integer.body.replace_trig(a, a.args[0])
-                    if l:
-                        integer.body = body.replace_trig(a, Op("-",a.args[0]))
-                new_integral.append(integer)
-                    #if Interval(sympy_style(zero_point[i]), sympy_style(zero_point[i + 1]))
+        if e.ty != expr.INTEGRAL:
+            return e
+        abs_expr = e.body.normalize().getAbsByMonomial()
+        if abs_expr != Const(1):
+            greator = [] #collect all abs values greater than 0's set
+            smallor = [] #collect all abs values smaller than 0's set
+            g, s = abs_expr.args[0].ranges(e.var, e.lower, e.upper) # g: value in abs > 0, s: value in abs < 0
+            new_integral = []
+            for l, h in g:
+                body1 = copy.deepcopy(e.body)
+                new_integral.append(expr.Integral(e.var, l, h, body1.replace_trig(abs_expr, abs_expr.args[0])))
+            for l, h in s:
+                body2 = copy.deepcopy(e.body)
+                new_integral.append(expr.Integral(e.var, l, h, body2.replace_trig(abs_expr, Op("-", abs_expr.args[0]))))
             return sum(new_integral[1:], new_integral[0])
+        else:
+            abs_expr = e.body.getAbs()
+            zero_point = []
+            for a in abs_expr:
+                arg = a.args[0]
+                zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
+                zero_point += zeros
+            body = e.body
+            new_integral = []
+            if not zero_point:
+                for a in abs_expr:
+                    body.replace_trig(a, a.args[0])
+                return expr.Integral(e.var, e.lower, e.upper, body)
+            else:
+                zero_point += [sympy_style(e.upper), sympy_style(e.lower)]
+                zero_point.sort()
+                for i in range(len(zero_point) - 1):
+                    body = copy.deepcopy(e.body)
+                    integer = expr.Integral(e.var, holpy_style(zero_point[i]), holpy_style(zero_point[i + 1]), body)
+                    for a in abs_expr:
+                        arg = a.args[0]
+                        g, l = arg.ranges(e.var, zero_point[i], zero_point[i + 1])
+                        if g:
+                            integer.body = integer.body.replace_trig(a, a.args[0])
+                        if l:
+                            integer.body = body.replace_trig(a, Op("-",a.args[0]))
+                    new_integral.append(integer)
+                        #if Interval(sympy_style(zero_point[i]), sympy_style(zero_point[i + 1]))
+                return sum(new_integral[1:], new_integral[0])
 
 class IntegrateByEquation(Rule):
     """When the initial integral occurs in the steps."""
@@ -456,6 +469,7 @@ class IntegrateByEquation(Rule):
         if not integrals:
             return False
         for i,j in integrals:
+            print(i.normalize(), self.lhs, i.normalize() == self.lhs)
             if i.normalize() == self.lhs:
                 return True
         return False
@@ -506,6 +520,7 @@ class IntegrateByEquation(Rule):
     def eval(self):
         """Eliminate the lhs's integral in rhs by solving equation."""
         coeff = self.getCoeff()
+        print("coeff: ", coeff)
         if coeff == Const(0):
             return self.rhs
         new_rhs = (self.rhs+((-coeff)*self.lhs.alpha_convert(self.var))).normalize().normalize()
