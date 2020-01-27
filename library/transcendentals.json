@@ -9390,6 +9390,69 @@
         {
             "attributes": [
                 "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "cos_acs",
+            "prop": "-1 ≤ y ⟶ y ≤ 1 ⟶ cos (acs y) = y",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_cos",
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ acs (cos x) = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_bounds_lt",
+            "prop": "-1 < y ⟶ y < 1 ⟶ 0 < acs y ∧ acs y < pi",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "acs_0",
+            "prop": "acs 0 = pi / 2",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "acs_1",
+            "prop": "acs 1 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "acs_neg_1",
+            "prop": "acs (-1) = pi",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
                 "hint_forward"
             ],
             "name": "sin_acs",
