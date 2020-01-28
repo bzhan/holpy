@@ -266,14 +266,10 @@ class Substitution1(Rule):
                 return Integral(self.var_name, upper, lower, Op("-", body).normalize()), body
         else:
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-            print(gu)
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
-            print("gu: ", gu)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-            print("c: ", c, expr.deriv(str(var_name), gu), c * expr.deriv(str(var_name), gu))
             new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
-            print("new_problem_body: ", new_problem_body)
             lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
             upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
             if sympy_style(lower) < sympy_style(upper):
@@ -367,7 +363,6 @@ class PolynomialDivision(Rule):
         if e.ty != expr.INTEGRAL:
             return e
         result = apart(expr.sympy_style(e.body))
-        print("!!!!!!!!!!!", result)
         return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))
 
 class ElimAbs(Rule):
@@ -376,11 +371,17 @@ class ElimAbs(Rule):
         self.name = "Elimate abs"
 
     def check_zero_point(self, e):
-        abs_expr = e.body.getAbs()
+        integrals = e.separate_integral()
+        if not integrals:
+            return False
+        abs_info = []
+        for i, j in integrals:
+            abs_expr = i.getAbs()
+            abs_info += [(a, i) for a in abs_expr]
         zero_point = []
-        for a in abs_expr:
+        for a, i in abs_info:
             arg = a.args[0]
-            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
+            zeros = solveset(expr.sympy_style(arg), expr.sympy_style(i.var), Interval(sympy_style(i.lower), sympy_style(i.upper), left_open = True, right_open = True))
             zero_point += zeros
         return len(zero_point) > 0
 
@@ -391,7 +392,7 @@ class ElimAbs(Rule):
             arg = a.args[0]
             zeros = solveset(expr.sympy_style(arg), expr.sympy_style(e.var), Interval(sympy_style(e.lower), sympy_style(e.upper), left_open = True, right_open = True))
             zero_point += zeros
-        return zero_point[0]
+        return holpy_style(zero_point[0])
 
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -453,7 +454,6 @@ class IntegrateByEquation(Rule):
         if not integrals:
             return False
         for i,j in integrals:
-            print(i.normalize(), self.lhs, i.normalize() == self.lhs)
             if i.normalize() == self.lhs:
                 return True
         return False
@@ -504,7 +504,6 @@ class IntegrateByEquation(Rule):
     def eval(self):
         """Eliminate the lhs's integral in rhs by solving equation."""
         coeff = self.getCoeff()
-        print("coeff: ", coeff)
         if coeff == Const(0):
             return self.rhs
         new_rhs = (self.rhs+((-coeff)*self.lhs.alpha_convert(self.var))).normalize().normalize()
