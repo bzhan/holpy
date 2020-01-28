@@ -320,11 +320,12 @@ class Theory():
         if T.is_stvar() or T.is_tvar():
             return None
         elif T.is_type():
+            if not self.has_type_sig(T.name):
+                raise TheoryException("Unknown type %s" % T.name)        
             if self.get_type_sig(T.name) != len(T.args):
-                raise TheoryException("Check type: " + repr(T))
-            else:
-                for arg in T.args:
-                    self.check_type(arg)
+                raise TheoryException("Incorrect arity for type %s" % T.name)
+            for arg in T.args:
+                self.check_type(arg)
         else:
             raise TypeError
 
