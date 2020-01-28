@@ -62,7 +62,7 @@ def convert_expr(e, mode="large"):
                     sy = "(%s)" % sy
                 return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
-                if not x.is_constant() and not y.is_constant() or x == expr.Fun("pi") or y == expr.Fun("pi"):
+                if not x.is_constant() and not y.is_constant() and not (y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0) or x == expr.Fun("pi") or y == expr.Fun("pi"):
                     if x.ty == expr.OP and (x.op not in ("^", "*")) and not len(x.args) == 1:
                         sx = "(" + sx + ")"
                     if y.ty == expr.OP and y.op != "^":
@@ -71,13 +71,19 @@ def convert_expr(e, mode="large"):
                 elif x.is_constant() and y.is_constant() and (y.ty != CONST or not (y.ty == OP and y.op in ("+", "-") or y.ty == CONST and isinstance(y.val, Fraction))):
                     if x.ty == expr.OP and x.op != "^" and len(x.args) != 1:
                         sx = "(" + sx + ")"
-                    if y.ty == expr.OP and not (len(y.args) == 2 and y.op == "^" and y.args[0].ty != OP or y.args[1].ty == CONST and y.args[1].val == Fraction(1/2)):
+                    if y.ty == expr.OP and not (len(y.args) == 2 and y.op == "^" or y.args[1].ty == CONST and y.args[1].val == Fraction(1/2)):
                         sy = "(" + sy + ")"
                     if x.ty == expr.CONST and isinstance(x.val, Fraction) and mode == "short":
                         sx = "(" + sx + ")"
                     return "%s %s" % (sx, sy)
                 elif x.is_constant() and y.ty == CONST and isinstance(y.val, Fraction) and y.val.numerator == 1 and y.val.denominator != 1:
                     return "\\frac{%s}{%s}" % (sx, convert_expr(expr.Const(y.val.denominator)))
+                elif y.ty == OP and y.op == "^" and y.args[1].ty == CONST and y.args[1].val < 0:
+                    if y.args[1].val == -1:
+                        return "\\frac{%s}{%s}" % (sx, convert_expr(y.args[0]))
+                    else:
+                        new_denom = Op("^", y.args[0], Const(-y.args[1].val))
+                        return "\\frac{%s}{%s}" % (sx, new_denom)
                 elif x.ty == expr.CONST:
                     if x.val == -1:
                         if y.ty == OP:

@@ -414,12 +414,14 @@ class Expr:
                 return x.to_poly() - y.to_poly()
             elif self.op == "-" and len(self.args) == 1:
                 x, = self.args
+                print("wow", x)
                 if x.ty == OP and x.op == "-" and len(x.args) == 1:
                    # --x => x
                     return x.args[0].to_poly()
                 elif x.ty == CONST:
                     return Const(-x.val).to_poly()
-                return -(x.to_poly())
+                print("wow")
+                return x.to_poly().scale(Const(-1))
             elif self.op == "/":
                 x, y = self.args
                 if x.normalize() == y.normalize():
@@ -428,40 +430,6 @@ class Expr:
                     return Fun("exp", (x.args[0] - y.args[0]).normalize()).to_poly()
                 else:
                     return Op("*", x, Op("^", y, Const(-1))).to_poly()
-                # if y.ty == OP and y.op == "*":
-                #     a, b = y.args
-                #     c = (x * (a ^ (Const(-1)))).normalize()
-                #     d = (x * (b ^ (Const(-1)))).normalize()
-                #     if c.ty == CONST:
-                #         return (c / b).to_poly()
-                #     elif d.ty == CONST:
-                #         return (c / a).to_poly()
-                #     else:
-                #         pass
-                # if x.ty == OP and x.op in ("+", "-") and len(x.args) == 2:
-                #     return Op(x.op, Op("/", x.args[0], y), Op("/", x.args[1], y)).to_poly()
-                # xp = x.to_poly()
-                # yp = y.to_poly()
-                # if x.ty == CONST and x.val == 0:
-                #     return poly.constant(Const(0))
-                # elif y.ty == CONST and y.val != 0:
-                #     return xp.scale(Const(Fraction(1, y.val)))                
-                # if len(yp.monomials) == 1:
-                #     k = yp.monomials[0]
-                #     k.coeff = Const(Fraction(1, k.coeff.normalize().val))
-                #     k_factor = list(k.factors)
-                #     k_factor = [(f1, -f2) for (f1, f2) in k_factor]
-                #     k.factors = tuple(k_factor)
-                #     return poly.Polynomial([m*k for m in xp.monomials])
-                # else:
-                #     c = Const(1)
-                #     if len(yp.monomials) == 1:
-                #         c *= yp.monomials[0].coeff
-                #         yp.monomials[0].coeff = Const(1)
-                #     if len(xp.monomials) == 1:
-                #         c *= xp.monomials[0].coeff
-                #         xp.monomials[0].coeff = Const(1)
-                #     return poly.singleton(Op("/", from_poly(xp), from_poly(yp))).scale(c)
             elif self.op == "^":
                 x, y = self.args
                 if x.ty == FUN and x.func_name == "exp":
@@ -473,8 +441,8 @@ class Expr:
                         return poly.constant(Const(1))
                     elif y.val == 1:
                         return x.to_poly()
-                    elif y.val == 2:
-                        return x.to_poly()*x.to_poly()
+                    # elif y.val == 2:
+                    #     return x.to_poly()*x.to_poly()
                     else:
                         if x.ty == CONST:
                             if isinstance(x.val, int) and (isinstance(y.val, Fraction) and y.val.denominator == 1 or isinstance(y.val, int)):
@@ -1033,7 +1001,7 @@ class Op(Expr):
             if a.priority() <= op_priority[self.op]:
                 if a.ty == OP and a.op != self.op:
                     s1 = "(%s)" % s1
-                elif a.ty == EVAL_AT or a.ty == INTEGRAL:
+                elif a.ty in (EVAL_AT, INTEGRAL, DERIV):
                     s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):
