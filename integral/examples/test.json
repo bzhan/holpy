@@ -738,7 +738,7 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sqrt{x}\\)",
-                    "latex": "\\int_{1}^{2} 2 u \\frac{1}{1 + u} \\,\\mathrm{du}",
+                    "latex": "\\int_{1}^{2} \\frac{2 u}{1 + u} \\,\\mathrm{du}",
                     "params": {
                         "f": "2 * u * (1 + u) ^ (-1)",
                         "g": "sqrt(x)",
@@ -751,7 +751,7 @@
                     "latex": "\\int_{1}^{2} 2 - \\frac{2}{u + 1} \\,\\mathrm{du}",
                     "location": "0",
                     "params": {
-                        "denom": "(1 + u) ^ (-1)",
+                        "denom": "1 + u",
                         "rhs": "2 - 2 / (u + 1)"
                     },
                     "reason": "Rewrite fraction",
@@ -1069,6 +1069,58 @@
                     },
                     "reason": "Rewrite fraction",
                     "text": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * (1 - cos(x) ^ 2))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(1 - \\cos^{2}(x)\\) to \\(\\sin^{2}(x)\\)",
+                    "latex": "\\int_{-\\pi/2}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,\\mathrm{dx}",
+                    "location": "0.0.1",
+                    "params": {
+                        "rule": "TR6"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[-pi / 2,pi / 2]. sqrt(cos(x) * sin(x) ^ 2)"
+                },
+                {
+                    "latex": "(\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,\\mathrm{dx}) + (\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)} \\sin^{2}(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "c": "0"
+                    },
+                    "reason": "Split region",
+                    "text": "(INT x:[-pi / 2,0]. sqrt(cos(x) * sin(x) ^ 2)) + (INT x:[0,pi / 2]. sqrt(cos(x) * sin(x) ^ 2))"
+                },
+                {
+                    "latex": "(\\int_{0}^{\\pi/2} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx}) - (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(INT x:[0,pi / 2]. cos(x) ^ (1/2) * sin(x)) - (INT x:[-pi / 2,0]. cos(x) ^ (1/2) * sin(x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                    "latex": "(\\int_{0}^{1} \\sqrt{u} \\,\\mathrm{du}) - (\\int_{-\\pi/2}^{0} \\sqrt{\\cos{(x)}} \\sin{(x)} \\,\\mathrm{dx})",
+                    "location": "0",
+                    "params": {
+                        "f": "-(u ^ (1/2))",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(INT u:[0,1]. u ^ (1/2)) - (INT x:[-pi / 2,0]. cos(x) ^ (1/2) * sin(x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
+                    "latex": "(\\int_{0}^{1} \\sqrt{u} \\,\\mathrm{du}) - (\\int_{0}^{1} -\\sqrt{u} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "-(u ^ (1/2))",
+                        "g": "cos(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(INT u:[0,1]. u ^ (1/2)) - (INT u:[0,1]. -(u ^ (1/2)))"
+                },
+                {
+                    "latex": "\\frac{4}{3}",
+                    "reason": "Simplification",
+                    "text": "4/3"
                 }
             ],
             "name": "Exercise 26",
@@ -1083,9 +1135,9 @@
                     "text": "INT x:[0,pi]. sqrt(1 + cos(2 * x))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\sqrt{1 + \\cos{(2 x)}}\\) to \\(\\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1}\\)",
+                    "_latex_reason": "Rewrite trigonometric \\(1 + \\cos{(2 x)}\\) to \\(-\\sin^{2}(x) + \\cos^{2}(x) + 1\\)",
                     "latex": "\\int_{0}^{\\pi} \\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1} \\,\\mathrm{dx}",
-                    "location": "0",
+                    "location": "0.0",
                     "params": {
                         "rule": "TR11"
                     },
@@ -1093,14 +1145,28 @@
                     "text": "INT x:[0,pi]. sqrt(-(sin(x) ^ 2) + cos(x) ^ 2 + 1)"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\sqrt{-\\sin^{2}(x) + \\cos^{2}(x) + 1}\\) to \\(\\sqrt{2} * \\sqrt{\\cos^{2}(x)}\\)",
-                    "latex": "\\int_{0}^{\\pi} \\sqrt{2} * \\sqrt{\\cos^{2}(x)} \\,\\mathrm{dx}",
-                    "location": "0",
+                    "_latex_reason": "Rewrite trigonometric \\(-\\sin^{2}(x) + \\cos^{2}(x) + 1\\) to \\(2 \\cos^{2}(x)\\)",
+                    "latex": "\\int_{0}^{\\pi} \\sqrt{2 \\cos^{2}(x)} \\,\\mathrm{dx}",
+                    "location": "0.0",
                     "params": {
                         "rule": "TR5"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi]. sqrt(2) * sqrt(cos(x) ^ 2)"
+                    "text": "INT x:[0,pi]. sqrt(2 * cos(x) ^ 2)"
+                },
+                {
+                    "latex": "\\sqrt{2} * (\\int_{0}^{\\pi} \\left| \\cos{(x)} \\right| \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "2 ^ (1/2) * (INT x:[0,pi]. abs(cos(x)))"
+                },
+                {
+                    "latex": "\\sqrt{2} * ((\\int_{0}^{\\pi/2} \\cos{(x)} \\,\\mathrm{dx}) + (\\int_{\\pi/2}^{\\pi} -\\cos{(x)} \\,\\mathrm{dx}))",
+                    "location": "1",
+                    "params": {
+                        "c": "pi/2"
+                    },
+                    "reason": "Split region",
+                    "text": "2 ^ (1/2) * ((INT x:[0,pi / 2]. cos(x)) + (INT x:[pi / 2,pi]. -cos(x)))"
                 },
                 {
                     "latex": "2 \\sqrt{2}",
@@ -1271,7 +1337,7 @@
                 },
                 {
                     "_latex_reason": "Integrate by parts, \\(u = \\frac{\\arctan{x}}{2}, v = x ^ 2\\)",
-                    "latex": "(\\left. \\frac{1}{2} x ^ 2 \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} x ^ 2 \\frac{1}{1 + x ^ 2} \\,\\mathrm{dx})",
+                    "latex": "(\\left. \\frac{1}{2} x ^ 2 \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{\\frac{1}{2} x ^ 2}{1 + x ^ 2} \\,\\mathrm{dx})",
                     "params": {
                         "parts_u": "atan(x)/2",
                         "parts_v": "x^2"
@@ -1280,20 +1346,14 @@
                     "text": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 * x ^ 2 * (1 + x ^ 2) ^ (-1))"
                 },
                 {
-                    "latex": "\\frac{1}{8} \\pi - \\frac{1}{2} \\int_{0}^{1} x ^ {2} \\frac{1}{1 + x ^ {2}} \\,\\mathrm{dx}",
-                    "reason": "Simplification",
-                    "text": "1/8 * pi - 1/2 * (INT x:[0,1]. x ^ 2 * (1 + x ^ 2) ^ (-1))"
-                },
-                {
-                    "_latex_reason": "Rewrite \\(x ^ 2 \\frac{1}{1 + x ^ 2}\\) to \\(1 - \\frac{1}{1 + x ^ 2}\\)",
-                    "latex": "\\frac{1}{8} \\pi - \\frac{1}{2} \\int_{0}^{1} 1 - \\frac{1}{1 + x ^ 2} \\,\\mathrm{dx}",
-                    "location": "1.1.0",
+                    "latex": "(\\left. \\frac{1}{2} x ^ 2 \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{1}{2} - \\frac{1}{2 (x ^ 2 + 1)} \\,\\mathrm{dx})",
+                    "location": "1.0",
                     "params": {
-                        "denom": "(1 + x ^ 2) ^ (-1)",
-                        "rhs": "1 - 1 / (1 + x^2)"
+                        "denom": "1 + x ^ 2",
+                        "rhs": "1/2 - 1 / (2 * (x ^ 2 + 1))"
                     },
                     "reason": "Rewrite fraction",
-                    "text": "1/8 * pi - 1/2 * (INT x:[0,1]. 1 - 1 / (1 + x ^ 2))"
+                    "text": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 - 1 / (2 * (x ^ 2 + 1)))"
                 },
                 {
                     "latex": "-\\frac{1}{2} + \\frac{1}{4} \\pi",

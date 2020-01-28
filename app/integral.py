@@ -39,8 +39,7 @@ def integral_initialize():
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
-    rules_set = [integral.rules.OnSubterm(integral.rules.ElimAbs()), 
-                        integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    rules_set = [integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     def simplify(problem):
         for i in range(3):
             for r in rules_set:             
@@ -56,15 +55,16 @@ def integral_super_simplify():
 @app.route("/api/integral-elim-abs", methods=["POST"])
 def integral_elim_abs():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.OnSubterm(integral.rules.ElimAbs())
+    rule = integral.rules.ElimAbs()
     problem = integral.parser.parse_expr(data['problem'])
-    if not rule.check_zero_point(problem):
-        new_problem = rule.eval(problem)
-        return jsonify({
-            'reason': "Simplification",
-            'text': str(new_problem),
-            'latex': integral.latex.convert_expr(new_problem)
-        })
+    c = rule.get_zero_point(problem)
+    # if not rule.check_zero_point(problem):
+    #     new_problem = rule.eval(problem)
+    #     return jsonify({
+    #         'reason': "Simplification",
+    #         'text': str(new_problem),
+    #         'latex': integral.latex.convert_expr(new_problem)
+    #     })
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
@@ -492,7 +492,7 @@ def integral_polynomial_division():
     rule = integral.rules.PolynomialDivision()
     problem = integral.parser.parse_expr(data['problem'])
     body = problem.body
-    denom = body.args[1]
+    denom = body.args[1].args[0]
     new_problem = rule.eval(problem)
     rhs = new_problem.body
     location = data['location']
