@@ -203,7 +203,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'UCDAVIS/Trignometric',    // Currently opened file
+      filename: 'test',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
@@ -242,7 +242,6 @@ export default {
       },
 
       lhs: undefined, //equation left hand side
-      same_integral: [],
       split_point: undefined,
       split_success: undefined
     }
@@ -432,22 +431,6 @@ export default {
       const response = await axios.post("http://127.0.0.1:5000/api/integral-super-simplify", JSON.stringify(data));
       this.cur_calc.push(response.data);
     },
-    displaySameIntegral: async function() {
-      this.same_integral = [];
-      if (this.cur_calc.length <= 1){
-        return;
-      }
-
-      const data = {
-        lhs: this.cur_calc[this.lhs - 1].text,
-        rhs: this.cur_calc[this.cur_calc.length - 1].text
-      };
-      
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-same-integral", JSON.stringify(data));
-      for(let i = 0; i < response.data.length; ++i){
-        this.same_integral.push(response.data[i]);
-      }
-    },
 
     elimAbs: function() {
       if(this.cur_calc.length == 0){
@@ -470,18 +453,6 @@ export default {
       this.closeIntegral();
       this.query_mode = undefined;
       
-    },
-
-    applyCommonIntegrals: async function () {
-      this.clear_separate_integral();
-      if (this.cur_calc.length === 0)
-        return;
-
-      const data = {
-        problem: this.cur_calc[this.cur_calc.length - 1].text
-      }
-      const response = await axios.post("http://127.0.0.1:5000/api/integral-common-integral", JSON.stringify(data))
-      this.cur_calc.push(response.data)
     },
 
     closeIntegral: async function(){

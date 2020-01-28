@@ -36,30 +36,6 @@ def integral_initialize():
         'reason': "Initial"
     })
 
-@app.route("/api/integral-linearity", methods=['POST'])
-def integral_linearity():
-    data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.Linearity()
-    problem = integral.parser.parse_expr(data['problem'])
-    new_problem = rule.eval(problem)
-    return jsonify({
-        'text': str(new_problem),
-        'latex': integral.latex.convert_expr(new_problem),
-        'reason': "Linearity"
-    })
-
-@app.route("/api/integral-simplify", methods=['POST'])
-def integral_simplify():
-    data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.Simplify()
-    problem = integral.parser.parse_expr(data['problem'])
-    new_problem = rule.eval(problem)
-    return jsonify({
-        'text': str(new_problem),
-        'latex': integral.latex.convert_expr(new_problem),
-        'reason': "Simplification"
-    })
-
 @app.route("/api/integral-super-simplify", methods=['POST'])
 def integral_super_simplify():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -76,30 +52,6 @@ def integral_super_simplify():
         'latex': integral.latex.convert_expr(problem),
         'reason': "Simplification"
     })
-
-@app.route("/api/integral-common-integral", methods=['POST'])
-def integral_common_integral():
-    data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.OnSubterm(integral.rules.CommonIntegral())
-    problem = integral.parser.parse_expr(data['problem'])
-    new_problem = rule.eval(problem)
-    return jsonify({
-        'text': str(new_problem),
-        'latex': integral.latex.convert_expr(new_problem),
-        'reason': "Common integrals"
-    })
-
-# @app.route("/api/integral-elim-abs", methods=["POST"])
-# def integral_elim_abs():
-#     data = json.loads(request.get_data().decode('utf-8'))
-#     rule = integral.rules.OnSubterm(integral.rules.ElimAbs())
-#     problem = integral.parser.parse_expr(data['problem'])
-#     new_problem = rule.eval(problem)
-#     return jsonify({
-#         'text': str(new_problem),
-#         'latex': integral.latex.convert_expr(new_problem),
-#         'reason': "Eliminate abs"
-#     })
 
 @app.route("/api/integral-elim-abs", methods=["POST"])
 def integral_elim_abs():
@@ -148,26 +100,6 @@ def integrate_by_equation():
         "reason": "Solve equation",
         "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
             integral.latex.convert_expr(lhs), integral.latex.convert_expr(rhs)
-        )
-    })
-
-@app.route("/api/integral-integrate-by-equation1", methods=['POST'])
-def integrate_by_equation1():
-    data = json.loads(request.get_data().decode('utf-8'))
-    problem = integral.parser.parse_expr(data['equation_part'])
-    lhs = integral.parser.parse_expr(data['lhs'])
-    rhs = integral.parser.parse_expr(data['rhs'])
-    rule = integral.rules.IntegrateByEquation(lhs)
-    result = rule.eval(rhs, problem)
-    return jsonify({
-        "text": str(result),
-        "latex": integral.latex.convert_expr(result),
-        "params": {
-            "lhs": data['lhs'],
-            "rhs": data['equation_part']
-        },
-        "_latex_reason": "By solving equation: \\(%s = %s\\)" % (
-            integral.latex.convert_expr(lhs), integral.latex.convert_expr(problem)
         )
     })
 
@@ -591,17 +523,6 @@ def integral_save_file():
     with open(file_name, 'w', encoding='utf-8') as f:
         json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_keys=True)
 
-    return jsonify({
-        'status': 'success'
-    })
-
-@app.route("/api/integral-save-format-file", methods=['POST'])
-def integral_save_format_file():
-    data = json.loads(request.get_data().decode('utf-8'))
-    file_name = "integral/examples/%s.json" % data['filename']
-    with open(file_name, 'w', encoding='utf-8') as f:
-        json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_key=True)
-    
     return jsonify({
         'status': 'success'
     })
