@@ -11,7 +11,7 @@ from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from logic.proofterm import ProofTerm, refl
+from logic.proofterm import ProofTerm, ProofTermDeriv, refl
 from logic.context import Context
 from data import set
 from data import nat
@@ -520,11 +520,14 @@ class simplify_rewr_conv(Conv):
         self.target = target
         self.target_eq = None
 
-    def get_proof_term(self, thy, t):
-        if not self.target_eq:
-            self.target_eq = refl(self.target).on_rhs(thy, auto.auto_conv())
+    def get_proof_term(self, thy, t, conds=None):
+        if conds is None:
+            conds = []
 
-        t_eq = refl(t).on_rhs(thy, auto.auto_conv())
+        if not self.target_eq:
+            self.target_eq = refl(self.target).on_rhs(thy, auto.auto_conv(conds=conds))
+
+        t_eq = refl(t).on_rhs(thy, auto.auto_conv(conds=conds))
         if self.target_eq.rhs != t_eq.rhs:
             raise ConvException("simplify_rewr_conv: %s != %s" % (
                 printer.print_term(thy, self.target_eq.rhs), printer.print_term(thy, t_eq.rhs)))
@@ -578,41 +581,27 @@ class fraction_rewr_conv(Conv):
         self.target = target
         self.denom = denom
 
-    def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral'), 'fraction_rewr_conv'
-        S, f = expr.args
-        
-        if not S.head.is_const_name('real_closed_interval'):
-            raise ConvException
-        a, b = S.args
-        le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+    def get_proof_term(self, thy, expr, conds=None):
+        if conds is None:
+            conds = []
 
-        interval = real.open_interval(a, b)
+        cv = auto.auto_conv(conds=conds)
 
-        vs = term.get_vars([self.denom, self.target])
-        assert len(vs) == 1
-        v = vs[0]
-        cond = set.mk_mem(v, interval)
-        f.var_name = v.name
-        body = f.subst_bound(v)
-
-        cond_pt = ProofTerm.assume(cond)
-
-        cv = auto.auto_conv(conds=[cond_pt])
-        lhs_eq = refl(real.times(self.denom, body))
-        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv([cond_pt])), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        lhs_eq = refl(real.times(self.denom, expr))
+        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
+                               arg_conv(cv), clear_denom_conv(conds), cv)
         rhs_eq = refl(real.times(self.denom, self.target))
-        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv([cond_pt])), arg_conv(cv), clear_denom_conv([cond_pt]), cv)
+        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
+                               arg_conv(cv), clear_denom_conv(conds), cv)
+        print(printer.print_term(thy, rhs_eq.prop))
         if lhs_eq.rhs != rhs_eq.rhs:
             raise AssertionError("fraction_rewr_conv: %s != %s" % (
                 printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))
         eq = ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
-        x_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(self.denom, real.zero)), pts=[cond_pt])
+        x_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(self.denom, real.zero)), pts=conds)
 
         eq_pt = apply_theorem(thy, 'real_eq_lcancel', x_neq_0, eq)
-        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
-        eq_pt = ProofTerm.forall_intr(v, eq_pt)
-        return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+        return eq_pt
 
 
 class trig_rewr_conv(Conv):
@@ -623,7 +612,7 @@ class trig_rewr_conv(Conv):
         self.code = code
         self.var_name = var_name
 
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, thy, t, conds=None):
         # Obtain the only variable in t
         if self.var_name == "":
             xs = term.get_vars(t)
@@ -708,30 +697,52 @@ class split_region_conv(Conv):
 
 class location_conv(Conv):
     """Apply conversion at the given location."""
-    def __init__(self, loc, cv):
+    def __init__(self, loc, cv, conds=None):
         if not isinstance(loc, Location):
             loc = Location(loc)
         assert isinstance(loc, Location) and isinstance(cv, Conv), "location_Conv"
         self.loc = loc
         self.cv = cv
+        if conds is None:
+            conds = []
+        self.conds = conds
 
     def get_proof_term(self, thy, t):
         if self.loc.is_empty():
-            return self.cv.get_proof_term(thy, t)
+            if self.conds and not isinstance(self.cv, rewr_conv):
+                return self.cv.get_proof_term(thy, t, conds=self.conds)
+            else:
+                return self.cv.get_proof_term(thy, t)
         elif t.head.is_const_name("evalat"):
             # Term is of the form evalat f a b
             if self.loc.head == 0:
-                return argn_conv(0, abs_conv(location_conv(self.loc.rest, self.cv))).get_proof_term(thy, t)
+                return argn_conv(0, abs_conv(location_conv(self.loc.rest, self.cv, self.conds))).get_proof_term(thy, t)
             else:
                 raise NotImplementedError
         elif t.head.is_const_name("real_integral"):
             # Term is of the form real_integral (real_closed_interval a b) f
             if self.loc.head == 0:
-                return arg_conv(abs_conv(location_conv(self.loc.rest, self.cv))).get_proof_term(thy, t)
+                # Apply congruence rule
+                S, f = t.args
+                if not S.head.is_const_name('real_closed_interval'):
+                    raise ConvException
+                a, b = S.args
+                le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+
+                interval = real.open_interval(a, b)
+                v = Var(f.var_name, realT)
+                cond = set.mk_mem(v, interval)
+                body = f.subst_bound(v)
+
+                cv = location_conv(self.loc.rest, self.cv, self.conds + [ProofTerm.assume(cond)])
+                eq_pt = cv.get_proof_term(thy, body)
+                eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+                eq_pt = ProofTerm.forall_intr(v, eq_pt)
+                return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
             else:
                 raise NotImplementedError
         else:
-            return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv)).get_proof_term(thy, t)
+            return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv, self.conds)).get_proof_term(thy, t)
 
 
 def get_at_location(loc, t):
@@ -957,6 +968,7 @@ def translate_item(item, target=None, *, debug=False):
             else:
                 pt = ProofTerm.transitive(pt, eq_pt2)
                 pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt1))
+                pt = ProofTermDeriv("transitive", None, None, [pt, ProofTerm.reflexive(expected)])
 
         if debug:
             print("= %s" % printer.print_term(thy, pt.rhs))
