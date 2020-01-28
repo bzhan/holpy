@@ -1350,7 +1350,11 @@
                     "location": "1.0",
                     "params": {
                         "denom": "1 + x ^ 2",
+<<<<<<< HEAD
                         "rhs": "1/2 - 1 / (2 * (x ^ 2 + 1))"
+=======
+                        "rhs": "1 - 1 / (1 + x^2)"
+>>>>>>> 32f05d76b4274cf77eeaaf0017b885b29a48e0c2
                     },
                     "reason": "Rewrite fraction",
                     "text": "([1/2 * x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. 1/2 - 1 / (2 * (x ^ 2 + 1)))"
