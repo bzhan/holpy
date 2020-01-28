@@ -43,7 +43,7 @@ def integral_super_simplify():
                         integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
     def simplify(problem):
         for i in range(3):
-            for r in rules_set:               
+            for r in rules_set:             
                 problem = r.eval(problem)
         return problem
     problem = simplify(integral.parser.parse_expr(data['problem']))
@@ -89,7 +89,6 @@ def integrate_by_equation():
     coeff = rule.getCoeff()
     coeff = (-coeff).normalize()
     new_problem = rule.eval()
-    print(new_problem)
     return jsonify({
         "text": str(new_problem),
         "latex": integral.latex.convert_expr(new_problem),
@@ -204,8 +203,6 @@ def integral_substitution():
     rule = integral.rules.Substitution1(data['var_name'], expr)
     problem = integral.parser.parse_expr(data['problem'])
     new_problem, new_problem_body = rule.eval(problem)
-    print("problem: ", problem)
-    print("loaction:", data['location'])
     return jsonify({
         'text': str(new_problem),
         'latex': integral.latex.convert_expr(new_problem),
@@ -376,8 +373,6 @@ def integral_rewrite_expr():
     try:
         new_expr = integral.parser.parse_expr(data['new_expr'])
         location = data['relative_location']
-        print(new_expr.normalize())
-        print(old_expr.normalize())
         if integral.expr.sympy_style(new_expr.normalize()).simplify() != integral.expr.sympy_style(old_expr.normalize()).simplify() or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False
@@ -497,13 +492,14 @@ def integral_polynomial_division():
     rule = integral.rules.PolynomialDivision()
     problem = integral.parser.parse_expr(data['problem'])
     body = problem.body
-    if not (body.ty == integral.expr.OP and body.op == "/"):
-        return jsonify({
-            'flag': False
-        })
     denom = body.args[1]
     new_problem = rule.eval(problem)
     rhs = new_problem.body
+    location = data['location']
+    if location:
+        location += ".0"
+    else:
+        location = "0"
     return jsonify({
         'flag': True,
         'text': str(new_problem),
@@ -513,7 +509,7 @@ def integral_polynomial_division():
             'rhs': str(rhs)
         },
         'reason': "Rewrite fraction",
-        "location": data['location']
+        "location": location
     })
 
 @app.route("/api/integral-save-file", methods=['POST'])
