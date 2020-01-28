@@ -751,7 +751,7 @@
                     "latex": "\\int_{1}^{2} 2 - \\frac{2}{u + 1} \\,\\mathrm{du}",
                     "location": "0",
                     "params": {
-                        "denom": "(1 + u) ^ (-1)",
+                        "denom": "1 + u",
                         "rhs": "2 - 2 / (u + 1)"
                     },
                     "reason": "Rewrite fraction",
@@ -1289,7 +1289,7 @@
                     "latex": "\\frac{1}{8} \\pi - \\frac{1}{2} \\int_{0}^{1} 1 - \\frac{1}{1 + x ^ 2} \\,\\mathrm{dx}",
                     "location": "1.1.0",
                     "params": {
-                        "denom": "(1 + x ^ 2) ^ (-1)",
+                        "denom": "1 + x ^ 2",
                         "rhs": "1 - 1 / (1 + x^2)"
                     },
                     "reason": "Rewrite fraction",
