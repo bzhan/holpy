@@ -414,13 +414,11 @@ class Expr:
                 return x.to_poly() - y.to_poly()
             elif self.op == "-" and len(self.args) == 1:
                 x, = self.args
-                print("wow", x)
                 if x.ty == OP and x.op == "-" and len(x.args) == 1:
                    # --x => x
                     return x.args[0].to_poly()
                 elif x.ty == CONST:
                     return Const(-x.val).to_poly()
-                print("wow")
                 return x.to_poly().scale(Const(-1))
             elif self.op == "/":
                 x, y = self.args

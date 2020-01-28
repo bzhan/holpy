@@ -452,7 +452,7 @@ export default {
       this.take_effect = 1;
       this.closeIntegral();
       this.query_mode = undefined;
-      
+      this.superSimplify();
     },
 
     closeIntegral: async function(){
