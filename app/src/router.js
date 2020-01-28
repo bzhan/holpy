@@ -18,7 +18,7 @@ const routes = [
   {path: '/ide', name: 'editor', component: Editor},
   {path: '/program', name: 'program', component: ProVerify},
   {path: '/integral', name: 'integral', component: Integral},
-  {path: '/monitor', name: 'monitor', component: Monitor}
+  {path: '/monitor', name: 'monitor', component: Monitor},
   {path: '/geometry', name: 'geometry', component: Geometry}
 ]
 
