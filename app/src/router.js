@@ -11,6 +11,7 @@ import ProVerify from './components/ProVerify.vue'
 import Monitor from './components/Monitor.vue'
 import Integral from './components/Integral.vue'
 import Geometry from './components/geometry/Geometry.vue'
+
 const routes = [
   {path: '/', name: 'main', component: Index},
   {path: '/login', name: 'login', component: Login},
