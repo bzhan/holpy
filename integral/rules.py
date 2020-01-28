@@ -32,28 +32,6 @@ class Simplify(Rule):
         self.name = "Simplify"
     
     def eval(self, e):
-        # e = e.normalize()
-        # if e.ty == expr.INTEGRAL and e.body.ty == expr.OP and e.body.op == "/":
-        #     old = e
-        #     up_monos, up_common     = expr.extract(e.body.args[0].to_poly())
-        #     down_monos, down_common = expr.extract(e.body.args[1].to_poly())
-        #     common_item = up_common.keys() & down_common.keys()
-        #     min_value = {}
-        #     for key in common_item:
-        #         min_value[key]    = up_common[key] if up_common[key] < down_common[key] else down_common[key]
-        #         up_common[key]   -= min_value[key]
-        #         down_common[key] -= min_value[key]
-        #     if len(min_value) != 0:
-        #         #numerartor and denominator have same element.
-        #         upp   = [(k ^ Const(v)).normalize() for k, v in up_common.items()]
-        #         dpp   = [(k ^ Const(v)).normalize() for k, v in down_common.items()]
-        #         upp_1 = functools.reduce(operator.mul, upp[1:], upp[0])
-        #         dpp_1 = functools.reduce(operator.mul, dpp[1:], dpp[0])
-        #         simp  = (sum(up_monos[1:], up_monos[0]) * upp_1).normalize() / (sum(down_monos[1:], down_monos[0]) * dpp_1).normalize()
-        #         return Integral(old.var, old.lower, old.upper, simp.normalize())
-        #     else:
-        #         return Integral(old.var, old.lower, old.upper, old.body.args[0].normalize()/old.body.args[1].normalize())
-        # else:
         return e.normalize()
 
 class Linearity(Rule):
@@ -150,6 +128,11 @@ class CommonIntegral(Rule):
                             return e
                     else:
                         return e
+                if a.ty == OP and a.op == "+" and a.args[0] == Const(1) and a.args[1].ty == OP \
+                    and a.args[1].op == "^" and a.args[1].args[0] == Var(e.var) and a.args[1].args[1] == Const(2) \
+                    and b == Const(-1):
+                    # (1 + x^2) ^ (-1) => arctan(x)
+                    return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
                 else:
                     return e
             elif e.body.op == "/":
@@ -384,6 +367,7 @@ class PolynomialDivision(Rule):
         if e.ty != expr.INTEGRAL:
             return e
         result = apart(expr.sympy_style(e.body))
+        print("!!!!!!!!!!!", result)
         return expr.Integral(e.var, e.lower, e.upper, parser.parse_expr(str(result).replace("**","^")))
 
 class ElimAbs(Rule):
