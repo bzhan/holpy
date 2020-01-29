@@ -232,13 +232,63 @@ class norm_cos_conv(Conv):
 
 auto.add_global_autos_norm(real.cos, norm_cos_conv())
 
-auto.add_global_autos_norm(
-    real.tan,
-    auto.norm_rules([
-        'tan_0',
-        'tan_pi4_alt',
-    ])
-)
+class norm_tan_conv(Conv):
+    """Normalization of an expression tan (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.tan):
+            raise ConvException('norm_tan_conv')
+
+        if t.arg == real.zero or t.arg == real.pi or t.arg == real.uminus(real.pi):
+            return refl(t).on_rhs(thy, rewr_conv('tan_def'))
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_tan_conv')
+
+        return refl(t).on_rhs(thy, rewr_conv('tan_def'))
+
+auto.add_global_autos_norm(real.tan, norm_tan_conv())
+
+class norm_cot_conv(Conv):
+    """Normalization of an expression cot (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.cot):
+            raise ConvException('norm_cot_conv')
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_cot_conv')
+
+        return refl(t).on_rhs(thy, rewr_conv('cot_def'))
+
+auto.add_global_autos_norm(real.cot, norm_cot_conv())
+
+class norm_sec_conv(Conv):
+    """Normalization of an expression sec (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.sec):
+            raise ConvException('norm_sec_conv')
+
+        if t.arg == real.zero or t.arg == real.pi or t.arg == real.uminus(real.pi):
+            return refl(t).on_rhs(thy, rewr_conv('sec_def'))
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_sec_conv')
+
+        return refl(t).on_rhs(thy, rewr_conv('sec_def'))
+
+auto.add_global_autos_norm(real.sec, norm_sec_conv())
+
+class norm_csc_conv(Conv):
+    """Normalization of an expression csc (r * pi)."""
+    def get_proof_term(self, thy, t):
+        if not (t.is_comb() and t.head == real.csc):
+            raise ConvException('norm_csc_conv')
+
+        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+            raise ConvException('norm_csc_conv')
+
+        return refl(t).on_rhs(thy, rewr_conv('csc_def'))
+
+auto.add_global_autos_norm(real.csc, norm_csc_conv())
 
 auto.add_global_autos_norm(
     real.exp,
@@ -349,6 +399,7 @@ auto.add_global_autos_norm(
 
         # Special trigonometric functions
         "real_integral_to_tan_evalat",
+        "real_integral_to_cot_evalat",
         "real_integral_to_atn_evalat",
     ])
 )

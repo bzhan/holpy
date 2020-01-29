@@ -8591,12 +8591,6 @@
             "vars": {}
         },
         {
-            "name": "tan_pi4_alt",
-            "prop": "tan (1 / 4 * pi) = 1",
-            "ty": "thm",
-            "vars": {}
-        },
-        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1"
