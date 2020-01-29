@@ -79,6 +79,12 @@ def convert(t):
             return sympy.cos(convert(t.arg))
         elif t.head == real.tan:
             return sympy.tan(convert(t.arg))
+        elif t.head == real.cot:
+            return sympy.cot(convert(t.arg))
+        elif t.head == real.sec:
+            return sympy.sec(convert(t.arg))
+        elif t.head == real.csc:
+            return sympy.csc(convert(t.arg))
         elif t.head.is_const_name('greater_eq'):
             return convert(t.arg1) >= convert(t.arg)
         elif t.head.is_const_name('greater'):
