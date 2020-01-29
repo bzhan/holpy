@@ -97,13 +97,32 @@ test_cases = {
         # "Exercise 10": "((880640/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 20/63 * (1 + 3 * exp(-1)) ^ 7) - 5/36 * (1 + 3 * exp(-1)) ^ 8",
         "Exercise 11": "-16 * 2 ^ (1/2) + 8 * (1 + 6 * exp(1) + exp(2)) ^ (1/2)",
         # "Exercise 12": None
+    },
+    "UCDAVIS/Trigonometric": {
+        "Exercise 1": "1 / 3",
+        # "Exercise 2": "-(1/5) * log(2 ^ (1/2) * (1/2))",
+        # "Exercise 3": None,
+        # "Exercise 4": "1 + 1/2 * pi",
+        "Exercise 5": "3/4 * pi",
+        # "Exercise 6": None,
+        "Exercise 7": "2 / 3",
+        # "Exercise 8": "-(1/5) * log(3) + 1/5 * log(4)",
+        "Exercise 9": "-2 + pi",
+        # "Exercise 10": "-2 + pi",
+        # "Exercise 11": None,
+        # "Exercise 12": None,
+        # "Exercise 13": None,
+        # "Exercise 14": "0",
     }
 }
 
 
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
-        filenames = ["test", "2014", "2019", "UCDAVIS/usubstitution", "UCDAVIS/Exponentials"]
+        filenames = [
+            "test", "2014", "2019", "UCDAVIS/usubstitution", "UCDAVIS/Exponentials",
+            "UCDAVIS/Trigonometric"
+        ]
         test_only = None
         profile = False
 
