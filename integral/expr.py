@@ -470,7 +470,7 @@ class Expr:
                             elif x.op == "/":
                                 return (x.normalize() ^ y).to_poly()
                             elif len(x.args) == 1:
-                                return Op("^", x.args[0], y).to_poly() 
+                                return Polynomial([poly.Monomial(Const(-1), [(x.args[0].normalize(), y.val)])]) 
                             else:
                                 return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                         elif x.ty == FUN and x.func_name == "sqrt":
