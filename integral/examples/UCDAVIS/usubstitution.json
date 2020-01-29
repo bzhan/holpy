@@ -454,6 +454,7 @@
                 },
                 {
                     "latex": "\\int_{0}^{1} x - 2 + \\frac{8}{x + 2} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
                         "denom": "x + 2",
                         "rhs": "(x - 2) + 8 / (x + 2)"
@@ -464,19 +465,19 @@
                 {
                     "latex": "-\\frac{3}{2} + 8 \\int_{0}^{1} \\frac{1}{2 + x} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "-3/2 + 8 * (INT x:[0,1]. 1 / (2 + x))"
+                    "text": "-3/2 + 8 * (INT x:[0,1]. (2 + x) ^ (-1))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(2 + x\\)",
                     "latex": "-\\frac{3}{2} + 8 \\int_{2}^{3} \\frac{1}{u} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "1 / u",
+                        "f": "u ^ (-1)",
                         "g": "2 + x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "-3/2 + 8 * (INT u:[2,3]. 1 / u)"
+                    "text": "-3/2 + 8 * (INT u:[2,3]. u ^ (-1))"
                 },
                 {
                     "latex": "-\\frac{3}{2} - 8 \\log{(2)} + 8 \\log{(3)}",

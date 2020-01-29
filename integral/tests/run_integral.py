@@ -80,8 +80,8 @@ test_cases = {
         "Exercise 13": "-11 / 21",
         "Exercise 14": "128 / 15",
         # "Exercise 15": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)",
-        # "Exercise 16": "(-(3/2) - 8 * log(2)) + 8 * log(3)",
-        # "Exercise 17": "41 / 6",
+        "Exercise 16": "(-(3/2) - 8 * log(2)) + 8 * log(3)",
+        "Exercise 17": "41 / 6",
         "Exercise 18": "188 / 15"
     },
     "UCDAVIS/Exponentials": {
