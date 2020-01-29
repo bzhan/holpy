@@ -8591,6 +8591,12 @@
             "vars": {}
         },
         {
+            "name": "tan_pi4_alt",
+            "prop": "tan (1 / 4 * pi) = 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1"
@@ -8904,6 +8910,22 @@
             "type": "real ⇒ real"
         },
         {
+            "name": "sin_csc_inverse",
+            "prop": "¬(sin x = 0) ⟶ sin x = 1 / csc x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "cos_sec_inverse",
+            "prop": "¬(cos x = 0) ⟶ cos x = 1 / sec x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -9118,6 +9140,22 @@
             ],
             "name": "tan_sec",
             "prop": "¬(cos x = 0) ⟶ 1 + tan x ^ (2::nat) = sec x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "tan_sec_alt",
+            "prop": "¬(cos x = 0) ⟶ tan x ^ (2::nat) = sec x ^ (2::nat) - 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "cot_csc_alt",
+            "prop": "¬(sin x = 0) ⟶ cot x ^ (2::nat) = csc x ^ (2::nat) - 1",
             "ty": "thm",
             "vars": {
                 "x": "real"

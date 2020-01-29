@@ -233,6 +233,14 @@ class norm_cos_conv(Conv):
 auto.add_global_autos_norm(real.cos, norm_cos_conv())
 
 auto.add_global_autos_norm(
+    real.tan,
+    auto.norm_rules([
+        'tan_0',
+        'tan_pi4_alt',
+    ])
+)
+
+auto.add_global_autos_norm(
     real.exp,
     auto.norm_rules([
         'real_exp_0',
@@ -340,6 +348,7 @@ auto.add_global_autos_norm(
         "real_integral_exp_evalat",
 
         # Special trigonometric functions
+        "real_integral_to_tan_evalat",
         "real_integral_to_atn_evalat",
     ])
 )
@@ -708,10 +717,10 @@ class trig_rewr_conv(Conv):
             return pt
         elif self.code == 'TR9':
             rewr_ths = [
-                'real_add_sin',
-                'real_sub_sin',
-                'real_add_cos',
-                'real_sub_cos'
+                'real_add_sin',  # sin x + sin y = 2 * sin ((x + y) / 2) * cos ((x - y) / 2)
+                'real_sub_sin',  # sin x - sin y = 2 * sin ((x - y) / 2) * cos ((x + y) / 2)
+                'real_add_cos',  # cos x + cos y = 2 * cos ((x + y) / 2) * cos ((x - y) / 2)
+                'real_sub_cos',  # cos x - cos y = 2 * sin ((x + y) / 2) * sin ((y - x) / 2)
             ]
             pt = refl(t)
             for rewr_th in rewr_ths:
@@ -719,8 +728,8 @@ class trig_rewr_conv(Conv):
             return pt
         elif self.code == 'TR10i':
             rewr_ths = [
-                'sin_cos_combine',
-                'sin_cos_combine2',
+                'sin_cos_combine',   # sin x + cos x = sqrt 2 * sin (x + pi / 4)
+                'sin_cos_combine2',  # sin x - cos x = -(sqrt 2) * cos (x + pi / 4)
             ]
             pt = refl(t)
             for rewr_th in rewr_ths:
@@ -735,6 +744,34 @@ class trig_rewr_conv(Conv):
             for rewr_th in rewr_ths:
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
             return pt
+        elif self.code == 'TR111':
+            if t.head == real.real_power and real.is_binary_real(t.arg):
+                p = real.from_binary_real(t.arg)
+                if not (isinstance(p, int) and p < 0):
+                    return refl(t)
+                if t.arg1.head == real.sin:
+                    sin_neq0 = logic.neg(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
+                    sin_neq0_pt = auto.auto_solve(thy, sin_neq0, conds)
+                    return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_csc_inverse', conds=[sin_neq0_pt])))
+                elif t.arg1.head == real.cos:
+                    cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
+                    cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
+                    return refl(t).on_rhs(thy, top_conv(rewr_conv('cos_sec_inverse', conds=[cos_neq0_pt])))
+                else:
+                    return refl(t)
+            else:
+                return refl(t)
+        elif self.code == 'TR22':
+            if t.head == real.nat_power and t.arg1.head == real.tan:
+                cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
+                cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
+                return refl(t).on_rhs(thy, rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
+            elif t.head == real.nat_power and t.arg1.head == real.cot:
+                sin_neq0 = logic.neg(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
+                sin_neq0_pt = auto.auto_solve(thy, sin_neq0, conds)
+                return refl(t).on_rhs(thy, rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
+            else:
+                return refl(t)
         else:
             raise NotImplementedError
 

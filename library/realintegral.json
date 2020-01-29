@@ -11581,6 +11581,20 @@
             }
         },
         {
+            "name": "real_integral_to_tan_evalat",
+            "prop": [
+                "a ≤ b ",
+                "⟶ real_continuous_on (λx. sec x ^ (2::nat)) (real_open_interval a b) ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. sec x ^ (2::nat)) = ",
+                "      evalat (λx. tan x) a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_forward"
