@@ -60,7 +60,8 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b"),
             ("INT x:[a,b]. 1 / (x ^ 2 + 1)", "[atan(x)]_x=a,b"),
             ("INT t:[a,b]. 8 ^ (1/2)", "[2 * 2 ^ (1/2) * t]_t=a,b"),
-            ("INT x:[a,b]. (1 + x^2)^(-1)", "[atan(x)]_x=a,b")
+            ("INT x:[a,b]. (1 + x^2)^(-1)", "[atan(x)]_x=a,b"),
+            ("INT x:[0, pi/4]. csc(x) ^ 2", "[-cot(x)]_x=0,pi / 4")
         ]
 
         rule = rules.CommonIntegral()

@@ -120,9 +120,9 @@ class CommonIntegral(Rule):
                     return EvalAt(e.var, e.lower, e.upper, expr.log(Fun("abs",a)))
                 elif a.ty == expr.FUN:
                     if b ==  Const(2):
-                        if a.func_name == "sec":
+                        if a.func_name == "sec" and a.args[0] == Var(e.var):
                             return EvalAt(e.var, e.lower, e.upper, expr.Fun("tan", *a.args))
-                        elif a.func_name == "csc":
+                        elif a.func_name == "csc" and a.args[0] == Var(e.var):
                             return EvalAt(e.var, e.lower, e.upper, -expr.Fun("cot", *a.args))
                         else:
                             return e

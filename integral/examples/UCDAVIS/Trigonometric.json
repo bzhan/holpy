@@ -574,46 +574,57 @@
                     "text": "INT x:[pi / 6,pi / 4]. csc(3 * x) ^ 2 + (csc(3 * x) ^ 2 - 1) + 2 * csc(3 * x) * cot(3 * x)"
                 },
                 {
-                    "latex": "2 - \\frac{1}{12} \\pi + 2 \\int_{\\pi/6}^{\\pi/4} \\cot{(3 x)} \\csc{(3 x)} \\,\\mathrm{dx}",
-                    "reason": "Simplification",
-                    "text": "(2 - 1/12 * pi) + 2 * (INT x:[pi / 6,pi / 4]. cot(3 * x) * csc(3 * x))"
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x\\)",
+                    "latex": "\\int_{\\pi/2}^{3 \\pi/4} \\frac{1}{3} * 2 \\cot{(u)} \\csc{(u)} + \\frac{1}{3} * 2 \\csc^{2}(u) - \\frac{1}{3} \\,\\mathrm{du}",
+                    "params": {
+                        "f": "((2 * cot(u) * csc(u)) / 3 + (2 * csc(u) ^ 2) / 3) - 1/3",
+                        "g": "3 * x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[pi / 2,(3 * pi) / 4]. ((2 * cot(u) * csc(u)) / 3 + (2 * csc(u) ^ 2) / 3) - 1/3"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\cot{(3 x)} \\csc{(3 x)}\\) to \\(\\frac{\\cot{(3 x)}}{\\sin{(3 x)}}\\)",
-                    "latex": "2 - \\frac{1}{12} \\pi + 2 \\int_{\\pi/6}^{\\pi/4} \\frac{\\cot{(3 x)}}{\\sin{(3 x)}} \\,\\mathrm{dx}",
+                    "latex": "\\frac{2}{3} - \\frac{1}{12} \\pi + \\frac{2}{3} \\int_{\\pi/2}^{3 \\pi/4} \\cot{(u)} \\csc{(u)} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "(2/3 - 1/12 * pi) + 2/3 * (INT u:[pi / 2,(3 * pi) / 4]. cot(u) * csc(u))"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\cot{(u)} \\csc{(u)}\\) to \\(\\frac{\\cot{(u)}}{\\sin{(u)}}\\)",
+                    "latex": "\\frac{2}{3} - \\frac{1}{12} \\pi + \\frac{2}{3} \\int_{\\pi/2}^{3 \\pi/4} \\frac{\\cot{(u)}}{\\sin{(u)}} \\,\\mathrm{du}",
                     "location": "1.1.0",
                     "params": {
                         "rule": "TR1"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "(2 - 1/12 * pi) + 2 * (INT x:[pi / 6,pi / 4]. cot(3 * x) / sin(3 * x))"
+                    "text": "(2/3 - 1/12 * pi) + 2/3 * (INT u:[pi / 2,(3 * pi) / 4]. cot(u) / sin(u))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\cot{(3 x)}}{\\sin{(3 x)}}\\) to \\(\\frac{\\cos{(3 x)}}{\\sin^{2}(3 x)}\\)",
-                    "latex": "2 - \\frac{1}{12} \\pi + 2 \\int_{\\pi/6}^{\\pi/4} \\frac{\\cos{(3 x)}}{\\sin^{2}(3 x)} \\,\\mathrm{dx}",
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\cot{(u)}}{\\sin{(u)}}\\) to \\(\\frac{\\cos{(u)}}{\\sin^{2}(u)}\\)",
+                    "latex": "\\frac{2}{3} - \\frac{1}{12} \\pi + \\frac{2}{3} \\int_{\\pi/2}^{3 \\pi/4} \\frac{\\cos{(u)}}{\\sin^{2}(u)} \\,\\mathrm{du}",
                     "location": "1.1.0",
                     "params": {
                         "rule": "TR2"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "(2 - 1/12 * pi) + 2 * (INT x:[pi / 6,pi / 4]. cos(3 * x) / sin(3 * x) ^ 2)"
+                    "text": "(2/3 - 1/12 * pi) + 2/3 * (INT u:[pi / 2,(3 * pi) / 4]. cos(u) / sin(u) ^ 2)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(3 x)}\\)",
-                    "latex": "2 - \\frac{1}{12} \\pi + 2 \\int_{\\sqrt{2} * 1/2}^{1} -\\frac{1}{3} \\frac{1}{u ^ 2} \\,\\mathrm{du}",
+                    "_latex_reason": "Substitute \\(t\\) for \\(\\sin{(u)}\\)",
+                    "latex": "\\frac{2}{3} - \\frac{1}{12} \\pi + \\frac{2}{3} \\int_{\\frac{\\sqrt{2}}{2}}^{1} -\\frac{1}{t ^ 2} \\,\\mathrm{dt}",
                     "location": "1.1",
                     "params": {
-                        "f": "1/3 * u ^ (-2)",
-                        "g": "sin(3 * x)",
-                        "var_name": "u"
+                        "f": "t ^ -2",
+                        "g": "sin(u)",
+                        "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "(2 - 1/12 * pi) + 2 * (INT u:[2 ^ (1/2) * (1/2),1]. -1/3 * u ^ (-2))"
+                    "text": "(2/3 - 1/12 * pi) + 2/3 * (INT t:[2 ^ (1/2) * (1/2),1]. -t ^ -2)"
                 },
                 {
-                    "latex": "-2 \\sqrt{2} * \\frac{1}{3} + \\frac{8}{3} - \\frac{1}{12} \\pi",
+                    "latex": "\\frac{-2 \\sqrt{2}}{3} + \\frac{4}{3} - \\frac{1}{12} \\pi",
                     "reason": "Simplification",
-                    "text": "(-2 * 2 ^ (1/2) * (1/3) + 8/3) - 1/12 * pi"
+                    "text": "(-2 * 2 ^ (1/2) * (1/3) + 4/3) - 1/12 * pi"
                 }
             ],
             "name": "Exercise 11",
