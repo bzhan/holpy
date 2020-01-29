@@ -112,7 +112,7 @@ test_cases = {
         # "Exercise 11": None,
         # "Exercise 12": None,
         # "Exercise 13": None,
-        # "Exercise 14": "0",
+        "Exercise 14": "-7/6",
         "Exercise 15": "-exp(4) + exp(5)",
         "Exercise 16": "0",
         "Exercise 17": "-(1/2) * log(2) ^ 2 + 1/2 * log(2 ^ (1/2) * (1/2)) ^ 2",
