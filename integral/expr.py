@@ -1008,6 +1008,8 @@ class Op(Expr):
                 s1 = "(%s)" % s1
             elif self.op == "^" and a.is_constant() and a.ty == OP and len(a.args) == 1:
                 s1 = "(%s)" % s1
+            elif self.op == "^" and a.is_constant() and a.ty == OP and a.op == "^":
+                s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)           
         else:
             raise NotImplementedError
