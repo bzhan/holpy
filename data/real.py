@@ -577,7 +577,20 @@ auto.add_global_autos_norm(
     ])
 )
 
+class real_nat_power_conv(Conv):
+    def get_proof_term(self, thy, t):
+        a, p = t.args
+
+        # Exponent is 2
+        if nat.is_binary_nat(p) and nat.from_binary_nat(p) == 2 and is_plus(a):
+            pt = refl(t)
+            pt = pt.on_rhs(thy, rewr_conv('real_pow_2'), rewr_conv('real_add_rdistrib'))
+            return pt
+
+        return refl(t)
+
 auto.add_global_autos_norm(nat_power, real_eval_conv())
+auto.add_global_autos_norm(nat_power, real_nat_power_conv())
 
 auto.add_global_autos_norm(
     real_power,
