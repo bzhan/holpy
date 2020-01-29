@@ -772,12 +772,12 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)} + \\cos{(x)}\\)",
                     "latex": "\\int_{1}^{\\sqrt{2}} -u ^ 5 \\,\\mathrm{du}",
                     "params": {
-                        "f": "-(u ^ 5)",
+                        "f": "-u ^ 5",
                         "g": "sin(x) + cos(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,2 ^ (1/2)]. -(u ^ 5)"
+                    "text": "INT u:[1,2 ^ (1/2)]. -u ^ 5"
                 },
                 {
                     "latex": "\\frac{1}{6} - \\frac{\\sqrt[64]{2}}{6}",
