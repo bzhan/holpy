@@ -127,6 +127,28 @@
         },
         {
             "_problem_latex": "\\int_{1}^{e} \\frac{\\log{(x)}}{x ^ 5} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} \\frac{\\log{(x)}}{x ^ 5} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. log(x) / x ^ 5"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = \\frac{-1}{4 x ^ 4}\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{4}}{x ^ 4} \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{-\\frac{1}{4}}{x ^ 5} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "-1/(4 * x^4)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-1/4 * x ^ -4 * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. -1/4 * x ^ -5)"
+                },
+                {
+                    "latex": "\\frac{1}{16} - \\frac{5}{16} e^{-4}",
+                    "reason": "Simplification",
+                    "text": "1/16 - 5/16 * exp(-4)"
+                }
+            ],
             "name": "Exercise 5",
             "problem": "INT x:[1, exp(1)]. log(x)/x^5"
         },
