@@ -33,7 +33,7 @@ test_cases = {
         # "Exercise 21": None,
         "Exercise 22": "1 - exp (-1/2)",
         "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
-        # "Exercise 24": "1 / 2 * pi",
+        # "Exercise 24": None,
         "Exercise 25": "3 / 8 * pi",
         "Exercise 26": "4 / 3",
         "Exercise 27": "2 * 2 ^ (1 / 2)",
@@ -63,13 +63,66 @@ test_cases = {
     "2019": {
         "Exercise 1": "-2/39 * log(cos(39 * pi / 200))",
         "Exercise 2": "log (sin(1) + exp(1))",
+    },
+    "UCDAVIS/usubstitution": {
+        "Exercise 1": "209952",
+        "Exercise 2": "175099 / 11",
+        "Exercise 3": "74 / 21",
+        "Exercise 4": "-1/3 + 1/3 * 2 ^ (3/4)",
+        "Exercise 5": "-(1/5) * exp(2) + 1/5 * exp(7)",
+        "Exercise 6": "4 / 3",
+        "Exercise 7": "0",
+        # "Exercise 8": "3/2 * log(2) - 3/2 * log(3)",
+        # "Exercise 9": None,
+        "Exercise 10": "3 * log(2)",
+        "Exercise 11": "1/5 - 1/5 * exp(-1)",
+        "Exercise 12": "1",
+        "Exercise 13": "-11 / 21",
+        "Exercise 14": "128 / 15",
+        # "Exercise 15": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)",
+        "Exercise 16": "(-(3/2) - 8 * log(2)) + 8 * log(3)",
+        "Exercise 17": "41 / 6",
+        "Exercise 18": "188 / 15"
+    },
+    "UCDAVIS/Exponentials": {
+        "Exercise 1": "-5 + 5 * exp(1)",
+        "Exercise 2": "5 - 3 * exp(1)",
+        "Exercise 3": "2",
+        # "Exercise 4": None,
+        "Exercise 5": "-149/98 + 3/2 * exp(2) + 1/49 * exp(7)",
+        "Exercise 6": "-243/10 + 1/10 * (1 + 2 * exp(1)) ^ 5",
+        "Exercise 7": "(-2 - 1/8 * exp(-8)) + 1/8 * exp(8)",
+        "Exercise 8": "(-(2/3) + exp(1)) - 1/3 * exp(3)",
+        # "Exercise 9": None,
+        # "Exercise 10": "((880640/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 20/63 * (1 + 3 * exp(-1)) ^ 7) - 5/36 * (1 + 3 * exp(-1)) ^ 8",
+        "Exercise 11": "-16 * 2 ^ (1/2) + 8 * (1 + 6 * exp(1) + exp(2)) ^ (1/2)",
+        # "Exercise 12": None
+    },
+    "UCDAVIS/Trigonometric": {
+        "Exercise 1": "1 / 3",
+        # "Exercise 2": "-(1/5) * log(2 ^ (1/2) * (1/2))",
+        # "Exercise 3": None,
+        # "Exercise 4": "1 + 1/2 * pi",
+        "Exercise 5": "3/4 * pi",
+        # "Exercise 6": None,
+        "Exercise 7": "2 / 3",
+        # "Exercise 8": "-(1/5) * log(3) + 1/5 * log(4)",
+        "Exercise 9": "-2 + pi",
+        # "Exercise 10": "-2 + pi",
+        # "Exercise 11": None,
+        # "Exercise 12": None,
+        # "Exercise 13": None,
+        # "Exercise 14": "0",
     }
 }
 
 
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
-        filenames = ["test", "2019"]
+        filenames = [
+            "test", "2014", "2019", "UCDAVIS/usubstitution", "UCDAVIS/Exponentials",
+            "UCDAVIS/Trigonometric"
+        ]
         test_only = None
         profile = False
 

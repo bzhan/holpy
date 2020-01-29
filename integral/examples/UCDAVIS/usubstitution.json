@@ -197,60 +197,53 @@
             "problem": "INT x:[1, exp(2*pi)]. sin(log(x)) / x"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} \\frac{3 x + 6}{x ^ 2 + 4 x - 3} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{1}^{2} \\frac{3 x + 6}{x ^ 2 + 4 x - 3} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{1} \\frac{3 x + 6}{x ^ 2 + 4 x - 3} \\,\\mathrm{dx}",
+                    "latex": "\\int_{1}^{2} \\frac{3 x + 6}{x ^ 2 + 4 x - 3} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,1]. (3 * x + 6) / ((x ^ 2 + 4 * x) - 3)"
+                    "text": "INT x:[1,2]. (3 * x + 6) / ((x ^ 2 + 4 * x) - 3)"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(x ^ 2 + 4 x - 3\\) to \\((x + 2) ^ 2 - 7\\)",
+                    "latex": "\\int_{1}^{2} \\frac{3 x + 6}{(x + 2) ^ 2 - 7} \\,\\mathrm{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "rhs": "(x + 2) ^ 2 - 7"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[1,2]. (3 * x + 6) / ((x + 2) ^ 2 - 7)"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(x + 2\\)",
-                    "latex": "\\int_{2}^{3} 3 (\\frac{u}{-7 + u ^ 2}) \\,\\mathrm{du}",
+                    "latex": "\\int_{3}^{4} \\frac{3 u}{u ^ 2 - 7} \\,\\mathrm{du}",
                     "params": {
-                        "f": "3 * (u / (-7 + u ^ 2))",
+                        "f": "(3 * u) / (u ^ 2 - 7)",
                         "g": "x + 2",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[2,3]. 3 * (u / (-7 + u ^ 2))"
+                    "text": "INT u:[3,4]. (3 * u) / (u ^ 2 - 7)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(t\\) for \\(u ^ 2\\)",
-                    "latex": "\\int_{4}^{9} \\frac{3}{2} (\\frac{1}{-7 + t}) \\,\\mathrm{dt}",
+                    "_latex_reason": "Substitute \\(t\\) for \\(u ^ 2 - 7\\)",
+                    "latex": "\\int_{2}^{9} \\frac{3}{2 t} \\,\\mathrm{dt}",
                     "params": {
-                        "f": "3/2 * (1 / (-7 + t))",
-                        "g": "u ^ 2",
+                        "f": "3 / (2 * t)",
+                        "g": "u ^ 2 - 7",
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[4,9]. 3/2 * (1 / (-7 + t))"
+                    "text": "INT t:[2,9]. 3 / (2 * t)"
                 },
                 {
-                    "latex": "\\frac{3}{2} \\int_{4}^{9} \\frac{1}{-7 + t} \\,\\mathrm{dt}",
+                    "latex": "-\\frac{3}{2} \\log{(2)} + \\frac{3}{2} \\log{(9)}",
                     "reason": "Simplification",
-                    "text": "3/2 * (INT t:[4,9]. 1 / (-7 + t))"
-                },
-                {
-                    "_latex_reason": "Substitute \\(y\\) for \\(-7 + t\\)",
-                    "latex": "\\frac{3}{2} \\int_{-3}^{2} \\frac{1}{y} \\,\\mathrm{dy}",
-                    "location": "1",
-                    "params": {
-                        "f": "y ^ (-1)",
-                        "g": "-7 + t",
-                        "var_name": "y"
-                    },
-                    "reason": "Substitution",
-                    "text": "3/2 * (INT y:[-3,2]. y ^ (-1))"
-                },
-                {
-                    "latex": "\\frac{3}{2} \\log{(2)} - \\frac{3}{2} \\log{(3)}",
-                    "reason": "Simplification",
-                    "text": "3/2 * log(2) - 3/2 * log(3)"
+                    "text": "-3/2 * log(2) + 3/2 * log(9)"
                 }
             ],
             "name": "Exercise 8",
-            "problem": "INT x:[0, 1]. (3*x+6)/(x^2 + 4 * x - 3)"
+            "problem": "INT x:[1, 2]. (3*x+6)/(x^2 + 4 * x - 3)"
         },
         {
             "_problem_latex": "\\int_{0}^{1} x 3 ^ {(x ^ 2 + 1)} \\,\\mathrm{dx}",
@@ -286,34 +279,34 @@
             "problem": "INT x:[exp(1), exp(2)]. 3/(x*log(x))"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/10} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/10} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 2]. cos(5 * x) / exp(sin(5 * x))"
+                    "text": "INT x:[0,pi / 10]. cos(5 * x) / exp(sin(5 * x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(5 x)}\\)",
                     "latex": "\\int_{0}^{1} \\frac{e^{-u}}{5} \\,\\mathrm{du}",
                     "params": {
-                        "f": "exp(-u) / 5",
+                        "f": "1/5 * exp(-u)",
                         "g": "sin(5 * x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,1]. exp(-u) / 5"
+                    "text": "INT u:[0,1]. 1/5 * exp(-u)"
                 },
                 {
                     "_latex_reason": "Substitute \\(t\\) for \\(-u\\)",
-                    "latex": "\\int_{-1}^{0} -1 -\\frac{1}{5} * e^{t} \\,\\mathrm{dt}",
+                    "latex": "\\int_{-1}^{0} \\frac{e^{t}}{5} \\,\\mathrm{dt}",
                     "params": {
-                        "f": "-exp(t) / 5",
+                        "f": "-(1/5) * exp(t)",
                         "g": "-u",
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[-1,0]. -1 * (-1/5) * exp(t)"
+                    "text": "INT t:[-1,0]. 1/5 * exp(t)"
                 },
                 {
                     "latex": "\\frac{1}{5} - \\frac{1}{5} e^{-1}",
@@ -322,7 +315,7 @@
                 }
             ],
             "name": "Exercise 11",
-            "problem": "INT x:[0, pi/2]. cos(5*x)/exp(sin(5*x))"
+            "problem": "INT x:[0, pi/10]. cos(5*x)/exp(sin(5*x))"
         },
         {
             "_problem_latex": "\\int_{0}^{\\sqrt{\\pi}} x \\sin{(x ^ 2)} \\,\\mathrm{dx}",
@@ -418,6 +411,7 @@
                 },
                 {
                     "latex": "\\int_{0}^{1} \\frac{1}{2} + \\frac{7}{2 (2 x + 3)} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
                         "denom": "2 * x + 3",
                         "rhs": "1/2 + 7 / (2 * (2 * x + 3))"
@@ -428,19 +422,19 @@
                 {
                     "latex": "\\frac{1}{2} + \\frac{7}{2} \\int_{0}^{1} \\frac{1}{3 + 2 x} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "1/2 + 7/2 * (INT x:[0,1]. 1 / (3 + 2 * x))"
+                    "text": "1/2 + 7/2 * (INT x:[0,1]. (3 + 2 * x) ^ (-1))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(3 + 2 x\\)",
-                    "latex": "\\frac{1}{2} + \\frac{7}{2} \\int_{3}^{5} \\frac{1}{2 u} \\,\\mathrm{du}",
+                    "latex": "\\frac{1}{2} + \\frac{7}{2} \\int_{3}^{5} \\frac{\\frac{1}{2}}{u} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "1 / (2 * u)",
+                        "f": "1/2 * u ^ (-1)",
                         "g": "3 + 2 * x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "1/2 + 7/2 * (INT u:[3,5]. 1 / (2 * u))"
+                    "text": "1/2 + 7/2 * (INT u:[3,5]. 1/2 * u ^ (-1))"
                 },
                 {
                     "latex": "\\frac{1}{2} - \\frac{7}{4} \\log{(3)} + \\frac{7}{4} \\log{(5)}",
@@ -461,6 +455,7 @@
                 },
                 {
                     "latex": "\\int_{0}^{1} x - 2 + \\frac{8}{x + 2} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
                         "denom": "x + 2",
                         "rhs": "(x - 2) + 8 / (x + 2)"
@@ -471,19 +466,19 @@
                 {
                     "latex": "-\\frac{3}{2} + 8 \\int_{0}^{1} \\frac{1}{2 + x} \\,\\mathrm{dx}",
                     "reason": "Simplification",
-                    "text": "-3/2 + 8 * (INT x:[0,1]. 1 / (2 + x))"
+                    "text": "-3/2 + 8 * (INT x:[0,1]. (2 + x) ^ (-1))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(2 + x\\)",
                     "latex": "-\\frac{3}{2} + 8 \\int_{2}^{3} \\frac{1}{u} \\,\\mathrm{du}",
                     "location": "1.1",
                     "params": {
-                        "f": "1 / u",
+                        "f": "u ^ (-1)",
                         "g": "2 + x",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "-3/2 + 8 * (INT u:[2,3]. 1 / u)"
+                    "text": "-3/2 + 8 * (INT u:[2,3]. u ^ (-1))"
                 },
                 {
                     "latex": "-\\frac{3}{2} - 8 \\log{(2)} + 8 \\log{(3)}",

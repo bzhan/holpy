@@ -498,7 +498,16 @@ def integral_polynomial_division():
     rule = integral.rules.PolynomialDivision()
     problem = integral.parser.parse_expr(data['problem'])
     body = problem.body
-    denom = body.args[1].args[0]
+
+    if body.ty == integral.expr.OP and body.op == '/':
+        denom = body.args[1]
+    elif body.ty == integral.expr.OP and body.op == '*' and \
+         body.args[1].ty == integral.expr.OP and body.args[1].op == '^' and \
+             body.args[1].args[1] == integral.expr.Const(-1):
+        denom = body.args[1].args[0]
+    else:
+        raise AssertionError('integral_polynomial_division: unknown body')
+
     new_problem = rule.eval(problem)
     rhs = new_problem.body
     location = data['location']
