@@ -58,6 +58,14 @@ auto.add_global_autos(
         "real_continuous_on_log_compose",
         "real_continuous_on_sqrt",
         "real_continuous_on_sqrt_compose",
+        "real_continuous_on_tan",
+        "real_continuous_on_tan_compose",
+        "real_continuous_on_cot",
+        "real_continuous_on_cot_compose",
+        "real_continuous_on_sec",
+        "real_continuous_on_sec_compose",
+        "real_continuous_on_csc",
+        "real_continuous_on_csc_compose",
 
         # Real power (three options)
         "real_continuous_on_real_pow",
@@ -100,6 +108,14 @@ auto.add_global_autos(
         "real_differentiable_at_log_compose",
         "real_differentiable_at_sqrt",
         "real_differentiable_at_sqrt_compose",
+        "real_differentiable_at_tan",
+        "real_differentiable_at_tan_compose",
+        "real_differentiable_at_cot",
+        "real_differentiable_at_cot_compose",
+        "real_differentiable_at_sec",
+        "real_differentiable_at_sec_compose",
+        "real_differentiable_at_csc",
+        "real_differentiable_at_csc_compose",
 
         # Real power
         "real_differentiable_real_pow_atreal",
@@ -280,6 +296,14 @@ auto.add_global_autos_norm(
         "real_derivative_log_compose",
         "real_derivative_sqrt",
         "real_derivative_sqrt_compose",
+        "real_derivative_tan",
+        "real_derivative_tan_compose",
+        "real_derivative_cot",
+        "real_derivative_cot_compose",
+        "real_derivative_sec",
+        "real_derivative_sec_compose",
+        "real_derivative_csc",
+        "real_derivative_csc_compose",
 
         # Real power
         "real_derivative_rpow",
@@ -637,7 +661,25 @@ class trig_rewr_conv(Conv):
         else:
             x = Var(self.var_name, realT)
 
-        if self.code == 'TR5':
+        if self.code == 'TR1':
+            rewr_ths = [
+                'sec_def',  # sec x = 1 / cos x
+                'csc_def'   # csc x = 1 / sin x
+            ]
+            pt = refl(t)
+            for rewr_th in rewr_ths:
+                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+            return pt
+        elif self.code == 'TR2':
+            rewr_ths = [
+                'tan_def',  # tan x = sin x / cos x
+                'cot_def',  # cot x = cos x / sin x
+            ]
+            pt = refl(t)
+            for rewr_th in rewr_ths:
+                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+            return pt
+        elif self.code == 'TR5':
             # (sin x) ^ 2 = 1 - (cos x) ^ 2
             return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
         elif self.code == 'TR5b':
@@ -834,6 +876,12 @@ def expr_to_holpy(expr):
             return real.cos(a)
         elif expr.func_name == 'tan':
             return real.tan(a)
+        elif expr.func_name == 'cot':
+            return real.cot(a)
+        elif expr.func_name == 'sec':
+            return real.sec(a)
+        elif expr.func_name == 'csc':
+            return real.csc(a)
         elif expr.func_name == 'log':
             return real.log(a)
         elif expr.func_name == 'exp':

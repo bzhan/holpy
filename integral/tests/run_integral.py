@@ -100,8 +100,8 @@ test_cases = {
     },
     "UCDAVIS/Trigonometric": {
         "Exercise 1": "1 / 3",
-        # "Exercise 2": "-(1/5) * log(2 ^ (1/2) * (1/2))",
-        # "Exercise 3": None,
+        "Exercise 2": "(-1/5) * log(2 ^ (1/2) * (1/2))",
+        "Exercise 3": "5 / 4",
         "Exercise 4": "1 + 1/2 * pi",
         "Exercise 5": "3/4 * pi",
         # "Exercise 6": None,

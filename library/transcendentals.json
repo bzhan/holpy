@@ -8528,11 +8528,17 @@
             }
         },
         {
+            "name": "cot",
+            "prop": "cot x = cos x / sin x",
+            "ty": "def",
+            "type": "real ⇒ real"
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
             "name": "cot_double",
-            "prop": "real_inverse (tan (2 * x)) = (real_inverse (tan x) - tan x) / 2",
+            "prop": "cot (2 * x) = (cot x - tan x) / 2",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8543,7 +8549,7 @@
                 "hint_rewrite"
             ],
             "name": "tan_cot_double",
-            "prop": "tan x = 1 / tan x - 2 / tan (2 * x)",
+            "prop": "tan x = cot x - 2 * cot (2 * x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8841,7 +8847,7 @@
                 "hint_rewrite"
             ],
             "name": "tan_cot",
-            "prop": "tan (pi / 2 - x) = real_inverse (tan x)",
+            "prop": "tan (pi / 2 - x) = cot x",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8884,6 +8890,18 @@
                 "a": "real",
                 "b": "real"
             }
+        },
+        {
+            "name": "sec",
+            "prop": "sec x = 1 / cos x",
+            "ty": "def",
+            "type": "real ⇒ real"
+        },
+        {
+            "name": "csc",
+            "prop": "csc x = 1 / sin x",
+            "ty": "def",
+            "type": "real ⇒ real"
         },
         {
             "attributes": [
@@ -9099,7 +9117,7 @@
                 "hint_backward"
             ],
             "name": "tan_sec",
-            "prop": "¬(cos x = 0) ⟶ 1 + tan x ^ (2::nat) = real_inverse (cos x) ^ (2::nat)",
+            "prop": "¬(cos x = 0) ⟶ 1 + tan x ^ (2::nat) = sec x ^ (2::nat)",
             "ty": "thm",
             "vars": {
                 "x": "real"

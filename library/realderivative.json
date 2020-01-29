@@ -11255,10 +11255,7 @@
                 "hint_backward"
             ],
             "name": "has_real_derivative_tan",
-            "prop": [
-                "¬(cos x = 0) ",
-                "⟶ has_real_derivative tan (real_inverse (cos x ^ (2::nat))) (atreal x)"
-            ],
+            "prop": "¬(cos x = 0) ⟶ has_real_derivative tan (sec x ^ (2::nat)) (atreal x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -11341,6 +11338,15 @@
             }
         },
         {
+            "name": "real_differentiable_at_tan_compose",
+            "prop": "¬(cos (f x) = 0) ⟶ real_differentiable (λx1. tan (f x1)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -11399,6 +11405,27 @@
             "ty": "thm",
             "vars": {
                 "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_tan",
+            "prop": "¬(cos x = 0) ⟶ real_derivative tan x = sec x ^ (2::nat)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_tan_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ ¬(cos (f x) = 0) ",
+                "   ⟶ real_derivative (λx1. tan (f x1)) x = sec (f x) ^ (2::nat) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -11638,6 +11665,192 @@
             ],
             "ty": "thm",
             "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_tan_compose",
+            "prop": [
+                "(∀x. x ∈ s ⟶ ¬(cos (f x) = 0)) ",
+                "⟶ real_continuous_on f s ⟶ real_continuous_on (λx. tan (f x)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_differentiable_at_cot",
+            "prop": "¬(sin x = 0) ⟶ real_differentiable cot (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_cot_compose",
+            "prop": "¬(sin (f x) = 0) ⟶ real_differentiable (λx1. cot (f x1)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_cot",
+            "prop": "¬(sin x = 0) ⟶ real_derivative cot x = -(csc x ^ (2::nat))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_cot_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ ¬(sin (f x) = 0) ",
+                "   ⟶ real_derivative (λx1. cot (f x1)) x = ",
+                "      -(csc (f x) ^ (2::nat)) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_continuous_on_cot",
+            "prop": "(∀x. x ∈ s ⟶ ¬(sin x = 0)) ⟶ real_continuous_on cot s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_cot_compose",
+            "prop": [
+                "(∀x. x ∈ s ⟶ ¬(sin (f x) = 0)) ",
+                "⟶ real_continuous_on f s ⟶ real_continuous_on (λx. cot (f x)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_derivative_sec",
+            "prop": "¬(cos x = 0) ⟶ real_derivative sec x = tan x * sec x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_sec_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ ¬(cos (f x) = 0) ",
+                "   ⟶ real_derivative (λx1. sec (f x1)) x = ",
+                "      tan (f x) * sec (f x) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_sec",
+            "prop": "¬(cos x = 0) ⟶ real_differentiable sec (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_sec_compose",
+            "prop": "¬(cos (f x) = 0) ⟶ real_differentiable (λx1. sec (f x1)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_continuous_on_sec",
+            "prop": "(∀x. x ∈ s ⟶ ¬(cos x = 0)) ⟶ real_continuous_on sec s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_sec_compose",
+            "prop": [
+                "(∀x. x ∈ s ⟶ ¬(cos (f x) = 0)) ",
+                "⟶ real_continuous_on f s ⟶ real_continuous_on (λx. sec (f x)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_derivative_csc",
+            "prop": "¬(sin x = 0) ⟶ real_derivative csc x = -(cot x) * csc x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_derivative_csc_compose",
+            "prop": [
+                "real_differentiable f (atreal x) ",
+                "⟶ ¬(sin (f x) = 0) ",
+                "   ⟶ real_derivative (λx1. csc (f x1)) x = ",
+                "      -(cot (f x)) * csc (f x) * real_derivative f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_csc",
+            "prop": "¬(sin x = 0) ⟶ real_differentiable csc (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_at_csc_compose",
+            "prop": "¬(sin (f x) = 0) ⟶ real_differentiable (λx1. csc (f x1)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_continuous_on_csc",
+            "prop": "(∀x. x ∈ s ⟶ ¬(sin x = 0)) ⟶ real_continuous_on csc s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_on_csc_compose",
+            "prop": "(∀x. x ∈ s ⟶ ¬(sin (f x) = 0)) ⟶ real_continuous_on (λx. csc (f x)) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
