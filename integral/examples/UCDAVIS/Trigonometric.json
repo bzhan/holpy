@@ -761,12 +761,12 @@
             "problem": "INT x:[0, pi/4]. tan(x) ^ 5"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 4]. (sin(x) - cos(x)) * (sin(x) + cos(x)) ^ 5"
+                    "text": "INT x:[0,pi / 2]. (sin(x) - cos(x)) * (sin(x) + cos(x)) ^ 5"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)} + \\cos{(x)}\\)",
@@ -780,13 +780,13 @@
                     "text": "INT u:[1,1]. -u ^ 5"
                 },
                 {
-                    "latex": "\\frac{1}{6} - \\frac{\\sqrt[64]{2}}{6}",
+                    "latex": "0",
                     "reason": "Simplification",
-                    "text": "1/6 - 2 ^ (1/64) * (1/6)"
+                    "text": "0"
                 }
             ],
             "name": "Exercise 14",
-            "problem": "INT x:[0, pi/4]. (sin(x) - cos(x))*(sin(x) + cos(x)) ^ 5"
+            "problem": "INT x:[0, pi/2]. (sin(x) - cos(x))*(sin(x) + cos(x)) ^ 5"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/2} \\cos{(x)} e^{4 + \\sin{(x)}} \\,\\mathrm{dx}",
@@ -854,34 +854,30 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)}\\)",
-                    "latex": "\\int_{1/2}^{\\sqrt{2} * 1/2} \\frac{1}{u} \\log{(u)} \\,\\mathrm{du}",
+                    "latex": "\\int_{1/2}^{\\frac{\\sqrt{2}}{2}} \\frac{1}{u} \\log{(u)} \\,\\mathrm{du}",
                     "params": {
-                        "f": "u ^ (-1) * log(u)",
+                        "f": "u ^ -1 * log(u)",
                         "g": "sin(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1/2,2 ^ (1/2) * (1/2)]. u ^ (-1) * log(u)"
+                    "text": "INT u:[1/2,2 ^ (1/2) * (1/2)]. u ^ -1 * log(u)"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = \\log{(u)}, v = \\log{(u)}\\)",
-                    "latex": "(\\left. \\log^{2}(u) \\right\\vert_{u=1/2}^{\\sqrt{2} * 1/2}) - (\\int_{1/2}^{\\sqrt{2} * 1/2} \\frac{1}{u} \\log{(u)} \\,\\mathrm{du})",
+                    "_latex_reason": "Substitute \\(t\\) for \\(\\log{(u)}\\)",
+                    "latex": "\\int_{-\\log{(2)}}^{\\log{(\\frac{\\sqrt{2}}{2})}} t \\,\\mathrm{dt}",
                     "params": {
-                        "parts_u": "log(u)",
-                        "parts_v": "log(u)"
+                        "f": "t",
+                        "g": "log(u)",
+                        "var_name": "t"
                     },
-                    "reason": "Integrate by parts",
-                    "text": "([log(u) ^ 2]_u=1/2,2 ^ (1/2) * (1/2)) - (INT u:[1/2,2 ^ (1/2) * (1/2)]. u ^ (-1) * log(u))"
+                    "reason": "Substitution",
+                    "text": "INT t:[-log(2),log(2 ^ (1/2) * (1/2))]. t"
                 },
                 {
-                    "_latex_reason": "By solving equation: \\(\\int_{1/2}^{\\sqrt{2} * 1/2} u ^ {-1} \\log{(u)} \\,\\mathrm{du} = (\\left. \\log^{2}(u) \\right\\vert_{u=1/2}^{\\sqrt{2} * 1/2}) - (\\int_{1/2}^{\\sqrt{2} * 1/2} u ^ {-1} \\log{(u)} \\,\\mathrm{du})\\)",
-                    "latex": "-\\frac{1}{2} \\log^{2}(2) + \\frac{1}{2} \\log^{2}(\\sqrt{2} * \\frac{1}{2})",
-                    "params": {
-                        "factor": "1",
-                        "prev_id": "1"
-                    },
-                    "reason": "Solve equation",
-                    "text": "-(1/2) * log(2) ^ 2 + 1/2 * log(2 ^ (1/2) * (1/2)) ^ 2"
+                    "latex": "-\\frac{1}{2} \\log^{2}(2) + \\frac{1}{2} \\log^{2}(\\frac{\\sqrt{2}}{2})",
+                    "reason": "Simplification",
+                    "text": "(-1/2) * log(2) ^ 2 + 1/2 * log(2 ^ (1/2) * (1/2)) ^ 2"
                 }
             ],
             "name": "Exercise 17",

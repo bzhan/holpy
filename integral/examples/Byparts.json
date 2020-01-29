@@ -1,0 +1,64 @@
+{
+    "content": [
+        {
+            "name": "Exercise 1",
+            "problem": "INT x:[0, 1]. x*exp(x)"
+        },
+        {
+            "name": "Exercise 2",
+            "problem": "INT x:[0, pi/2]. x * sin(x)"
+        },
+        {
+            "name": "Exercise 3",
+            "problem": "INT x:[1, exp(1)]. x * log(x)"
+        },
+        {
+            "name": "Exercise 4",
+            "problem": "INT x:[0, pi/4]. x * cos(3*x)"
+        },
+        {
+            "name": "Exercise 5",
+            "problem": "INT x:[1, exp(1)]. log(x)/x^5"
+        },
+        {
+            "name": "Exercise 6",
+            "problem": "INT x:[0, 1/3]. asin(3*x)"
+        },
+        {
+            "name": "Exercise 7",
+            "problem": "INT x:[1, exp(1)]. log(x)"
+        },
+        {
+            "name": "Exercise 8",
+            "problem": "INT x:[0, 1]. 2*x*atan(x)"
+        },
+        {
+            "name": "Exercise 9",
+            "problem": "INT x:[1, 2]. x^2*exp(3*x)"
+        },
+        {
+            "name": "Exercise 10",
+            "problem": "INT x:[1, exp(1)]. x^3*log(5*x)"
+        },
+        {
+            "name":"Exercise 11",
+            "problem": "INT x:[1, exp(1)]. log(x) ^ 2"
+        },
+        {
+            "name": "Exercise 12",
+            "problem": "INT x:[1, exp(1)]. log(x) ^ 3"
+        },
+        {
+            "name": "Exercise 13",
+            "problem": "INT x:[-2, 1]. x * sqrt(x + 3)"
+        },
+        {
+            "name": "Exercise 14",
+            "problem": "INT x:[0, pi/4]. x * sin(x) * cos(x)"
+        },
+        {
+            "name":"Exercise 15",
+            "problem": "INT x:[1, exp(1)]. (log(x)/x)^2"
+        }
+    ]
+}

@@ -536,6 +536,10 @@ class Expr:
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
+            print(self)
+            print(upper)
+            print(lower)
+            print(upper.normalize() - lower.normalize())
             return (upper.normalize() - lower.normalize()).to_poly(0)
             # return upper.to_poly() - lower.to_poly()
         elif self.ty == INTEGRAL:
@@ -1007,6 +1011,8 @@ class Op(Expr):
                 if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):
                     s2 = "(%s)" % s2
             elif self.op == "^" and a.ty == CONST and a.val < 0:
+                s1 = "(%s)" % s1
+            elif self.op == "^" and a.is_constant() and a.ty == OP and len(a.args) == 1:
                 s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)           
         else:

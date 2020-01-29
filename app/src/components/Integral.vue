@@ -203,7 +203,7 @@ export default {
 
   data: function () {
     return {
-      filename: 'test',    // Currently opened file
+      filename: 'UCDAVIS/trigonometric',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation
