@@ -536,15 +536,25 @@ class simplify_rewr_conv(Conv):
 
 
 class norm_monomial_all_conv(Conv):
-    def __init__(self, conds):
+    """Normalize all factors of a product or quotient."""
+    def __init__(self, conds=None):
+        if conds is None:
+            conds = []
         self.conds = conds
 
     def get_proof_term(self, thy, t):
         pt = refl(t)
         if real.is_times(t):
             return pt.on_rhs(thy, binop_conv(self), real.norm_mult_monomials(self.conds))
+        elif real.is_divides(t):
+            return pt.on_rhs(thy, rewr_conv('real_divide_def'), arg_conv(rewr_conv('rpow_neg_one')), self)
+        elif real.is_real_power(t) and t.arg == real.uminus(real.one) and real.is_times(t.arg1):
+            a, b = t.arg1.args
+            a_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(a, real.zero)), pts=self.conds)
+            b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), pts=self.conds)
+            return pt.on_rhs(thy, rewr_conv('rpow_base_mult_neg1', conds=[a_neq_0, b_neq_0]), self)
         else:
-            return pt
+            return pt.on_rhs(thy, auto.auto_conv(conds=self.conds))
 
 class norm_denom_conv(Conv):
     def __init__(self, conds):
@@ -558,7 +568,10 @@ class norm_denom_conv(Conv):
             return pt.on_rhs(thy, auto.auto_conv(self.conds))
 
 class clear_denom_conv(Conv):
-    def __init__(self, conds):
+    """Clear denominators."""
+    def __init__(self, conds=None):
+        if conds is None:
+            conds = []
         self.conds = conds
 
     def get_proof_term(self, thy, t):
@@ -566,6 +579,8 @@ class clear_denom_conv(Conv):
         if real.is_plus(t.arg):
             return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'), arg1_conv(self),
                              arg_conv(norm_monomial_all_conv(self.conds)))
+        elif real.is_minus(t.arg):
+            return pt.on_rhs(thy, arg_conv(rewr_conv('real_poly_neg2')), self)
         else:
             return pt.on_rhs(thy, norm_monomial_all_conv(self.conds))
 
@@ -589,10 +604,10 @@ class fraction_rewr_conv(Conv):
 
         lhs_eq = refl(real.times(self.denom, expr))
         lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
-                               arg_conv(cv), clear_denom_conv(conds), cv)
+                               clear_denom_conv(conds), cv)
         rhs_eq = refl(real.times(self.denom, self.target))
         rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
-                               arg_conv(cv), clear_denom_conv(conds), cv)
+                               clear_denom_conv(conds), cv)
         if lhs_eq.rhs != rhs_eq.rhs:
             raise AssertionError("fraction_rewr_conv: %s != %s" % (
                 printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))

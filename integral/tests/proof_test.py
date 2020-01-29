@@ -155,7 +155,7 @@ class ProofTest(unittest.TestCase):
             ("real_derivative (%x. 3 * x) x", [], "(3::real)"),
             ("real_derivative (%x. x ^ (2::nat)) x", [], "2 * x"),
             ("real_derivative (%x. x ^ (3::nat)) x", [], "3 * x ^ (2::nat)"),
-            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 * (1 + x) ^ (2::nat)"),
+            ("real_derivative (%x. (x + 1) ^ (3::nat)) x", [], "3 + 6 * x + 3 * x ^ (2::nat)"),
             ("real_derivative (%x. exp x) x", [], "exp x"),
             ("real_derivative (%x. exp (x ^ (2::nat))) x", [], "2 * (exp (x ^ (2::nat)) * x)"),
             ("real_derivative (%x. exp (exp x)) x", [], "exp (x + exp x)"),
@@ -166,7 +166,7 @@ class ProofTest(unittest.TestCase):
             # Differentiable with conditions
             ("real_derivative (%x. 1 / x) x", ["x Mem real_open_interval 0 1"], "-1 * x ^ -(2::real)"),
             ("real_derivative (%x. 1 / (x ^ (2::nat) + 1)) x", ["x Mem real_open_interval (-1) 1"],
-             "-2 * (x * (1 + x ^ (2::nat)) ^ -(2::real))"),
+             "-2 * (x * (1 + 2 * x ^ (2::nat) + x ^ (4::nat)) ^ -(1::real))"),
             ("real_derivative (%x. log x) x", ["x Mem real_open_interval 0 1"], "x ^ -(1::real)"),
             ("real_derivative (%x. log (sin x)) x", ["x Mem real_open_interval 0 1"],
              "cos x * (sin x) ^ -(1::real)"),
@@ -275,6 +275,19 @@ class ProofTest(unittest.TestCase):
             res = parser.parse_term(ctxt, res)
             cv = proof.simplify_rewr_conv(t)
             test_conv(self, 'realintegral', proof.location_conv(loc, cv), t=s, t_res=res)
+
+    def testNormMonomialAllConv(self):
+        test_data = [
+            ("2 * (2 * x + 3)", "2 * (3 + 2 * x)"),
+            ("7 / (2 * (2 * x + 3))", "7/2 * (3 + 2 * x) ^ -(1::real)"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, res in test_data:
+            s = parser.parse_term(ctxt, s)
+            res = parser.parse_term(ctxt, res)
+            cv = proof.norm_monomial_all_conv()
+            test_conv(self, 'realintegral', cv, t=s, t_res=res)
 
     def testTrigRewrConv(self):
         test_data = [

@@ -432,17 +432,18 @@
                     "text": "INT x:[0,pi]. cos(x) ^ 2 / (1 + sin(x))"
                 },
                 {
-                    "_latex_reason": "Rewrite \\(\\cos^{2}(x)\\) to \\(1 - \\sin^{2}(x)\\)",
+                    "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(x)\\) to \\(1 - \\sin^{2}(x)\\)",
                     "latex": "\\int_{0}^{\\pi} \\frac{1 - \\sin^{2}(x)}{1 + \\sin{(x)}} \\,\\mathrm{dx}",
                     "location": "0.0",
                     "params": {
-                        "rhs": "1 - sin(x)^2"
+                        "rule": "TR6"
                     },
-                    "reason": "Rewrite fraction",
+                    "reason": "Rewrite trigonometric",
                     "text": "INT x:[0,pi]. (1 - sin(x) ^ 2) / (1 + sin(x))"
                 },
                 {
                     "latex": "\\int_{0}^{\\pi} 1 - \\sin{(x)} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
                         "denom": "1 + sin(x)",
                         "rhs": "1 - sin(x)"
@@ -763,9 +764,9 @@
             "_problem_latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 2]. (sin(x) - cos(x)) * (sin(x) + cos(x)) ^ 5"
+                    "text": "INT x:[0,pi / 4]. (sin(x) - cos(x)) * (sin(x) + cos(x)) ^ 5"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)} + \\cos{(x)}\\)",
@@ -779,9 +780,9 @@
                     "text": "INT u:[1,1]. -u ^ 5"
                 },
                 {
-                    "latex": "0",
+                    "latex": "\\frac{1}{6} - \\frac{\\sqrt[64]{2}}{6}",
                     "reason": "Simplification",
-                    "text": "0"
+                    "text": "1/6 - 2 ^ (1/64) * (1/6)"
                 }
             ],
             "name": "Exercise 14",

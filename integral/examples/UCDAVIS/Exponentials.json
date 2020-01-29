@@ -183,7 +183,7 @@
             "problem": "INT x:[0, 1].(exp(4*x) - exp(-4*x))^2"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} (e^{x} (1 - e^{x})) (1 + e^{x}) \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} e^{x} (1 - e^{x}) (1 + e^{x}) \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{1} (e^{x} (1 - e^{x})) (1 + e^{x}) \\,\\mathrm{dx}",
@@ -217,16 +217,16 @@
             "problem": "INT x:[0, 1].exp(x)*(1-exp(x))*(1+exp(x))"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} (30 e^{-3 x}) (1 + 3 e^{-x}) ^ 5 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} 30 e^{-3 x} (1 + 3 e^{-x}) ^ 5 \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{1} (30 e^{-3 x}) (1 + 3 e^{-x}) ^ 5 \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{1} 30 e^{-3 x} (1 + 3 e^{-x}) ^ 5 \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[0,1]. 30 * exp(-3 * x) * (1 + 3 * exp(-x)) ^ 5"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(1 + 3 e^{-x}\\)",
-                    "latex": "\\int_{1 + 3 e^{-1}}^{4} ((-\\frac{10}{9} u ^ 5) (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} + ((\\frac{10}{9} u ^ 6) (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
+                    "latex": "\\int_{1 + 3 e^{-1}}^{4} \\frac{-\\frac{10}{9} u ^ 5 (-1 + u) ^ 3}{1 - 2 u + u ^ 2} + \\frac{\\frac{10}{9} u ^ 6 (-1 + u) ^ 3}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
                     "params": {
                         "f": "(10 * u ^ 5 * (u - 1) ^ 3 * (-u / ((u ^ 2 - 2 * u) + 1) + 1 / ((u ^ 2 - 2 * u) + 1))) / 9",
                         "g": "1 + 3 * exp(-x)",
@@ -236,44 +236,24 @@
                     "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1) + 10/9 * u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1)"
                 },
                 {
-                    "latex": "-\\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ {5} (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} \\,\\mathrm{du} + \\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ {6} (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "-10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 5 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1)) + 10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1))"
-                },
-                {
-                    "_latex_reason": "Rewrite \\(1 - 2 u + u ^ 2\\) to \\((1 - u) ^ 2\\)",
-                    "latex": "-\\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ 5 (-1 + u) ^ 3) \\frac{1}{(1 - u) ^ 2} \\,\\mathrm{du} + \\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ 6 (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
-                    "location": "0.1.0.1.0",
+                    "_latex_reason": "Rewrite \\(1 - 2 u + u ^ 2\\) to \\((-1 + u) ^ 2\\)",
+                    "latex": "\\int_{1 + 3 e^{-1}}^{4} \\frac{-\\frac{10}{9} u ^ 5 (-1 + u) ^ 3}{(-1 + u) ^ 2} + \\frac{\\frac{10}{9} u ^ 6 (-1 + u) ^ 3}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
+                    "location": "0.0.1.0",
                     "params": {
-                        "rhs": "(1-u)^2"
+                        "rhs": "(-1+u)^2"
                     },
                     "reason": "Rewrite fraction",
-                    "text": "-10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 5 * (-1 + u) ^ 3 * (1 - u) ^ 2 ^ (-1)) + 10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1))"
-                },
-                {
-                    "_latex_reason": "Rewrite \\((1 - u) ^ 2\\) to \\((u - 1) ^ 2\\)",
-                    "latex": "-\\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ 5 (-1 + u) ^ 3) \\frac{1}{(u - 1) ^ 2} \\,\\mathrm{du} + \\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ 6 (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
-                    "location": "0.1.0.1.0",
-                    "params": {
-                        "rhs": "(u - 1)^2"
-                    },
-                    "reason": "Rewrite fraction",
-                    "text": "-10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 5 * (-1 + u) ^ 3 * (u - 1) ^ 2 ^ (-1)) + 10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1))"
-                },
-                {
-                    "latex": "-\\frac{348160}{189} - \\frac{5}{27} (1 + 3 e^{-1}) ^ 6 + \\frac{10}{63} (1 + 3 e^{-1}) ^ 7 + \\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ {6} (-1 + u) ^ 3) \\frac{1}{1 - 2 u + u ^ 2} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "(-348160/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 10/63 * (1 + 3 * exp(-1)) ^ 7 + 10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1))"
+                    "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1) + 10/9 * u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1)"
                 },
                 {
                     "_latex_reason": "Rewrite \\(1 - 2 u + u ^ 2\\) to \\((-1 + u) ^ 2\\)",
-                    "latex": "-\\frac{348160}{189} - \\frac{5}{27} (1 + 3 e^{-1}) ^ 6 + \\frac{10}{63} (1 + 3 e^{-1}) ^ 7 + \\frac{10}{9} \\int_{1 + 3 e^{-1}}^{4} (u ^ 6 (-1 + u) ^ 3) \\frac{1}{(-1 + u) ^ 2} \\,\\mathrm{du}",
-                    "location": "1.1.0.1.0",
+                    "latex": "\\int_{1 + 3 e^{-1}}^{4} \\frac{-\\frac{10}{9} u ^ 5 (-1 + u) ^ 3}{(-1 + u) ^ 2} + \\frac{\\frac{10}{9} u ^ 6 (-1 + u) ^ 3}{(-1 + u) ^ 2} \\,\\mathrm{du}",
+                    "location": "0.1.1.0",
                     "params": {
-                        "rhs": "(-1 + u) ^ 2"
+                        "rhs": "(-1+u)^2"
                     },
                     "reason": "Rewrite fraction",
-                    "text": "(-348160/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 10/63 * (1 + 3 * exp(-1)) ^ 7 + 10/9 * (INT u:[1 + 3 * exp(-1),4]. u ^ 6 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1))"
+                    "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1) + 10/9 * u ^ 6 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1)"
                 },
                 {
                     "latex": "\\frac{880640}{189} - \\frac{5}{27} (1 + 3 e^{-1}) ^ 6 + \\frac{20}{63} (1 + 3 e^{-1}) ^ 7 - \\frac{5}{36} (1 + 3 e^{-1}) ^ 8",
@@ -285,7 +265,7 @@
             "problem": "INT x:[0, 1].30*exp(-3*x)*(1 + 3*exp(-x))^5"
         },
         {
-            "_problem_latex": "\\int_{0}^{1} \\frac{(8 e^{x}) (3 + e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} \\frac{8 e^{x} (3 + e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{1} \\frac{(8 e^{x}) (3 + e^{x})}{\\sqrt{e^{2 x} + 6 e^{x} + 1}} \\,\\mathrm{dx}",
