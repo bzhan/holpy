@@ -665,12 +665,26 @@ auto.add_global_autos_norm(
     auto.norm_rules([
         'log_ge_zero'
     ])
-),
+)
+
+auto.add_global_autos_norm(
+    greater,
+    auto.norm_rules([
+        'log_gt_zero'
+    ])
+)
 
 auto.add_global_autos_norm(
     less_eq,
     auto.norm_rules([
         'log_le_zero'
+    ])
+)
+
+auto.add_global_autos_norm(
+    less,
+    auto.norm_rules([
+        'log_lt_zero'
     ])
 )
 

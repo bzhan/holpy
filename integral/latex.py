@@ -3,7 +3,8 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import expr
-from integral.expr import OP, CONST, FUN, Const
+from integral.expr import OP, CONST, FUN, Const, Op
+
 
 def convert_expr(e, mode="large"):
     if e.ty == expr.VAR:

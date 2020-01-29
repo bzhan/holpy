@@ -279,34 +279,34 @@
             "problem": "INT x:[exp(1), exp(2)]. 3/(x*log(x))"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/10} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/10} \\frac{\\cos{(5 x)}}{e^{\\sin{(5 x)}}} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 2]. cos(5 * x) / exp(sin(5 * x))"
+                    "text": "INT x:[0,pi / 10]. cos(5 * x) / exp(sin(5 * x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(5 x)}\\)",
                     "latex": "\\int_{0}^{1} \\frac{e^{-u}}{5} \\,\\mathrm{du}",
                     "params": {
-                        "f": "exp(-u) / 5",
+                        "f": "1/5 * exp(-u)",
                         "g": "sin(5 * x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,1]. exp(-u) / 5"
+                    "text": "INT u:[0,1]. 1/5 * exp(-u)"
                 },
                 {
                     "_latex_reason": "Substitute \\(t\\) for \\(-u\\)",
-                    "latex": "\\int_{-1}^{0} -1 -\\frac{1}{5} * e^{t} \\,\\mathrm{dt}",
+                    "latex": "\\int_{-1}^{0} \\frac{e^{t}}{5} \\,\\mathrm{dt}",
                     "params": {
-                        "f": "-exp(t) / 5",
+                        "f": "-(1/5) * exp(t)",
                         "g": "-u",
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[-1,0]. -1 * (-1/5) * exp(t)"
+                    "text": "INT t:[-1,0]. 1/5 * exp(t)"
                 },
                 {
                     "latex": "\\frac{1}{5} - \\frac{1}{5} e^{-1}",
@@ -315,7 +315,7 @@
                 }
             ],
             "name": "Exercise 11",
-            "problem": "INT x:[0, pi/2]. cos(5*x)/exp(sin(5*x))"
+            "problem": "INT x:[0, pi/10]. cos(5*x)/exp(sin(5*x))"
         },
         {
             "_problem_latex": "\\int_{0}^{\\sqrt{\\pi}} x \\sin{(x ^ 2)} \\,\\mathrm{dx}",

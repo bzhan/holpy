@@ -5512,8 +5512,24 @@
             }
         },
         {
+            "name": "log_gt_zero",
+            "prop": "log x > 0 ⟷ x > 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "log_le_zero",
             "prop": "log x ≤ 0 ⟷ x > 0 ∧ x ≤ 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "log_lt_zero",
+            "prop": "log x < 0 ⟷ x > 0 ∧ x < 1",
             "ty": "thm",
             "vars": {
                 "x": "real"
