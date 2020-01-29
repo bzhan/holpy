@@ -593,7 +593,6 @@ class fraction_rewr_conv(Conv):
         rhs_eq = refl(real.times(self.denom, self.target))
         rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
                                arg_conv(cv), clear_denom_conv(conds), cv)
-        print(printer.print_term(thy, rhs_eq.prop))
         if lhs_eq.rhs != rhs_eq.rhs:
             raise AssertionError("fraction_rewr_conv: %s != %s" % (
                 printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))
@@ -910,9 +909,11 @@ def translate_item(item, target=None, *, debug=False):
             # Rewrite by multiplying a denominator
             rhs = parse_expr(step['params']['rhs'])
             rhs = expr_to_holpy(rhs)
-            denom = parse_expr(step['params']['denom'])
-            denom = expr_to_holpy(denom)
-            cv = fraction_rewr_conv(rhs, denom)
+            if 'denom' in step['params']:
+                denom = expr_to_holpy(parse_expr(step['params']['denom']))
+                cv = fraction_rewr_conv(rhs, denom)
+            else:
+                cv = simplify_rewr_conv(rhs)
 
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity

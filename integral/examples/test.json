@@ -1576,9 +1576,44 @@
                     "text": "INT x:[1 / exp(1),exp(1)]. abs(log(x))"
                 },
                 {
+                    "latex": "(\\int_{1/e}^{1} \\left| \\log{(x)} \\right| \\,\\mathrm{dx}) + (\\int_{1}^{e} \\left| \\log{(x)} \\right| \\,\\mathrm{dx})",
+                    "params": {
+                        "c": "1"
+                    },
+                    "reason": "Split region",
+                    "text": "(INT x:[1 / exp(1),1]. abs(log(x))) + (INT x:[1,exp(1)]. abs(log(x)))"
+                },
+                {
                     "latex": "(\\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}) - (\\int_{e^{-1}}^{1} \\log{(x)} \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "INT x:[1,exp(1)]. log(x) - (INT x:[exp(-1),1]. log(x))"
+                    "text": "(INT x:[1,exp(1)]. log(x)) - (INT x:[exp(-1),1]. log(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
+                    "latex": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx}) - (\\int_{e^{-1}}^{1} \\log{(x)} \\,\\mathrm{dx})",
+                    "location": "0",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) - (INT x:[exp(-1),1]. log(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
+                    "latex": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx}) - ((\\left. x \\log{(x)} \\right\\vert_{x=e^{-1}}^{1}) - (\\int_{e^{-1}}^{1} 1 \\,\\mathrm{dx}))",
+                    "location": "1",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1) - (([x * log(x)]_x=exp(-1),1) - (INT x:[exp(-1),1]. 1))"
+                },
+                {
+                    "latex": "2 - 2 e^{-1}",
+                    "reason": "Simplification",
+                    "text": "2 - 2 * exp(-1)"
                 }
             ],
             "name": "Exercise 36",
