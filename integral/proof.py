@@ -228,7 +228,9 @@ auto.add_global_autos_norm(
     real.log,
     auto.norm_rules([
         'log_1',
-        'log_exp'
+        'log_exp',
+        'log_pow',
+        'log_div',
     ])
 )
 
@@ -673,6 +675,15 @@ class trig_rewr_conv(Conv):
             for rewr_th in rewr_ths:
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
             return pt
+        elif self.code == 'TR10i':
+            rewr_ths = [
+                'sin_cos_combine',
+                'sin_cos_combine2',
+            ]
+            pt = refl(t)
+            for rewr_th in rewr_ths:
+                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+            return pt
         elif self.code == 'TR11':
             rewr_ths = [
                 'sin_double',  # sin (2 * x) = 2 * sin x * cos x
@@ -961,15 +972,12 @@ def translate_item(item, target=None, *, debug=False):
             t1_pt = t1_pt.on_rhs(thy, arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
                                       arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
             pt = ProofTerm.transitive(prev_pt, t1_pt)
-            if debug:
-                print("= %s (solve %d)" % (printer.print_term(thy, pt.rhs), prev_id))
-            prev_pts.append(pt)
-            continue
         else:
             raise NotImplementedError
 
         # Obtain result on proof side
-        pt = pt.on_rhs(thy, location_conv(loc, cv))
+        if reason != 'Solve equation':
+            pt = pt.on_rhs(thy, location_conv(loc, cv))
 
         if 'text' in step:
             expected = expr_to_holpy(parse_expr(step['text']))

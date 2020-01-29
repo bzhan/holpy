@@ -115,7 +115,7 @@ test_cases = {
         # "Exercise 14": "0",
         "Exercise 15": "-exp(4) + exp(5)",
         "Exercise 16": "0",
-        # "Exercise 17": "-(1/2) * log(2) ^ 2 + 1/2 * log(2 ^ (1/2) * (1/2)) ^ 2",
+        "Exercise 17": "-(1/2) * log(2) ^ 2 + 1/2 * log(2 ^ (1/2) * (1/2)) ^ 2",
         # "Exercise 18": None,
         "Exercise 19": "-1/2 + 2 ^ (1/2) * (1/2)",
         "Exercise 20": "-1/9",
@@ -124,7 +124,7 @@ test_cases = {
         "Exercise 23": "1/2 + 1/2 * exp(1/2 * pi)",
         "Exercise 24": "-3/7",
         # "Exercise 25": None,
-        # "Exercise 26": "0",
+        "Exercise 26": "1 / 2 * log (2 ^ (1 / 2) * (1 / 2))",
         # "Exercise 27": "log(1 + exp(1/2 * pi))",
     }
 }

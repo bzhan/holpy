@@ -1194,42 +1194,42 @@
             "problem": "INT x:[0, pi/4]. sec(x) * sqrt(sec(x) + tan(x))"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(2 x)} - \\cos{(2 x)}}{\\sin{(2 x)} + \\cos{(2 x)}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/8} \\frac{\\sin{(2 x)} - \\cos{(2 x)}}{\\sin{(2 x)} + \\cos{(2 x)}} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(2 x)} - \\cos{(2 x)}}{\\sin{(2 x)} + \\cos{(2 x)}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/8} \\frac{\\sin{(2 x)} - \\cos{(2 x)}}{\\sin{(2 x)} + \\cos{(2 x)}} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 4]. (sin(2 * x) - cos(2 * x)) / (sin(2 * x) + cos(2 * x))"
+                    "text": "INT x:[0,pi / 8]. (sin(2 * x) - cos(2 * x)) / (sin(2 * x) + cos(2 * x))"
                 },
                 {
                     "_latex_reason": "Rewrite trigonometric \\(\\frac{\\sin{(2 x)} - \\cos{(2 x)}}{\\sin{(2 x)} + \\cos{(2 x)}}\\) to \\(-\\frac{\\cos{(2 x + \\frac{\\pi}{4})}}{\\sin{(2 x + \\frac{\\pi}{4})}}\\)",
-                    "latex": "\\int_{0}^{\\pi/4} -\\frac{\\cos{(2 x + \\frac{\\pi}{4})}}{\\sin{(2 x + \\frac{\\pi}{4})}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/8} -\\frac{\\cos{(2 x + \\frac{\\pi}{4})}}{\\sin{(2 x + \\frac{\\pi}{4})}} \\,\\mathrm{dx}",
                     "location": "0",
                     "params": {
                         "rule": "TR10i"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi / 4]. -cos(2 * x + pi / 4) / sin(2 * x + pi / 4)"
+                    "text": "INT x:[0,pi / 8]. -cos(2 * x + pi / 4) / sin(2 * x + pi / 4)"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(2 x + \\frac{\\pi}{4})}\\)",
-                    "latex": "\\int_{\\frac{\\sqrt{2}}{2}}^{\\frac{\\sqrt{2}}{2}} \\frac{\\frac{1}{2}}{u} \\,\\mathrm{du}",
+                    "latex": "\\int_{\\frac{\\sqrt{2}}{2}}^{1} \\frac{-\\frac{1}{2}}{u} \\,\\mathrm{du}",
                     "params": {
                         "f": "(-1/2) * u ^ -1",
                         "g": "sin(2 * x + pi / 4)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[2 ^ (1/2) * (1/2),2 ^ (1/2) * (1/2)]. 1/2 * u ^ -1"
+                    "text": "INT u:[2 ^ (1/2) * (1/2),1]. -1/2 * u ^ -1"
                 },
                 {
-                    "latex": "0",
+                    "latex": "\\frac{1}{2} \\log{(\\frac{\\sqrt{2}}{2})}",
                     "reason": "Simplification",
-                    "text": "0"
+                    "text": "1/2 * log(2 ^ (1/2) * (1/2))"
                 }
             ],
             "name": "Exercise 26",
-            "problem": "INT x:[0, pi/4]. (sin(2*x) - cos(2*x))/(sin(2*x) + cos(2*x))"
+            "problem": "INT x:[0, pi/8]. (sin(2*x) - cos(2*x))/(sin(2*x) + cos(2*x))"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\sin{(x)} + \\cos{(x)}}{e^{-x} + \\sin{(x)}} \\,\\mathrm{dx}",
