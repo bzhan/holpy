@@ -377,8 +377,6 @@ class Expr:
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
-                # if x.ty == FUN and x.func_name == "log" and y.ty == FUN and y.func_name == "log":
-                #     return (x.normalize()+y.normalize()).to_poly()
                 if y.ty == OP and len(y.args) == 1:
                     # x + (-y) => x - y
                     return Op("-", x, y.args[0]).to_poly()
@@ -439,8 +437,8 @@ class Expr:
                         return poly.constant(Const(1))
                     elif y.val == 1:
                         return x.to_poly()
-                    elif y.val == 2:
-                        return x.to_poly()*x.to_poly()
+                    elif y.val == 2 and x.ty == OP and x.op in ("+", "-") and len(x.args) == 2:
+                        return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                     else:
                         if x.ty == CONST:
                             if isinstance(x.val, int) and (isinstance(y.val, Fraction) and y.val.denominator == 1 or isinstance(y.val, int)):
@@ -536,10 +534,6 @@ class Expr:
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
-            print(self)
-            print(upper)
-            print(lower)
-            print(upper.normalize() - lower.normalize())
             return (upper.normalize() - lower.normalize()).to_poly(0)
             # return upper.to_poly() - lower.to_poly()
         elif self.ty == INTEGRAL:
