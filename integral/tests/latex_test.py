@@ -24,7 +24,8 @@ class LatexTest(unittest.TestCase):
             ("exp(-(t^2/2))", "e^{-\\frac{1}{2} * t ^ 2}"),
             ("2 * 2 ^ (1/2)", "2 \\sqrt{2}"),
             ("(-1) * exp((-1))", "-e^{-1}"),
-            ("abs(u) ^ -1", "\\frac{1}{\left| u \\right|}")
+            ("abs(u) ^ -1", "\\frac{1}{\left| u \\right|}"),
+            ("(3 + x) ^ (3/2)", "(3 + x) ^ {\\frac{3}{2}}")
         ]
 
         for e, res in test_data:

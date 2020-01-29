@@ -159,48 +159,776 @@
         },
         {
             "_problem_latex": "\\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. log(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
+                    "latex": "(\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1)"
+                },
+                {
+                    "latex": "1",
+                    "reason": "Simplification",
+                    "text": "1"
+                }
+            ],
             "name": "Exercise 7",
             "problem": "INT x:[1, exp(1)]. log(x)"
         },
         {
             "_problem_latex": "\\int_{0}^{1} 2 x \\arctan{x} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} 2 x \\arctan{x} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. 2 * x * atan(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\arctan{x}, v = x ^ 2\\)",
+                    "latex": "(\\left. x ^ 2 \\arctan{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{x ^ 2}{1 + x ^ 2} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "atan(x)",
+                        "parts_v": "x^2"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x ^ 2 * atan(x)]_x=0,1) - (INT x:[0,1]. x ^ 2 * (1 + x ^ 2) ^ -1)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\pi - (\\int_{0}^{1} \\frac{x ^ {2}}{1 + x ^ {2}} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "1/4 * pi - (INT x:[0,1]. x ^ 2 * (1 + x ^ 2) ^ -1)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\pi - (\\int_{0}^{1} 1 - \\frac{1}{x ^ 2 + 1} \\,\\mathrm{dx})",
+                    "location": "1.0",
+                    "params": {
+                        "denom": "1 + x ^ 2",
+                        "rhs": "1 - 1 / (x ^ 2 + 1)"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "1/4 * pi - (INT x:[0,1]. 1 - 1 / (x ^ 2 + 1))"
+                },
+                {
+                    "latex": "-1 + \\frac{1}{2} \\pi",
+                    "reason": "Simplification",
+                    "text": "-1 + 1/2 * pi"
+                }
+            ],
             "name": "Exercise 8",
             "problem": "INT x:[0, 1]. 2*x*atan(x)"
         },
         {
             "_problem_latex": "\\int_{1}^{2} x ^ 2 e^{3 x} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{2} x ^ 2 e^{3 x} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,2]. x ^ 2 * exp(3 * x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\frac{1}{3} * x ^ 2, v = e^{3 x}\\)",
+                    "latex": "(\\left. \\frac{1}{3} x ^ 2 e^{3 x} \\right\\vert_{x=1}^{2}) - (\\int_{1}^{2} (\\frac{2}{3}) x e^{3 x} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x^2/3",
+                        "parts_v": "exp(3*x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/3 * x ^ 2 * exp(3 * x)]_x=1,2) - (INT x:[1,2]. 2/3 * x * exp(3 * x))"
+                },
+                {
+                    "latex": "-\\frac{1}{3} e^{3} + \\frac{4}{3} e^{6} - \\frac{2}{3} \\int_{1}^{2} x e^{3 x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "(-1/3 * exp(3) + 4/3 * exp(6)) - 2/3 * (INT x:[1,2]. x * exp(3 * x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\frac{x}{3}, v = e^{3 x}\\)",
+                    "latex": "-\\frac{1}{3} e^{3} + \\frac{4}{3} e^{6} - \\frac{2}{3} ((\\left. \\frac{x}{3} e^{3 x} \\right\\vert_{x=1}^{2}) - (\\int_{1}^{2} \\frac{e^{3 x}}{3} \\,\\mathrm{dx}))",
+                    "location": "1.1",
+                    "params": {
+                        "parts_u": "x/3",
+                        "parts_v": "exp(3*x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "(-1/3 * exp(3) + 4/3 * exp(6)) - 2/3 * (([1/3 * x * exp(3 * x)]_x=1,2) - (INT x:[1,2]. 1/3 * exp(3 * x)))"
+                },
+                {
+                    "latex": "-\\frac{1}{9} e^{3} + \\frac{8}{9} e^{6} + \\frac{2}{9} \\int_{1}^{2} e^{3 x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "-1/9 * exp(3) + 8/9 * exp(6) + 2/9 * (INT x:[1,2]. exp(3 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(3 x\\)",
+                    "latex": "-\\frac{1}{9} e^{3} + \\frac{8}{9} e^{6} + \\frac{2}{9} \\int_{3}^{6} \\frac{e^{t}}{3} \\,\\mathrm{dt}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "1/3 * exp(t)",
+                        "g": "3 * x",
+                        "var_name": "t"
+                    },
+                    "reason": "Substitution",
+                    "text": "-1/9 * exp(3) + 8/9 * exp(6) + 2/9 * (INT t:[3,6]. 1/3 * exp(t))"
+                },
+                {
+                    "latex": "-\\frac{5}{27} e^{3} + \\frac{26}{27} e^{6}",
+                    "reason": "Simplification",
+                    "text": "-5/27 * exp(3) + 26/27 * exp(6)"
+                }
+            ],
             "name": "Exercise 9",
             "problem": "INT x:[1, 2]. x^2*exp(3*x)"
         },
         {
             "_problem_latex": "\\int_{1}^{e} x ^ 3 \\log{(5 x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} x ^ 3 \\log{(5 x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. x ^ 3 * log(5 * x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\frac{\\log{(5 x)}}{4}, v = x ^ 4\\)",
+                    "latex": "(\\left. \\frac{1}{4} x ^ 4 \\log{(5 x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{1}{4} x ^ 3 \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(5*x)/4",
+                        "parts_v": "x ^ 4"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/4 * x ^ 4 * log(5 * x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1/4 * x ^ 3)"
+                },
+                {
+                    "latex": "\\frac{1}{16} - \\frac{1}{4} \\log{(5)} - \\frac{1}{16} e^{4} + (\\frac{1}{4} \\log{(5 e)}) e^{4}",
+                    "reason": "Simplification",
+                    "text": "(1/16 - 1/4 * log(5) - 1/16 * exp(4)) + 1/4 * log(5 * exp(1)) * exp(4)"
+                }
+            ],
             "name": "Exercise 10",
             "problem": "INT x:[1, exp(1)]. x^3*log(5*x)"
         },
         {
             "_problem_latex": "\\int_{1}^{e} \\log^{2}(x) \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} \\log^{2}(x) \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. log(x) ^ 2"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log^{2}(x), v = x\\)",
+                    "latex": "(\\left. x \\log^{2}(x) \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 2 \\log{(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)^2",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x) ^ 2]_x=1,exp(1)) - (INT x:[1,exp(1)]. 2 * log(x))"
+                },
+                {
+                    "latex": "e - 2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "exp(1) - 2 * (INT x:[1,exp(1)]. log(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = x\\)",
+                    "latex": "e - 2 ((\\left. x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 1 \\,\\mathrm{dx}))",
+                    "location": "1.1",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "exp(1) - 2 * (([x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1))"
+                },
+                {
+                    "latex": "-2 + e",
+                    "reason": "Simplification",
+                    "text": "-2 + exp(1)"
+                }
+            ],
             "name": "Exercise 11",
             "problem": "INT x:[1, exp(1)]. log(x) ^ 2"
         },
         {
             "_problem_latex": "\\int_{1}^{e} \\log^{3}(x) \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} \\log^{3}(x) \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. log(x) ^ 3"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log^{3}(x), v = x\\)",
+                    "latex": "(\\left. x \\log^{3}(x) \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 3 \\log^{2}(x) \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)^3",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x) ^ 3]_x=1,exp(1)) - (INT x:[1,exp(1)]. 3 * log(x) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = 3 \\log^{2}(x), v = x\\)",
+                    "latex": "(\\left. x \\log^{3}(x) \\right\\vert_{x=1}^{e}) - ((\\left. 3 x \\log^{2}(x) \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 6 \\log{(x)} \\,\\mathrm{dx}))",
+                    "location": "1",
+                    "params": {
+                        "parts_u": "3 * log(x) ^ 2",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x) ^ 3]_x=1,exp(1)) - (([3 * x * log(x) ^ 2]_x=1,exp(1)) - (INT x:[1,exp(1)]. 6 * log(x)))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = 6 \\log{(x)}, v = x\\)",
+                    "latex": "(\\left. x \\log^{3}(x) \\right\\vert_{x=1}^{e}) - ((\\left. 3 x \\log^{2}(x) \\right\\vert_{x=1}^{e}) - ((\\left. 6 x \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} 6 \\,\\mathrm{dx})))",
+                    "location": "1.1",
+                    "params": {
+                        "parts_u": "6 * log(x)",
+                        "parts_v": "x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * log(x) ^ 3]_x=1,exp(1)) - (([3 * x * log(x) ^ 2]_x=1,exp(1)) - (([6 * x * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 6)))"
+                },
+                {
+                    "latex": "6 - 2 e",
+                    "reason": "Simplification",
+                    "text": "6 - 2 * exp(1)"
+                }
+            ],
             "name": "Exercise 12",
             "problem": "INT x:[1, exp(1)]. log(x) ^ 3"
         },
         {
             "_problem_latex": "\\int_{-2}^{1} x \\sqrt{x + 3} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{-2}^{1} x \\sqrt{x + 3} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[-2,1]. x * sqrt(x + 3)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = \\frac{2}{3} (x + 3) ^ {\\frac{3}{2}}\\)",
+                    "latex": "(\\left. (\\frac{2}{3}) x (3 + x) ^ {\\frac{3}{2}} \\right\\vert_{x=-2}^{1}) - (\\int_{-2}^{1} \\frac{2}{3} (3 + x) ^ {\\frac{3}{2}} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x",
+                        "parts_v": "2/3 * (x + 3) ^ (3/2)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([2/3 * x * (3 + x) ^ (3/2)]_x=-2,1) - (INT x:[-2,1]. 2/3 * (3 + x) ^ (3/2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 + x\\)",
+                    "latex": "(\\left. (\\frac{2}{3}) x (3 + x) ^ {\\frac{3}{2}} \\right\\vert_{x=-2}^{1}) - (\\int_{1}^{4} \\frac{2}{3} u ^ {\\frac{3}{2}} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "2/3 * u ^ (3/2)",
+                        "g": "3 + x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "([2/3 * x * (3 + x) ^ (3/2)]_x=-2,1) - (INT u:[1,4]. 2/3 * u ^ (3/2))"
+                },
+                {
+                    "latex": "-\\frac{8}{5}",
+                    "reason": "Simplification",
+                    "text": "-8/5"
+                }
+            ],
             "name": "Exercise 13",
             "problem": "INT x:[-2, 1]. x * sqrt(x + 3)"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/4} x \\sin{(x)} \\cos{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} x \\sin{(x)} \\cos{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. x * sin(x) * cos(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = \\frac{1}{2} \\sin^{2}(x)\\)",
+                    "latex": "(\\left. \\frac{x}{2} \\sin^{2}(x) \\right\\vert_{x=0}^{\\pi/4}) - (\\int_{0}^{\\pi/4} \\frac{1}{2} \\sin^{2}(x) \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x",
+                        "parts_v": "1/2 * sin(x) ^ 2"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/2 * x * sin(x) ^ 2]_x=0,pi / 4) - (INT x:[0,pi / 4]. 1/2 * sin(x) ^ 2)"
+                },
+                {
+                    "latex": "\\frac{1}{16} \\pi - \\frac{1}{2} \\int_{0}^{\\pi/4} \\sin^{2}(x) \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "1/16 * pi - 1/2 * (INT x:[0,pi / 4]. sin(x) ^ 2)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\sin^{2}(x)\\) to \\(\\frac{1}{2} - \\frac{\\cos{(2 x)}}{2}\\)",
+                    "latex": "\\frac{1}{16} \\pi - \\frac{1}{2} \\int_{0}^{\\pi/4} \\frac{1}{2} - \\frac{\\cos{(2 x)}}{2} \\,\\mathrm{dx}",
+                    "location": "1.1.0",
+                    "params": {
+                        "rule": "TR8"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "1/16 * pi - 1/2 * (INT x:[0,pi / 4]. 1/2 - cos(2 * x) / 2)"
+                },
+                {
+                    "latex": "\\frac{1}{4} \\int_{0}^{\\pi/4} \\cos{(2 x)} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "1/4 * (INT x:[0,pi / 4]. cos(2 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 x\\)",
+                    "latex": "\\frac{1}{4} \\int_{0}^{1/2 \\pi} \\frac{\\cos{(u)}}{2} \\,\\mathrm{du}",
+                    "location": "1",
+                    "params": {
+                        "f": "1/2 * cos(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/4 * (INT u:[0,1/2 * pi]. 1/2 * cos(u))"
+                },
+                {
+                    "latex": "\\frac{1}{8}",
+                    "reason": "Simplification",
+                    "text": "1/8"
+                }
+            ],
             "name": "Exercise 14",
             "problem": "INT x:[0, pi/4]. x * sin(x) * cos(x)"
         },
         {
             "_problem_latex": "\\int_{1}^{e} (\\frac{\\log{(x)}}{x}) ^ 2 \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} (\\frac{\\log{(x)}}{x}) ^ 2 \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. (log(x) / x) ^ 2"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log^{2}(x), v = \\frac{-1}{x}\\)",
+                    "latex": "(\\left. -\\frac{1}{x} \\log^{2}(x) \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{-2}{x ^ 2} \\log{(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x) ^ 2",
+                        "parts_v": "-1/x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-x ^ -1 * log(x) ^ 2]_x=1,exp(1)) - (INT x:[1,exp(1)]. -2 * x ^ -2 * log(x))"
+                },
+                {
+                    "latex": "-e^{-1} + 2 \\int_{1}^{e} x ^ {-2} \\log{(x)} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "-exp(-1) + 2 * (INT x:[1,exp(1)]. x ^ -2 * log(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\log{(x)}, v = \\frac{-1}{x}\\)",
+                    "latex": "-e^{-1} + 2 ((\\left. -\\frac{1}{x} \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} -\\frac{1}{x ^ 2} \\,\\mathrm{dx}))",
+                    "location": "1.1",
+                    "params": {
+                        "parts_u": "log(x)",
+                        "parts_v": "-1/x"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "-exp(-1) + 2 * (([-x ^ -1 * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. -x ^ -2))"
+                },
+                {
+                    "latex": "2 - 5 e^{-1}",
+                    "reason": "Simplification",
+                    "text": "2 - 5 * exp(-1)"
+                }
+            ],
             "name": "Exercise 15",
             "problem": "INT x:[1, exp(1)]. (log(x)/x)^2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} x ^ 5 e^{x ^ 3} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} x ^ 5 e^{x ^ 3} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x ^ 5 * exp(x ^ 3)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x ^ 3, v = \\frac{e^{x ^ 3}}{3}\\)",
+                    "latex": "(\\left. \\frac{1}{3} x ^ 3 e^{x ^ 3} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} x ^ 2 e^{x ^ 3} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x ^ 3",
+                        "parts_v": "exp(x ^ 3)/3"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/3 * x ^ 3 * exp(x ^ 3)]_x=0,1) - (INT x:[0,1]. x ^ 2 * exp(x ^ 3))"
+                },
+                {
+                    "latex": "\\frac{1}{3} e - (\\int_{0}^{1} x ^ {2} e^{x ^ {3}} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "1/3 * exp(1) - (INT x:[0,1]. x ^ 2 * exp(x ^ 3))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(e^{x ^ 3}\\)",
+                    "latex": "\\frac{1}{3} e - (\\int_{1}^{e} \\frac{1}{3} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "1/3",
+                        "g": "exp(x ^ 3)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/3 * exp(1) - (INT u:[1,exp(1)]. 1/3)"
+                },
+                {
+                    "latex": "\\frac{1}{3}",
+                    "reason": "Simplification",
+                    "text": "1/3"
+                }
+            ],
+            "name": "Exercise 16",
+            "problem": "INT x:[0, 1]. x ^ 5 * exp(x ^ 3)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/4} x ^ 3 \\cos{(x ^ 2)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} x ^ 3 \\cos{(x ^ 2)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. x ^ 3 * cos(x ^ 2)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x ^ 2, v = \\frac{\\sin{(x ^ 2)}}{2}\\)",
+                    "latex": "(\\left. \\frac{1}{2} x ^ 2 \\sin{(x ^ 2)} \\right\\vert_{x=0}^{\\pi/4}) - (\\int_{0}^{\\pi/4} x \\sin{(x ^ 2)} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x ^ 2",
+                        "parts_v": "sin(x ^ 2)/2"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/2 * x ^ 2 * sin(x ^ 2)]_x=0,pi / 4) - (INT x:[0,pi / 4]. x * sin(x ^ 2))"
+                },
+                {
+                    "latex": "(\\frac{1}{32} \\pi ^ 2) \\sin{(\\frac{1}{16} * \\pi ^ 2)} - (\\int_{0}^{\\pi/4} x \\sin{(x ^ 2)} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "1/32 * pi ^ 2 * sin(pi ^ 2 / 16) - (INT x:[0,pi / 4]. x * sin(x ^ 2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(x ^ 2\\)",
+                    "latex": "(\\frac{1}{32} \\pi ^ 2) \\sin{(\\frac{1}{16} * \\pi ^ 2)} - (\\int_{0}^{(1/16) \\pi ^ 2} \\frac{\\sin{(u)}}{2} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "1/2 * sin(u)",
+                        "g": "x ^ 2",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/32 * pi ^ 2 * sin(pi ^ 2 / 16) - (INT u:[0,1/16 * pi ^ 2]. 1/2 * sin(u))"
+                },
+                {
+                    "latex": "-\\frac{1}{2} + (\\frac{1}{32} \\pi ^ 2) \\sin{(\\frac{1}{16} * \\pi ^ 2)} + \\frac{1}{2} \\cos{(\\frac{1}{16} * \\pi ^ 2)}",
+                    "reason": "Simplification",
+                    "text": "-1/2 + 1/32 * pi ^ 2 * sin(pi ^ 2 / 16) + 1/2 * cos(pi ^ 2 / 16)"
+                }
+            ],
+            "name": "Exercise 17",
+            "problem": "INT x:[0, pi/4]. x ^ 3 * cos(x ^ 2)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} x ^ 7 \\sqrt{5 + 3 x ^ 4} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} x ^ 7 \\sqrt{5 + 3 x ^ 4} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x ^ 7 * sqrt(5 + 3 * x ^ 4)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x ^ 4, v = \\frac{1}{18} (5 + 3 x ^ 4) ^ {\\frac{3}{2}}\\)",
+                    "latex": "(\\left. \\frac{1}{18} x ^ 4 (5 + 3 x ^ 4) ^ {\\frac{3}{2}} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{2}{9} x ^ 3 (5 + 3 x ^ 4) ^ {\\frac{3}{2}} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x ^ 4",
+                        "parts_v": "(1/18)*(5 + 3*x^4)^(3/2)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/18 * x ^ 4 * (5 + 3 * x ^ 4) ^ (3/2)]_x=0,1) - (INT x:[0,1]. 2/9 * x ^ 3 * (5 + 3 * x ^ 4) ^ (3/2))"
+                },
+                {
+                    "latex": "\\frac{8 \\sqrt{2}}{9} - \\frac{2}{9} \\int_{0}^{1} x ^ {3} (5 + 3 x ^ {4}) ^ {\\frac{3}{2}} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "8 * 2 ^ (1/2) * (1/9) - 2/9 * (INT x:[0,1]. x ^ 3 * (5 + 3 * x ^ 4) ^ (3/2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(5 + 3 x ^ 4\\)",
+                    "latex": "\\frac{8 \\sqrt{2}}{9} - \\frac{2}{9} \\int_{5}^{8} \\frac{1}{12} u ^ {\\frac{3}{2}} \\,\\mathrm{du}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "1/12 * u ^ (3/2)",
+                        "g": "5 + 3 * x ^ 4",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "8 * 2 ^ (1/2) * (1/9) - 2/9 * (INT u:[5,8]. 1/12 * u ^ (3/2))"
+                },
+                {
+                    "latex": "\\frac{-8 \\sqrt{2}}{135} + \\frac{5 ^ {\\frac{3}{2}}}{27}",
+                    "reason": "Simplification",
+                    "text": "-8 * 2 ^ (1/2) * (1/135) + 5 ^ (3/2) * (1/27)"
+                }
+            ],
+            "name": "Exercise 18",
+            "problem": "INT x:[0, 1]. x ^ 7 * sqrt(5 + 3 * x ^ 4)"
+        },
+        {
+            "_problem_latex": "\\int_{1}^{2} \\frac{x ^ 3}{(x ^ 2 + 5) ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{2} \\frac{x ^ 3}{(x ^ 2 + 5) ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,2]. x ^ 3 / (x ^ 2 + 5) ^ 2"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x ^ 2, v = \\frac{-1}{2 (x ^ 2 + 5)}\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{2} x ^ 2}{5 + x ^ 2} \\right\\vert_{x=1}^{2}) - (\\int_{1}^{2} \\frac{-x}{5 + x ^ 2} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x ^ 2",
+                        "parts_v": "-1/(2 * (x ^ 2 + 5))"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-1/2 * x ^ 2 * (5 + x ^ 2) ^ -1]_x=1,2) - (INT x:[1,2]. -x * (5 + x ^ 2) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(5 + x ^ 2\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{2} x ^ 2}{5 + x ^ 2} \\right\\vert_{x=1}^{2}) - (\\int_{6}^{9} \\frac{-1}{2 u} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "-1 / (2 * u)",
+                        "g": "5 + x ^ 2",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "([-1/2 * x ^ 2 * (5 + x ^ 2) ^ -1]_x=1,2) - (INT u:[6,9]. -1 / (2 * u))"
+                },
+                {
+                    "latex": "-\\frac{5}{36} - \\frac{1}{2} \\log{(6)} + \\frac{1}{2} \\log{(9)}",
+                    "reason": "Simplification",
+                    "text": "((-5/36) - 1/2 * log(6)) + 1/2 * log(9)"
+                }
+            ],
+            "name": "Exercise 19",
+            "problem": "INT x:[1, 2]. x ^ 3 / (x ^ 2 + 5) ^ 2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} e^{6 x} \\sin{(e^{3 x})} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} e^{6 x} \\sin{(e^{3 x})} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. exp(6 * x) * sin(exp(3 * x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = e^{3 x}, v = (-\\frac{1}{3}) \\cos{(e^{3 x})}\\)",
+                    "latex": "(\\left. (-\\frac{1}{3}) \\cos{(e^{3 x})} e^{3 x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} -\\cos{(e^{3 x})} e^{3 x} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "exp(3 * x)",
+                        "parts_v": "-(1/3)*cos(exp(3*x))"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-1/3 * cos(exp(3 * x)) * exp(3 * x)]_x=0,1) - (INT x:[0,1]. -cos(exp(3 * x)) * exp(3 * x))"
+                },
+                {
+                    "latex": "\\frac{1}{3} \\cos{(1)} + (-\\frac{1}{3} \\cos{(e^{3})}) e^{3} + (\\int_{0}^{1} \\cos{(e^{3 x})} e^{3 x} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "1/3 * cos(1) + -1/3 * cos(exp(3)) * exp(3) + (INT x:[0,1]. cos(exp(3 * x)) * exp(3 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(e^{3 x}\\)",
+                    "latex": "\\frac{1}{3} \\cos{(1)} + (-\\frac{1}{3} \\cos{(e^{3})}) e^{3} + (\\int_{1}^{e^{3}} \\frac{\\cos{(u)}}{3} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "1/3 * cos(u)",
+                        "g": "exp(3 * x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/3 * cos(1) + -1/3 * cos(exp(3)) * exp(3) + (INT u:[1,exp(3)]. 1/3 * cos(u))"
+                },
+                {
+                    "latex": "\\frac{1}{3} \\cos{(1)} - \\frac{1}{3} \\sin{(1)} + (-\\frac{1}{3} \\cos{(e^{3})}) e^{3} + \\frac{1}{3} \\sin{(e^{3})}",
+                    "reason": "Simplification",
+                    "text": "(1/3 * cos(1) - 1/3 * sin(1)) + (-1/3) * cos(exp(3)) * exp(3) + 1/3 * sin(exp(3))"
+                }
+            ],
+            "name": "Exercise 20",
+            "problem": "INT x:[0, 1]. exp(6 * x) * sin(exp(3 * x))"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} \\frac{x ^ 3 e^{x ^ 2}}{(x ^ 2 + 1) ^ 2} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} \\frac{x ^ 3 e^{x ^ 2}}{(x ^ 2 + 1) ^ 2} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. (x ^ 3 * exp(x ^ 2)) / (x ^ 2 + 1) ^ 2"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x ^ 2 e^{x ^ 2}, v = \\frac{-1}{2 (x ^ 2 + 1)}\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{2} x ^ 2}{1 + x ^ 2} e^{x ^ 2} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{-x}{1 + x ^ 2} e^{x ^ 2} + \\frac{-x ^ 3}{1 + x ^ 2} e^{x ^ 2} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x^2*exp(x ^ 2)",
+                        "parts_v": "-1/(2*(x^2 + 1))"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-1/2 * x ^ 2 * (1 + x ^ 2) ^ -1 * exp(x ^ 2)]_x=0,1) - (INT x:[0,1]. -x * (1 + x ^ 2) ^ -1 * exp(x ^ 2) + -x ^ 3 * (1 + x ^ 2) ^ -1 * exp(x ^ 2))"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(\\frac{-x}{1 + x ^ 2} e^{x ^ 2} + \\frac{-x ^ 3}{1 + x ^ 2} e^{x ^ 2}\\) to \\(\\frac{-x (1 + x ^ 2) e^{x ^ 2}}{1 + x ^ 2}\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{2} x ^ 2}{1 + x ^ 2} e^{x ^ 2} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\frac{-x (1 + x ^ 2) e^{x ^ 2}}{1 + x ^ 2} \\,\\mathrm{dx})",
+                    "location": "1.0",
+                    "params": {
+                        "rhs": "-x*(1 + x^2)*exp(x ^ 2)/(1 + x^2)"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "([-1/2 * x ^ 2 * (1 + x ^ 2) ^ -1 * exp(x ^ 2)]_x=0,1) - (INT x:[0,1]. (-x * (1 + x ^ 2) * exp(x ^ 2)) / (1 + x ^ 2))"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(\\frac{-x (1 + x ^ 2) e^{x ^ 2}}{1 + x ^ 2}\\) to \\(-x e^{x ^ 2}\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{2} x ^ 2}{1 + x ^ 2} e^{x ^ 2} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} -x e^{x ^ 2} \\,\\mathrm{dx})",
+                    "location": "1.0",
+                    "params": {
+                        "denom": "1 + x ^ 2",
+                        "rhs": "-x*exp(x ^ 2)"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "([-1/2 * x ^ 2 * (1 + x ^ 2) ^ -1 * exp(x ^ 2)]_x=0,1) - (INT x:[0,1]. -x * exp(x ^ 2))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(x ^ 2\\)",
+                    "latex": "(\\left. \\frac{-\\frac{1}{2} x ^ 2}{1 + x ^ 2} e^{x ^ 2} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} (-\\frac{1}{2}) e^{u} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "(-1/2) * exp(u)",
+                        "g": "x ^ 2",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "([-1/2 * x ^ 2 * (1 + x ^ 2) ^ -1 * exp(x ^ 2)]_x=0,1) - (INT u:[0,1]. -1/2 * exp(u))"
+                },
+                {
+                    "latex": "-\\frac{1}{2} + \\frac{1}{4} e",
+                    "reason": "Simplification",
+                    "text": "-1/2 + 1/4 * exp(1)"
+                }
+            ],
+            "name": "Exercise 21",
+            "problem": "INT x:[0, 1]. (x ^ 3 * exp(x^2))/(x^2 + 1) ^ 2"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{1} e^{x} \\cos{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} e^{x} \\cos{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. exp(x) * cos(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = e^{x}, v = \\sin{(x)}\\)",
+                    "latex": "(\\left. \\sin{(x)} e^{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} \\sin{(x)} e^{x} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "exp(x)",
+                        "parts_v": "sin(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([sin(x) * exp(x)]_x=0,1) - (INT x:[0,1]. sin(x) * exp(x))"
+                },
+                {
+                    "latex": "\\sin{(1)} e - (\\int_{0}^{1} \\sin{(x)} e^{x} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "sin(1) * exp(1) - (INT x:[0,1]. sin(x) * exp(x))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = -e^{x}, v = \\cos{(x)}\\)",
+                    "latex": "\\sin{(1)} e - ((\\left. -\\cos{(x)} e^{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} -\\cos{(x)} e^{x} \\,\\mathrm{dx}))",
+                    "location": "1",
+                    "params": {
+                        "parts_u": "-exp(x)",
+                        "parts_v": "cos(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "sin(1) * exp(1) - (([-cos(x) * exp(x)]_x=0,1) - (INT x:[0,1]. -cos(x) * exp(x)))"
+                },
+                {
+                    "latex": "-1 + \\cos{(1)} e + \\sin{(1)} e - (\\int_{0}^{1} \\cos{(x)} e^{x} \\,\\mathrm{dx})",
+                    "reason": "Simplification",
+                    "text": "(-1 + cos(1) * exp(1) + sin(1) * exp(1)) - (INT x:[0,1]. cos(x) * exp(x))"
+                },
+                {
+                    "_latex_reason": "By solving equation: \\(\\int_{0}^{1} \\cos{(x)} e^{x} \\,\\mathrm{dx} = -1 + \\cos{(1)} e + \\sin{(1)} e - (\\int_{0}^{1} \\cos{(x)} e^{x} \\,\\mathrm{dx})\\)",
+                    "latex": "-\\frac{1}{2} + (\\frac{1}{2} \\cos{(1)}) e + (\\frac{1}{2} \\sin{(1)}) e",
+                    "params": {
+                        "factor": "1",
+                        "prev_id": "0"
+                    },
+                    "reason": "Solve equation",
+                    "text": "-1/2 + 1/2 * cos(1) * exp(1) + 1/2 * sin(1) * exp(1)"
+                }
+            ],
+            "name": "Exercise 22",
+            "problem": "INT x:[0, 1]. exp(x) * cos(x)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/4} \\sin{(3 x)} \\cos{(5 x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} \\sin{(3 x)} \\cos{(5 x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. sin(3 * x) * cos(5 * x)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\sin{(3 x)} \\cos{(5 x)}\\) to \\(-\\frac{\\sin{(2 x)}}{2} + \\frac{\\sin{(8 x)}}{2}\\)",
+                    "latex": "\\int_{0}^{\\pi/4} -\\frac{\\sin{(2 x)}}{2} + \\frac{\\sin{(8 x)}}{2} \\,\\mathrm{dx}",
+                    "location": "0",
+                    "params": {
+                        "rule": "TR8"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "INT x:[0,pi / 4]. -sin(2 * x) / 2 + sin(8 * x) / 2"
+                },
+                {
+                    "latex": "-\\frac{1}{2} \\int_{0}^{\\pi/4} \\sin{(2 x)} \\,\\mathrm{dx} + \\frac{1}{2} \\int_{0}^{\\pi/4} \\sin{(8 x)} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "-1/2 * (INT x:[0,pi / 4]. sin(2 * x)) + 1/2 * (INT x:[0,pi / 4]. sin(8 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(2 x\\)",
+                    "latex": "-\\frac{1}{2} \\int_{0}^{1/2 \\pi} \\frac{\\sin{(u)}}{2} \\,\\mathrm{du} + \\frac{1}{2} \\int_{0}^{\\pi/4} \\sin{(8 x)} \\,\\mathrm{dx}",
+                    "location": "0.1",
+                    "params": {
+                        "f": "1/2 * sin(u)",
+                        "g": "2 * x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "-1/2 * (INT u:[0,1/2 * pi]. 1/2 * sin(u)) + 1/2 * (INT x:[0,pi / 4]. sin(8 * x))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(8 x\\)",
+                    "latex": "-\\frac{1}{2} \\int_{0}^{1/2 \\pi} \\frac{\\sin{(u)}}{2} \\,\\mathrm{du} + \\frac{1}{2} \\int_{0}^{2 \\pi} \\frac{\\sin{(t)}}{8} \\,\\mathrm{dt}",
+                    "location": "1.1",
+                    "params": {
+                        "f": "1/8 * sin(t)",
+                        "g": "8 * x",
+                        "var_name": "t"
+                    },
+                    "reason": "Substitution",
+                    "text": "-1/2 * (INT u:[0,1/2 * pi]. 1/2 * sin(u)) + 1/2 * (INT t:[0,2 * pi]. 1/8 * sin(t))"
+                },
+                {
+                    "latex": "-\\frac{1}{4}",
+                    "reason": "Simplification",
+                    "text": "-1/4"
+                }
+            ],
+            "name": "Exercise 23",
+            "problem": "INT x:[0, pi/4]. sin(3*x)*cos(5*x)"
         }
     ]
 }

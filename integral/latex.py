@@ -44,6 +44,8 @@ def convert_expr(e, mode="large"):
                                 return "\\sqrt{%s}" % sx
                             else:
                                 return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
+                        if x.ty == OP:
+                            return "(%s) ^ {%s}" % (sx, sy)
                         return "%s ^ {%s}" % (sx, sy)
                     if y.ty == expr.CONST and y.val < 0:
                         if y.val != -1:
