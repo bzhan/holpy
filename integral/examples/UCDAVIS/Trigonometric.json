@@ -761,32 +761,32 @@
             "problem": "INT x:[0, pi/4]. tan(x) ^ 5"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 2]. (sin(x) - cos(x)) * (sin(x) + cos(x)) ^ 5"
+                    "text": "INT x:[0,pi / 4]. (sin(x) - cos(x)) * (sin(x) + cos(x)) ^ 5"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)} + \\cos{(x)}\\)",
-                    "latex": "\\int_{1}^{1} -u ^ 5 \\,\\mathrm{du}",
+                    "latex": "\\int_{1}^{\\sqrt{2}} -u ^ 5 \\,\\mathrm{du}",
                     "params": {
                         "f": "-u ^ 5",
                         "g": "sin(x) + cos(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,1]. -u ^ 5"
+                    "text": "INT u:[1,2 ^ (1/2)]. -u ^ 5"
                 },
                 {
-                    "latex": "0",
+                    "latex": "\\frac{1}{6} - \\frac{\\sqrt[64]{2}}{6}",
                     "reason": "Simplification",
-                    "text": "0"
+                    "text": "1/6 - 2 ^ (1/64) * (1/6)"
                 }
             ],
             "name": "Exercise 14",
-            "problem": "INT x:[0, pi/2]. (sin(x) - cos(x))*(sin(x) + cos(x)) ^ 5"
+            "problem": "INT x:[0, pi/4]. (sin(x) - cos(x))*(sin(x) + cos(x)) ^ 5"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/2} \\cos{(x)} e^{4 + \\sin{(x)}} \\,\\mathrm{dx}",
