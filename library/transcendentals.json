@@ -7790,6 +7790,22 @@
             }
         },
         {
+            "name": "sin_cos_combine",
+            "prop": "sin x + cos x = sqrt 2 * sin (x + pi / 4)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "sin_cos_combine2",
+            "prop": "sin x - cos x = -(sqrt 2) * cos (x + pi / 4)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward",
                 "hint_backward1"
