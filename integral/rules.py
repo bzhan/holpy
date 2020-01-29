@@ -225,35 +225,6 @@ class Substitution1(Rule):
     def eval(self, e):
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
-        # try:
-        #     gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
-        #     print(gu)
-        #     gu = gu[-1] if isinstance(gu, list) else gu
-        #     gu = expr.holpy_style(gu)
-        #     print("gu: ", gu)
-        #     c = e.body.replace_trig(parser.parse_expr(e.var), gu)
-        #     print("c: ", c, expr.deriv(str(var_name), gu), c * expr.deriv(str(var_name), gu))
-        #     new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
-        #     print("new_problem_body: ", new_problem_body)
-        #     lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
-        #     upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
-        #     if sympy_style(lower) < sympy_style(upper):
-        #         return Integral(self.var_name, lower, upper, new_problem_body), new_problem_body
-        #     else:
-        #         return Integral(self.var_name, upper, lower, Op("-", new_problem_body).normalize()), new_problem_body
-        # except NotImplementedError as ex:
-        #     dfx = expr.deriv(e.var, var_subst)
-        #     body =holpy_style(sympy_style((e.body/dfx)))
-        #     body = body.normalize().replace_trig(var_subst.normalize(), var_name)
-        #     lower = var_subst.subst(e.var, e.lower).normalize()
-        #     upper = var_subst.subst(e.var, e.upper).normalize()
-        #     if var_subst not in body.findVar():
-        #         if sympy_style(lower) < sympy_style(upper):
-        #             return Integral(self.var_name, lower, upper, body), body
-        #         else:
-        #             return Integral(self.var_name, upper, lower, Op("-", body).normalize()), body
-        #     else:
-        #         raise NotImplementedError
         dfx = expr.deriv(e.var, var_subst)
         body =holpy_style(sympy_style(e.body/dfx).simplify())
         body = body.normalize().replace_trig(var_subst.normalize(), var_name)
@@ -276,10 +247,6 @@ class Substitution1(Rule):
                 return Integral(self.var_name, lower, upper, new_problem_body), new_problem_body
             else:
                 return Integral(self.var_name, upper, lower, Op("-", new_problem_body).normalize()), new_problem_body
-                
-
-
-
 
 class Substitution2(Rule):
     """Apply substitution x = f(u)"""

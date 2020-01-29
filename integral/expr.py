@@ -367,7 +367,7 @@ class Expr:
     def to_poly(self, simp = 1):
         """Convert expression to a polynomial."""
         p = self
-        if self.is_constant() and simp == 0:
+        if self.is_constant() and simp == 0 and not (self.ty == OP and self.op == "^" and self.args[0] == Fun("pi")):
             p = sympy_parser.parse_expr(str(self).replace("^", "**"))
             return parser.parse_expr(str(p).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1))).to_poly(simp = 1)
         if self.ty == VAR:
@@ -526,9 +526,9 @@ class Expr:
                     return poly.constant(Const(abs(x.val)))
                 elif x.is_constant():
                     if sympy_style(x) > 0:
-                        return poly.constant(x)
+                        return poly.constant(holpy_style(sympy_style(x)))
                     else:
-                        return poly.constant(-x)
+                        return poly.constant(holpy_style(sympy_style(-x)))
                 else:
                     return poly.singleton(self)
             else:
@@ -536,7 +536,7 @@ class Expr:
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
-            return (upper.normalize() - lower.normalize()).to_poly()
+            return (upper.normalize() - lower.normalize()).to_poly(0)
             # return upper.to_poly() - lower.to_poly()
         elif self.ty == INTEGRAL:
             a = self
@@ -990,7 +990,9 @@ class Op(Expr):
         if len(self.args) == 1:
             a, = self.args
             s = str(a)
-            if a.priority() < 80:
+            if a.ty == CONST and a.val > 0:
+                return "(%s%s)" % (self.op, s)
+            if a.priority() < 70:
                 s = "(%s)" % s
             return "%s%s" % (self.op, s)
         elif len(self.args) == 2:
@@ -1004,11 +1006,8 @@ class Op(Expr):
             if b.priority() <= op_priority[self.op] and not (b.ty == CONST and isinstance(b.val, Fraction) and b.val.denominator == 1):
                 if not (b.ty == OP and b.op in ("+", "*") and b.op == self.op):
                     s2 = "(%s)" % s2
-            if self.op == "^":
-                if b.ty == CONST and b.val < 0 or b.ty == OP and len(b.args) == 1:
-                    s2 = "(%s)" % s2
-                if a.ty == CONST and a.val < 0 or a.ty == OP and len(a.args) == 1:
-                    s1 = "(%s)" % s1
+            elif self.op == "^" and a.ty == CONST and a.val < 0:
+                s1 = "(%s)" % s1
             return "%s %s %s" % (s1, self.op, s2)           
         else:
             raise NotImplementedError
