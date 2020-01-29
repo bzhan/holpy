@@ -760,7 +760,7 @@
             "problem": "INT x:[0, pi/4]. tan(x) ^ 5"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/4} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{0}^{\\pi/2} (\\sin{(x)} - \\cos{(x)}) (\\sin{(x)} + \\cos{(x)}) ^ 5 \\,\\mathrm{dx}",
@@ -769,14 +769,14 @@
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)} + \\cos{(x)}\\)",
-                    "latex": "\\int_{1}^{1} u ^ 5 \\,\\mathrm{du}",
+                    "latex": "\\int_{1}^{1} -u ^ 5 \\,\\mathrm{du}",
                     "params": {
-                        "f": "-(u ^ 5)",
+                        "f": "-u ^ 5",
                         "g": "sin(x) + cos(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,1]. u ^ 5"
+                    "text": "INT u:[1,1]. -u ^ 5"
                 },
                 {
                     "latex": "0",
@@ -785,7 +785,7 @@
                 }
             ],
             "name": "Exercise 14",
-            "problem": "INT x:[0, pi/2]. (sin(x) - cos(x))*(sin(x) + cos(x)) ^ 5"
+            "problem": "INT x:[0, pi/4]. (sin(x) - cos(x))*(sin(x) + cos(x)) ^ 5"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/2} \\cos{(x)} e^{4 + \\sin{(x)}} \\,\\mathrm{dx}",
@@ -1201,54 +1201,25 @@
                     "text": "INT x:[0,pi / 4]. (sin(2 * x) - cos(2 * x)) / (sin(2 * x) + cos(2 * x))"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(2 x\\)",
-                    "latex": "\\int_{0}^{1/2 \\pi} -\\frac{1}{2} \\frac{1}{\\tan{(u + \\frac{\\pi}{4})}} \\,\\mathrm{du}",
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\sin{(2 x)} - \\cos{(2 x)}}{\\sin{(2 x)} + \\cos{(2 x)}}\\) to \\(-\\frac{\\cos{(2 x + \\frac{\\pi}{4})}}{\\sin{(2 x + \\frac{\\pi}{4})}}\\)",
+                    "latex": "\\int_{0}^{\\pi/4} -\\frac{\\cos{(2 x + \\frac{\\pi}{4})}}{\\sin{(2 x + \\frac{\\pi}{4})}} \\,\\mathrm{dx}",
+                    "location": "0",
                     "params": {
-                        "f": "-(1/2) * tan(u + pi / 4) ^ (-1)",
-                        "g": "2 * x",
-                        "var_name": "u"
-                    },
-                    "reason": "Substitution",
-                    "text": "INT u:[0,1/2 * pi]. -1/2 * tan(u + pi / 4) ^ (-1)"
-                },
-                {
-                    "latex": "-\\frac{1}{2} \\int_{0}^{1/2 \\pi} \\frac{1}{\\tan{(u + \\frac{\\pi}{4})}} \\,\\mathrm{du}",
-                    "reason": "Simplification",
-                    "text": "-1/2 * (INT u:[0,1/2 * pi]. tan(u + pi / 4) ^ (-1))"
-                },
-                {
-                    "_latex_reason": "Substitute \\(t\\) for \\(u + \\frac{\\pi}{4}\\)",
-                    "latex": "-\\frac{1}{2} \\int_{\\pi/4}^{3 \\pi/4} \\frac{1}{\\tan{(t)}} \\,\\mathrm{dt}",
-                    "location": "1",
-                    "params": {
-                        "f": "1 / tan(t)",
-                        "g": "u + pi / 4",
-                        "var_name": "t"
-                    },
-                    "reason": "Substitution",
-                    "text": "-1/2 * (INT t:[pi / 4,(3 * pi) / 4]. 1 / tan(t))"
-                },
-                {
-                    "_latex_reason": "Rewrite trigonometric \\(\\frac{1}{\\tan{(t)}}\\) to \\(\\frac{\\cos{(t)}}{\\sin{(t)}}\\)",
-                    "latex": "-\\frac{1}{2} \\int_{\\pi/4}^{3 \\pi/4} \\frac{\\cos{(t)}}{\\sin{(t)}} \\,\\mathrm{dt}",
-                    "location": "1.0",
-                    "params": {
-                        "rule": "TR2"
+                        "rule": "TR10i"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "-1/2 * (INT t:[pi / 4,(3 * pi) / 4]. cos(t) / sin(t))"
+                    "text": "INT x:[0,pi / 4]. -cos(2 * x + pi / 4) / sin(2 * x + pi / 4)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(t)}\\)",
-                    "latex": "-\\frac{1}{2} \\int_{\\frac{\\sqrt{2}}{2}}^{\\frac{\\sqrt{2}}{2}} -\\frac{1}{u} \\,\\mathrm{du}",
-                    "location": "1",
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(2 x + \\frac{\\pi}{4})}\\)",
+                    "latex": "\\int_{\\frac{\\sqrt{2}}{2}}^{\\frac{\\sqrt{2}}{2}} \\frac{\\frac{1}{2}}{u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "u ^ (-1)",
-                        "g": "sin(t)",
+                        "f": "(-1/2) * u ^ -1",
+                        "g": "sin(2 * x + pi / 4)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "-1/2 * (INT u:[2 ^ (1/2) * (1/2),2 ^ (1/2) * (1/2)]. -(u ^ (-1)))"
+                    "text": "INT u:[2 ^ (1/2) * (1/2),2 ^ (1/2) * (1/2)]. 1/2 * u ^ -1"
                 },
                 {
                     "latex": "0",

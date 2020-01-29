@@ -231,7 +231,7 @@ class Substitution1(Rule):
         lower = var_subst.subst(e.var, e.lower).normalize()
         upper = var_subst.subst(e.var, e.upper).normalize()
         if parser.parse_expr(e.var) not in body.findVar():
-            if sympy_style(lower) < sympy_style(upper):
+            if sympy_style(lower) <= sympy_style(upper):
                 return Integral(self.var_name, lower, upper, body), body
             else:
                 return Integral(self.var_name, upper, lower, Op("-", body).normalize()), body
