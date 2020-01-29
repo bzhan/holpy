@@ -14694,7 +14694,7 @@
             "prop": [
                 "real_differentiable f (atreal x) ",
                 "⟶ 0 < f x ",
-                "   ⟶ real_derivative (λx1. f x1 ^ y) x = y * x ^ (y - 1) * real_derivative f x"
+                "   ⟶ real_derivative (λx1. f x1 ^ y) x = y * (f x) ^ (y - 1) * real_derivative f x"
             ],
             "ty": "thm",
             "vars": {

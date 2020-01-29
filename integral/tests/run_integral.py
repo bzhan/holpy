@@ -126,6 +126,31 @@ test_cases = {
         # "Exercise 25": None,
         "Exercise 26": "1 / 2 * log (2 ^ (1 / 2) * (1 / 2))",
         # "Exercise 27": "log(1 + exp(1/2 * pi))",
+    },
+    "Byparts": {
+        "Exercise 1": "1",
+        "Exercise 2": "1",
+        "Exercise 3": "1/4 + 1/4 * exp(2)",
+        "Exercise 4": "(-1/9 - 2 ^ (1/2) * (1/18)) + 2 ^ (1/2) * (1/24) * pi",
+        "Exercise 5": "1/16 - 5/16 * exp(-4)",
+        # "Exercise 6": None,
+        "Exercise 7": "1",
+        "Exercise 8": "-1 + 1/2 * pi",
+        "Exercise 9": "-5/27 * exp(3) + 26/27 * exp(6)",
+        "Exercise 10": "(1/16 - 1/4 * log(5) - 1/16 * exp(4)) + 1/4 * log(5 * exp(1)) * exp(4)",
+        "Exercise 11": "-2 + exp(1)",
+        "Exercise 12": "6 - 2 * exp(1)",
+        "Exercise 13": "-8/5",
+        "Exercise 14": "1 / 8",
+        "Exercise 15": "2 - 5 * exp(-1)",
+        "Exercise 16": "1 / 3",
+        "Exercise 17": "-1/2 + 1/32 * pi ^ 2 * sin(pi ^ 2 / 16) + 1/2 * cos(pi ^ 2 / 16)",
+        "Exercise 18": "-8 * 2 ^ (1/2) * (1/135) + 5 ^ (3/2) * (1/27)",
+        # "Exercise 19": "((-5/36) - 1/2 * log(6)) + 1/2 * log(9)",
+        "Exercise 20": "(1/3 * cos(1) - 1/3 * sin(1)) + (-1/3) * cos(exp(3)) * exp(3) + 1/3 * sin(exp(3))",
+        # "Exercise 21": "-1/2 + 1/4 * exp(1)",
+        "Exercise 22": "-1/2 + 1/2 * cos(1) * exp(1) + 1/2 * sin(1) * exp(1)",
+        "Exercise 23": "-1/4",
     }
 }
 
@@ -134,7 +159,7 @@ class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
             "test", "2014", "2019", "UCDAVIS/usubstitution", "UCDAVIS/Exponentials",
-            "UCDAVIS/Trigonometric"
+            "UCDAVIS/Trigonometric", "Byparts"
         ]
         test_only = None
         profile = False
