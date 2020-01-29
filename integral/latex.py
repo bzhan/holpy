@@ -163,6 +163,10 @@ def convert_expr(e, mode="large"):
                 return "\\left| %s \\right|" % sx
             elif e.func_name == "atan":
                 return "\\arctan{%s}" % sx
+            elif e.func_name == "asin":
+                return "\\arcsin{%s}" % sx
+            elif e.func_name == "acos":
+                return "\\arccos{%s}" % sx
             return "\\%s{(%s)}" % (e.func_name, sx)
         else:
             raise NotImplementedError
