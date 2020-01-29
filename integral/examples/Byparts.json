@@ -1,63 +1,183 @@
 {
     "content": [
         {
+            "_problem_latex": "\\int_{0}^{1} x e^{x} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{1} x e^{x} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,1]. x * exp(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = e^{x}\\)",
+                    "latex": "(\\left. x e^{x} \\right\\vert_{x=0}^{1}) - (\\int_{0}^{1} e^{x} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x",
+                        "parts_v": "exp(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([x * exp(x)]_x=0,1) - (INT x:[0,1]. exp(x))"
+                },
+                {
+                    "latex": "1",
+                    "reason": "Simplification",
+                    "text": "1"
+                }
+            ],
             "name": "Exercise 1",
             "problem": "INT x:[0, 1]. x*exp(x)"
         },
         {
+            "_problem_latex": "\\int_{0}^{\\pi/2} x \\sin{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/2} x \\sin{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 2]. x * sin(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = -x, v = \\cos{(x)}\\)",
+                    "latex": "(\\left. -x \\cos{(x)} \\right\\vert_{x=0}^{\\pi/2}) - (\\int_{0}^{\\pi/2} -\\cos{(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "-x",
+                        "parts_v": "cos(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-x * cos(x)]_x=0,pi / 2) - (INT x:[0,pi / 2]. -cos(x))"
+                },
+                {
+                    "latex": "1",
+                    "reason": "Simplification",
+                    "text": "1"
+                }
+            ],
             "name": "Exercise 2",
             "problem": "INT x:[0, pi/2]. x * sin(x)"
         },
         {
+            "_problem_latex": "\\int_{1}^{e} x \\log{(x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{1}^{e} x \\log{(x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[1,exp(1)]. x * log(x)"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = \\frac{\\log{(x)}}{2}, v = x ^ 2\\)",
+                    "latex": "(\\left. \\frac{1}{2} x ^ 2 \\log{(x)} \\right\\vert_{x=1}^{e}) - (\\int_{1}^{e} \\frac{x}{2} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "log(x)/2",
+                        "parts_v": "x^2"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([1/2 * x ^ 2 * log(x)]_x=1,exp(1)) - (INT x:[1,exp(1)]. 1/2 * x)"
+                },
+                {
+                    "latex": "\\frac{1}{4} + \\frac{1}{4} e^{2}",
+                    "reason": "Simplification",
+                    "text": "1/4 + 1/4 * exp(2)"
+                }
+            ],
             "name": "Exercise 3",
             "problem": "INT x:[1, exp(1)]. x * log(x)"
         },
         {
+            "_problem_latex": "\\int_{0}^{\\pi/4} x \\cos{(3 x)} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} x \\cos{(3 x)} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. x * cos(3 * x)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(3 x\\)",
+                    "latex": "\\int_{0}^{3 \\pi/4} \\frac{1}{9} * u \\cos{(u)} \\,\\mathrm{du}",
+                    "params": {
+                        "f": "(u * cos(u)) / 9",
+                        "g": "3 * x",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[0,(3 * pi) / 4]. (u * cos(u)) / 9"
+                },
+                {
+                    "latex": "\\frac{1}{9} \\int_{0}^{3 \\pi/4} u \\cos{(u)} \\,\\mathrm{du}",
+                    "reason": "Simplification",
+                    "text": "1/9 * (INT u:[0,(3 * pi) / 4]. u * cos(u))"
+                },
+                {
+                    "_latex_reason": "Integrate by parts, \\(u = u, v = \\sin{(u)}\\)",
+                    "latex": "\\frac{1}{9} ((\\left. u \\sin{(u)} \\right\\vert_{u=0}^{3 \\pi/4}) - (\\int_{0}^{3 \\pi/4} \\sin{(u)} \\,\\mathrm{du}))",
+                    "location": "1",
+                    "params": {
+                        "parts_u": "u",
+                        "parts_v": "sin(u)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "1/9 * (([u * sin(u)]_u=0,(3 * pi) / 4) - (INT u:[0,(3 * pi) / 4]. sin(u)))"
+                },
+                {
+                    "latex": "-\\frac{1}{9} - \\frac{\\sqrt{2}}{18} + \\frac{\\sqrt{2}}{24} \\pi",
+                    "reason": "Simplification",
+                    "text": "(-1/9 - 2 ^ (1/2) * (1/18)) + 2 ^ (1/2) * (1/24) * pi"
+                }
+            ],
             "name": "Exercise 4",
             "problem": "INT x:[0, pi/4]. x * cos(3*x)"
         },
         {
+            "_problem_latex": "\\int_{1}^{e} \\frac{\\log{(x)}}{x ^ 5} \\,\\mathrm{dx}",
             "name": "Exercise 5",
             "problem": "INT x:[1, exp(1)]. log(x)/x^5"
         },
         {
+            "_problem_latex": "\\int_{0}^{1/3} \\arcsin{3 x} \\,\\mathrm{dx}",
             "name": "Exercise 6",
             "problem": "INT x:[0, 1/3]. asin(3*x)"
         },
         {
+            "_problem_latex": "\\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx}",
             "name": "Exercise 7",
             "problem": "INT x:[1, exp(1)]. log(x)"
         },
         {
+            "_problem_latex": "\\int_{0}^{1} 2 x \\arctan{x} \\,\\mathrm{dx}",
             "name": "Exercise 8",
             "problem": "INT x:[0, 1]. 2*x*atan(x)"
         },
         {
+            "_problem_latex": "\\int_{1}^{2} x ^ 2 e^{3 x} \\,\\mathrm{dx}",
             "name": "Exercise 9",
             "problem": "INT x:[1, 2]. x^2*exp(3*x)"
         },
         {
+            "_problem_latex": "\\int_{1}^{e} x ^ 3 \\log{(5 x)} \\,\\mathrm{dx}",
             "name": "Exercise 10",
             "problem": "INT x:[1, exp(1)]. x^3*log(5*x)"
         },
         {
-            "name":"Exercise 11",
+            "_problem_latex": "\\int_{1}^{e} \\log^{2}(x) \\,\\mathrm{dx}",
+            "name": "Exercise 11",
             "problem": "INT x:[1, exp(1)]. log(x) ^ 2"
         },
         {
+            "_problem_latex": "\\int_{1}^{e} \\log^{3}(x) \\,\\mathrm{dx}",
             "name": "Exercise 12",
             "problem": "INT x:[1, exp(1)]. log(x) ^ 3"
         },
         {
+            "_problem_latex": "\\int_{-2}^{1} x \\sqrt{x + 3} \\,\\mathrm{dx}",
             "name": "Exercise 13",
             "problem": "INT x:[-2, 1]. x * sqrt(x + 3)"
         },
         {
+            "_problem_latex": "\\int_{0}^{\\pi/4} x \\sin{(x)} \\cos{(x)} \\,\\mathrm{dx}",
             "name": "Exercise 14",
             "problem": "INT x:[0, pi/4]. x * sin(x) * cos(x)"
         },
         {
-            "name":"Exercise 15",
+            "_problem_latex": "\\int_{1}^{e} (\\frac{\\log{(x)}}{x}) ^ 2 \\,\\mathrm{dx}",
+            "name": "Exercise 15",
             "problem": "INT x:[1, exp(1)]. (log(x)/x)^2"
         }
     ]
