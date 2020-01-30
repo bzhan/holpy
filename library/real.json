@@ -486,6 +486,32 @@
             }
         },
         {
+            "name": "real_gt_add",
+            "prop": "x > 0 ⟶ y > 0 ⟶ x + y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_gt_mul",
+            "prop": "x > 0 ⟶ y > 0 ⟶ x * y > 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "real_gt_to_neq",
+            "prop": "x > 0 ⟶ ¬(x = 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -10634,6 +10660,28 @@
             "ty": "thm",
             "vars": {
                 "x": "real"
+            }
+        },
+        {
+            "name": "real_divide_eq",
+            "prop": "¬(b = 0) ⟶ ¬(d = 0) ⟶ a * d = b * c ⟶ a / b = c / d",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real"
+            }
+        },
+        {
+            "name": "real_divide_add",
+            "prop": "¬(b = 0) ⟶ ¬(d = 0) ⟶ a / b + c / d = (a * d + b * c) / (b * d)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real"
             }
         },
         {

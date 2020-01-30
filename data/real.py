@@ -36,6 +36,7 @@ uminus = Const("uminus", TFun(realT, realT))
 times = Const("times", TFun(realT, realT, realT))
 divides = Const("real_divide", TFun(realT, realT, realT))
 inverse = Const("real_inverse", TFun(realT, realT))
+equals = Const("equals", TFun(realT, realT, boolT))
 less_eq = Const("less_eq", TFun(realT, realT, boolT))
 less = Const("less", TFun(realT, realT, boolT))
 greater_eq = Const("greater_eq", TFun(realT, realT, boolT))
@@ -697,6 +698,21 @@ auto.add_global_autos(
         'real_ge_add',
         'real_ge_mul',
         'real_ge_divide'
+    ])
+)
+
+auto.add_global_autos(
+    greater,
+    auto.solve_rules([
+        'real_gt_add',
+        'real_gt_mul'
+    ])
+)
+
+auto.add_global_autos_neg(
+    equals,
+    auto.solve_rules([
+        'real_gt_to_neq'
     ])
 )
 

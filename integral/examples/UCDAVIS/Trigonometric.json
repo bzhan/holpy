@@ -460,89 +460,89 @@
             "problem": "INT x:[0, pi]. cos(x) ^ 2/(1 + sin(x))"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi} \\frac{\\sin{(x)}}{1 + \\sin{(x)}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(x)}}{1 + \\sin{(x)}} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi} \\frac{\\sin{(x)}}{1 + \\sin{(x)}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(x)}}{1 + \\sin{(x)}} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi]. sin(x) / (1 + sin(x))"
+                    "text": "INT x:[0,pi / 4]. sin(x) / (1 + sin(x))"
                 },
                 {
                     "_latex_reason": "Rewrite \\(\\frac{\\sin{(x)}}{1 + \\sin{(x)}}\\) to \\(\\frac{\\sin{(x)} (1 - \\sin{(x)})}{1 - \\sin^{2}(x)}\\)",
-                    "latex": "\\int_{0}^{\\pi} \\frac{\\sin{(x)} (1 - \\sin{(x)})}{1 - \\sin^{2}(x)} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(x)} (1 - \\sin{(x)})}{1 - \\sin^{2}(x)} \\,\\mathrm{dx}",
                     "location": "0",
                     "params": {
                         "denom": "1 + sin(x)",
-                        "rhs": "sin(x)*(1 - sin(x))/(1 - sin(x)^2)"
+                        "rhs": "sin(x)*(1-sin(x))/(1-sin(x)^2)"
                     },
                     "reason": "Rewrite fraction",
-                    "text": "INT x:[0,pi]. (sin(x) * (1 - sin(x))) / (1 - sin(x) ^ 2)"
+                    "text": "INT x:[0,pi / 4]. (sin(x) * (1 - sin(x))) / (1 - sin(x) ^ 2)"
                 },
                 {
                     "_latex_reason": "Rewrite trigonometric \\(1 - \\sin^{2}(x)\\) to \\(\\cos^{2}(x)\\)",
-                    "latex": "\\int_{0}^{\\pi} \\frac{\\sin{(x)} (1 - \\sin{(x)})}{\\cos^{2}(x)} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(x)} (1 - \\sin{(x)})}{\\cos^{2}(x)} \\,\\mathrm{dx}",
                     "location": "0.1",
                     "params": {
                         "rule": "TR5"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT x:[0,pi]. (sin(x) * (1 - sin(x))) / cos(x) ^ 2"
+                    "text": "INT x:[0,pi / 4]. (sin(x) * (1 - sin(x))) / cos(x) ^ 2"
                 },
                 {
-                    "latex": "(\\int_{0}^{\\pi} \\frac{1}{\\cos^{2}(x)} \\sin{(x)} \\,\\mathrm{dx}) - (\\int_{0}^{\\pi} \\frac{1}{\\cos^{2}(x)} \\sin^{2}(x) \\,\\mathrm{dx})",
+                    "latex": "(\\int_{0}^{\\pi/4} \\frac{1}{\\cos^{2}(x)} \\sin{(x)} \\,\\mathrm{dx}) - (\\int_{0}^{\\pi/4} \\frac{1}{\\cos^{2}(x)} \\sin^{2}(x) \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "(INT x:[0,pi]. cos(x) ^ (-2) * sin(x)) - (INT x:[0,pi]. cos(x) ^ (-2) * sin(x) ^ 2)"
+                    "text": "(INT x:[0,pi / 4]. cos(x) ^ -2 * sin(x)) - (INT x:[0,pi / 4]. cos(x) ^ -2 * sin(x) ^ 2)"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\cos{(x)}\\)",
-                    "latex": "(\\int_{-1}^{1} \\frac{1}{u ^ 2} \\,\\mathrm{du}) - (\\int_{0}^{\\pi} \\frac{1}{\\cos^{2}(x)} \\sin^{2}(x) \\,\\mathrm{dx})",
+                    "latex": "(\\int_{\\frac{\\sqrt{2}}{2}}^{1} \\frac{1}{u ^ 2} \\,\\mathrm{du}) - (\\int_{0}^{\\pi/4} \\frac{1}{\\cos^{2}(x)} \\sin^{2}(x) \\,\\mathrm{dx})",
                     "location": "0",
                     "params": {
-                        "f": "-(u ^ (-2))",
+                        "f": "-u ^ -2",
                         "g": "cos(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "(INT u:[-1,1]. u ^ (-2)) - (INT x:[0,pi]. cos(x) ^ (-2) * sin(x) ^ 2)"
+                    "text": "(INT u:[2 ^ (1/2) * (1/2),1]. u ^ -2) - (INT x:[0,pi / 4]. cos(x) ^ -2 * sin(x) ^ 2)"
                 },
                 {
-                    "latex": "-2 - (\\int_{0}^{\\pi} \\frac{1}{\\cos^{2}(x)} \\sin^{2}(x) \\,\\mathrm{dx})",
+                    "latex": "-1 + \\sqrt{2} - (\\int_{0}^{\\pi/4} \\frac{1}{\\cos^{2}(x)} \\sin^{2}(x) \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "-2 - (INT x:[0,pi]. cos(x) ^ (-2) * sin(x) ^ 2)"
+                    "text": "(-1 + 2 ^ (1/2)) - (INT x:[0,pi / 4]. cos(x) ^ -2 * sin(x) ^ 2)"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\frac{1}{\\cos^{2}(x)} \\sin^{2}(x)\\) to \\(\\frac{1 - \\cos^{2}(x)}{\\cos^{2}(x)}\\)",
-                    "latex": "-2 - (\\int_{0}^{\\pi} \\frac{1 - \\cos^{2}(x)}{\\cos^{2}(x)} \\,\\mathrm{dx})",
-                    "location": "1.0",
+                    "_latex_reason": "Rewrite trigonometric \\(\\sin^{2}(x)\\) to \\(1 - \\cos^{2}(x)\\)",
+                    "latex": "-1 + \\sqrt{2} - (\\int_{0}^{\\pi/4} \\frac{1}{\\cos^{2}(x)} (1 - \\cos^{2}(x)) \\,\\mathrm{dx})",
+                    "location": "1.0.1",
                     "params": {
                         "rule": "TR5"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "-2 - (INT x:[0,pi]. (1 - cos(x) ^ 2) / cos(x) ^ 2)"
+                    "text": "(-1 + 2 ^ (1/2)) - (INT x:[0,pi / 4]. cos(x) ^ -2 * (1 - cos(x) ^ 2))"
                 },
                 {
-                    "latex": "-2 + \\pi - (\\int_{0}^{\\pi} \\frac{1}{\\cos^{2}(x)} \\,\\mathrm{dx})",
+                    "latex": "-1 + \\sqrt{2} + \\frac{1}{4} \\pi - (\\int_{0}^{\\pi/4} \\frac{1}{\\cos^{2}(x)} \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "(-2 + pi) - (INT x:[0,pi]. cos(x) ^ (-2))"
+                    "text": "(-1 + 2 ^ (1/2) + 1/4 * pi) - (INT x:[0,pi / 4]. cos(x) ^ -2)"
                 },
                 {
                     "_latex_reason": "Rewrite trigonometric \\(\\frac{1}{\\cos^{2}(x)}\\) to \\(\\sec^{2}(x)\\)",
-                    "latex": "-2 + \\pi - (\\int_{0}^{\\pi} \\sec^{2}(x) \\,\\mathrm{dx})",
+                    "latex": "-1 + \\sqrt{2} + \\frac{1}{4} \\pi - (\\int_{0}^{\\pi/4} \\sec^{2}(x) \\,\\mathrm{dx})",
                     "location": "1.0",
                     "params": {
                         "rule": "TR111"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "(-2 + pi) - (INT x:[0,pi]. sec(x) ^ 2)"
+                    "text": "(-1 + 2 ^ (1/2) + 1/4 * pi) - (INT x:[0,pi / 4]. sec(x) ^ 2)"
                 },
                 {
-                    "latex": "-2 + \\pi",
+                    "latex": "-2 + \\sqrt{2} + \\frac{1}{4} \\pi",
                     "reason": "Simplification",
-                    "text": "-2 + pi"
+                    "text": "-2 + 2 ^ (1/2) + 1/4 * pi"
                 }
             ],
             "name": "Exercise 10",
-            "problem": "INT x:[0, pi]. sin(x) / (1 + sin(x))"
+            "problem": "INT x:[0, pi/4]. sin(x) / (1 + sin(x))"
         },
         {
             "_problem_latex": "\\int_{\\pi/6}^{\\pi/4} (\\csc{(3 x)} + \\cot{(3 x)}) ^ 2 \\,\\mathrm{dx}",
@@ -1246,22 +1246,12 @@
                     "text": "INT x:[0,pi / 2]. (sin(x) + cos(x)) / (exp(-x) + sin(x))"
                 },
                 {
-                    "_latex_reason": "Rewrite \\(\\frac{\\sin{(x)} + \\cos{(x)}}{e^{-x} + \\sin{(x)}}\\) to \\(\\frac{e^{x} (\\sin{(x)} + \\cos{(x)})}{e^{x} (e^{-x} + \\sin{(x)})}\\)",
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{e^{x} (\\sin{(x)} + \\cos{(x)})}{e^{x} (e^{-x} + \\sin{(x)})} \\,\\mathrm{dx}",
+                    "_latex_reason": "Rewrite \\(\\frac{\\sin{(x)} + \\cos{(x)}}{e^{-x} + \\sin{(x)}}\\) to \\(\\frac{e^{x} (\\sin{(x)} + \\cos{(x)})}{1 + e^{x} \\sin{(x)}}\\)",
+                    "latex": "\\int_{0}^{\\pi/2} \\frac{e^{x} (\\sin{(x)} + \\cos{(x)})}{1 + e^{x} \\sin{(x)}} \\,\\mathrm{dx}",
                     "location": "0",
                     "params": {
                         "denom": "exp(-x) + sin(x)",
-                        "rhs": "exp(x)*(sin(x) + cos(x))/(exp(x) * (exp(-x) + sin(x)))"
-                    },
-                    "reason": "Rewrite fraction",
-                    "text": "INT x:[0,pi / 2]. (exp(x) * (sin(x) + cos(x))) / (exp(x) * (exp(-x) + sin(x)))"
-                },
-                {
-                    "_latex_reason": "Rewrite \\(e^{x} (e^{-x} + \\sin{(x)})\\) to \\(1 + e^{x} \\sin{(x)}\\)",
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{e^{x} (\\sin{(x)} + \\cos{(x)})}{1 + e^{x} \\sin{(x)}} \\,\\mathrm{dx}",
-                    "location": "0.1",
-                    "params": {
-                        "rhs": "1 + exp(x) * sin(x)"
+                        "rhs": "(exp(x)*(sin(x)+cos(x))/(1+exp(x)*sin(x)))"
                     },
                     "reason": "Rewrite fraction",
                     "text": "INT x:[0,pi / 2]. (exp(x) * (sin(x) + cos(x))) / (1 + exp(x) * sin(x))"
@@ -1270,12 +1260,12 @@
                     "_latex_reason": "Substitute \\(u\\) for \\(1 + e^{x} \\sin{(x)}\\)",
                     "latex": "\\int_{1}^{1 + e^{1/2 \\pi}} \\frac{1}{u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "u ^ (-1)",
+                        "f": "u ^ -1",
                         "g": "1 + exp(x) * sin(x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[1,1 + exp(1/2 * pi)]. u ^ (-1)"
+                    "text": "INT u:[1,1 + exp(1/2 * pi)]. u ^ -1"
                 },
                 {
                     "latex": "\\log{(1 + e^{\\frac{1}{2} \\pi})}",
