@@ -55,20 +55,25 @@ test_cases = {
         "Exercise 4": "2500",
         "Exercise 5": "3 ^ (1/2) * pi",
         "Exercise 6": "18",
-        # "Exercise 7": "log(2)",
+        # "Exercise 7": "log(2)",  # problem with TR22
         "Exercise 8": "5 / 2",
-        # "Exercise 9": None,
+        # "Exercise 9": None,  # out of range
         "Exercise 10": "(1 - log(1 - exp(-1))) + log(1 - exp(-2))",
         "Exercise 11": "1 / 8 * pi",
-        # "Exercise 12": "4",
+        # "Exercise 12": "4",  # out of range
         "Exercise 13": "1 - 1/4 * pi",
-        # "Exercise 14": "24 - 8 * e",
-        # "Exercise 15": None,
-        # "Exercise 16": "e * log(e)^2",   # TypeError
+        # "Exercise 14": None,  # out of range
+        # "Exercise 15": "24 - 8 * e",  # sympy
+        "Exercise 16": "-1/2 + log(2) + log(3 ^ (1/2) * (1/2))",
+        "Exercise 17": "exp(1)",
         "Exercise 18": "1/2 - 1/2 * log(2)",
         "Exercise 19": "1/4 * pi",
         "Exercise 20": "-1 + 2 * log(2) + 3 * log (3 ^ (1 / 2) * (1 / 2))",
-        # "Exercise 21": None,
+        # "Exercise 21": None,  # linearity
+        "Exercise 22": "3/2 + 3 ^ (1/2) * (1/3) * pi",
+        "Exercise 23": "418 / 35",
+        "Exercise 24": "2",
+        # "Exercise 25": "2 ^ (1/2) * (1/8) * pi + -2 ^ (1/2) * (1/2) * atan(sqrt(14) / 7)"  # sympy
     },
     "2014": {
         "Exercise 6": "-(4 / 5)",
@@ -85,14 +90,14 @@ test_cases = {
         "Exercise 5": "-(1/5) * exp(2) + 1/5 * exp(7)",
         "Exercise 6": "4 / 3",
         "Exercise 7": "0",
-        # "Exercise 8": "3/2 * log(2) - 3/2 * log(3)",
-        # "Exercise 9": None,
+        "Exercise 8": "-(3/2) * log(2) + 3/2 * log(9)",
+        # "Exercise 9": None,  # non-constant exponent
         "Exercise 10": "3 * log(2)",
         "Exercise 11": "1/5 - 1/5 * exp(-1)",
         "Exercise 12": "1",
         "Exercise 13": "-11 / 21",
         "Exercise 14": "128 / 15",
-        # "Exercise 15": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)",
+        "Exercise 15": "(1/2 - 7/4 * log(3)) + 7/4 * log(5)",
         "Exercise 16": "(-(3/2) - 8 * log(2)) + 8 * log(3)",
         "Exercise 17": "41 / 6",
         "Exercise 18": "188 / 15"
@@ -101,15 +106,15 @@ test_cases = {
         "Exercise 1": "-5 + 5 * exp(1)",
         "Exercise 2": "5 - 3 * exp(1)",
         "Exercise 3": "2",
-        # "Exercise 4": None,
+        # "Exercise 4": None,  # out of range
         "Exercise 5": "-149/98 + 3/2 * exp(2) + 1/49 * exp(7)",
         "Exercise 6": "-243/10 + 1/10 * (1 + 2 * exp(1)) ^ 5",
         "Exercise 7": "(-2 - 1/8 * exp(-8)) + 1/8 * exp(8)",
         "Exercise 8": "(-(2/3) + exp(1)) - 1/3 * exp(3)",
-        # "Exercise 9": None,
-        # "Exercise 10": "((880640/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 20/63 * (1 + 3 * exp(-1)) ^ 7) - 5/36 * (1 + 3 * exp(-1)) ^ 8",
+        # "Exercise 9": None,  # out of range
+        # "Exercise 10": "((880640/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 20/63 * (1 + 3 * exp(-1)) ^ 7) - 5/36 * (1 + 3 * exp(-1)) ^ 8",  # normalization
         "Exercise 11": "-16 * 2 ^ (1/2) + 8 * (1 + 6 * exp(1) + exp(2)) ^ (1/2)",
-        # "Exercise 12": "-7 * 28 ^ (1/3) + 1/4 * (27 + exp(3)) ^ (4/3)"
+        # "Exercise 12": "-7 * 28 ^ (1/3) + 1/4 * (27 + exp(3)) ^ (4/3)"  # normalization
     },
     "UCDAVIS/Trigonometric": {
         "Exercise 1": "1 / 3",
@@ -119,7 +124,7 @@ test_cases = {
         "Exercise 5": "3/4 * pi",
         "Exercise 6": "(1 + 3/4 * pi) - 4 * log(2 ^ (1/2) * (1/2))",
         "Exercise 7": "2 / 3",
-        # "Exercise 8": "-(1/5) * log(3) + 1/5 * log(4)",
+        "Exercise 8": "-(1/5) * log(3) + 1/5 * log(4)",
         "Exercise 9": "-2 + pi",
         "Exercise 10": "-2 + 2 ^ (1/2) + 1/4 * pi",
         "Exercise 11": "(-2 * 2 ^ (1/2) * (1/3) + 4/3) - 1/12 * pi",
@@ -136,7 +141,7 @@ test_cases = {
         "Exercise 22": "1 + (-1 + 2 ^ (1/2) * (1/2)) * exp(2 ^ (1/2) * (1/2))",
         "Exercise 23": "1/2 + 1/2 * exp(1/2 * pi)",
         "Exercise 24": "-3/7",
-        # "Exercise 25": None,
+        "Exercise 25": "-2 + 2 * (1 + 2 ^ (1/2)) ^ (1/2)",
         "Exercise 26": "1 / 2 * log (2 ^ (1 / 2) * (1 / 2))",
         "Exercise 27": "log(1 + exp(1/2 * pi))",
     },
@@ -146,7 +151,7 @@ test_cases = {
         "Exercise 3": "1/4 + 1/4 * exp(2)",
         "Exercise 4": "(-1/9 - 2 ^ (1/2) * (1/18)) + 2 ^ (1/2) * (1/24) * pi",
         "Exercise 5": "1/16 - 5/16 * exp(-4)",
-        # "Exercise 6": None,
+        # "Exercise 6": None,  # arcsin
         "Exercise 7": "1",
         "Exercise 8": "-1 + 1/2 * pi",
         "Exercise 9": "-5/27 * exp(3) + 26/27 * exp(6)",
@@ -159,9 +164,9 @@ test_cases = {
         "Exercise 16": "1 / 3",
         "Exercise 17": "-1/2 + 1/32 * pi ^ 2 * sin(pi ^ 2 / 16) + 1/2 * cos(pi ^ 2 / 16)",
         "Exercise 18": "-8 * 2 ^ (1/2) * (1/135) + 5 ^ (3/2) * (1/27)",
-        # "Exercise 19": "((-5/36) - 1/2 * log(6)) + 1/2 * log(9)",
+        # "Exercise 19": "((-5/36) - 1/2 * log(6)) + 1/2 * log(9)",  # integrate by parts
         "Exercise 20": "(1/3 * cos(1) - 1/3 * sin(1)) + (-1/3) * cos(exp(3)) * exp(3) + 1/3 * sin(exp(3))",
-        # "Exercise 21": "-1/2 + 1/4 * exp(1)",
+        # "Exercise 21": "-1/2 + 1/4 * exp(1)",  # integrate by parts
         "Exercise 22": "-1/2 + 1/2 * cos(1) * exp(1) + 1/2 * sin(1) * exp(1)",
         "Exercise 23": "-1/4",
     },
@@ -176,7 +181,7 @@ test_cases = {
         "Exercise 8": "(-1 - 10 * log(3)) + 10 * log(4)",
         "Exercise 9": "-atan(2) + atan(3)",
         "Exercise 10": "1/40 * pi - 1/10 * atan(4/5)",
-        # "Exercise 11": "(-1/6) * pi + 2/3 * atan(4/3)",
+        # "Exercise 11": "(-1/6) * pi + 2/3 * atan(4/3)",  # normalization
         "Exercise 12": "1/2 * log(2)",
         "Exercise 13": "1/4 * pi",
         "Exercise 14": "(-1/2) * log(2) + 1/2 * log(1 + exp(2))",
@@ -187,7 +192,7 @@ test_cases = {
         "Exercise 19": "(7/4 * log(14) - 7/4 * log(30)) + 13 * 5 ^ (1/2) * (1/5) * atan(sqrt(5)) + -13 * 5 ^ (1/2) * (1/5) * atan((3 * sqrt(5)) / 5)",
         "Exercise 20": "1/2 * log(2) - 1/2 * log(1 + exp(-2))",
         "Exercise 21": "(-1 + 1/4 * pi + exp(1)) - atan(exp(1))",
-        # "Exercise 22": "(7 - 2 * log(5)) + 2 * log(6)",
+        # "Exercise 22": "(7 - 2 * log(5)) + 2 * log(6)",  # order of boundary
     }
 }
 
