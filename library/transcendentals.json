@@ -9004,6 +9004,15 @@
             }
         },
         {
+            "name": "atn_neg_alt",
+            "prop": "atn (-c * x) = -(atn (c * x))",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "x": "real"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],

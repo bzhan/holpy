@@ -294,6 +294,7 @@ auto.add_global_autos_norm(
         'atn_sqrt_3',
         'atn_inv_sqrt_3',
         'atn_neg',
+        'atn_neg_alt',
     ])
 )
 

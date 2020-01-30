@@ -437,6 +437,17 @@
                     "text": "1/2 * (INT t:[4/5,1]. 1 / (5 * (t ^ 2 + 1)))"
                 },
                 {
+                    "_latex_reason": "Rewrite \\(\\frac{1}{5 (t ^ 2 + 1)}\\) to \\(\\frac{1}{5} (\\frac{1}{t ^ 2 + 1})\\)",
+                    "latex": "\\frac{1}{2} \\int_{4/5}^{1} \\frac{1}{5} (\\frac{1}{t ^ 2 + 1}) \\,\\mathrm{dt}",
+                    "location": "1.0",
+                    "params": {
+                        "denom": "5 * (t ^ 2 + 1)",
+                        "rhs": "1/5 * (1 / (t^2+1))"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "1/2 * (INT t:[4/5,1]. 1/5 * (1 / (t ^ 2 + 1)))"
+                },
+                {
                     "latex": "\\frac{1}{40} \\pi - \\frac{1}{10} \\arctan{\\frac{4}{5}}",
                     "reason": "Simplification",
                     "text": "1/40 * pi - 1/10 * atan(4/5)"
@@ -879,6 +890,17 @@
                     },
                     "reason": "Substitution",
                     "text": "13 * (INT t:[-sqrt(5),(-3 * sqrt(5)) / 5]. sqrt(5) / (5 * (t ^ 2 + 1))) + 7/2 * (INT t:[14,30]. -1/2 * t ^ -1)"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(\\frac{\\sqrt{5}}{5 (t ^ 2 + 1)}\\) to \\(\\frac{\\sqrt{5}}{5} * \\frac{1}{t ^ 2 + 1}\\)",
+                    "latex": "13 \\int_{-\\sqrt{5}}^{-3 \\sqrt{5}/5} \\frac{\\sqrt{5}}{5} * \\frac{1}{t ^ 2 + 1} \\,\\mathrm{dt} + \\frac{7}{2} \\int_{14}^{30} \\frac{-\\frac{1}{2}}{t} \\,\\mathrm{dt}",
+                    "location": "0.1.0",
+                    "params": {
+                        "denom": "5 * (t ^ 2 + 1)",
+                        "rhs": "(sqrt(5)/5) * (1/(t^2+1))"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "13 * (INT t:[-sqrt(5),(-3 * sqrt(5)) / 5]. (sqrt(5) / 5) * (1 / (t ^ 2 + 1))) + 7/2 * (INT t:[14,30]. -1/2 * t ^ -1)"
                 },
                 {
                     "latex": "\\frac{7}{4} \\log{(14)} - \\frac{7}{4} \\log{(30)} + (\\frac{13 \\sqrt{5}}{5}) \\arctan{\\sqrt{5}} + -\\frac{13 \\sqrt{5}}{5} \\arctan{\\frac{1}{5} * 3 \\sqrt{5}}",
