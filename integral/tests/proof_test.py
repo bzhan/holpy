@@ -187,6 +187,16 @@ class ProofTest(unittest.TestCase):
             cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
+    def testIneq(self):
+        test_data = [
+            ("x Mem real_open_interval 0 (pi / 2) --> sin x > 0"),
+            ("x Mem real_open_interval 0 (pi / 2) --> exp(-x) + sin x > 0"),
+            ("x Mem real_open_interval 0 (pi / 2) --> ~(exp(-x) + sin x = 0)"),
+        ]
+
+        for expr in test_data:
+            test_macro(self, 'realintegral', 'auto', vars={'x': 'real'}, args=expr, res=expr)
+
     def testRealIncreasing(self):
         test_data = [
             "real_derivative (%x. x) x >= 0",

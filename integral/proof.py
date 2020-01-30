@@ -688,6 +688,15 @@ class fraction_rewr_conv(Conv):
 
         cv = auto.auto_conv(conds=conds)
 
+        if real.is_divides(expr) and real.is_divides(self.target):
+            a, b = expr.args
+            c, d = self.target.args
+            b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), conds)
+            d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), conds)
+            cross_eq = auto.auto_solve(thy, Term.mk_equals(real.times(a, d), real.times(b, c)))
+            pt = apply_theorem(thy, 'real_divide_eq', b_neq_0, d_neq_0, cross_eq)
+            return pt
+
         lhs_eq = refl(real.times(self.denom, expr))
         lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
                                clear_denom_conv(conds), cv)

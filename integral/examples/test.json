@@ -655,7 +655,7 @@
                     "text": "INT x:[1 / sqrt(2),1]. sqrt(1 - x ^ 2) / x ^ 2"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(u)}\\)",
+                    "_latex_reason": "Substitute \\(x\\) for \\(\\sin{(u)}\\)",
                     "latex": "\\int_{\\pi/4}^{\\pi/2} (\\frac{\\sqrt{1 - \\sin^{2}(u)}}{\\sin^{2}(u)}) \\cos{(u)} \\,\\mathrm{du}",
                     "params": {
                         "a": "pi / 4",
@@ -677,24 +677,39 @@
                     "text": "INT u:[pi / 4,pi / 2]. (sqrt(cos(u) ^ 2) / sin(u) ^ 2) * cos(u)"
                 },
                 {
-                    "latex": "\\int_{\\pi/4}^{\\pi/2} \\cos^{2}(u) \\frac{1}{\\sin^{2}(u)} \\,\\mathrm{du}",
+                    "latex": "\\int_{\\pi/4}^{\\pi/2} \\frac{\\cos^{2}(u)}{sin(u) ^ 2} \\,\\mathrm{du}",
                     "reason": "Simplification",
-                    "text": "INT u:[pi / 4,pi / 2]. cos(u) ^ 2 * sin(u) ^ (-2)"
+                    "text": "INT u:[pi / 4,pi / 2]. cos(u) ^ 2 * sin(u) ^ -2"
                 },
                 {
                     "_latex_reason": "Rewrite trigonometric \\(\\cos^{2}(u)\\) to \\(1 - \\sin^{2}(u)\\)",
-                    "latex": "\\int_{\\pi/4}^{\\pi/2} (1 - \\sin^{2}(u)) \\frac{1}{\\sin^{2}(u)} \\,\\mathrm{du}",
+                    "latex": "\\int_{\\pi/4}^{\\pi/2} \\frac{1 - \\sin^{2}(u)}{sin(u) ^ 2} \\,\\mathrm{du}",
                     "location": "0.0",
                     "params": {
                         "rule": "TR6"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "INT u:[pi / 4,pi / 2]. (1 - sin(u) ^ 2) * sin(u) ^ (-2)"
+                    "text": "INT u:[pi / 4,pi / 2]. (1 - sin(u) ^ 2) * sin(u) ^ -2"
                 },
                 {
                     "latex": "-\\frac{1}{4} \\pi + (\\int_{\\pi/4}^{\\pi/2} \\frac{1}{\\sin^{2}(u)} \\,\\mathrm{du})",
                     "reason": "Simplification",
-                    "text": "-1/4 * pi + (INT u:[pi / 4,pi / 2]. sin(u) ^ (-2))"
+                    "text": "-1/4 * pi + (INT u:[pi / 4,pi / 2]. sin(u) ^ -2)"
+                },
+                {
+                    "_latex_reason": "Rewrite trigonometric \\(\\frac{1}{\\sin^{2}(u)}\\) to \\(\\csc^{2}(u)\\)",
+                    "latex": "-\\frac{1}{4} \\pi + (\\int_{\\pi/4}^{\\pi/2} \\csc^{2}(u) \\,\\mathrm{du})",
+                    "location": "1.0",
+                    "params": {
+                        "rule": "TR111"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "-1/4 * pi + (INT u:[pi / 4,pi / 2]. csc(u) ^ 2)"
+                },
+                {
+                    "latex": "1 - \\frac{1}{4} \\pi",
+                    "reason": "Simplification",
+                    "text": "1 - 1/4 * pi"
                 }
             ],
             "name": "Exercise 18",
@@ -918,42 +933,68 @@
                     "text": "INT x:[-2,0]. (x + 2) / (x ^ 2 + 2 * x + 2)"
                 },
                 {
-                    "_latex_reason": "Rewrite \\(\\frac{x + 2}{x ^ 2 + 2 x + 2}\\) to \\(\\frac{x + 1 + 1}{(x + 1) (x + 1) + 1}\\)",
-                    "latex": "\\int_{-2}^{0} \\frac{x + 1 + 1}{(x + 1) (x + 1) + 1} \\,\\mathrm{dx}",
-                    "location": "0",
+                    "_latex_reason": "Rewrite \\(x ^ 2 + 2 x + 2\\) to \\((x + 1) (x + 1) + 1\\)",
+                    "latex": "\\int_{-2}^{0} \\frac{x + 2}{(x + 1) (x + 1) + 1} \\,\\mathrm{dx}",
+                    "location": "0.1",
                     "params": {
-                        "rhs": "(x+1+1)/((x+1)*(x+1)+1)"
+                        "rhs": "(x+1)*(x+1)+1"
                     },
-                    "reason": "Rewrite",
-                    "text": "INT x:[-2,0]. (x + 1 + 1) / ((x + 1) * (x + 1) + 1)"
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[-2,0]. (x + 2) / ((x + 1) * (x + 1) + 1)"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(x + 1\\)",
-                    "latex": "\\int_{-1}^{1} \\frac{u}{1 + u ^ 2} + \\frac{1}{1 + u ^ 2} \\,\\mathrm{du}",
+                    "latex": "\\int_{-1}^{1} \\frac{u + 1}{u ^ 2 + 1} \\,\\mathrm{du}",
                     "params": {
-                        "f": "u / (1 + u ^ 2) + 1 / (1 + u ^ 2)",
+                        "f": "(u + 1) / (u ^ 2 + 1)",
                         "g": "x + 1",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[-1,1]. u / (1 + u ^ 2) + 1 / (1 + u ^ 2)"
+                    "text": "INT u:[-1,1]. (u + 1) / (u ^ 2 + 1)"
                 },
                 {
                     "latex": "\\frac{1}{2} \\pi + (\\int_{-1}^{1} \\frac{u}{1 + u ^ {2}} \\,\\mathrm{du})",
                     "reason": "Simplification",
-                    "text": "1/2 * pi + (INT u:[-1,1]. u / (1 + u ^ 2))"
+                    "text": "1/2 * pi + (INT u:[-1,1]. u * (1 + u ^ 2) ^ -1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} \\pi + (\\int_{-1}^{0} \\frac{u}{1 + u ^ 2} \\,\\mathrm{du}) + (\\int_{0}^{1} \\frac{u}{1 + u ^ 2} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "c": "0"
+                    },
+                    "reason": "Split region",
+                    "text": "1/2 * pi + (INT u:[-1,0]. u * (1 + u ^ 2) ^ -1) + (INT u:[0,1]. u * (1 + u ^ 2) ^ -1)"
                 },
                 {
                     "_latex_reason": "Substitute \\(t\\) for \\(1 + u ^ 2\\)",
-                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{1}{2} (\\frac{1}{t}) + (\\int_{1}^{2} -\\frac{1}{2} (\\frac{1}{t}) \\,\\mathrm{dt}) \\,\\mathrm{dt})",
-                    "location": "1",
+                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{t} \\,\\mathrm{dt}) + (\\int_{0}^{1} \\frac{u}{1 + u ^ 2} \\,\\mathrm{du})",
+                    "location": "0.1",
                     "params": {
-                        "f": "1/2 * t ^ (-1)",
+                        "f": "1/2 * t ^ -1",
                         "g": "1 + u ^ 2",
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "1/2 * pi + (INT t:[1,2]. 1/2 * t ^ (-1) + (INT t:[1,2]. -1/2 * t ^ (-1)))"
+                    "text": "1/2 * pi + (INT t:[1,2]. -1/2 * t ^ -1) + (INT u:[0,1]. u * (1 + u ^ 2) ^ -1)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(t\\) for \\(1 + u ^ 2\\)",
+                    "latex": "\\frac{1}{2} \\pi + (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{t} \\,\\mathrm{dt}) + (\\int_{1}^{2} \\frac{\\frac{1}{2}}{t} \\,\\mathrm{dt})",
+                    "location": "1",
+                    "params": {
+                        "f": "1/2 * t ^ -1",
+                        "g": "1 + u ^ 2",
+                        "var_name": "t"
+                    },
+                    "reason": "Substitution",
+                    "text": "1/2 * pi + (INT t:[1,2]. -1/2 * t ^ -1) + (INT t:[1,2]. 1/2 * t ^ -1)"
+                },
+                {
+                    "latex": "\\frac{1}{2} \\pi",
+                    "reason": "Simplification",
+                    "text": "1/2 * pi"
                 }
             ],
             "name": "Exercise 24",
