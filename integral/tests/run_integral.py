@@ -68,6 +68,7 @@ test_cases = {
         "Exercise 18": "1/2 - 1/2 * log(2)",
         "Exercise 19": "1/4 * pi",
         # "Exercise 20": "-1 + -2 * log (1 / 2) + 3 * log (1 / 2 * 3 ^ (1 / 2))",
+        # "Exercise 21": None,
         # "Exercise 25": "1 / 24 * (pi * 2 ^ (1 / 2))",
     },
     "2014": {
@@ -168,7 +169,7 @@ test_cases = {
     "UCDAVIS/LogAndArctangent": {
         "Exercise 1": "3/2 + 3 * log(2)",
         "Exercise 2": "-7 * log(5) + 7 * log(6)",
-        # "Exercise 3": "3 * atan(1/2)",
+        "Exercise 3": "3 * atan(1/2)",
         "Exercise 4": "1/2 * log(4) - 1/2 * log(5)",
         "Exercise 5": "26/3 - 8 * log(3)",
         # "Exercise 6": "-4/3 + 1/2 * pi",
