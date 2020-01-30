@@ -687,23 +687,18 @@ class fraction_rewr_conv(Conv):
 
 class trig_rewr_conv(Conv):
     """Apply trignometric rewrites."""
-    def __init__(self, code, var_name, target):
+    def __init__(self, code, target):
         """Initialize with code of the trignometric rewrite in Fu's method."""
         assert isinstance(code, str)
         self.code = code
-        self.var_name = var_name
         self.target = target
 
     def get_proof_term(self, thy, t, conds=None):
         # Obtain the only variable in t
-        if self.var_name == "":
-            xs = term.get_vars(t)
-            assert len(xs) == 1, "trig_rewr_conv"
-            x = xs[0]
-        else:
-            x = Var(self.var_name, realT)
-
-        if self.code == 'TR1':
+        if self.code == 'TR0':
+            # (sin x) ^ 2 + (cos x) ^ 2 = 1
+            return ProofTerm.symmetric(refl(self.target).on_rhs(thy, rewr_conv('sin_circle')))
+        elif self.code == 'TR1':
             # Definition of sec and csc
             # Handled by normalization
             return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
@@ -714,12 +709,6 @@ class trig_rewr_conv(Conv):
         elif self.code == 'TR5':
             # (sin x) ^ 2 = 1 - (cos x) ^ 2
             return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
-        elif self.code == 'TR5b':
-            # (sin x) ^ 2 + (cos x) ^ 2 = 1
-            return refl(t).on_rhs(thy, rewr_conv('sin_circle'))
-        elif self.code == 'TR5c':
-            # 1 = (sin x) ^ 2 + (cos x) ^ 2
-            return ProofTerm.symmetric(apply_theorem(thy, 'sin_circle', inst={'x': x}))
         elif self.code == 'TR6':
             # (cos x) ^ 2 = 1 - (sin x) ^ 2
             return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle3')))
@@ -1039,11 +1028,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity
-            if 'var_name' in step['params']:
-                var_name = step['params']['var_name']
-            else:
-                var_name = ""
-            cv = trig_rewr_conv(step['params']['rule'], var_name, expected_loc)
+            cv = trig_rewr_conv(step['params']['rule'], expected_loc)
 
         elif reason == 'Unfold power':
             # Rewrite x ^ 2 to x * x.

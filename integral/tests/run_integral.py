@@ -67,7 +67,7 @@ test_cases = {
         # "Exercise 16": "e * log(e)^2",   # TypeError
         "Exercise 18": "1/2 - 1/2 * log(2)",
         "Exercise 19": "1/4 * pi",
-        # "Exercise 20": "-1 + -2 * log (1 / 2) + 3 * log (1 / 2 * 3 ^ (1 / 2))",
+        "Exercise 20": "-1 + 2 * log(2) + 3 * log (3 ^ (1 / 2) * (1 / 2))",
         # "Exercise 21": None,
         # "Exercise 25": "1 / 24 * (pi * 2 ^ (1 / 2))",
     },
