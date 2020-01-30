@@ -654,10 +654,9 @@ class fraction_rewr_conv(Conv):
     The starting term should be an integral.
 
     """
-    def __init__(self, target, denom):
+    def __init__(self, target):
         """Initialize with denominator and target of the rewrite."""
         self.target = target
-        self.denom = denom
 
     def get_proof_term(self, thy, expr, conds=None):
         if conds is None:
@@ -1020,11 +1019,7 @@ def translate_item(item, target=None, *, debug=False):
             # Rewrite by multiplying a denominator
             rhs = parse_expr(step['params']['rhs'])
             rhs = expr_to_holpy(rhs)
-            if 'denom' in step['params']:
-                denom = expr_to_holpy(parse_expr(step['params']['denom']))
-                cv = fraction_rewr_conv(rhs, denom)
-            else:
-                cv = fraction_rewr_conv(rhs, real.one)
+            cv = fraction_rewr_conv(rhs)
 
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity

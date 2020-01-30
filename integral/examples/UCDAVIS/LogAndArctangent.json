@@ -200,16 +200,37 @@
                     "text": "(-4/3 + 1/2 * pi) - (INT x:[-1,1]. x * (1 + x ^ 2) ^ -1)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(1 + x ^ 2\\)",
-                    "latex": "-\\frac{4}{3} + \\frac{1}{2} \\pi - (\\int_{2}^{2} \\frac{\\frac{1}{2}}{u} \\,\\mathrm{du})",
+                    "latex": "-\\frac{4}{3} + \\frac{1}{2} \\pi - (\\int_{-1}^{0} \\frac{x}{1 + x ^ 2} \\,\\mathrm{dx}) + (\\int_{0}^{1} \\frac{x}{1 + x ^ 2} \\,\\mathrm{dx})",
                     "location": "1",
+                    "params": {
+                        "c": "0"
+                    },
+                    "reason": "Split region",
+                    "text": "(-4/3 + 1/2 * pi) - ((INT x:[-1,0]. x * (1 + x ^ 2) ^ -1) + (INT x:[0,1]. x * (1 + x ^ 2) ^ -1))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(1 + x ^ 2\\)",
+                    "latex": "-\\frac{4}{3} + \\frac{1}{2} \\pi - (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{u} \\,\\mathrm{du}) + (\\int_{0}^{1} \\frac{x}{1 + x ^ 2} \\,\\mathrm{dx})",
+                    "location": "1.0",
                     "params": {
                         "f": "1/2 * u ^ -1",
                         "g": "1 + x ^ 2",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "(-4/3 + 1/2 * pi) - (INT u:[2,2]. 1/2 * u ^ -1)"
+                    "text": "(-4/3 + 1/2 * pi) - ((INT u:[1,2]. -1/2 * u ^ -1) + (INT x:[0,1]. x * (1 + x ^ 2) ^ -1))"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(1 + x ^ 2\\)",
+                    "latex": "-\\frac{4}{3} + \\frac{1}{2} \\pi - (\\int_{1}^{2} \\frac{-\\frac{1}{2}}{u} \\,\\mathrm{du}) + (\\int_{1}^{2} \\frac{\\frac{1}{2}}{u} \\,\\mathrm{du})",
+                    "location": "1.1",
+                    "params": {
+                        "f": "1/2 * u ^ -1",
+                        "g": "1 + x ^ 2",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(-4/3 + 1/2 * pi) - ((INT u:[1,2]. -1/2 * u ^ -1) + (INT u:[1,2]. 1/2 * u ^ -1))"
                 },
                 {
                     "latex": "-\\frac{4}{3} + \\frac{1}{2} \\pi",
@@ -480,32 +501,32 @@
             "problem": "INT x:[9, 16]. 1 / (sqrt(x) * (x + 9))"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi} \\frac{\\sin{(2 x)}}{1 + \\cos{(2 x)}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(2 x)}}{1 + \\cos{(2 x)}} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi} \\frac{\\sin{(2 x)}}{1 + \\cos{(2 x)}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/4} \\frac{\\sin{(2 x)}}{1 + \\cos{(2 x)}} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi]. sin(2 * x) / (1 + cos(2 * x))"
+                    "text": "INT x:[0,pi / 4]. sin(2 * x) / (1 + cos(2 * x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(1 + \\cos{(2 x)}\\)",
-                    "latex": "\\int_{2}^{2} \\frac{--\\frac{1}{2}}{u} \\,\\mathrm{du}",
+                    "latex": "\\int_{1}^{2} \\frac{--\\frac{1}{2}}{u} \\,\\mathrm{du}",
                     "params": {
                         "f": "-1 / (2 * u)",
                         "g": "1 + cos(2 * x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[2,2]. -1 * (-1/2) * u ^ -1"
+                    "text": "INT u:[1,2]. -1 * (-1/2) * u ^ -1"
                 },
                 {
-                    "latex": "0",
+                    "latex": "\\frac{1}{2} \\log{(2)}",
                     "reason": "Simplification",
-                    "text": "0"
+                    "text": "1/2 * log(2)"
                 }
             ],
             "name": "Exercise 12",
-            "problem": "INT x:[0, pi]. sin(2*x)/(1 + cos(2*x))"
+            "problem": "INT x:[0, pi/4]. sin(2*x)/(1 + cos(2*x))"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(x)}}{1 + \\sin^{2}(x)} \\,\\mathrm{dx}",
