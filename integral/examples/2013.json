@@ -522,11 +522,6 @@
                     "text": "INT u:[0,21 * pi]. (2 * u * sin(sqrt(u ^ 2))) / sqrt(u ^ 2)"
                 },
                 {
-                    "latex": "2 \\left. -\\cos{(u)} \\right\\vert_{u=0}^{21 \\pi}",
-                    "reason": "Simplification",
-                    "text": "2 * ([-cos(u)]_u=0,21 * pi)"
-                },
-                {
                     "latex": "4",
                     "reason": "Simplification",
                     "text": "4"
@@ -683,12 +678,12 @@
                 {
                     "latex": "\\int_{1}^{e} 2 \\log{(x)} + \\log^{2}(x) \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[1,e]. 2 * log(x) + log(x) ^ 2"
+                    "text": "INT x:[1,exp(1)]. 2 * log(x) + log(x) ^ 2"
                 },
                 {
                     "latex": "2 \\int_{1}^{e} \\log{(x)} \\,\\mathrm{dx} + (\\int_{1}^{e} \\log^{2}(x) \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "2 * (INT x:[1,e]. log(x)) + (INT x:[1,e]. log(x) ^ 2)"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + (INT x:[1,exp(1)]. log(x) ^ 2)"
                 },
                 {
                     "_latex_reason": "Integrate by parts, \\(u = \\log^{2}(x), v = x\\)",
@@ -699,16 +694,16 @@
                         "parts_v": "x"
                     },
                     "reason": "Integrate by parts",
-                    "text": "2 * (INT x:[1,e]. log(x)) + (([x * log(x) ^ 2]_x=1,e) - (INT x:[1,e]. 2 * log(x)))"
+                    "text": "2 * (INT x:[1,exp(1)]. log(x)) + (([x * log(x) ^ 2]_x=1,exp(1)) - (INT x:[1,exp(1)]. 2 * log(x)))"
                 },
                 {
-                    "latex": "e \\log^{2}(e)",
+                    "latex": "e",
                     "reason": "Simplification",
-                    "text": "e * log(e) ^ 2"
+                    "text": "exp(1)"
                 }
             ],
             "name": "Exercise 16",
-            "problem": "INT x:[1, e]. 2*log(x) + log(x) ^ 2"
+            "problem": "INT x:[1, exp(1)]. 2*log(x) + log(x) ^ 2"
         },
         {
             "_problem_latex": "\\int_{0}^{1} \\frac{x ^ 3}{1 + x ^ 2} \\,\\mathrm{dx}",

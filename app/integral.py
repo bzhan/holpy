@@ -46,7 +46,7 @@ def integral_super_simplify():
         # If there are no abs expression or there are no zero point
         rules_set.append(integral.rules.OnSubterm(integral.rules.ElimAbs()))
     def simplify(problem):
-        for i in range(3):
+        for i in range(5):
             for r in rules_set:             
                 problem = r.eval(problem)
         return problem
