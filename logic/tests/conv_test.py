@@ -35,11 +35,11 @@ def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=Non
 
     res_th = cv.eval(thy, t)
     expected_th = Thm(assms, Term.mk_equals(t, t_res))
-    self.assertEqual(res_th, expected_th,
+    self.assertTrue(res_th.can_prove(expected_th),
         msg="\nExpected: %s\nGot %s" % (printer.print_thm(thy, expected_th), printer.print_thm(thy, res_th)))
     pt = cv.get_proof_term(thy, t)
     prf = pt.export()
-    self.assertEqual(thy.check_proof(prf), Thm(assms, Term.mk_equals(t, t_res)))
+    self.assertEqual(thy.check_proof(prf), res_th)
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):

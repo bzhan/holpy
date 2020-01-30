@@ -7,7 +7,7 @@ from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
-    rewr_conv, abs_conv, binop_conv, every_conv
+    rewr_conv, abs_conv, binop_conv, every_conv, try_conv
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
@@ -591,8 +591,8 @@ class simplify_rewr_conv(Conv):
         return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
 
 
-class norm_monomial_all_conv(Conv):
-    """Normalize all factors of a product or quotient."""
+class combine_fraction(Conv):
+    """Combine sum or differences of rational functions."""
     def __init__(self, conds=None):
         if conds is None:
             conds = []
@@ -600,45 +600,52 @@ class norm_monomial_all_conv(Conv):
 
     def get_proof_term(self, thy, t):
         pt = refl(t)
-        if real.is_times(t):
-            return pt.on_rhs(thy, binop_conv(self), real.norm_mult_monomials(self.conds))
-        elif real.is_divides(t):
-            return pt.on_rhs(thy, rewr_conv('real_divide_def'), arg_conv(rewr_conv('rpow_neg_one')), self)
-        elif real.is_real_power(t) and t.arg == real.uminus(real.one) and real.is_times(t.arg1):
-            a, b = t.arg1.args
-            a_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(a, real.zero)), pts=self.conds)
-            b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), pts=self.conds)
-            return pt.on_rhs(thy, rewr_conv('rpow_base_mult_neg1', conds=[a_neq_0, b_neq_0]), self)
+        if real.is_divides(t):
+            return pt
+        elif real.is_plus(t):
+            pt = pt.on_rhs(thy, binop_conv(self))
+            assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
+            b = pt.rhs.arg1.arg
+            d = pt.rhs.arg.arg
+            if b == d:
+                b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+                return pt.on_rhs(thy, rewr_conv('real_divide_add_same', conds=[b_neq_0]),
+                                      arg1_conv(auto.auto_conv(self.conds)))
+            else:
+                b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+                d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), self.conds)
+                return pt.on_rhs(thy, rewr_conv('real_divide_add', conds=[b_neq_0, d_neq_0]),
+                                    arg1_conv(auto.auto_conv(self.conds)),
+                                    arg_conv(try_conv(rewr_conv('real_mul_lid'))),
+                                    arg_conv(try_conv(rewr_conv('real_mul_rid'))))
+        elif real.is_minus(t):
+            return pt.on_rhs(thy, rewr_conv('real_poly_neg2'), self)
+        elif real.is_real_power(t) and real.is_binary_real(t.arg):
+            p = real.from_binary_real(t.arg)
+            if p == -1:
+                return pt.on_rhs(thy, rewr_conv('rpow_neg_one', sym=True),
+                                      rewr_conv('real_inverse_divide'))
+            elif p < 0:
+                pt = pt.on_rhs(thy, rewr_conv('rpow_neg'), rewr_conv('real_inverse_divide'))
+                if isinstance(p, int):
+                    pt = pt.on_rhs(thy, arg_conv(rewr_conv('rpow_pow')),
+                                        arg_conv(arg_conv(rewr_conv('nat_of_nat_def', sym=True))))
+                return pt
+            else:
+                return pt.on_rhs(thy, rewr_conv('real_divide_1'))
+        elif real.is_times(t):
+            pt = pt.on_rhs(thy, binop_conv(self))
+            assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
+            b = pt.rhs.arg1.arg
+            d = pt.rhs.arg.arg
+            b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+            d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), self.conds)
+            return pt.on_rhs(thy, rewr_conv('real_divide_mult', conds=[b_neq_0, d_neq_0]),
+                                  arg1_conv(auto.auto_conv(self.conds)),
+                                  arg_conv(try_conv(rewr_conv('real_mul_lid'))),
+                                  arg_conv(try_conv(rewr_conv('real_mul_rid'))))
         else:
-            return pt.on_rhs(thy, auto.auto_conv(conds=self.conds))
-
-class norm_denom_conv(Conv):
-    def __init__(self, conds):
-        self.conds = conds
-
-    def get_proof_term(self, thy, t):
-        pt = refl(t)
-        if real.is_times(t):
-            return pt.on_rhs(thy, arg1_conv(self), arg_conv(auto.auto_conv(self.conds)))
-        else:
-            return pt.on_rhs(thy, auto.auto_conv(self.conds))
-
-class clear_denom_conv(Conv):
-    """Clear denominators."""
-    def __init__(self, conds=None):
-        if conds is None:
-            conds = []
-        self.conds = conds
-
-    def get_proof_term(self, thy, t):
-        pt = refl(t)
-        if real.is_plus(t.arg):
-            return pt.on_rhs(thy, rewr_conv('real_add_ldistrib'), arg1_conv(self),
-                             arg_conv(norm_monomial_all_conv(self.conds)))
-        elif real.is_minus(t.arg):
-            return pt.on_rhs(thy, arg_conv(rewr_conv('real_poly_neg2')), self)
-        else:
-            return pt.on_rhs(thy, norm_monomial_all_conv(self.conds))
+            return pt.on_rhs(thy, rewr_conv('real_divide_1'))
 
 class fraction_rewr_conv(Conv):
     """Rewrite two fractions that should be equal after multiplying
@@ -658,29 +665,24 @@ class fraction_rewr_conv(Conv):
 
         cv = auto.auto_conv(conds=conds)
 
-        if real.is_divides(expr) and real.is_divides(self.target):
-            a, b = expr.args
-            c, d = self.target.args
-            b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), conds)
-            d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), conds)
-            cross_eq = auto.auto_solve(thy, Term.mk_equals(real.times(a, d), real.times(b, c)))
-            pt = apply_theorem(thy, 'real_divide_eq', b_neq_0, d_neq_0, cross_eq)
-            return pt
+        lhs_eq = refl(expr).on_rhs(thy, auto.auto_conv(conds))
+        rhs_eq = refl(self.target).on_rhs(thy, auto.auto_conv(conds))
+        if lhs_eq.rhs == rhs_eq.rhs:
+            return ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
 
-        lhs_eq = refl(real.times(self.denom, expr))
-        lhs_eq = lhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
-                               clear_denom_conv(conds), cv)
-        rhs_eq = refl(real.times(self.denom, self.target))
-        rhs_eq = rhs_eq.on_rhs(thy, arg1_conv(norm_denom_conv(conds)),
-                               clear_denom_conv(conds), cv)
-        if lhs_eq.rhs != rhs_eq.rhs:
-            raise AssertionError("fraction_rewr_conv: %s != %s" % (
-                printer.print_term(thy, lhs_eq.rhs), printer.print_term(thy, rhs_eq.rhs)))
-        eq = ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
-        x_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(self.denom, real.zero)), pts=conds)
+        lhs_eq = lhs_eq.on_rhs(thy, combine_fraction(conds))
+        rhs_eq = rhs_eq.on_rhs(thy, combine_fraction(conds))
 
-        eq_pt = apply_theorem(thy, 'real_eq_lcancel', x_neq_0, eq)
-        return eq_pt
+        assert real.is_divides(lhs_eq.rhs) and real.is_divides(rhs_eq.rhs)
+
+        a, b = lhs_eq.rhs.args
+        c, d = rhs_eq.rhs.args
+        b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), conds)
+        d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), conds)
+        cross_eq = auto.auto_solve(thy, Term.mk_equals(real.times(a, d), real.times(b, c)))
+        pt = apply_theorem(thy, 'real_divide_eq', b_neq_0, d_neq_0, cross_eq)
+
+        return ProofTerm.transitive(ProofTerm.transitive(lhs_eq, pt), ProofTerm.symmetric(rhs_eq))
 
 
 class trig_rewr_conv(Conv):
@@ -1033,7 +1035,7 @@ def translate_item(item, target=None, *, debug=False):
                 denom = expr_to_holpy(parse_expr(step['params']['denom']))
                 cv = fraction_rewr_conv(rhs, denom)
             else:
-                cv = simplify_rewr_conv(rhs)
+                cv = fraction_rewr_conv(rhs, real.one)
 
         elif reason == 'Rewrite trigonometric':
             # Rewrite using a trigonometric identity

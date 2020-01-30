@@ -10663,6 +10663,14 @@
             }
         },
         {
+            "name": "real_divide_1",
+            "prop": "x = x / 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "real_divide_eq",
             "prop": "¬(b = 0) ⟶ ¬(d = 0) ⟶ a * d = b * c ⟶ a / b = c / d",
             "ty": "thm",
@@ -10676,6 +10684,27 @@
         {
             "name": "real_divide_add",
             "prop": "¬(b = 0) ⟶ ¬(d = 0) ⟶ a / b + c / d = (a * d + b * c) / (b * d)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real"
+            }
+        },
+        {
+            "name": "real_divide_add_same",
+            "prop": "¬(c = 0) ⟶ a / c + b / c = (a + b) / c",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        },
+        {
+            "name": "real_divide_mult",
+            "prop": "¬(b = 0) ⟶ ¬(d = 0) ⟶ a / b * (c / d) = a * c / (b * d)",
             "ty": "thm",
             "vars": {
                 "a": "real",

@@ -286,19 +286,6 @@ class ProofTest(unittest.TestCase):
             cv = proof.simplify_rewr_conv(t)
             test_conv(self, 'realintegral', proof.location_conv(loc, cv), t=s, t_res=res)
 
-    def testNormMonomialAllConv(self):
-        test_data = [
-            ("2 * (2 * x + 3)", "2 * (3 + 2 * x)"),
-            ("7 / (2 * (2 * x + 3))", "7/2 * (3 + 2 * x) ^ -(1::real)"),
-        ]
-
-        ctxt = Context('realintegral', vars={'x': 'real'})
-        for s, res in test_data:
-            s = parser.parse_term(ctxt, s)
-            res = parser.parse_term(ctxt, res)
-            cv = proof.norm_monomial_all_conv()
-            test_conv(self, 'realintegral', cv, t=s, t_res=res)
-
     def testTrigRewrConv(self):
         test_data = [
             ("sin x ^ (2::nat)", "", "TR5", "1 - cos x ^ (2::nat)"),
@@ -312,8 +299,28 @@ class ProofTest(unittest.TestCase):
         for s, loc, code, res in test_data:
             s = parser.parse_term(ctxt, s)
             res = parser.parse_term(ctxt, res)
-            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, var_name="x"))
+            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, var_name="x", target=res))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
+
+    def testCombineFractionConv(self):
+        test_data = [
+            ('1 / (x + 1) + 1 / (x - 1)', 'x Mem real_open_interval (-1/2) (1/2)', '2 * x / ((x + 1) * (x - 1))'),
+            ("2 + 1 / (x + 1)", 'x Mem real_open_interval 0 1', '(3 + 2 * x) / (x + 1)'),
+            ("(x + 1) ^ -(1::real)", 'x Mem real_open_interval 0 1', '1 / (x + 1)'),
+            ("2 * (x * (x + 1) ^ -(1::real))", 'x Mem real_open_interval 0 1', '2 * x / (x + 1)'),
+            ("2 - 1 / (x + 1)", 'x Mem real_open_interval 0 1', '(1 + 2 * x) / (x + 1)'),
+            ("x ^ (1/2)", "x Mem real_open_interval 0 1", "x ^ (1/2) / 1"),
+            ("x ^ -(1/2)", "x Mem real_open_interval 0 1", "1 / (x ^ (1/2))"),
+            ("x ^ -(2::real)", "x Mem real_open_interval 0 1", "1 / (x ^ (2::nat))"),
+        ]
+
+        ctxt = Context('realintegral', vars={'x': 'real'})
+        for s, cond, res in test_data:
+            s = parser.parse_term(ctxt, s)
+            res = parser.parse_term(ctxt, res)
+            cond_t = parser.parse_term(ctxt, cond)
+            cv = proof.combine_fraction([ProofTerm.assume(cond_t)])
+            test_conv(self, 'realintegral', cv, t=s, t_res=res, assms=[cond])
 
     def testExprToHolpy(self):
         test_data = [
