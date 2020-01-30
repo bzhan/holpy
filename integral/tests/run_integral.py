@@ -173,12 +173,12 @@ test_cases = {
         "Exercise 4": "1/2 * log(4) - 1/2 * log(5)",
         "Exercise 5": "26/3 - 8 * log(3)",
         "Exercise 6": "-4/3 + 1/2 * pi",
-        # "Exercise 7": "-log(3) + log(4)",
-        # "Exercise 8": "(-1 - 10 * log(3)) + 10 * log(4)",
+        "Exercise 7": "-log(3) + log(4)",
+        "Exercise 8": "(-1 - 10 * log(3)) + 10 * log(4)",
         "Exercise 9": "-atan(2) + atan(3)",
         # "Exercise 10": "1/40 * pi - 1/10 * atan(4/5)",
         # "Exercise 11": "(-1/6) * pi + 2/3 * atan(4/3)",
-        # "Exercise 12": "0",
+        "Exercise 12": "1/2 * log(2)",
         "Exercise 13": "1/4 * pi",
         "Exercise 14": "(-1/2) * log(2) + 1/2 * log(1 + exp(2))",
         "Exercise 15": "(-1/4) * pi + atan(exp(1))",
@@ -186,7 +186,7 @@ test_cases = {
         "Exercise 17": "-1/2 + log(2)",
         "Exercise 18": "((-1/8) * pi - 1/2 * log(5/4)) + 1/2 * atan(1/2) + 1/2 * log(2)",
         # "Exercise 19": "(7/4 * log(14) - 7/4 * log(30)) + 13 * 5 ^ (1/2) * (1/5) * atan(sqrt(5)) + -13 * 5 ^ (1/2) * (1/5) * atan((3 * sqrt(5)) / 5)",
-        # "Exercise 20": "1/2 * log(2) - 1/2 * log(1 + exp(-2))",
+        "Exercise 20": "1/2 * log(2) - 1/2 * log(1 + exp(-2))",
         "Exercise 21": "(-1 + 1/4 * pi + exp(1)) - atan(exp(1))",
         # "Exercise 22": "(7 - 2 * log(5)) + 2 * log(6)",
     }
@@ -196,14 +196,14 @@ test_cases = {
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
-            # "test",
-            # "2013",
-            # "2014",
-            # "2019",
-            # "UCDAVIS/usubstitution",
-            # "UCDAVIS/Exponentials",
-            # "UCDAVIS/Trigonometric",
-            # "Byparts",
+            "test",
+            "2013",
+            "2014",
+            "2019",
+            "UCDAVIS/usubstitution",
+            "UCDAVIS/Exponentials",
+            "UCDAVIS/Trigonometric",
+            "Byparts",
             "UCDAVIS/LogAndArctangent"
         ]
         test_only = None

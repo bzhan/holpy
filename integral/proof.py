@@ -446,129 +446,6 @@ class integrate_by_parts(Conv):
         return pt
 
 
-def apply_subst_thm(thy, f, g, a, b):
-    """Apply the substitution theorem.
-
-    The returned result is (in the increasing case)
-    real_integral (real_closed_interval a b) (%x. f (g x) * dg x) =
-    real_integral (real_closed_interval (g a) (g b)) f,
-
-    where both f (g x) * dg x and f are normalized.
-
-    """
-    # Form the assumption: g is increasing or decreasing on [a, b],
-    # then apply the theorem.
-    try:
-        auto.auto_solve(thy, real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
-        is_le = True
-    except logic.TacticException:
-        is_le = False
-
-    if is_le:
-        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr',
-            inst={'a': a, 'b': b, 'f': f, 'g': g})
-
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(thy, A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-    else:
-        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
-            inst={'a': a, 'b': b, 'f': f, 'g': g})
-
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(thy, A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-
-    return eq_pt
-
-
-class substitution(Conv):
-    """Apply substitution rule.
-
-    expr is of the form real_integral (real_closed_interval a b) (%x. f (g x) * dg x)
-
-    Conditions include:
-
-    -- f is continuous on [g(a), g(b)]
-    -- g is an increasing function (so that a <= b implies g(a) <= g(b))
-
-    The result is real_integral (real_closed_interval (g a) (g b)) (%u. f u).
-
-    """
-    def __init__(self, f, g):
-        self.f = f
-        self.g = g
-
-    def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral')
-        S, h = expr.args
-        assert S.head.is_const_name('real_closed_interval')
-        a, b = S.args
-
-        if not (h.is_abs() and self.f.is_abs() and self.g.is_abs()):
-            raise NotImplementedError
-
-        # Make the equality theorem
-        eq_pt = apply_subst_thm(thy, self.f, self.g, a, b)
-
-        # Use the equality to rewrite expression.
-        pt = refl(expr).on_rhs(thy, auto.auto_conv())
-        eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
-        if eq_pt.lhs != pt.rhs:
-            raise ConvException("Substitution: %s != %s" % (
-                printer.print_term(thy, eq_pt.lhs), printer.print_term(thy, pt.rhs)))
-        pt = pt.on_rhs(thy, rewr_conv(eq_pt))
-
-        if pt.rhs.head == real.uminus:
-            pt = pt.on_rhs(thy, arg_conv(arg1_conv(auto.auto_conv())))
-        else:
-            pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
-
-        return pt
-
-
-class substitution_inverse(Conv):
-    """Apply inverse substitution rule.
-
-    expr is of the form real_integral (real_closed_interval (g a) (g b)) f
-
-    Conditions include:
-
-    -- f is continuous on [g(a), g(b)]
-    -- g is an increasing function (so that a <= b implies g(a) <= g(b))
-
-    The result is real_integral (real_closed_interval a b) (%u. f (g u) * dg u).
-     
-    """
-    def __init__(self, g, a, b):
-        self.g = g
-        self.a = a
-        self.b = b
-
-    def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral')
-        _, f = expr.args
-
-        if not (f.is_abs() and self.g.is_abs()):
-            raise NotImplementedError
-
-        # Make the equality theorem
-        eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
-
-        # Use the equality to rewrite expression
-        pt = refl(expr).on_rhs(thy, auto.auto_conv())
-        eq_pt = eq_pt.on_rhs(thy, auto.auto_conv())
-        if eq_pt.rhs != pt.rhs:
-            raise ConvException("Substitution inverse: %s != %s" % (
-                printer.print_term(thy, eq_pt.rhs), printer.print_term(thy, pt.rhs)))
-        pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
-        pt = pt.on_rhs(thy, auto.auto_conv())
-
-        return pt
-
-
 class simplify_rewr_conv(Conv):
     """Rewrite the term with a term with the same simplification."""
     def __init__(self, target):
@@ -647,6 +524,7 @@ class combine_fraction(Conv):
         else:
             return pt.on_rhs(thy, rewr_conv('real_divide_1'))
 
+
 class fraction_rewr_conv(Conv):
     """Rewrite two fractions that should be equal after multiplying
     by some denominator.
@@ -678,10 +556,158 @@ class fraction_rewr_conv(Conv):
         c, d = rhs_eq.rhs.args
         b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), conds)
         d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), conds)
-        cross_eq = auto.auto_solve(thy, Term.mk_equals(real.times(a, d), real.times(b, c)))
+        cross_eq = auto.auto_solve(thy, Term.mk_equals(real.times(a, d), real.times(b, c)), conds)
         pt = apply_theorem(thy, 'real_divide_eq', b_neq_0, d_neq_0, cross_eq)
 
         return ProofTerm.transitive(ProofTerm.transitive(lhs_eq, pt), ProofTerm.symmetric(rhs_eq))
+
+
+def fraction_rewr_integral(thy, expr, target):
+    """Given two integrals over the same closed range, try to make
+    them equal by rewriting the integrands.
+
+    """
+    assert expr.head.is_const_name('real_integral'), 'fraction_rewr_integral'
+    S, f = expr.args
+    
+    assert S.head.is_const_name('real_closed_interval'), 'fraction_rewr_integral'
+    a, b = S.args
+    le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+
+    assert target.head.is_const_name('real_integral'), 'fraction_rewr_integral'
+    target_S, target_f = target.args
+
+    assert S == target_S, 'fraction_rewr_integral'
+
+    interval = real.open_interval(a, b)
+    v = Var(f.var_name, realT)
+    cond = set.mk_mem(v, interval)
+    body = f.subst_bound(v)
+    target_body = target_f.subst_bound(v)
+
+    eq_pt = fraction_rewr_conv(target_body).get_proof_term(thy, body, [ProofTerm.assume(cond)])
+    eq_pt = ProofTerm.implies_intr(cond, eq_pt)
+    eq_pt = ProofTerm.forall_intr(v, eq_pt)
+    return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+
+
+def apply_subst_thm(thy, f, g, a, b):
+    """Apply the substitution theorem.
+
+    The returned result is (in the increasing case)
+    real_integral (real_closed_interval a b) (%x. f (g x) * dg x) =
+    real_integral (real_closed_interval (g a) (g b)) f,
+
+    where both f (g x) * dg x and f are normalized.
+
+    """
+    # Form the assumption: g is increasing or decreasing on [a, b],
+    # then apply the theorem.
+    try:
+        auto.auto_solve(thy, real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
+        is_le = True
+    except logic.TacticException:
+        is_le = False
+
+    if is_le:
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr',
+            inst={'a': a, 'b': b, 'f': f, 'g': g})
+
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+    else:
+        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
+            inst={'a': a, 'b': b, 'f': f, 'g': g})
+
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+
+    return eq_pt
+
+
+class substitution(Conv):
+    """Apply substitution rule.
+
+    expr is of the form real_integral (real_closed_interval a b) (%x. f (g x) * dg x)
+
+    Conditions include:
+
+    -- f is continuous on [g(a), g(b)]
+    -- g is an increasing function (so that a <= b implies g(a) <= g(b))
+
+    The result is real_integral (real_closed_interval (g a) (g b)) (%u. f u).
+
+    """
+    def __init__(self, f, g):
+        self.f = f
+        self.g = g
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral')
+        S, h = expr.args
+        assert S.head.is_const_name('real_closed_interval')
+        a, b = S.args
+
+        if not (h.is_abs() and self.f.is_abs() and self.g.is_abs()):
+            raise NotImplementedError
+
+        # Make the equality theorem
+        eq_pt = apply_subst_thm(thy, self.f, self.g, a, b)
+
+        # Use the equality to rewrite expression.
+        eq_pt2 = fraction_rewr_integral(thy, eq_pt.lhs, expr)
+        pt = ProofTerm.transitive(ProofTerm.symmetric(eq_pt2), eq_pt)
+
+        if pt.rhs.head == real.uminus:
+            pt = pt.on_rhs(thy, arg_conv(arg1_conv(auto.auto_conv())))
+        else:
+            pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
+
+        return pt
+
+
+class substitution_inverse(Conv):
+    """Apply inverse substitution rule.
+
+    expr is of the form real_integral (real_closed_interval (g a) (g b)) f
+
+    Conditions include:
+
+    -- f is continuous on [g(a), g(b)]
+    -- g is an increasing function (so that a <= b implies g(a) <= g(b))
+
+    The result is real_integral (real_closed_interval a b) (%u. f (g u) * dg u).
+     
+    """
+    def __init__(self, g, a, b):
+        self.g = g
+        self.a = a
+        self.b = b
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral')
+        _, f = expr.args
+
+        if not (f.is_abs() and self.g.is_abs()):
+            raise NotImplementedError
+
+        # Make the equality theorem
+        eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
+
+        # Use the equality to rewrite expression
+        pt = refl(expr).on_rhs(thy, auto.auto_conv())
+        eq_pt = eq_pt.on_rhs(thy, auto.auto_conv())
+        if eq_pt.rhs != pt.rhs:
+            raise ConvException("Substitution inverse: %s != %s" % (
+                printer.print_term(thy, eq_pt.rhs), printer.print_term(thy, pt.rhs)))
+        pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
+        pt = pt.on_rhs(thy, auto.auto_conv())
+
+        return pt
 
 
 class trig_rewr_conv(Conv):
