@@ -49,13 +49,26 @@ test_cases = {
         "Interesting 1": "1 / 4 * pi",
     },
     "2013": {
-        "Exercise 2": "-2 + exp 1 + exp 3",
+        "Exercise 1": "2 * log(2) + 2 * exp(1) + -2 * log(2 * exp(1)) * exp(1)",
+        "Exercise 2": "-2 + exp(1) + exp(3)",
+        "Exercise 3": "-sin(exp(1)) + 1/2 * sin(exp(2))",
+        "Exercise 4": "2500",
+        "Exercise 5": "3 ^ (1/2) * pi",
         "Exercise 6": "18",
-        "Exercise 8": "7 / 2",
-        "Exercise 10": "-1 * log (-1 + exp(1)) + log (-1 + exp(2))",
+        # "Exercise 7": "log(2)",
+        "Exercise 8": "5 / 2",
+        # "Exercise 9": None,
+        "Exercise 10": "(1 - log(1 - exp(-1))) + log(1 - exp(-2))",
         "Exercise 11": "1 / 8 * pi",
-        "Exercise 20": "-1 + -2 * log (1 / 2) + 3 * log (1 / 2 * 3 ^ (1 / 2))",
-        "Exercise 25": "1 / 24 * (pi * 2 ^ (1 / 2))",
+        # "Exercise 12": "4",
+        "Exercise 13": "1 - 1/4 * pi",
+        # "Exercise 14": "24 - 8 * e",
+        # "Exercise 15": None,
+        # "Exercise 16": "e * log(e)^2",   # TypeError
+        "Exercise 18": "1/2 - 1/2 * log(2)",
+        "Exercise 19": "1/4 * pi",
+        # "Exercise 20": "-1 + -2 * log (1 / 2) + 3 * log (1 / 2 * 3 ^ (1 / 2))",
+        # "Exercise 25": "1 / 24 * (pi * 2 ^ (1 / 2))",
     },
     "2014": {
         "Exercise 6": "-(4 / 5)",
@@ -168,8 +181,14 @@ test_cases = {
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
-            "test", "2014", "2019", "UCDAVIS/usubstitution", "UCDAVIS/Exponentials",
-            "UCDAVIS/Trigonometric", "Byparts",
+            "test",
+            "2013",
+            "2014",
+            "2019",
+            "UCDAVIS/usubstitution",
+            "UCDAVIS/Exponentials",
+            "UCDAVIS/Trigonometric",
+            "Byparts",
             "UCDAVIS/LogAndArctangent"
         ]
         test_only = None
