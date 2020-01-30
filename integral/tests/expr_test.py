@@ -160,8 +160,10 @@ class ExprTest(unittest.TestCase):
             ("(-u + 1) ^ 3 * (1 - u) ^ 2 ^ (-1)", "1 - u"),
             ("2 * (-((1/2) * -(3 ^ (1/2))) + 1)", "3 ^ (1/2) + 2"),
             ("1/2 * (-2 * (INT t:[0,(-1)/2]. exp(t)))", "-(INT t:[0,-1/2]. exp(t))"),
-            # ("(cos(x)^4 * sin(x) ^ 2) /  -(sin(x))", "-cos(x) ^ 4 * sin(x)"),
-            ("2 ^ (1/2) ^ 6 / 6", "4/3")
+            ("(cos(x)^4 * sin(x) ^ 2) /  -(sin(x))", "-cos(x) ^ 4 * sin(x)"),
+            ("2 ^ (1/2) ^ 6 / 6", "4/3"),
+            ("sin(x) ^ 2 * csc(x) ^ 3", "csc(x)"),
+            ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)")
         ]
 
         for s, res in test_data:

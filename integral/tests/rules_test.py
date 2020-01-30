@@ -17,9 +17,9 @@ class RulesTest(unittest.TestCase):
             ("INT x:[4, 9]. x^(1/2)*(1+x^(1/2))",
             "INT x:[4, 9]. x^(1/2) + x"),
             ("INT x:[0, pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
-            "INT x:[0, pi/2]. -cos(x) ^ 4 * csc(x) * sin(x) ^ 2"),
+            "INT x:[0, pi/2]. -cos(x) ^ 4 * sin(x)"),
             ("INT x:[a, b]. (x ^ 2 + 2 * x  - x ^ 3 + sin(x)*x) /  (x * y * sin(z))",
-            "INT x:[a,b]. x * y ^ -1 * csc(z) + -x ^ 2 * y ^ -1 * csc(z) + 2 * y ^ -1 * csc(z) + y ^ -1 * csc(z) * sin(x)")
+            "INT x:[a,b]. x * y ^ -1 * csc(z) + -x ^ 2 * y ^ -1 * csc(z) + y ^ -1 * sin(x) * csc(z) + 2 * y ^ -1 * csc(z)")
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:

@@ -430,12 +430,12 @@ class Expr:
                 x, y = self.args
                 if x.ty == FUN and x.func_name == "exp":
                     return Fun("exp", y * x.args[0]).to_poly()
-                if x.ty == FUN and x.func_name == "sin" and y.ty == CONST and y.val < 0:
-                    return (csc(x.args[0]) ^ Const(-y.val)).to_poly()
-                if x.ty == FUN and x.func_name == "cos" and y.ty == CONST and y.val < 0:
-                    return (sec(x.args[0]) ^ Const(-y.val)).to_poly()
-                if x.ty == FUN and x.func_name == "tan" and y.ty == CONST and y.val < 0:
-                    return (cot(x.args[0]) ^ Const(-y.val)).to_poly()
+                # if x.ty == FUN and x.func_name == "sin" and y.ty == CONST and y.val < 0:
+                #     return (csc(x.args[0]) ^ Const(-y.val)).to_poly()
+                # if x.ty == FUN and x.func_name == "cos" and y.ty == CONST and y.val < 0:
+                #     return (sec(x.args[0]) ^ Const(-y.val)).to_poly()
+                # if x.ty == FUN and x.func_name == "tan" and y.ty == CONST and y.val < 0:
+                #     return (cot(x.args[0]) ^ Const(-y.val)).to_poly()
                 if y.ty == CONST or y.ty == OP and len(y.args) == 1 and y.args[0].ty == CONST:
                     if y.ty == OP and len(y.args) == 1 and y.args[0].ty == CONST:
                         y = Const(-y.args[0].val)
@@ -479,6 +479,12 @@ class Expr:
                                 return Polynomial([poly.Monomial(Const(1), [(x.normalize(), y.val)])])
                         elif x.ty == FUN and x.func_name == "sqrt":
                             return Op("^", x.args[0], Const(Fraction(y.val*(1/2)))).to_poly()
+                        elif x.ty == FUN and x.func_name == "csc":
+                            return (Fun("sin", x.args[0]) ^ Const(-y.val)).to_poly()
+                        elif x.ty == FUN and x.func_name == "sec":
+                            return (Fun("cos", x.args[0]) ^ Const(-y.val)).to_poly()
+                        elif x.ty == FUN and x.func_name == "cot":
+                            return (Fun("tan", x.args[0]) ^ Const(-y.val)).to_poly()
                         elif x.ty == FUN and x.func_name in ("sin", "cos", "tan", "asin", "acos", "atan") and x.normalize() != x:
                             return Op("^", x.normalize(), y).to_poly()
                         else:
@@ -501,6 +507,12 @@ class Expr:
                 p = Fun(self.func_name, self.args[0].normalize())
                 p = sympy_style(p).simplify()
                 p = holpy_style(p)
+                if p.ty == FUN and p.func_name == "cot":
+                    p = (Fun("tan", p.args[0]) ^ Const(-1))
+                if p.ty == FUN and p.func_name == "csc":
+                    p = (Fun("sin", p.args[0]) ^ Const(-1))
+                if p.ty == FUN and p.func_name == "sec":
+                    p = (Fun("cos", p.args[0]) ^ Const(-1))
                 if p != self:
                     return p.to_poly()
                 else:
@@ -721,6 +733,18 @@ def trig_transform(trig):
     poss.add((holpy_style(i), "Unchanged"))
     return poss
 
+def getReciprocalTrig(factor, pow):
+    dic =  {
+        "sin": "csc",
+        "cos": "sec",
+        "tan": "cot",
+        "csc": "sin",
+        "sec": "cos",
+        "cot": "tan"
+    }
+    return factor ^ Const(pow) if pow >= 0 else Fun(dic[factor.func_name], *factor.args) ^ Const(-pow)
+
+
 def from_mono(m):
     """Convert a monomial to an expression."""
     factors = []
@@ -729,7 +753,9 @@ def from_mono(m):
     exps = []
     for factor, pow in m.factors:
         if factor.ty == FUN and factor.func_name == "exp":
-            exps.append(factor.args[0]*Const(pow))   
+            exps.append(factor.args[0]*Const(pow))
+        elif factor.ty == FUN and factor.func_name in ("sin", "cos", "tan", "csc", "sec", "cot"):
+            factors.append(getReciprocalTrig(factor, pow))
         elif pow == 1:
             factors.append(factor)
         else:
