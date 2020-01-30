@@ -304,12 +304,15 @@ class ExprTest(unittest.TestCase):
 
     def testGetAbs(self):
         test_data = [
-            ("2 * u / (1 + abs(u))", ["u"])
+            ("2 * u / (1 + abs(u))", ["abs(u)"]),
+            ("t * (4 + abs(t)) ^ -1 * abs(t ^ -1)", ["abs(t)", "abs(t ^ -1)"])
         ]
 
         for s, s1 in test_data:
             s = parse_expr(s)
-            s.getAbs()
+            for i in range(len(s1)):
+                s1[i] = parse_expr(s1[i])
+            self.assertEqual(s.getAbs(), s1)
 
     def testPriority(self):
         x = parse_expr("x")

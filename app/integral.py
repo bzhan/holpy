@@ -379,7 +379,7 @@ def integral_rewrite_expr():
     try:
         new_expr = integral.parser.parse_expr(data['new_expr'])
         location = data['relative_location']
-        if integral.expr.sympy_style(new_expr.normalize()).simplify() != integral.expr.sympy_style(old_expr.normalize()).simplify() or new_expr.findVar()[0].name != problem.var:
+        if expand_multinomial(integral.expr.sympy_style(new_expr.normalize()).simplify()) != expand_multinomial(integral.expr.sympy_style(old_expr.normalize()).simplify()) or new_expr.findVar()[0].name != problem.var:
             return jsonify({
                 'flag': False
             })

@@ -388,7 +388,10 @@ class ElimAbs(Rule):
             new_integral = []
             if not zero_point:
                 for a in abs_expr:
-                    body.replace_trig(a, a.args[0])
+                    if list(solveset(sympy_style(a.args[0]) > 0, expr.sympy_style(e.var), Interval.open(sympy_style(e.lower), sympy_style(e.upper)))):
+                        body.replace_trig(a, a.args[0])
+                    else:
+                        body.replace_trig(a, -a.args[0])
                 return expr.Integral(e.var, e.lower, e.upper, body)
             else:
                 zero_point += [sympy_style(e.upper), sympy_style(e.lower)]

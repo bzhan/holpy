@@ -71,7 +71,7 @@ def convert_expr(e, mode="large"):
                     if y.ty == expr.OP and y.op != "^":
                         sy = "(" + sy + ")"
                     return "%s %s" % (sx, sy)
-                elif x.is_constant() and y.is_constant() and (y.ty != CONST or not (y.ty == OP and y.op in ("+", "-") or y.ty == CONST and isinstance(y.val, Fraction))):
+                elif x.is_constant() and y.is_constant() and y.ty != CONST and not (y.ty == OP and y.op in ("+", "-") or y.ty == CONST and isinstance(y.val, Fraction)):
                     if x == Const(-1):
                         return "-%s" % sy
                     if x.ty == expr.OP and x.op != "^" and len(x.args) != 1:

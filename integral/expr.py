@@ -638,7 +638,11 @@ class Expr:
         upper = sympy_style(upper)
         greater_zero = solveset(e > 0, var, Interval(lower, upper, left_open = True, right_open = True))
         smaller_zero = solveset(e < 0, var, Interval(lower, upper, left_open = True, right_open = True))
+        print("self: ", self)
+        print("greater zero: ", greater_zero)
+        print("smaller zero: ", smaller_zero)
         def to_holpy(l):
+            print(type(I))
             if isinstance(l, Union):
                 return [(holpy_style(x.start), holpy_style(x.end)) for x in l.args]
             elif isinstance(l, Interval):
@@ -658,7 +662,7 @@ class Expr:
     def getAbsByMonomial(self):
         """Separate abs from monomial"""
         p = self.to_poly()
-        if len(p.monomials) == 1: #Only separate 
+        if len(p.monomials) == 1 and len(self.getAbs()) <= 1: #Only separate 
             a = []
             b = []
             for f in p.monomials[0].factors:
