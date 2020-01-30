@@ -227,6 +227,9 @@ class RunIntegral(unittest.TestCase):
                     target = test_cases[filename][item['name']]
                     proof.translate_item(item, target, debug=True)
 
+        # for k, v in sympywrapper.solveset_cache.items():
+        #     print(k, ': ', v)
+
         if profile:
             p = Stats(pr)
             p.strip_dirs()
