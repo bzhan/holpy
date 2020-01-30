@@ -232,63 +232,33 @@ class norm_cos_conv(Conv):
 
 auto.add_global_autos_norm(real.cos, norm_cos_conv())
 
-class norm_tan_conv(Conv):
-    """Normalization of an expression tan (r * pi)."""
-    def get_proof_term(self, thy, t):
-        if not (t.is_comb() and t.head == real.tan):
-            raise ConvException('norm_tan_conv')
+auto.add_global_autos_norm(
+    real.tan,
+    auto.norm_rules([
+        'tan_def'
+    ])
+)
 
-        if t.arg == real.zero or t.arg == real.pi or t.arg == real.uminus(real.pi):
-            return refl(t).on_rhs(thy, rewr_conv('tan_def'))
+auto.add_global_autos_norm(
+    real.cot,
+    auto.norm_rules([
+        'cot_def'
+    ])
+)
 
-        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
-            raise ConvException('norm_tan_conv')
+auto.add_global_autos_norm(
+    real.sec,
+    auto.norm_rules([
+        'sec_def'
+    ])
+)
 
-        return refl(t).on_rhs(thy, rewr_conv('tan_def'))
-
-auto.add_global_autos_norm(real.tan, norm_tan_conv())
-
-class norm_cot_conv(Conv):
-    """Normalization of an expression cot (r * pi)."""
-    def get_proof_term(self, thy, t):
-        if not (t.is_comb() and t.head == real.cot):
-            raise ConvException('norm_cot_conv')
-
-        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
-            raise ConvException('norm_cot_conv')
-
-        return refl(t).on_rhs(thy, rewr_conv('cot_def'))
-
-auto.add_global_autos_norm(real.cot, norm_cot_conv())
-
-class norm_sec_conv(Conv):
-    """Normalization of an expression sec (r * pi)."""
-    def get_proof_term(self, thy, t):
-        if not (t.is_comb() and t.head == real.sec):
-            raise ConvException('norm_sec_conv')
-
-        if t.arg == real.zero or t.arg == real.pi or t.arg == real.uminus(real.pi):
-            return refl(t).on_rhs(thy, rewr_conv('sec_def'))
-
-        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
-            raise ConvException('norm_sec_conv')
-
-        return refl(t).on_rhs(thy, rewr_conv('sec_def'))
-
-auto.add_global_autos_norm(real.sec, norm_sec_conv())
-
-class norm_csc_conv(Conv):
-    """Normalization of an expression csc (r * pi)."""
-    def get_proof_term(self, thy, t):
-        if not (t.is_comb() and t.head == real.csc):
-            raise ConvException('norm_csc_conv')
-
-        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
-            raise ConvException('norm_csc_conv')
-
-        return refl(t).on_rhs(thy, rewr_conv('csc_def'))
-
-auto.add_global_autos_norm(real.csc, norm_csc_conv())
+auto.add_global_autos_norm(
+    real.csc,
+    auto.norm_rules([
+        'csc_def'
+    ])
+)
 
 auto.add_global_autos_norm(
     real.exp,
@@ -715,11 +685,12 @@ class fraction_rewr_conv(Conv):
 
 class trig_rewr_conv(Conv):
     """Apply trignometric rewrites."""
-    def __init__(self, code, var_name):
+    def __init__(self, code, var_name, target):
         """Initialize with code of the trignometric rewrite in Fu's method."""
         assert isinstance(code, str)
         self.code = code
         self.var_name = var_name
+        self.target = target
 
     def get_proof_term(self, thy, t, conds=None):
         # Obtain the only variable in t
@@ -731,23 +702,13 @@ class trig_rewr_conv(Conv):
             x = Var(self.var_name, realT)
 
         if self.code == 'TR1':
-            rewr_ths = [
-                'sec_def',  # sec x = 1 / cos x
-                'csc_def'   # csc x = 1 / sin x
-            ]
-            pt = refl(t)
-            for rewr_th in rewr_ths:
-                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
-            return pt
+            # Definition of sec and csc
+            # Handled by normalization
+            return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
         elif self.code == 'TR2':
-            rewr_ths = [
-                'tan_def',  # tan x = sin x / cos x
-                'cot_def',  # cot x = cos x / sin x
-            ]
-            pt = refl(t)
-            for rewr_th in rewr_ths:
-                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
-            return pt
+            # Definition of tan and cot
+            # Handled by normalization
+            return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
         elif self.code == 'TR5':
             # (sin x) ^ 2 = 1 - (cos x) ^ 2
             return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
@@ -805,22 +766,9 @@ class trig_rewr_conv(Conv):
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
             return pt
         elif self.code == 'TR111':
-            if t.head == real.real_power and real.is_binary_real(t.arg):
-                p = real.from_binary_real(t.arg)
-                if not (isinstance(p, int) and p < 0):
-                    return refl(t)
-                if t.arg1.head == real.sin:
-                    sin_neq0 = logic.neg(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
-                    sin_neq0_pt = auto.auto_solve(thy, sin_neq0, conds)
-                    return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_csc_inverse', conds=[sin_neq0_pt])))
-                elif t.arg1.head == real.cos:
-                    cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
-                    cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
-                    return refl(t).on_rhs(thy, top_conv(rewr_conv('cos_sec_inverse', conds=[cos_neq0_pt])))
-                else:
-                    return refl(t)
-            else:
-                return refl(t)
+            # Reverse of definition of sec and csc
+            # Handled by normalization
+            return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
         elif self.code == 'TR22':
             if t.head == real.nat_power and t.arg1.head == real.tan:
                 cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
@@ -1026,6 +974,10 @@ def translate_item(item, target=None, *, debug=False):
         else:
             loc = Location("")
         reason = step['reason']
+        expected = expr_to_holpy(parse_expr(step['text']))
+
+        rewr_loc = get_at_location(loc, pt.rhs)
+        expected_loc = get_at_location(loc, expected)
 
         if reason == 'Initial':
             continue
@@ -1036,8 +988,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Substitution':
             # Perform substitution u = g(x)
-            rewr_t = get_at_location(loc, pt.rhs)
-            assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution"
+            assert rewr_loc.head.is_const_name("real_integral"), "translate_item: Substitution"
             f = expr_to_holpy(parse_expr(step['params']['f']))
             g = expr_to_holpy(parse_expr(step['params']['g']))
             ori_var = term.get_vars(g)[0]
@@ -1049,8 +1000,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Substitution inverse':
             # Perform substitution x = g(u)
-            rewr_t = get_at_location(loc, pt.rhs)
-            assert rewr_t.head.is_const_name("real_integral"), "translate_item: Substitution inverse"
+            assert rewr_loc.head.is_const_name("real_integral"), "translate_item: Substitution inverse"
             g = parse_expr(step['params']['g'])
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
@@ -1061,8 +1011,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Integrate by parts':
             # Integration by parts using u and v
-            rewr_t = get_at_location(loc, pt.rhs)
-            assert rewr_t.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
+            assert rewr_loc.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
             u = expr_to_holpy(parse_expr(step['params']['parts_u']))
             v = expr_to_holpy(parse_expr(step['params']['parts_v']))
             ori_var = term.get_vars([u, v])[0]
@@ -1092,7 +1041,7 @@ def translate_item(item, target=None, *, debug=False):
                 var_name = step['params']['var_name']
             else:
                 var_name = ""
-            cv = trig_rewr_conv(step['params']['rule'], var_name)
+            cv = trig_rewr_conv(step['params']['rule'], var_name, expected_loc)
 
         elif reason == 'Unfold power':
             # Rewrite x ^ 2 to x * x.
@@ -1110,7 +1059,6 @@ def translate_item(item, target=None, *, debug=False):
             prev_id = int(step['params']['prev_id'])
             prev_pt = prev_pts[prev_id]
 
-
             t1 = real.times(real.to_binary_real(Fraction(1, factor+1)),
                             real.plus(prev_pt.rhs, real.times(real.to_binary_real(factor), prev_pt.rhs)))
             t1_pt = auto.auto_solve(thy, Term.mk_equals(prev_pt.rhs, t1))
@@ -1124,9 +1072,7 @@ def translate_item(item, target=None, *, debug=False):
         if reason != 'Solve equation':
             pt = pt.on_rhs(thy, location_conv(loc, cv))
 
-        if 'text' in step:
-            expected = expr_to_holpy(parse_expr(step['text']))
-
+        if pt.rhs != expected:
             eq_pt1 = refl(expected).on_rhs(thy, auto.auto_conv())
             eq_pt2 = refl(pt.rhs).on_rhs(thy, auto.auto_conv())
             if eq_pt1.rhs != eq_pt2.rhs:
@@ -1137,7 +1083,8 @@ def translate_item(item, target=None, *, debug=False):
             else:
                 pt = ProofTerm.transitive(pt, eq_pt2)
                 pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt1))
-                pt = ProofTermDeriv("transitive", None, None, [pt, ProofTerm.reflexive(expected)])
+
+        pt = ProofTermDeriv("transitive", None, None, [pt, ProofTerm.reflexive(expected)])
 
         if debug:
             print("= %s" % printer.print_term(thy, pt.rhs))

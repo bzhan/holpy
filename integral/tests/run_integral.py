@@ -39,7 +39,7 @@ test_cases = {
         "Exercise 27": "2 * 2 ^ (1 / 2)",
         "Exercise 28": "1 - 2 * exp(-1)",
         "Exercise 29": "1 / 4 + 1 / 4 * exp(2)",
-        # "Exercise 30": None,
+        "Exercise 30": "((1/4 - 3 ^ (1/2) * (1/9)) * pi - log(2 ^ (1/2) * (1/2))) + log(3 ^ (1/2) * (1/2))",
         "Exercise 31": "-4 + 4 * log(4)",
         "Exercise 32": "-(1 / 2) + 1 / 4 * pi",
         "Exercise 33": "-(2 / 5) + 1 / 5 * exp(pi)",
@@ -151,6 +151,16 @@ test_cases = {
         # "Exercise 21": "-1/2 + 1/4 * exp(1)",
         "Exercise 22": "-1/2 + 1/2 * cos(1) * exp(1) + 1/2 * sin(1) * exp(1)",
         "Exercise 23": "-1/4",
+    },
+    "UCDAVIS/LogAndArctangent": {
+        "Exercise 1": "3/2 + 3 * log(2)",
+        "Exercise 2": "-7 * log(5) + 7 * log(6)",
+        # "Exercise 3": "3 * atan(1/2)",
+        "Exercise 4": "1/2 * log(4) - 1/2 * log(5)",
+        "Exercise 5": "26/3 - 8 * log(3)",
+        # "Exercise 6": "-4/3 + 1/2 * pi",
+        # "Exercise 7": "-log(3) + log(4)",
+        # "Exercise 8": "(-1 - 10 * log(3)) + 10 * log(4)",
     }
 }
 
@@ -159,7 +169,8 @@ class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
             "test", "2014", "2019", "UCDAVIS/usubstitution", "UCDAVIS/Exponentials",
-            "UCDAVIS/Trigonometric", "Byparts"
+            "UCDAVIS/Trigonometric", "Byparts",
+            "UCDAVIS/LogAndArctangent"
         ]
         test_only = None
         profile = False

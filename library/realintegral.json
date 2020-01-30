@@ -11585,7 +11585,7 @@
             "prop": [
                 "a ≤ b ",
                 "⟶ (∀x. x ∈ real_open_interval a b ⟶ ¬(cos x = 0)) ",
-                "   ⟶ real_integral (real_closed_interval a b) (λx. sec x ^ (2::nat)) = ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. cos x ^ -(2::real)) = ",
                 "      evalat (λx. tan x) a b"
             ],
             "ty": "thm",
@@ -11599,7 +11599,7 @@
             "prop": [
                 "a ≤ b ",
                 "⟶ (∀x. x ∈ real_open_interval a b ⟶ ¬(sin x = 0)) ",
-                "   ⟶ real_integral (real_closed_interval a b) (λx. csc x ^ (2::nat)) = ",
+                "   ⟶ real_integral (real_closed_interval a b) (λx. sin x ^ -(2::real)) = ",
                 "      evalat (λx. -(cot x)) a b"
             ],
             "ty": "thm",
