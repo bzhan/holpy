@@ -243,7 +243,7 @@
                         "rhs": "(-1+u)^2"
                     },
                     "reason": "Rewrite fraction",
-                    "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1) + 10/9 * u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ (-1)"
+                    "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ -1 + 10/9 * u ^ 6 * (-1 + u) ^ 3 * ((1 - 2 * u) + u ^ 2) ^ -1"
                 },
                 {
                     "_latex_reason": "Rewrite \\(1 - 2 u + u ^ 2\\) to \\((-1 + u) ^ 2\\)",
@@ -253,7 +253,7 @@
                         "rhs": "(-1+u)^2"
                     },
                     "reason": "Rewrite fraction",
-                    "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1) + 10/9 * u ^ 6 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ (-1)"
+                    "text": "INT u:[1 + 3 * exp(-1),4]. -10/9 * u ^ 5 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ -1 + 10/9 * u ^ 6 * (-1 + u) ^ 3 * (-1 + u) ^ 2 ^ -1"
                 },
                 {
                     "latex": "\\frac{880640}{189} - \\frac{5}{27} (1 + 3 e^{-1}) ^ 6 + \\frac{20}{63} (1 + 3 e^{-1}) ^ 7 - \\frac{5}{36} (1 + 3 e^{-1}) ^ 8",
@@ -309,6 +309,37 @@
                     "latex": "\\int_{0}^{1} \\sqrt[3]{27 e^{9 x} + e^{12 x}} \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[0,1]. (27 * exp(9 * x) + exp(12 * x)) ^ (1/3)"
+                },
+                {
+                    "_latex_reason": "Rewrite \\(27 e^{9 x} + e^{12 x}\\) to \\(e^{9 x} (27 + e^{3 x})\\)",
+                    "latex": "\\int_{0}^{1} \\sqrt[3]{e^{9 x} (27 + e^{3 x})} \\,\\mathrm{dx}",
+                    "location": "0.0",
+                    "params": {
+                        "rhs": "exp(9*x) * (27 + exp(3*x))"
+                    },
+                    "reason": "Rewrite fraction",
+                    "text": "INT x:[0,1]. (exp(9 * x) * (27 + exp(3 * x))) ^ (1/3)"
+                },
+                {
+                    "latex": "\\int_{0}^{1} \\sqrt[3]{27 + e^{3 x}} e^{3 x} \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[0,1]. (27 + exp(3 * x)) ^ (1/3) * exp(3 * x)"
+                },
+                {
+                    "_latex_reason": "Substitute \\(u\\) for \\(27 + e^{3 x}\\)",
+                    "latex": "\\int_{28}^{27 + e^{3}} \\frac{1}{3} \\sqrt[3]{u} \\,\\mathrm{du}",
+                    "params": {
+                        "f": "1/3 * u ^ (1/3)",
+                        "g": "27 + exp(3 * x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "INT u:[28,27 + exp(3)]. 1/3 * u ^ (1/3)"
+                },
+                {
+                    "latex": "-7 \\sqrt[3]{28} + \\frac{1}{4} (27 + e^{3}) ^ {\\frac{4}{3}}",
+                    "reason": "Simplification",
+                    "text": "-7 * 28 ^ (1/3) + 1/4 * (27 + exp(3)) ^ (4/3)"
                 }
             ],
             "name": "Exercise 12",

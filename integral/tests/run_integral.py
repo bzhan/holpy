@@ -30,7 +30,7 @@ test_cases = {
         "Exercise 18": "1 - 1/4 * pi",
         "Exercise 19": "1 / 6",
         "Exercise 20": "2 + 2 * log(2) - 2 * log(3)",
-        # "Exercise 21": None,
+        # "Exercise 21": "1 - 2 * log(2)",
         "Exercise 22": "1 - exp (-1/2)",
         "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
         "Exercise 24": "1/2 * pi",
@@ -96,7 +96,7 @@ test_cases = {
         # "Exercise 9": None,
         # "Exercise 10": "((880640/189 - 5/27 * (1 + 3 * exp(-1)) ^ 6) + 20/63 * (1 + 3 * exp(-1)) ^ 7) - 5/36 * (1 + 3 * exp(-1)) ^ 8",
         "Exercise 11": "-16 * 2 ^ (1/2) + 8 * (1 + 6 * exp(1) + exp(2)) ^ (1/2)",
-        # "Exercise 12": None
+        # "Exercise 12": "-7 * 28 ^ (1/3) + 1/4 * (27 + exp(3)) ^ (4/3)"
     },
     "UCDAVIS/Trigonometric": {
         "Exercise 1": "1 / 3",
