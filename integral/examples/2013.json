@@ -873,24 +873,14 @@
                     "text": "-1 + log(3 ^ (1/2) * (1/2)) + 2 * (INT u:[pi / 6,pi / 3]. 1 / (2 * sin(u) * cos(u)))"
                 },
                 {
-                    "_latex_reason": "Rewrite \\(1\\) to \\(\\sin^{2}(u) + \\cos^{2}(u)\\)",
+                    "_latex_reason": "Rewrite trigonometric \\(1\\) to \\(\\sin^{2}(u) + \\cos^{2}(u)\\)",
                     "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + 2 \\int_{\\pi/6}^{\\pi/3} \\frac{\\sin^{2}(u) + \\cos^{2}(u)}{2 \\sin{(u)} \\cos{(u)}} \\,\\mathrm{du}",
                     "location": "1.1.0.0",
-                    "params": {
-                        "rhs": "sin(u) ^ 2 + cos(u) ^ 2"
-                    },
-                    "reason": "Rewrite fraction",
-                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + 2 * (INT u:[pi / 6,pi / 3]. (sin(u) ^ 2 + cos(u) ^ 2) / (2 * sin(u) * cos(u)))"
-                },
-                {
-                    "_latex_reason": "Rewrite trigonometric \\(\\frac{\\sin^{2}(u) + \\cos^{2}(u)}{2 \\sin{(u)} \\cos{(u)}}\\) to \\(\\frac{\\sin{(u)}}{2 \\cos{(u)}} + \\frac{\\cos{(u)}}{2 \\sin{(u)}}\\)",
-                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + 2 \\int_{\\pi/6}^{\\pi/3} \\frac{\\sin{(u)}}{2 \\cos{(u)}} + \\frac{\\cos{(u)}}{2 \\sin{(u)}} \\,\\mathrm{du}",
-                    "location": "1.1.0",
                     "params": {
                         "rule": "TR0"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + 2 * (INT u:[pi / 6,pi / 3]. sin(u) / (2 * cos(u)) + cos(u) / (2 * sin(u)))"
+                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + 2 * (INT u:[pi / 6,pi / 3]. (sin(u) ^ 2 + cos(u) ^ 2) / (2 * sin(u) * cos(u)))"
                 },
                 {
                     "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{\\pi/6}^{\\pi/3} \\cos{(u)} \\csc{(u)} \\,\\mathrm{du}) + (\\int_{\\pi/6}^{\\pi/3} \\sec{(u)} \\sin{(u)} \\,\\mathrm{du})",
@@ -898,28 +888,28 @@
                     "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT u:[pi / 6,pi / 3]. cos(u) * csc(u)) + (INT u:[pi / 6,pi / 3]. sec(u) * sin(u))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\cos{(u)} \\csc{(u)}\\) to \\(\\frac{\\cos{(u)}}{\\sin{(u)}}\\)",
-                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{\\pi/6}^{\\pi/3} \\frac{\\cos{(u)}}{\\sin{(u)}} \\,\\mathrm{du}) + (\\int_{\\pi/6}^{\\pi/3} \\sec{(u)} \\sin{(u)} \\,\\mathrm{du})",
-                    "location": "0.1.0",
+                    "_latex_reason": "Rewrite trigonometric \\(\\csc{(u)}\\) to \\(\\frac{1}{\\sin{(u)}}\\)",
+                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{\\pi/6}^{\\pi/3} \\cos{(u)} (\\frac{1}{\\sin{(u)}}) \\,\\mathrm{du}) + (\\int_{\\pi/6}^{\\pi/3} \\sec{(u)} \\sin{(u)} \\,\\mathrm{du})",
+                    "location": "0.1.0.1",
                     "params": {
                         "rule": "TR1"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT u:[pi / 6,pi / 3]. cos(u) / sin(u)) + (INT u:[pi / 6,pi / 3]. sec(u) * sin(u))"
+                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT u:[pi / 6,pi / 3]. cos(u) * (1 / sin(u))) + (INT u:[pi / 6,pi / 3]. sec(u) * sin(u))"
                 },
                 {
-                    "_latex_reason": "Rewrite trigonometric \\(\\sec{(u)} \\sin{(u)}\\) to \\(\\frac{\\sin{(u)}}{\\cos{(u)}}\\)",
-                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{\\pi/6}^{\\pi/3} \\frac{\\cos{(u)}}{\\sin{(u)}} \\,\\mathrm{du}) + (\\int_{\\pi/6}^{\\pi/3} \\frac{\\sin{(u)}}{\\cos{(u)}} \\,\\mathrm{du})",
-                    "location": "1.0",
+                    "_latex_reason": "Rewrite trigonometric \\(\\sec{(u)}\\) to \\(\\frac{1}{\\cos{(u)}}\\)",
+                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{\\pi/6}^{\\pi/3} \\cos{(u)} (\\frac{1}{\\sin{(u)}}) \\,\\mathrm{du}) + (\\int_{\\pi/6}^{\\pi/3} (\\frac{1}{\\cos{(u)}}) \\sin{(u)} \\,\\mathrm{du})",
+                    "location": "1.0.0",
                     "params": {
                         "rule": "TR1"
                     },
                     "reason": "Rewrite trigonometric",
-                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT u:[pi / 6,pi / 3]. cos(u) / sin(u)) + (INT u:[pi / 6,pi / 3]. sin(u) / cos(u))"
+                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT u:[pi / 6,pi / 3]. cos(u) * (1 / sin(u))) + (INT u:[pi / 6,pi / 3]. (1 / cos(u)) * sin(u))"
                 },
                 {
                     "_latex_reason": "Substitute \\(t\\) for \\(\\sin{(u)}\\)",
-                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{1/2}^{\\sqrt{3}/2} \\frac{1}{t} \\,\\mathrm{dt}) + (\\int_{\\pi/6}^{\\pi/3} \\frac{\\sin{(u)}}{\\cos{(u)}} \\,\\mathrm{du})",
+                    "latex": "-1 + \\log{(\\frac{\\sqrt{3}}{2})} + (\\int_{1/2}^{\\sqrt{3}/2} \\frac{1}{t} \\,\\mathrm{dt}) + (\\int_{\\pi/6}^{\\pi/3} (\\frac{1}{\\cos{(u)}}) \\sin{(u)} \\,\\mathrm{du})",
                     "location": "0.1",
                     "params": {
                         "f": "1 / t",
@@ -927,7 +917,7 @@
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT t:[1/2,sqrt(3) / 2]. 1 / t) + (INT u:[pi / 6,pi / 3]. sin(u) / cos(u))"
+                    "text": "-1 + log(3 ^ (1/2) * (1/2)) + (INT t:[1/2,sqrt(3) / 2]. 1 / t) + (INT u:[pi / 6,pi / 3]. (1 / cos(u)) * sin(u))"
                 },
                 {
                     "_latex_reason": "Substitute \\(t\\) for \\(\\cos{(u)}\\)",
