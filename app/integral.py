@@ -170,38 +170,6 @@ def integral_compose_integral():
         info.update({'_latex_reason': latex_reason})
     return json.dumps(info)
 
-    
-
-@app.route("/api/integral-trig-transformation", methods=['POST'])
-def integral_trig_transformation():
-    data = json.loads(request.get_data().decode('utf-8'))
-    rule = integral.rules.TrigSubstitution()
-    del integral.expr.trig_identity[:]
-    problem = integral.parser.parse_expr(data['problem'])
-    e = integral.parser.parse_expr(data['exp'])
-    if e.normalize() == problem.body.normalize():
-        e = integral.expr.Integral(problem.var, problem.lower, problem.upper, e)
-        possible_new_problem = rule.eval(e)
-        #need to do more
-        possible_form = list(integral.expr.trig_transform(integral.expr.trig_identity[0]))
-        n = []
-        for p in range(len(possible_new_problem)):
-            n.append({ 
-                'text': str(possible_new_problem[p][0]),
-                'latex': integral.latex.convert_expr(possible_new_problem[p][0]),
-                '_latex_reason': "Trig identities: \(%s = %s\\); Method : %s"
-                % (integral.latex.convert_expr(integral.expr.trig_identity[0]),
-                integral.latex.convert_expr(integral.parser.parse_expr(str(possible_form[p][0]).replace("**", "^"))),
-                str(possible_new_problem[p][1]))
-            })
-        return json.dumps(n)
-    else:
-        return jsonify({
-            'text': str(problem),
-            'latex': integral.latex.convert_expr(problem),
-            'reason': "Rewrite is invalid."
-        })
-
 @app.route("/api/integral-substitution", methods=['POST'])
 def integral_substitution():
     data = json.loads(request.get_data().decode('utf-8'))
@@ -271,7 +239,7 @@ def integral_validate_expr():
                 location += "." + dollar_location
             
             # location = data["integral_location"] + ".0." + dollar_location if data["integral_location"] != "" else "0." + dollar_location
-            new_trig_set = tuple(integral.expr.trig_transform(select))
+            new_trig_set = tuple(integral.expr.trig_transform(select, problem.var))
             new_integral_set = [integral.expr.Integral(problem.var, problem.lower, problem.upper, problem.body.replace_expr(dollar_location, t[0])) for t in new_trig_set]
             transform_info = []
             for i in range(len(new_integral_set)):

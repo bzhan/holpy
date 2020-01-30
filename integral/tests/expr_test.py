@@ -151,7 +151,6 @@ class ExprTest(unittest.TestCase):
             ("(2 * u) * pi ^ (-1) *(1/pi)^(-1)", "2 * u"),
             ("((2 * u) * pi ^ (-1)) * (u / pi) ^ (-1)", "2"),
             ("2 * (INT x:[1,exp(1)]. 1) - ([u * log(u)]_u=2,2 * exp(1))", "2 * log(2) + (-2) * log(2 * exp(1)) * exp(1) + 2 * (INT x:[1,exp(1)]. 1)"),
-            ("sin(x)^2+cos(x)^2", "1"),
             ("3 ^ (1/2) * 3 ^ (1/2)", "3"),
             ("2 * ((1/2) * 3 ^ (1/2))", "3 ^ (1/2)"),
             ("exp(5 * x) * 3 / exp(3 * x)",  "3 * exp(2 * x)"),
@@ -245,20 +244,6 @@ class ExprTest(unittest.TestCase):
             s = parse_expr(s)
             s2 = parse_expr(s2)
             self.assertEqual(expr.deriv("x", s), s2)
-    
-    def testTrig(self):
-        test_data = [
-            ("$sin(x)^2$*sin(x)", {"sin(x) ^ 2 * sin(x)","(1 - cos(x) ^ 2) * sin(x)", \
-                "(1/2 - cos(2 * x) / 2) * sin(x)"}),
-        ]
-
-        for t, s in test_data:
-            t = parse_expr(t)
-            n = t.identity_trig_expr(expr.trig_identity)
-            c = []
-            for i in range(len(n)):
-                c.append(str(n[i][0]))
-            self.assertEqual(set(c), s)
 
     def testSeparateIntegral(self):
         test_data = [

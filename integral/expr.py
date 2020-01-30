@@ -380,14 +380,14 @@ class Expr:
                 if y.ty == OP and len(y.args) == 1:
                     # x + (-y) => x - y
                     return Op("-", x, y.args[0]).to_poly()
-                elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "sin" and x.args[1].ty == CONST and x.args[1].val == 2\
-                    and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "cos" and y.args[1].ty == CONST and y.args[1].val == 2\
-                    and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
-                    return poly.singleton(Const(1))
-                elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "cos" and x.args[1].ty == CONST and x.args[1].val == 2\
-                    and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "sin" and y.args[1].ty == CONST and y.args[1].val == 2\
-                    and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
-                    return poly.singleton(Const(1))
+                # elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "sin" and x.args[1].ty == CONST and x.args[1].val == 2\
+                #     and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "cos" and y.args[1].ty == CONST and y.args[1].val == 2\
+                #     and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
+                #     return poly.singleton(Const(1))
+                # elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "cos" and x.args[1].ty == CONST and x.args[1].val == 2\
+                #     and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "sin" and y.args[1].ty == CONST and y.args[1].val == 2\
+                #     and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
+                #     return poly.singleton(Const(1))
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
@@ -720,10 +720,13 @@ def valid_expr(s):
         return False
     return True
 
-def trig_transform(trig):
+def trig_transform(trig, var):
     """Compute all possible trig function equal to trig"""
     poss = set()
     poss_expr = set()
+    if trig.ty == CONST:
+        poss.add((trig * ((sin(Var(var)) ^ Const(2)) + (cos(Var(var))^Const(2))), "TR0"))
+        return poss
     i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
     for f, rule in trigFun.items():
         j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
@@ -1199,7 +1202,6 @@ class EvalAt(Expr):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
 trigFun = {     
-    TR0: "simplify expression",
     TR1: "sec-csc to cos-sin",
     TR2: "tan-cot to sin-cos ratio",
     TR2i: "sin-cos ratio to tan",
