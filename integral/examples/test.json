@@ -1252,49 +1252,51 @@
             "_problem_latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{x}{\\sin^{2}(x)} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{x}{\\sin^{2}x} \\,\\mathrm{dx}",
+                    "latex": "\\int_{\\pi/4}^{\\pi/3} \\frac{x}{\\sin^{2}(x)} \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[pi / 4,pi / 3]. x / sin(x) ^ 2"
                 },
                 {
-                    "_latex_reason": "Integrate by parts, \\(u = x, v = -\\cot{(x)}\\).",
-                    "latex": "(\\left. (-x) \\cot{(x)} \\right\\vert_{x=\\pi/4}^{\\pi/3}) - (\\int_{\\pi/4}^{\\pi/3} -\\cot{(x)} \\,\\mathrm{dx})",
-                    "text": "([(-1) * x * cot(x)]_x=pi / 4,pi / 3) - (INT x:[pi / 4,pi / 3]. (-1) * cot(x))"
+                    "_latex_reason": "Integrate by parts, \\(u = x, v = -\\cot{(x)}\\)",
+                    "latex": "(\\left. -x \\cot{(x)} \\right\\vert_{x=\\pi/4}^{\\pi/3}) - (\\int_{\\pi/4}^{\\pi/3} -\\cot{(x)} \\,\\mathrm{dx})",
+                    "params": {
+                        "parts_u": "x",
+                        "parts_v": "-cot(x)"
+                    },
+                    "reason": "Integrate by parts",
+                    "text": "([-x * cot(x)]_x=pi / 4,pi / 3) - (INT x:[pi / 4,pi / 3]. -cot(x))"
                 },
                 {
-                    "latex": "-\\frac{1}{3} \\pi * \\cot{(\\frac{\\pi}{3})} + \\frac{1}{4} \\pi * \\cot{(\\frac{\\pi}{4})} + (\\int_{\\pi/4}^{\\pi/3} \\cot{(x)} \\,\\mathrm{dx})",
+                    "latex": "(\\frac{1}{4} - \\frac{\\sqrt{3}}{9}) \\pi + (\\int_{\\pi/4}^{\\pi/3} \\cot{(x)} \\,\\mathrm{dx})",
                     "reason": "Simplification",
-                    "text": "(-1/3) * pi * cot(pi / 3) + 1/4 * pi * cot(pi / 4) + (INT x:[pi / 4,pi / 3]. cot(x))"
+                    "text": "(1/4 - 3 ^ (1/2) * (1/9)) * pi + (INT x:[pi / 4,pi / 3]. cot(x))"
                 },
                 {
-                    "latex": "-\\frac{1}{3} \\pi * \\cot{(\\frac{\\pi}{3})} + \\frac{1}{4} \\pi * \\cot{(\\frac{\\pi}{4})} + (\\int_{\\pi/4}^{\\pi/3} \\cot{(x)} \\,\\mathrm{dx})",
-                    "reason": "Common integrals",
-                    "text": "(-1/3) * pi * cot(pi / 3) + 1/4 * pi * cot(pi / 4) + (INT x:[pi / 4,pi / 3]. cot(x))"
+                    "_latex_reason": "Rewrite trigonometric \\(\\cot{(x)}\\) to \\(\\frac{\\cos{(x)}}{\\sin{(x)}}\\)",
+                    "latex": "(\\frac{1}{4} - \\frac{\\sqrt{3}}{9}) \\pi + (\\int_{\\pi/4}^{\\pi/3} \\frac{\\cos{(x)}}{\\sin{(x)}} \\,\\mathrm{dx})",
+                    "location": "1.0",
+                    "params": {
+                        "rule": "TR2"
+                    },
+                    "reason": "Rewrite trigonometric",
+                    "text": "(1/4 - 3 ^ (1/2) * (1/9)) * pi + (INT x:[pi / 4,pi / 3]. cos(x) / sin(x))"
                 },
                 {
-                    "_latex_reason": "Trig identities: \\(\\cot{(x)} = \\frac{\\cos{(x)}}{\\sin{(x)}}\\); Method : tan-cot to sin-cos ratio.",
-                    "latex": "-\\frac{1}{3} \\pi * \\cot{(\\frac{\\pi}{3})} + \\frac{1}{4} \\pi * \\cot{(\\frac{\\pi}{4})} + (\\int_{\\pi/4}^{\\pi/3} \\frac{\\cos{(x)}}{\\sin{(x)}} \\,\\mathrm{dx})",
-                    "text": "(-1/3) * pi * cot(pi / 3) + 1/4 * pi * cot(pi / 4) + (INT x:[pi / 4,pi / 3]. cos(x) / sin(x))"
+                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)}\\)",
+                    "latex": "(\\frac{1}{4} - \\frac{\\sqrt{3}}{9}) \\pi + (\\int_{\\sqrt{2}/2}^{\\sqrt{3}/2} \\frac{1}{u} \\,\\mathrm{du})",
+                    "location": "1",
+                    "params": {
+                        "f": "1 / u",
+                        "g": "sin(x)",
+                        "var_name": "u"
+                    },
+                    "reason": "Substitution",
+                    "text": "(1/4 - 3 ^ (1/2) * (1/9)) * pi + (INT u:[sqrt(2) / 2,sqrt(3) / 2]. 1 / u)"
                 },
                 {
-                    "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(x)}\\).",
-                    "latex": "-\\frac{1}{3} \\pi * \\cot{(\\frac{\\pi}{3})} + \\frac{1}{4} \\pi * \\cot{(\\frac{\\pi}{4})} + (\\int_{1/2 \\sqrt{2}}^{1/2 \\sqrt{3}} \\frac{1}{u} \\,\\mathrm{du})",
-                    "text": "(-1/3) * pi * cot(pi / 3) + 1/4 * pi * cot(pi / 4) + (INT u:[1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2)]. 1 / u)"
-                },
-                {
-                    "latex": "-\\frac{1}{3} \\pi * \\cot{(\\frac{\\pi}{3})} + \\frac{1}{4} \\pi * \\cot{(\\frac{\\pi}{4})} + (\\left. \\log{(\\left| u \\right|)} \\right\\vert_{u=1/2 \\sqrt{2}}^{1/2 \\sqrt{3}})",
-                    "reason": "Common integrals",
-                    "text": "(-1/3) * pi * cot(pi / 3) + 1/4 * pi * cot(pi / 4) + ([log(abs(u))]_u=1/2 * 2 ^ (1/2),1/2 * 3 ^ (1/2))"
-                },
-                {
-                    "latex": "(\\frac{-\\sqrt{3}}{9} + \\frac{1}{4}) * \\pi + \\log{(\\frac{\\sqrt{6}}{2})}",
+                    "latex": "(\\frac{1}{4} - \\frac{\\sqrt{3}}{9}) \\pi - \\log{(\\frac{\\sqrt{2}}{2})} + \\log{(\\frac{\\sqrt{3}}{2})}",
                     "reason": "Simplification",
-                    "text": "(1/9 * ((-1) * 3 ^ (1/2)) + 1/4) * pi + log(1/2 * 6 ^ (1/2))"
-                },
-                {
-                    "latex": "(\\frac{1}{4} - \\frac{\\sqrt{3}}{9}) * \\pi + \\log{(\\frac{\\sqrt{6}}{2})}",
-                    "reason": "Simplification",
-                    "text": "(1/4 + (-1) * (1/9 * 3 ^ (1/2))) * pi + log(1/2 * 6 ^ (1/2))"
+                    "text": "((1/4 - 3 ^ (1/2) * (1/9)) * pi - log(2 ^ (1/2) * (1/2))) + log(3 ^ (1/2) * (1/2))"
                 }
             ],
             "name": "Exercise 30",

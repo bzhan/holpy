@@ -430,6 +430,12 @@ class Expr:
                 x, y = self.args
                 if x.ty == FUN and x.func_name == "exp":
                     return Fun("exp", y * x.args[0]).to_poly()
+                if x.ty == FUN and x.func_name == "sin" and y.ty == CONST and y.val < 0:
+                    return (csc(x.args[0]) ^ Const(-y.val)).to_poly()
+                if x.ty == FUN and x.func_name == "cos" and y.ty == CONST and y.val < 0:
+                    return (sec(x.args[0]) ^ Const(-y.val)).to_poly()
+                if x.ty == FUN and x.func_name == "tan" and y.ty == CONST and y.val < 0:
+                    return (cot(x.args[0]) ^ Const(-y.val)).to_poly()
                 if y.ty == CONST or y.ty == OP and len(y.args) == 1 and y.args[0].ty == CONST:
                     if y.ty == OP and len(y.args) == 1 and y.args[0].ty == CONST:
                         y = Const(-y.args[0].val)
@@ -638,11 +644,7 @@ class Expr:
         upper = sympy_style(upper)
         greater_zero = solveset(e > 0, var, Interval(lower, upper, left_open = True, right_open = True))
         smaller_zero = solveset(e < 0, var, Interval(lower, upper, left_open = True, right_open = True))
-        print("self: ", self)
-        print("greater zero: ", greater_zero)
-        print("smaller zero: ", smaller_zero)
         def to_holpy(l):
-            print(type(I))
             if isinstance(l, Union):
                 return [(holpy_style(x.start), holpy_style(x.end)) for x in l.args]
             elif isinstance(l, Interval):
@@ -895,7 +897,7 @@ def deriv(var, e):
             return (-csc(x) * cot(x) * deriv(var, x)).normalize()
         elif e.func_name == "cot":
             x,  = e.args
-            return -(csc(x) ^ 2).normalize()
+            return -(csc(x) ^ Const(2)).normalize()
         elif e.func_name == "cot":
             x, = e.args
             return (-(sin(x) ^ Const(-2)) * deriv(var, x)).normalize()
