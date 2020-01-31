@@ -390,9 +390,14 @@ class real_integral_cong(Conv):
         le_pt = auto.auto_solve(thy, real.less_eq(a, b))
 
         interval = real.open_interval(a, b)
-        v = Var(f.var_name, realT)
-        cond = set.mk_mem(v, interval)
-        body = f.subst_bound(v)
+        if f.is_const():
+            v = Var('x', realT)
+            cond = set.mk_mem(v, interval)
+            body = f(v)
+        else:
+            v = Var(f.var_name, realT)
+            cond = set.mk_mem(v, interval)
+            body = f.subst_bound(v)
 
         cv = auto.auto_conv(conds=[ProofTerm.assume(cond)])
         eq_pt = cv.get_proof_term(thy, body)
@@ -739,20 +744,20 @@ class trig_rewr_conv(Conv):
         elif self.code == 'TR1':
             # Definition of sec and csc
             # Handled by normalization
-            return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
+            pt = refl(t)
         elif self.code == 'TR2':
             # Definition of tan and cot
             # Handled by normalization
-            return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
+            pt = refl(t)
         elif self.code == 'TR5':
             # (sin x) ^ 2 = 1 - (cos x) ^ 2
-            return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
+            pt = refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
         elif self.code == 'TR6':
             # (cos x) ^ 2 = 1 - (sin x) ^ 2
-            return refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle3')))
+            pt = refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle3')))
         elif self.code == 'TR7':
             # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
-            return refl(t).on_rhs(thy, top_conv(rewr_conv('cos_lower_degree')))
+            pt = refl(t).on_rhs(thy, top_conv(rewr_conv('cos_lower_degree')))
         elif self.code == 'TR8':
             rewr_ths = [
                 'sin_lower_degree',  # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
@@ -764,7 +769,6 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
             for rewr_th in rewr_ths:
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
-            return pt
         elif self.code == 'TR9':
             rewr_ths = [
                 'real_add_sin',  # sin x + sin y = 2 * sin ((x + y) / 2) * cos ((x - y) / 2)
@@ -775,7 +779,6 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
             for rewr_th in rewr_ths:
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
-            return pt
         elif self.code == 'TR10i':
             rewr_ths = [
                 'sin_cos_combine',   # sin x + cos x = sqrt 2 * sin (x + pi / 4)
@@ -784,7 +787,6 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
             for rewr_th in rewr_ths:
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
-            return pt
         elif self.code == 'TR11':
             rewr_ths = [
                 'sin_double',  # sin (2 * x) = 2 * sin x * cos x
@@ -793,28 +795,30 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
             for rewr_th in rewr_ths:
                 pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
-            return pt
         elif self.code == 'TR111':
             # Reverse of definition of sec and csc
             # Handled by normalization
-            return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
+            pt = refl(t)
         elif self.code == 'TR22':
             if real.is_plus(t) and t.arg.head == real.nat_power and t.arg.arg1.head == real.tan:
                 cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
-                return refl(t).on_rhs(thy, rewr_conv('tan_sec', conds=[cos_neq0_pt]))
+                pt = refl(t).on_rhs(thy, rewr_conv('tan_sec', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.tan:
                 cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
-                return refl(t).on_rhs(thy, rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
+                pt = refl(t).on_rhs(thy, rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.cot:
                 sin_neq0 = logic.neg(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
                 sin_neq0_pt = auto.auto_solve(thy, sin_neq0, conds)
-                return refl(t).on_rhs(thy, rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
+                pt = refl(t).on_rhs(thy, rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
             else:
-                return refl(t)
+                pt = refl(t)
         else:
             raise NotImplementedError
+
+        eq_pt = simplify_rewr_conv(self.target).get_proof_term(thy, pt.rhs, conds)
+        return ProofTerm.transitive(pt, eq_pt)
 
 
 class split_region_conv(Conv):
@@ -1017,7 +1021,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Simplification':
             # Simplify the expression
-            cv = auto.auto_conv()
+            cv = simplify_rewr_conv(expected_loc)
 
         elif reason == 'Substitution':
             # Perform substitution u = g(x)
@@ -1096,6 +1100,9 @@ def translate_item(item, target=None, *, debug=False):
         # Obtain result on proof side
         if reason != 'Solve equation':
             pt = pt.on_rhs(thy, location_conv(loc, cv))
+
+        if reason not in ('Unfold power', 'Split region', 'Solve equation'):
+            assert pt.rhs == expected, "translate_item: unexpected rhs"
 
         if pt.rhs != expected:
             eq_pt1 = refl(expected).on_rhs(thy, auto.auto_conv())

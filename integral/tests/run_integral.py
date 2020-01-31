@@ -60,7 +60,7 @@ test_cases = {
         # "Exercise 9": None,  # out of range
         "Exercise 10": "(1 - log(1 - exp(-1))) + log(1 - exp(-2))",
         "Exercise 11": "1 / 8 * pi",
-        # "Exercise 12": "4",  # out of range
+        # "Exercise 12": None,  # out of range
         "Exercise 13": "1 - 1/4 * pi",
         # "Exercise 14": None,  # out of range
         # "Exercise 15": "24 - 8 * e",  # sympy
@@ -151,7 +151,7 @@ test_cases = {
         "Exercise 3": "1/4 + 1/4 * exp(2)",
         "Exercise 4": "(-1/9 - 2 ^ (1/2) * (1/18)) + 2 ^ (1/2) * (1/24) * pi",
         "Exercise 5": "1/16 - 5/16 * exp(-4)",
-        # "Exercise 6": None,  # arcsin
+        # "Exercise 6": None,  # out of range (arcsin)
         "Exercise 7": "1",
         "Exercise 8": "-1 + 1/2 * pi",
         "Exercise 9": "-5/27 * exp(3) + 26/27 * exp(6)",
