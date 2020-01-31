@@ -352,8 +352,11 @@ auto.add_global_autos_norm(
     auto.norm_rules([
         # Linearity rules
         "real_integral_add",
+        "real_integral_neg",
+        "real_integral_sub",
         "real_integral_lmul",
         "real_integral_lmul2",
+        "real_integral_lmul3",
 
         # Common integrals
         "real_integral_0",
@@ -796,7 +799,11 @@ class trig_rewr_conv(Conv):
             # Handled by normalization
             return auto.auto_solve(thy, Term.mk_equals(t, self.target), conds)
         elif self.code == 'TR22':
-            if t.head == real.nat_power and t.arg1.head == real.tan:
+            if real.is_plus(t) and t.arg.head == real.nat_power and t.arg.arg1.head == real.tan:
+                cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg.arg1.arg), real.zero))
+                cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
+                return refl(t).on_rhs(thy, rewr_conv('tan_sec', conds=[cos_neq0_pt]))
+            elif t.head == real.nat_power and t.arg1.head == real.tan:
                 cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
                 return refl(t).on_rhs(thy, rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))

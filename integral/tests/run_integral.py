@@ -55,7 +55,7 @@ test_cases = {
         "Exercise 4": "2500",
         "Exercise 5": "3 ^ (1/2) * pi",
         "Exercise 6": "18",
-        # "Exercise 7": "log(2)",  # problem with TR22
+        "Exercise 7": "log(2)",
         "Exercise 8": "5 / 2",
         # "Exercise 9": None,  # out of range
         "Exercise 10": "(1 - log(1 - exp(-1))) + log(1 - exp(-2))",
@@ -69,7 +69,7 @@ test_cases = {
         "Exercise 18": "1/2 - 1/2 * log(2)",
         "Exercise 19": "1/4 * pi",
         "Exercise 20": "-1 + 2 * log(2) + 3 * log (3 ^ (1 / 2) * (1 / 2))",
-        # "Exercise 21": None,  # linearity
+        "Exercise 21": "(((1/4 * log(2/3) - 1/4 * log(10/9)) + 1/4 * log(5/4) + 1/4 * log(4/3)) - 1/4 * log(3/2)) + 1/4 * log(2)",
         "Exercise 22": "3/2 + 3 ^ (1/2) * (1/3) * pi",
         "Exercise 23": "418 / 35",
         "Exercise 24": "2",
