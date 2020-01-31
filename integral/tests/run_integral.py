@@ -9,7 +9,7 @@ from integral import proof
 from prover import sympywrapper
 
 test_cases = {
-    "test": {
+    "tongji7": {
         "Exercise 1": "34 / 3",
         "Exercise 2": "1 / 4",
         "Exercise 3": "-(1 / 6) + (1 / 6) * exp(6)",
@@ -48,7 +48,7 @@ test_cases = {
         "Exercise 36": "2 - 2 * exp (-1)",
         "Interesting 1": "1 / 4 * pi",
     },
-    "2013": {
+    "MIT/2013": {
         "Exercise 1": "2 * log(2) + 2 * exp(1) + -2 * log(2 * exp(1)) * exp(1)",
         "Exercise 2": "-2 + exp(1) + exp(3)",
         "Exercise 3": "-sin(exp(1)) + 1/2 * sin(exp(2))",
@@ -75,10 +75,10 @@ test_cases = {
         "Exercise 24": "2",
         # "Exercise 25": "2 ^ (1/2) * (1/8) * pi + -2 ^ (1/2) * (1/2) * atan(sqrt(14) / 7)"  # sympy
     },
-    "2014": {
+    "MIT/2014": {
         "Exercise 6": "-(4 / 5)",
     },
-    "2019": {
+    "MIT/2019": {
         "Exercise 1": "-2/39 * log(cos(39 * pi / 200))",
         "Exercise 2": "log (sin(1) + exp(1))",
     },
@@ -145,7 +145,7 @@ test_cases = {
         "Exercise 26": "1 / 2 * log (2 ^ (1 / 2) * (1 / 2))",
         "Exercise 27": "log(1 + exp(1/2 * pi))",
     },
-    "Byparts": {
+    "UCDAVIS/Byparts": {
         "Exercise 1": "1",
         "Exercise 2": "1",
         "Exercise 3": "1/4 + 1/4 * exp(2)",
@@ -200,14 +200,14 @@ test_cases = {
 class RunIntegral(unittest.TestCase):
     def testRunIntegral(self):
         filenames = [
-            "test",
-            "2013",
-            "2014",
-            "2019",
+            "tongji7",
+            "MIT/2013",
+            "MIT/2014",
+            "MIT/2019",
             "UCDAVIS/usubstitution",
             "UCDAVIS/Exponentials",
             "UCDAVIS/Trigonometric",
-            "Byparts",
+            "UCDAVIS/Byparts",
             "UCDAVIS/LogAndArctangent"
         ]
         test_only = None
