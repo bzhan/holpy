@@ -2,6 +2,10 @@
 
 Implementation of higher-order logic in Python.
 
+### Verification of symbolic integration:
+
+See README file in the [`integral`](integral/) directory.
+
 ### Installation and usage:
 
 This project requires Python 3.5 and npm:

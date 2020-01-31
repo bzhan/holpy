@@ -299,7 +299,7 @@ class ProofTest(unittest.TestCase):
         for s, loc, code, res in test_data:
             s = parser.parse_term(ctxt, s)
             res = parser.parse_term(ctxt, res)
-            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, var_name="x", target=res))
+            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, target=res))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
 
     def testCombineFractionConv(self):

@@ -203,7 +203,7 @@ export default {
 
   data: function () {
     return {
-      filename: '2013',    // Currently opened file
+      filename: 'tongji7',    // Currently opened file
       content: [],         // List of problems
       cur_id: undefined,   // ID of the selected item
       cur_calc: [],        // Current calculation

@@ -122,6 +122,17 @@ def solve_goal(goal):
 
         return sympy_goal == True
 
+solveset_cache = dict()
+
+def solveset_wrapper(goal, var, interval):
+    if (goal, var, interval) in solveset_cache:
+        solveset_cache[(goal, var, interval)]['count'] += 1
+        return solveset_cache[(goal, var, interval)]['res']
+    else:
+        res = sympy.solveset(goal, var, interval)
+        solveset_cache[(goal, var, interval)] = {'count': 1, 'res': res}
+        return res
+
 def solve_with_interval(goal, cond):
     """Attempt to solve goal using sympy's solveset function."""
     if not (hol_set.is_mem(cond) and cond.arg1.is_var() and 
@@ -139,7 +150,7 @@ def solve_with_interval(goal, cond):
             return False
 
         # print("Sympy solve: ", sympy_goal, " on interval ", interval)
-        res = sympy.solveset(sympy_goal, var, interval)
+        res = solveset_wrapper(sympy_goal, var, interval)
         # print("Result: ", res)
         return res == sympy.EmptySet
 
@@ -150,7 +161,7 @@ def solve_with_interval(goal, cond):
 
     # print("Sympy solve: ", sympy_goal, " on interval ", interval)
     try:
-        res = sympy.solveset(sympy_goal, var, interval)
+        res = solveset_wrapper(sympy_goal, var, interval)
     except TypeError:  # raised by Sympy
         print("TypeError")
         return False

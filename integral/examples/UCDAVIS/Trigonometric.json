@@ -384,43 +384,43 @@
             "problem": "INT x:[0, pi/2]. sin(x) ^ 3"
         },
         {
-            "_problem_latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(5 x)}}{3 + \\sin{(5 x)}} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{\\pi/10} \\frac{\\cos{(5 x)}}{3 + \\sin{(5 x)}} \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{\\pi/2} \\frac{\\cos{(5 x)}}{3 + \\sin{(5 x)}} \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{\\pi/10} \\frac{\\cos{(5 x)}}{3 + \\sin{(5 x)}} \\,\\mathrm{dx}",
                     "reason": "Initial",
-                    "text": "INT x:[0,pi / 2]. cos(5 * x) / (3 + sin(5 * x))"
+                    "text": "INT x:[0,pi / 10]. cos(5 * x) / (3 + sin(5 * x))"
                 },
                 {
                     "_latex_reason": "Substitute \\(u\\) for \\(\\sin{(5 x)}\\)",
-                    "latex": "\\int_{0}^{1} \\frac{1}{5} \\frac{1}{3 + u} \\,\\mathrm{du}",
+                    "latex": "\\int_{0}^{1} \\frac{\\frac{1}{5}}{3 + u} \\,\\mathrm{du}",
                     "params": {
-                        "f": "1/5 * (3 + u) ^ (-1)",
+                        "f": "1/5 * (3 + u) ^ -1",
                         "g": "sin(5 * x)",
                         "var_name": "u"
                     },
                     "reason": "Substitution",
-                    "text": "INT u:[0,1]. 1/5 * (3 + u) ^ (-1)"
+                    "text": "INT u:[0,1]. 1/5 * (3 + u) ^ -1"
                 },
                 {
                     "_latex_reason": "Substitute \\(t\\) for \\(3 + u\\)",
-                    "latex": "\\int_{3}^{4} \\frac{1}{5} \\frac{1}{t} \\,\\mathrm{dt}",
+                    "latex": "\\int_{3}^{4} \\frac{\\frac{1}{5}}{t} \\,\\mathrm{dt}",
                     "params": {
-                        "f": "1/5 * t ^ (-1)",
+                        "f": "1/5 * t ^ -1",
                         "g": "3 + u",
                         "var_name": "t"
                     },
                     "reason": "Substitution",
-                    "text": "INT t:[3,4]. 1/5 * t ^ (-1)"
+                    "text": "INT t:[3,4]. 1/5 * t ^ -1"
                 },
                 {
                     "latex": "-\\frac{1}{5} \\log{(3)} + \\frac{1}{5} \\log{(4)}",
                     "reason": "Simplification",
-                    "text": "-(1/5) * log(3) + 1/5 * log(4)"
+                    "text": "(-1/5) * log(3) + 1/5 * log(4)"
                 }
             ],
             "name": "Exercise 8",
-            "problem": "INT x:[0, pi/2]. cos(5 * x)/ (3 + sin(5 * x))"
+            "problem": "INT x:[0, pi/10]. cos(5 * x)/ (3 + sin(5 * x))"
         },
         {
             "_problem_latex": "\\int_{0}^{\\pi} \\frac{\\cos^{2}(x)}{1 + \\sin{(x)}} \\,\\mathrm{dx}",
