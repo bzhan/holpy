@@ -367,7 +367,7 @@ class Expr:
     def to_poly(self, simp = 1):
         """Convert expression to a polynomial."""
         p = self
-        if self.is_constant() and simp == 0 and not (self.ty == OP and self.op == "^" and self.args[0] == Fun("pi")):
+        if self.is_constant() and simp == 0 and not (self.ty == OP and self.op == "^" and (self.args[0] == Fun("pi") or self.args[1].ty == CONST and self.args[1].val < 0)):
             p = sympy_parser.parse_expr(str(self).replace("^", "**"))
             return parser.parse_expr(str(p).replace("**", "^")).replace_trig(Var("E"), Fun("exp", Const(1))).to_poly(simp = 1)
         if self.ty == VAR:
@@ -380,14 +380,6 @@ class Expr:
                 if y.ty == OP and len(y.args) == 1:
                     # x + (-y) => x - y
                     return Op("-", x, y.args[0]).to_poly()
-                # elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "sin" and x.args[1].ty == CONST and x.args[1].val == 2\
-                #     and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "cos" and y.args[1].ty == CONST and y.args[1].val == 2\
-                #     and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
-                #     return poly.singleton(Const(1))
-                # elif x.ty == OP and x.op == "^" and x.args[0].ty == FUN and x.args[0].func_name == "cos" and x.args[1].ty == CONST and x.args[1].val == 2\
-                #     and y.ty == OP and y.op == "^" and y.args[0].ty == FUN and y.args[0].func_name == "sin" and y.args[1].ty == CONST and y.args[1].val == 2\
-                #     and x.args[0].args[0].normalize() == y.args[0].args[0].normalize():
-                #     return poly.singleton(Const(1))
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args

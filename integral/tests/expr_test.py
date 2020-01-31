@@ -162,7 +162,8 @@ class ExprTest(unittest.TestCase):
             ("(cos(x)^4 * sin(x) ^ 2) /  -(sin(x))", "-cos(x) ^ 4 * sin(x)"),
             ("2 ^ (1/2) ^ 6 / 6", "4/3"),
             ("sin(x) ^ 2 * csc(x) ^ 3", "csc(x)"),
-            ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)")
+            ("sin(x) ^ 3 * csc(x) ^ 2", "sin(x)"),
+            ("1 / (2 - sqrt(3))", "(2 - 3 ^ (1/2)) ^ -1")
         ]
 
         for s, res in test_data:
