@@ -30,7 +30,7 @@ test_cases = {
         "Exercise 18": "1 - 1/4 * pi",
         "Exercise 19": "1 / 6",
         "Exercise 20": "2 + 2 * log(2) - 2 * log(3)",
-        # "Exercise 21": "1 - 2 * log(2)",
+        "Exercise 21": "1 - 2 * log(2)",
         "Exercise 22": "1 - exp (-1/2)",
         "Exercise 23": "-2 + 2 * 3 ^ (1/2)",
         "Exercise 24": "1/2 * pi",
@@ -164,9 +164,9 @@ test_cases = {
         "Exercise 16": "1 / 3",
         "Exercise 17": "-1/2 + 1/32 * pi ^ 2 * sin(pi ^ 2 / 16) + 1/2 * cos(pi ^ 2 / 16)",
         "Exercise 18": "-8 * 2 ^ (1/2) * (1/135) + 5 ^ (3/2) * (1/27)",
-        # "Exercise 19": "((-5/36) - 1/2 * log(6)) + 1/2 * log(9)",  # integrate by parts
+        "Exercise 19": "((-5/36) - 1/2 * log(6)) + 1/2 * log(9)",
         "Exercise 20": "(1/3 * cos(1) - 1/3 * sin(1)) + (-1/3) * cos(exp(3)) * exp(3) + 1/3 * sin(exp(3))",
-        # "Exercise 21": "-1/2 + 1/4 * exp(1)",  # integrate by parts
+        "Exercise 21": "-1/2 + 1/4 * exp(1)",
         "Exercise 22": "-1/2 + 1/2 * cos(1) * exp(1) + 1/2 * sin(1) * exp(1)",
         "Exercise 23": "-1/4",
     },

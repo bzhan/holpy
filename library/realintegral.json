@@ -27715,7 +27715,7 @@
                 "      ⟶ real_differentiable g (atreal x) ∧ real_derivative g x ≤ 0) ",
                 "   ⟶ a ≤ b ",
                 "      ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * real_derivative g x) = ",
-                "         -(real_integral (real_closed_interval (g b) (g a)) f)"
+                "         real_integral (real_closed_interval (g b) (g a)) (λx. - f x)"
             ],
             "ty": "thm",
             "vars": {

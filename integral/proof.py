@@ -400,73 +400,27 @@ class real_integral_cong(Conv):
 auto.add_global_autos_norm(real_integral, real_integral_cong())
 
 
-class integrate_by_parts(Conv):
-    """Evaluate using integration by parts.
-    
-    expr is of the form real_integral (real_closed_interval a b) (%x. u x * dv x),
-    where a and b are constant real numbers.
-
-    u and v are both real => real functions in abstraction form, such that the
-    derivative of u is du, and the derivative of v is dv.
-
-    The result is evalat (%x. u x * v x) a b - real_integral (real_closed_interval a b) (%x. u x * dv x).
-
-    """
-    def __init__(self, u, v):
-        self.u = u
-        self.v = v
-
-    def get_proof_term(self, thy, expr):
-        assert expr.head.is_const_name('real_integral')
-        S, f = expr.args
-        assert S.head.is_const_name('real_closed_interval')
-        a, b = S.args
-
-        if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
-            raise NotImplementedError
-
-        eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat',
-            inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
-
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(thy, A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
-
-        eq_pt = eq_pt.on_lhs(thy, auto.auto_conv())
-        eq_pt = eq_pt.on_rhs(thy, arg_conv(arg_conv(abs_conv(auto.auto_conv()))))
-
-        pt = refl(expr)
-        pt = pt.on_rhs(thy, auto.auto_conv())
-
-        if eq_pt.lhs != pt.rhs:
-            raise ConvException("Integration by parts: %s != %s" % (
-                printer.print_term(thy, eq_pt.lhs), printer.print_term(thy, pt.rhs)))
-
-        pt = ProofTerm.transitive(pt, eq_pt)
-        return pt
-
-
 class simplify_rewr_conv(Conv):
     """Rewrite the term with a term with the same simplification."""
     def __init__(self, target):
         """Initialize with target of the rewrite."""
         self.target = target
-        self.target_eq = None
 
     def get_proof_term(self, thy, t, conds=None):
         if conds is None:
             conds = []
 
-        if not self.target_eq:
-            self.target_eq = refl(self.target).on_rhs(thy, auto.auto_conv(conds=conds))
+        if t == self.target:
+            return refl(t)
 
         t_eq = refl(t).on_rhs(thy, auto.auto_conv(conds=conds))
-        if self.target_eq.rhs != t_eq.rhs:
-            raise ConvException("simplify_rewr_conv: %s != %s" % (
-                printer.print_term(thy, self.target_eq.rhs), printer.print_term(thy, t_eq.rhs)))
+        target_eq = refl(self.target).on_rhs(thy, auto.auto_conv(conds=conds))
 
-        return ProofTerm.transitive(t_eq, ProofTerm.symmetric(self.target_eq))
+        if target_eq.rhs != t_eq.rhs:
+            raise ConvException("simplify_rewr_conv: %s != %s" % (
+                printer.print_term(thy, target_eq.rhs), printer.print_term(thy, t_eq.rhs)))
+
+        return ProofTerm.transitive(t_eq, ProofTerm.symmetric(target_eq))
 
 
 class combine_fraction(Conv):
@@ -568,29 +522,40 @@ def fraction_rewr_integral(thy, expr, target):
     them equal by rewriting the integrands.
 
     """
+    if expr == target:
+        return refl(expr)
+
     assert expr.head.is_const_name('real_integral'), 'fraction_rewr_integral'
-    S, f = expr.args
-    
+    assert target.head.is_const_name('real_integral'), 'fraction_rewr_integral'
+
+    # First normalize the domain of integration
+    expr_pt = refl(expr).on_rhs(thy, arg1_conv(auto.auto_conv()))
+    target_pt = refl(target).on_rhs(thy, arg1_conv(auto.auto_conv()))
+
+    S, f = expr_pt.rhs.args
     assert S.head.is_const_name('real_closed_interval'), 'fraction_rewr_integral'
     a, b = S.args
     le_pt = auto.auto_solve(thy, real.less_eq(a, b))
 
-    assert target.head.is_const_name('real_integral'), 'fraction_rewr_integral'
-    target_S, target_f = target.args
-
+    # The domains of integration should now be equal
+    target_S, target_f = target_pt.rhs.args
     assert S == target_S, 'fraction_rewr_integral'
 
+    # Take variable x and assumption x in the domain of integration
     interval = real.open_interval(a, b)
     v = Var(f.var_name, realT)
     cond = set.mk_mem(v, interval)
     body = f.subst_bound(v)
     target_body = target_f.subst_bound(v)
 
+    # Now apply fraction_rewr_conv and then use congruence theorem
     eq_pt = fraction_rewr_conv(target_body).get_proof_term(thy, body, [ProofTerm.assume(cond)])
     eq_pt = ProofTerm.implies_intr(cond, eq_pt)
     eq_pt = ProofTerm.forall_intr(v, eq_pt)
-    return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+    eq_pt = apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
 
+    # Link all theorems together
+    return ProofTerm.transitive(ProofTerm.transitive(expr_pt, eq_pt), ProofTerm.symmetric(target_pt))
 
 def apply_subst_thm(thy, f, g, a, b):
     """Apply the substitution theorem.
@@ -643,9 +608,10 @@ class substitution(Conv):
     The result is real_integral (real_closed_interval (g a) (g b)) (%u. f u).
 
     """
-    def __init__(self, f, g):
+    def __init__(self, f, g, target):
         self.f = f
         self.g = g
+        self.target = target
 
     def get_proof_term(self, thy, expr):
         assert expr.head.is_const_name('real_integral')
@@ -663,10 +629,8 @@ class substitution(Conv):
         eq_pt2 = fraction_rewr_integral(thy, eq_pt.lhs, expr)
         pt = ProofTerm.transitive(ProofTerm.symmetric(eq_pt2), eq_pt)
 
-        if pt.rhs.head == real.uminus:
-            pt = pt.on_rhs(thy, arg_conv(arg1_conv(auto.auto_conv())))
-        else:
-            pt = pt.on_rhs(thy, arg1_conv(auto.auto_conv()))
+        eq_pt3 = fraction_rewr_integral(thy, pt.rhs, self.target)
+        pt = ProofTerm.transitive(pt, eq_pt3)
 
         return pt
 
@@ -684,10 +648,11 @@ class substitution_inverse(Conv):
     The result is real_integral (real_closed_interval a b) (%u. f (g u) * dg u).
      
     """
-    def __init__(self, g, a, b):
+    def __init__(self, g, a, b, target):
         self.g = g
         self.a = a
         self.b = b
+        self.target = target
 
     def get_proof_term(self, thy, expr):
         assert expr.head.is_const_name('real_integral')
@@ -699,15 +664,59 @@ class substitution_inverse(Conv):
         # Make the equality theorem
         eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
 
-        # Use the equality to rewrite expression
-        pt = refl(expr).on_rhs(thy, auto.auto_conv())
-        eq_pt = eq_pt.on_rhs(thy, auto.auto_conv())
-        if eq_pt.rhs != pt.rhs:
-            raise ConvException("Substitution inverse: %s != %s" % (
-                printer.print_term(thy, eq_pt.rhs), printer.print_term(thy, pt.rhs)))
-        pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
-        pt = pt.on_rhs(thy, auto.auto_conv())
+        # Use the equality to rewrite expression.
+        eq_pt2 = fraction_rewr_integral(thy, expr, eq_pt.rhs)
+        pt = ProofTerm.transitive(eq_pt2, ProofTerm.symmetric(eq_pt))
 
+        eq_pt3 = fraction_rewr_integral(thy, pt.rhs, self.target)
+        pt = ProofTerm.transitive(pt, eq_pt3)
+
+        return pt
+
+
+class integrate_by_parts(Conv):
+    """Evaluate using integration by parts.
+    
+    expr is of the form real_integral (real_closed_interval a b) (%x. u x * dv x),
+    where a and b are constant real numbers.
+
+    u and v are both real => real functions in abstraction form, such that the
+    derivative of u is du, and the derivative of v is dv.
+
+    The result is evalat (%x. u x * v x) a b - real_integral (real_closed_interval a b) (%x. u x * dv x).
+
+    """
+    def __init__(self, u, v, target):
+        self.u = u
+        self.v = v
+        self.target = target
+
+    def get_proof_term(self, thy, expr):
+        assert expr.head.is_const_name('real_integral')
+        S, f = expr.args
+        assert S.head.is_const_name('real_closed_interval')
+        a, b = S.args
+
+        if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
+            raise NotImplementedError
+
+        eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat',
+            inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
+
+        As, _ = eq_pt.prop.strip_implies()
+        for A in As:
+            A_pt = auto.auto_solve(thy, A)
+            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+
+        # Use the equality to rewrite expression.
+        eq_pt2 = fraction_rewr_integral(thy, expr, eq_pt.lhs)
+        pt = ProofTerm.transitive(eq_pt2, eq_pt)
+
+        # Rewrite to agree with target
+        assert real.is_minus(pt.rhs) and real.is_minus(self.target)
+        eq_pt3 = fraction_rewr_integral(thy, pt.rhs.arg, self.target.arg)
+        pt = pt.on_rhs(thy, arg_conv(rewr_conv(eq_pt3)))
+        pt = pt.on_rhs(thy, arg1_conv(simplify_rewr_conv(self.target.arg1)))
         return pt
 
 
@@ -1013,7 +1022,7 @@ def translate_item(item, target=None, *, debug=False):
             new_var = Var(new_name, realT)
             f = Term.mk_abs(new_var, f)
             g = Term.mk_abs(ori_var, g)
-            cv = substitution(f, g)
+            cv = substitution(f, g, expected_loc)
 
         elif reason == 'Substitution inverse':
             # Perform substitution x = g(u)
@@ -1024,7 +1033,7 @@ def translate_item(item, target=None, *, debug=False):
             g = Term.mk_abs(new_var, expr_to_holpy(g))
             a = expr_to_holpy(parse_expr(step['params']['a']))
             b = expr_to_holpy(parse_expr(step['params']['b']))
-            cv = substitution_inverse(g, a, b)
+            cv = substitution_inverse(g, a, b, expected_loc)
 
         elif reason == 'Integrate by parts':
             # Integration by parts using u and v
@@ -1034,7 +1043,7 @@ def translate_item(item, target=None, *, debug=False):
             ori_var = term.get_vars([u, v])[0]
             u = Term.mk_abs(ori_var, u)
             v = Term.mk_abs(ori_var, v)
-            cv = integrate_by_parts(u, v)
+            cv = integrate_by_parts(u, v, expected_loc)
 
         elif reason == 'Rewrite':
             # Rewrite to another expression
