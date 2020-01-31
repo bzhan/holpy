@@ -9,7 +9,8 @@ from logic import matcher
 from logic.matcher import first_order_match, MatchException
 from data.nat import natT
 from syntax import parser
-from logic.context import Context
+from logic import context
+
 
 class MatcherTest(unittest.TestCase):
     def testIsPattern(self):
@@ -26,21 +27,20 @@ class MatcherTest(unittest.TestCase):
             ("∀x. ∀s. ?Q s ⟶ ¬x ∈ s ⟶ finite s ⟶ ?Q (insert x s)", True),
         ]
 
-        ctxt = Context('set', svars={
+        context.set_context('set', svars={
             "f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat",
             "P": "nat => bool", "Q": "nat set => bool", "x": "nat", "s": "nat set"})
         for t, res in test_data:
-            t = parser.parse_term(ctxt, t)
+            t = parser.parse_term(t)
             self.assertEqual(matcher.is_pattern(t, []), res)
 
-    def run_test(self, thy, pat, t, *, vars=None, svars=None, tyinst=None, inst=None, failed=None):
-        ctxt = Context(thy, vars=vars, svars=svars)
-        thy = ctxt.thy
-        pat = parser.parse_term(ctxt, pat)
-        t = parser.parse_term(ctxt, t)
-        tyinst = dict((nm, parser.parse_type(thy, s))
+    def run_test(self, thy_name, pat, t, *, vars=None, svars=None, tyinst=None, inst=None, failed=None):
+        context.set_context(thy_name, vars=vars, svars=svars)
+        pat = parser.parse_term(pat)
+        t = parser.parse_term(t)
+        tyinst = dict((nm, parser.parse_type(s))
                       for nm, s in tyinst.items()) if tyinst is not None else dict()
-        inst = dict((nm, parser.parse_term(ctxt, s))
+        inst = dict((nm, parser.parse_term(s))
                     for nm, s in inst.items()) if inst is not None else dict()
 
         if failed is not None:

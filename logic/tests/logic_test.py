@@ -9,6 +9,7 @@ from kernel.macro import global_macros
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
+from kernel import theory
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic import logic
 from logic import basic
@@ -16,7 +17,7 @@ from logic import matcher
 from logic.tests.conv_test import test_conv
 from data import nat
 from syntax import parser
-from logic.context import Context
+from logic import context
 
 Ta = TVar("a")
 a = Var("a", boolT)
@@ -26,34 +27,32 @@ d = Var("d", boolT)
 x = Var("x", Ta)
 y = Var("y", Ta)
 
-def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", failed=None,
+def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="", failed=None,
                limit=None, eval_only=False):
-    ctxt = Context(thy, vars=vars, limit=limit)
-    thy = ctxt.thy
+    context.set_context(thy_name, vars=vars, limit=limit)
 
     macro = global_macros[macro]
-    assms = [parser.parse_term(ctxt, assm)
-             for assm in assms] if assms is not None else []
+    assms = [parser.parse_term(assm) for assm in assms] if assms is not None else []
     prev_ths = [Thm([assm], assm) for assm in assms]
     prevs = [ProofTerm.assume(assm) for assm in assms]
-    args = parser.parse_args(ctxt, macro.sig, args)
+    args = parser.parse_args(macro.sig, args)
 
     if failed is not None:
-        self.assertRaises(failed, macro.eval, thy, args, prev_ths)
+        self.assertRaises(failed, macro.eval, args, prev_ths)
         if not eval_only:
-            self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
+            self.assertRaises(failed, macro.get_proof_term, args, prevs)
         return
 
-    res = parser.parse_term(ctxt, res)
+    res = parser.parse_term(res)
 
     # Check the eval function
-    self.assertEqual(macro.eval(thy, args, prev_ths), Thm(assms, res))
+    self.assertEqual(macro.eval(args, prev_ths), Thm(assms, res))
 
     # Check the proof term
     if not eval_only:
-        pt = macro.get_proof_term(thy, args, prevs)
+        pt = macro.get_proof_term(args, prevs)
         prf = pt.export()
-        self.assertEqual(thy.check_proof(prf), Thm(assms, res))
+        self.assertEqual(theory.thy.check_proof(prf), Thm(assms, res))
 
 class LogicTest(unittest.TestCase):
     def testConj(self):
@@ -167,7 +166,7 @@ class LogicTest(unittest.TestCase):
         )
 
     def testIntro(self):
-        thy = basic.load_theory('logic_base')
+        basic.load_theory('logic_base')
         macro = logic.intros_macro()
 
         Ta = TVar('a')
@@ -179,9 +178,9 @@ class LogicTest(unittest.TestCase):
         pt2 = ProofTerm.variable('x', Ta)
         pt3 = ProofTerm.assume(P(x))
         pt4 = ProofTerm.sorry(Thm([P(x)], C))
-        pt4 = ProofTermDeriv('intros', thy, args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
+        pt4 = ProofTermDeriv('intros', args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
         prf = pt4.export()
-        self.assertEqual(thy.check_proof(prf), Thm([ex_P], C))
+        self.assertEqual(theory.thy.check_proof(prf), Thm([ex_P], C))
 
     def testRewriteGoal(self):
         test_macro(

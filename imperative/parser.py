@@ -6,6 +6,7 @@ from lark import Lark, Transformer, v_args, exceptions
 from kernel.type import TFun
 from kernel.term import Term, Var
 from kernel.report import ProofReport
+from kernel import theory
 from logic import basic
 from logic import logic
 from data import nat
@@ -128,7 +129,7 @@ def parse_com(s):
     return com_parser.parse(s)
 
 def process_file(input, output):
-    thy = basic.load_theory('hoare')
+    basic.load_theory('hoare')
 
     dn = os.path.dirname(os.path.realpath(__file__))
     with open(os.path.join(dn, 'examples/' + input + '.json'), encoding='utf-8') as a:
@@ -149,9 +150,9 @@ def process_file(input, output):
                 st2 = mk_fun_upd(st2, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
             Sem = imp.Sem(natFunT)
             goal = Sem(com, st1, st2)
-            prf = ProofTermDeriv("eval_Sem", thy, goal, []).export()
+            prf = ProofTermDeriv("eval_Sem", goal, []).export()
             rpt = ProofReport()
-            th = thy.check_proof(prf, rpt)
+            th = theory.thy.check_proof(prf, rpt)
             output.add_theorem("eval" + str(eval_count), th, prf)
             eval_count += 1
         elif run['ty'] == 'vcg':
@@ -160,9 +161,9 @@ def process_file(input, output):
             post = Term.mk_abs(st, parse_cond(run['post']))
             Valid = imp.Valid(natFunT)
             goal = Valid(pre, com, post)
-            prf = imp.vcg_solve(thy, goal).export()
+            prf = imp.vcg_solve(goal).export()
             rpt = ProofReport()
-            th = thy.check_proof(prf, rpt)
+            th = theory.thy.check_proof(prf, rpt)
             output.add_theorem("vcg" + str(vcg_count), th, prf)
             vcg_count += 1
         else:

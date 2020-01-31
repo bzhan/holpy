@@ -7,9 +7,9 @@ from kernel.type import TVar, Type, TFun, boolT
 from kernel import term
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
+from kernel import theory
 from kernel import extension
-from logic.context import Context
-from logic import logic
+from logic import context
 from syntax import parser
 from syntax import printer
 from syntax import pprint
@@ -27,10 +27,10 @@ class ItemException(Exception):
 
 class Item:
     """Base class for different types of items."""
-    def __init__(self, thy, data):
+    def __init__(self, data):
         self.error = None
 
-    def parse(self, thy, data):
+    def parse(self, data):
         """Parse an item from data in JSON format."""
         raise NotImplementedError
 
@@ -43,7 +43,7 @@ class Item:
         raise NotImplementedError
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         """Obtain data for display or edit.
         
         Normally, use highlight=False, unicode=True for edit, and
@@ -52,20 +52,20 @@ class Item:
         """
         raise NotImplementedError
 
-    def parse_edit(self, thy, edit_data):
+    def parse_edit(self, edit_data):
         """Parse the given edit_data to the object."""
         raise NotImplementedError
 
-    def export_json(self, thy):
+    def export_json(self):
         """Export the object to JSON format."""
         raise NotImplementedError
 
-    def export_web(self, thy, line_length=80):
-        res = self.export_json(thy)
-        res['display'] = self.get_display(thy, highlight=True, unicode=True, line_length=line_length)
-        res['edit'] = self.get_display(thy, highlight=False, unicode=True, line_length=line_length)
+    def export_web(self, line_length=80):
+        res = self.export_json()
+        res['display'] = self.get_display(highlight=True, unicode=True, line_length=line_length)
+        res['edit'] = self.get_display(highlight=False, unicode=True, line_length=line_length)
         if self.error is None:
-            res['ext'] = printer.print_extensions(thy, self.get_extension())
+            res['ext'] = printer.print_extensions(self.get_extension())
         else:
             res['error'] = {
                 "err_type": self.error.__class__.__name__,
@@ -75,9 +75,9 @@ class Item:
         return res
 
 
-def export_term(thy, t):
+def export_term(t):
     """Function for printing a term for export to json."""
-    res = printer.print_term(thy, t, unicode=True, line_length=80)
+    res = printer.print_term(t, unicode=True, line_length=80)
     if len(res) == 1:
         res = res[0]
     return res
@@ -91,9 +91,9 @@ def display_raw(s):
         return [pprint.N(line) for line in s]
 
 @settings.with_settings
-def display_term(thy, t, line_length):
+def display_term(t, line_length):
     """Display parsed term."""
-    res = printer.print_term(thy, t, line_length=line_length)
+    res = printer.print_term(t, line_length=line_length)
     if settings.highlight():
         return res
     else:
@@ -114,17 +114,17 @@ class Constant(Item):
         return self.ty == other.ty and self.name == other.name and self.type == other.type and \
             self.overloaded == other.overloaded and self.cname == other.cname and self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
         if 'overloaded' in data and data['overloaded']:
             self.overloaded = True
 
         try:
-            self.type = parser.parse_type(thy, data['type'])
+            self.type = parser.parse_type(data['type'])
             if self.overloaded:
                 self.cname = self.name
             else:
-                self.cname = thy.get_overload_const_name(self.name, self.type)
+                self.cname = theory.thy.get_overload_const_name(self.name, self.type)
         except Exception as error:
             self.type = data['type']
             self.error = error
@@ -139,22 +139,22 @@ class Constant(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         return {
             'ty': 'def.ax',
             'name': self.name,
-            'type': display_raw(self.type) if self.error else printer.print_type(thy, self.type),
+            'type': display_raw(self.type) if self.error else printer.print_type(self.type),
             'overloaded': self.overloaded
         }
 
-    def parse_edit(self, thy, edit_data):
-        self.parse(thy, edit_data)
+    def parse_edit(self, edit_data):
+        self.parse(edit_data)
 
-    def export_json(self, thy):
+    def export_json(self):
         res = {
             'ty': 'def.ax',
             'name': self.name,
-            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True)
+            'type': self.type if self.error else printer.print_type(self.type, unicode=True)
         }
         if self.overloaded:
             res['overloaded'] = True
@@ -174,16 +174,16 @@ class Axiom(Item):
         return self.ty == other.ty and self.name == other.name and self.vars == other.vars and \
             self.prop == other.prop and self.attributes == other.attributes and self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
 
         try:
-            ctxt = Context(thy, vars=data['vars'])
-            self.vars = ctxt.vars
-            self.prop = parser.parse_term(ctxt, data['prop'])
+            with context.fresh_context(vars=data['vars']):
+                self.vars = context.ctxt.vars
+                self.prop = parser.parse_term(data['prop'])
 
             # theorem does not already exist
-            if thy.has_theorem(self.name):
+            if theory.thy.has_theorem(self.name):
                 raise ItemException("Theorem %s: theorem already exists")
 
             # prop should not contain extra variables
@@ -212,13 +212,13 @@ class Axiom(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         if self.error:
             disp_vars = [pprint.N(nm + ' :: ' + T) for nm, T in self.vars.items()]
             disp_prop = display_raw(self.prop)
         else:
-            disp_vars = [pprint.N(nm + ' :: ') + printer.print_type(thy, T) for nm, T in self.vars.items()]
-            disp_prop = display_term(thy, self.prop, line_length)
+            disp_vars = [pprint.N(nm + ' :: ') + printer.print_type(T) for nm, T in self.vars.items()]
+            disp_prop = display_term(self.prop, line_length)
 
         return {
             'ty': 'thm.ax',
@@ -228,22 +228,22 @@ class Axiom(Item):
             'attributes': self.attributes
         }
 
-    def parse_edit(self, thy, edit_data):
+    def parse_edit(self, edit_data):
         vars = dict()
         for var_decl in edit_data['vars'].split('\n'):
             if var_decl.strip():
                 nm, T = [s.strip() for s in var_decl.split('::')]
                 vars[nm] = T
         edit_data['vars'] = vars
-        self.parse(thy, edit_data)
+        self.parse(edit_data)
 
-    def export_json(self, thy):
+    def export_json(self):
         res = {
             'ty': 'thm.ax',
             'name': self.name,
             'vars': self.vars if self.error else \
-                dict((nm, printer.print_type(thy, T, unicode=True)) for nm, T in self.vars.items()),
-            'prop': self.prop if self.error else export_term(thy, self.prop)
+                dict((nm, printer.print_type(T, unicode=True)) for nm, T in self.vars.items()),
+            'prop': self.prop if self.error else export_term(self.prop)
         }
         if self.attributes:
             res['attributes'] = self.attributes
@@ -262,8 +262,8 @@ class Theorem(Axiom):
         return super().__eq__(other) and self.steps == other.steps and self.proof == other.proof and \
             self.num_gaps == other.num_gaps
 
-    def parse(self, thy, data):
-        super().parse(thy, data)
+    def parse(self, data):
+        super().parse(data)
 
         # Just store the proof information without processing them
         if 'steps' in data:
@@ -277,8 +277,8 @@ class Theorem(Axiom):
         return super().get_extension()
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
-        res = super().get_display(thy, line_length=line_length)
+    def get_display(self, line_length=80):
+        res = super().get_display(line_length=line_length)
         res['ty'] = 'thm'
         return res
 
@@ -292,11 +292,11 @@ class Theorem(Axiom):
             res['num_gaps'] = self.num_gaps
         return res
 
-    def parse_edit(self, thy, edit_data):
-        super().parse_edit(thy, edit_data)
+    def parse_edit(self, edit_data):
+        super().parse_edit(edit_data)
 
-    def export_json(self, thy):
-        res = super().export_json(thy)
+    def export_json(self):
+        res = super().export_json()
         res['ty'] = 'thm'
         if self.steps:
             res['steps'] = self.steps
@@ -322,14 +322,15 @@ class Definition(Item):
             self.prop == other.prop and self.cname == other.cname and self.attributes == other.attributes and \
             self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
 
         try:
-            self.type = parser.parse_type(thy, data['type'])
-            self.cname = thy.get_overload_const_name(self.name, self.type)
-            ctxt = Context(thy, defs={self.name: self.type})
-            self.prop = parser.parse_term(ctxt, data['prop'])
+            self.type = parser.parse_type(data['type'])
+            self.cname = theory.thy.get_overload_const_name(self.name, self.type)
+
+            with context.fresh_context(defs={self.name: self.type}):
+                self.prop = parser.parse_term(data['prop'])
 
             # prop should be an equality
             if not self.prop.is_equals():
@@ -366,13 +367,13 @@ class Definition(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         if self.error:
             disp_type = display_raw(self.type)
             disp_prop = display_raw(self.prop)
         else:
-            disp_type = printer.print_type(thy, self.type)
-            disp_prop = display_term(thy, self.prop, line_length)
+            disp_type = printer.print_type(self.type)
+            disp_prop = display_term(self.prop, line_length)
         
         return {
             'ty': 'def',
@@ -382,15 +383,15 @@ class Definition(Item):
             'attributes': self.attributes
         }
     
-    def parse_edit(self, thy, edit_data):
-        self.parse(thy, edit_data)
+    def parse_edit(self, edit_data):
+        self.parse(edit_data)
 
-    def export_json(self, thy):
+    def export_json(self):
         res = {
             'ty': 'def',
             'name': self.name,
-            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True),
-            'prop': self.prop if self.error else export_term(thy, self.prop)
+            'type': self.type if self.error else printer.print_type(self.type, unicode=True),
+            'prop': self.prop if self.error else export_term(self.prop)
         }
         if self.attributes:
             res['attributes'] = self.attributes
@@ -427,15 +428,16 @@ class Fun(Item):
         return self.ty == other.ty and self.name == other.name and self.type == other.type and \
             self.rules == other.rules and self.cname == other.cname and self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
 
         try:
-            self.type = parser.parse_type(thy, data['type'])
-            self.cname = thy.get_overload_const_name(self.name, self.type)
-            ctxt = Context(thy, defs={self.name: self.type})
+            self.type = parser.parse_type(data['type'])
+            self.cname = theory.thy.get_overload_const_name(self.name, self.type)
+
             for rule in data['rules']:
-                prop = parser.parse_term(ctxt, rule['prop'])
+                with context.fresh_context(defs={self.name: self.type}):
+                    prop = parser.parse_term(rule['prop'])
 
                 # prop should be an equality
                 if not prop.is_equals():
@@ -470,13 +472,13 @@ class Fun(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         if self.error:
             disp_type = display_raw(self.type)
             disp_rules = [rule['prop'] for rule in self.rules]
         else:
-            disp_type = printer.print_type(thy, self.type)
-            disp_rules = [printer.print_term(thy, rule['prop']) for rule in self.rules]
+            disp_type = printer.print_type(self.type)
+            disp_rules = [printer.print_term(rule['prop']) for rule in self.rules]
         
         return {
             'ty': 'def.ind',
@@ -485,19 +487,19 @@ class Fun(Item):
             'rules': disp_rules if settings.highlight() else '\n'.join(disp_rules)
         }
 
-    def parse_edit(self, thy, edit_data):
+    def parse_edit(self, edit_data):
         rules = []
         for prop in edit_data['rules'].split('\n'):
             rules.append({'prop': prop})
         edit_data['rules'] = rules
-        self.parse(thy, edit_data)
+        self.parse(edit_data)
 
-    def export_json(self, thy):
+    def export_json(self):
         return {
             'ty': 'def.ind',
             'name': self.name,
-            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True),
-            'rules': [{'prop': rule['prop'] if self.error else export_term(thy, rule['prop'])}
+            'type': self.type if self.error else printer.print_type(self.type, unicode=True),
+            'rules': [{'prop': rule['prop'] if self.error else export_term(rule['prop'])}
                       for rule in self.rules]
         }
 
@@ -522,15 +524,16 @@ class Inductive(Item):
         return self.ty == other.ty and self.name == other.name and self.type == other.type and \
             self.rules == other.rules and self.cname == other.cname and self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
 
         try:
-            self.type = parser.parse_type(thy, data['type'])
-            self.cname = thy.get_overload_const_name(self.name, self.type)
-            ctxt = Context(thy, defs={self.name: self.type})
+            self.type = parser.parse_type(data['type'])
+            self.cname = theory.thy.get_overload_const_name(self.name, self.type)
+
             for rule in data['rules']:
-                prop = parser.parse_term(ctxt, rule['prop'])
+                with context.fresh_context(defs={self.name: self.type}):
+                    prop = parser.parse_term(rule['prop'])
 
                 # Test conclusion of the prop
                 _, concl = prop.strip_implies()
@@ -581,13 +584,13 @@ class Inductive(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         if self.error:
             disp_type = display_raw(self.type)
             disp_rules = [pprint.N(rule['name'] + ": " + rule['prop']) for rule in self.rules]
         else:
-            disp_type = printer.print_type(thy, self.type)
-            disp_rules = [pprint.N(rule['name'] + ": ") + printer.print_term(thy, rule['prop'])
+            disp_type = printer.print_type(self.type)
+            disp_rules = [pprint.N(rule['name'] + ": ") + printer.print_term(rule['prop'])
                           for rule in self.rules]
         
         return {
@@ -597,20 +600,20 @@ class Inductive(Item):
             'rules': disp_rules if settings.highlight() else '\n'.join(disp_rules)
         }
 
-    def parse_edit(self, thy, edit_data):
+    def parse_edit(self, edit_data):
         rules = []
         for rule in edit_data['rules'].split('\n'):
             name, prop = [s.strip() for s in rule.split(':', 1)]
             rules.append({'name': name, 'prop': prop})
         edit_data['rules'] = rules
-        self.parse(thy, edit_data)
+        self.parse(edit_data)
 
-    def export_json(self, thy):
+    def export_json(self):
         return {
             'ty': 'def.pred',
             'name': self.name,
-            'type': self.type if self.error else printer.print_type(thy, self.type, unicode=True),
-            'rules': [{'name': rule['name'], 'prop': rule['prop'] if self.error else export_term(thy, rule['prop'])}
+            'type': self.type if self.error else printer.print_type(self.type, unicode=True),
+            'rules': [{'name': rule['name'], 'prop': rule['prop'] if self.error else export_term(rule['prop'])}
                       for rule in self.rules]
         }
 
@@ -626,7 +629,7 @@ class AxType(Item):
         return self.ty == other.ty and self.name == other.name and self.args == other.args and \
             self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
         self.args = data['args']
 
@@ -637,24 +640,24 @@ class AxType(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         Targs = [TVar(arg) for arg in self.args]
         T = Type(self.name, *Targs)
         return {
             'ty': 'type.ax',
-            'type': printer.print_type(thy, T)
+            'type': printer.print_type(T)
         }
 
-    def parse_edit(self, thy, edit_data):
-        T = parser.parse_type(thy, edit_data['type'], check_type=False)
+    def parse_edit(self, edit_data):
+        T = parser.parse_type(edit_data['type'], check_type=False)
         data = {
             'ty': 'type.ax',
             'name': T.name,
             'args': [argT.name for argT in T.args]
         }
-        self.parse(thy, data)
+        self.parse(data)
 
-    def export_json(self, thy):
+    def export_json(self):
         return {
             'ty': 'type.ax',
             'name': self.name,
@@ -689,18 +692,18 @@ class Datatype(Item):
         return self.ty == other.ty and self.name == other.name and self.args == other.args and \
             self.constrs == other.constrs and self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.name = data['name']
         self.args = data['args']
-        thy.add_type_sig(self.name, len(self.args))
+        theory.thy.add_type_sig(self.name, len(self.args))
 
         try:
             for constr in data['constrs']:
-                constr_type = parser.parse_type(thy, constr['type'])
+                constr_type = parser.parse_type(constr['type'])
                 self.constrs.append({
                     'name': constr['name'],
                     'type': constr_type,
-                    'cname': thy.get_overload_const_name(constr['name'], constr_type),
+                    'cname': theory.thy.get_overload_const_name(constr['name'], constr_type),
                     'args': constr['args']
                 })
         except Exception as error:
@@ -709,6 +712,8 @@ class Datatype(Item):
             self.trace = traceback2.format_exc()
 
     def get_extension(self):
+        from logic import logic
+
         assert self.error is None, "get_extension"
         res = []
 
@@ -771,7 +776,7 @@ class Datatype(Item):
         return res
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         Targs = [TVar(arg) for arg in self.args]
         T = Type(self.name, *Targs)
         constrs = []
@@ -779,20 +784,20 @@ class Datatype(Item):
             argsT, _ = constr['type'].strip_type()
             res = pprint.N(constr['name'])
             for i, arg in enumerate(constr['args']):
-                res += pprint.N(' (' + arg + ' :: ') + printer.print_type(thy, argsT[i]) + pprint.N(')')
+                res += pprint.N(' (' + arg + ' :: ') + printer.print_type(argsT[i]) + pprint.N(')')
             constrs.append(res)
 
         return {
             'ty': 'type.ind',
-            'type': printer.print_type(thy, T),
+            'type': printer.print_type(T),
             'constrs': constrs if settings.highlight() else '\n'.join(constrs)
         }
 
-    def parse_edit(self, thy, edit_data):
-        T = parser.parse_type(thy, edit_data['type'])
+    def parse_edit(self, edit_data):
+        T = parser.parse_type(edit_data['type'])
         constrs = []
         for constr_decl in edit_data['constrs'].split('\n'):
-            constr = parser.parse_ind_constr(thy, constr_decl)
+            constr = parser.parse_ind_constr(constr_decl)
             constr['type'] = str(TFun(*(constr['type'] + [T])))
             constrs.append(constr)
 
@@ -803,15 +808,15 @@ class Datatype(Item):
             'constrs': constrs
         }
 
-        self.parse(thy, data)
+        self.parse(data)
 
-    def export_json(self, thy):
+    def export_json(self):
         constrs = []
         for constr in self.constrs:
             constrs.append({
                 'name': constr['name'],
                 'args': constr['args'],
-                'type': constr['type'] if self.error else printer.print_type(thy, constr['type'])
+                'type': constr['type'] if self.error else printer.print_type(constr['type'])
             })
         return {
             'ty': 'type.ind',
@@ -832,7 +837,7 @@ class Header(Item):
         return self.ty == other.ty and self.depth == other.depth and self.name == other.name and \
             self.error == other.error
 
-    def parse(self, thy, data):
+    def parse(self, data):
         self.depth = data['depth']
         self.name = data['name']
 
@@ -840,17 +845,17 @@ class Header(Item):
         return []
 
     @settings.with_settings
-    def get_display(self, thy, line_length=80):
+    def get_display(self, line_length=80):
         return {
             'ty': 'header',
             'depth': self.depth,
             'name': self.name
         }
 
-    def parse_edit(self, thy, edit_data):
-        self.parse(thy, edit_data)
+    def parse_edit(self, edit_data):
+        self.parse(edit_data)
 
-    def export_json(self, thy):
+    def export_json(self):
         return {
             'ty': 'header',
             'depth': self.depth,
@@ -870,12 +875,12 @@ item_table = {
     'header': Header
 }
 
-def parse_item(thy, data):
+def parse_item(data):
     obj = item_table[data['ty']]()
-    obj.parse(thy, data)
+    obj.parse(data)
     return obj
 
-def parse_edit(thy, edit_data):
+def parse_edit(edit_data):
     obj = item_table[edit_data['ty']]()
-    obj.parse_edit(thy, edit_data)
+    obj.parse_edit(edit_data)
     return obj

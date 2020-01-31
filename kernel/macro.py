@@ -19,15 +19,16 @@ extension adding it by name.
 """
 global_macros = dict()
 
-def has_macro(thy, name):
+def has_macro(name):
+    from kernel import theory
     if name in global_macros:
         macro = global_macros[name]
-        return macro.limit is None or thy.has_theorem(macro.limit)
+        return macro.limit is None or theory.thy.has_theorem(macro.limit)
     else:
         return False
 
-def get_macro(thy, name):
-    assert has_macro(thy, name), "get_macro: %s is not available." % name
+def get_macro(name):
+    assert has_macro(name), "get_macro: %s is not available." % name
     return global_macros[name]
 
 
@@ -55,7 +56,7 @@ class ProofMacro():
         self.level = None
         self.sig = None
 
-    def eval(self, thy, args, prevs):
+    def eval(self, args, prevs):
         """Obtain the result of applying the proof method.
         
         Input is the current theory, argument of the proof method, and
@@ -64,7 +65,7 @@ class ProofMacro():
         """
         raise NotImplementedError
 
-    def expand(self, prefix, thy, args, prevs):
+    def expand(self, prefix, args, prevs):
         """Obtain the detailed proof of the derivation.
         
         Input is the current id prefix, the current theory,

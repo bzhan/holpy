@@ -6,7 +6,7 @@ from fractions import Fraction
 
 from logic.tests.conv_test import test_conv
 from logic.tests.logic_test import test_macro
-from logic.context import Context
+from logic import context
 from logic import auto
 from logic.proofterm import ProofTerm
 from data import real
@@ -67,8 +67,8 @@ class RealTest(unittest.TestCase):
         ]
 
         for expr, res in test_data:
-            ctxt = Context('real')
-            t = parser.parse_term(ctxt, expr)
+            context.set_context('real')
+            t = parser.parse_term(expr)
             eval_res = real.real_eval(t)
             self.assertEqual(type(eval_res), type(res))
             self.assertEqual(eval_res, res)
@@ -96,9 +96,9 @@ class RealTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real'}
-        ctxt = Context('realintegral', vars=vars)
+        context.set_context('realintegral', vars=vars)
         for t, conds, res in test_data:
-            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            conds_pt = [ProofTerm.assume(parser.parse_term(cond)) for cond in conds]
             cv = real.combine_atom(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
@@ -119,9 +119,9 @@ class RealTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real', 'y': 'real'}
-        ctxt = Context('realintegral', vars=vars)
+        context.set_context('realintegral', vars=vars)
         for t, conds, res in test_data:
-            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            conds_pt = [ProofTerm.assume(parser.parse_term(cond)) for cond in conds]
             cv = real.norm_mult_monomials(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 

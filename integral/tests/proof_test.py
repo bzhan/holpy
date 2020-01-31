@@ -10,7 +10,7 @@ from data.set import setT
 from data.integral import within, atreal
 from integral import proof
 from logic import auto
-from logic.context import Context
+from logic import context
 from logic.proofterm import refl, ProofTerm
 from logic.conv import top_conv, arg_conv
 from logic.logic import TacticException
@@ -141,9 +141,9 @@ class ProofTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real'}
-        ctxt = Context('realintegral', vars=vars)
+        context.set_context('realintegral', vars=vars)
         for t, conds, res in test_data:
-            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            conds_pt = [ProofTerm.assume(parser.parse_term(cond)) for cond in conds]
             cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
@@ -181,9 +181,9 @@ class ProofTest(unittest.TestCase):
         ]
 
         vars = {'x': 'real'}
-        ctxt = Context('realintegral', vars=vars)
+        context.set_context('realintegral', vars=vars)
         for t, conds, res in test_data:
-            conds_pt = [ProofTerm.assume(parser.parse_term(ctxt, cond)) for cond in conds]
+            conds_pt = [ProofTerm.assume(parser.parse_term(cond)) for cond in conds]
             cv = auto.auto_conv(conds_pt)
             test_conv(self, 'realintegral', cv, vars=vars, t=t, t_res=res, assms=conds)
 
@@ -238,11 +238,12 @@ class ProofTest(unittest.TestCase):
              "evalat (%x. x * exp x) (-1) 2 - real_integral (real_closed_interval (-1) 2) (%x. exp x)"),
         ]
 
-        ctxt = Context('realintegral')
+        context.set_context('realintegral')
         for expr, u, v, res in test_data:
-            u = parser.parse_term(ctxt, u)
-            v = parser.parse_term(ctxt, v)
-            test_conv(self, 'realintegral', proof.integrate_by_parts(u, v), t=expr, t_res=res)
+            u = parser.parse_term(u)
+            v = parser.parse_term(v)
+            res = parser.parse_term(res)
+            test_conv(self, 'realintegral', proof.integrate_by_parts(u, v, res), t=expr, t_res=res)
 
     def testSubstitution(self):
         test_data = [
@@ -252,21 +253,22 @@ class ProofTest(unittest.TestCase):
              "real_integral (real_closed_interval 0 6) (%x. 1 / 6 * exp x)"),
         ]
 
-        ctxt = Context('realintegral')
+        context.set_context('realintegral')
         for expr, f, g, res in test_data:
-            f = parser.parse_term(ctxt, f)
-            g = parser.parse_term(ctxt, g)
-            test_conv(self, 'realintegral', proof.substitution(f, g), t=expr, t_res=res)
+            f = parser.parse_term(f)
+            g = parser.parse_term(g)
+            res = parser.parse_term(res)
+            test_conv(self, 'realintegral', proof.substitution(f, g, res), t=expr, t_res=res)
 
     def testSimplifyRewrConv(self):
         test_data = [
             ("(sin x) ^ (3::nat)", "sin x * (sin x) ^ (2::nat)"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        context.set_context('realintegral', vars={'x': 'real'})
         for s, t in test_data:
-            s = parser.parse_term(ctxt, s)
-            t = parser.parse_term(ctxt, t)
+            s = parser.parse_term(s)
+            t = parser.parse_term(t)
             test_conv(self, 'realintegral', proof.simplify_rewr_conv(t), t=s, t_res=t)
 
     def testLocationConv(self):
@@ -278,11 +280,11 @@ class ProofTest(unittest.TestCase):
              "real_integral (real_closed_interval 0 1) (%x. (sin x) * (sin x) ^ (2::nat))"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        context.set_context('realintegral', vars={'x': 'real'})
         for s, loc, t, res in test_data:
-            s = parser.parse_term(ctxt, s)
-            t = parser.parse_term(ctxt, t)
-            res = parser.parse_term(ctxt, res)
+            s = parser.parse_term(s)
+            t = parser.parse_term(t)
+            res = parser.parse_term(res)
             cv = proof.simplify_rewr_conv(t)
             test_conv(self, 'realintegral', proof.location_conv(loc, cv), t=s, t_res=res)
 
@@ -295,11 +297,12 @@ class ProofTest(unittest.TestCase):
              "real_integral (real_closed_interval 0 pi) (%x. (1 - cos x ^ (2::nat)) * sin x)"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        context.set_context('realintegral', vars={'x': 'real'})
         for s, loc, code, res in test_data:
-            s = parser.parse_term(ctxt, s)
-            res = parser.parse_term(ctxt, res)
-            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, target=res))
+            s = parser.parse_term(s)
+            res = parser.parse_term(res)
+            loc = proof.Location(loc)
+            cv = proof.location_conv(loc, proof.trig_rewr_conv(code, target=proof.get_at_location(loc, res)))
             test_conv(self, 'realintegral', cv, t=s, t_res=res)
 
     def testCombineFractionConv(self):
@@ -314,23 +317,24 @@ class ProofTest(unittest.TestCase):
             ("x ^ -(2::real)", "x Mem real_open_interval 0 1", "1 / (x ^ (2::nat))"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        vars = {'x': 'real'}
+        context.set_context('realintegral', vars=vars)
         for s, cond, res in test_data:
-            s = parser.parse_term(ctxt, s)
-            res = parser.parse_term(ctxt, res)
-            cond_t = parser.parse_term(ctxt, cond)
+            s = parser.parse_term(s)
+            res = parser.parse_term(res)
+            cond_t = parser.parse_term(cond)
             cv = proof.combine_fraction([ProofTerm.assume(cond_t)])
-            test_conv(self, 'realintegral', cv, t=s, t_res=res, assms=[cond])
+            test_conv(self, 'realintegral', cv, vars=vars, t=s, t_res=res, assms=[cond])
 
     def testExprToHolpy(self):
         test_data = [
             ("INT x:[2,3]. 2 * x + x ^ 2", "real_integral (real_closed_interval 2 3) (%x. 2 * x + x ^ (2::nat))"),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        context.set_context('realintegral', vars={'x': 'real'})
         for s, res in test_data:
             s = integral.parser.parse_expr(s)
-            res = parser.parse_term(ctxt, res)
+            res = parser.parse_term(res)
             self.assertEqual(proof.expr_to_holpy(s), res)
 
 

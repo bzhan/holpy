@@ -6,41 +6,41 @@ from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
+from kernel import theory
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
 from data.nat import natT, plus, zero
 from server import tactic
 from syntax import parser
 from syntax import printer
-from logic.context import Context
+from logic import context
 
 
 class TacticTest(unittest.TestCase):
-    def run_test(self, thy, tactic, *, vars=None, prevs=None, goal, args=None, new_goals=None, failed=None):
+    def run_test(self, thy_name, tactic, *, vars=None, prevs=None, goal, args=None, new_goals=None, failed=None):
         """Test a single invocation of a tactic."""
-        ctxt = Context(thy, vars=vars)
-        thy = ctxt.thy
+        context.set_context(thy_name, vars=vars)
 
-        assms = [parser.parse_term(ctxt, prev) for prev in prevs] if prevs is not None else []
+        assms = [parser.parse_term(prev) for prev in prevs] if prevs is not None else []
         prf = Proof(*assms)
         prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
-        goal = parser.parse_term(ctxt, goal)
+        goal = parser.parse_term(goal)
         goal_pt = ProofTerm.sorry(Thm(assms, goal))
 
         # Invoke the tactic to get the proof term
         if failed is not None:
-            self.assertRaises(failed, tactic.get_proof_term, thy, goal_pt, prevs=prevs, args=args)
+            self.assertRaises(failed, tactic.get_proof_term, goal_pt, prevs=prevs, args=args)
             return
 
-        pt = tactic.get_proof_term(thy, goal_pt, prevs=prevs, args=args)
+        pt = tactic.get_proof_term(goal_pt, prevs=prevs, args=args)
 
         # Export and check proof
         prefix = ItemID(len(prevs)-1) if len(prevs) > 0 else ItemID(len(prevs))
         prf = pt.export(prefix=prefix, prf=prf, subproof=False)
-        self.assertEqual(thy.check_proof(prf), Thm(assms, goal))
+        self.assertEqual(theory.thy.check_proof(prf), Thm(assms, goal))
 
         # Test agreement of new goals
-        new_goals = [parser.parse_term(ctxt, new_goal)
+        new_goals = [parser.parse_term(new_goal)
                      for new_goal in new_goals] if new_goals is not None else []
         concls = [goal.prop for goal in prf.get_sorrys()]
         self.assertEqual(new_goals, concls)
@@ -119,8 +119,8 @@ class TacticTest(unittest.TestCase):
         )
 
     def testInduct2(self):
-        thy = basic.load_theory('list')
-        xs = Var("xs", parser.parse_type(thy, "'a list"))
+        basic.load_theory('list')
+        xs = Var("xs", parser.parse_type("'a list"))
         self.run_test(
             'list', tactic.var_induct(),
             vars={"xs": "'a list"},

@@ -5,13 +5,13 @@ import unittest
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel import theory
-from logic.context import Context
+from logic import context
 from server import method
 from server import server
 from syntax import parser
 
 
-def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
+def test_method(self, thy_name, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
                 gaps=None, lines=None, query=None, failed=None):
     """Test run a method.
 
@@ -21,17 +21,16 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
 
     """
     # Build context
-    ctxt = Context(thy, vars=vars)
-    thy = ctxt.thy
+    context.set_context(thy_name, vars=vars)
 
     # Build starting state
     if assms is not None:
         assert isinstance(assms, list), "test_method: assms need to be a list"
-        assms = [parser.parse_term(ctxt, t) for t in assms]
+        assms = [parser.parse_term(t) for t in assms]
     else:
         assms = []
-    concl = parser.parse_term(ctxt, concl)
-    state = server.parse_init_state(ctxt, Term.mk_implies(*(assms + [concl])))
+    concl = parser.parse_term(concl)
+    state = server.parse_init_state(Term.mk_implies(*(assms + [concl])))
 
     # Obtain and run method
     if args is None:
@@ -58,26 +57,25 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
         gaps = []  # assert no gaps
     else:
         assert isinstance(gaps, list), "test_method: gaps need to be a list"
-        gaps = [parser.parse_term(ctxt, gap) for gap in gaps]
+        gaps = [parser.parse_term(gap) for gap in gaps]
     self.assertEqual([gap.prop for gap in state.rpt.gaps], gaps)
 
     # Compare list of lines
     if lines:
         for id, t in lines.items():
-            t = parser.parse_term(ctxt, t)
+            t = parser.parse_term(t)
             self.assertEqual(state.get_proof_item(id).th.prop, t)
 
 
 class MethodTest(unittest.TestCase):
-    def run_search_thm(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, res):
+    def run_search_thm(self, thy_name, *, vars=None, assms=None, concl, method_name, prevs=None, res):
         # Build context
-        ctxt = Context(thy, vars=vars)
-        thy = ctxt.thy
+        context.set_context(thy_name, vars=vars)
 
         # Build starting state
-        assms = [parser.parse_term(ctxt, t) for t in assms] if assms is not None else []
-        concl = parser.parse_term(ctxt, concl)
-        state = server.parse_init_state(ctxt, Term.mk_implies(*(assms + [concl])))
+        assms = [parser.parse_term(t) for t in assms] if assms is not None else []
+        concl = parser.parse_term(concl)
+        state = server.parse_init_state(Term.mk_implies(*(assms + [concl])))
 
         # Obtain method and run its search function
         method = theory.global_methods[method_name]

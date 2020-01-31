@@ -5,7 +5,8 @@
 from kernel.type import STVar, TFun
 from kernel.term import Term
 from kernel import term
-from kernel.theory import TheoryException
+from kernel import theory
+from logic import context
 from data import binary
 from util import unionfind
 
@@ -19,15 +20,13 @@ class TypeInferenceException(Exception):
 def is_internal_type(T):
     return T.is_stvar() and T.name.startswith('_t')
 
-def type_infer(ctxt, t, *, forbid_internal=True):
+def type_infer(t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
     explicitly given. This function works on terms with overloaded
     constants.
     
     """
-    thy = ctxt.thy
-
     # Union-find mapping for representatives of temporary
     # type variables.
     uf = dict()
@@ -106,8 +105,8 @@ def type_infer(ctxt, t, *, forbid_internal=True):
         # otherwise, make a new type.
         if t.is_svar():
             if t.T is None:
-                if t.name in ctxt.svars:
-                    t.T = ctxt.svars[t.name]
+                if t.name in context.ctxt.svars:
+                    t.T = context.ctxt.svars[t.name]
                 elif t.name in incr_sctxt:
                     t.T = incr_sctxt[t.name]
                 else:
@@ -117,8 +116,8 @@ def type_infer(ctxt, t, *, forbid_internal=True):
 
         elif t.is_var():
             if t.T is None:
-                if t.name in ctxt.vars:
-                    t.T = ctxt.vars[t.name]
+                if t.name in context.ctxt.vars:
+                    t.T = context.ctxt.vars[t.name]
                 elif t.name in incr_ctxt:
                     t.T = incr_ctxt[t.name]
                 else:
@@ -131,10 +130,10 @@ def type_infer(ctxt, t, *, forbid_internal=True):
         elif t.is_const():
             if t.T is None:
                 try:
-                    T = thy.get_term_sig(t.name, stvar=True)
-                except TheoryException as e:
-                    if t.name in ctxt.defs:
-                        T = ctxt.defs[t.name]
+                    T = theory.thy.get_term_sig(t.name, stvar=True)
+                except theory.TheoryException as e:
+                    if t.name in context.ctxt.defs:
+                        T = context.ctxt.defs[t.name]
                     else:
                         raise e
                 tyinst = dict()
@@ -181,10 +180,10 @@ def type_infer(ctxt, t, *, forbid_internal=True):
         else:
             raise TypeError
 
-    if ctxt.defs and t.is_equals():
+    if context.ctxt.defs and t.is_equals():
         t_head, t_args = t.lhs.strip_comb()
-        if t_head.is_const() and t_head.name in ctxt.defs:
-            t_head.T = ctxt.defs[t_head.name]
+        if t_head.is_const() and t_head.name in context.ctxt.defs:
+            t_head.T = context.ctxt.defs[t_head.name]
 
     infer(t, [])
 
@@ -215,7 +214,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
 
     return t
 
-def infer_printed_type(thy, t):
+def infer_printed_type(t):
     """Infer the types that should be printed.
     
     The algorithm is as follows:
@@ -253,7 +252,7 @@ def infer_printed_type(thy, t):
 
     for i in range(100):
         clear_const_type(t)
-        type_infer(Context(thy), t, forbid_internal=False)
+        type_infer(t, forbid_internal=False)
 
         def has_internalT(T):
             return any(is_internal_type(subT) for subT in T.get_tsubs())

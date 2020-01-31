@@ -5,7 +5,7 @@ import unittest
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from logic import basic
-from logic.context import Context
+from logic import context
 from imperative.expr import Var, true, eq, neq, neg, plus, minus, uminus, times, less, less_eq, zero, one
 from imperative.com import Skip, Assign, Seq, Cond, While
 from imperative.parser2 import cond_parser
@@ -14,7 +14,7 @@ from server import server
 from server import method
 from syntax import printer
 
-thy = basic.load_theory('hoare')
+basic.load_theory('hoare')
 
 class ComTest(unittest.TestCase):
     def testPrintCom(self):
@@ -98,8 +98,8 @@ class ComTest(unittest.TestCase):
         vc = cond_parser.parse(vc)
 
         goal = vc.convert_hol({"a": "int"})
-        ctxt = Context(thy, vars={'a': 'int', 'c': 'int'})
-        state = server.parse_init_state(ctxt, goal)
+        context.set_context(None, vars={'a': 'int', 'c': 'int'})
+        state = server.parse_init_state(goal)
         method.apply_method(state, {
             'method_name': 'rewrite_goal',
             'theorem': 'abs_def',
@@ -124,8 +124,8 @@ class ComTest(unittest.TestCase):
         vc = cond_parser.parse(vc)
 
         goal = vc.convert_hol({"m": "int", "n": "int"})
-        ctxt = Context(thy, vars={'c': 'int', 'm': 'int', 'n': 'int'})
-        state = server.parse_init_state(ctxt, goal)
+        context.set_context(None, vars={'c': 'int', 'm': 'int', 'n': 'int'})
+        state = server.parse_init_state(goal)
         method.apply_method(state, {
             'method_name': 'rewrite_goal',
             'theorem': 'max_def',

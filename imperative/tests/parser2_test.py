@@ -6,7 +6,7 @@ from logic import basic
 from imperative import parser2
 from imperative import imp
 
-thy = basic.load_theory('int')
+basic.load_theory('int')
 
 class Parser2Test(unittest.TestCase):
     def testParsePrint(self):

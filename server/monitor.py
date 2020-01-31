@@ -7,8 +7,9 @@ import json
 import copy
 
 from kernel.proof import Proof
+from kernel import theory
 from logic import basic
-from logic.context import Context
+from logic import context
 from server import server
 from server import method
 from logic import logic
@@ -16,10 +17,10 @@ from server import items
 from syntax import parser
 
 
-def check_proof(thy, item, *, rewrite):
+def check_proof(item, *, rewrite):
     if item.steps:
-        ctxt = Context(thy, vars=item.vars)
-        state = server.parse_init_state(ctxt, item.prop)
+        context.set_context(None, vars=item.vars)
+        state = server.parse_init_state(item.prop)
         history = state.parse_steps(item.steps)
         if rewrite:
             item.proof = state.export_proof(unicode=True, highlight=False)
@@ -50,8 +51,8 @@ def check_proof(thy, item, *, rewrite):
         }
     elif item.proof:
         try:
-            ctxt = Context(thy, vars=item.vars)
-            state = server.parse_proof(ctxt, item.proof)
+            context.set_context(None, vars=item.vars)
+            state = server.parse_proof(item.proof)
             state.check_proof(no_gaps=True)
         except Exception as e:
             return {
@@ -72,7 +73,7 @@ def check_proof(thy, item, *, rewrite):
 def check_theory(filename, username='master', rewrite=False):
     """Check the theory with the given name."""
     data = basic.load_json_data(filename, username)
-    thy = basic.load_theories(data['imports'], username)
+    basic.load_theory(filename, limit='start', username=username)
 
     res = []
     stat = {'OK': 0, 'NoSteps': 0, 'Failed': 0, 'Partial': 0,
@@ -81,7 +82,7 @@ def check_theory(filename, username='master', rewrite=False):
     content = []
 
     for raw_item in data['content']:
-        item = items.parse_item(thy, raw_item)
+        item = items.parse_item(raw_item)
         if item.error:
             e = item.error
             item_res = {
@@ -94,12 +95,14 @@ def check_theory(filename, username='master', rewrite=False):
             }
         else:
             exts = item.get_extension()
-            old_thy = copy.copy(thy)
-            thy.unchecked_extend(exts)
+            old_thy = copy.copy(theory.thy)
+            theory.thy.unchecked_extend(exts)
+            new_thy = theory.thy
 
             # Check consistency with edit_item
-            edit_item = item.get_display(thy, unicode=True, highlight=False)
-            item2 = items.parse_edit(old_thy, edit_item)
+            edit_item = item.get_display(unicode=True, highlight=False)
+            theory.thy = old_thy
+            item2 = items.parse_edit(edit_item)
             if item.ty == 'thm':
                 item2.proof = item.proof
                 item2.steps = item.steps
@@ -111,7 +114,7 @@ def check_theory(filename, username='master', rewrite=False):
                     'status': 'EditFail'
                 }
             elif item.ty == 'thm':
-                item_res = check_proof(old_thy, item, rewrite=rewrite)
+                item_res = check_proof(item, rewrite=rewrite)
                 item_res['ty'] = 'thm'
                 item_res['name'] = item.name
             else:
@@ -120,12 +123,13 @@ def check_theory(filename, username='master', rewrite=False):
                     'name': item.name,
                     'status': 'ParseOK'
                 }
+            theory.thy = new_thy
 
         stat[item_res['status']] += 1
         res.append(item_res)
 
         if rewrite:
-            content.append(item.export_json(thy))
+            content.append(item.export_json())
 
     if rewrite:
         data['content'] = content

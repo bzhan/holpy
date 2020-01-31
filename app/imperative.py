@@ -27,7 +27,7 @@ def get_program_file():
     """
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['file_name']
-    thy = basic.load_theory('hoare')
+    basic.load_theory('hoare')
     path = 'imperative/examples/' + file_name + '.json'
     with open(path, 'r', encoding='utf-8') as f:
         file_data = json.load(f)
@@ -46,7 +46,7 @@ def verify():
 
     """
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory('hoare')
+    basic.load_theory('hoare')
     pre = parser2.cond_parser.parse(data['pre'])
     post = parser2.cond_parser.parse(data['post'])
     com = parser2.com_parser.parse(data['com'])
@@ -57,8 +57,8 @@ def verify():
     for line in lines:
         if line['ty'] == 'vc':
             vc_hol = line['prop']
-            line['prop'] = printer.print_term(thy, line['prop'])
-            line['smt'] = z3wrapper.solve(thy, vc_hol)
+            line['prop'] = printer.print_term(line['prop'])
+            line['smt'] = z3wrapper.solve(vc_hol)
 
     return jsonify({
         'lines': lines,

@@ -6,10 +6,11 @@ from kernel.type import TVar, TFun
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
+from kernel import theory
 from logic import basic
 from logic.proofterm import ProofTerm
 
-thy = basic.load_theory('logic_base')
+basic.load_theory('logic_base')
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -26,7 +27,7 @@ class ProofTermTest(unittest.TestCase):
 
         prf = pt3.export()
         self.assertEqual(len(prf.items), 3)
-        self.assertEqual(thy.check_proof(prf), pt3.th)
+        self.assertEqual(theory.thy.check_proof(prf), pt3.th)
 
     def testExport2(self):
         """Repeated theorems."""
@@ -37,7 +38,7 @@ class ProofTermTest(unittest.TestCase):
 
         prf = pt4.export()
         self.assertEqual(len(prf.items), 4)
-        self.assertEqual(thy.check_proof(prf), pt4.th)
+        self.assertEqual(theory.thy.check_proof(prf), pt4.th)
 
     def testExport3(self):
         """Case with atoms."""
@@ -50,7 +51,7 @@ class ProofTermTest(unittest.TestCase):
         prf.add_item(1, rule="sorry", th=Thm.mk_equals(y,z))
         pt3.export(prf=prf)
 
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(x,z))
+        self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(x,z))
 
 
 if __name__ == "__main__":

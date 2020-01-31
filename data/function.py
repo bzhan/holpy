@@ -52,7 +52,7 @@ def strip_fun_upd(t):
 class fun_upd_eval_conv(Conv):
     """Evaluate the function (f)(a1 := b1, a2 := b2, ...) on an input."""
 
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         if not t.is_comb():
             return refl(t)
 
@@ -60,11 +60,11 @@ class fun_upd_eval_conv(Conv):
         if is_fun_upd(f):
             f1, a, b = f.args
             if a == c:
-                return rewr_conv("fun_upd_same").get_proof_term(thy, t)
+                return rewr_conv("fun_upd_same").get_proof_term(t)
             else:
-                neq = nat.nat_const_ineq(thy, c, a)
-                eq = rewr_conv("fun_upd_other", conds=[neq]).get_proof_term(thy, t)
-                return eq.on_arg(thy, self)
+                neq = nat.nat_const_ineq(c, a)
+                eq = rewr_conv("fun_upd_other", conds=[neq]).get_proof_term(t)
+                return eq.on_arg(self)
         elif f.is_abs():
             return ProofTerm.beta_conv(t)
         else:
@@ -78,7 +78,7 @@ class fun_upd_eval_macro(ProofTermMacro):
         self.sig = Term
         self.limit = 'fun_upd_twist'
 
-    def get_proof_term(self, thy, args, pts):
+    def get_proof_term(self, args, pts):
         assert len(pts) == 0, "fun_upd_eval_macro"
         assert args.is_equals(), "fun_upd_eval_macro: goal is not an equality"
 
@@ -93,16 +93,16 @@ class fun_upd_norm_one_conv(Conv):
     the last update to the right position, combining if necessary.
 
     """
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         pt = refl(t)
         if is_fun_upd(t) and is_fun_upd(t.args[0]):
             f, a, b = t.args
             f2, a2, b2 = f.args
             if nat.from_binary_nat(a) < nat.from_binary_nat(a2):
-                neq = nat.nat_const_ineq(thy, a, a2)
-                return pt.on_rhs(thy, rewr_conv("fun_upd_twist", conds=[neq]), argn_conv(0, self))
+                neq = nat.nat_const_ineq(a, a2)
+                return pt.on_rhs(rewr_conv("fun_upd_twist", conds=[neq]), argn_conv(0, self))
             elif nat.from_binary_nat(a) == nat.from_binary_nat(a2):
-                return pt.on_rhs(thy, rewr_conv("fun_upd_upd"))
+                return pt.on_rhs(rewr_conv("fun_upd_upd"))
             else:
                 return pt
         else:
@@ -115,10 +115,10 @@ class fun_upd_norm_conv(Conv):
     and combines updates on the same key.
 
     """
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         pt = refl(t)
         if is_fun_upd(t):
-            return pt.on_rhs(thy, argn_conv(0, self), fun_upd_norm_one_conv())
+            return pt.on_rhs(argn_conv(0, self), fun_upd_norm_one_conv())
         else:
             return pt
 

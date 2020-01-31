@@ -150,7 +150,7 @@ auto.add_global_autos_norm(
 
 class norm_sin_conv(Conv):
     """Normalization of an expression sin (r * pi)."""
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         if not (t.is_comb() and t.head == real.sin):
             raise ConvException('norm_sin_conv')
 
@@ -159,32 +159,32 @@ class norm_sin_conv(Conv):
 
         r = real.from_binary_real(t.arg.arg1)
         if r >= 2:
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(r-2), real.pi),
                           real.times(real.to_binary_real(2), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic'))
 
         if r >= 1:
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(r-1), real.pi),
                           real.pi),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi'))
 
         if r >= Fraction(1,2):
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
                           real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
 
         if r > Fraction(1,4):
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.minus(real.divides(real.pi, real.to_binary_real(2)),
                            real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_sin'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_sin'))
 
         return refl(t)
 
@@ -192,7 +192,7 @@ auto.add_global_autos_norm(real.sin, norm_sin_conv())
 
 class norm_cos_conv(Conv):
     """Normalization of an expression cos (r * pi)."""
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         if not (t.is_comb() and t.head == real.cos):
             raise ConvException('norm_cos_conv')
 
@@ -201,32 +201,32 @@ class norm_cos_conv(Conv):
 
         r = real.from_binary_real(t.arg.arg1)
         if r >= 2:
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(r-2), real.pi),
                           real.times(real.to_binary_real(2), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic'))
 
         if r >= 1:
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(r-1), real.pi),
                           real.pi),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi'))
 
         if r >= Fraction(1,2):
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
                           real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
 
         if r > Fraction(1,4):
-            eq = auto.auto_solve(thy, Term.mk_equals(
+            eq = auto.auto_solve(Term.mk_equals(
                 real.minus(real.divides(real.pi, real.to_binary_real(2)),
                            real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
-            return refl(t).on_rhs(thy, arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_cos'))
+            return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_cos'))
 
         return refl(t)
 
@@ -380,14 +380,14 @@ auto.add_global_autos_norm(
 
 class real_integral_cong(Conv):
     """Apply auto to the body of an integral."""
-    def get_proof_term(self, thy, expr):
+    def get_proof_term(self, expr):
         assert expr.head.is_const_name('real_integral'), 'real_integral_cong'
         S, f = expr.args
         
         if not S.head.is_const_name('real_closed_interval'):
             raise ConvException
         a, b = S.args
-        le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+        le_pt = auto.auto_solve(real.less_eq(a, b))
 
         interval = real.open_interval(a, b)
         if f.is_const():
@@ -400,10 +400,10 @@ class real_integral_cong(Conv):
             body = f.subst_bound(v)
 
         cv = auto.auto_conv(conds=[ProofTerm.assume(cond)])
-        eq_pt = cv.get_proof_term(thy, body)
+        eq_pt = cv.get_proof_term(body)
         eq_pt = ProofTerm.implies_intr(cond, eq_pt)
         eq_pt = ProofTerm.forall_intr(v, eq_pt)
-        return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+        return apply_theorem('real_integral_eq_closed_interval', le_pt, eq_pt)
 
 auto.add_global_autos_norm(real_integral, real_integral_cong())
 
@@ -414,19 +414,19 @@ class simplify_rewr_conv(Conv):
         """Initialize with target of the rewrite."""
         self.target = target
 
-    def get_proof_term(self, thy, t, conds=None):
+    def get_proof_term(self, t, conds=None):
         if conds is None:
             conds = []
 
         if t == self.target:
             return refl(t)
 
-        t_eq = refl(t).on_rhs(thy, auto.auto_conv(conds=conds))
-        target_eq = refl(self.target).on_rhs(thy, auto.auto_conv(conds=conds))
+        t_eq = refl(t).on_rhs(auto.auto_conv(conds=conds))
+        target_eq = refl(self.target).on_rhs(auto.auto_conv(conds=conds))
 
         if target_eq.rhs != t_eq.rhs:
             raise ConvException("simplify_rewr_conv: %s != %s" % (
-                printer.print_term(thy, target_eq.rhs), printer.print_term(thy, t_eq.rhs)))
+                printer.print_term(target_eq.rhs), printer.print_term(t_eq.rhs)))
 
         return ProofTerm.transitive(t_eq, ProofTerm.symmetric(target_eq))
 
@@ -438,54 +438,54 @@ class combine_fraction(Conv):
             conds = []
         self.conds = conds
 
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         pt = refl(t)
         if real.is_divides(t):
             return pt
         elif real.is_plus(t):
-            pt = pt.on_rhs(thy, binop_conv(self))
+            pt = pt.on_rhs(binop_conv(self))
             assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
             if b == d:
-                b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), self.conds)
-                return pt.on_rhs(thy, rewr_conv('real_divide_add_same', conds=[b_neq_0]),
-                                      arg1_conv(auto.auto_conv(self.conds)))
+                b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+                return pt.on_rhs(rewr_conv('real_divide_add_same', conds=[b_neq_0]),
+                                 arg1_conv(auto.auto_conv(self.conds)))
             else:
-                b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), self.conds)
-                d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), self.conds)
-                return pt.on_rhs(thy, rewr_conv('real_divide_add', conds=[b_neq_0, d_neq_0]),
-                                    arg1_conv(auto.auto_conv(self.conds)),
-                                    arg_conv(try_conv(rewr_conv('real_mul_lid'))),
-                                    arg_conv(try_conv(rewr_conv('real_mul_rid'))))
+                b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+                d_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(d, real.zero)), self.conds)
+                return pt.on_rhs(rewr_conv('real_divide_add', conds=[b_neq_0, d_neq_0]),
+                                 arg1_conv(auto.auto_conv(self.conds)),
+                                 arg_conv(try_conv(rewr_conv('real_mul_lid'))),
+                                 arg_conv(try_conv(rewr_conv('real_mul_rid'))))
         elif real.is_minus(t):
-            return pt.on_rhs(thy, rewr_conv('real_poly_neg2'), self)
+            return pt.on_rhs(rewr_conv('real_poly_neg2'), self)
         elif real.is_real_power(t) and real.is_binary_real(t.arg):
             p = real.from_binary_real(t.arg)
             if p == -1:
-                return pt.on_rhs(thy, rewr_conv('rpow_neg_one', sym=True),
-                                      rewr_conv('real_inverse_divide'))
+                return pt.on_rhs(rewr_conv('rpow_neg_one', sym=True),
+                                 rewr_conv('real_inverse_divide'))
             elif p < 0:
-                pt = pt.on_rhs(thy, rewr_conv('rpow_neg'), rewr_conv('real_inverse_divide'))
+                pt = pt.on_rhs(rewr_conv('rpow_neg'), rewr_conv('real_inverse_divide'))
                 if isinstance(p, int):
-                    pt = pt.on_rhs(thy, arg_conv(rewr_conv('rpow_pow')),
-                                        arg_conv(arg_conv(rewr_conv('nat_of_nat_def', sym=True))))
+                    pt = pt.on_rhs(arg_conv(rewr_conv('rpow_pow')),
+                                   arg_conv(arg_conv(rewr_conv('nat_of_nat_def', sym=True))))
                 return pt
             else:
-                return pt.on_rhs(thy, rewr_conv('real_divide_1'))
+                return pt.on_rhs(rewr_conv('real_divide_1'))
         elif real.is_times(t):
-            pt = pt.on_rhs(thy, binop_conv(self))
+            pt = pt.on_rhs(binop_conv(self))
             assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
-            b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), self.conds)
-            d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), self.conds)
-            return pt.on_rhs(thy, rewr_conv('real_divide_mult', conds=[b_neq_0, d_neq_0]),
-                                  arg1_conv(auto.auto_conv(self.conds)),
-                                  arg_conv(try_conv(rewr_conv('real_mul_lid'))),
-                                  arg_conv(try_conv(rewr_conv('real_mul_rid'))))
+            b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+            d_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(d, real.zero)), self.conds)
+            return pt.on_rhs(rewr_conv('real_divide_mult', conds=[b_neq_0, d_neq_0]),
+                             arg1_conv(auto.auto_conv(self.conds)),
+                             arg_conv(try_conv(rewr_conv('real_mul_lid'))),
+                             arg_conv(try_conv(rewr_conv('real_mul_rid'))))
         else:
-            return pt.on_rhs(thy, rewr_conv('real_divide_1'))
+            return pt.on_rhs(rewr_conv('real_divide_1'))
 
 
 class fraction_rewr_conv(Conv):
@@ -499,33 +499,33 @@ class fraction_rewr_conv(Conv):
         """Initialize with denominator and target of the rewrite."""
         self.target = target
 
-    def get_proof_term(self, thy, expr, conds=None):
+    def get_proof_term(self, expr, conds=None):
         if conds is None:
             conds = []
 
         cv = auto.auto_conv(conds=conds)
 
-        lhs_eq = refl(expr).on_rhs(thy, auto.auto_conv(conds))
-        rhs_eq = refl(self.target).on_rhs(thy, auto.auto_conv(conds))
+        lhs_eq = refl(expr).on_rhs(auto.auto_conv(conds))
+        rhs_eq = refl(self.target).on_rhs(auto.auto_conv(conds))
         if lhs_eq.rhs == rhs_eq.rhs:
             return ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
 
-        lhs_eq = lhs_eq.on_rhs(thy, combine_fraction(conds))
-        rhs_eq = rhs_eq.on_rhs(thy, combine_fraction(conds))
+        lhs_eq = lhs_eq.on_rhs(combine_fraction(conds))
+        rhs_eq = rhs_eq.on_rhs(combine_fraction(conds))
 
         assert real.is_divides(lhs_eq.rhs) and real.is_divides(rhs_eq.rhs)
 
         a, b = lhs_eq.rhs.args
         c, d = rhs_eq.rhs.args
-        b_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(b, real.zero)), conds)
-        d_neq_0 = auto.auto_solve(thy, logic.neg(Term.mk_equals(d, real.zero)), conds)
-        cross_eq = auto.auto_solve(thy, Term.mk_equals(real.times(a, d), real.times(b, c)), conds)
-        pt = apply_theorem(thy, 'real_divide_eq', b_neq_0, d_neq_0, cross_eq)
+        b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), conds)
+        d_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(d, real.zero)), conds)
+        cross_eq = auto.auto_solve(Term.mk_equals(real.times(a, d), real.times(b, c)), conds)
+        pt = apply_theorem('real_divide_eq', b_neq_0, d_neq_0, cross_eq)
 
         return ProofTerm.transitive(ProofTerm.transitive(lhs_eq, pt), ProofTerm.symmetric(rhs_eq))
 
 
-def fraction_rewr_integral(thy, expr, target):
+def fraction_rewr_integral(expr, target):
     """Given two integrals over the same closed range, try to make
     them equal by rewriting the integrands.
 
@@ -537,13 +537,13 @@ def fraction_rewr_integral(thy, expr, target):
     assert target.head.is_const_name('real_integral'), 'fraction_rewr_integral'
 
     # First normalize the domain of integration
-    expr_pt = refl(expr).on_rhs(thy, arg1_conv(auto.auto_conv()))
-    target_pt = refl(target).on_rhs(thy, arg1_conv(auto.auto_conv()))
+    expr_pt = refl(expr).on_rhs(arg1_conv(auto.auto_conv()))
+    target_pt = refl(target).on_rhs(arg1_conv(auto.auto_conv()))
 
     S, f = expr_pt.rhs.args
     assert S.head.is_const_name('real_closed_interval'), 'fraction_rewr_integral'
     a, b = S.args
-    le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+    le_pt = auto.auto_solve(real.less_eq(a, b))
 
     # The domains of integration should now be equal
     target_S, target_f = target_pt.rhs.args
@@ -557,15 +557,15 @@ def fraction_rewr_integral(thy, expr, target):
     target_body = target_f.subst_bound(v)
 
     # Now apply fraction_rewr_conv and then use congruence theorem
-    eq_pt = fraction_rewr_conv(target_body).get_proof_term(thy, body, [ProofTerm.assume(cond)])
+    eq_pt = fraction_rewr_conv(target_body).get_proof_term(body, [ProofTerm.assume(cond)])
     eq_pt = ProofTerm.implies_intr(cond, eq_pt)
     eq_pt = ProofTerm.forall_intr(v, eq_pt)
-    eq_pt = apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+    eq_pt = apply_theorem('real_integral_eq_closed_interval', le_pt, eq_pt)
 
     # Link all theorems together
     return ProofTerm.transitive(ProofTerm.transitive(expr_pt, eq_pt), ProofTerm.symmetric(target_pt))
 
-def apply_subst_thm(thy, f, g, a, b):
+def apply_subst_thm(f, g, a, b):
     """Apply the substitution theorem.
 
     The returned result is (in the increasing case)
@@ -578,26 +578,26 @@ def apply_subst_thm(thy, f, g, a, b):
     # Form the assumption: g is increasing or decreasing on [a, b],
     # then apply the theorem.
     try:
-        auto.auto_solve(thy, real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
+        auto.auto_solve(real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
         is_le = True
     except logic.TacticException:
         is_le = False
 
     if is_le:
-        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_incr',
+        eq_pt = apply_theorem('real_integral_substitution_simple_incr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
 
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
-            A_pt = auto.auto_solve(thy, A)
+            A_pt = auto.auto_solve(A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
     else:
-        eq_pt = apply_theorem(thy, 'real_integral_substitution_simple_decr',
+        eq_pt = apply_theorem('real_integral_substitution_simple_decr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
 
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
-            A_pt = auto.auto_solve(thy, A)
+            A_pt = auto.auto_solve(A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
 
     return eq_pt
@@ -621,7 +621,7 @@ class substitution(Conv):
         self.g = g
         self.target = target
 
-    def get_proof_term(self, thy, expr):
+    def get_proof_term(self, expr):
         assert expr.head.is_const_name('real_integral')
         S, h = expr.args
         assert S.head.is_const_name('real_closed_interval')
@@ -631,13 +631,13 @@ class substitution(Conv):
             raise NotImplementedError
 
         # Make the equality theorem
-        eq_pt = apply_subst_thm(thy, self.f, self.g, a, b)
+        eq_pt = apply_subst_thm(self.f, self.g, a, b)
 
         # Use the equality to rewrite expression.
-        eq_pt2 = fraction_rewr_integral(thy, eq_pt.lhs, expr)
+        eq_pt2 = fraction_rewr_integral(eq_pt.lhs, expr)
         pt = ProofTerm.transitive(ProofTerm.symmetric(eq_pt2), eq_pt)
 
-        eq_pt3 = fraction_rewr_integral(thy, pt.rhs, self.target)
+        eq_pt3 = fraction_rewr_integral(pt.rhs, self.target)
         pt = ProofTerm.transitive(pt, eq_pt3)
 
         return pt
@@ -662,7 +662,7 @@ class substitution_inverse(Conv):
         self.b = b
         self.target = target
 
-    def get_proof_term(self, thy, expr):
+    def get_proof_term(self, expr):
         assert expr.head.is_const_name('real_integral')
         _, f = expr.args
 
@@ -670,13 +670,13 @@ class substitution_inverse(Conv):
             raise NotImplementedError
 
         # Make the equality theorem
-        eq_pt = apply_subst_thm(thy, f, self.g, self.a, self.b)
+        eq_pt = apply_subst_thm(f, self.g, self.a, self.b)
 
         # Use the equality to rewrite expression.
-        eq_pt2 = fraction_rewr_integral(thy, expr, eq_pt.rhs)
+        eq_pt2 = fraction_rewr_integral(expr, eq_pt.rhs)
         pt = ProofTerm.transitive(eq_pt2, ProofTerm.symmetric(eq_pt))
 
-        eq_pt3 = fraction_rewr_integral(thy, pt.rhs, self.target)
+        eq_pt3 = fraction_rewr_integral(pt.rhs, self.target)
         pt = ProofTerm.transitive(pt, eq_pt3)
 
         return pt
@@ -699,7 +699,7 @@ class integrate_by_parts(Conv):
         self.v = v
         self.target = target
 
-    def get_proof_term(self, thy, expr):
+    def get_proof_term(self, expr):
         assert expr.head.is_const_name('real_integral')
         S, f = expr.args
         assert S.head.is_const_name('real_closed_interval')
@@ -708,23 +708,23 @@ class integrate_by_parts(Conv):
         if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
             raise NotImplementedError
 
-        eq_pt = apply_theorem(thy, 'real_integration_by_parts_simple_evalat',
+        eq_pt = apply_theorem('real_integration_by_parts_simple_evalat',
             inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
 
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
-            A_pt = auto.auto_solve(thy, A)
+            A_pt = auto.auto_solve(A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
 
         # Use the equality to rewrite expression.
-        eq_pt2 = fraction_rewr_integral(thy, expr, eq_pt.lhs)
+        eq_pt2 = fraction_rewr_integral(expr, eq_pt.lhs)
         pt = ProofTerm.transitive(eq_pt2, eq_pt)
 
         # Rewrite to agree with target
         assert real.is_minus(pt.rhs) and real.is_minus(self.target)
-        eq_pt3 = fraction_rewr_integral(thy, pt.rhs.arg, self.target.arg)
-        pt = pt.on_rhs(thy, arg_conv(rewr_conv(eq_pt3)))
-        pt = pt.on_rhs(thy, arg1_conv(simplify_rewr_conv(self.target.arg1)))
+        eq_pt3 = fraction_rewr_integral(pt.rhs.arg, self.target.arg)
+        pt = pt.on_rhs(arg_conv(rewr_conv(eq_pt3)))
+        pt = pt.on_rhs(arg1_conv(simplify_rewr_conv(self.target.arg1)))
         return pt
 
 
@@ -736,11 +736,11 @@ class trig_rewr_conv(Conv):
         self.code = code
         self.target = target
 
-    def get_proof_term(self, thy, t, conds=None):
+    def get_proof_term(self, t, conds=None):
         # Obtain the only variable in t
         if self.code == 'TR0':
             # (sin x) ^ 2 + (cos x) ^ 2 = 1
-            return ProofTerm.symmetric(refl(self.target).on_rhs(thy, rewr_conv('sin_circle')))
+            return ProofTerm.symmetric(refl(self.target).on_rhs(rewr_conv('sin_circle')))
         elif self.code == 'TR1':
             # Definition of sec and csc
             # Handled by normalization
@@ -751,13 +751,13 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
         elif self.code == 'TR5':
             # (sin x) ^ 2 = 1 - (cos x) ^ 2
-            pt = refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle2')))
+            pt = refl(t).on_rhs(top_conv(rewr_conv('sin_circle2')))
         elif self.code == 'TR6':
             # (cos x) ^ 2 = 1 - (sin x) ^ 2
-            pt = refl(t).on_rhs(thy, top_conv(rewr_conv('sin_circle3')))
+            pt = refl(t).on_rhs(top_conv(rewr_conv('sin_circle3')))
         elif self.code == 'TR7':
             # (cos x) ^ 2 = (1 + cos (2 * x)) / 2
-            pt = refl(t).on_rhs(thy, top_conv(rewr_conv('cos_lower_degree')))
+            pt = refl(t).on_rhs(top_conv(rewr_conv('cos_lower_degree')))
         elif self.code == 'TR8':
             rewr_ths = [
                 'sin_lower_degree',  # (sin x) ^ 2 = (1 - cos (2 * x)) / 2
@@ -768,7 +768,7 @@ class trig_rewr_conv(Conv):
             ]
             pt = refl(t)
             for rewr_th in rewr_ths:
-                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+                pt = pt.on_rhs(top_conv(rewr_conv(rewr_th)))
         elif self.code == 'TR9':
             rewr_ths = [
                 'real_add_sin',  # sin x + sin y = 2 * sin ((x + y) / 2) * cos ((x - y) / 2)
@@ -778,7 +778,7 @@ class trig_rewr_conv(Conv):
             ]
             pt = refl(t)
             for rewr_th in rewr_ths:
-                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+                pt = pt.on_rhs(top_conv(rewr_conv(rewr_th)))
         elif self.code == 'TR10i':
             rewr_ths = [
                 'sin_cos_combine',   # sin x + cos x = sqrt 2 * sin (x + pi / 4)
@@ -786,7 +786,7 @@ class trig_rewr_conv(Conv):
             ]
             pt = refl(t)
             for rewr_th in rewr_ths:
-                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+                pt = pt.on_rhs(top_conv(rewr_conv(rewr_th)))
         elif self.code == 'TR11':
             rewr_ths = [
                 'sin_double',  # sin (2 * x) = 2 * sin x * cos x
@@ -794,7 +794,7 @@ class trig_rewr_conv(Conv):
             ]
             pt = refl(t)
             for rewr_th in rewr_ths:
-                pt = pt.on_rhs(thy, top_conv(rewr_conv(rewr_th)))
+                pt = pt.on_rhs(top_conv(rewr_conv(rewr_th)))
         elif self.code == 'TR111':
             # Reverse of definition of sec and csc
             # Handled by normalization
@@ -802,22 +802,22 @@ class trig_rewr_conv(Conv):
         elif self.code == 'TR22':
             if real.is_plus(t) and t.arg.head == real.nat_power and t.arg.arg1.head == real.tan:
                 cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg.arg1.arg), real.zero))
-                cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
-                pt = refl(t).on_rhs(thy, rewr_conv('tan_sec', conds=[cos_neq0_pt]))
+                cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
+                pt = refl(t).on_rhs(rewr_conv('tan_sec', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.tan:
                 cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
-                cos_neq0_pt = auto.auto_solve(thy, cos_neq0, conds)
-                pt = refl(t).on_rhs(thy, rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
+                cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
+                pt = refl(t).on_rhs(rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.cot:
                 sin_neq0 = logic.neg(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
-                sin_neq0_pt = auto.auto_solve(thy, sin_neq0, conds)
-                pt = refl(t).on_rhs(thy, rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
+                sin_neq0_pt = auto.auto_solve(sin_neq0, conds)
+                pt = refl(t).on_rhs(rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
             else:
                 pt = refl(t)
         else:
             raise NotImplementedError
 
-        eq_pt = simplify_rewr_conv(self.target).get_proof_term(thy, pt.rhs, conds)
+        eq_pt = simplify_rewr_conv(self.target).get_proof_term(pt.rhs, conds)
         return ProofTerm.transitive(pt, eq_pt)
 
 
@@ -826,7 +826,7 @@ class split_region_conv(Conv):
     def __init__(self, c):
         self.c = c
 
-    def get_proof_term(self, thy, expr):
+    def get_proof_term(self, expr):
         assert expr.head.is_const_name('real_integral'), 'split_region'
         S, f = expr.args
         
@@ -834,11 +834,11 @@ class split_region_conv(Conv):
             raise ConvException
         a, b = S.args
 
-        eq_pt = apply_theorem(thy, 'real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
+        eq_pt = apply_theorem('real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
 
         As, _ = eq_pt.prop.strip_implies()
         for A in As:
-            A_pt = auto.auto_solve(thy, A)
+            A_pt = auto.auto_solve(A)
             eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
 
         return ProofTerm.symmetric(eq_pt)
@@ -856,16 +856,16 @@ class location_conv(Conv):
             conds = []
         self.conds = conds
 
-    def get_proof_term(self, thy, t):
+    def get_proof_term(self, t):
         if self.loc.is_empty():
             if self.conds and not isinstance(self.cv, rewr_conv):
-                return self.cv.get_proof_term(thy, t, conds=self.conds)
+                return self.cv.get_proof_term(t, conds=self.conds)
             else:
-                return self.cv.get_proof_term(thy, t)
+                return self.cv.get_proof_term(t)
         elif t.head.is_const_name("evalat"):
             # Term is of the form evalat f a b
             if self.loc.head == 0:
-                return argn_conv(0, abs_conv(location_conv(self.loc.rest, self.cv, self.conds))).get_proof_term(thy, t)
+                return argn_conv(0, abs_conv(location_conv(self.loc.rest, self.cv, self.conds))).get_proof_term(t)
             else:
                 raise NotImplementedError
         elif t.head.is_const_name("real_integral"):
@@ -876,7 +876,7 @@ class location_conv(Conv):
                 if not S.head.is_const_name('real_closed_interval'):
                     raise ConvException
                 a, b = S.args
-                le_pt = auto.auto_solve(thy, real.less_eq(a, b))
+                le_pt = auto.auto_solve(real.less_eq(a, b))
 
                 interval = real.open_interval(a, b)
                 v = Var(f.var_name, realT)
@@ -884,14 +884,14 @@ class location_conv(Conv):
                 body = f.subst_bound(v)
 
                 cv = location_conv(self.loc.rest, self.cv, self.conds + [ProofTerm.assume(cond)])
-                eq_pt = cv.get_proof_term(thy, body)
+                eq_pt = cv.get_proof_term(body)
                 eq_pt = ProofTerm.implies_intr(cond, eq_pt)
                 eq_pt = ProofTerm.forall_intr(v, eq_pt)
-                return apply_theorem(thy, 'real_integral_eq_closed_interval', le_pt, eq_pt)
+                return apply_theorem('real_integral_eq_closed_interval', le_pt, eq_pt)
             else:
                 raise NotImplementedError
         else:
-            return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv, self.conds)).get_proof_term(thy, t)
+            return argn_conv(self.loc.head, location_conv(self.loc.rest, self.cv, self.conds)).get_proof_term(t)
 
 
 def get_at_location(loc, t):
@@ -993,9 +993,6 @@ def expr_to_holpy(expr):
 
 def translate_item(item, target=None, *, debug=False):
     """Translate a calculation in json into holpy proof."""
-    ctxt = Context('realintegral')
-    thy = ctxt.thy
-
     problem = parse_expr(item['problem'])
     init = expr_to_holpy(problem)
     pt = refl(init)
@@ -1003,7 +1000,7 @@ def translate_item(item, target=None, *, debug=False):
     prev_pts = [pt]
 
     if debug:
-        print("\n%s: %s" % (item['name'], printer.print_term(thy, pt.rhs)))
+        print("\n%s: %s" % (item['name'], printer.print_term(pt.rhs)))
 
     for step in item['calc']:
         if 'location' in step:
@@ -1090,44 +1087,44 @@ def translate_item(item, target=None, *, debug=False):
 
             t1 = real.times(real.to_binary_real(Fraction(1, factor+1)),
                             real.plus(prev_pt.rhs, real.times(real.to_binary_real(factor), prev_pt.rhs)))
-            t1_pt = auto.auto_solve(thy, Term.mk_equals(prev_pt.rhs, t1))
-            t1_pt = t1_pt.on_rhs(thy, arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
-                                      arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
+            t1_pt = auto.auto_solve(Term.mk_equals(prev_pt.rhs, t1))
+            t1_pt = t1_pt.on_rhs(arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
+                                 arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
             pt = ProofTerm.transitive(prev_pt, t1_pt)
         else:
             raise NotImplementedError
 
         # Obtain result on proof side
         if reason != 'Solve equation':
-            pt = pt.on_rhs(thy, location_conv(loc, cv))
+            pt = pt.on_rhs(location_conv(loc, cv))
 
         if reason not in ('Unfold power', 'Split region', 'Solve equation'):
             assert pt.rhs == expected, "translate_item: unexpected rhs"
 
         if pt.rhs != expected:
-            eq_pt1 = refl(expected).on_rhs(thy, auto.auto_conv())
-            eq_pt2 = refl(pt.rhs).on_rhs(thy, auto.auto_conv())
+            eq_pt1 = refl(expected).on_rhs(auto.auto_conv())
+            eq_pt2 = refl(pt.rhs).on_rhs(auto.auto_conv())
             if eq_pt1.rhs != eq_pt2.rhs:
                 print("Unequal right side.\nExpected: %s\nGot:      %s" % (
-                    printer.print_term(thy, eq_pt1.rhs), printer.print_term(thy, eq_pt2.rhs)
+                    printer.print_term(eq_pt1.rhs), printer.print_term(eq_pt2.rhs)
                 ))
                 raise AssertionError
             else:
                 pt = ProofTerm.transitive(pt, eq_pt2)
                 pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt1))
 
-        pt = ProofTermDeriv("transitive", None, None, [pt, ProofTerm.reflexive(expected)])
+        pt = ProofTermDeriv("transitive", None, [pt, ProofTerm.reflexive(expected)])
 
         if debug:
-            print("= %s" % printer.print_term(thy, pt.rhs))
+            print("= %s" % printer.print_term(pt.rhs))
         prev_pts.append(pt)
 
     assert pt.lhs == init, "translate_item: wrong left side."
     if target is not None:
         target = expr_to_holpy(parse_expr(target))
         assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
-            printer.print_term(thy, target), printer.print_term(thy, pt.rhs))
+            printer.print_term(target), printer.print_term(pt.rhs))
     elif not debug:
-        print(printer.print_term(thy, pt.rhs))
+        print(printer.print_term(pt.rhs))
 
     return pt

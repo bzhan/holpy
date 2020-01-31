@@ -5,7 +5,7 @@ import sympy
 from sympy import Symbol, sqrt, sin, cos
 from sympy.abc import x
 
-from logic.context import Context
+from logic import context
 from logic.tests.logic_test import test_macro
 from syntax import parser
 from prover import sympywrapper
@@ -20,9 +20,9 @@ class SymPyWrapperTest(unittest.TestCase):
             ("real_open_interval 0 1", sympy.Interval.open(0, 1)),
         ]
 
-        ctxt = Context('realintegral', vars={'x': 'real'})
+        context.set_context('realintegral', vars={'x': 'real'})
         for s, res in test_data:
-            s = parser.parse_term(ctxt, s)
+            s = parser.parse_term(s)
             self.assertEqual(sympywrapper.convert(s), res)
 
     def testSymPySolve(self):
@@ -35,9 +35,9 @@ class SymPyWrapperTest(unittest.TestCase):
             ("1 / 2 * 2 ^ (1 / 2) = 2 ^ -(1 / 2)", True),
         ]
 
-        ctxt = Context('transcendentals')
+        context.set_context('transcendentals')
         for goal, res in test_data:
-            goal = parser.parse_term(ctxt, goal)
+            goal = parser.parse_term(goal)
             self.assertEqual(sympywrapper.solve_goal(goal), res)
 
     def testSymPySolve2(self):
@@ -60,10 +60,10 @@ class SymPyWrapperTest(unittest.TestCase):
             ("~(x ^ (2::nat) + 1 = 0)", "x Mem real_closed_interval (-1) 1", True),
         ]
 
-        ctxt = Context('transcendentals', vars={'x': 'real'})
+        context.set_context('transcendentals', vars={'x': 'real'})
         for goal, cond, res in test_data:
-            goal = parser.parse_term(ctxt, goal)
-            cond = parser.parse_term(ctxt, cond)
+            goal = parser.parse_term(goal)
+            cond = parser.parse_term(cond)
             self.assertEqual(sympywrapper.solve_with_interval(goal, cond), res)
 
     def testAuto(self):

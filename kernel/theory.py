@@ -2,50 +2,15 @@
 
 from copy import copy
 from typing import Tuple
+import contextlib
 
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
-from kernel.macro import ProofMacro, global_macros, has_macro, get_macro
+from kernel.macro import ProofMacro, has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
-
-global_methods = dict()
-
-def has_method(thy, name):
-    if name in global_methods:
-        method = global_methods[name]
-        return method.limit is None or thy.has_theorem(method.limit)
-    else:
-        return False
-
-def get_method(thy, name):
-    assert has_method(thy, name), "get_method: %s is not available" % name
-    return global_methods[name]
-
-def get_all_methods(thy):
-    res = dict()
-    for name in global_methods:
-        if has_method(thy, name):
-            res[name] = global_methods[name]
-    return res
-
-def get_method_sig(thy):
-    sig = dict()
-    for name in global_methods:
-        if has_method(thy, name):
-            sig[name] = global_methods[name].sig
-    return sig
-
-
-class Method:
-    """Methods represent potential actions on the state."""
-    def search(self, state, id, prevs):
-        pass
-
-    def apply(self, state, id, args, prevs):
-        pass
 
 
 class TheoryException(Exception):
@@ -431,20 +396,20 @@ class Theory():
                 except TypeError:
                     raise CheckProofException("invalid input to derivation " + seq.rule)
 
-            elif has_macro(self, seq.rule):
+            elif has_macro(seq.rule):
                 # Otherwise, the proof method corresponds to a macro. If
                 # the level of the macro is less than or equal to the current
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
-                macro = get_macro(self, seq.rule)
+                macro = get_macro(seq.rule)
                 assert macro.level is None or (isinstance(macro.level, int) and macro.level >= 0), \
                     ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level is not None and macro.level <= check_level:
-                    res_th = macro.eval(self, seq.args, prev_ths)
+                    res_th = macro.eval(seq.args, prev_ths)
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    seq.subproof = macro.expand(seq.id, self, seq.args, list(zip(seq.prevs, prev_ths)))
+                    seq.subproof = macro.expand(seq.id, seq.args, list(zip(seq.prevs, prev_ths)))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
                     for s in seq.subproof.items:
@@ -496,7 +461,7 @@ class Theory():
             _, sig = primitive_deriv[name]
             return sig
         else:
-            macro = get_macro(self, name)
+            macro = get_macro(name)
             return macro.sig
 
     def extend_type(self, ext):
@@ -557,3 +522,58 @@ class Theory():
                 raise TypeError
 
         return ext_report
+
+
+"""Global theory"""
+thy = None
+
+@contextlib.contextmanager
+def fresh_theory():
+    # Record previous theory
+    global thy
+    prev_thy = thy
+
+    # Set theory to empty
+    thy = Theory.EmptyTheory()
+    try:
+        yield None
+    finally:
+        # Recover previous theory
+        thy = prev_thy
+
+
+global_methods = dict()
+
+def has_method(name):
+    if name in global_methods:
+        method = global_methods[name]
+        return method.limit is None or thy.has_theorem(method.limit)
+    else:
+        return False
+
+def get_method(name):
+    assert has_method(name), "get_method: %s is not available" % name
+    return global_methods[name]
+
+def get_all_methods():
+    res = dict()
+    for name in global_methods:
+        if has_method(name):
+            res[name] = global_methods[name]
+    return res
+
+def get_method_sig():
+    sig = dict()
+    for name in global_methods:
+        if has_method(name):
+            sig[name] = global_methods[name].sig
+    return sig
+
+
+class Method:
+    """Methods represent potential actions on the state."""
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, args, prevs):
+        pass

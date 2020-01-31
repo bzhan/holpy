@@ -6,17 +6,11 @@ import json
 
 from kernel import term
 from kernel.term import Var
+from kernel import theory
 from kernel.theory import Theory, TheoryException
 from kernel.thm import Thm
 from kernel import extension
-from logic.context import Context
-from logic import logic  # Load all defined macros
-from data import expr
-from syntax import parser
-from syntax import operator
-from prover import z3wrapper
 from server import items
-from server import method  # Load all defined methods
 
 
 """
@@ -154,29 +148,30 @@ def load_theory_cache(filename, username="master"):
 
     # Load all imported theories
     depend_list = get_import_order(cache['imports'], username)
-    thy = Theory.EmptyTheory()
-    for prev_name in depend_list:
-        prev_cache = load_theory_cache(prev_name, username)
-        for item in prev_cache['content']:
-            if item.error is None:
-                thy.unchecked_extend(item.get_extension())
 
-    # Use this theory to parse the content of current theory
-    cache['timestamp'] = timestamp
-    data = load_json_data(filename, username)
-    cache['content'] = []
-    for index, item in enumerate(data['content']):
-        item = items.parse_item(thy, item)
-        cache['content'].append(item)
-        if item.error is None:
-            exts = item.get_extension()
-            thy.unchecked_extend(exts)
-            for ext in exts:
-                if ext.ty == extension.CONSTANT:
-                    name = ext.ref_name
-                else:
-                    name = ext.name
-                item_index[username][(ext.ty, name)] = (filename, timestamp, index)
+    with theory.fresh_theory():
+        for prev_name in depend_list:
+            prev_cache = load_theory_cache(prev_name, username)
+            for item in prev_cache['content']:
+                if item.error is None:
+                    theory.thy.unchecked_extend(item.get_extension())
+
+        # Use this theory to parse the content of current theory
+        cache['timestamp'] = timestamp
+        data = load_json_data(filename, username)
+        cache['content'] = []
+        for index, item in enumerate(data['content']):
+            item = items.parse_item(item)
+            cache['content'].append(item)
+            if item.error is None:
+                exts = item.get_extension()
+                theory.thy.unchecked_extend(exts)
+                for ext in exts:
+                    if ext.ty == extension.CONSTANT:
+                        name = ext.ref_name
+                    else:
+                        name = ext.name
+                    item_index[username][(ext.ty, name)] = (filename, timestamp, index)
 
     return cache
 
@@ -195,22 +190,6 @@ def query_item_index(username, filename, ext_ty, name):
     else:
         return None
 
-def load_theories(filenames, username="master"):
-    """Load a list of theories (usually serve as a base for
-    extending a theory).
-    
-    """
-    depend_list = get_import_order(filenames, username)
-    thy = Theory.EmptyTheory()
-    for prev_name in depend_list:
-        prev_cache = load_theory_cache(prev_name, username)
-        for item in prev_cache['content']:
-            if item.error is None:
-                thy.unchecked_extend(item.get_extension())
-
-    return thy
-
-
 def load_theory(filename, *, limit=None, username="master"):
     """Load the theory with the given theory name.
     
@@ -221,8 +200,24 @@ def load_theory(filename, *, limit=None, username="master"):
     load_theory_cache(filename, username)
     
     cache = theory_cache[username][filename]
-    thy = load_theories(cache['imports'], username)
-        
+
+    # Load imported theories
+    depend_list = get_import_order(cache['imports'], username)
+
+    theory.thy = Theory.EmptyTheory()
+    for prev_name in depend_list:
+        prev_cache = load_theory_cache(prev_name, username)
+        for item in prev_cache['content']:
+            if item.error is None:
+                theory.thy.unchecked_extend(item.get_extension())
+
+    # Make table for this later
+    if filename == 'expr':
+        from data import expr
+
+    if limit == 'start':
+        return None
+
     # Take the portion of content up to (and not including) limit
     content = cache['content']
     found_limit = False
@@ -232,9 +227,9 @@ def load_theory(filename, *, limit=None, username="master"):
             break
 
         if item.error is None:
-            thy.unchecked_extend(item.get_extension())
+            theory.thy.unchecked_extend(item.get_extension())
 
     if limit and not found_limit:
         raise TheoryException("load_theory: limit %s not found" % str(limit))
 
-    return thy
+    return None

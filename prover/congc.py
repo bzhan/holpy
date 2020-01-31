@@ -344,7 +344,7 @@ class CongClosureHOL:
     higher-order logic.
 
     """
-    def __init__(self, thy):
+    def __init__(self):
         """Initialization of an empty congruence closure for terms in
         higher-order logic.
 
@@ -364,11 +364,8 @@ class CongClosureHOL:
         # Mapping from equality added to the closure to proof terms.
         self.pts = {}
 
-        # Keep a theory for printing purposes
-        self.thy = thy
-
     def __str__(self):
-        index = "\n".join("%s: %s" % (s, printer.print_term(self.thy, t))
+        index = "\n".join("%s: %s" % (s, printer.print_term(t))
                           for s, t in self.index.items())
         return "Index:\n" + index + "\nClosure:\n" + str(self.closure)
 

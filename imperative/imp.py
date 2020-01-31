@@ -56,50 +56,50 @@ norm_cond_cv = every_conv(
     logic.norm_bool_expr()
 )
 
-def eval_Sem(thy, com, st):
+def eval_Sem(com, st):
     """Evaluates the effect of program com on state st."""
     f, args = com.strip_comb()
     T = st.get_type()
     if f.is_const_name("Skip"):
-        return apply_theorem(thy, "Sem_Skip", tyinst={"a": T}, inst={"s": st})
+        return apply_theorem("Sem_Skip", tyinst={"a": T}, inst={"s": st})
     elif f.is_const_name("Assign"):
         a, b = args
         Ta = a.get_type()
         Tb = b.get_type().range_type()
-        pt = apply_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
-        return pt.on_arg(thy, arg_conv(norm_cv))
+        pt = apply_theorem("Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
+        return pt.on_arg(arg_conv(norm_cv))
     elif f.is_const_name("Seq"):
         c1, c2 = args
-        pt1 = eval_Sem(thy, c1, st)
-        pt2 = eval_Sem(thy, c2, pt1.prop.arg)
-        pt = apply_theorem(thy, "Sem_seq", pt1, pt2)
-        return pt.on_arg(thy, function.fun_upd_norm_one_conv())
+        pt1 = eval_Sem(c1, st)
+        pt2 = eval_Sem(c2, pt1.prop.arg)
+        pt = apply_theorem("Sem_seq", pt1, pt2)
+        return pt.on_arg(function.fun_upd_norm_one_conv())
     elif f.is_const_name("Cond"):
         b, c1, c2 = args
-        b_st = beta_norm(thy, b(st))
-        b_eval = norm_cond_cv.get_proof_term(thy, b_st)
+        b_st = beta_norm(b(st))
+        b_eval = norm_cond_cv.get_proof_term(b_st)
         if b_eval.prop.arg == logic.true:
-            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
-            pt1 = eval_Sem(thy, c1, st)
-            return apply_theorem(thy, "Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
+            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
+            pt1 = eval_Sem(c1, st)
+            return apply_theorem("Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
         else:
-            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
-            pt2 = eval_Sem(thy, c2, st)
-            return apply_theorem(thy, "Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
+            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
+            pt2 = eval_Sem(c2, st)
+            return apply_theorem("Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
     elif f.is_const_name("While"):
         b, inv, c = args
-        b_st = beta_norm(thy, b(st))
-        b_eval = norm_cond_cv.get_proof_term(thy, b_st)
+        b_st = beta_norm(b(st))
+        b_eval = norm_cond_cv.get_proof_term(b_st)
         if b_eval.prop.arg == logic.true:
-            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
-            pt1 = eval_Sem(thy, c, st)
-            pt2 = eval_Sem(thy, com, pt1.prop.arg)
-            pt = apply_theorem(thy, "Sem_while_loop", b_res, pt1, pt2,
+            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
+            pt1 = eval_Sem(c, st)
+            pt2 = eval_Sem(com, pt1.prop.arg)
+            pt = apply_theorem("Sem_while_loop", b_res, pt1, pt2,
                                concl=Sem(T)(com, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
-            return pt.on_arg(thy, function.fun_upd_norm_one_conv())
+            return pt.on_arg(function.fun_upd_norm_one_conv())
         else:
-            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
-            return apply_theorem(thy, "Sem_while_skip", b_res, concl=Sem(T)(com, st, st))
+            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
+            return apply_theorem("Sem_while_skip", b_res, concl=Sem(T)(com, st, st))
     else:
         raise NotImplementedError
 
@@ -110,19 +110,19 @@ class eval_Sem_macro(ProofTermMacro):
         self.sig = Term
         self.limit = 'Sem_Assign'
 
-    def can_eval(self, thy, goal):
+    def can_eval(self, goal):
         assert isinstance(goal, Term), "eval_Sem_macro"
         f, (com, st, st2) = goal.strip_comb()
         try:
-            pt = eval_Sem(thy, com, st)
+            pt = eval_Sem(com, st)
         except NotImplementedError:
             return False
         return st2 == pt.prop.arg        
 
-    def get_proof_term(self, thy, args, pts):
+    def get_proof_term(self, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
         f, (com, st, st2) = args.strip_comb()
-        pt = eval_Sem(thy, com, st)
+        pt = eval_Sem(com, st)
         assert st2 == pt.prop.arg, "eval_Sem_macro: wrong result."
         return pt
 
@@ -140,7 +140,7 @@ class eval_Sem_method(Method):
             return []
 
         cur_th = state.get_proof_item(id).th
-        if eval_Sem_macro().can_eval(state.thy, cur_th.prop):
+        if eval_Sem_macro().can_eval(cur_th.prop):
             return [{}]
         else:
             return []
@@ -154,7 +154,7 @@ class eval_Sem_method(Method):
         state.apply_tactic(id, MacroTactic('eval_Sem'))
 
 
-def compute_wp(thy, T, c, Q):
+def compute_wp(T, c, Q):
     """Compute the weakest precondition for the given command
     and postcondition. Here c is the program and Q is the postcondition.
     The computation is by case analysis on the form of c. The function
@@ -163,44 +163,44 @@ def compute_wp(thy, T, c, Q):
 
     """
     if c.head.is_const_name("Skip"):  # Skip
-        return apply_theorem(thy, "skip_rule", concl=Valid(T)(Q, c, Q))
+        return apply_theorem("skip_rule", concl=Valid(T)(Q, c, Q))
     elif c.head.is_const_name("Assign"):  # Assign a b
         a, b = c.args
         s = Var("s", T)
         P2 = Term.mk_abs(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
-        return apply_theorem(thy, "assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
+        return apply_theorem("assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
     elif c.head.is_const_name("Seq"):  # Seq c1 c2
         c1, c2 = c.args
-        wp1 = compute_wp(thy, T, c2, Q)  # Valid Q' c2 Q
-        wp2 = compute_wp(thy, T, c1, wp1.prop.args[0])  # Valid Q'' c1 Q'
-        return apply_theorem(thy, "seq_rule", wp2, wp1)
+        wp1 = compute_wp(T, c2, Q)  # Valid Q' c2 Q
+        wp2 = compute_wp(T, c1, wp1.prop.args[0])  # Valid Q'' c1 Q'
+        return apply_theorem("seq_rule", wp2, wp1)
     elif c.head.is_const_name("Cond"):  # Cond b c1 c2
         b, c1, c2 = c.args
-        wp1 = compute_wp(thy, T, c1, Q)
-        wp2 = compute_wp(thy, T, c2, Q)
-        res = apply_theorem(thy, "if_rule", wp1, wp2, inst={"b": b})
+        wp1 = compute_wp(T, c1, Q)
+        wp2 = compute_wp(T, c2, Q)
+        res = apply_theorem("if_rule", wp1, wp2, inst={"b": b})
         return res
     elif c.head.is_const_name("While"):  # While b I c
         _, I, _ = c.args
-        pt = apply_theorem(thy, "while_rule", concl=Valid(T)(I, c, Q))
+        pt = apply_theorem("while_rule", concl=Valid(T)(I, c, Q))
         pt0 = ProofTerm.assume(pt.assums[0])
-        pt1 = vcg(thy, T, pt.assums[1])
+        pt1 = vcg(T, pt.assums[1])
         return ProofTerm.implies_elim(pt, pt0, pt1)
     else:
         raise NotImplementedError
 
-def vcg(thy, T, goal):
+def vcg(T, goal):
     """Compute the verification conditions for the goal. Here the
     goal is of the form Valid P c Q. The function returns a proof term
     showing [] |- Valid P c Q.
     
     """
     P, c, Q = goal.args
-    pt = compute_wp(thy, T, c, Q)
+    pt = compute_wp(T, c, Q)
     entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))
-    return apply_theorem(thy, "pre_rule", entail_P, pt)
+    return apply_theorem("pre_rule", entail_P, pt)
 
-def vcg_norm(thy, T, goal):
+def vcg_norm(T, goal):
     """Compute vcg, then normalize the result into the form
 
     A_1 --> A_2 --> ... --> A_n --> Valid P c Q,
@@ -208,12 +208,12 @@ def vcg_norm(thy, T, goal):
     where A_i are the normalized verification conditions.
 
     """
-    pt = vcg(thy, T, goal)
+    pt = vcg(T, goal)
     for A in reversed(pt.hyps):
         pt = ProofTerm.implies_intr(A, pt)
 
     # Normalize each of the assumptions
-    return pt.on_assums(thy, rewr_conv("Entail_def"), beta_norm_conv(),
+    return pt.on_assums(rewr_conv("Entail_def"), beta_norm_conv(),
                         top_conv(function.fun_upd_eval_conv()))
 
 class vcg_macro(ProofTermMacro):
@@ -229,33 +229,33 @@ class vcg_macro(ProofTermMacro):
         self.sig = Term
         self.limit = 'while_rule'
 
-    def get_proof_term(self, thy, goal, pts):
+    def get_proof_term(self, goal, pts):
         f, (P, c, Q) = goal.strip_comb()
         assert f.is_const_name("Valid"), "vcg_macro"
 
         # Obtain the theorem [...] |- Valid P c Q
         T = Q.get_type().domain_type()
-        pt = vcg_norm(thy, T, goal)
+        pt = vcg_norm(T, goal)
 
         # Discharge the assumptions using the previous facts
         return ProofTerm.implies_elim(pt, *pts)
 
 class vcg_tactic(Tactic):
     """Tactic corresponding to VCG macro."""
-    def get_proof_term(self, thy, goal, args, prevs):
+    def get_proof_term(self, goal, args, prevs):
         assert len(goal.hyps) == 0, "vcg_tactic"
         f, (P, c, Q) = goal.prop.strip_comb()
         assert f.is_const_name("Valid"), "vcg_tactic"
 
         # Obtain the theorem [...] |- Valid P c Q
         T = Q.get_type().domain_type()
-        pt = vcg_norm(thy, T, goal.prop)
+        pt = vcg_norm(T, goal.prop)
 
         ptAs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
-        return ProofTermDeriv("vcg", thy, goal.prop, ptAs)
+        return ProofTermDeriv("vcg", goal.prop, ptAs)
 
 
-def vcg_solve(thy, goal):
+def vcg_solve(goal):
     """Compute the verification conditions for a hoare triple, then
     solves the verification conditions using SMT.
     
@@ -264,9 +264,9 @@ def vcg_solve(thy, goal):
     assert f.is_const_name("Valid"), "vcg_solve"
 
     T = Q.get_type().domain_type()
-    pt = vcg_norm(thy, T, goal)
-    vc_pt = [ProofTermDeriv("z3", thy, vc, []) for vc in pt.assums]
-    return ProofTermDeriv("vcg", thy, goal, vc_pt)
+    pt = vcg_norm(T, goal)
+    vc_pt = [ProofTermDeriv("z3", vc, []) for vc in pt.assums]
+    return ProofTermDeriv("vcg", goal, vc_pt)
 
 class vcg_method(Method):
     """Method corresponding to VCG."""

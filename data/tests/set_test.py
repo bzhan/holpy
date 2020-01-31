@@ -7,7 +7,7 @@ from kernel.term import Var
 from logic import basic
 from data import set
 
-thy = basic.load_theory('set')
+basic.load_theory('set')
 
 class SetTest(unittest.TestCase):
     def testIsLiteralSet(self):

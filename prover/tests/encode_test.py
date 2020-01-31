@@ -3,6 +3,7 @@ import unittest
 from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel import report
+from kernel import theory
 from logic import logic
 from logic import basic
 from syntax import printer
@@ -21,6 +22,9 @@ e = Var('e', boolT)
 
 
 class EncodeTest(unittest.TestCase):
+    def setUp(self):
+        basic.load_theory('sat')
+
     def testLogicSubterms(self):
         t = disj(imp(a,conj(c,d)),imp(b,conj(c,e)))
         res = [
@@ -40,9 +44,8 @@ class EncodeTest(unittest.TestCase):
         pt = encode.get_encode_proof(th)
         self.assertEqual(pt.th, th)
         
-        thy = basic.load_theory('sat')
         rpt = report.ProofReport()
-        self.assertEqual(thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
+        self.assertEqual(theory.thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
 
 

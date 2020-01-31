@@ -13,7 +13,7 @@ from logic import logic
 from logic import basic
 from syntax import parser
 from syntax import printer
-from logic.context import Context
+from logic import context
 from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
@@ -22,9 +22,9 @@ from imperative import imp
 def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
               print_stat=False, print_search=False, print_steps=False):
     """Test list of steps for the given theorem."""
-    def test_val(thy, val):
-        ctxt = Context(thy, vars=val['vars'])
-        state = server.parse_init_state(ctxt, val['prop'])
+    def test_val(val):
+        context.set_context(None, vars=val['vars'])
+        state = server.parse_init_state(val['prop'])
         goal = state.prf.items[-1].th
         num_found = 0
         if print_stat and 'steps' not in val:
@@ -70,35 +70,35 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
             total = len(val['steps'])
             print("%20s %5d %5d %5d" % (val['name'], total, num_found, total - num_found))
         
-    thy = basic.load_theory(thy_name, limit=('thm', thm_name))
+    basic.load_theory(thy_name, limit=('thm', thm_name))
     with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
         for val in f_data['content']:
             if val['ty'] == 'thm' and val['name'] == thm_name:
-                test_val(thy, val)
+                test_val(val)
 
 class ServerTest(unittest.TestCase):
     def testInitState(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A & B --> B & A")
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A & B --> B & A")
         self.assertEqual(len(state.prf.items), 3)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A & B --> B & A"))
 
     def testInitState2(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A --> B --> A & B")
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A --> B --> A & B")
         self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A --> B --> A & B"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A --> B --> A & B"))
 
     def testInitState3(self):
-        ctxt = Context('logic_base', vars={'A': 'bool'})
-        state = server.parse_init_state(ctxt, "A | ~A")
+        context.set_context('logic_base', vars={'A': 'bool'})
+        state = server.parse_init_state("A | ~A")
         self.assertEqual(len(state.prf.items), 2)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A | ~A"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A | ~A"))
 
     def testJsonData(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A & B --> B & A")
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A & B --> B & A")
         json_data = state.json_data()
         self.assertEqual(len(json_data['vars']), 2)
         self.assertEqual(len(json_data['proof']), 3)
@@ -110,8 +110,8 @@ class ServerTest(unittest.TestCase):
             {'id': 1, 'rule': 'sorry', 'args': '', 'prevs': [], 'th': 'A & B |- B & A'},
             {'id': 2, 'rule': 'implies_intr', 'args': 'A & B', 'prevs': [1], 'th': ''}
         ]
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_proof(ctxt, data)
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_proof(data)
         self.assertEqual(len(state.vars), 2)
         self.assertEqual(len(state.prf.items), 3)
 
@@ -119,44 +119,44 @@ class ServerTest(unittest.TestCase):
         data = [
             {'id': 0, 'rule': 'variable', 'args': "a, 'a", 'prevs': [], 'th': ''}
         ]
-        ctxt = Context('logic_base')
-        state = server.parse_proof(ctxt, data)
+        context.set_context('logic_base')
+        state = server.parse_proof(data)
         self.assertEqual(len(state.prf.items), 1)
 
     def testGetCtxt(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A & B --> B & A")
-        self.assertEqual(state.get_ctxt(0), Context(ctxt.thy, vars={'A': 'bool', 'B': 'bool'}))
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A & B --> B & A")
+        self.assertEqual(state.get_vars(0), {'A': boolT, 'B': boolT})
 
     def testAddLineBefore(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A & B --> B & A")
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A & B --> B & A")
 
         state.add_line_before(2, 1)
         self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A & B --> B & A"))
 
         state.add_line_before(2, 3)
         self.assertEqual(len(state.prf.items), 7)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A & B --> B & A"))
 
     def testRemoveLine(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A & B --> B & A")
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A & B --> B & A")
 
         state.add_line_before(2, 1)
         state.remove_line(2)
         self.assertEqual(len(state.prf.items), 3)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A & B --> B & A"))
 
     def testSetLine(self):
-        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
-        state = server.parse_init_state(ctxt, "A & B --> B & A")
+        context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
+        state = server.parse_init_state("A & B --> B & A")
 
         state.add_line_before(2, 1)
         state.set_line(2, "theorem", args="conjD1")
         self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), parser.parse_thm(ctxt, "|- A & B --> B & A"))
+        self.assertEqual(state.check_proof(), parser.parse_thm("|- A & B --> B & A"))
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""

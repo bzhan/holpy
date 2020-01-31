@@ -6,10 +6,11 @@ from prover import congc
 from kernel.type import TVar, TFun
 from kernel.term import Term
 from kernel.thm import Thm
+from kernel import theory
 from logic import basic
 from data.nat import natT
 from syntax import parser, printer
-from logic.context import Context
+from logic import context
 
 MERGE, CHECK, EXPLAIN, MATCH = range(4)
 
@@ -80,9 +81,8 @@ class CongClosureTest(unittest.TestCase):
 
 class CongClosureHOLTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
-        thy = basic.load_theory('nat')
         Ta = TVar('a')
-        ctxt = Context(thy, vars={
+        context.set_context('nat', vars={
             'a': Ta,
             'b': Ta,
             'c': Ta,
@@ -98,36 +98,36 @@ class CongClosureHOLTest(unittest.TestCase):
             'y': natT,
             'z': natT
         })
-        closure = congc.CongClosureHOL(thy)
+        closure = congc.CongClosureHOL()
         for item in data:
             if item[0] == MERGE:
                 _, s, t = item
-                s = parser.parse_term(ctxt, s)
-                t = parser.parse_term(ctxt, t)
+                s = parser.parse_term(s)
+                t = parser.parse_term(t)
                 closure.merge(s, t)
                 if verbose:
                     print("Merge %s, %s\nAfter\n%s" % (s, t, closure))
             elif item[0] == CHECK:
                 _, s, t, b = item
-                s = parser.parse_term(ctxt, s)
-                t = parser.parse_term(ctxt, t)
+                s = parser.parse_term(s)
+                t = parser.parse_term(t)
                 self.assertEqual(closure.test(s, t), b)
             elif item[0] == EXPLAIN:
                 _, s, t = item
-                s = parser.parse_term(ctxt, s)
-                t = parser.parse_term(ctxt, t)
+                s = parser.parse_term(s)
+                t = parser.parse_term(t)
                 prf = closure.explain(s, t).export()
-                self.assertEqual(thy.check_proof(prf), Thm.mk_equals(s, t))
+                self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(s, t))
                 if verbose:
-                    print("Proof of %s" % printer.print_term(thy, Term.mk_equals(s, t)))
-                    print(printer.print_proof(thy, prf))
+                    print("Proof of %s" % printer.print_term(Term.mk_equals(s, t)))
+                    print(printer.print_proof(prf))
             elif item[0] == MATCH:
                 _, pat, t, res = item
-                pat = parser.parse_term(ctxt, pat)
-                t = parser.parse_term(ctxt, t)
+                pat = parser.parse_term(pat)
+                t = parser.parse_term(t)
                 for res_inst in res:
                     for k in res_inst:
-                        res_inst[k] = parser.parse_term(ctxt, res_inst[k])
+                        res_inst[k] = parser.parse_term(res_inst[k])
                 inst = closure.ematch(pat, t)
                 self.assertEqual(inst, res)
             else:

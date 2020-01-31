@@ -176,7 +176,7 @@ class SymPyMacro(ProofMacro):
         self.sig = Term
         self.limit = None
 
-    def can_eval(self, thy, goal, prevs):
+    def can_eval(self, goal, prevs):
         if len(prevs) == 0:
             return solve_goal(goal)
         elif len(prevs) == 1:
@@ -184,23 +184,23 @@ class SymPyMacro(ProofMacro):
         else:
             return False
 
-    def eval(self, thy, goal, prevs):
-        assert self.can_eval(thy, goal, prevs), "sympy: not solved."
+    def eval(self, goal, prevs):
+        assert self.can_eval(goal, prevs), "sympy: not solved."
 
         return Thm(sum([th.hyps for th in prevs], ()), goal)
 
-    def expand(self, prefix, thy, args, prevs):
+    def expand(self, prefix, args, prevs):
         raise NotImplementedError
 
 
-def sympy_solve(thy, goal, pts):
+def sympy_solve(goal, pts):
     if pts is None:
         pts = []
 
     macro = SymPyMacro()
-    if macro.can_eval(thy, goal, pts):
+    if macro.can_eval(goal, pts):
         th = Thm(sum([th.hyps for th in pts], ()), goal)
-        return ProofTermDeriv('sympy', thy, args=goal, prevs=pts, th=th)
+        return ProofTermDeriv('sympy', args=goal, prevs=pts, th=th)
     else:
         raise TacticException
 

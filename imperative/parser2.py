@@ -146,7 +146,7 @@ cond_parser = Lark(grammar, start="cond", parser="lalr", transformer=HoareTransf
 com_parser = Lark(grammar, start="cmd", parser="lalr", transformer=HoareTransformer())
 
 def process_file(input):
-    thy = basic.load_theory('hoare')
+    basic.load_theory('hoare')
 
     dn = os.path.dirname(os.path.realpath(__file__))
     with open(os.path.join(dn, 'examples/' + input + '.json'), encoding='utf-8') as a:

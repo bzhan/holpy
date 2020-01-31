@@ -9,16 +9,14 @@ from logic import basic
 from logic.tests.logic_test import test_macro
 from syntax import parser
 from syntax import printer
-from logic.context import Context
+from logic import context
 from prover import z3wrapper
 from server.tests.method_test import test_method
 
 
 class Z3WrapperTest(unittest.TestCase):
     def testNormTerm(self):
-        ctxt = Context('real', vars={'S': 'real set', 'T': 'real set', 'x': 'real', 'a': 'real', 'b': 'real'})
-        thy = ctxt.thy
-
+        context.set_context('real', vars={'S': 'real set', 'T': 'real set', 'x': 'real', 'a': 'real', 'b': 'real'})
         test_data = [
             ('S ⊆ T', '∀x. x ∈ S ⟶ x ∈ T'),
             ('x ∈ {a, b}', 'x = a ∨ x = b'),
@@ -28,15 +26,15 @@ class Z3WrapperTest(unittest.TestCase):
         ]
 
         for t, res_t in test_data:
-            t = parser.parse_term(ctxt, t)
-            res_t = parser.parse_term(ctxt, res_t)
-            self.assertEqual(z3wrapper.norm_term(thy, t), res_t)
+            t = parser.parse_term(t)
+            res_t = parser.parse_term(res_t)
+            self.assertEqual(z3wrapper.norm_term(t), res_t)
 
     def testSolve(self):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = Context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
+        context.set_context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
         test_data = [
             ("s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B", True),
             ("s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B", True),
@@ -50,29 +48,27 @@ class Z3WrapperTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
+            t = parser.parse_term(s)
+            self.assertEqual(z3wrapper.solve(t), res)
 
     def testSolveNat(self):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = Context('set', vars={
-            'x': 'nat', 'y': 'nat', 'z': 'nat'
-        })
+        context.set_context('set', vars={'x': 'nat', 'y': 'nat', 'z': 'nat'})
         test_data = [
             ('x - y + z = x + z - y', False),
             ('x >= y --> x - y + z = x + z - y', True)
         ]
         for s, res in test_data:
-            t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
+            t = parser.parse_term(s)
+            self.assertEqual(z3wrapper.solve(t), res)
 
     def testSolveSet(self):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = Context('set', vars={
+        context.set_context('set', vars={
             'm': 'nat', 'S': 'nat set', 'T': 'nat set', 'x': 'nat',
             'a': "'a", 'A': "'a set"})
         test_data = [
@@ -85,14 +81,14 @@ class Z3WrapperTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
+            t = parser.parse_term(s)
+            self.assertEqual(z3wrapper.solve(t), res)
 
     def testSolveReal(self):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = Context('real', vars={
+        context.set_context('real', vars={
             'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set',
             'n': 'nat'})
         test_data = [
@@ -113,8 +109,8 @@ class Z3WrapperTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
+            t = parser.parse_term(s)
+            self.assertEqual(z3wrapper.solve(t), res)
 
     def testZ3Macro(self):
         if not z3wrapper.z3_loaded:

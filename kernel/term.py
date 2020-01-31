@@ -144,7 +144,7 @@ class Term():
             elif self.is_comb():
                 self._hash_val = hash(("COMB", hash(self.fun), hash(self.arg)))
             elif self.is_abs():
-                self._hash_val = hash(("ABS", hash(self.var_T), hash(self.body)))
+                self._hash_val = hash(("ABS", hash(self.var_name), hash(self.var_T), hash(self.body)))
             elif self.is_bound():
                 self._hash_val = hash(("BOUND", self.n))
             else:

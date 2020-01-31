@@ -9,6 +9,7 @@ from kernel import theory
 from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
+from logic import context
 from syntax import parser, printer, pprint, settings
 from server import tactic
 
@@ -27,18 +28,20 @@ class cut_method(Method):
 
     @settings.with_settings
     def display_step(self, state, data):
-        goal = parser.parse_term(state.get_ctxt(data['goal_id']), data['goal'])
-        return pprint.N("have ") + printer.print_term(state.thy, goal)
+        id = data['goal_id']
+        with context.fresh_context(vars=state.get_vars(id)):
+            goal = parser.parse_term(data['goal'])
+        return pprint.N("have ") + printer.print_term(goal)
 
     def apply(self, state, id, data, prevs):
         cur_item = state.get_proof_item(id)
         hyps = cur_item.th.hyps
 
-        ctxt = state.get_ctxt(id)
-        C = parser.parse_term(ctxt, data['goal'])
-        for v in term.get_vars(C):
-            if v.name not in ctxt.vars:
-                raise AssertionError('Insert goal: extra variable %s' % v.name)
+        with context.fresh_context(vars=state.get_vars(id)):
+            C = parser.parse_term(data['goal'])
+            for v in term.get_vars(C):
+                if v.name not in context.ctxt.vars:
+                    raise AssertionError('Insert goal: extra variable %s' % v.name)
 
         state.add_line_before(id, 1)
         state.set_line(id, 'sorry', th=Thm(hyps, C))
@@ -57,15 +60,17 @@ class cases_method(Method):
 
     @settings.with_settings
     def display_step(self, state, data):
-        A = parser.parse_term(state.get_ctxt(data['goal_id']), data['case'])
-        return pprint.N("case ") + printer.print_term(state.thy, A)
+        id = data['goal_id']
+        with context.fresh_context(vars=state.get_vars(id)):
+            A = parser.parse_term(data['case'])
+        return pprint.N("case ") + printer.print_term(A)
 
     def apply(self, state, id, data, prevs):
-        ctxt = state.get_ctxt(id)
-        A = parser.parse_term(ctxt, data['case'])
-        for v in term.get_vars(A):
-            if v.name not in ctxt.vars:
-                raise AssertionError('Apply case: extra variable %s' % v.name)
+        with context.fresh_context(vars=state.get_vars(id)):
+            A = parser.parse_term(data['case'])
+            for v in term.get_vars(A):
+                if v.name not in context.ctxt.vars:
+                    raise AssertionError('Apply case: extra variable %s' % v.name)
 
         state.apply_tactic(id, tactic.cases(), args=A)
 
@@ -79,7 +84,7 @@ class apply_prev_method(Method):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
-            pt = tactic.apply_prev().get_proof_term(state.thy, cur_item.th, args=None, prevs=prevs)
+            pt = tactic.apply_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
         except (AssertionError, matcher.MatchException):
             return []
@@ -101,7 +106,7 @@ class rewrite_goal_with_prev_method(Method):
         try:
             cur_item = state.get_proof_item(id)
             prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
-            pt = tactic.rewrite_goal_with_prev().get_proof_term(state.thy, cur_item.th, args=None, prevs=prevs)
+            pt = tactic.rewrite_goal_with_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
         except (AssertionError, matcher.MatchException):
             return []
         else:
@@ -124,13 +129,12 @@ class rewrite_goal(Method):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
-        thy = state.thy
         results = []
 
         def search_thm(th_name, sym):
             try:
                 sym_b = True if sym == 'true' else False
-                pt = tactic.rewrite_goal(sym=sym_b).get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                pt = tactic.rewrite_goal(sym=sym_b).get_proof_term(cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "sym": sym, "_goal": [gap.prop for gap in pt.get_gaps()]})
             except (AssertionError, matcher.MatchException) as e:
                 pass
@@ -141,10 +145,10 @@ class rewrite_goal(Method):
                 sym = data['sym']
             search_thm(data['theorem'], sym)
         else:
-            for th_name in thy.get_data("theorems"):
-                if 'hint_rewrite' in thy.get_attributes(th_name):
+            for th_name in theory.thy.get_data("theorems"):
+                if 'hint_rewrite' in theory.thy.get_attributes(th_name):
                     search_thm(th_name, 'false')
-                if 'hint_rewrite_sym' in thy.get_attributes(th_name):
+                if 'hint_rewrite_sym' in theory.thy.get_attributes(th_name):
                     search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
@@ -173,13 +177,12 @@ class rewrite_fact(Method):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
-        thy = state.thy
         results = []
 
         def search_thm(th_name, sym):
             try:
                 sym_b = True if sym == 'true' else False
-                pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(thy, th_name, prevs)
+                pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(th_name, prevs)
                 results.append({"theorem": th_name, "sym": sym, "_fact": [pt.prop]})
             except (AssertionError, matcher.MatchException, InvalidDerivationException) as e:
                 # print(e)
@@ -188,10 +191,10 @@ class rewrite_fact(Method):
         if data:
             search_thm(data['theorem'], data['sym'])
         else:
-            for th_name in thy.get_data("theorems"):
-                if 'hint_rewrite' in thy.get_attributes(th_name):
+            for th_name in theory.thy.get_data("theorems"):
+                if 'hint_rewrite' in theory.thy.get_attributes(th_name):
                     search_thm(th_name, 'false')
-                if 'hint_rewrite_sym' in thy.get_attributes(th_name):
+                if 'hint_rewrite_sym' in theory.thy.get_attributes(th_name):
                     search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
@@ -207,7 +210,7 @@ class rewrite_fact(Method):
         try:
             prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
             sym_b = 'sym' in data and data['sym'] == 'true'
-            pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(state.thy, data['theorem'], prev_pts)
+            pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(data['theorem'], prev_pts)
         except InvalidDerivationException as e:
             raise e
 
@@ -232,7 +235,7 @@ class rewrite_fact_with_prev(Method):
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             macro = logic.rewrite_fact_with_prev_macro()
-            pt = macro.get_proof_term(state.thy, args=None, pts=prevs)
+            pt = macro.get_proof_term(args=None, pts=prevs)
             return [{"_fact": [pt.prop]}]
         except (AssertionError, matcher.MatchException):
             return []
@@ -244,7 +247,7 @@ class rewrite_fact_with_prev(Method):
     def apply(self, state, id, data, prevs):
         try:
             prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
-            pt = logic.rewrite_fact_with_prev_macro().get_proof_term(state.thy, None, prev_pts)
+            pt = logic.rewrite_fact_with_prev_macro().get_proof_term(None, prev_pts)
         except AssertionError as e:
             raise e
 
@@ -265,7 +268,6 @@ class apply_forward_step(Method):
     def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
 
-        thy = state.thy
         results = []
 
         def search_thm(th_name, min_prevs):
@@ -274,7 +276,7 @@ class apply_forward_step(Method):
 
             try:
                 macro = logic.apply_theorem_macro()
-                res_th = macro.eval(thy, th_name, prev_ths)
+                res_th = macro.eval(th_name, prev_ths)
                 results.append({"theorem": th_name, "_fact": [res_th.prop]})
             except theory.ParameterQueryException:
                 results.append({"theorem": th_name})
@@ -284,8 +286,8 @@ class apply_forward_step(Method):
         if data:
             search_thm(data['theorem'], min_prevs=0)
         else:
-            for th_name in thy.get_data("theorems"):
-                if 'hint_forward' in thy.get_attributes(th_name):
+            for th_name in theory.thy.get_data("theorems"):
+                if 'hint_forward' in theory.thy.get_attributes(th_name):
                     search_thm(th_name, min_prevs=1)
 
         return sorted(results, key=lambda d: d['theorem'])
@@ -296,14 +298,13 @@ class apply_forward_step(Method):
 
     def apply(self, state, id, data, prevs):
         inst = dict()
-        thy = state.thy
-        ctxt = state.get_ctxt(id)
-        for key, val in data.items():
-            if key.startswith("param_"):
-                if val != '':
-                    inst[key[6:]] = parser.parse_term(ctxt, val)
+        with context.fresh_context(vars=state.get_vars(id)):
+            for key, val in data.items():
+                if key.startswith("param_"):
+                    if val != '':
+                        inst[key[6:]] = parser.parse_term(val)
 
-        th = thy.get_theorem(data['theorem'], svar=True)
+        th = theory.thy.get_theorem(data['theorem'], svar=True)
 
         # Check whether to ask for parameters
         As, C = th.prop.strip_implies()
@@ -316,7 +317,7 @@ class apply_forward_step(Method):
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         macro = logic.apply_theorem_macro(with_inst=True)
-        res_th = macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
+        res_th = macro.eval((data['theorem'], dict(), inst), prev_ths)
 
         state.add_line_before(id, 1)
         if inst:
@@ -339,12 +340,11 @@ class apply_backward_step(Method):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
-        thy = state.thy
         results = []
 
         def search_thm(th_name):
             try:
-                pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                pt = tactic.rule().get_proof_term(cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
             except theory.ParameterQueryException:
                 # In this case, still suggest the result
@@ -355,9 +355,9 @@ class apply_backward_step(Method):
         if data:
             search_thm(data['theorem'])
         else:
-            for th_name in thy.get_data("theorems"):
-                if 'hint_backward' in thy.get_attributes(th_name) or \
-                   ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
+            for th_name in theory.thy.get_data("theorems"):
+                if 'hint_backward' in theory.thy.get_attributes(th_name) or \
+                   ('hint_backward1' in theory.thy.get_attributes(th_name) and len(prevs) >= 1):
                     search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
@@ -368,10 +368,10 @@ class apply_backward_step(Method):
 
     def apply(self, state, id, data, prevs):
         inst = dict()
-        ctxt = state.get_ctxt(id)
-        for key, val in data.items():
-            if key.startswith("param_"):
-                inst[key[6:]] = parser.parse_term(ctxt, val)
+        with context.fresh_context(vars=state.get_vars(id)):
+            for key, val in data.items():
+                if key.startswith("param_"):
+                    inst[key[6:]] = parser.parse_term(val)
         if inst:
             state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
         else:
@@ -387,12 +387,11 @@ class apply_resolve_step(Method):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
-        thy = state.thy
         results = []
 
         def search_thm(th_name):
             try:
-                pt = tactic.resolve().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                pt = tactic.resolve().get_proof_term(cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
             except (AssertionError, matcher.MatchException):
                 pass
@@ -400,8 +399,8 @@ class apply_resolve_step(Method):
         if data:
             search_thm(data['theorem'])
         else:
-            for th_name in thy.get_data("theorems"):
-                if 'hint_resolve' in thy.get_attributes(th_name):
+            for th_name in theory.thy.get_data("theorems"):
+                if 'hint_resolve' in theory.thy.get_attributes(th_name):
                     search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
@@ -461,7 +460,7 @@ class introduction(Method):
             names = [name.strip() for name in data['names'].split(",")]
         else:
             names = []
-        pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=names)
+        pt = intros_tac.get_proof_term(cur_item.th, args=names)
 
         cur_item.rule = "subproof"
         cur_item.subproof = pt.export(prefix=id)
@@ -530,11 +529,11 @@ class exists_elim(Method):
         assert len(prevs) == 1, "exists_elim"
 
         # Parse the list of variable names
-        ctxt = state.get_ctxt(id)
-        names = [name.strip() for name in data['names'].split(',')]
-        for name in names:
-            if name in ctxt.vars:
-                raise AssertionError("Instantiate exists: duplicate name %s" % name)
+        with context.fresh_context(vars=state.get_vars(id)):
+            names = [name.strip() for name in data['names'].split(',')]
+            for name in names:
+                if name in context.ctxt.vars:
+                    raise AssertionError("Instantiate exists: duplicate name %s" % name)
 
         exists_item = state.get_proof_item(prevs[0])
         exists_prop = exists_item.th.prop
@@ -593,12 +592,12 @@ class forall_elim(Method):
         return pprint.N("Forall elimination")
 
     def apply(self, state, id, data, prevs):
-        ctxt = state.get_ctxt(id)
-        t = parser.parse_term(ctxt, data['s'])
+        with context.fresh_context(vars=state.get_vars(id)):
+            t = parser.parse_term(data['s'])
 
-        for v in term.get_vars(t):
-            if v.name not in ctxt.vars:
-                raise AssertionError('Forall elimination: extra variable %s' % v.name)
+            for v in term.get_vars(t):
+                if v.name not in context.ctxt.vars:
+                    raise AssertionError('Forall elimination: extra variable %s' % v.name)
 
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim_gen', args=t, prevs=prevs)
@@ -627,12 +626,12 @@ class inst_exists_goal(Method):
         return pprint.N("Instantiate exists goal")
 
     def apply(self, state, id, data, prevs):
-        ctxt = state.get_ctxt(id)
-        t = parser.parse_term(ctxt, data['s'])
+        with context.fresh_context(vars=state.get_vars(id)):
+            t = parser.parse_term(data['s'])
 
-        for v in term.get_vars(t):
-            if v.name not in ctxt.vars:
-                raise AssertionError('Instantiate exists: extra variable %s' % v.name)
+            for v in term.get_vars(t):
+                if v.name not in context.ctxt.vars:
+                    raise AssertionError('Instantiate exists: extra variable %s' % v.name)
 
         state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
@@ -651,8 +650,8 @@ class induction(Method):
 #            return []
 
         results = []
-        for name, th in state.thy.get_data("theorems").items():
-            if 'var_induct' not in state.thy.get_attributes(name):
+        for name, th in theory.thy.get_data("theorems").items():
+            if 'var_induct' not in theory.thy.get_attributes(name):
                 continue
 
             var_T = th.concl.arg.T
@@ -672,9 +671,9 @@ class induction(Method):
 
     def apply(self, state, id, data, prevs):
         # Find variable
-        ctxt = state.get_ctxt(id)
-        assert data['var'] in ctxt.vars, "induction: cannot find variable."
-        var = Var(data['var'], ctxt.vars[data['var']])
+        with context.fresh_context(vars=state.get_vars(id)):
+            assert data['var'] in context.ctxt.vars, "induction: cannot find variable."
+            var = Var(data['var'], context.ctxt.vars[data['var']])
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
 
@@ -692,12 +691,12 @@ class new_var(Method):
 
     @settings.with_settings
     def display_step(self, state, data):
-        T = parser.parse_type(state.thy, data['type'])
-        return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(state.thy, T)
+        T = parser.parse_type(data['type'])
+        return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(T)
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
-        T = parser.parse_type(state.thy, data['type'])
+        T = parser.parse_type(data['type'])
         state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
 
 class apply_fact(Method):
@@ -711,11 +710,10 @@ class apply_fact(Method):
 
     def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
-        thy = state.thy
 
         try:
             macro = logic.apply_fact_macro()
-            pt = macro.eval(thy, args=None, prevs=prev_ths)
+            pt = macro.eval(args=None, prevs=prev_ths)
             return [{"_fact": [pt.prop]}]
         except (AssertionError, matcher.MatchException):
             return []
@@ -734,7 +732,7 @@ def apply_method(state, step):
     all necessary information.
 
     """
-    method = get_method(state.thy, step['method_name'])
+    method = get_method(step['method_name'])
     goal_id = ItemID(step['goal_id'])
     fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []
@@ -761,13 +759,13 @@ def output_hint(state, step):
     res = method.display_step(state, step)
     if '_goal' in step:
         if step['_goal']:
-            goals = [printer.print_term(state.thy, t) for t in step['_goal']]
+            goals = [printer.print_term(t) for t in step['_goal']]
             res += pprint.KWRed(" goal ") + printer.commas_join(goals)
         else:
             res += pprint.KWGreen(" (solves)")
 
     if '_fact' in step and len(step['_fact']) > 0:
-        facts = [printer.print_term(state.thy, t) for t in step['_fact']]
+        facts = [printer.print_term(t) for t in step['_fact']]
         res += pprint.KWGreen(" fact ") + printer.commas_join(facts)
 
     return res

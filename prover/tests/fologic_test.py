@@ -6,7 +6,7 @@ from kernel.type import boolT, TFun, TVar
 from logic import basic
 from syntax import parser
 from syntax import printer
-from logic.context import Context
+from logic import context
 from prover import fologic
 
 
@@ -17,9 +17,9 @@ class FOLogicTest(unittest.TestCase):
             ("%x::'a. y = y", False)
         ]
 
-        ctxt = Context('logic', vars={'y': "'a"})
+        context.set_context('logic', vars={'y': "'a"})
         for fm, res in test_data:
-            fm = parser.parse_term(ctxt, fm)
+            fm = parser.parse_term(fm)
             self.assertEqual(fologic.has_bound0(fm.body), res)
 
     def testSimplify(self):
@@ -30,10 +30,10 @@ class FOLogicTest(unittest.TestCase):
             ("(!x. !y. P x | (P y & false)) --> ?z::'a. q", "(!x. P x) --> q")
         ]
 
-        ctxt = Context('logic', vars={'p': 'bool', 'q': 'bool', 'P': "'a => bool", 'Q': "'a => bool"})
+        context.set_context('logic', vars={'p': 'bool', 'q': 'bool', 'P': "'a => bool", 'Q': "'a => bool"})
         for fm, res in test_data:
-            fm = parser.parse_term(ctxt, fm)
-            res = parser.parse_term(ctxt, res)
+            fm = parser.parse_term(fm)
+            res = parser.parse_term(res)
             self.assertEqual(fologic.simplify(fm), res)
 
     def testNNF(self):
@@ -43,10 +43,10 @@ class FOLogicTest(unittest.TestCase):
              "(?x. ~P x) | (?y. Q y) & (?z. P z & Q z) | (!y. ~Q y) & (!z. ~P z | ~Q z)")
         ]
 
-        ctxt = Context('logic', vars={'P': "'a => bool", 'Q': "'a => bool"})
+        context.set_context('logic', vars={'P': "'a => bool", 'Q': "'a => bool"})
         for fm, res in test_data:
-            fm = parser.parse_term(ctxt, fm)
-            res = parser.parse_term(ctxt, res)
+            fm = parser.parse_term(fm)
+            res = parser.parse_term(res)
             self.assertEqual(fologic.nnf(fm), res)
 
     def testASKolem(self):
@@ -58,10 +58,10 @@ class FOLogicTest(unittest.TestCase):
              "!x. ~P x | Q c_y | (!z. ~P z | ~Q z)")
         ]
 
-        ctxt = Context('nat', vars={'P': "'a => bool", 'Q': "'a => bool"})
+        context.set_context('nat', vars={'P': "'a => bool", 'Q': "'a => bool"})
         for fm, res in test_data:
-            fm = parser.parse_term(ctxt, fm)
-            res = parser.parse_term(ctxt, res)
+            fm = parser.parse_term(fm)
+            res = parser.parse_term(res)
             self.assertEqual(fologic.askolemize(fm), res)
 
 

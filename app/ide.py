@@ -11,7 +11,7 @@ from kernel import theory
 from syntax import parser, printer, settings, pprint
 from server import server, method
 from logic import basic
-from logic.context import Context
+from logic import context
 from server import monitor
 from server import items
 from app.app import app
@@ -51,10 +51,8 @@ class ProofCache():
         self.steps = data['steps']
 
         limit = ('thm', self.thm_name)
-        thy = basic.load_theory(self.theory_name, limit=limit, username=self.username)
-
-        ctxt = Context(thy, vars=self.vars)
-        state = server.parse_init_state(ctxt, self.prop)
+        context.set_context(self.theory_name, limit=limit, username=self.username, vars=self.vars)
+        state = server.parse_init_state(self.prop)
 
         self.history = []
         self.states = [copy.copy(state)]
@@ -208,11 +206,11 @@ def load_json_file():
         'description': cache['description'],
         'content': []
     }
-    thy = basic.load_theories(cache['imports'])
+    basic.load_theory(filename, limit='start')
     for item in cache['content']:
         if item.error is None:
-            thy.unchecked_extend(item.get_extension())
-        output_item = item.export_web(thy, line_length=line_length)
+            theory.thy.unchecked_extend(item.get_extension())
+        output_item = item.export_web(line_length=line_length)
         f_data['content'].append(output_item)
 
     if data['profile']:
@@ -268,22 +266,23 @@ def search_method():
         proof_cache.create_cache(data)
         print("Load: %f" % (time.perf_counter() - start_time))
 
+    basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), username=data['username'])
+
     start_time = time.perf_counter()
     state = proof_cache.states[data['index']]
-    thy = state.thy
     fact_ids = data['step']['fact_ids']
     goal_id = data['step']['goal_id']
 
     search_res = state.search_method(goal_id, fact_ids)
     for res in search_res:
         if '_goal' in res:
-            res['_goal'] = [printer.print_term(thy, t, unicode=True) for t in res['_goal']]
+            res['_goal'] = [printer.print_term(t, unicode=True) for t in res['_goal']]
         if '_fact' in res:
-            res['_fact'] = [printer.print_term(thy, t, unicode=True) for t in res['_fact']]
+            res['_fact'] = [printer.print_term(t, unicode=True) for t in res['_fact']]
 
-    ctxt = state.get_ctxt(goal_id)
-    print_ctxt = dict((k, printer.print_type(thy, v, unicode=True, highlight=True))
-                      for k, v in ctxt.vars.items())
+    vars = state.get_vars(goal_id)
+    print_vars = dict((k, printer.print_type(v, unicode=True, highlight=True))
+                      for k, v in vars.items())
     print("Response:", time.perf_counter() - start_time)
 
     if data['profile']:
@@ -294,7 +293,7 @@ def search_method():
 
     return jsonify({
         'search_res': search_res,
-        'ctxt': print_ctxt
+        'ctxt': print_vars
     })
 
 
@@ -322,11 +321,12 @@ def check_modify():
     else:
         limit = None
 
-    thy = basic.load_theory(data['filename'], limit=limit, username=username)
-    item = items.parse_edit(thy, edit_item)
+    basic.load_theory(data['filename'], limit=limit, username=username)
+
+    item = items.parse_edit(edit_item)
     if item.error is None:
-        thy.unchecked_extend(item.get_extension())
-    output_item = item.export_web(thy, line_length=line_length)
+        theory.thy.unchecked_extend(item.get_extension())
+    output_item = item.export_web(line_length=line_length)
 
     return jsonify({
         'item': output_item

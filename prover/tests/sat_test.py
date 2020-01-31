@@ -4,7 +4,7 @@ import json
 from logic import logic
 from logic import basic
 from syntax import parser
-from logic.context import Context
+from logic import context
 from prover import encode, sat
 
 
@@ -65,8 +65,8 @@ class SATTest(unittest.TestCase):
             f_data = json.load(f)
 
         for problem in f_data:
-            ctxt = Context('logic', vars=problem['vars'])
-            prop = parser.parse_term(ctxt, problem['prop'])
+            context.set_context('logic', vars=problem['vars'])
+            prop = parser.parse_term(problem['prop'])
             cnf, _ = encode.encode(logic.neg(prop))
             self.assertIsNone(sat.solve_cnf(cnf))
 

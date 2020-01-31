@@ -5,17 +5,16 @@ import unittest
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
+from kernel import theory
 from kernel.report import ProofReport
 from data import nat
 from imperative import imp
 from logic import logic
+from logic import context
 from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
 from syntax import printer
-from logic.context import Context
-
-thy = basic.load_theory('hoare')
 
 natT = nat.natT
 natFunT = TFun(natT, natT)
@@ -40,54 +39,57 @@ def fun_upd_of_seq(*ns):
     return mk_fun_upd(mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
 
 class HoareTest(unittest.TestCase):
+    def setUp(self):
+        basic.load_theory('hoare')
+
     def testEvalSem(self):
         com = Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2))))
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem2(self):
         com = Seq(incr_one, incr_one)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 2)
         goal = Sem(com, st, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem3(self):
         com = Cond(abs(s, eq(s(zero), zero)), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem4(self):
         com = Cond(abs(s, logic.neg(eq(s(zero), one))), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
         com = While(abs(s, logic.neg(eq(s(zero), to_binary(3)))), assn_true, incr_one)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)
-        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm([], goal))
+        self.assertEqual(theory.thy.check_proof(prf, rpt), Thm([], goal))
 
     def testComputeWP(self):
         Q = Var("Q", TFun(natFunT, boolT))
@@ -100,8 +102,8 @@ class HoareTest(unittest.TestCase):
         ]
 
         for c, P in test_data:
-            prf = imp.compute_wp(thy, natFunT, c, Q).export()
-            self.assertEqual(thy.check_proof(prf), Thm([], Valid(P, c, Q)))
+            prf = imp.compute_wp(natFunT, c, Q).export()
+            self.assertEqual(theory.thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
     def testVCG(self):
         P = Var("P", TFun(natFunT, boolT))
@@ -114,30 +116,30 @@ class HoareTest(unittest.TestCase):
 
         for c in test_data:
             goal = Valid(P, c, Q)
-            prf = imp.vcg(thy, natFunT, goal).export()
-            self.assertEqual(thy.check_proof(prf).concl, goal)
+            prf = imp.vcg(natFunT, goal).export()
+            self.assertEqual(theory.thy.check_proof(prf).concl, goal)
 
-            prf = imp.vcg_tactic().get_proof_term(thy, Thm([], goal), None, []).export()
-            self.assertEqual(thy.check_proof(prf).prop, goal)
+            prf = imp.vcg_tactic().get_proof_term(Thm([], goal), None, []).export()
+            self.assertEqual(theory.thy.check_proof(prf).prop, goal)
 
     def testVCGWhile(self):
-        ctxt = Context(thy, vars={"A": 'nat', "B": 'nat'})
-        c = parser.parse_term(ctxt, \
+        context.set_context(None, vars={"A": 'nat', "B": 'nat'})
+        c = parser.parse_term(
             "While (%s. ~s (0::nat) = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))")
-        P = parser.parse_term(ctxt, "%s. s (0::nat) = (0::nat) & s 1 = 0")
-        Q = parser.parse_term(ctxt, "%s. s (1::nat) = A * B")
+        P = parser.parse_term("%s. s (0::nat) = (0::nat) & s 1 = 0")
+        Q = parser.parse_term("%s. s (1::nat) = A * B")
         goal = Valid(P, c, Q)
-        prf = imp.vcg_solve(thy, goal).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.vcg_solve(goal).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testVCGIf(self):
-        ctxt = Context(thy, vars={'A': 'nat'})
-        c = parser.parse_term(ctxt, "Cond (%s. s (0::nat) = A) Skip (Assign 0 (%s. A))")
-        P = parser.parse_term(ctxt, "%s::nat=>nat. true")
-        Q = parser.parse_term(ctxt, "%s. s (0::nat) = A")
+        context.set_context(None, vars={'A': 'nat'})
+        c = parser.parse_term("Cond (%s. s (0::nat) = A) Skip (Assign 0 (%s. A))")
+        P = parser.parse_term("%s::nat=>nat. true")
+        Q = parser.parse_term("%s. s (0::nat) = A")
         goal = Valid(P, c, Q)
-        prf = imp.vcg_solve(thy, goal).export()
-        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+        prf = imp.vcg_solve(goal).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
 
 if __name__ == "__main__":

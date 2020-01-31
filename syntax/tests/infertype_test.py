@@ -7,23 +7,23 @@ from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from logic import basic
 from logic import logic
 from data import nat
-from data import list
-from logic.context import Context
+from data.list import listT, cons, mk_append, nil
+from logic import context
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
-thy = basic.load_theory('list')
-
 Ta = TVar("a")
-listT = list.listT
 
-ctxt = Context(thy, vars={
-    "A" : boolT,
-    "P" : TFun(Ta, boolT),
-    "a" : Ta,
-    "b" : Ta,
-})
 
 class InferTypeTest(unittest.TestCase):
+    def setUp(self):
+        basic.load_theory('list')
+        context.ctxt = context.Context(vars={
+            "A" : boolT,
+            "P" : TFun(Ta, boolT),
+            "a" : Ta,
+            "b" : Ta,
+        })
+
     def testInferType(self):
         test_data = [
             # A1 --> A2
@@ -43,11 +43,11 @@ class InferTypeTest(unittest.TestCase):
              Abs("x", Ta, Abs("y", Ta, Const("equals", TFun(Ta, Ta, boolT))(Bound(1), Bound(0))))),
             # [a]
             (Const("cons", None)(Var("a", None), Const("nil", None)),
-             list.cons(Ta)(Var("a", Ta), Const("nil", listT(Ta)))),
+             cons(Ta)(Var("a", Ta), Const("nil", listT(Ta)))),
         ]
 
         for t, res in test_data:
-            self.assertEqual(type_infer(ctxt, t), res)
+            self.assertEqual(type_infer(t), res)
 
     def testInferTypeFail(self):
         test_data = [
@@ -56,7 +56,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "Unable to unify", type_infer, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "Unable to unify", type_infer, t)
 
     def testInferTypeFail2(self):
         test_data = [
@@ -65,7 +65,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, t)
 
     def testInferTypeFail3(self):
         test_data = [
@@ -73,31 +73,31 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "Infinite loop", type_infer, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "Infinite loop", type_infer, t)
 
     def testInferPrintedType(self):
         t = Const("nil", listT(Ta))
-        infer_printed_type(thy, t)
+        infer_printed_type(t)
         self.assertTrue(hasattr(t, "print_type"))
 
-        t = list.cons(Ta)(Var("a", Ta))
-        infer_printed_type(thy, t)
+        t = cons(Ta)(Var("a", Ta))
+        infer_printed_type(t)
         self.assertFalse(hasattr(t.fun, "print_type"))
 
         t = Term.mk_equals(Const("nil", listT(Ta)), Const("nil", listT(Ta)))
-        infer_printed_type(thy, t)
+        infer_printed_type(t)
         self.assertFalse(hasattr(t.fun.fun, "print_type"))
         self.assertTrue(hasattr(t.arg1, "print_type"))
         self.assertFalse(hasattr(t.arg, "print_type"))
 
-        t = Term.mk_equals(list.mk_append(list.nil(Ta),list.nil(Ta)), list.nil(Ta))
-        infer_printed_type(thy, t)
+        t = Term.mk_equals(mk_append(nil(Ta),nil(Ta)), nil(Ta))
+        infer_printed_type(t)
         self.assertTrue(hasattr(t.arg1.arg1, "print_type"))
         self.assertFalse(hasattr(t.arg1.arg, "print_type"))
         self.assertFalse(hasattr(t.arg, "print_type"))
 
         t = Term.mk_abs(Var("x", Ta), Term.mk_equals(Var("x", Ta), Var("x", Ta)))
-        infer_printed_type(thy, t)
+        infer_printed_type(t)
 
 
 if __name__ == "__main__":

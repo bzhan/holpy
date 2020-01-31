@@ -14,6 +14,7 @@ from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
+from kernel import theory
 from logic import logic
 from logic import conv
 from logic.proofterm import ProofTermDeriv
@@ -190,31 +191,31 @@ norm_thms = [
     'real_closed_interval_def',
 ]
 
-def norm_term(thy, t):
+def norm_term(t):
     # Collect list of theorems that can be used.
     cvs = []
     for th_name in norm_thms:
-        if isinstance(th_name, str) and thy.has_theorem(th_name):
+        if isinstance(th_name, str) and theory.thy.has_theorem(th_name):
             cvs.append(conv.try_conv(conv.rewr_conv(th_name)))
-        elif thy.has_theorem(th_name[0]):
+        elif theory.thy.has_theorem(th_name[0]):
             cvs.append(conv.try_conv(conv.rewr_conv(th_name[0], sym=True)))
     cvs.append(conv.try_conv(conv.beta_conv()))
     cv = conv.top_conv(conv.every_conv(*cvs))
     while True:
-        rhs = cv.eval(thy, t).rhs
+        rhs = cv.eval(t).rhs
         if rhs == t:
             break
         else:
             t = rhs
     return fologic.simplify(t)
 
-def solve(thy, t, debug=False):
+def solve(t, debug=False):
     """Solve the given goal using Z3."""
     s = z3.Solver()
     s.set('timeout', 5000)
 
     # First strip foralls from t.
-    t = norm_term(thy, t)
+    t = norm_term(t)
     new_names = logic.get_forall_names(t, svar=False)
     _, As, C = logic.strip_all_implies(t, new_names, svar=False)
 
@@ -251,20 +252,20 @@ class Z3Macro(ProofMacro):
         self.sig = Term
         self.limit = None
 
-    def eval(self, thy, args, prevs):
+    def eval(self, args, prevs):
         if z3_loaded:
             assms = [prev.prop for prev in prevs]
-            assert solve(thy, Term.mk_implies(*(assms + [args]))), "Z3: not solved."
+            assert solve(Term.mk_implies(*(assms + [args]))), "Z3: not solved."
         else:
             print("Warning: Z3 is not installed")
 
         return Thm(sum([th.hyps for th in prevs], ()), args)
 
-    def expand(self, prefix, thy, args, prevs):
+    def expand(self, prefix, args, prevs):
         raise NotImplementedError
 
-def apply_z3(thy, t):
-    return ProofTermDeriv('z3', thy, args=t)
+def apply_z3(t):
+    return ProofTermDeriv('z3', args=t)
 
 
 class Z3Method(Method):
@@ -293,7 +294,7 @@ class Z3Method(Method):
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
         goal = cur_item.th.prop
 
-        assert solve(state.thy, Term.mk_implies(*(assms + [goal]))), "Z3 method: not solved"
+        assert solve(Term.mk_implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)
 
 

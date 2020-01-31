@@ -17,7 +17,7 @@ from data import function
 from data import interval
 from syntax import printer
 
-thy = basic.load_theory('list')
+basic.load_theory('list')
 
 A = Var("A", boolT)
 B = Var("B", boolT)
@@ -123,7 +123,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintRename(self):
         test_data = [
@@ -133,7 +133,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintComb(self):
         f = Var("f", TFun(Ta, Ta))
@@ -146,7 +146,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintArithmetic(self):
         test_data = [
@@ -169,10 +169,11 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testReal(self):
-        thy = basic.load_theory('real')
+        basic.load_theory('real')
+
         x = Var('x', real.realT)
         y = Var('y', real.realT)
         n = Var('n', nat.natT)
@@ -190,7 +191,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintBinary(self):
         m = Var("m", nat.natT)
@@ -202,10 +203,11 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintInt(self):
-        thy = basic.load_theory('int')
+        basic.load_theory('int')
+
         m = Var("m", int.intT)
         test_data = [
             (int.zero, "(0::int)"),
@@ -217,10 +219,11 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintReal(self):
-        thy = basic.load_theory('real')
+        basic.load_theory('real')
+
         m = Var("m", real.realT)
         test_data = [
             (real.zero, "(0::real)"),
@@ -232,7 +235,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintList(self):
         nil = list.nil
@@ -252,7 +255,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintSet(self):
         A = Var("A", set.setT(Ta))
@@ -277,8 +280,8 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s1, s2 in test_data:
-            self.assertEqual(printer.print_term(thy, t), s1)
-            self.assertEqual(printer.print_term(thy, t, unicode=True), s2)
+            self.assertEqual(printer.print_term(t), s1)
+            self.assertEqual(printer.print_term(t, unicode=True), s2)
 
     def testPrintInterval(self):
         m = Var("m", nat.natT)
@@ -288,9 +291,9 @@ class PrinterTest(unittest.TestCase):
             (interval.mk_interval(nat.one, m), "{1..m}"),
         ]
 
-        thy = basic.load_theory('iterate')
+        basic.load_theory('iterate')
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintFunction(self):
         f = Var("f", TFun(Ta, Ta))
@@ -306,9 +309,9 @@ class PrinterTest(unittest.TestCase):
             (function.mk_const_fun(nat.natT, nat.zero), "%x::nat. (0::nat)"),
         ]
 
-        thy = basic.load_theory('function')
+        basic.load_theory('function')
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintString(self):
         test_data = [
@@ -316,9 +319,9 @@ class PrinterTest(unittest.TestCase):
             (string.mk_string("ab"), '"ab"'),
         ]
 
-        thy = basic.load_theory('string')
+        basic.load_theory('string')
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintWithType(self):
         test_data = [
@@ -328,7 +331,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t), s)
+            self.assertEqual(printer.print_term(t), s)
 
     def testPrintUnicode(self):
         test_data = [
@@ -344,12 +347,12 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t, unicode=True), s)
+            self.assertEqual(printer.print_term(t, unicode=True), s)
 
     def testPrintHighlight(self):
         """Test highlight"""
         t = exists(a,all(b,R(a,b)))
-        self.assertEqual(printer.print_term(thy, t, highlight=True), [
+        self.assertEqual(printer.print_term(t, highlight=True), [
             {'color': 0, 'text': '?'},
             {'color': 1, 'text': 'a'},
             {'color': 0, 'text': '. '},
@@ -369,7 +372,7 @@ class PrinterTest(unittest.TestCase):
         B = Var('B', boolT)
         A_to_B = Term.mk_implies(A, B)
         th = Thm([A, A_to_B], B)
-        res = printer.print_thm(thy, th, highlight=True)
+        res = printer.print_thm(th, highlight=True)
         self.assertEqual(res, [
             {'color': 2, 'text': 'A'},
             {'color': 0, 'text': ', '},

@@ -5,6 +5,7 @@ import json
 from pstats import Stats
 import cProfile
 
+from logic import basic
 from integral import proof
 from prover import sympywrapper
 
@@ -217,6 +218,7 @@ class RunIntegral(unittest.TestCase):
             pr = cProfile.Profile()
             pr.enable()
 
+        basic.load_theory('realintegral')
         for filename in filenames:
             with open('integral/examples/%s.json' % filename, 'r', encoding='utf-8') as f:
                 f_data = json.load(f)

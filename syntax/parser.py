@@ -10,7 +10,9 @@ from kernel import macro
 from kernel import term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
+from kernel import theory
 from kernel import extension
+from logic import context
 from data import binary
 from syntax import infertype
 
@@ -145,9 +147,6 @@ grammar = r"""
     %ignore WS
 """
 
-# Modifiable settings in the transformation part of the parser.
-# This includes thy and ctxt.
-parser_setting = dict()
 
 @v_args(inline=True)
 class HOLTransformer(Transformer):
@@ -161,8 +160,6 @@ class HOLTransformer(Transformer):
         return STVar(str(s))
 
     def type(self, *args):
-        thy = parser_setting['thy']
-        tname = args[-1]
         return Type(str(args[-1]), *args[:-1])
 
     def funtype(self, t1, t2):
@@ -173,10 +170,8 @@ class HOLTransformer(Transformer):
         return SVar(s, None)
 
     def vname(self, s):
-        thy = parser_setting['thy']
-        ctxt = parser_setting['ctxt']
         s = str(s)
-        if thy.has_term_sig(s) or s in ctxt.defs:
+        if theory.thy.has_term_sig(s) or s in context.ctxt.defs:
             # s is the name of a constant in the theory
             return Const(s, None)
         else:
@@ -418,96 +413,82 @@ var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
 term_list_parser = get_parser_for("term_list")
 
-def parse_type(thy, s, check_type=True):
+def parse_type(s, *, check_type=True):
     """Parse a type."""
-    parser_setting['thy'] = thy
     T = type_parser.parse(s)
     if check_type:
-        thy.check_type(T)
+        theory.thy.check_type(T)
     return T
 
-def parse_term(ctxt, s):
+def parse_term(s):
     """Parse a term."""
-    parser_setting['thy'] = ctxt.thy
-    parser_setting['ctxt'] = ctxt
     # Permit parsing a list of strings by concatenating them.
     if isinstance(s, list):
         s = " ".join(s)
     try:
         t = term_parser.parse(s)
-        return infertype.type_infer(ctxt, t)
+        return infertype.type_infer(t)
     except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 
-def parse_thm(ctxt, s):
+def parse_thm(s):
     """Parse a theorem (sequent)."""
-    parser_setting['thy'] = ctxt.thy
-    parser_setting['ctxt'] = ctxt
     try:
         th = thm_parser.parse(s)
-        th.hyps = tuple(infertype.type_infer(ctxt, hyp) for hyp in th.hyps)
-        th.prop = infertype.type_infer(ctxt, th.prop)
+        th.hyps = tuple(infertype.type_infer(hyp) for hyp in th.hyps)
+        th.prop = infertype.type_infer(th.prop)
     except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
     return th
 
-def parse_inst(ctxt, s):
+def parse_inst(s):
     """Parse a term instantiation."""
-    parser_setting['thy'] = ctxt.thy
-    parser_setting['ctxt'] = ctxt
     inst = inst_parser.parse(s)
     for k in inst:
-        inst[k] = infertype.type_infer(ctxt, inst[k])
+        inst[k] = infertype.type_infer(inst[k])
     return inst
 
-def parse_tyinst(thy, s):
+def parse_tyinst(s):
     """Parse a type instantiation."""
-    parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
 
-def parse_named_thm(ctxt, s):
+def parse_named_thm(s):
     """Parse a named theorem."""
     res = named_thm_parser.parse(s)
     if len(res) == 1:
-        return (None, infertype.type_infer(ctxt, res[0]))
+        return (None, infertype.type_infer(res[0]))
     else:
-        return (str(res[0]), infertype.type_infer(ctxt, res[1]))
+        return (str(res[0]), infertype.type_infer(res[1]))
 
-def parse_instsp(ctxt, s):
+def parse_instsp(s):
     """Parse type and term instantiations."""
-    parser_setting['thy'] = ctxt.thy
-    parser_setting['ctxt'] = ctxt
     tyinst, inst = instsp_parser.parse(s)
     for k in inst:
-        inst[k] = infertype.type_infer(ctxt, inst[k])
+        inst[k] = infertype.type_infer(inst[k])
     return tyinst, inst
 
-def parse_ind_constr(thy, s):
+def parse_ind_constr(s):
     """Parse a constructor for an inductive type definition."""
-    parser_setting['thy'] = thy
     return ind_constr_parser.parse(s)
 
-def parse_var_decl(thy, s):
+def parse_var_decl(s):
     """Parse a variable declaration."""
-    parser_setting['thy'] = thy
     return var_decl_parser.parse(s)
 
-def parse_term_list(ctxt, s):
+def parse_term_list(s):
     """Parse a list of terms."""
     if s == "":
         return []
-    parser_setting['thy'] = ctxt.thy
-    parser_setting['ctxt'] = ctxt
+
     ts = term_list_parser.parse(s)
     for i in range(len(ts)):
-        ts[i] = infertype.type_infer(ctxt, ts[i])
+        ts[i] = infertype.type_infer(ts[i])
     return ts
 
-def parse_args(ctxt, sig, args):
+def parse_args(sig, args):
     """Parse the argument according to the signature."""
-    thy = ctxt.thy
     try:
         if sig == None:
             assert args == "", "rule expects no argument."
@@ -515,30 +496,30 @@ def parse_args(ctxt, sig, args):
         elif sig == str:
             return args
         elif sig == Term:
-            return parse_term(ctxt, args)
+            return parse_term(args)
         elif sig == macro.Inst:
-            return parse_inst(ctxt, args)
+            return parse_inst(args)
         elif sig == macro.TyInst:
-            return parse_tyinst(thy, args)
+            return parse_tyinst(args)
         elif sig == Tuple[str, HOLType]:
             s1, s2 = args.split(",", 1)
-            return s1, parse_type(thy, s2)
+            return s1, parse_type(s2)
         elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
-            return s1, parse_term(ctxt, s2)
+            return s1, parse_term(s2)
         elif sig == Tuple[str, macro.TyInst, macro.Inst]:
             s1, s2 = args.split(",", 1)
-            tyinst, inst = parse_instsp(ctxt, s2)
+            tyinst, inst = parse_instsp(s2)
             return s1, tyinst, inst
         elif sig == List[Term]:
-            return parse_term_list(ctxt, args)
+            return parse_term_list(args)
         else:
             raise TypeError
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
 
-def parse_proof_rule(ctxt, data):
+def parse_proof_rule(data):
     """Parse a proof rule.
 
     data is a dictionary containing id, rule, args, prevs, and th.
@@ -548,7 +529,6 @@ def parse_proof_rule(ctxt, data):
     require different parsing of the arguments.
 
     """
-    thy = ctxt.thy
     id, rule = data['id'], data['rule']
 
     if rule == "":
@@ -557,8 +537,8 @@ def parse_proof_rule(ctxt, data):
     if data['th'] == "":
         th = None
     else:
-        th = parse_thm(ctxt, data['th'])
+        th = parse_thm(data['th'])
 
-    sig = thy.get_proof_rule_sig(rule)
-    args = parse_args(ctxt, sig, data['args'])
+    sig = theory.thy.get_proof_rule_sig(rule)
+    args = parse_args(sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)

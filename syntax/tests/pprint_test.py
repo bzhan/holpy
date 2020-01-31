@@ -2,19 +2,17 @@
 
 import unittest
 
-from logic import basic
 from syntax import parser
 from syntax import pprint
-from logic.context import Context
+from logic import context
 
 
 class PPrintTest(unittest.TestCase):
-    def run_test(self, thy, s, expected_res, *, line_length=80):
-        ctxt = Context(thy)
-        thy = ctxt.thy
-        t = parser.parse_term(ctxt, s)
-        ast = pprint.get_ast_term(thy, t, unicode=True)
-        res = pprint.print_ast(thy, ast, line_length=line_length)
+    def run_test(self, thy_name, s, expected_res, *, line_length=80):
+        context.set_context(thy_name)
+        t = parser.parse_term(s)
+        ast = pprint.get_ast_term(t, unicode=True)
+        res = pprint.print_ast(ast, line_length=line_length)
         self.assertEqual(res, expected_res)
 
     def testPPrint1(self):
@@ -45,12 +43,12 @@ class PPrintTest(unittest.TestCase):
         )
 
     def testPPrint3(self):
-        ctxt = Context('realanalysis')
-        thy = ctxt.thy
+        context.set_context('realanalysis')
+
         s = "real_bounded t ∧ t ⊆ s ⟶ real_bounded s"
-        t = parser.parse_term(ctxt, s)
-        ast = pprint.get_ast_term(thy, t, unicode=True)
-        res = pprint.print_ast(thy, ast, highlight=True, line_length=80)
+        t = parser.parse_term(s)
+        ast = pprint.get_ast_term(t, unicode=True)
+        res = pprint.print_ast(ast, highlight=True, line_length=80)
         expected_res = [[
             {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 1},
             {'text': ' ', 'color': 0},

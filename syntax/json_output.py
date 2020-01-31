@@ -14,13 +14,12 @@ class JSONTheory():
     def __init__(self, name, imports, description):
         self.name = name
         self.imports = imports
-        self.thy = basic.load_theories(imports)
         self.description = description
         self.content = []
 
     def export_proof_json(self, item):
-        str_th = printer.print_thm(self.thy, item.th) if item.th else ""
-        str_args = printer.print_str_args(self.thy, item.rule, item.args, item.th)
+        str_th = printer.print_thm(item.th) if item.th else ""
+        str_args = printer.print_str_args(item.rule, item.args, item.th)
         res = {
             'id': str(item.id),
             'th': str_th,
@@ -41,7 +40,7 @@ class JSONTheory():
         data = {
             "name": name,
             "ty": "thm",
-            "prop": items.export_term(self.thy, th.prop),
+            "prop": items.export_term(th.prop),
             "vars": vars,
             "num_gaps": 0,
             "proof": sum([self.export_proof_json(item) for item in prf.items], []),

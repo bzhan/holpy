@@ -27,7 +27,7 @@ class ParaverifierTest(unittest.TestCase):
         failed = 0
         for inv_id, rule_id, case_id, hint in subgoals:
             goal, ans = sys.verify_subgoal(inv_id, rule_id, case_id, hint)
-            log(printer.print_term(sys.thy, goal), " --- ", "OK" if ans else "FAIL")
+            log(printer.print_term(goal), " --- ", "OK" if ans else "FAIL")
             if not ans:
                 failed += 1
 
@@ -47,7 +47,7 @@ class ParaverifierTest(unittest.TestCase):
         failed = 0
         for inv_id, rule_id, case_id, hint in subgoals:
             goal, ans = sys.verify_subgoal(inv_id, rule_id, case_id, hint)
-            log(printer.print_term(sys.thy, goal), " --- ", "OK" if ans else "FAIL")
+            log(printer.print_term(goal), " --- ", "OK" if ans else "FAIL")
             if not ans:
                 failed += 1
 

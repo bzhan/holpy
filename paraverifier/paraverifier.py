@@ -6,6 +6,7 @@ import json
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
+from kernel import theory
 from kernel import extension
 from logic import basic
 from logic import logic
@@ -17,7 +18,7 @@ from prover import z3wrapper
 from syntax import parser
 from syntax import printer
 from server import items
-from logic.context import Context
+from logic import context
 from paraverifier import gcl
 
 
@@ -43,8 +44,7 @@ class ParaSystem():
     invs: list of invariants.
 
     """
-    def __init__(self, thy, name, vars, states, rules, invs):
-        self.thy = thy
+    def __init__(self, name, vars, states, rules, invs):
         self.name = name
         self.vars = vars
         self.states = states
@@ -70,12 +70,12 @@ class ParaSystem():
         for i, rule in enumerate(self.rules):
             _, guard, assigns = rule
             assigns_str = ", ".join("%s := %s" % (str(k), str(v)) for k, v in assigns.items())
-            res += "%d: [%s] %s" % (i, printer.print_term(self.thy, guard), assigns_str) + "\n"
+            res += "%d: [%s] %s" % (i, printer.print_term(guard), assigns_str) + "\n"
 
         res += "Number of invariants: %d\n" % len(self.invs)
         for i, inv in enumerate(self.invs):
             _, inv_term = inv
-            res += "%d: %s" % (i, printer.print_term(self.thy, inv_term)) + "\n"
+            res += "%d: %s" % (i, printer.print_term(inv_term)) + "\n"
 
         return res
 
@@ -160,7 +160,7 @@ class ParaSystem():
         goal = self.get_subgoal(inv_id, rule_id, case_id, hint)
         goal = self.replace_states(goal)
         if z3wrapper.z3_loaded:
-            ans = z3wrapper.solve(self.thy, goal)
+            ans = z3wrapper.solve(goal)
         else:
             ans = True
         return goal, ans
@@ -176,8 +176,8 @@ class ParaSystem():
             extension.Constant("inv", TFun(gcl.stateT, boolT)),
             extension.Theorem("inv_def", Thm([], prop))
         ]
-        self.thy.unchecked_extend(exts)
-        # print(printer.print_extensions(self.thy, exts))
+        theory.thy.unchecked_extend(exts)
+        # print(printer.print_extensions(exts))
 
     def add_semantics(self):
         """Add the semantics of the system in GCL."""
@@ -195,8 +195,8 @@ class ParaSystem():
         item.type = TFun(gcl.stateT, gcl.stateT, boolT)
         item.rules = rules
         exts = item.get_extension()
-        self.thy.unchecked_extend(exts)
-        # print(printer.print_extensions(self.thy, exts))
+        theory.thy.unchecked_extend(exts)
+        # print(printer.print_extensions(exts))
 
     def get_proof(self):
         invC = Const("inv", TFun(gcl.stateT, boolT))
@@ -204,32 +204,30 @@ class ParaSystem():
         s1 = Var("s1", gcl.stateT)
         s2 = Var("s2", gcl.stateT)
         prop = Thm.mk_implies(invC(s1), transC(s1,s2), invC(s2))
-        # print(printer.print_thm(self.thy, prop))
+        # print(printer.print_thm(prop))
 
         trans_pt = ProofTerm.assume(transC(s1,s2))
-        # print(printer.print_thm(self.thy, trans_pt.th))
+        # print(printer.print_thm(trans_pt.th))
         P = Term.mk_implies(invC(s1), invC(s2))
-        ind_pt = apply_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
-        # print(printer.print_thm(self.thy, ind_pt.th))
+        ind_pt = apply_theorem("trans_cases", inst={"a1": s1, "a2": s2, "P": P})
+        # print(printer.print_thm(ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
         for ind_A in ind_As[1:-1]:
-            # print("ind_A: ", printer.print_term(self.thy, ind_A))
+            # print("ind_A: ", printer.print_term(ind_A))
             vars, As, C = logic.strip_all_implies(ind_A, ["s", "k"])
             # for A in As:
-            #     print("A: ", printer.print_term(self.thy, A))
-            # print("C: ", printer.print_term(self.thy, C))
+            #     print("A: ", printer.print_term(A))
+            # print("C: ", printer.print_term(C))
             eq1 = ProofTerm.assume(As[0])
             eq2 = ProofTerm.assume(As[1])
             guard = ProofTerm.assume(As[2])
-            inv_pre = ProofTerm.assume(As[3]).on_arg(self.thy, rewr_conv(eq1)) \
-                                             .on_prop(self.thy, rewr_conv("inv_def"))
-            C_goal = ProofTerm.assume(C).on_arg(self.thy, rewr_conv(eq2)) \
-                                        .on_prop(self.thy, rewr_conv("inv_def"))
+            inv_pre = ProofTerm.assume(As[3]).on_arg(rewr_conv(eq1)).on_prop(rewr_conv("inv_def"))
+            C_goal = ProofTerm.assume(C).on_arg(rewr_conv(eq2)).on_prop(rewr_conv("inv_def"))
             # for t in logic.strip_conj(inv_pre.prop):
-            #     print("inv_pre: ", printer.print_term(self.thy, t))
+            #     print("inv_pre: ", printer.print_term(t))
             # for t in logic.strip_conj(C_goal.prop):
-            #     print("C_goal: ", printer.print_term(self.thy, t))
+            #     print("C_goal: ", printer.print_term(t))
 
 
 def load_system(filename):
@@ -237,17 +235,17 @@ def load_system(filename):
     with open(os.path.join(dn, 'examples/' + filename + '.json'), encoding='utf-8') as a:
         data = json.load(a)
 
-    thy = basic.load_theory('gcl')
+    basic.load_theory('gcl')
 
     name = data['name']
     vars = []
     for nm, str_T in data['vars'].items():
-        T = parser.parse_type(thy, str_T)
+        T = parser.parse_type(str_T)
         vars.append(Var(nm, T))
 
     for i, nm in enumerate(data['states']):
-        thy.add_term_sig(nm, natT)
-        thy.add_theorem(nm + "_def", Thm.mk_equals(Const(nm, natT), to_binary_nat(i)))
+        theory.thy.add_term_sig(nm, natT)
+        theory.thy.add_theorem(nm + "_def", Thm.mk_equals(Const(nm, natT), to_binary_nat(i)))
 
     states = [Const(nm, natT) for nm in data['states']]
 
@@ -255,25 +253,27 @@ def load_system(filename):
     for rule in data['rules']:
         if isinstance(rule['var'], str):
             rule_var = Var(rule['var'], natT)
-            ctxt = Context(thy, vars={v.name: v.T for v in vars + [rule_var]})
+            cur_vars = {v.name: v.T for v in vars + [rule_var]}
         else:
             assert isinstance(rule['var'], list)
             rule_var = [Var(nm, natT) for nm in rule['var']]
-            ctxt = Context(thy, vars={v.name: v.T for v in vars + rule_var})
-        guard = parser.parse_term(ctxt, rule['guard'])
-        assign = dict()
-        for k, v in rule['assign'].items():
-            assign[parser.parse_term(ctxt, k)] = parser.parse_term(ctxt, v)
-        rules.append((rule_var, guard, assign))
+            cur_vars = {v.name: v.T for v in vars + rule_var}
+
+        with context.fresh_context(vars=cur_vars):
+            guard = parser.parse_term(rule['guard'])
+            assign = dict()
+            for k, v in rule['assign'].items():
+                assign[parser.parse_term(k)] = parser.parse_term(v)
+            rules.append((rule_var, guard, assign))
 
     invs = []
     for inv in data['invs']:
         inv_vars = [Var(nm, natT) for nm in inv['vars']]
-        ctxt = Context(thy, vars={v.name: v.T for v in vars + inv_vars})
-        prop = parser.parse_term(ctxt, inv['prop'])
+        with context.fresh_context(vars={v.name: v.T for v in vars + inv_vars}):
+            prop = parser.parse_term(inv['prop'])
         invs.append((inv_vars, prop))
 
-    return ParaSystem(thy, name, vars, states, rules, invs)
+    return ParaSystem(name, vars, states, rules, invs)
 
 def load_hints(filename):
     dn = os.path.dirname(os.path.realpath(__file__))

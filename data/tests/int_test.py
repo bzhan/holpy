@@ -5,7 +5,7 @@ import unittest
 from logic import basic
 from data.int import is_binary_int, from_binary_int, to_binary_int, uminus, zero, one
 
-thy = basic.load_theory("int")
+basic.load_theory("int")
 
 
 class IntTest(unittest.TestCase):

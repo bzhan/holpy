@@ -13,7 +13,8 @@ from logic.tests.logic_test import test_macro
 from logic.tests.conv_test import test_conv
 from syntax import parser
 
-thy = basic.load_theory('nat')
+basic.load_theory('nat')
+
 
 class NatTest(unittest.TestCase):
     def testPlus(self):
@@ -123,7 +124,6 @@ class NatTest(unittest.TestCase):
             test_conv(self, 'nat', nat.norm_full(), limit=limit, vars=vars, t=expr, t_res=res)
 
     def testNormFullLevel2(self):
-        thy = basic.load_theory('nat', )
         test_data = [
             ("(x + y) * (y + x)", "x * x + x * y + x * y + y * y"),
             ("(Suc x) * y", "y + x * y"),

@@ -12,6 +12,7 @@ from kernel import report
 from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
+from logic import context
 from syntax import parser, printer, pprint
 from syntax import settings
 from logic.context import Context
@@ -25,19 +26,18 @@ from util import typecheck
 class ProofState():
     """Represents proof state on the server side."""
 
-    def __init__(self, thy):
+    def __init__(self):
         """Empty proof state."""
-        self.thy = thy
         self.vars = []
         self.prf = Proof()
         self.rpt = None
 
-    def get_ctxt(self, id):
+    def get_vars(self, id):
         """Obtain the context at the given id."""
         id = ItemID(id)
-        ctxt = Context(self.thy)
+        vars = dict()
         for v in self.vars:
-            ctxt.vars[v.name] = v.T
+            vars[v.name] = v.T
 
         prf = self.prf
         try:
@@ -45,9 +45,9 @@ class ProofState():
                 for item in prf.items[:n+1]:
                     if item.rule == "variable":
                         nm, T = item.args
-                        ctxt.vars[nm] = T
+                        vars[nm] = T
                 prf = prf.items[n].subproof
-            return ctxt
+            return vars
         except (AttributeError, IndexError):
             raise ProofStateException
 
@@ -57,7 +57,7 @@ class ProofState():
         return lines + "\n" + str(self.prf)
 
     def __copy__(self):
-        res = ProofState(self.thy)
+        res = ProofState()
         res.vars = copy.copy(self.vars)
         res.prf = copy.copy(self.prf)
         res.rpt = copy.copy(self.rpt)
@@ -65,7 +65,7 @@ class ProofState():
 
     @settings.with_settings
     def export_proof(self):
-        return sum([printer.export_proof_item(self.thy, item) for item in self.prf.items], [])
+        return sum([printer.export_proof_item(item) for item in self.prf.items], [])
 
     def json_data(self):
         """Export proof in json format."""
@@ -73,14 +73,14 @@ class ProofState():
             "vars": {v.name: str(v.T) for v in self.vars},
             "proof": self.export_proof(unicode=True, highlight=True),
             "num_gaps": len(self.rpt.gaps),
-            "method_sig": theory.get_method_sig(self.thy),
+            "method_sig": theory.get_method_sig(),
         }
         return res
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""
         self.rpt = report.ProofReport()
-        return self.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
+        return theory.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def add_line_before(self, id, n):
         """Add n lines before the given id."""
@@ -159,7 +159,7 @@ class ProofState():
         id = ItemID(id)
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
         results = []
-        all_methods = theory.get_all_methods(self.thy)
+        all_methods = theory.get_all_methods()
         for name in all_methods:
             cur_method = all_methods[name]
             if hasattr(cur_method, 'no_order'):
@@ -190,7 +190,7 @@ class ProofState():
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "apply_tactic: id is not a gap"
 
-        pt = tactic.get_proof_term(self.thy, cur_item.th, args=args, prevs=prevs)
+        pt = tactic.get_proof_term(cur_item.th, args=args, prevs=prevs)
         new_prf = pt.export(prefix=id, subproof=False)
 
         self.add_line_before(id, len(new_prf.items) - 1)
@@ -210,7 +210,7 @@ class ProofState():
         # Resolve trivial subgoals
         for item in new_prf.items:
             if item.rule == 'sorry':
-                if logic.trivial_macro().can_eval(self.thy, item.th.prop):
+                if logic.trivial_macro().can_eval(item.th.prop):
                     self.set_line(item.id, 'trivial', args=item.th.prop)
 
     def parse_steps(self, steps):
@@ -239,7 +239,7 @@ class ProofState():
 
         return history
 
-def parse_init_state(ctxt, prop):
+def parse_init_state(prop):
     """Given data for a theorem statement, construct the initial partial proof.
     
     data['vars']: list of variables.
@@ -262,11 +262,12 @@ def parse_init_state(ctxt, prop):
     """
     typecheck.checkinstance('parse_init_state', prop, (str, list, Term))
     if isinstance(prop, (str, list)):
-       prop = parser.parse_term(ctxt, prop)
+       prop = parser.parse_term(prop)
     assums, concl = prop.strip_implies()
 
-    state = ProofState(ctxt.thy)
-    state.vars = ctxt.get_vars()
+    state = ProofState()
+    for nm, T in context.ctxt.vars.items():
+        state.vars.append(Var(nm, T))
     state.prf = Proof(*assums)
     n = len(assums)
     state.prf.add_item(n, "sorry", th=Thm(assums, concl))
@@ -274,17 +275,17 @@ def parse_init_state(ctxt, prop):
     state.check_proof(compute_only=True)
     return state
 
-def parse_proof(ctxt, proof):
+def parse_proof(proof):
     """Obtain proof from json format."""
-    thy = ctxt.thy
-    state = ProofState(thy)
-    state.vars = ctxt.get_vars()
+    state = ProofState()
+    for nm, T in context.ctxt.vars.items():
+        state.vars.append(Var(nm, T))
     state.prf = Proof()
     for line in proof:
         if line['rule'] == "variable":
             nm, str_T = line['args'].split(',', 1)
-            ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
-        item = parser.parse_proof_rule(ctxt, line)
+            context.ctxt.vars[nm] = parser.parse_type(str_T.strip())
+        item = parser.parse_proof_rule(line)
         state.prf.insert_item(item)
     state.check_proof()
 

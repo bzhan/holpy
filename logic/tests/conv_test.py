@@ -5,41 +5,40 @@ import unittest
 from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from logic import basic
+from kernel import theory
 from logic.proofterm import ProofTerm
 from logic import conv
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     top_sweep_conv, arg_conv, rewr_conv, has_rewrite, ConvException
 from syntax import parser, printer
-from logic.context import Context
+from logic import context
 
-def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=None, limit=None):
-    ctxt = Context(thy, vars=vars, limit=limit)
-    thy = ctxt.thy
+
+def test_conv(self, thy_name, cv, *, vars=None, t, t_res=None, failed=None, assms=None, limit=None):
+    context.set_context(thy_name, vars=vars, limit=limit)
 
     if isinstance(t, str):
-        t = parser.parse_term(ctxt, t)
+        t = parser.parse_term(t)
     assert isinstance(t, Term)
 
     if failed is not None:
-        self.assertRaises(failed, cv.eval, thy, t)
-        self.assertRaises(failed, cv.get_proof_term, thy, t)
+        self.assertRaises(failed, cv.eval, t)
+        self.assertRaises(failed, cv.get_proof_term, t)
         return
 
-    assms = [parser.parse_term(ctxt, assm)
-             for assm in assms] if assms is not None else []
+    assms = [parser.parse_term(assm) for assm in assms] if assms is not None else []
 
     if isinstance(t_res, str):
-        t_res = parser.parse_term(ctxt, t_res)
+        t_res = parser.parse_term(t_res)
     assert isinstance(t_res, Term)
 
-    res_th = cv.eval(thy, t)
+    res_th = cv.eval(t)
     expected_th = Thm(assms, Term.mk_equals(t, t_res))
     self.assertTrue(res_th.can_prove(expected_th),
-        msg="\nExpected: %s\nGot %s" % (printer.print_thm(thy, expected_th), printer.print_thm(thy, res_th)))
-    pt = cv.get_proof_term(thy, t)
+        msg="\nExpected: %s\nGot %s" % (printer.print_thm(expected_th), printer.print_thm(res_th)))
+    pt = cv.get_proof_term(t)
     prf = pt.export()
-    self.assertEqual(thy.check_proof(prf), res_th)
+    self.assertEqual(theory.thy.check_proof(prf), res_th)
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):
@@ -100,7 +99,7 @@ class ConvTest(unittest.TestCase):
         )
 
     def testRewrConv4(self):
-        cond = parser.parse_term(Context('nat'), "(x::nat) <= y")
+        cond = parser.parse_term("(x::nat) <= y")
         test_conv(
             self, 'nat', rewr_conv("min_simp1", conds=[ProofTerm.sorry(Thm([], cond))]),
             vars={"x": "nat", "y": "nat"},
@@ -229,10 +228,10 @@ class ConvTest(unittest.TestCase):
             ("%x. comp_fun g f x = y", "comp_fun_eval", True),
         ]
 
-        ctxt = Context('function', vars={'x': 'nat', 'y': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'})
+        context.set_context('function', vars={'x': 'nat', 'y': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'})
         for t, th_name, res in test_data:
-            t = parser.parse_term(ctxt, t)
-            self.assertEqual(has_rewrite(ctxt.thy, th_name, t), res)
+            t = parser.parse_term(t)
+            self.assertEqual(has_rewrite(th_name, t), res)
 
     def testHasRewriteSym(self):
         test_data = [
@@ -240,10 +239,10 @@ class ConvTest(unittest.TestCase):
             ("image h (image h t) = t", "image_combine", True),
         ]
 
-        ctxt = Context('set', vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 'h': 'nat => nat', 't': 'nat set'})
+        context.set_context('set', vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 'h': 'nat => nat', 't': 'nat set'})
         for t, th_name, res in test_data:
-            t = parser.parse_term(ctxt, t)
-            self.assertEqual(has_rewrite(ctxt.thy, th_name, t, sym=True), res)
+            t = parser.parse_term(t)
+            self.assertEqual(has_rewrite(th_name, t, sym=True), res)
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ from logic import logic
 from logic.proofterm import ProofTerm
 from logic.conv import rewr_conv, every_conv, top_conv
 
-thy = basic.load_theory('sat')
+basic.load_theory('sat')
 
 conj = logic.mk_conj
 disj = logic.mk_disj
@@ -82,27 +82,27 @@ def get_encode_proof(th):
     for ptA in ptAs:
         rhs = ptA.prop.rhs
         if logic.is_conj(rhs):
-            pts.append(ptA.on_prop(thy, rewr_conv("encode_conj")))
+            pts.append(ptA.on_prop(rewr_conv("encode_conj")))
         elif logic.is_disj(rhs):
-            pts.append(ptA.on_prop(thy, rewr_conv("encode_disj")))
+            pts.append(ptA.on_prop(rewr_conv("encode_disj")))
         elif rhs.is_implies():
-            pts.append(ptA.on_prop(thy, rewr_conv("encode_imp")))
+            pts.append(ptA.on_prop(rewr_conv("encode_imp")))
         elif rhs.is_equals():
-            pts.append(ptA.on_prop(thy, rewr_conv("encode_eq")))
+            pts.append(ptA.on_prop(rewr_conv("encode_eq")))
         elif logic.is_neg(rhs):
-            pts.append(ptA.on_prop(thy, rewr_conv("encode_not")))
+            pts.append(ptA.on_prop(rewr_conv("encode_not")))
 
     # Obtain the rewrite of the original formula.
     cvs = [top_conv(rewr_conv(ProofTerm.symmetric(ptA))) for ptA in ptAs]
     cv = every_conv(*cvs)
 
-    pts.append(ptF.on_prop(thy, cv))
+    pts.append(ptF.on_prop(cv))
 
     pt = pts[0]
     for pt2 in pts[1:]:
-        pt = logic.apply_theorem(thy, 'conjI', pt, pt2)
+        pt = logic.apply_theorem('conjI', pt, pt2)
 
-    return pt.on_prop(thy, logic.norm_conj_assoc())
+    return pt.on_prop(logic.norm_conj_assoc())
 
 def encode(t):
     """Convert a holpy term into an equisatisfiable CNF. The result

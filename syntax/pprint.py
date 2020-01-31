@@ -5,6 +5,7 @@ from copy import copy
 from kernel.type import HOLType
 from kernel import term
 from kernel import extension
+from kernel import theory
 from data import binary
 from syntax import settings
 from syntax import infertype
@@ -219,7 +220,7 @@ class FunType(AST):
 
 
 @settings.with_settings
-def get_ast_type(thy, T):
+def get_ast_type(T):
     """Obtain the abstract syntax tree for a type."""
     typecheck.checkinstance('get_ast_type', T, HOLType)
 
@@ -259,10 +260,10 @@ term_ast = dict()
 ATOM, FUN_APPL, UNARY, BINARY, BINDER = range(5)
 
 @settings.with_settings
-def get_ast_term(thy, t):
+def get_ast_term(t):
     """Obtain the abstract syntax tree for a term."""
-    if (thy, t, settings.unicode()) in term_ast:
-        return term_ast[(thy, t, settings.unicode())]
+    if (t, settings.unicode()) in term_ast:
+        return term_ast[(t, settings.unicode())]
 
     typecheck.checkinstance('get_ast_term', t, term.Term)
     var_names = [v.name for v in term.get_vars(t)]
@@ -321,7 +322,7 @@ def get_ast_term(thy, t):
             res = Number(n, t.get_type())
             if (t.is_const() and hasattr(t, "print_type")) or \
                (t.is_comb() and hasattr(t.fun, "print_type")):
-                res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
+                res = Bracket(ShowType(res, get_ast_type(res.T)))
             return res
 
         # Lists
@@ -329,7 +330,7 @@ def get_ast_term(thy, t):
             items = list.dest_literal_list(t)
             res = List([helper(item, bd_vars) for item in items], t.get_type())
             if hasattr(t, "print_type"):
-                res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
+                res = Bracket(ShowType(res, get_ast_type(res.T)))
             return res
 
         # Sets
@@ -338,7 +339,7 @@ def get_ast_term(thy, t):
             if set.is_empty_set(t):
                 res = Operator("∅", t.T, "empty_set") if settings.unicode() else Operator("{}", t.T, "empty_set")
                 if hasattr(t, "print_type"):
-                    res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
+                    res = Bracket(ShowType(res, get_ast_type(res.T)))
                 return res
             else:
                 return Set([helper(item, bd_vars) for item in items], t.get_type())
@@ -362,7 +363,7 @@ def get_ast_term(thy, t):
             var_names.remove(nm)
 
             if hasattr(t.arg, "print_type"):
-                bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+                bind_var = ShowType(bind_var, get_ast_type(bind_var.T))
 
             return Collect(bind_var, body_ast, t.get_type())
 
@@ -377,10 +378,10 @@ def get_ast_term(thy, t):
             return VarName(t.name, t.T)
 
         elif t.is_const():
-            link_name = thy.get_overload_const_name(t.name, t.T)
+            link_name = theory.thy.get_overload_const_name(t.name, t.T)
             res = ConstName(t.name, t.T, link_name=link_name)
             if hasattr(t, "print_type"):
-                res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
+                res = Bracket(ShowType(res, get_ast_type(res.T)))
             return res
 
         elif t.is_comb():
@@ -399,7 +400,7 @@ def get_ast_term(thy, t):
                     arg1_ast = Bracket(arg1_ast)
 
                 op_str = op_data.unicode_op if settings.unicode() else op_data.ascii_op
-                op_name = thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
+                op_name = theory.thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
                 op_ast = Operator(op_str, t.head.get_type(), op_name)
 
                 # Obtain output for second argument, enclose in parenthesis
@@ -414,7 +415,7 @@ def get_ast_term(thy, t):
             # Unary case
             elif op_data and op_data.arity == operator.UNARY:
                 op_str = op_data.unicode_op if settings.unicode() else op_data.ascii_op
-                op_name = thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
+                op_name = theory.thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
                 op_ast = Operator(op_str, t.head.get_type(), op_name)
 
                 arg_ast = helper(t.arg, bd_vars)
@@ -435,7 +436,7 @@ def get_ast_term(thy, t):
                 bind_var = Bound(nm, t.arg.var_T)
                 body_ast = helper(t.arg.body, [bind_var] + bd_vars)
                 if hasattr(t.arg, "print_type"):
-                    bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+                    bind_var = ShowType(bind_var, get_ast_type(bind_var.T))
                 var_names.remove(nm)
 
                 return BinderAppl(op_ast, bind_var, body_ast)
@@ -469,7 +470,7 @@ def get_ast_term(thy, t):
             bind_var = Bound(nm, t.var_T)
             body_ast = helper(t.body, [bind_var] + bd_vars)
             if hasattr(t, "print_type"):
-                bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+                bind_var = ShowType(bind_var, get_ast_type(bind_var.T))
             var_names.remove(nm)
 
             return BinderAppl(op_ast, bind_var, body_ast)
@@ -483,10 +484,10 @@ def get_ast_term(thy, t):
             raise TypeError
 
     copy_t = copy(t)  # make copy here, because infer_printed_type may change t.
-    infertype.infer_printed_type(thy, copy_t)
+    infertype.infer_printed_type(copy_t)
 
     ast = helper(copy_t, [])
-    term_ast[(thy, t, settings.unicode())] = ast
+    term_ast[(t, settings.unicode())] = ast
     return ast
 
 def print_length(res):
@@ -559,7 +560,7 @@ def KWGreen(s):
         return s
 
 @settings.with_settings
-def print_ast(thy, ast, *, line_length=None):
+def print_ast(ast, *, line_length=None):
     res = [[]]
     cur_line = 0
     indent = 0
@@ -623,7 +624,7 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "operator":
             add_normal(ast.symbol, link={'name': ast.link_name, 'ty': extension.CONSTANT})
         elif ast.ty == "binary_op":
-            if line_length and print_length(print_ast(thy, ast)) > line_length:
+            if line_length and print_length(print_ast(ast)) > line_length:
                 if ast.op.symbol in ("-->", "⟶"):
                     rec(ast.arg1)
                     add_normal(" ")
@@ -661,7 +662,7 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "bound":
             add_bound(ast.name)
         elif ast.ty == "fun_appl":
-            if line_length and print_length(print_ast(thy, ast)) > line_length:
+            if line_length and print_length(print_ast(ast)) > line_length:
                 rec(ast.fun)
                 add_normal(' ')
                 indent += 2
@@ -673,7 +674,7 @@ def print_ast(thy, ast, *, line_length=None):
                 add_normal(' ')
                 rec(ast.arg)
         elif ast.ty == "ite":
-            if line_length and print_length(print_ast(thy, ast)) > line_length:
+            if line_length and print_length(print_ast(ast)) > line_length:
                 add_normal('if ')
                 rec(ast.cond)
                 add_normal(' then ')

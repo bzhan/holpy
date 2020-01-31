@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TVar, TFun
 from kernel.term import Var
 from kernel.thm import Thm
+from kernel import theory
 from logic import basic
 from data import nat
 from data import function
@@ -19,7 +20,7 @@ a2 = Var("a2", Ta)
 b1 = Var("b1", Ta)
 b2 = Var("b2", Ta)
 
-thy = basic.load_theory('function')
+basic.load_theory('function')
 
 natT = nat.natT
 zero = nat.zero
@@ -43,10 +44,10 @@ class FunctionTest(unittest.TestCase):
     def testEvalFunUpd(self):
         f = fun_upd_of_seq(1, 5)
         cv = function.fun_upd_eval_conv()
-        prf = cv.get_proof_term(thy, f(one)).export()
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), to_binary(5)))
-        prf = cv.get_proof_term(thy, f(zero)).export()
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(zero), zero))
+        prf = cv.get_proof_term(f(one)).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(f(one), to_binary(5)))
+        prf = cv.get_proof_term(f(zero)).export()
+        self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(f(zero), zero))
 
     def testNormFunUpd(self):
         test_data = [
@@ -64,8 +65,8 @@ class FunctionTest(unittest.TestCase):
             res = fun_upd_of_seq(*n_res)
 
             cv = function.fun_upd_norm_conv()
-            prf = cv.get_proof_term(thy, f).export()
-            self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f, res))
+            prf = cv.get_proof_term(f).export()
+            self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(f, res))
 
 
 if __name__ == "__main__":
