@@ -15,7 +15,7 @@ test_cases = {
         "Exercise 3": "-(1 / 6) + (1 / 6) * exp(6)",
         "Exercise 4": "2 * exp(-1) + exp(2)",
         "Exercise 5": "1 - 1/2 * 2 ^ (1/2)",
-        # "Exercise 6": None,
+        "Exercise 6": "3 / 2",
         "Exercise 7": "21 / 8",
         "Exercise 8": "-(3 / 4)",
         "Exercise 9": "1 / 11 * -81 * 2 ^ (2 / 3) + 1 / 44 * 945 * 3 ^ (2 / 3)",
