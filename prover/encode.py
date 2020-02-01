@@ -5,7 +5,7 @@ Tseitin encoding from formulae in holpy to CNF.
 from collections import OrderedDict
 
 from kernel.type import boolT
-from kernel.term import Term, Var, And, Or, Not, Implies
+from kernel.term import Term, Var, And, Or, Not, Implies, Eq
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -127,7 +127,7 @@ def encode(t):
             r1 = get_var(subterms_dict[st.arg1])
             r2 = get_var(subterms_dict[st.arg])
             f = st.head
-            eqs.append(Term.mk_equals(l, f(r1, r2)))
+            eqs.append(Eq(l, f(r1, r2)))
             if st.is_implies():
                 clauses.extend(encode_eq_imp(l, r1, r2))
             elif st.is_equals():
@@ -138,10 +138,10 @@ def encode(t):
                 clauses.extend(encode_eq_disj(l, r1, r2))
         elif st.is_not():
             r = get_var(subterms_dict[st.arg])
-            eqs.append(Term.mk_equals(l, Not(r)))
+            eqs.append(Eq(l, Not(r)))
             clauses.extend(encode_eq_not(l, r))
         else:
-            eqs.append(Term.mk_equals(l, st))
+            eqs.append(Eq(l, st))
 
     clauses.append(get_var(len(subterms) - 1))
 

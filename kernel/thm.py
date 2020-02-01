@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Const, Implies
+from kernel.term import Term, Const, Implies, Eq
 from kernel import macro
 from util import typecheck
 
@@ -97,11 +97,6 @@ class Thm():
         typecheck.checkinstance('mk_implies', args, [Term])
         return Thm([], Implies(*args))
 
-    @staticmethod
-    def mk_equals(x, y):
-        """Returns the theorem x = y."""
-        return Thm([], Term.mk_equals(x, y))
-
     def is_equals(self):
         """Check whether the proposition of the theorem is of the form x = y."""
         return self.prop.is_equals()
@@ -157,7 +152,7 @@ class Thm():
 
         |- x = x
         """
-        return Thm.mk_equals(x, x)
+        return Thm([], Eq(x, x))
 
     @staticmethod
     def symmetric(th):
@@ -169,7 +164,7 @@ class Thm():
         """
         if th.is_equals():
             x, y = th.prop.args
-            return Thm(th.hyps, Term.mk_equals(y, x))
+            return Thm(th.hyps, Eq(y, x))
         else:
             raise InvalidDerivationException("symmetric")
 
@@ -186,7 +181,7 @@ class Thm():
             x, y1 = th1.prop.args
             y2, z = th2.prop.args
             if y1 == y2:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(x, z))
+                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Eq(x, z))
             else:
                 raise InvalidDerivationException("transitive: %s != %s" % (str(y1), str(y2)))
         else:
@@ -206,7 +201,7 @@ class Thm():
             x, y = th2.prop.args
             Tf = f.get_type()
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(f(x), g(y)))
+                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Eq(f(x), g(y)))
             else:
                 raise InvalidDerivationException("combination")
         else:
@@ -225,7 +220,7 @@ class Thm():
             A1, B1 = th1.prop.args
             B2, A2 = th2.prop.args
             if A1 == A2 and B1 == B2:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(A1, B1))
+                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Eq(A1, B1))
             else:
                 raise InvalidDerivationException("equal_intr")
         else:
@@ -292,7 +287,7 @@ class Thm():
             t_new = t.beta_conv()
         except term.TermSubstitutionException:
             raise InvalidDerivationException("beta_conv")
-        return Thm.mk_equals(t, t_new)
+        return Thm([], Eq(t, t_new))
 
     @staticmethod
     def abstraction(x, th):
@@ -310,7 +305,7 @@ class Thm():
                 t1_new, t2_new = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
             except term.TermSubstitutionException:
                 raise InvalidDerivationException("abstraction")
-            return Thm(th.hyps, Term.mk_equals(t1_new, t2_new))
+            return Thm(th.hyps, Eq(t1_new, t2_new))
         else:
             raise InvalidDerivationException("abstraction")
 

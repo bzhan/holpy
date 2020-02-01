@@ -314,7 +314,7 @@ class rewr_conv(Conv):
 
         # The conclusion of eq_pt should be an equality, and the number of
         # assumptions in eq_pt should match number of conditions.
-        assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
+        assert self.C.is_equals(), "rewr_conv: theorem is not an equality."
         if len(self.As) != len(self.conds):
             raise ConvException("rewr_conv: number of conds does not agree")
 
@@ -378,7 +378,7 @@ def has_rewrite(th, t, *, sym=False, conds=None):
 
     if conds is None:
         conds = []
-    if not Term.is_equals(C) or len(As) != len(conds):
+    if not C.is_equals() or len(As) != len(conds):
         return False
         
     if set(term.get_svars(As + [C.lhs])) != set(term.get_svars(As + [C])):

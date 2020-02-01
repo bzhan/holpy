@@ -4,7 +4,7 @@
 
 from kernel.type import TFun, Type, boolT
 from kernel import term
-from kernel.term import Term, Const
+from kernel.term import Term, Const, Eq
 from logic import basic
 from data.nat import natT, to_binary
 from logic import logic
@@ -43,7 +43,7 @@ def convert_term(var_map, s, t):
             else:
                 raise NotImplementedError
         elif t.is_equals():
-            return Term.mk_equals(convert(t.arg1), convert(t.arg))
+            return Eq(convert(t.arg1), convert(t.arg))
         elif t.is_not():
             return term.Not(convert(t.arg))
         elif t.is_conj():

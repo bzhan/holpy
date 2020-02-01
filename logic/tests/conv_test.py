@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import boolT
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Eq
 from kernel.thm import Thm
 from kernel import theory
 from logic.proofterm import ProofTerm
@@ -33,7 +33,7 @@ def test_conv(self, thy_name, cv, *, vars=None, t, t_res=None, failed=None, assm
     assert isinstance(t_res, Term)
 
     res_th = cv.eval(t)
-    expected_th = Thm(assms, Term.mk_equals(t, t_res))
+    expected_th = Thm(assms, Eq(t, t_res))
     self.assertTrue(res_th.can_prove(expected_th),
         msg="\nExpected: %s\nGot %s" % (printer.print_thm(expected_th), printer.print_thm(res_th)))
     pt = cv.get_proof_term(t)

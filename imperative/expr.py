@@ -2,7 +2,7 @@
 
 from kernel.type import TFun
 from kernel import term
-from kernel.term import true, false
+from kernel.term import Eq, true, false
 from data.int import intT
 from data import int as hol_int
 from data.list import listT, nth, length
@@ -198,9 +198,9 @@ class Op(Expr):
             elif self.op == "*":
                 return hol_int.times(e1, e2)
             elif self.op == "==":
-                return term.Term.mk_equals(e1, e2)
+                return term.Eq(e1, e2)
             elif self.op == "!=":
-                return term.Not(term.Term.mk_equals(e1, e2))
+                return term.Not(term.Eq(e1, e2))
             elif self.op == "<=":
                 return hol_int.less_eq(e1, e2)
             elif self.op == "<":
@@ -216,7 +216,7 @@ class Op(Expr):
             elif self.op == "-->":
                 return term.Implies(e1, e2)
             elif self.op == "<-->":
-                return term.Term.mk_equals(e1, e2)
+                return term.Eq(e1, e2)
             else:
                 raise NotImplementedError
         else:

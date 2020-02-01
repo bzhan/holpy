@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import TVar, TFun, boolT
 from kernel import term
-from kernel.term import Term, Var, Abs, Bound, And, Or
+from kernel.term import Term, Var, Abs, Bound, And, Or, Eq
 from kernel.macro import global_macros
 from kernel.thm import Thm
 from kernel.proof import Proof
@@ -57,7 +57,7 @@ def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="
 class LogicTest(unittest.TestCase):
     def testGetForallName(self):
         test_data = [
-            (Term.mk_all(x, Term.mk_all(y, Term.mk_equals(x, y))), ["x", "y"]),
+            (Term.mk_all(x, Term.mk_all(y, Eq(x, y))), ["x", "y"]),
         ]
 
         for t, res in test_data:

@@ -5,7 +5,7 @@ import itertools
 
 from kernel.type import TVar, Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Var, Const, And, Implies, Not
+from kernel.term import Term, Var, Const, And, Implies, Not, Eq
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -571,7 +571,7 @@ class Inductive(Item):
         for rule in self.rules:
             prop = rule['prop']
             As, C = prop.strip_implies()
-            eq_assums = [Term.mk_equals(var, arg) for var, arg in zip(vars, C.args)]
+            eq_assums = [Eq(var, arg) for var, arg in zip(vars, C.args)]
             assum = Implies(*(eq_assums + As), P)
             prop_vars = term.get_vars(prop)
             for var in reversed(term.get_vars(prop)):
@@ -734,7 +734,7 @@ class Datatype(Item):
             B = Const(constr2['name'], constr2['type'])
             lhs = A(*lhs_vars)
             rhs = B(*rhs_vars)
-            neq = Not(Term.mk_equals(lhs, rhs))
+            neq = Not(Eq(lhs, rhs))
             th_name = "%s_%s_%s_neq" % (self.name, constr1['name'], constr2['name'])
             res.append(extension.Theorem(th_name, Thm([], neq)))
 
@@ -747,11 +747,11 @@ class Datatype(Item):
                 lhs_vars = [Var(nm, T) for nm, T in zip(constr['args'], argT)]
                 rhs_vars = [Var(nm + "1", T) for nm, T in zip(constr['args'], argT)]
                 A = Const(constr['name'], constr['type'])
-                assum = Term.mk_equals(A(*lhs_vars), A(*rhs_vars))
-                concls = [Term.mk_equals(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
+                assum = Eq(A(*lhs_vars), A(*rhs_vars))
+                concls = [Eq(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
                 concl = And(*concls)
                 th_name = "%s_%s_inject" % (self.name, constr['name'])
-                res.append(extension.Theorem(th_name, Thm.mk_implies(assum, concl)))
+                res.append(extension.Theorem(th_name, Thm([], Implies(assum, concl))))
 
         # Add the inductive theorem.
         tvars = [TVar(targ) for targ in self.args]
@@ -770,7 +770,7 @@ class Datatype(Item):
             ind_assums.append(ind_assum)
         ind_concl = var_P(Var("x", T))
         th_name = self.name + "_induct"
-        res.append(extension.Theorem(th_name, Thm.mk_implies(*(ind_assums + [ind_concl]))))
+        res.append(extension.Theorem(th_name, Thm([], Implies(*(ind_assums + [ind_concl])))))
         res.append(extension.Attribute(th_name, "var_induct"))
 
         return res

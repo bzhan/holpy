@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TFun
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Eq
 from kernel.thm import Thm
 from kernel import theory
 from logic import basic
@@ -66,7 +66,7 @@ class ExprTest(unittest.TestCase):
         self.assertFalse(macro.can_eval(expr.avalI(s3, V(one), to_binary(5))))
 
         # Goal is not avalI
-        self.assertFalse(macro.can_eval(Term.mk_equals(V(one), N(zero))))
+        self.assertFalse(macro.can_eval(Eq(V(one), N(zero))))
 
 
 if __name__ == "__main__":

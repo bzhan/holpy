@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, boolT
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, Not, true, false
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, Not, Eq, true, false
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -35,7 +35,6 @@ p = Var("p", nat.natT)
 xs = Var("xs", Type("list", Ta))
 ys = Var("ys", Type("list", Ta))
 zs = Var("zs", Type("list", Ta))
-eq = Term.mk_equals
 abs = Term.mk_abs
 all = Term.mk_all
 exists = logic.mk_exists
@@ -49,14 +48,14 @@ class PrinterTest(unittest.TestCase):
             (a, "a"),
 
             # Equality and implies
-            (eq(a, b), "a = b"),
+            (Eq(a, b), "a = b"),
             (Implies(A, B), "A --> B"),
             (Implies(A, B, C), "A --> B --> C"),
             (Implies(Implies(A, B), C), "(A --> B) --> C"),
-            (Implies(A, eq(a, b)), "A --> a = b"),
-            (eq(Implies(A, B), Implies(B, C)), "(A --> B) <--> (B --> C)"),
-            (eq(A, eq(B, C)), "A <--> B <--> C"),
-            (eq(eq(A, B), C), "(A <--> B) <--> C"),
+            (Implies(A, Eq(a, b)), "A --> a = b"),
+            (Eq(Implies(A, B), Implies(B, C)), "(A --> B) <--> (B --> C)"),
+            (Eq(A, Eq(B, C)), "A <--> B <--> C"),
+            (Eq(Eq(A, B), C), "(A <--> B) <--> C"),
 
             # Conjunction and disjunction
             (And(A, B), "A & B"),
@@ -87,11 +86,11 @@ class PrinterTest(unittest.TestCase):
             (Or(Implies(A, B), C), "(A --> B) | C"),
             (Not(And(A, B)), "~(A & B)"),
             (Not(Implies(A, B)), "~(A --> B)"),
-            (Not(eq(A, B)), "~(A <--> B)"),
-            (eq(Not(A), B), "~A <--> B"),
-            (eq(Not(A), Not(B)), "~A <--> ~B"),
-            (Implies(A, eq(B, C)), "A --> B <--> C"),
-            (eq(Implies(A, B), C), "(A --> B) <--> C"),
+            (Not(Eq(A, B)), "~(A <--> B)"),
+            (Eq(Not(A), B), "~A <--> B"),
+            (Eq(Not(A), Not(B)), "~A <--> ~B"),
+            (Implies(A, Eq(B, C)), "A --> B <--> C"),
+            (Eq(Implies(A, B), C), "(A --> B) <--> C"),
 
             # Abstraction
             (abs(a, And(P(a),Q(a))), "%a. P a & Q a"),
@@ -105,7 +104,7 @@ class PrinterTest(unittest.TestCase):
             (Implies(all(a, P(a)), Q(a)), "(!a1. P a1) --> Q a"),
             (Implies(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
             (Implies(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
-            (eq(A, all(a, P(a))), "A <--> (!a. P a)"),
+            (Eq(A, all(a, P(a))), "A <--> (!a. P a)"),
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
             (logic.mk_exists1(a, P(a)), "?!a. P a"),
@@ -114,7 +113,7 @@ class PrinterTest(unittest.TestCase):
 
             # If
             (mk_if(A, a, b), "if A then a else b"),
-            (eq(mk_if(A, a, b), a), "(if A then a else b) = a"),
+            (Eq(mk_if(A, a, b), a), "(if A then a else b) = a"),
             (mk_if(A, P, Q), "if A then P else Q"),
         ]
 
@@ -322,8 +321,8 @@ class PrinterTest(unittest.TestCase):
     def testPrintWithType(self):
         test_data = [
             (list.nil(Ta), "([]::'a list)"),
-            (eq(list.nil(Ta), list.nil(Ta)), "([]::'a list) = []"),
-            (all(a, eq(a, a)), "!a::'a. a = a"),
+            (Eq(list.nil(Ta), list.nil(Ta)), "([]::'a list) = []"),
+            (all(a, Eq(a, a)), "!a::'a. a = a"),
         ]
 
         for t, s in test_data:

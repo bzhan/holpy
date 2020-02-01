@@ -4,7 +4,7 @@ import unittest
 
 from prover import congc
 from kernel.type import TVar, TFun
-from kernel.term import Term
+from kernel.term import Term, Eq
 from kernel.thm import Thm
 from kernel import theory
 from logic import basic
@@ -117,9 +117,9 @@ class CongClosureHOLTest(unittest.TestCase):
                 s = parser.parse_term(s)
                 t = parser.parse_term(t)
                 prf = closure.explain(s, t).export()
-                self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(s, t))
+                self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(s, t)))
                 if verbose:
-                    print("Proof of %s" % printer.print_term(Term.mk_equals(s, t)))
+                    print("Proof of %s" % printer.print_term(Eq(s, t)))
                     print(printer.print_proof(prf))
             elif item[0] == MATCH:
                 _, pat, t, res = item

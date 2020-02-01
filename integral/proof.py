@@ -4,7 +4,7 @@ from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const, Not
+from kernel.term import Term, Var, Const, Not, Eq
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv
@@ -159,28 +159,28 @@ class norm_sin_conv(Conv):
 
         r = real.from_binary_real(t.arg.arg1)
         if r >= 2:
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.plus(real.times(real.to_binary_real(r-2), real.pi),
                           real.times(real.to_binary_real(2), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic'))
 
         if r >= 1:
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.plus(real.times(real.to_binary_real(r-1), real.pi),
                           real.pi),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi'))
 
         if r >= Fraction(1,2):
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
                           real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
 
         if r > Fraction(1,4):
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.minus(real.divides(real.pi, real.to_binary_real(2)),
                            real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
@@ -201,28 +201,28 @@ class norm_cos_conv(Conv):
 
         r = real.from_binary_real(t.arg.arg1)
         if r >= 2:
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.plus(real.times(real.to_binary_real(r-2), real.pi),
                           real.times(real.to_binary_real(2), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic'))
 
         if r >= 1:
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.plus(real.times(real.to_binary_real(r-1), real.pi),
                           real.pi),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi'))
 
         if r >= Fraction(1,2):
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
                           real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
 
         if r > Fraction(1,4):
-            eq = auto.auto_solve(Term.mk_equals(
+            eq = auto.auto_solve(Eq(
                 real.minus(real.divides(real.pi, real.to_binary_real(2)),
                            real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
                 real.times(real.to_binary_real(r), real.pi)))
@@ -448,12 +448,12 @@ class combine_fraction(Conv):
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
             if b == d:
-                b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), self.conds)
+                b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), self.conds)
                 return pt.on_rhs(rewr_conv('real_divide_add_same', conds=[b_neq_0]),
                                  arg1_conv(auto.auto_conv(self.conds)))
             else:
-                b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), self.conds)
-                d_neq_0 = auto.auto_solve(Not(Term.mk_equals(d, real.zero)), self.conds)
+                b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), self.conds)
+                d_neq_0 = auto.auto_solve(Not(Eq(d, real.zero)), self.conds)
                 return pt.on_rhs(rewr_conv('real_divide_add', conds=[b_neq_0, d_neq_0]),
                                  arg1_conv(auto.auto_conv(self.conds)),
                                  arg_conv(try_conv(rewr_conv('real_mul_lid'))),
@@ -478,8 +478,8 @@ class combine_fraction(Conv):
             assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
-            b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), self.conds)
-            d_neq_0 = auto.auto_solve(Not(Term.mk_equals(d, real.zero)), self.conds)
+            b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), self.conds)
+            d_neq_0 = auto.auto_solve(Not(Eq(d, real.zero)), self.conds)
             return pt.on_rhs(rewr_conv('real_divide_mult', conds=[b_neq_0, d_neq_0]),
                              arg1_conv(auto.auto_conv(self.conds)),
                              arg_conv(try_conv(rewr_conv('real_mul_lid'))),
@@ -517,9 +517,9 @@ class fraction_rewr_conv(Conv):
 
         a, b = lhs_eq.rhs.args
         c, d = rhs_eq.rhs.args
-        b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), conds)
-        d_neq_0 = auto.auto_solve(Not(Term.mk_equals(d, real.zero)), conds)
-        cross_eq = auto.auto_solve(Term.mk_equals(real.times(a, d), real.times(b, c)), conds)
+        b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), conds)
+        d_neq_0 = auto.auto_solve(Not(Eq(d, real.zero)), conds)
+        cross_eq = auto.auto_solve(Eq(real.times(a, d), real.times(b, c)), conds)
         pt = apply_theorem('real_divide_eq', b_neq_0, d_neq_0, cross_eq)
 
         return ProofTerm.transitive(ProofTerm.transitive(lhs_eq, pt), ProofTerm.symmetric(rhs_eq))
@@ -801,15 +801,15 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
         elif self.code == 'TR22':
             if real.is_plus(t) and t.arg.head == real.nat_power and t.arg.arg1.head == real.tan:
-                cos_neq0 = Not(Term.mk_equals(real.cos(t.arg.arg1.arg), real.zero))
+                cos_neq0 = Not(Eq(real.cos(t.arg.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('tan_sec', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.tan:
-                cos_neq0 = Not(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
+                cos_neq0 = Not(Eq(real.cos(t.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.cot:
-                sin_neq0 = Not(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
+                sin_neq0 = Not(Eq(real.sin(t.arg1.arg), real.zero))
                 sin_neq0_pt = auto.auto_solve(sin_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
             else:
@@ -1087,7 +1087,7 @@ def translate_item(item, target=None, *, debug=False):
 
             t1 = real.times(real.to_binary_real(Fraction(1, factor+1)),
                             real.plus(prev_pt.rhs, real.times(real.to_binary_real(factor), prev_pt.rhs)))
-            t1_pt = auto.auto_solve(Term.mk_equals(prev_pt.rhs, t1))
+            t1_pt = auto.auto_solve(Eq(prev_pt.rhs, t1))
             t1_pt = t1_pt.on_rhs(arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
                                  arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
             pt = ProofTerm.transitive(prev_pt, t1_pt)

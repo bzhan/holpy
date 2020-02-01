@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, HOLType, boolT
-from kernel.term import Var, Term, And
+from kernel.term import Var, Term, And, Eq
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
@@ -429,8 +429,8 @@ class ParserTest(unittest.TestCase):
         A = Var('A', boolT)
         B = Var('B', boolT)
         test_data = [
-            ("conjI: A = B", ('conjI', Term.mk_equals(A, B))),
-            ("A = B", (None, Term.mk_equals(A, B)))
+            ("conjI: A = B", ('conjI', Eq(A, B))),
+            ("A = B", (None, Eq(A, B)))
         ]
 
         context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})

@@ -66,7 +66,7 @@ def simplify1(fm):
             return Not(fm.arg1)
         else:
             return fm
-    elif Term.is_equals(fm):
+    elif fm.is_equals():
         if fm.arg1 == true:
             return fm.arg
         elif fm.arg == true:
@@ -93,7 +93,7 @@ def simplify(fm):
     """
     if fm.is_not():
         return simplify1(Not(simplify(fm.arg)))
-    elif fm.is_conj() or fm.is_disj() or Term.is_implies(fm) or Term.is_equals(fm):
+    elif fm.is_conj() or fm.is_disj() or fm.is_implies() or fm.is_equals():
         return simplify1(fm.head(simplify(fm.arg1), simplify(fm.arg)))
     elif Term.is_all(fm) or logic.is_exists(fm):
         assert fm.arg.is_abs()
@@ -109,7 +109,7 @@ def nnf(fm):
         return Or(nnf(fm.arg1), nnf(fm.arg))
     elif fm.is_implies():
         return Or(nnf(Not(fm.arg1)), nnf(fm.arg))
-    elif Term.is_equals(fm):
+    elif fm.is_equals():
         return Or(And(nnf(fm.arg1), nnf(fm.arg)),
                   And(nnf(Not(fm.arg1)), nnf(Not(fm.arg))))
     elif fm.is_not():
@@ -122,7 +122,7 @@ def nnf(fm):
             return And(nnf(Not(p.arg1)), nnf(Not(p.arg)))
         elif p.is_implies():
             return And(nnf(p.arg1), nnf(Not(p.arg)))
-        elif Term.is_equals(p):
+        elif p.is_equals():
             return Or(And(nnf(p.arg1), nnf(Not(p.arg))),
                       And(nnf(Not(p.arg1)), nnf(p.arg)))
         elif Term.is_all(p):

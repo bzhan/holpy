@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import Type, TVar, TFun, boolT
-from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
 from kernel.macro import ProofMacro
@@ -34,14 +34,14 @@ class beta_conv_rhs_macro(ProofMacro):
 
     def eval(self, thy, args, ths):
         th = ths[0]
-        assert Term.is_equals(th.prop), "beta_conv_rhs"
+        assert th.prop.is_equals(), "beta_conv_rhs"
         rhs = th.prop.rhs
 
         return Thm.transitive(th, Thm.beta_conv(rhs))
 
     def expand(self, prefix, thy, args, prevs):
         id, th = prevs[0]
-        assert Term.is_equals(th.prop), "beta_conv_rhs"
+        assert th.prop.is_equals(), "beta_conv_rhs"
         rhs = th.prop.rhs
 
         prf = Proof()
@@ -87,10 +87,10 @@ class TheoryTest(unittest.TestCase):
     def testCheckTerm(self):
         test_data = [
             x,
-            Term.mk_equals(x, y),
-            Term.mk_equals(f, f),
+            Eq(x, y),
+            Eq(f, f),
             Implies(A, B),
-            Abs("x", Ta, Term.mk_equals(x, y)),
+            Abs("x", Ta, Eq(x, y)),
         ]
 
         for t in test_data:
@@ -126,13 +126,13 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(1, "implies_intr", args=A, prevs=[0])
 
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(A,A))
+        self.assertEqual(thy.check_proof(prf, rpt), Thm([], Implies(A,A)))
         self.assertEqual(rpt.steps, 2)
 
     def testCheckProof3(self):
         """Proof of [x = y, y = z] |- f z = f x."""
-        x_eq_y = Term.mk_equals(x,y)
-        y_eq_z = Term.mk_equals(y,z)
+        x_eq_y = Eq(x,y)
+        y_eq_z = Eq(y,z)
         prf = Proof(x_eq_y, y_eq_z)
         prf.add_item(2, "transitive", prevs=[0, 1])
         prf.add_item(3, "symmetric", prevs=[2])
@@ -140,37 +140,37 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(5, "combination", prevs=[4, 3])
 
         rpt = ProofReport()
-        th = Thm([x_eq_y, y_eq_z], Term.mk_equals(f(z),f(x)))
+        th = Thm([x_eq_y, y_eq_z], Eq(f(z),f(x)))
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps, 6)
 
     def testCheckProof4(self):
         """Proof of |- x = y --> x = y by instantiating an existing theorem."""
         thy = Theory.EmptyTheory()
-        thy.add_theorem("trivial", Thm.mk_implies(A,A))
+        thy.add_theorem("trivial", Thm([], Implies(A,A)))
 
-        x_eq_y = Term.mk_equals(x,y)
+        x_eq_y = Eq(x,y)
         prf = Proof()
         prf.add_item(0, "theorem", args="trivial")
         prf.add_item(1, "substitution", args={"A" : x_eq_y}, prevs=[0])
 
         rpt = ProofReport()
-        th = Thm.mk_implies(x_eq_y,x_eq_y)
+        th = Thm([], Implies(x_eq_y,x_eq_y))
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps, 2)
 
     def testCheckProof5(self):
         """Empty instantiation."""
         thy = Theory.EmptyTheory()
-        thy.add_theorem("trivial", Thm.mk_implies(A,A))
+        thy.add_theorem("trivial", Thm([], Implies(A,A)))
 
-        x_eq_y = Term.mk_equals(x,y)
+        x_eq_y = Eq(x,y)
         prf = Proof()
         prf.add_item(0, "theorem", args="trivial")
         prf.add_item(1, "substitution", args={}, prevs=[0])
 
         rpt = ProofReport()
-        th = Thm.mk_implies(SVar('A', boolT), SVar('A', boolT))
+        th = Thm([], Implies(SVar('A', boolT), SVar('A', boolT)))
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps_stat(), (1, 1, 0))
         self.assertEqual(rpt.th_names, {"trivial"})
@@ -199,7 +199,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckProofFail4(self):
         """Output does not match."""
         prf = Proof(A)
-        prf.add_item(1, "implies_intr", args=A, prevs=[0], th = Thm.mk_implies(A,B))
+        prf.add_item(1, "implies_intr", args=A, prevs=[0], th = Thm([], Implies(A,B)))
 
         self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
 
@@ -246,13 +246,13 @@ class TheoryTest(unittest.TestCase):
     def testCheckProofGap(self):
         """Check proof with gap."""
         prf = Proof()
-        prf.add_item(0, "sorry", th = Thm.mk_implies(A,B))
+        prf.add_item(0, "sorry", th = Thm([], Implies(A,B)))
         prf.add_item(1, "sorry", th = Thm([], A))
         prf.add_item(2, "implies_elim", prevs=[0, 1])
 
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), Thm([], B))
-        self.assertEqual(rpt.gaps, [Thm.mk_implies(A, B), Thm([], A)])
+        self.assertEqual(rpt.gaps, [Thm([], Implies(A, B)), Thm([], A)])
 
     def testUncheckedExtend(self):
         """Unchecked extension."""
@@ -260,24 +260,23 @@ class TheoryTest(unittest.TestCase):
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
-        id_simps = Term.mk_equals(id_const(x), x)
 
         exts = [
             extension.Constant("id", TFun(Ta, Ta)),
-            extension.Theorem("id_def", Thm.mk_equals(id_const, id_def)),
-            extension.Theorem("id.simps", Thm([], id_simps))
+            extension.Theorem("id_def", Thm([], Eq(id_const, id_def))),
+            extension.Theorem("id.simps", Thm([], Eq(id_const, x)))
         ]
 
         self.assertEqual(thy.unchecked_extend(exts), None)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta, Ta))
-        self.assertEqual(thy.get_theorem("id_def"), Thm.mk_equals(id_const, id_def))
-        self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
+        self.assertEqual(thy.get_theorem("id_def"), Thm([], Eq(id_const, id_def)))
+        self.assertEqual(thy.get_theorem("id.simps"), Thm([], Eq(id_const, x)))
 
     def testCheckedExtend(self):
         """Checked extension: adding an axiom."""
         thy = Theory.EmptyTheory()
 
-        id_simps = Term.mk_equals(Comb(Const("id", TFun(Ta,Ta)),x), x)
+        id_simps = Eq(Comb(Const("id", TFun(Ta,Ta)),x), x)
         exts = [extension.Theorem("id.simps", Thm([], id_simps))]
 
         ext_report = thy.checked_extend(exts)
@@ -290,7 +289,7 @@ class TheoryTest(unittest.TestCase):
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
-        id_simps = Term.mk_equals(id_const(x), x)
+        id_simps = Eq(id_const(x), x)
 
         # Proof of |- id x = x from |- id = (%x. x)
         prf = Proof()
@@ -303,13 +302,13 @@ class TheoryTest(unittest.TestCase):
 
         exts = [
             extension.Constant("id", TFun(Ta, Ta)),
-            extension.Theorem("id_def", Thm.mk_equals(id_const, id_def)),
+            extension.Theorem("id_def", Thm([], Eq(id_const, id_def))),
             extension.Theorem("id.simps", Thm([], id_simps), prf)
         ]
 
         ext_report = thy.checked_extend(exts)
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
-        self.assertEqual(ext_report.get_axioms(), [('id_def', Thm.mk_equals(id_const, id_def))])
+        self.assertEqual(ext_report.get_axioms(), [('id_def', Thm([], Eq(id_const, id_def)))])
 
     def testCheckedExtend3(self):
         """Axiomatized constant."""

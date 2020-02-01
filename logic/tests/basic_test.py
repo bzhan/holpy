@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, boolT
-from kernel.term import Var, Term, Not, And, Or, true
+from kernel.term import Var, Term, Not, And, Or, Eq, Implies, true
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import TheoryException
@@ -49,7 +49,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(7, "implies_elim", prevs=[6, 4])
         prf.add_item(8, "implies_elim", prevs=[7, 2])
         prf.add_item(9, "implies_intr", args=And(A, B), prevs=[8])
-        th = Thm.mk_implies(And(A, B), And(B, A))
+        th = Thm([], Implies(And(A, B), And(B, A)))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testConjCommWithMacro(self):
@@ -63,7 +63,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(2, "apply_theorem", args="conjD2", prevs=[0])
         prf.add_item(3, "apply_theorem", args="conjI", prevs=[2, 1])
         prf.add_item(4, "implies_intr", args=And(A, B), prevs=[3])
-        th = Thm.mk_implies(And(A, B), And(B, A))
+        th = Thm([], Implies(And(A, B), And(B, A)))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDisjComm(self):
@@ -83,7 +83,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(8, "implies_elim", prevs=[7, 2])
         prf.add_item(9, "implies_elim", prevs=[8, 4])
         prf.add_item(10, "implies_intr", args=Or(A, B), prevs=[9])
-        th = Thm.mk_implies(Or(A, B), Or(B, A))
+        th = Thm([], Implies(Or(A, B), Or(B, A)))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDisjCommWithMacro(self):
@@ -101,7 +101,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(6, "implies_intr", args=B, prevs=[5])
         prf.add_item(7, "apply_theorem", args="disjE", prevs=[0, 3, 6])
         prf.add_item(8, "implies_intr", args=Or(A, B), prevs=[7])
-        th = Thm.mk_implies(Or(A, B), Or(B, A))
+        th = Thm([], Implies(Or(A, B), Or(B, A)))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testAllConj(self):
@@ -131,7 +131,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(12, "implies_elim", prevs=[11, 5])
         prf.add_item(13, "implies_elim", prevs=[12, 9])
         prf.add_item(14, "implies_intr", args=all_conj, prevs=[13])
-        th = Thm.mk_implies(all_conj, conj_all)
+        th = Thm([], Implies(all_conj, conj_all))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testAllConjWithMacro(self):
@@ -154,7 +154,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(5, "forall_intr", args=x, prevs=[4])
         prf.add_item(6, "apply_theorem", args="conjI", prevs=[3, 5])
         prf.add_item(7, "implies_intr", args=all_conj, prevs=[6])
-        th = Thm.mk_implies(all_conj, conj_all)
+        th = Thm([], Implies(all_conj, conj_all))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDoubleNeg(self):
@@ -172,7 +172,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(7, "substitution", args={"A": Not(A)}, prevs=[6])
         prf.add_item(8, "implies_elim", prevs=[7, 5])
         prf.add_item(9, "implies_intr", args=A, prevs=[8])
-        th = Thm.mk_implies(A, Not(Not(A)))
+        th = Thm([], Implies(A, Not(Not(A))))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDoubleNegInvWithMacro(self):
@@ -190,7 +190,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(7, "implies_intr", args=Not(A), prevs=[5])
         prf.add_item(8, "apply_theorem", args="disjE", prevs=[1, 6, 7])
         prf.add_item(9, "implies_intr", args=Not(Not(A)), prevs=[8])
-        th = Thm.mk_implies(Not(Not(A)), A)
+        th = Thm([], Implies(Not(Not(A)), A))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testTrueAbsorb(self):
@@ -205,7 +205,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(4, "implies_elim", prevs=[3, 1])
         prf.add_item(5, "implies_elim", prevs=[4, 0])
         prf.add_item(6, "implies_intr", args=A, prevs=[5])
-        th = Thm.mk_implies(A, And(true, A))
+        th = Thm([], Implies(A, And(true, A)))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testExistsConjWithMacro(self):
@@ -232,14 +232,14 @@ class BasicTest(unittest.TestCase):
         prf.add_item(8, "forall_intr", args=x, prevs=[7])
         prf.add_item(9, "apply_theorem", args="exE", prevs=[0, 8])
         prf.add_item(10, "implies_intr", args=exists_conj, prevs=[9])
-        th = Thm.mk_implies(exists_conj, conj_exists)
+        th = Thm([], Implies(exists_conj, conj_exists))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         basic.load_theory('nat')
         n = Var("n", nat.natT)
-        eq = Term.mk_equals
+        eq = Eq
         prf = Proof()
         prf.add_item(0, "theorem", args="nat_induct")
         prf.add_item(1, "substitution", args={"P": Term.mk_abs(n, eq(nat.plus(n,nat.zero),n)), "x": n}, prevs=[0])
@@ -256,14 +256,14 @@ class BasicTest(unittest.TestCase):
         prf.add_item(12, "implies_intr", args=eq(nat.plus(n,nat.zero), n), prevs=[11])
         prf.add_item(13, "forall_intr", args=n, prevs=[12])
         prf.add_item(14, "implies_elim", prevs=[5, 13])
-        th = Thm.mk_equals(nat.plus(n, nat.zero), n)
+        th = Thm([], Eq(nat.plus(n, nat.zero), n))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testAddZeroRightWithMacro(self):
         """Proof of n + 0 = n by induction, using macros."""
         basic.load_theory('nat')
         n = Var("n", nat.natT)
-        eq = Term.mk_equals
+        eq = Eq
         plus = nat.plus
         zero = nat.zero
         S = nat.Suc
@@ -277,14 +277,14 @@ class BasicTest(unittest.TestCase):
         prf.add_item(6, "implies_intr", args=eq(plus(n,zero),n), prevs=[5])
         prf.add_item(7, "forall_intr", args=n, prevs=[6])
         prf.add_item(8, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 7])
-        th = Thm.mk_equals(plus(n, zero), n)
+        th = Thm([], Eq(plus(n, zero), n))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         basic.load_theory('nat')
         n = Var("n", nat.natT)
-        eq = Term.mk_equals
+        eq = Eq
         prf = Proof()
         prf.add_item(0, "theorem", args="nat_induct")
         prf.add_item(1, "substitution", args={"P": Term.mk_abs(n, eq(nat.times(n,nat.zero),nat.zero)), "x": n}, prevs=[0])
@@ -302,14 +302,14 @@ class BasicTest(unittest.TestCase):
         prf.add_item(13, "implies_intr", args=eq(nat.times(n,nat.zero), nat.zero), prevs=[12])
         prf.add_item(14, "forall_intr", args=n, prevs=[13])
         prf.add_item(15, "implies_elim", prevs=[5, 14])
-        th = Thm.mk_equals(nat.times(n, nat.zero), nat.zero)
+        th = Thm([], Eq(nat.times(n, nat.zero), nat.zero))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testMultZeroRightWithMacro(self):
         """Proof of n * 0 = 0 by induction, using macros."""
         basic.load_theory('nat')
         n = Var("n", nat.natT)
-        eq = Term.mk_equals
+        eq = Eq
         zero = nat.zero
         plus = nat.mk_plus
         times = nat.mk_times
@@ -325,7 +325,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(7, "implies_intr", args=eq(times(n,zero),zero), prevs=[6])
         prf.add_item(8, "forall_intr", args=n, prevs=[7])
         prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
-        th = Thm.mk_equals(times(n, zero), zero)
+        th = Thm([], Eq(times(n, zero), zero))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testIntersection(self):
@@ -341,7 +341,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(1, "rewrite_fact", args="member_inter_iff", prevs=[0])
         prf.add_item(2, "apply_theorem", args="conjD1", prevs=[1])
         prf.add_item(3, "implies_intr", args=x_in_AB, prevs=[2])
-        self.assertEqual(theory.thy.check_proof(prf), Thm.mk_implies(x_in_AB, x_in_A))
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], Implies(x_in_AB, x_in_A)))
 
 
 if __name__ == "__main__":

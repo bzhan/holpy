@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, Type, boolT
-from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies
+from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies, Eq
 from logic import basic
 from logic import logic
 from data import nat
@@ -31,7 +31,7 @@ class InferTypeTest(unittest.TestCase):
              Implies(Var("A1", boolT), Var("A2", boolT))),
             # A1 = A2
             (Const("equals", None)(Var("A1", boolT), Var("A2", None)),
-             Term.mk_equals(Var("A1", boolT), Var("A2", boolT))),
+             Eq(Var("A1", boolT), Var("A2", boolT))),
             # a = b
             (Const("equals", None)(Var("a", None), Var("b", None)),
              Const("equals", TFun(Ta, Ta, boolT))(Var("a", Ta), Var("b", Ta))),
@@ -84,19 +84,19 @@ class InferTypeTest(unittest.TestCase):
         infer_printed_type(t)
         self.assertFalse(hasattr(t.fun, "print_type"))
 
-        t = Term.mk_equals(Const("nil", listT(Ta)), Const("nil", listT(Ta)))
+        t = Eq(Const("nil", listT(Ta)), Const("nil", listT(Ta)))
         infer_printed_type(t)
         self.assertFalse(hasattr(t.fun.fun, "print_type"))
         self.assertTrue(hasattr(t.arg1, "print_type"))
         self.assertFalse(hasattr(t.arg, "print_type"))
 
-        t = Term.mk_equals(mk_append(nil(Ta),nil(Ta)), nil(Ta))
+        t = Eq(mk_append(nil(Ta),nil(Ta)), nil(Ta))
         infer_printed_type(t)
         self.assertTrue(hasattr(t.arg1.arg1, "print_type"))
         self.assertFalse(hasattr(t.arg1.arg, "print_type"))
         self.assertFalse(hasattr(t.arg, "print_type"))
 
-        t = Term.mk_abs(Var("x", Ta), Term.mk_equals(Var("x", Ta), Var("x", Ta)))
+        t = Term.mk_abs(Var("x", Ta), Eq(Var("x", Ta), Var("x", Ta)))
         infer_printed_type(t)
 
 

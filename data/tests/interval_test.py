@@ -2,6 +2,7 @@
 
 import unittest
 
+from kernel.term import Eq
 from kernel.thm import Thm
 from kernel import theory
 from data import nat
@@ -26,7 +27,7 @@ class IntervalTest(unittest.TestCase):
             pt = interval.numseg_conv().get_proof_term(t)
             rhs = set.mk_literal_set([nat.to_binary_nat(i) for i in range(m, n+1)], nat.natT)
             prf = pt.export()
-            self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(t, rhs))
+            self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(t, rhs)))
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import os
 import json
 
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const, And, Implies
+from kernel.term import Term, Var, Const, And, Implies, Eq
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -170,7 +170,7 @@ class ParaSystem():
         s = Var("s", gcl.stateT)
         invC = Const("inv", TFun(gcl.stateT, boolT))
         inv_rhs = And(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
-        prop = Term.mk_equals(invC(s), inv_rhs)
+        prop = Eq(invC(s), inv_rhs)
 
         exts = [
             extension.Constant("inv", TFun(gcl.stateT, boolT)),
@@ -203,7 +203,7 @@ class ParaSystem():
         transC = Const("trans", TFun(gcl.stateT, gcl.stateT, boolT))
         s1 = Var("s1", gcl.stateT)
         s2 = Var("s2", gcl.stateT)
-        prop = Thm.mk_implies(invC(s1), transC(s1,s2), invC(s2))
+        prop = Thm([], Implies(invC(s1), transC(s1,s2), invC(s2)))
         # print(printer.print_thm(prop))
 
         trans_pt = ProofTerm.assume(transC(s1,s2))
@@ -245,7 +245,7 @@ def load_system(filename):
 
     for i, nm in enumerate(data['states']):
         theory.thy.add_term_sig(nm, natT)
-        theory.thy.add_theorem(nm + "_def", Thm.mk_equals(Const(nm, natT), to_binary_nat(i)))
+        theory.thy.add_theorem(nm + "_def", Thm([], Eq(Const(nm, natT), to_binary_nat(i))))
 
     states = [Const(nm, natT) for nm in data['states']]
 

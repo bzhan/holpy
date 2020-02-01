@@ -417,7 +417,7 @@ class rewrite_goal_macro(ProofTermMacro):
         cv = then_conv(top_sweep_conv(rewr_cv), beta_norm_conv())
         pt = cv.get_proof_term(goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
-        if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
+        if pt.prop.lhs.is_equals() and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
             pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.lhs))
         else:
             pt = ProofTerm.equal_elim(pt, pts[0])  # goal

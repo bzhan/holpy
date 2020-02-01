@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TFun, boolT
-from kernel.term import Var, Term, true, false
+from kernel.term import Var, Term, Eq, true, false
 from logic import basic
 from data.nat import natT, to_binary, zero, one
 from logic import logic
@@ -12,10 +12,10 @@ from paraverifier import gcl
 from paraverifier.gcl import Para, Ident, NatV, BoolV
 from syntax import printer
 
-thy = basic.load_theory("gcl")
-eq = Term.mk_equals
-
 class GCLTest(unittest.TestCase):
+    def setUp(self):
+        basic.load_theory('gcl')
+
     def testConvertTerm(self):
         a, b = Var("a", TFun(natT, natT)), Var("b", boolT)
         var_map = {a: 0, b: 1}
@@ -24,9 +24,9 @@ class GCLTest(unittest.TestCase):
             (a(one), s(Para(Ident(zero), one))),
             (b, s(Ident(one))),
             (to_binary(3), NatV(to_binary(3))),
-            (eq(a(one), to_binary(3)), eq(s(Para(Ident(zero), one)), NatV(to_binary(3)))),
+            (Eq(a(one), to_binary(3)), Eq(s(Para(Ident(zero), one)), NatV(to_binary(3)))),
             (true, BoolV(true)),
-            (eq(b, false), eq(s(Ident(one)), BoolV(false))),
+            (Eq(b, false), Eq(s(Ident(one)), BoolV(false))),
         ]
 
         for t, res in test_data:

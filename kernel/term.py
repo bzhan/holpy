@@ -463,11 +463,6 @@ class Term():
         """Whether self is a constant with the given name."""
         return self.is_const() and self.name == name
 
-    @staticmethod
-    def equals(T):
-        """Returns the equals constant for the given type."""
-        return Const("equals", TFun(T, T, boolT))
-
     def is_equals(self):
         """Whether self is of the form A = B."""
         return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name("equals")
@@ -489,12 +484,6 @@ class Term():
     def rhs(self):
         assert self.is_equals(), "rhs: not an equality."
         return self.arg
-
-    @staticmethod
-    def mk_equals(s, t):
-        """Construct the term s = t."""
-        eq_t = Term.equals(s.get_type())
-        return eq_t(s, t)
 
     def incr_boundvars(self, inc):
         """Increase loose bound variables in self by inc."""
@@ -827,6 +816,14 @@ neg = Const("neg", TFun(boolT, boolT))
 conj = Const("conj", TFun(boolT, boolT, boolT))
 disj = Const("disj", TFun(boolT, boolT, boolT))
 implies = Const("implies", TFun(boolT, boolT, boolT))
+
+def equals(T):
+    """Returns the equals constant for the given type."""
+    return Const("equals", TFun(T, T, boolT))
+
+def Eq(s, t):
+    """Construct the term s = t."""
+    return equals(s.get_type())(s, t)
 
 def Not(t):
     """Return negation of boolean term t."""

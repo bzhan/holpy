@@ -2,7 +2,7 @@
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Const, Not
+from kernel.term import Term, Const, Not, Eq
 from kernel.thm import Thm
 from kernel import theory
 from kernel.theory import Method, global_methods
@@ -133,7 +133,7 @@ def convert_to_poly(t):
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
     def eval(self, t):
-        return Thm.mk_equals(t, to_binary(from_binary(t.arg) + 1))
+        return Thm([], Eq(t, to_binary(from_binary(t.arg) + 1)))
 
     def get_proof_term(self, t):
         n = t.arg  # remove Suc
@@ -150,7 +150,7 @@ class Suc_conv(Conv):
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
     def eval(self, t):
-        return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
+        return Thm([], Eq(t, to_binary(from_binary(t.arg1) + from_binary(t.arg))))
 
     def get_proof_term(self, t):
         if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
@@ -178,7 +178,7 @@ class add_conv(Conv):
 class mult_conv(Conv):
     """Computes the product of two binary numbers."""
     def eval(self, t):
-        return Thm.mk_equals(t, to_binary(from_binary(t.arg1) * from_binary(t.arg)))
+        return Thm([], Eq(t, to_binary(from_binary(t.arg1) * from_binary(t.arg))))
 
     def get_proof_term(self, t):
         n1, n2 = t.arg1, t.arg  # two summands
@@ -239,7 +239,7 @@ def nat_eval(t):
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
     def eval(self, t):
-        return Thm.mk_equals(t, to_binary_nat(nat_eval(t)))
+        return Thm([], Eq(t, to_binary_nat(nat_eval(t))))
 
     def get_proof_term(self, t):
         pt = refl(t)
@@ -285,7 +285,7 @@ class nat_eval_conv(Conv):
         simp_t = to_binary_nat(nat_eval(t))
         if simp_t == t:
             return refl(t)
-        return ProofTermDeriv('nat_eval', Term.mk_equals(t, simp_t))
+        return ProofTermDeriv('nat_eval', Eq(t, simp_t))
 
 auto.add_global_autos_norm(plus, nat_eval_conv())
 auto.add_global_autos_norm(minus, nat_eval_conv())
@@ -683,7 +683,7 @@ class nat_const_ineq_macro(ProofTermMacro):
         return pt.on_prop(arg_conv(binop_conv(rewr_of_nat_conv(sym=True))))
 
 def nat_const_ineq(a, b):
-    goal = Not(Term.mk_equals(a, b))
+    goal = Not(Eq(a, b))
     return ProofTermDeriv("nat_const_ineq", goal, [])
 
 
@@ -763,7 +763,7 @@ class nat_const_less_macro(ProofTermMacro):
         assert from_binary_nat(m) < from_binary_nat(n)
         less_eq_goal = less_eq(m, n)
         less_eq_pt = nat_const_less_eq_macro().get_proof_term(less_eq_goal, [])
-        ineq_goal = Not(Term.mk_equals(m, n))
+        ineq_goal = Not(Eq(m, n))
         ineq_pt = nat_const_ineq_macro().get_proof_term(ineq_goal, [])
         return apply_theorem("less_lesseqI", less_eq_pt, ineq_pt)
 

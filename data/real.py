@@ -7,7 +7,7 @@ from sympy.ntheory.factor_ import factorint
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Const
+from kernel.term import Term, Const, Eq
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
@@ -229,7 +229,7 @@ class real_eval_conv(Conv):
         simp_t = to_binary_real(real_eval(t))
         if simp_t == t:
             return refl(t)
-        return ProofTermDeriv('real_eval', Term.mk_equals(t, simp_t))
+        return ProofTermDeriv('real_eval', Eq(t, simp_t))
 
 
 """Normalization of polynomials.
@@ -813,7 +813,7 @@ class real_norm_conv(Conv):
         if t2 == t:
             return refl(t)
         else:
-            return ProofTermDeriv('real_norm', Term.mk_equals(t, t2))
+            return ProofTermDeriv('real_norm', Eq(t, t2))
 
 
 class real_norm_method(Method):

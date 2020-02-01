@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun
-from kernel.term import Var, Term
+from kernel.term import Var, Term, Eq
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel import theory
@@ -21,8 +21,8 @@ f = Var("f", TFun(Ta,Ta,Ta))
 class ProofTermTest(unittest.TestCase):
     def testExport(self):
         """Basic case."""
-        pt1 = ProofTerm.assume(Term.mk_equals(x,y))
-        pt2 = ProofTerm.assume(Term.mk_equals(y,z))
+        pt1 = ProofTerm.assume(Eq(x,y))
+        pt2 = ProofTerm.assume(Eq(y,z))
         pt3 = ProofTerm.transitive(pt1, pt2)
 
         prf = pt3.export()
@@ -31,7 +31,7 @@ class ProofTermTest(unittest.TestCase):
 
     def testExport2(self):
         """Repeated theorems."""
-        pt1 = ProofTerm.assume(Term.mk_equals(x,y))
+        pt1 = ProofTerm.assume(Eq(x,y))
         pt2 = ProofTerm.reflexive(f)
         pt3 = ProofTerm.combination(pt2, pt1)  # f x = f y
         pt4 = ProofTerm.combination(pt3, pt1)  # f x x = f y y
@@ -42,16 +42,16 @@ class ProofTermTest(unittest.TestCase):
 
     def testExport3(self):
         """Case with atoms."""
-        pt1 = ProofTerm.atom(0, Thm.mk_equals(x,y))
-        pt2 = ProofTerm.atom(1, Thm.mk_equals(y,z))
+        pt1 = ProofTerm.atom(0, Thm([], Eq(x,y)))
+        pt2 = ProofTerm.atom(1, Thm([], Eq(y,z)))
         pt3 = ProofTerm.transitive(pt1, pt2)
 
         prf = Proof()
-        prf.add_item(0, rule="sorry", th=Thm.mk_equals(x,y))
-        prf.add_item(1, rule="sorry", th=Thm.mk_equals(y,z))
+        prf.add_item(0, rule="sorry", th=Thm([], Eq(x,y)))
+        prf.add_item(1, rule="sorry", th=Thm([], Eq(y,z)))
         pt3.export(prf=prf)
 
-        self.assertEqual(theory.thy.check_proof(prf), Thm.mk_equals(x,z))
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(x,z)))
 
 
 if __name__ == "__main__":

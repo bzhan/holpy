@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Not, true
+from kernel.term import Term, Var, Not, Eq, true
 from kernel.thm import Thm
 from kernel import theory
 from kernel.report import ProofReport
@@ -29,7 +29,6 @@ zero = nat.zero
 one = nat.one
 to_binary = nat.to_binary_nat
 
-eq = Term.mk_equals
 abs = Term.mk_abs
 s = Var("s", natFunT)
 assn_true = abs(s, true)
@@ -59,7 +58,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem3(self):
-        com = Cond(abs(s, eq(s(zero), zero)), incr_one, Skip)
+        com = Cond(abs(s, Eq(s(zero), zero)), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
@@ -71,7 +70,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem4(self):
-        com = Cond(abs(s, Not(eq(s(zero), one))), incr_one, Skip)
+        com = Cond(abs(s, Not(Eq(s(zero), one))), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
@@ -83,7 +82,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
-        com = While(abs(s, Not(eq(s(zero), to_binary(3)))), assn_true, incr_one)
+        com = While(abs(s, Not(Eq(s(zero), to_binary(3)))), assn_true, incr_one)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)

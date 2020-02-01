@@ -185,7 +185,7 @@ class rewrite_goal(Tactic):
             macro_name = 'rewrite_goal_sym'
         else:
             macro_name = 'rewrite_goal'
-        if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+        if new_goal.is_equals() and new_goal.lhs == new_goal.rhs:
             return ProofTermDeriv(macro_name, args=(th_name, C), prevs=prevs)
         else:
             new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))

@@ -8,6 +8,7 @@ on intervals.
 import sympy
 from fractions import Fraction
 
+from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
 from kernel.macro import global_macros
@@ -209,14 +210,14 @@ auto.add_global_autos(real.greater, sympy_solve)
 auto.add_global_autos(real.less_eq, sympy_solve)
 auto.add_global_autos(real.less, sympy_solve)
 
-auto.add_global_autos_neg(Term.equals(real.realT), sympy_solve)
+auto.add_global_autos_neg(term.equals(real.realT), sympy_solve)
 
 auto.add_global_autos(nat.greater_eq, sympy_solve)
 auto.add_global_autos(nat.greater, sympy_solve)
 auto.add_global_autos(nat.less_eq, sympy_solve)
 auto.add_global_autos(nat.less, sympy_solve)
 
-auto.add_global_autos_neg(Term.equals(nat.natT), sympy_solve)
+auto.add_global_autos_neg(term.equals(nat.natT), sympy_solve)
 
 global_macros.update({
     "sympy": SymPyMacro(),
