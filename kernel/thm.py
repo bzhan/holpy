@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Const, Implies, Eq
+from kernel.term import Term, Const, Implies, Eq, Forall, Lambda
 from kernel import macro
 from util import typecheck
 
@@ -273,7 +273,7 @@ class Thm():
         try:
             hyps_new = [hyp.subst(inst) for hyp in th.hyps]
             prop_new = th.prop.subst(inst)
-        except term.TermSubstitutionException:
+        except term.TermException:
             raise InvalidDerivationException("substitution")
         return Thm(hyps_new, prop_new)
 
@@ -285,7 +285,7 @@ class Thm():
         """
         try:
             t_new = t.beta_conv()
-        except term.TermSubstitutionException:
+        except term.TermException:
             raise InvalidDerivationException("beta_conv")
         return Thm([], Eq(t, t_new))
 
@@ -302,8 +302,8 @@ class Thm():
         elif th.is_equals():
             t1, t2 = th.prop.args
             try:
-                t1_new, t2_new = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
-            except term.TermSubstitutionException:
+                t1_new, t2_new = Lambda(x, t1), Lambda(x, t2)
+            except term.TermException:
                 raise InvalidDerivationException("abstraction")
             return Thm(th.hyps, Eq(t1_new, t2_new))
         else:
@@ -322,7 +322,7 @@ class Thm():
         elif not (x.is_var() or x.is_svar()):
             raise InvalidDerivationException("forall_intr")
         else:
-            return Thm(th.hyps, Term.mk_all(x, th.prop))
+            return Thm(th.hyps, Forall(x, th.prop))
 
     @staticmethod
     def forall_elim(s, th):
@@ -332,7 +332,7 @@ class Thm():
         ------------
         |- t[s/x]
         """
-        if th.prop.is_all():
+        if th.prop.is_forall():
             if th.prop.arg.var_T != s.get_type():
                 raise InvalidDerivationException("forall_elim")
             else:

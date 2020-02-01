@@ -4,7 +4,7 @@ from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const, Not, Eq
+from kernel.term import Term, Var, Const, Not, Eq, Lambda
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv
@@ -981,12 +981,12 @@ def expr_to_holpy(expr):
     elif expr.is_integral():
         a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
         var = Var(expr.var, real.realT)
-        f = Term.mk_abs(var, expr_to_holpy(expr.body))
+        f = Lambda(var, expr_to_holpy(expr.body))
         return real_integral(real.closed_interval(a, b), f)
     elif expr.is_evalat():
         a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
         var = Var(expr.var, real.realT)
-        f = Term.mk_abs(var, expr_to_holpy(expr.body))
+        f = Lambda(var, expr_to_holpy(expr.body))
         return evalat(f, a, b)
     else:
         raise NotImplementedError
@@ -1028,8 +1028,8 @@ def translate_item(item, target=None, *, debug=False):
             ori_var = term.get_vars(g)[0]
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
-            f = Term.mk_abs(new_var, f)
-            g = Term.mk_abs(ori_var, g)
+            f = Lambda(new_var, f)
+            g = Lambda(ori_var, g)
             cv = substitution(f, g, expected_loc)
 
         elif reason == 'Substitution inverse':
@@ -1038,7 +1038,7 @@ def translate_item(item, target=None, *, debug=False):
             g = parse_expr(step['params']['g'])
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
-            g = Term.mk_abs(new_var, expr_to_holpy(g))
+            g = Lambda(new_var, expr_to_holpy(g))
             a = expr_to_holpy(parse_expr(step['params']['a']))
             b = expr_to_holpy(parse_expr(step['params']['b']))
             cv = substitution_inverse(g, a, b, expected_loc)
@@ -1049,8 +1049,8 @@ def translate_item(item, target=None, *, debug=False):
             u = expr_to_holpy(parse_expr(step['params']['parts_u']))
             v = expr_to_holpy(parse_expr(step['params']['parts_v']))
             ori_var = term.get_vars([u, v])[0]
-            u = Term.mk_abs(ori_var, u)
-            v = Term.mk_abs(ori_var, v)
+            u = Lambda(ori_var, u)
+            v = Lambda(ori_var, v)
             cv = integrate_by_parts(u, v, expected_loc)
 
         elif reason == 'Rewrite':

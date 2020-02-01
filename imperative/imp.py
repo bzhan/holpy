@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
-from kernel.term import Term, Var, Const, true
+from kernel.term import Term, Var, Const, Lambda, true
 from kernel.thm import Thm
 from kernel.macro import global_macros
 from kernel.theory import Method, global_methods
@@ -167,7 +167,7 @@ def compute_wp(T, c, Q):
     elif c.head.is_const_name("Assign"):  # Assign a b
         a, b = c.args
         s = Var("s", T)
-        P2 = Term.mk_abs(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
+        P2 = Lambda(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
         return apply_theorem("assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
     elif c.head.is_const_name("Seq"):  # Seq c1 c2
         c1, c2 = c.args

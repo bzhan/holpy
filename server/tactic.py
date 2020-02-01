@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel import term
-from kernel.term import Term, Implies, Not
+from kernel.term import Term, Implies, Not, Lambda
 from kernel.thm import Thm
 from kernel import theory
 from logic import logic
@@ -154,7 +154,7 @@ class var_induct(Tactic):
     """Apply induction rule on a variable."""
     def get_proof_term(self, goal, *, args=None, prevs=None):
         th_name, var = args
-        P = Term.mk_abs(var, goal.prop)
+        P = Lambda(var, goal.prop)
         th = theory.thy.get_theorem(th_name, svar=True)
         f, args = th.concl.strip_comb()
         if len(args) != 1:
@@ -276,7 +276,7 @@ class inst_exists_goal(Tactic):
         assert isinstance(args, Term), "inst_exists_goal"
 
         C = goal.prop
-        assert logic.is_exists(C), "inst_exists_goal: goal is not exists statement"
+        assert C.is_exists(), "inst_exists_goal: goal is not exists statement"
         argT = args.get_type()
         assert C.arg.var_T == argT, "inst_exists_goal: incorrect type: expect %s, given %s" % (
             str(C.arg.var_T), str(argT)

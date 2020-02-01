@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import boolT
-from kernel.term import Term, Var, Eq
+from kernel.term import Term, Var, Eq, Lambda
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
@@ -79,7 +79,7 @@ class TacticTest(unittest.TestCase):
             'nat', tactic.rule(),
             vars={"n": "nat"},
             goal="n + 0 = n",
-            args=("nat_induct", ({}, {'P': Term.mk_abs(n, Eq(plus(n, zero), n)), 'x': n})),
+            args=("nat_induct", ({}, {'P': Lambda(n, Eq(plus(n, zero), n)), 'x': n})),
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
         )
 

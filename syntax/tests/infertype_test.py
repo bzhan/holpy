@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, Type, boolT
-from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies, Eq
+from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies, Lambda, Eq
 from logic import basic
 from logic import logic
 from data import nat
@@ -96,7 +96,7 @@ class InferTypeTest(unittest.TestCase):
         self.assertFalse(hasattr(t.arg1.arg, "print_type"))
         self.assertFalse(hasattr(t.arg, "print_type"))
 
-        t = Term.mk_abs(Var("x", Ta), Eq(Var("x", Ta), Var("x", Ta)))
+        t = Lambda(Var("x", Ta), Eq(Var("x", Ta), Var("x", Ta)))
         infer_printed_type(t)
 
 

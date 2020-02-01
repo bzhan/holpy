@@ -425,7 +425,7 @@ def parse_term(s):
     try:
         t = term_parser.parse(s)
         return infertype.type_infer(t)
-    except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+    except (term.TermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 
@@ -435,7 +435,7 @@ def parse_thm(s):
         th = thm_parser.parse(s)
         th.hyps = tuple(infertype.type_infer(hyp) for hyp in th.hyps)
         th.prop = infertype.type_infer(th.prop)
-    except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+    except (term.TermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
     return th

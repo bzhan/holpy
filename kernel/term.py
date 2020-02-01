@@ -15,14 +15,6 @@ class TermException(Exception):
     def __str__(self):
         return self.msg
 
-class OpenTermException(Exception):
-    pass
-
-class TermSubstitutionException(Exception):
-    def __init__(self, str=""):
-        self.str = str
-
-
 class TypeCheckException(Exception):
     pass
 
@@ -282,7 +274,7 @@ class Term():
             return TFun(self.var_T, self.body._get_type([self.var_T] + bd_vars))
         elif self.is_bound():
             if self.n >= len(bd_vars):
-                raise OpenTermException
+                raise TermException("get_type: open term.")
             else:
                 return bd_vars[self.n]
         else:
@@ -357,7 +349,7 @@ class Term():
                 if t.get_type() == self.T:
                     return inst[self.name]
                 else:
-                    raise TermSubstitutionException("Type " + str(t.get_type()) + " != " + str(self.T))
+                    raise TermException("Type " + str(t.get_type()) + " != " + str(self.T))
             else:
                 return self
         elif self.is_var() or self.is_const():
@@ -440,24 +432,13 @@ class Term():
         else:
             return [self]
 
-    def is_all(self):
-        """Whether self is of the form !x. P x.
-        
-        Note that unlike many other systems, we require the argument of
-        all to be in abstraction form.
-        
-        """
-        return self.is_comb() and self.fun.is_const_name("all") and self.arg.is_abs()
+    def is_forall(self):
+        """Whether self is of the form !x. P x."""
+        return self.is_comb('all', 1)
 
-    @staticmethod
-    def mk_all(x, body):
-        """Given a variable x and a term t possibly depending on x, return
-        the term !x. t. Optional arguments var_name and T specify the
-        suggested name and type of the bound variable.
-
-        """
-        all_t = Const("all", TFun(TFun(x.T, boolT), boolT))
-        return all_t(Term.mk_abs(x, body))
+    def is_exists(self):
+        """Whether self is of the form ?x. P x."""
+        return self.is_comb('exists', 1)
 
     def is_const_name(self, name):
         """Whether self is a constant with the given name."""
@@ -531,7 +512,7 @@ class Term():
             # Perform the substitution. Note t may be a bound variable itself.
             return rec(self.body, 0)
         else:
-            raise TermSubstitutionException("subst_bound: input is not an abstraction.")
+            raise TermException("subst_bound: input is not an abstraction.")
 
     def beta_conv(self):
         """Beta-conversion: given a term of the form (%x. t1) t2, return the
@@ -541,7 +522,7 @@ class Term():
         if self.is_comb():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermSubstitutionException("beta_conv: input is not a combination.")
+            raise TermException("beta_conv: input is not a combination.")
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
@@ -585,7 +566,7 @@ class Term():
             if s.is_svar():
                 if t.is_svar() and s.name == t.name:
                     if s.T != t.T:
-                        raise TermSubstitutionException("abstract_over: wrong type")
+                        raise TermException("abstract_over: wrong type.")
                     else:
                         return Bound(n)
                 else:
@@ -593,7 +574,7 @@ class Term():
             elif s.is_var():
                 if t.is_var() and s.name == t.name:
                     if s.T != t.T:
-                        raise TermSubstitutionException("abstract_over: wrong type")
+                        raise TermException("abstract_over: wrong type.")
                     else:
                         return Bound(n)
                 else:
@@ -612,15 +593,7 @@ class Term():
         if t.is_var() or t.is_svar():
             return rec(self, 0)
         else:
-            raise TermSubstitutionException("abstract_over: t is not a variable.")
-
-    @staticmethod
-    def mk_abs(t, body):
-        """Given body in terms of t, return the term %t. body. """
-        if not (t.is_var() or t.is_svar()):
-            raise TermSubstitutionException("mk_abs: t is not a variable.")
-        res = Abs(t.name, t.T, body.abstract_over(t))
-        return res
+            raise TermException("abstract_over: t is not a variable.")
 
     def checked_get_type(self):
         """Perform type-checking and return the type of self."""
@@ -639,7 +612,7 @@ class Term():
                 return TFun(t.var_T, bodyT)
             elif t.is_bound():
                 if t.n >= len(bd_vars):
-                    raise OpenTermException
+                    raise TermException("Check type: open term")
                 else:
                     return bd_vars[t.n]
             else:
@@ -648,7 +621,7 @@ class Term():
 
     def convert_svar(self):
         if self.is_svar():
-            raise TermSubstitutionException("convert_svar: term already contains SVar.")
+            raise TermException("convert_svar: term already contains SVar.")
         elif self.is_var():
             return SVar(self.name, self.T.convert_stvar())
         elif self.is_const():
@@ -713,9 +686,6 @@ class Bound(Term):
     def __init__(self, n):
         self.ty = Term.BOUND
         self.n = n
-
-def all_t(T):
-    return Const("all", TFun(TFun(T, boolT), boolT))
 
 def get_svars(t):
     """Returns list of vschematic ariables in a term or a list of terms."""
@@ -859,3 +829,44 @@ def Implies(*args):
     for s in reversed(args[:-1]):
         res = implies(s, res)
     return res
+
+def Lambda(x, body):
+    """Construct the term lambda x. body.
+    
+    Here x must be a variable (or schematic variable) and body is a term
+    possibly depending on x.
+    
+    """
+    typecheck.checkinstance('Lambda', x, Term, body, Term)
+    if not (x.is_var() or x.is_svar()):
+        raise TermException("Lambda: x must be a variable. Got %s" % str(x))
+    return Abs(x.name, x.T, body.abstract_over(x))
+
+def forall(T):
+    return Const("all", TFun(TFun(T, boolT), boolT))
+ 
+def Forall(x, body):
+    """Construct the term !x. body.
+    
+    Here x must be a variable (or schematic variable) and body is a term
+    possibly depending on x.
+
+    """
+    typecheck.checkinstance('Forall', x, Term, body, Term)
+    if not (x.is_var() or x.is_svar()):
+        raise TermException("Forall: x must be a variable. Got %s" % str(x))
+    return forall(x.T)(Lambda(x, body))
+
+def exists(T):
+    return Const("exists", TFun(TFun(T, boolT), boolT))
+
+def Exists(x, body):
+    """Construct the term EX x. body.
+    
+    Here x must be a variable and body is a term possibly depending on x.
+    
+    """
+    typecheck.checkinstance('Exists', x, Term, body, Term)
+    if not x.is_var():
+        raise TermException("Exists: x must be a variable. Got %s" % str(x))
+    return exists(x.T)(Lambda(x, body))

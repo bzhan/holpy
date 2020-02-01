@@ -427,7 +427,7 @@ class introduction(Method):
             return []
 
         goal_th = state.get_proof_item(id).th
-        if goal_th.prop.is_all():
+        if goal_th.prop.is_forall():
             return [{}]
         elif goal_th.prop.is_implies():
             return [{"names": ""}]
@@ -450,9 +450,9 @@ class introduction(Method):
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
 
         prop = cur_item.th.prop
-        assert prop.is_implies() or prop.is_all(), "introduction"
+        assert prop.is_implies() or prop.is_forall(), "introduction"
 
-        if prop.is_all() and 'names' not in data:
+        if prop.is_forall() and 'names' not in data:
             raise theory.ParameterQueryException(['names'])
 
         intros_tac = tactic.intros()
@@ -516,7 +516,7 @@ class exists_elim(Method):
 
         if len(prevs) == 1:
             prev_th = state.get_proof_item(prevs[0]).th
-            if logic.is_exists(prev_th.prop):
+            if prev_th.prop.is_exists():
                 return [{}]
 
         return []
@@ -537,7 +537,7 @@ class exists_elim(Method):
 
         exists_item = state.get_proof_item(prevs[0])
         exists_prop = exists_item.th.prop
-        assert logic.is_exists(exists_prop), "exists_elim"
+        assert exists_prop.is_exists(), "exists_elim"
 
         vars, body = logic.strip_exists(exists_prop, names)
 
@@ -582,7 +582,7 @@ class forall_elim(Method):
 
         if len(prevs) == 1:
             prev_th = state.get_proof_item(prevs[0]).th
-            if prev_th.prop.is_all():
+            if prev_th.prop.is_forall():
                 return [{}]
 
         return []
@@ -616,7 +616,7 @@ class inst_exists_goal(Method):
             return []
 
         cur_th = state.get_proof_item(id).th
-        if logic.is_exists(cur_th.prop):
+        if cur_th.prop.is_exists():
             return [{}]
         else:
             return []

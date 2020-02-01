@@ -1,8 +1,8 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
-from kernel.term import Term
-from kernel.term import Const
+from kernel.term import Term, Const, Lambda
+
 
 """Utility functions for sets."""
 
@@ -115,4 +115,4 @@ def mk_collect(x, body):
 
     """
     assert x.is_var(), "mk_collect"
-    return collect(x.T)(Term.mk_abs(x, body))
+    return collect(x.T)(Lambda(x, body))

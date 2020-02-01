@@ -477,7 +477,7 @@ def get_ast_term(t):
 
         elif t.is_bound():
             if t.n >= len(bd_vars):
-                raise OpenTermException
+                raise TermException("print_term: open term")
             else:
                 return bd_vars[t.n]
         else:

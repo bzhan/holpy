@@ -3,7 +3,7 @@
 from copy import copy
 
 from kernel.type import HOLType
-from kernel.term import Term, OpenTermException
+from kernel.term import Term
 from kernel.thm import Thm
 from kernel import extension
 from kernel import proof

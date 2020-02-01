@@ -5,7 +5,7 @@ import itertools
 
 from kernel.type import TVar, Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Var, Const, And, Implies, Not, Eq
+from kernel.term import Term, Var, Const, And, Implies, Not, Eq, Forall
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -575,7 +575,7 @@ class Inductive(Item):
             assum = Implies(*(eq_assums + As), P)
             prop_vars = term.get_vars(prop)
             for var in reversed(term.get_vars(prop)):
-                assum = Term.mk_all(var, assum)
+                assum = Forall(var, assum)
             assums.append(assum)
 
         prop = Implies(*([assum0] + assums + [P]))
@@ -712,8 +712,6 @@ class Datatype(Item):
             self.trace = traceback2.format_exc()
 
     def get_extension(self):
-        from logic import logic
-
         assert self.error is None, "get_extension"
         res = []
 
@@ -766,7 +764,7 @@ class Datatype(Item):
             As = [var_P(Var(nm, T2)) for nm, T2 in zip(constr['args'], argT) if T2 == T]
             ind_assum = Implies(*(As + [C]))
             for arg in reversed(args):
-                ind_assum = Term.mk_all(arg, ind_assum)
+                ind_assum = Forall(arg, ind_assum)
             ind_assums.append(ind_assum)
         ind_concl = var_P(Var("x", T))
         th_name = self.name + "_induct"

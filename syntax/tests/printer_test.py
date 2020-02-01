@@ -3,7 +3,8 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, boolT
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, Not, Eq, true, false
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, \
+    Not, Eq, Forall, Lambda, Exists, true, false
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -35,9 +36,6 @@ p = Var("p", nat.natT)
 xs = Var("xs", Type("list", Ta))
 ys = Var("ys", Type("list", Ta))
 zs = Var("zs", Type("list", Ta))
-abs = Term.mk_abs
-all = Term.mk_all
-exists = logic.mk_exists
 mk_if = logic.mk_if
 
 class PrinterTest(unittest.TestCase):
@@ -93,23 +91,23 @@ class PrinterTest(unittest.TestCase):
             (Eq(Implies(A, B), C), "(A --> B) <--> C"),
 
             # Abstraction
-            (abs(a, And(P(a),Q(a))), "%a. P a & Q a"),
+            (Lambda(a, And(P(a),Q(a))), "%a. P a & Q a"),
 
             # Quantifiers
-            (all(a, P(a)), "!a. P a"),
-            (all(a, all(b, And(P(a),P(b)))), "!a. !b. P a & P b"),
-            (all(a, And(P(a), Q(a))), "!a. P a & Q a"),
-            (And(all(a, P(a)), Q(a)), "(!a1. P a1) & Q a"),
-            (all(a, Implies(P(a), Q(a))), "!a. P a --> Q a"),
-            (Implies(all(a, P(a)), Q(a)), "(!a1. P a1) --> Q a"),
-            (Implies(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
-            (Implies(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
-            (Eq(A, all(a, P(a))), "A <--> (!a. P a)"),
-            (exists(a, P(a)), "?a. P a"),
-            (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
+            (Forall(a, P(a)), "!a. P a"),
+            (Forall(a, Forall(b, And(P(a),P(b)))), "!a. !b. P a & P b"),
+            (Forall(a, And(P(a), Q(a))), "!a. P a & Q a"),
+            (And(Forall(a, P(a)), Q(a)), "(!a1. P a1) & Q a"),
+            (Forall(a, Implies(P(a), Q(a))), "!a. P a --> Q a"),
+            (Implies(Forall(a, P(a)), Q(a)), "(!a1. P a1) --> Q a"),
+            (Implies(Forall(a, P(a)), Forall(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
+            (Implies(Exists(a, P(a)), Exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
+            (Eq(A, Forall(a, P(a))), "A <--> (!a. P a)"),
+            (Exists(a, P(a)), "?a. P a"),
+            (Exists(a, Forall(b, R(a, b))), "?a. !b. R a b"),
             (logic.mk_exists1(a, P(a)), "?!a. P a"),
             (logic.mk_the(a, P(a)), "THE a. P a"),
-            (all(a, exists(b, R(a, b))), "!a. ?b. R a b"),
+            (Forall(a, Exists(b, R(a, b))), "!a. ?b. R a b"),
 
             # If
             (mk_if(A, a, b), "if A then a else b"),
@@ -322,7 +320,7 @@ class PrinterTest(unittest.TestCase):
         test_data = [
             (list.nil(Ta), "([]::'a list)"),
             (Eq(list.nil(Ta), list.nil(Ta)), "([]::'a list) = []"),
-            (all(a, Eq(a, a)), "!a::'a. a = a"),
+            (Forall(a, Eq(a, a)), "!a::'a. a = a"),
         ]
 
         for t, s in test_data:
@@ -333,9 +331,9 @@ class PrinterTest(unittest.TestCase):
             (And(A, B), "A ∧ B"),
             (Or(A, B), "A ∨ B"),
             (Implies(A, B), "A ⟶ B"),
-            (abs(a, P(a)), "λa. P a"),
-            (all(a, P(a)), "∀a. P a"),
-            (exists(a, P(a)), "∃a. P a"),
+            (Lambda(a, P(a)), "λa. P a"),
+            (Forall(a, P(a)), "∀a. P a"),
+            (Exists(a, P(a)), "∃a. P a"),
             (Not(A), "¬A"),
             (nat.plus(m, n), "m + n"),
             (nat.times(m, n), "m * n"),
@@ -346,7 +344,7 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintHighlight(self):
         """Test highlight"""
-        t = exists(a,all(b,R(a,b)))
+        t = Exists(a,Forall(b,R(a,b)))
         self.assertEqual(printer.print_term(t, highlight=True), [
             {'color': 0, 'text': '?'},
             {'color': 1, 'text': 'a'},

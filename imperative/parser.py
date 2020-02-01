@@ -4,7 +4,7 @@ import json, os
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TFun
-from kernel.term import Term, Var, Not, And, Or, Implies, Eq, true
+from kernel.term import Term, Var, Not, And, Or, Implies, Eq, Lambda, true
 from kernel.report import ProofReport
 from kernel import theory
 from logic import basic
@@ -101,19 +101,19 @@ class HoareTransformer(Transformer):
 
     def assign_cmd(self, v, e):
         Assign = imp.Assign(nat.natT, nat.natT)
-        return Assign(nat.to_binary_nat(str_to_nat(v)), Term.mk_abs(st, e))
+        return Assign(nat.to_binary_nat(str_to_nat(v)), Lambda(st, e))
 
     def if_cmd(self, b, c1, c2):
         Cond = imp.Cond(natFunT)
-        return Cond(Term.mk_abs(st, b), c1, c2)
+        return Cond(Lambda(st, b), c1, c2)
 
     def while_cmd(self, b, c):
         While = imp.While(natFunT)
-        return While(Term.mk_abs(st, b), Term.mk_abs(st, true), c)
+        return While(Lambda(st, b), Lambda(st, true), c)
 
     def while_cmd_inv(self, b, inv, c):
         While = imp.While(natFunT)
-        return While(Term.mk_abs(st, b), Term.mk_abs(st, inv), c)
+        return While(Lambda(st, b), Lambda(st, inv), c)
 
     def seq_cmd(self, c1, c2):
         Seq = imp.Seq(natFunT)
@@ -157,8 +157,8 @@ def process_file(input, output):
             eval_count += 1
         elif run['ty'] == 'vcg':
             com = parse_com(run['com'])
-            pre = Term.mk_abs(st, parse_cond(run['pre']))
-            post = Term.mk_abs(st, parse_cond(run['post']))
+            pre = Lambda(st, parse_cond(run['pre']))
+            post = Lambda(st, parse_cond(run['post']))
             Valid = imp.Valid(natFunT)
             goal = Valid(pre, com, post)
             prf = imp.vcg_solve(goal).export()

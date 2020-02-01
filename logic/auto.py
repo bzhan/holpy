@@ -118,7 +118,7 @@ def solve(goal, pts=None):
         pt = ProofTerm.implies_intr(a1, pt)
         return pt
     
-    if goal.is_all():
+    if goal.is_forall():
         var_names = [v.name for v in term.get_vars([goal] + [pt.prop for pt in pts])]
         nm = name.get_variant_name(goal.arg.var_name, var_names)
         v = Var(nm, goal.arg.var_T)

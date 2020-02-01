@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, boolT
-from kernel.term import Var, Term, Not, And, Or, Eq, Implies, true
+from kernel.term import Var, Term, Not, And, Or, Eq, Implies, Forall, Exists, Lambda, true
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import TheoryException
@@ -111,10 +111,8 @@ class BasicTest(unittest.TestCase):
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
-        all_conj = Term.mk_all(x, And(A(x), B(x)))
-        all_A = Term.mk_all(x, A(x))
-        all_B = Term.mk_all(x, B(x))
-        conj_all = And(all_A, all_B)
+        all_conj = Forall(x, And(A(x), B(x)))
+        conj_all = And(Forall(x, A(x)), Forall(x, B(x)))
 
         prf = Proof(all_conj)
         prf.add_item(1, "forall_elim", args=x, prevs=[0])
@@ -127,7 +125,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(8, "implies_elim", prevs=[7, 1])
         prf.add_item(9, "forall_intr", args=x, prevs=[8])
         prf.add_item(10, "theorem", args="conjI")
-        prf.add_item(11, "substitution", args={"A": all_A, "B": all_B}, prevs=[10])
+        prf.add_item(11, "substitution", args={"A": Forall(x, A(x)), "B": Forall(x, B(x))}, prevs=[10])
         prf.add_item(12, "implies_elim", prevs=[11, 5])
         prf.add_item(13, "implies_elim", prevs=[12, 9])
         prf.add_item(14, "implies_intr", args=all_conj, prevs=[13])
@@ -141,10 +139,8 @@ class BasicTest(unittest.TestCase):
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
-        all_conj = Term.mk_all(x, And(A(x), B(x)))
-        all_A = Term.mk_all(x, A(x))
-        all_B = Term.mk_all(x, B(x))
-        conj_all = And(all_A, all_B)
+        all_conj = Forall(x, And(A(x), B(x)))
+        conj_all = And(Forall(x, A(x)), Forall(x, B(x)))
 
         prf = Proof(all_conj)
         prf.add_item(1, "forall_elim", args=x, prevs=[0])
@@ -215,20 +211,17 @@ class BasicTest(unittest.TestCase):
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
-        conjAB = And(A(x), B(x))
-        exists_conj = logic.mk_exists(x, conjAB)
-        exists_A = logic.mk_exists(x, A(x))
-        exists_B = logic.mk_exists(x, B(x))
-        conj_exists = And(exists_A, exists_B)
+        exists_conj = Exists(x, And(A(x), B(x)))
+        conj_exists = And(Exists(x, A(x)), Exists(x, B(x)))
 
         prf = Proof(exists_conj)
-        prf.add_item(1, "assume", args=conjAB)
+        prf.add_item(1, "assume", args=And(A(x), B(x)))
         prf.add_item(2, "apply_theorem", args="conjD1", prevs=[1])
         prf.add_item(3, "apply_theorem", args="conjD2", prevs=[1])
         prf.add_item(4, "apply_theorem_for", args=("exI", {'a': Ta}, {'P': A, 'a': x}), prevs=[2])
         prf.add_item(5, "apply_theorem_for", args=("exI", {'a': Ta}, {'P': B, 'a': x}), prevs=[3])
         prf.add_item(6, "apply_theorem", args="conjI", prevs=[4, 5])
-        prf.add_item(7, "implies_intr", args=conjAB, prevs=[6])
+        prf.add_item(7, "implies_intr", args=And(A(x), B(x)), prevs=[6])
         prf.add_item(8, "forall_intr", args=x, prevs=[7])
         prf.add_item(9, "apply_theorem", args="exE", prevs=[0, 8])
         prf.add_item(10, "implies_intr", args=exists_conj, prevs=[9])
@@ -239,21 +232,20 @@ class BasicTest(unittest.TestCase):
         """Proof of n + 0 = n by induction."""
         basic.load_theory('nat')
         n = Var("n", nat.natT)
-        eq = Eq
         prf = Proof()
         prf.add_item(0, "theorem", args="nat_induct")
-        prf.add_item(1, "substitution", args={"P": Term.mk_abs(n, eq(nat.plus(n,nat.zero),n)), "x": n}, prevs=[0])
+        prf.add_item(1, "substitution", args={"P": Lambda(n, Eq(nat.plus(n,nat.zero),n)), "x": n}, prevs=[0])
         prf.add_item(2, "beta_norm", prevs=[1])
         prf.add_item(3, "theorem", args="nat_plus_def_1")
         prf.add_item(4, "substitution", args={"n": nat.zero}, prevs=[3])
         prf.add_item(5, "implies_elim", prevs=[2, 4])
-        prf.add_item(6, "assume", args=eq(nat.plus(n,nat.zero), n))
+        prf.add_item(6, "assume", args=Eq(nat.plus(n,nat.zero), n))
         prf.add_item(7, "theorem", args="nat_plus_def_2")
         prf.add_item(8, "substitution", args={"m": n, "n": nat.zero}, prevs=[7])
         prf.add_item(9, "reflexive", args=nat.Suc)
         prf.add_item(10, "combination", prevs=[9, 6])
         prf.add_item(11, "transitive", prevs=[8, 10])
-        prf.add_item(12, "implies_intr", args=eq(nat.plus(n,nat.zero), n), prevs=[11])
+        prf.add_item(12, "implies_intr", args=Eq(nat.plus(n,nat.zero), n), prevs=[11])
         prf.add_item(13, "forall_intr", args=n, prevs=[12])
         prf.add_item(14, "implies_elim", prevs=[5, 13])
         th = Thm([], Eq(nat.plus(n, nat.zero), n))
@@ -276,7 +268,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(5, "rewrite_goal", args=("nat_plus_def_2", eq(plus(S(n),zero),S(n))), prevs=[4])
         prf.add_item(6, "implies_intr", args=eq(plus(n,zero),n), prevs=[5])
         prf.add_item(7, "forall_intr", args=n, prevs=[6])
-        prf.add_item(8, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 7])
+        prf.add_item(8, "apply_theorem_for", args=("nat_induct", {}, {"P": Lambda(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 7])
         th = Thm([], Eq(plus(n, zero), n))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
@@ -287,7 +279,7 @@ class BasicTest(unittest.TestCase):
         eq = Eq
         prf = Proof()
         prf.add_item(0, "theorem", args="nat_induct")
-        prf.add_item(1, "substitution", args={"P": Term.mk_abs(n, eq(nat.times(n,nat.zero),nat.zero)), "x": n}, prevs=[0])
+        prf.add_item(1, "substitution", args={"P": Lambda(n, eq(nat.times(n,nat.zero),nat.zero)), "x": n}, prevs=[0])
         prf.add_item(2, "beta_norm", prevs=[1])
         prf.add_item(3, "theorem", args="nat_times_def_1")
         prf.add_item(4, "substitution", args={"n": nat.zero}, prevs=[3])
@@ -324,7 +316,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(6, "rewrite_goal", args=("nat_times_def_2", eq(times(S(n),zero),zero)), prevs=[5])
         prf.add_item(7, "implies_intr", args=eq(times(n,zero),zero), prevs=[6])
         prf.add_item(8, "forall_intr", args=n, prevs=[7])
-        prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
+        prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Lambda(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
         th = Thm([], Eq(times(n, zero), zero))
         self.assertEqual(theory.thy.check_proof(prf), th)
 

@@ -75,13 +75,13 @@ def convert(t, var_names, assms, to_real):
             if t.T == nat.natT and t.name not in assms:
                 assms[t.name] = z3_t >= 0
             return z3_t
-        elif t.is_all():
+        elif t.is_forall():
             nm = name.get_variant_name(t.arg.var_name, var_names)
             var_names.append(nm)
             v = Var(nm, t.arg.var_T)
             z3_v = convert_const(nm, t.arg.var_T)
             return z3.ForAll(z3_v, rec(t.arg.subst_bound(v)))
-        elif logic.is_exists(t):
+        elif t.is_exists():
             nm = name.get_variant_name(t.arg.var_name, var_names)
             var_names.append(nm)
             v = Var(nm, t.arg.var_T)

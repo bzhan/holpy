@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 from kernel.type import TVar, TFun, boolT
 from kernel import term
-from kernel.term import Term, SVar, Var, Const, Abs, Implies, true, false
+from kernel.term import Term, SVar, Var, Const, Abs, Implies, Lambda, true, false
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel import macro
@@ -27,21 +27,6 @@ class TacticException(Exception):
 
 """Utility functions for logic."""
 
-def exists_t(T):
-    return Const("exists", TFun(TFun(T, boolT), boolT))
-
-def is_exists(t):
-    """Whether t is of the form ?x. P x."""
-    return t.is_comb() and t.fun.is_const_name("exists") and t.arg.is_abs()
-
-def mk_exists(x, body):
-    """Given a variable x and a term P possibly depending on x, return
-    the term ?x. P.
-
-    """
-    assert x.is_var(), "mk_exists"
-    return exists_t(x.T)(Term.mk_abs(x, body))
-
 def is_exists1(t):
     """Whether t is of the form ?!x. P x."""
     return t.is_comb() and t.fun.is_const_name("exists1") and t.arg.is_abs()
@@ -53,7 +38,7 @@ def mk_exists1(x, body):
     """
     assert x.is_var(), "mk_exists1"
     exists1_t = Const("exists1", TFun(TFun(x.T, boolT), boolT))
-    return exists1_t(Term.mk_abs(x, body))
+    return exists1_t(Lambda(x, body))
 
 def is_the(t):
     """Whether t is of the form THE x. P x."""
@@ -66,7 +51,7 @@ def mk_the(x, body):
     """
     assert x.is_var(), "mk_the"
     the_t = Const("The", TFun(TFun(x.T, boolT), x.T))
-    return the_t(Term.mk_abs(x, body))
+    return the_t(Lambda(x, body))
 
 def subst_norm(t, instsp):
     """Substitute using the given instantiation, then normalize with
@@ -97,7 +82,7 @@ def get_forall_names(t, svar=True):
 
     """
     def helper(t):
-        if Term.is_all(t):
+        if t.is_forall():
             return [t.arg.var_name] + helper(t.arg.body)
         else:
             return []
@@ -117,7 +102,7 @@ def strip_all_implies(t, names, svar=True):
     substituted for v_1, ..., v_k.
 
     """
-    if Term.is_all(t):
+    if t.is_forall():
         assert len(names) > 0, "strip_all_implies: not enough names input."
         assert isinstance(names[0], str), "strip_all_implies: names must be strings."
         if svar:
@@ -140,7 +125,7 @@ def strip_exists(t, names):
     input term, with bound variables substituted for v_1, ..., v_k.
 
     """
-    if is_exists(t) and len(names) > 0:
+    if t.is_exists() and len(names) > 0:
         assert isinstance(names[0], str), "strip_exists: names must be strings."
         v = Var(names[0], t.arg.var_T)
         vars, body = strip_exists(t.arg.subst_bound(v), names[1:])
@@ -222,7 +207,7 @@ class intros_macro(ProofTermMacro):
             if intro.th.prop.is_VAR():  # variable case
                 pt = ProofTerm.forall_intr(intro.prop.arg, pt)
             elif len(args) > 0 and intro.th.prop == args[0]:  # exists case
-                assert is_exists(intro.prop), "intros_macro"
+                assert intro.prop.is_exists(), "intros_macro"
                 pt = apply_theorem('exE', intro, pt)
                 args = args[1:]
             else:  # assume case

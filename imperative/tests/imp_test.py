@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Not, Eq, true
+from kernel.term import Term, Var, Not, Eq, Lambda, true
 from kernel.thm import Thm
 from kernel import theory
 from kernel.report import ProofReport
@@ -29,10 +29,9 @@ zero = nat.zero
 one = nat.one
 to_binary = nat.to_binary_nat
 
-abs = Term.mk_abs
 s = Var("s", natFunT)
-assn_true = abs(s, true)
-incr_one = Assign(zero, abs(s, nat.plus(s(zero), one)))
+assn_true = Lambda(s, true)
+incr_one = Assign(zero, Lambda(s, nat.plus(s(zero), one)))
 
 def fun_upd_of_seq(*ns):
     return mk_fun_upd(mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
@@ -42,7 +41,7 @@ class HoareTest(unittest.TestCase):
         basic.load_theory('hoare')
 
     def testEvalSem(self):
-        com = Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2))))
+        com = Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, to_binary(2))))
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
@@ -58,7 +57,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem3(self):
-        com = Cond(abs(s, Eq(s(zero), zero)), incr_one, Skip)
+        com = Cond(Lambda(s, Eq(s(zero), zero)), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
@@ -70,7 +69,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem4(self):
-        com = Cond(abs(s, Not(Eq(s(zero), one))), incr_one, Skip)
+        com = Cond(Lambda(s, Not(Eq(s(zero), one))), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
@@ -82,7 +81,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
-        com = While(abs(s, Not(Eq(s(zero), to_binary(3)))), assn_true, incr_one)
+        com = While(Lambda(s, Not(Eq(s(zero), to_binary(3)))), assn_true, incr_one)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)
@@ -94,10 +93,10 @@ class HoareTest(unittest.TestCase):
         Q = Var("Q", TFun(natFunT, boolT))
 
         test_data = [
-            (Assign(zero, abs(s, one)),
-             abs(s, Q(mk_fun_upd(s, zero, one)))),
-            (Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2)))),
-             abs(s, Q(mk_fun_upd(s, zero, one, one, to_binary(2))))),
+            (Assign(zero, Lambda(s, one)),
+             Lambda(s, Q(mk_fun_upd(s, zero, one)))),
+            (Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, to_binary(2)))),
+             Lambda(s, Q(mk_fun_upd(s, zero, one, one, to_binary(2))))),
         ]
 
         for c, P in test_data:
@@ -109,8 +108,8 @@ class HoareTest(unittest.TestCase):
         Q = Var("Q", TFun(natFunT, boolT))
 
         test_data = [
-            Assign(zero, abs(s, one)),
-            Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2)))),
+            Assign(zero, Lambda(s, one)),
+            Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, to_binary(2)))),
         ]
 
         for c in test_data:

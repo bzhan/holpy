@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import STVar, TVar, TFun, boolT
-from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, TypeCheckException
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Forall, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
@@ -210,13 +210,13 @@ class ThmTest(unittest.TestCase):
 
     def testForallIntr(self):
         th = Thm([], Eq(x,y))
-        t_res = Term.mk_all(x, Eq(x, y))
+        t_res = Forall(x, Eq(x, y))
         self.assertEqual(Thm.forall_intr(x, th), Thm([], t_res))
 
     def testForallIntr2(self):
         """Also OK if the variable does not appear in theorem."""
         th = Thm([], Eq(x,y))
-        t_res = Term.mk_all(z, Eq(x, y))
+        t_res = Forall(z, Eq(x, y))
         self.assertEqual(Thm.forall_intr(z, th), Thm([], t_res))
 
     def testForallIntrFail(self):
@@ -230,7 +230,7 @@ class ThmTest(unittest.TestCase):
 
     def testForallElim(self):
         P = Var("P", TFun(Ta, boolT))
-        th = Thm([], Term.mk_all(x, P(x)))
+        th = Thm([], Forall(x, P(x)))
         self.assertEqual(Thm.forall_elim(y, th), Thm([], P(y)))
 
     def testForallElimFail(self):
@@ -239,7 +239,7 @@ class ThmTest(unittest.TestCase):
 
     def testForallElimFail2(self):
         P = Var("P", TFun(Ta, boolT))
-        th = Thm([], Term.mk_all(x, P(x)))
+        th = Thm([], Forall(x, P(x)))
         self.assertRaises(InvalidDerivationException, Thm.forall_elim, A, th)
 
 

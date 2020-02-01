@@ -4,8 +4,8 @@ import unittest
 
 from kernel.type import STVar, TVar, Type, TFun
 from kernel import term
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or
-from kernel.term import TermSubstitutionException, TypeCheckException
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda
+from kernel.term import TermException, TypeCheckException
 
 Ta = TVar("a")
 Tb = TVar("b")
@@ -129,7 +129,7 @@ class TermTest(unittest.TestCase):
             self.assertEqual(t.subst(inst), res)
 
     def testSubstFail(self):
-        self.assertRaises(TermSubstitutionException, SVar('a', TVar('a')).subst, {"a" : b})
+        self.assertRaises(TermException, SVar('a', TVar('a')).subst, {"a" : b})
 
     def testSubstBound(self):
         test_data = [
@@ -145,7 +145,7 @@ class TermTest(unittest.TestCase):
             self.assertEqual(t.subst_bound(s), res)
 
     def testSubstBoundFail(self):
-        self.assertRaises(TermSubstitutionException, a.subst_bound, b)
+        self.assertRaises(TermException, a.subst_bound, b)
 
     def testStripComb(self):
         self.assertEqual(f2.strip_comb(), (f2, []))
@@ -164,11 +164,10 @@ class TermTest(unittest.TestCase):
     def testBetaNorm(self):
         x = Var('x', Ta)
         y = Var('y', Ta)
-        abs = term.Term.mk_abs
         test_data = [
-            (abs(x,x)(x), x),
-            (abs(x,abs(y,y))(x,y), y),
-            (abs(x,abs(y,x))(x,y), x),
+            (Lambda(x, x)(x), x),
+            (Lambda(x, Lambda(y, y))(x, y), y),
+            (Lambda(x, Lambda(y, x))(x, y), x),
         ]
 
         for t, res in test_data:
@@ -201,10 +200,10 @@ class TermTest(unittest.TestCase):
             self.assertEqual(s.abstract_over(t), res)
 
     def testAbstractOverFail(self):
-        self.assertRaises(TermSubstitutionException, Comb(f,a).abstract_over, Comb(f,a))
+        self.assertRaises(TermException, Comb(f,a).abstract_over, Comb(f,a))
 
     def testAbstractOverFail2(self):
-        self.assertRaises(TermSubstitutionException, a.abstract_over, Var("a", Tb))
+        self.assertRaises(TermException, a.abstract_over, Var("a", Tb))
 
     def testCheckedGetType(self):
         test_data = [
