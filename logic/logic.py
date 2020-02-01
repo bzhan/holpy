@@ -205,7 +205,7 @@ class intros_macro(ProofTermMacro):
 
         for intro in reversed(intros):
             if intro.th.prop.is_VAR():  # variable case
-                pt = ProofTerm.forall_intr(intro.prop.arg, pt)
+                pt = pt.forall_intr(intro.prop.arg)
             elif len(args) > 0 and intro.th.prop == args[0]:  # exists case
                 assert intro.prop.is_exists(), "intros_macro"
                 pt = apply_theorem('exE', intro, pt)
@@ -213,7 +213,7 @@ class intros_macro(ProofTermMacro):
             else:  # assume case
                 assert len(intro.th.hyps) == 1 and intro.th.hyps[0] == intro.th.prop, \
                     "intros_macro"
-                pt = ProofTerm.implies_intr(intro.prop, pt)
+                pt = pt.implies_intr(intro.prop)
         return pt
 
 class apply_theorem_macro(ProofTermMacro):
@@ -289,19 +289,15 @@ class apply_theorem_macro(ProofTermMacro):
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         pt = ProofTerm.theorem(name)
-        if tyinst:
-            pt = ProofTerm.subst_type(tyinst, pt)
-        if inst:
-            pt = ProofTerm.substitution(inst, pt)
+        pt = pt.subst_type(tyinst).substitution(inst)
         if pt.prop.beta_norm() != pt.prop:
             pt = beta_norm_conv().apply_to_pt(pt)
-        for prev_pt in pts:
-            pt = ProofTerm.implies_elim(pt, prev_pt)
+        pt = pt.implies_elim(*pts)
 
         assert len(term.get_stvars(pt.prop)) == 0, "apply_theorem: unmatched type variables."
         vars = term.get_svars(pt.prop)
         for v in reversed(vars):
-            pt = ProofTerm.forall_intr(v, pt)
+            pt = pt.forall_intr(v)
 
         return pt
 
@@ -342,18 +338,18 @@ class apply_fact_macro(ProofTermMacro):
             pt = ProofTerm.subst_type(tyinst, pt)
         for new_var in new_vars:
             if new_var.name in inst:
-                pt = ProofTerm.forall_elim(inst[new_var.name], pt)
+                pt = pt.forall_elim(inst[new_var.name])
             else:
-                pt = ProofTerm.forall_elim(new_var, pt)
+                pt = pt.forall_elim(new_var)
         if pt.prop.beta_norm() != pt.prop:
             pt = beta_norm_conv().apply_to_pt(pt)
         for prev_pt in pt_prevs:
             if prev_pt.prop != pt.assums[0]:
                 prev_pt = beta_norm_conv().apply_to_pt(prev_pt)
-            pt = ProofTerm.implies_elim(pt, prev_pt)
+            pt = pt.implies_elim(prev_pt)
         for new_var in new_vars:
             if new_var.name not in inst:
-                pt = ProofTerm.forall_intr(new_var, pt)
+                pt = pt.forall_intr(new_var)
 
         return pt
 
@@ -401,11 +397,11 @@ class rewrite_goal_macro(ProofTermMacro):
 
         cv = then_conv(top_sweep_conv(rewr_cv), beta_norm_conv())
         pt = cv.get_proof_term(goal)  # goal = th.prop
-        pt = ProofTerm.symmetric(pt)  # th.prop = goal
+        pt = pt.symmetric()           # th.prop = goal
         if pt.prop.lhs.is_equals() and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
-            pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.lhs))
+            pt = pt.equal_elim(refl(pt.prop.lhs.lhs))
         else:
-            pt = ProofTerm.equal_elim(pt, pts[0])  # goal
+            pt = pt.equal_elim(pts[0])  # goal
 
         return pt
 
@@ -459,22 +455,22 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         new_vars, _, _ = strip_all_implies(eq_pt.prop, new_names)
 
         for new_var in new_vars:
-            eq_pt = ProofTerm.forall_elim(new_var, eq_pt)
+            eq_pt = eq_pt.forall_elim(new_var)
 
         pts = pts[1:]
 
         cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym)),
                        beta_norm_conv())
         pt = cv.get_proof_term(goal)  # goal = th.prop
-        pt = ProofTerm.symmetric(pt)  # th.prop = goal
+        pt = pt.symmetric()           # th.prop = goal
         if pt.prop.lhs.is_reflexive():
-            pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.rhs))
+            pt = pt.equal_elim(refl(pt.prop.lhs.rhs))
         else:
-            pt = ProofTerm.equal_elim(pt, pts[0])
+            pt = pt.equal_elim(pts[0])
             pts = pts[1:]
 
         for A in pts:
-            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
+            pt = pt.implies_intr(A.prop).implies_elim(A)
         return pt
 
 class rewrite_fact_with_prev_macro(ProofTermMacro):
@@ -502,7 +498,7 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         assert len(eq_As) == 0 and eq_C.is_equals(), "rewrite_fact_with_prev"
 
         for new_var in new_vars:
-            eq_pt = ProofTerm.forall_elim(new_var, eq_pt)
+            eq_pt = eq_pt.forall_elim(new_var)
 
         # Check rewriting using eq_pt has an effect
         cv1 = top_sweep_conv(rewr_conv(eq_pt))
@@ -523,7 +519,7 @@ class forall_elim_gen_macro(ProofTermMacro):
         assert isinstance(args, Term), "forall_elim_gen"
         s = args  # term to instantiate
 
-        pt = ProofTerm.forall_elim(s, pts[0])
+        pt = pts[0].forall_elim(s)
         if pt.prop.beta_norm() != pt.prop:
             pt = beta_norm_conv().apply_to_pt(pt)
         return pt
@@ -550,9 +546,9 @@ class trivial_macro(ProofTermMacro):
 
         pt = ProofTerm.assume(C)
         for A in reversed(As):
-            pt = ProofTerm.implies_intr(A, pt)
+            pt = pt.implies_intr(A)
         for v in reversed(vars):
-            pt = ProofTerm.forall_intr(v, pt)
+            pt = pt.forall_intr(v)
         return pt
 
 class resolve_theorem_macro(ProofTermMacro):
@@ -569,11 +565,7 @@ class resolve_theorem_macro(ProofTermMacro):
 
         # Match for variables in pt.
         tyinst, inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
-        if tyinst:
-            pt = ProofTerm.subst_type(tyinst, pt)
-        if inst:
-            pt = ProofTerm.substitution(inst, pt)
-
+        pt = pt.subst_type(tyinst).substitution(inst)
         pt = apply_theorem('negE', pt, pts[0])  # false
         return apply_theorem('falseE', pt, concl=goal)
 
@@ -656,7 +648,7 @@ class imp_conj_macro(ProofTermMacro):
 
         traverse_A(ProofTerm.assume(A))
         concl = traverse_C(C)
-        return ProofTerm.implies_intr(A, concl)
+        return concl.implies_intr(A)
 
 
 macro.global_macros.update({

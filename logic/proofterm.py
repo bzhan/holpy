@@ -60,61 +60,59 @@ class ProofTerm():
     def reflexive(x):
         return ProofTermDeriv("reflexive", x, [])
 
-    @staticmethod
-    def symmetric(pt):
-        return ProofTermDeriv("symmetric", None, [pt])
+    def symmetric(self):
+        return ProofTermDeriv("symmetric", None, [self])
 
-    @staticmethod
-    def transitive(pt1, pt2):
-        if pt1.prop.is_reflexive():
-            return pt2
-        if pt2.prop.is_reflexive():
-            return pt1
-        return ProofTermDeriv("transitive", None, [pt1, pt2])
+    def transitive(self, *pts):
+        pt = self
+        for eq_pt in pts:
+            if pt.prop.is_reflexive():
+                pt = eq_pt
+            elif eq_pt.prop.is_reflexive():
+                pass
+            else:
+                pt = ProofTermDeriv("transitive", None, [pt, eq_pt])
+        return pt
 
-    @staticmethod
-    def combination(pt1, pt2):
-        return ProofTermDeriv("combination", None, [pt1, pt2])
+    def combination(self, pt2):
+        return ProofTermDeriv("combination", None, [self, pt2])
 
-    @staticmethod
-    def equal_elim(pt1, pt2):
-        return ProofTermDeriv("equal_elim", None, [pt1, pt2])
+    def equal_elim(self, pt2):
+        return ProofTermDeriv("equal_elim", None, [self, pt2])
 
-    @staticmethod
-    def implies_intr(A, pt):
-        return ProofTermDeriv("implies_intr", A, [pt])
+    def implies_intr(self, A):
+        return ProofTermDeriv("implies_intr", A, [self])
 
-    @staticmethod
-    def implies_elim(pt1, *pts):
-        if len(pts) == 0:
-            return pt1
+    def implies_elim(self, *pts):
+        pt = self
+        for assum_pt in pts:
+            pt = ProofTermDeriv("implies_elim", None, [pt, assum_pt])
+        return pt
+
+    def subst_type(self, tyinst):
+        if tyinst:
+            return ProofTermDeriv("subst_type", tyinst, [self])
         else:
-            pt2 = ProofTermDeriv("implies_elim", None, [pt1, pts[0]])
-            return ProofTerm.implies_elim(pt2, *pts[1:])
+            return self
 
-    @staticmethod
-    def subst_type(tyinst, pt):
-        return ProofTermDeriv("subst_type", tyinst, [pt])
-
-    @staticmethod
-    def substitution(inst, pt):
-        return ProofTermDeriv("substitution", inst, [pt])
+    def substitution(self, inst):
+        if inst:
+            return ProofTermDeriv("substitution", inst, [self])
+        else:
+            return self
 
     @staticmethod
     def beta_conv(x):
         return ProofTermDeriv("beta_conv", x, [])
 
-    @staticmethod
-    def abstraction(pt, x):
-        return ProofTermDeriv("abstraction", x, [pt])
+    def abstraction(self, x):
+        return ProofTermDeriv("abstraction", x, [self])
 
-    @staticmethod
-    def forall_intr(x, pt):
-        return ProofTermDeriv("forall_intr", x, [pt])
+    def forall_intr(self, x):
+        return ProofTermDeriv("forall_intr", x, [self])
 
-    @staticmethod
-    def forall_elim(s, pt):
-        return ProofTermDeriv("forall_elim", s, [pt])
+    def forall_elim(self, s):
+        return ProofTermDeriv("forall_elim", s, [self])
 
     @staticmethod
     def theorem(th_name):

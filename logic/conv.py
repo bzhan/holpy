@@ -37,11 +37,11 @@ class Conv():
         # in a special way.
         if pos == "rhs":
             eq_pt = self.get_proof_term(pt.prop.rhs)
-            return ProofTerm.transitive(pt, eq_pt)
+            return pt.transitive(eq_pt)
 
         elif pos == "lhs":
             eq_pt = self.get_proof_term(pt.prop.lhs)
-            return ProofTerm.transitive(ProofTerm.symmetric(eq_pt), pt)
+            return eq_pt.symmetric().transitive(pt)
         elif pos == "arg":
             return arg_conv(self).apply_to_pt(pt)
         elif pos == "assums":
@@ -51,7 +51,7 @@ class Conv():
         if eq_pt.prop.is_reflexive():
             return pt
         else:
-            return ProofTerm.equal_elim(eq_pt, pt)
+            return eq_pt.equal_elim(pt)
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
@@ -80,7 +80,7 @@ class combination_conv(Conv):
         if pt1.th.is_reflexive() and pt2.th.is_reflexive():
             return ProofTerm.reflexive(t)
         else:
-            return ProofTerm.combination(pt1, pt2)
+            return pt1.combination(pt2)
 
 class then_conv(Conv):
     """Applies cv1, followed by cv2."""
@@ -98,7 +98,7 @@ class then_conv(Conv):
         pt2 = self.cv2.get_proof_term(t2)
         
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
-        return ProofTerm.transitive(pt1, pt2)
+        return pt1.transitive(pt2)
 
 class else_conv(Conv):
     """Applies cv1, if fails, apply cv2."""
@@ -129,7 +129,7 @@ class beta_norm_conv(Conv):
         pt1 = top_conv(beta_conv()).get_proof_term(t)
         if pt1.prop.rhs != t:
             pt2 = self.get_proof_term(pt1.prop.rhs)
-            return ProofTerm.transitive(pt1, pt2)
+            return pt1.transitive(pt2)
         else:
             return refl(t)
 
@@ -151,10 +151,10 @@ class eta_conv(Conv):
             raise ConvException("eta_conv")
 
         eq_pt = ProofTerm.theorem('eta_conversion')
-        eq_pt = ProofTerm.subst_type({
+        eq_pt = eq_pt.subst_type({
             'a': t2.fun.get_type().domain_type(),
-            'b': t2.fun.get_type().range_type()}, eq_pt)
-        eq_pt = ProofTerm.substitution({'f': t2.fun}, eq_pt)
+            'b': t2.fun.get_type().range_type()})
+        eq_pt = eq_pt.substitution({'f': t2.fun})
         return eq_pt
 
 class abs_conv(Conv):
@@ -176,7 +176,7 @@ class abs_conv(Conv):
         # It is possible that cv produces additional assumptions
         # containing v. In this case the conversion should fail.
         try:
-            return ProofTerm.abstraction(self.cv.get_proof_term(t2), v)
+            return self.cv.get_proof_term(t2).abstraction(v)
         except InvalidDerivationException:
             raise ConvException("abs_conv")
 
@@ -337,14 +337,10 @@ class rewr_conv(Conv):
 
         pt = self.eq_pt
         tyinst, inst = instsp
-        if tyinst:
-            pt = ProofTerm.subst_type(tyinst, pt)
-        if inst:
-            pt = ProofTerm.substitution(inst, pt)
-        if self.conds:
-            pt = ProofTerm.implies_elim(pt, *self.conds)
+        pt = pt.subst_type(tyinst).substitution(inst)
+        pt = pt.implies_elim(*self.conds)
         if self.sym:
-            pt = ProofTerm.symmetric(pt)
+            pt = pt.symmetric()
 
         assert pt.th.is_equals(), "rewr_conv: wrong result."
 

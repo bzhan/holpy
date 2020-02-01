@@ -23,7 +23,7 @@ class ProofTermTest(unittest.TestCase):
         """Basic case."""
         pt1 = ProofTerm.assume(Eq(x,y))
         pt2 = ProofTerm.assume(Eq(y,z))
-        pt3 = ProofTerm.transitive(pt1, pt2)
+        pt3 = pt1.transitive(pt2)
 
         prf = pt3.export()
         self.assertEqual(len(prf.items), 3)
@@ -33,8 +33,8 @@ class ProofTermTest(unittest.TestCase):
         """Repeated theorems."""
         pt1 = ProofTerm.assume(Eq(x,y))
         pt2 = ProofTerm.reflexive(f)
-        pt3 = ProofTerm.combination(pt2, pt1)  # f x = f y
-        pt4 = ProofTerm.combination(pt3, pt1)  # f x x = f y y
+        pt3 = pt2.combination(pt1)  # f x = f y
+        pt4 = pt3.combination(pt1)  # f x x = f y y
 
         prf = pt4.export()
         self.assertEqual(len(prf.items), 4)
@@ -44,7 +44,7 @@ class ProofTermTest(unittest.TestCase):
         """Case with atoms."""
         pt1 = ProofTerm.atom(0, Thm([], Eq(x,y)))
         pt2 = ProofTerm.atom(1, Thm([], Eq(y,z)))
-        pt3 = ProofTerm.transitive(pt1, pt2)
+        pt3 = pt1.transitive(pt2)
 
         prf = Proof()
         prf.add_item(0, rule="sorry", th=Thm([], Eq(x,y)))

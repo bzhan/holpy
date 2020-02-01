@@ -401,8 +401,7 @@ class real_integral_cong(Conv):
 
         cv = auto.auto_conv(conds=[ProofTerm.assume(cond)])
         eq_pt = cv.get_proof_term(body)
-        eq_pt = ProofTerm.implies_intr(cond, eq_pt)
-        eq_pt = ProofTerm.forall_intr(v, eq_pt)
+        eq_pt = eq_pt.implies_intr(cond).forall_intr(v)
         return apply_theorem('real_integral_eq_closed_interval', le_pt, eq_pt)
 
 auto.add_global_autos_norm(real_integral, real_integral_cong())
@@ -428,7 +427,7 @@ class simplify_rewr_conv(Conv):
             raise ConvException("simplify_rewr_conv: %s != %s" % (
                 printer.print_term(target_eq.rhs), printer.print_term(t_eq.rhs)))
 
-        return ProofTerm.transitive(t_eq, ProofTerm.symmetric(target_eq))
+        return t_eq.transitive(target_eq.symmetric())
 
 
 class combine_fraction(Conv):
@@ -508,7 +507,7 @@ class fraction_rewr_conv(Conv):
         lhs_eq = refl(expr).on_rhs(auto.auto_conv(conds))
         rhs_eq = refl(self.target).on_rhs(auto.auto_conv(conds))
         if lhs_eq.rhs == rhs_eq.rhs:
-            return ProofTerm.transitive(lhs_eq, ProofTerm.symmetric(rhs_eq))
+            return lhs_eq.transitive(rhs_eq.symmetric())
 
         lhs_eq = lhs_eq.on_rhs(combine_fraction(conds))
         rhs_eq = rhs_eq.on_rhs(combine_fraction(conds))
@@ -522,7 +521,7 @@ class fraction_rewr_conv(Conv):
         cross_eq = auto.auto_solve(Eq(real.times(a, d), real.times(b, c)), conds)
         pt = apply_theorem('real_divide_eq', b_neq_0, d_neq_0, cross_eq)
 
-        return ProofTerm.transitive(ProofTerm.transitive(lhs_eq, pt), ProofTerm.symmetric(rhs_eq))
+        return lhs_eq.transitive(pt, rhs_eq.symmetric())
 
 
 def fraction_rewr_integral(expr, target):
@@ -558,12 +557,11 @@ def fraction_rewr_integral(expr, target):
 
     # Now apply fraction_rewr_conv and then use congruence theorem
     eq_pt = fraction_rewr_conv(target_body).get_proof_term(body, [ProofTerm.assume(cond)])
-    eq_pt = ProofTerm.implies_intr(cond, eq_pt)
-    eq_pt = ProofTerm.forall_intr(v, eq_pt)
+    eq_pt = eq_pt.implies_intr(cond).forall_intr(v)
     eq_pt = apply_theorem('real_integral_eq_closed_interval', le_pt, eq_pt)
 
     # Link all theorems together
-    return ProofTerm.transitive(ProofTerm.transitive(expr_pt, eq_pt), ProofTerm.symmetric(target_pt))
+    return expr_pt.transitive(eq_pt, target_pt.symmetric())
 
 def apply_subst_thm(f, g, a, b):
     """Apply the substitution theorem.
@@ -587,18 +585,14 @@ def apply_subst_thm(f, g, a, b):
         eq_pt = apply_theorem('real_integral_substitution_simple_incr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
 
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+        for A in eq_pt.assums:
+            eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
     else:
         eq_pt = apply_theorem('real_integral_substitution_simple_decr',
             inst={'a': a, 'b': b, 'f': f, 'g': g})
 
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+        for A in eq_pt.assums:
+            eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
 
     return eq_pt
 
@@ -635,10 +629,10 @@ class substitution(Conv):
 
         # Use the equality to rewrite expression.
         eq_pt2 = fraction_rewr_integral(eq_pt.lhs, expr)
-        pt = ProofTerm.transitive(ProofTerm.symmetric(eq_pt2), eq_pt)
+        pt = eq_pt2.symmetric().transitive(eq_pt)
 
         eq_pt3 = fraction_rewr_integral(pt.rhs, self.target)
-        pt = ProofTerm.transitive(pt, eq_pt3)
+        pt = pt.transitive(eq_pt3)
 
         return pt
 
@@ -674,10 +668,10 @@ class substitution_inverse(Conv):
 
         # Use the equality to rewrite expression.
         eq_pt2 = fraction_rewr_integral(expr, eq_pt.rhs)
-        pt = ProofTerm.transitive(eq_pt2, ProofTerm.symmetric(eq_pt))
+        pt = eq_pt2.transitive(eq_pt.symmetric())
 
         eq_pt3 = fraction_rewr_integral(pt.rhs, self.target)
-        pt = ProofTerm.transitive(pt, eq_pt3)
+        pt = pt.transitive(eq_pt3)
 
         return pt
 
@@ -711,14 +705,12 @@ class integrate_by_parts(Conv):
         eq_pt = apply_theorem('real_integration_by_parts_simple_evalat',
             inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
 
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+        for A in eq_pt.assums:
+            eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
 
         # Use the equality to rewrite expression.
         eq_pt2 = fraction_rewr_integral(expr, eq_pt.lhs)
-        pt = ProofTerm.transitive(eq_pt2, eq_pt)
+        pt = eq_pt2.transitive(eq_pt)
 
         # Rewrite to agree with target
         assert real.is_minus(pt.rhs) and real.is_minus(self.target)
@@ -740,7 +732,7 @@ class trig_rewr_conv(Conv):
         # Obtain the only variable in t
         if self.code == 'TR0':
             # (sin x) ^ 2 + (cos x) ^ 2 = 1
-            return ProofTerm.symmetric(refl(self.target).on_rhs(rewr_conv('sin_circle')))
+            return refl(self.target).on_rhs(rewr_conv('sin_circle')).symmetric()
         elif self.code == 'TR1':
             # Definition of sec and csc
             # Handled by normalization
@@ -818,7 +810,7 @@ class trig_rewr_conv(Conv):
             raise NotImplementedError
 
         eq_pt = simplify_rewr_conv(self.target).get_proof_term(pt.rhs, conds)
-        return ProofTerm.transitive(pt, eq_pt)
+        return pt.transitive(eq_pt)
 
 
 class split_region_conv(Conv):
@@ -836,12 +828,10 @@ class split_region_conv(Conv):
 
         eq_pt = apply_theorem('real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
 
-        As, _ = eq_pt.prop.strip_implies()
-        for A in As:
-            A_pt = auto.auto_solve(A)
-            eq_pt = ProofTerm.implies_elim(eq_pt, A_pt)
+        for A in eq_pt.assums:
+            eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
 
-        return ProofTerm.symmetric(eq_pt)
+        return eq_pt.symmetric()
 
 
 class location_conv(Conv):
@@ -885,8 +875,7 @@ class location_conv(Conv):
 
                 cv = location_conv(self.loc.rest, self.cv, self.conds + [ProofTerm.assume(cond)])
                 eq_pt = cv.get_proof_term(body)
-                eq_pt = ProofTerm.implies_intr(cond, eq_pt)
-                eq_pt = ProofTerm.forall_intr(v, eq_pt)
+                eq_pt = eq_pt.implies_intr(cond).forall_intr(v)
                 return apply_theorem('real_integral_eq_closed_interval', le_pt, eq_pt)
             else:
                 raise NotImplementedError
@@ -1090,7 +1079,7 @@ def translate_item(item, target=None, *, debug=False):
             t1_pt = auto.auto_solve(Eq(prev_pt.rhs, t1))
             t1_pt = t1_pt.on_rhs(arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
                                  arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())
-            pt = ProofTerm.transitive(prev_pt, t1_pt)
+            pt = prev_pt.transitive(t1_pt)
         else:
             raise NotImplementedError
 
@@ -1110,8 +1099,7 @@ def translate_item(item, target=None, *, debug=False):
                 ))
                 raise AssertionError
             else:
-                pt = ProofTerm.transitive(pt, eq_pt2)
-                pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt1))
+                pt = pt.transitive(eq_pt2, eq_pt1.symmetric())
 
         pt = ProofTermDeriv("transitive", None, [pt, ProofTerm.reflexive(expected)])
 

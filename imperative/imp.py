@@ -185,7 +185,7 @@ def compute_wp(T, c, Q):
         pt = apply_theorem("while_rule", concl=Valid(T)(I, c, Q))
         pt0 = ProofTerm.assume(pt.assums[0])
         pt1 = vcg(T, pt.assums[1])
-        return ProofTerm.implies_elim(pt, pt0, pt1)
+        return pt.implies_elim(pt0, pt1)
     else:
         raise NotImplementedError
 
@@ -210,7 +210,7 @@ def vcg_norm(T, goal):
     """
     pt = vcg(T, goal)
     for A in reversed(pt.hyps):
-        pt = ProofTerm.implies_intr(A, pt)
+        pt = pt.implies_intr(A)
 
     # Normalize each of the assumptions
     return pt.on_assums(rewr_conv("Entail_def"), beta_norm_conv(),
@@ -238,7 +238,7 @@ class vcg_macro(ProofTermMacro):
         pt = vcg_norm(T, goal)
 
         # Discharge the assumptions using the previous facts
-        return ProofTerm.implies_elim(pt, *pts)
+        return pt.implies_elim(*pts)
 
 class vcg_tactic(Tactic):
     """Tactic corresponding to VCG macro."""

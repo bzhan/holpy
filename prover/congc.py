@@ -458,15 +458,15 @@ class CongClosureHOL:
                     # - b corresponds to Comb(b1, b2)
                     eq_pt1 = get_proofterm(a1, b1) if a1 != b1 else ProofTerm.reflexive(self.index[a1])                    
                     eq_pt2 = get_proofterm(a2, b2) if a2 != b2 else ProofTerm.reflexive(self.index[a2])
-                    eq_pt = ProofTerm.combination(eq_pt1, eq_pt2)
+                    eq_pt = eq_pt1.combination(eq_pt2)
 
                 # Append the equality to the current chain.
                 if a == cur_pos:
-                    pt = ProofTerm.transitive(pt, eq_pt)
+                    pt = pt.transitive(eq_pt)
                     cur_pos = b
                 else:
                     assert b == cur_pos
-                    pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
+                    pt = pt.transitive(pt, eq_pt.symmetric())
                     cur_pos = a
 
             return pt

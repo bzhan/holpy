@@ -90,9 +90,9 @@ def solve(goal, pts=None):
             assume_pt1 = ProofTerm.assume(a1)
             assume_pt2 = ProofTerm.assume(a2)
             pt1 = solve(goal, [assume_pt1] + pts[:i] + pts[i+1:])
-            pt1 = ProofTerm.implies_intr(a1, pt1)
+            pt1 = pt1.implies_intr(a1)
             pt2 = solve(goal, [assume_pt2] + pts[:i] + pts[i+1:])
-            pt2 = ProofTerm.implies_intr(a2, pt2)
+            pt2 = pt2.implies_intr(a2)
             return apply_theorem('disjE', pt, pt1, pt2)
 
     # Handle various logical connectives.
@@ -114,18 +114,14 @@ def solve(goal, pts=None):
     if goal.is_implies():
         a1, a2 = goal.args
         assume_pt = ProofTerm.assume(a1)
-        pt = solve(a2, [assume_pt] + pts)
-        pt = ProofTerm.implies_intr(a1, pt)
-        return pt
+        return solve(a2, [assume_pt] + pts).implies_intr(a1)
     
     if goal.is_forall():
         var_names = [v.name for v in term.get_vars([goal] + [pt.prop for pt in pts])]
         nm = name.get_variant_name(goal.arg.var_name, var_names)
         v = Var(nm, goal.arg.var_T)
         t = goal.arg.subst_bound(v)
-        pt = solve(t, pts)
-        pt = ProofTerm.forall_intr(v, pt)
-        return pt
+        return solve(t, pts).forall_intr(v)
 
     # Normalize goal
     eq_pt = norm(goal, pts)
@@ -133,14 +129,14 @@ def solve(goal, pts=None):
 
     if goal.is_conj():
         pt = solve(goal, pts)
-        return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
+        return eq_pt.symmetric().equal_elim(pt)
 
     # Call registered functions
     if goal.is_not() and goal.arg.head in global_autos_neg:
         for f in global_autos_neg[goal.arg.head]:
             try:
                 pt = f(goal, pts)
-                return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
+                return eq_pt.symmetric().equal_elim(pt)
             except TacticException:
                 pass
 
@@ -151,7 +147,7 @@ def solve(goal, pts=None):
                 if eq_pt.rhs != pt.prop:
                     raise AssertionError("auto solve: %s != %s" % (
                         printer.print_term(eq_pt.prop), printer.print_term(pt.prop)))
-                return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
+                return eq_pt.symmetric().equal_elim(pt)
             except TacticException:
                 pass
 
@@ -209,7 +205,7 @@ def norm(t, pts=None):
 
     # First normalize each argument
     for arg in t.args:
-        eq_pt = ProofTerm.combination(eq_pt, norm(arg, pts))
+        eq_pt = eq_pt.combination(norm(arg, pts))
 
     # Next, apply each normalization rule
     if t.head in global_autos_norm:
@@ -219,7 +215,7 @@ def norm(t, pts=None):
                 if isinstance(f, Conv):
                     eq_pt = eq_pt.on_rhs(f)
                 else:
-                    eq_pt = ProofTerm.transitive(eq_pt, f(eq_pt.rhs, pts))
+                    eq_pt = eq_pt.transitive(f(eq_pt.rhs, pts))
             except ConvException:
                 continue
 
@@ -235,7 +231,7 @@ def norm(t, pts=None):
             eq_pt2 = norm(eq_pt.rhs, pts)
             if eq_pt2.lhs != eq_pt.rhs:
                 eq_pt2 = eq_pt2.on_lhs(top_conv(eta_conv()))
-            return ProofTerm.transitive(eq_pt, eq_pt2)
+            return eq_pt.transitive(eq_pt2)
     else:
         # No normalization rule available for this head
         return eq_pt
@@ -284,7 +280,7 @@ class auto_macro(ProofTermMacro):
             eq2 = norm(args.rhs, pts)
             if eq1.rhs != eq2.rhs:
                 raise TacticException
-            return ProofTerm.transitive(eq1, ProofTerm.symmetric(eq2))
+            return eq1.transitive(eq2.symmetric())
         else:
             # Otherwise, use solve function
             return solve(args, pts)

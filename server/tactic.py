@@ -207,7 +207,7 @@ class rewrite_goal_with_prev(Tactic):
         assert len(prev_As) == 0 and prev_C.is_equals(), "rewrite_goal_with_prev"
 
         for new_var in new_vars:
-            pt = ProofTerm.forall_elim(new_var, pt)
+            pt = pt.forall_elim(new_var)
 
         # Check whether rewriting using the theorem has an effect
         assert has_rewrite(pt.th, C), "rewrite_goal_with_prev"
@@ -243,10 +243,9 @@ class apply_prev(Tactic):
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
-        if tyinst:
-            pt = ProofTerm.subst_type(tyinst, pt)
+        pt = pt.subst_type(tyinst)
         for new_name in new_names:
-            pt = ProofTerm.forall_elim(inst[new_name], pt)
+            pt = pt.forall_elim(inst[new_name])
         if pt.prop.beta_norm() != pt.prop:
             pt = beta_norm_conv().apply_to_pt(pt)
         inst_As, inst_C = pt.prop.strip_implies()

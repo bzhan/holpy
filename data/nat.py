@@ -582,8 +582,7 @@ class nat_norm_macro(ProofTermMacro):
         pt1 = norm_full().get_proof_term(t1)
         pt2 = norm_full().get_proof_term(t2)
         assert pt1.prop.rhs == pt2.prop.rhs, "nat_norm_macro: normalization is not equal."
-
-        return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
+        return pt1.transitive(pt2.symmetric())
 
 class nat_norm_method(Method):
     """Apply nat_norm macro."""
@@ -741,7 +740,7 @@ class nat_const_less_eq_macro(ProofTermMacro):
         m, n = goal.args
         assert from_binary_nat(m) <= from_binary_nat(n)
         p = to_binary_nat(from_binary_nat(n) - from_binary_nat(m))
-        eq = ProofTerm.symmetric(norm_full().get_proof_term(plus(m, p)))
+        eq = norm_full().get_proof_term(plus(m, p)).symmetric()
         goal2 = rewr_conv('less_eq_exist').eval(goal).prop.rhs
         ex_eq = apply_theorem('exI', eq, concl=goal2)
         return ex_eq.on_prop(rewr_conv('less_eq_exist', sym=True))
