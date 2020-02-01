@@ -29,7 +29,7 @@ class TacticException(Exception):
 
 def is_exists1(t):
     """Whether t is of the form ?!x. P x."""
-    return t.is_comb() and t.fun.is_const_name("exists1") and t.arg.is_abs()
+    return t.is_comb('exists1', 1)
 
 def mk_exists1(x, body):
     """Given a variable x and a term P possibly depending on x, return
@@ -42,7 +42,7 @@ def mk_exists1(x, body):
 
 def is_the(t):
     """Whether t is of the form THE x. P x."""
-    return t.is_comb() and t.fun.is_const_name("The") and t.arg.is_abs()
+    return t.is_comb('The', 1)
 
 def mk_the(x, body):
     """Given a variable x and a term P possibly depending on x, return
@@ -66,8 +66,7 @@ def if_t(T):
 
 def is_if(t):
     """Whether t is of the form if P then x else y."""
-    f, args = t.strip_comb()
-    return f.is_const_name("IF") and len(args) == 3
+    return t.is_comb("IF", 3)
 
 def mk_if(P, x, y):
     """Obtain the term if P then x else y."""

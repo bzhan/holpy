@@ -381,10 +381,10 @@ auto.add_global_autos_norm(
 class real_integral_cong(Conv):
     """Apply auto to the body of an integral."""
     def get_proof_term(self, expr):
-        assert expr.head.is_const_name('real_integral'), 'real_integral_cong'
+        assert expr.is_comb('real_integral', 2), 'real_integral_cong'
         S, f = expr.args
         
-        if not S.head.is_const_name('real_closed_interval'):
+        if not S.is_comb('real_closed_interval', 2):
             raise ConvException
         a, b = S.args
         le_pt = auto.auto_solve(real.less_eq(a, b))
@@ -532,15 +532,15 @@ def fraction_rewr_integral(expr, target):
     if expr == target:
         return refl(expr)
 
-    assert expr.head.is_const_name('real_integral'), 'fraction_rewr_integral'
-    assert target.head.is_const_name('real_integral'), 'fraction_rewr_integral'
+    assert expr.is_comb('real_integral', 2), 'fraction_rewr_integral'
+    assert target.is_comb('real_integral', 2), 'fraction_rewr_integral'
 
     # First normalize the domain of integration
     expr_pt = refl(expr).on_rhs(arg1_conv(auto.auto_conv()))
     target_pt = refl(target).on_rhs(arg1_conv(auto.auto_conv()))
 
     S, f = expr_pt.rhs.args
-    assert S.head.is_const_name('real_closed_interval'), 'fraction_rewr_integral'
+    assert S.is_comb('real_closed_interval', 2), 'fraction_rewr_integral'
     a, b = S.args
     le_pt = auto.auto_solve(real.less_eq(a, b))
 
@@ -616,9 +616,9 @@ class substitution(Conv):
         self.target = target
 
     def get_proof_term(self, expr):
-        assert expr.head.is_const_name('real_integral')
+        assert expr.is_comb('real_integral', 2)
         S, h = expr.args
-        assert S.head.is_const_name('real_closed_interval')
+        assert S.is_comb('real_closed_interval', 2)
         a, b = S.args
 
         if not (h.is_abs() and self.f.is_abs() and self.g.is_abs()):
@@ -657,7 +657,7 @@ class substitution_inverse(Conv):
         self.target = target
 
     def get_proof_term(self, expr):
-        assert expr.head.is_const_name('real_integral')
+        assert expr.is_comb('real_integral', 2)
         _, f = expr.args
 
         if not (f.is_abs() and self.g.is_abs()):
@@ -694,9 +694,9 @@ class integrate_by_parts(Conv):
         self.target = target
 
     def get_proof_term(self, expr):
-        assert expr.head.is_const_name('real_integral')
+        assert expr.is_comb('real_integral', 2)
         S, f = expr.args
-        assert S.head.is_const_name('real_closed_interval')
+        assert S.is_comb('real_closed_interval', 2)
         a, b = S.args
 
         if not (f.is_abs() and self.u.is_abs() and self.v.is_abs()):
@@ -819,11 +819,12 @@ class split_region_conv(Conv):
         self.c = c
 
     def get_proof_term(self, expr):
-        assert expr.head.is_const_name('real_integral'), 'split_region'
+        if not expr.is_comb('real_integral', 2):
+            raise ConvException('split_region')
         S, f = expr.args
         
-        if not S.head.is_const_name('real_closed_interval'):
-            raise ConvException
+        if not S.is_comb('real_closed_interval', 2):
+            raise ConvException('split_region')
         a, b = S.args
 
         eq_pt = apply_theorem('real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
@@ -852,18 +853,18 @@ class location_conv(Conv):
                 return self.cv.get_proof_term(t, conds=self.conds)
             else:
                 return self.cv.get_proof_term(t)
-        elif t.head.is_const_name("evalat"):
+        elif t.is_comb("evalat", 3):
             # Term is of the form evalat f a b
             if self.loc.head == 0:
                 return argn_conv(0, abs_conv(location_conv(self.loc.rest, self.cv, self.conds))).get_proof_term(t)
             else:
                 raise NotImplementedError
-        elif t.head.is_const_name("real_integral"):
+        elif t.is_comb("real_integral", 2):
             # Term is of the form real_integral (real_closed_interval a b) f
             if self.loc.head == 0:
                 # Apply congruence rule
                 S, f = t.args
-                if not S.head.is_const_name('real_closed_interval'):
+                if not S.is_comb('real_closed_interval', 2):
                     raise ConvException
                 a, b = S.args
                 le_pt = auto.auto_solve(real.less_eq(a, b))
@@ -886,14 +887,14 @@ class location_conv(Conv):
 def get_at_location(loc, t):
     if loc.is_empty():
         return t
-    elif t.head.is_const_name("evalat"):
+    elif t.is_comb("evalat", 3):
         if loc.head == 0:
             f = t.args[0]
             body = f.subst_bound(Var(f.var_name, realT))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
-    elif t.head.is_const_name("real_integral"):
+    elif t.is_comb("real_integral", 2):
         if loc.head == 0:
             f = t.args[1]
             body = f.subst_bound(Var(f.var_name, realT))
@@ -1011,7 +1012,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Substitution':
             # Perform substitution u = g(x)
-            assert rewr_loc.head.is_const_name("real_integral"), "translate_item: Substitution"
+            assert rewr_loc.is_comb("real_integral", 2), "translate_item: Substitution"
             f = expr_to_holpy(parse_expr(step['params']['f']))
             g = expr_to_holpy(parse_expr(step['params']['g']))
             ori_var = term.get_vars(g)[0]
@@ -1023,7 +1024,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Substitution inverse':
             # Perform substitution x = g(u)
-            assert rewr_loc.head.is_const_name("real_integral"), "translate_item: Substitution inverse"
+            assert rewr_loc.is_comb("real_integral", 2), "translate_item: Substitution inverse"
             g = parse_expr(step['params']['g'])
             new_name = step['params']['var_name']
             new_var = Var(new_name, realT)
@@ -1034,7 +1035,7 @@ def translate_item(item, target=None, *, debug=False):
 
         elif reason == 'Integrate by parts':
             # Integration by parts using u and v
-            assert rewr_loc.head.is_const_name("real_integral"), "translate_item: Integrate by parts"
+            assert rewr_loc.is_comb("real_integral", 2), "translate_item: Integrate by parts"
             u = expr_to_holpy(parse_expr(step['params']['parts_u']))
             v = expr_to_holpy(parse_expr(step['params']['parts_v']))
             ori_var = term.get_vars([u, v])[0]

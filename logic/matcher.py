@@ -141,7 +141,7 @@ def first_order_match_incr(pat, t, instsp):
                         if v in bd_vars:
                             if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
                                 op_data = operator.get_info_for_fun(inst_t.head)
-                                if inst_t.head.is_const_name("IF") and len(inst_t.args) == 3:
+                                if inst_t.is_comb("IF", 3):
                                     inst_t = Lambda(v, inst_t) 
                                 elif op_data is None:
                                     # inst_t is of the form f x, where x is the argument.

@@ -11,7 +11,7 @@ def mk_interval(m, n):
     return Const("nat_interval", TFun(natT, natT, setT(natT)))(m, n)
 
 def is_interval(t):
-    return t.is_binop() and t.head.is_const_name("nat_interval")
+    return t.is_comb('nat_interval', 2)
 
 class numseg_conv(Conv):
     """Evaluate {m..n} to a concrete set. Here m and n are specific

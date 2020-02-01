@@ -25,13 +25,13 @@ def append(T):
     return Const("append", TFun(listT(T), listT(T), listT(T)))
 
 def is_nil(t):
-    return t.is_const_name("nil")
+    return t.is_const("nil")
 
 def is_cons(t):
-    return t.is_binop() and t.head.is_const_name("cons")
+    return t.is_comb('cons', 2)
 
 def is_append(t):
-    return t.is_binop() and t.head.is_const_name("append")
+    return t.is_comb('append', 2)
 
 def mk_cons(x, xs):
     return cons(x.get_type())(x, xs)

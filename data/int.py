@@ -62,16 +62,15 @@ def to_binary_int(n):
         return of_nat(nat.to_binary(n))
 
 def is_binary_int(t):
-    if t.is_comb() and t.fun.is_const_name("uminus"):
+    if t.is_comb('uminus', 1):
         return is_binary_int(t.arg)
     else:
         return t == zero or t == one or \
-               (t.is_comb() and t.fun.is_const_name("of_nat") and
-                nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)
+               (t.is_comb('of_nat', 1) and nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)
 
 def from_binary_int(t):
     assert is_binary_int(t), "from_binary_int"
-    if t.is_comb() and t.fun.is_const_name("uminus"):
+    if t.is_comb('uminus', 1):
         return -from_binary_int(t.arg)
     if t == zero:
         return 0

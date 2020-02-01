@@ -61,41 +61,38 @@ def convert(t):
         return convert(t.arg1) ** nat.from_binary_nat(t.arg)
     elif real.is_real_power(t):
         return convert(t.arg1) ** convert(t.arg)
-    elif t.is_comb():
-        if t.head.is_const_name('real_closed_interval'):
-            return sympy.Interval(convert(t.arg1), convert(t.arg))
-        elif t.head.is_const_name('real_open_interval'):
-            return sympy.Interval.open(convert(t.arg1), convert(t.arg))
-        elif t.head == real.sqrt:
-            return sympy.sqrt(convert(t.arg))
-        elif t.head == real.abs:
-            return sympy.Abs(convert(t.arg))
-        elif t.head == real.exp:
-            return sympy.exp(convert(t.arg))
-        elif t.head == real.log:
-            return sympy.log(convert(t.arg))
-        elif t.head == real.sin:
-            return sympy.sin(convert(t.arg))
-        elif t.head == real.cos:
-            return sympy.cos(convert(t.arg))
-        elif t.head == real.tan:
-            return sympy.tan(convert(t.arg))
-        elif t.head == real.cot:
-            return sympy.cot(convert(t.arg))
-        elif t.head == real.sec:
-            return sympy.sec(convert(t.arg))
-        elif t.head == real.csc:
-            return sympy.csc(convert(t.arg))
-        elif t.head.is_const_name('greater_eq'):
-            return convert(t.arg1) >= convert(t.arg)
-        elif t.head.is_const_name('greater'):
-            return convert(t.arg1) > convert(t.arg)
-        elif t.head.is_const_name('less_eq'):
-            return convert(t.arg1) <= convert(t.arg)
-        elif t.head.is_const_name('less'):
-            return convert(t.arg1) < convert(t.arg)
-        else:
-            raise SymPyException("Unable to convert " + str(t))
+    elif t.is_comb('real_closed_interval', 2):
+        return sympy.Interval(convert(t.arg1), convert(t.arg))
+    elif t.is_comb('real_open_interval', 2):
+        return sympy.Interval.open(convert(t.arg1), convert(t.arg))
+    elif t.is_comb('sqrt', 1):
+        return sympy.sqrt(convert(t.arg))
+    elif t.is_comb('abs', 1):
+        return sympy.Abs(convert(t.arg))
+    elif t.is_comb('exp', 1):
+        return sympy.exp(convert(t.arg))
+    elif t.is_comb('log', 1):
+        return sympy.log(convert(t.arg))
+    elif t.is_comb('sin', 1):
+        return sympy.sin(convert(t.arg))
+    elif t.is_comb('cos', 1):
+        return sympy.cos(convert(t.arg))
+    elif t.is_comb('tan', 1):
+        return sympy.tan(convert(t.arg))
+    elif t.is_comb('cot', 1):
+        return sympy.cot(convert(t.arg))
+    elif t.is_comb('sec', 1):
+        return sympy.sec(convert(t.arg))
+    elif t.is_comb('csc', 1):
+        return sympy.csc(convert(t.arg))
+    elif t.is_comb('greater_eq', 2):
+        return convert(t.arg1) >= convert(t.arg)
+    elif t.is_comb('greater', 2):
+        return convert(t.arg1) > convert(t.arg)
+    elif t.is_comb('less_eq', 2):
+        return convert(t.arg1) <= convert(t.arg)
+    elif t.is_comb('less', 2):
+        return convert(t.arg1) < convert(t.arg)
     else:
         raise SymPyException("Unable to convert " + str(t))
 
@@ -137,8 +134,8 @@ def solveset_wrapper(goal, var, interval):
 def solve_with_interval(goal, cond):
     """Attempt to solve goal using sympy's solveset function."""
     if not (hol_set.is_mem(cond) and cond.arg1.is_var() and 
-            (cond.arg.head.is_const_name("real_closed_interval") or
-             cond.arg.head.is_const_name("real_open_interval"))):
+            (cond.arg.is_comb("real_closed_interval", 2) or
+             cond.arg.is_comb("real_open_interval", 2))):
         return False
 
     var = convert(cond.arg1)

@@ -15,7 +15,7 @@ def empty_set(T):
     return Const("empty_set", setT(T))
 
 def is_empty_set(t):
-    return t.is_const_name("empty_set")
+    return t.is_const("empty_set")
 
 def univ(T):
     return Const("univ", setT(T))
@@ -39,7 +39,7 @@ def mk_mem(x, A):
     return mem(x.get_type())(x, A)
 
 def is_mem(t):
-    return t.is_binop() and t.head.is_const_name("member")
+    return t.is_comb('member', 2)
 
 def subset(T):
     return Const("subset", TFun(setT(T), setT(T), boolT))
@@ -76,7 +76,7 @@ def mk_insert(x, A):
     return insert(x.get_type())(x, A)
 
 def is_insert(t):
-    return t.is_binop() and t.head.is_const_name("insert")
+    return t.is_comb('insert', 2)
 
 def mk_literal_set(ts, T):
     if ts:

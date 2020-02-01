@@ -90,8 +90,7 @@ def to_binary_nat(n):
 
 def is_binary_nat(t):
     return t == zero or t == one or \
-           (t.is_comb() and t.fun.is_const_name("of_nat") and
-            is_binary(t.arg) and from_binary(t.arg) >= 2)
+           (t.is_comb('of_nat', 1) and is_binary(t.arg) and from_binary(t.arg) >= 2)
 
 def from_binary_nat(t):
     """Convert HOL binary form (with of_nat) to Python integer."""

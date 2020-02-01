@@ -440,13 +440,9 @@ class Term():
         """Whether self is of the form ?x. P x."""
         return self.is_comb('exists', 1)
 
-    def is_const_name(self, name):
-        """Whether self is a constant with the given name."""
-        return self.is_const() and self.name == name
-
     def is_equals(self):
         """Whether self is of the form A = B."""
-        return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name("equals")
+        return self.is_comb('equals', 2)
 
     def is_reflexive(self):
         """Whether self is of the form A = A."""
@@ -454,7 +450,7 @@ class Term():
 
     def is_VAR(self):
         """Whether self is of the form _VAR v."""
-        return self.is_comb() and self.fun.is_const_name("_VAR") and self.arg.is_var()
+        return self.is_comb('_VAR', 1) and self.arg.is_var()
 
     @property
     def lhs(self):

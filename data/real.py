@@ -165,7 +165,7 @@ def real_eval(t):
     def rec(t):
         if is_binary_real(t):
             return from_binary_real(t)
-        elif t.head.is_const_name('of_nat'):
+        elif t.is_comb('of_nat', 1):
             return nat.nat_eval(t.arg)
         elif is_plus(t):
             return rec(t.arg1) + rec(t.arg)
@@ -722,7 +722,7 @@ def convert_to_poly(t):
         return poly.singleton(t)
     elif is_binary_real(t):
         return poly.constant(from_binary_real(t))
-    elif t.is_comb() and t.fun.is_const_name('of_nat'):
+    elif t.is_comb('of_nat', 1):
         return nat.convert_to_poly(t.arg)
     elif is_plus(t):
         t1, t2 = t.args

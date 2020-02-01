@@ -309,13 +309,12 @@ def get_ast_term(t):
         """
         # Some special cases:
         # Natural numbers:
-        if t.is_const_name("zero") or t.is_const_name("one") or \
-           (t.is_comb() and t.fun.is_const_name("of_nat") and
-            binary.is_binary(t.arg) and binary.from_binary(t.arg) >= 2):
+        if t.is_const("zero") or t.is_const("one") or \
+           (t.is_comb('of_nat', 1) and binary.is_binary(t.arg) and binary.from_binary(t.arg) >= 2):
             # First find the number
-            if t.is_const_name("zero"):
+            if t.is_const("zero"):
                 n = 0
-            elif t.is_const_name("one"):
+            elif t.is_const("one"):
                 n = 1
             else:
                 n = binary.from_binary(t.arg)
@@ -354,7 +353,7 @@ def get_ast_term(t):
         elif interval.is_interval(t):
             return Interval(helper(t.arg1, bd_vars), helper(t.arg, bd_vars), t.get_type())
 
-        elif t.is_comb() and t.fun.is_const_name('collect') and t.arg.is_abs():
+        elif t.is_comb('collect', 1) and t.arg.is_abs():
             nm = name.get_variant_name(t.arg.var_name, var_names)
             var_names.append(nm)
 

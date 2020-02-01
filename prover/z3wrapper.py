@@ -102,32 +102,32 @@ def convert(t, var_names, assms, to_real):
             return z3.If(rec(b), rec(t1), rec(t2))
         elif t.is_not():
             return z3.Not(rec(t.arg))
-        elif t.head.is_const_name('plus'):
+        elif t.is_comb('plus', 2):
             return rec(t.arg1) + rec(t.arg)
-        elif t.head.is_const_name('minus'):
+        elif t.is_comb('minus', 2):
             m, n = rec(t.arg1), rec(t.arg)
             if t.arg1.get_type() == nat.natT:
                 return z3.If(m >= n, m - n, 0)
             return m - n
-        elif t.head.is_const_name('uminus'):
+        elif t.is_comb('uminus', 1):
             return -rec(t.arg)
-        elif t.head.is_const_name('times'):
+        elif t.is_comb('times', 2):
             return rec(t.arg1) * rec(t.arg)
-        elif t.head.is_const_name('less_eq'):
+        elif t.is_comb('less_eq', 2):
             return rec(t.arg1) <= rec(t.arg)
-        elif t.head.is_const_name('less'):
+        elif t.is_comb('less', 2):
             return rec(t.arg1) < rec(t.arg)
-        elif t.head.is_const_name('greater_eq'):
+        elif t.is_comb('greater_eq', 2):
             return rec(t.arg1) >= rec(t.arg)
-        elif t.head.is_const_name('greater'):
+        elif t.is_comb('greater', 2):
             return rec(t.arg1) > rec(t.arg)
-        elif t.head.is_const_name('real_divide'):
+        elif t.is_comb('real_divide', 2):
             return rec(t.arg1) / rec(t.arg)
-        elif t.head.is_const_name('zero'):
+        elif t.is_const('zero'):
             return 0
-        elif t.head.is_const_name('one'):
+        elif t.is_const('one'):
             return 1
-        elif t.is_comb() and t.head.is_const_name('of_nat'):
+        elif t.is_comb('of_nat', 1):
             if nat.is_binary(t.arg):
                 return nat.from_binary(t.arg)
             elif t.get_type() == realT:
@@ -144,16 +144,16 @@ def convert(t, var_names, assms, to_real):
                 return z3.ToReal(rec(t.arg))
             else:
                 raise Z3Exception("convert: unsupported of_nat " + repr(t))
-        elif t.head.is_const_name('max'):
+        elif t.is_comb('max', 2):
             a, b = rec(t.arg1), rec(t.arg)
             return z3.If(a >= b, a, b)
-        elif t.head.is_const_name('min'):
+        elif t.is_comb('min', 2):
             a, b = rec(t.arg1), rec(t.arg)
             return z3.If(a <= b, a, b)
-        elif t.head.is_const_name('abs'):
+        elif t.is_comb('abs', 1):
             a = rec(t.arg)
             return z3.If(a >= 0, a, -a)
-        elif t.head.is_const_name('member'):
+        elif t.is_comb('member', 2):
             a, S = rec(t.arg1), rec(t.arg)
             return S(a)
         elif t.is_comb():

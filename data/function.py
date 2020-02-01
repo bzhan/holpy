@@ -16,8 +16,7 @@ def is_fun_upd(t):
     is, whether t is of the form f (a := b).
 
     """
-    c, args = t.strip_comb()
-    return len(args) == 3 and c.is_const_name("fun_upd")
+    return t.is_comb('fun_upd', 3)
 
 def fun_upd(T1, T2):
     """Returns the term fun_upd on functions of type T1 => T2."""

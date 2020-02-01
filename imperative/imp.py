@@ -56,50 +56,49 @@ norm_cond_cv = every_conv(
     logic.norm_bool_expr()
 )
 
-def eval_Sem(com, st):
-    """Evaluates the effect of program com on state st."""
-    f, args = com.strip_comb()
+def eval_Sem(c, st):
+    """Evaluates the effect of program c on state st."""
     T = st.get_type()
-    if f.is_const_name("Skip"):
+    if c.is_const("Skip"):
         return apply_theorem("Sem_Skip", tyinst={"a": T}, inst={"s": st})
-    elif f.is_const_name("Assign"):
-        a, b = args
+    elif c.is_comb("Assign", 2):
+        a, b = c.args
         Ta = a.get_type()
         Tb = b.get_type().range_type()
         pt = apply_theorem("Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
         return pt.on_arg(arg_conv(norm_cv))
-    elif f.is_const_name("Seq"):
-        c1, c2 = args
+    elif c.is_comb("Seq", 2):
+        c1, c2 = c.args
         pt1 = eval_Sem(c1, st)
         pt2 = eval_Sem(c2, pt1.prop.arg)
         pt = apply_theorem("Sem_seq", pt1, pt2)
         return pt.on_arg(function.fun_upd_norm_one_conv())
-    elif f.is_const_name("Cond"):
-        b, c1, c2 = args
+    elif c.is_comb("Cond", 3):
+        b, c1, c2 = c.args
         b_st = beta_norm(b(st))
         b_eval = norm_cond_cv.get_proof_term(b_st)
         if b_eval.prop.arg == true:
             b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
             pt1 = eval_Sem(c1, st)
-            return apply_theorem("Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
+            return apply_theorem("Sem_if1", b_res, pt1, concl=Sem(T)(c, st, pt1.prop.arg))
         else:
             b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
             pt2 = eval_Sem(c2, st)
-            return apply_theorem("Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
-    elif f.is_const_name("While"):
-        b, inv, c = args
+            return apply_theorem("Sem_if2", b_res, pt2, concl=Sem(T)(c, st, pt2.prop.arg))
+    elif c.is_comb("While", 3):
+        b, inv, body = c.args
         b_st = beta_norm(b(st))
         b_eval = norm_cond_cv.get_proof_term(b_st)
         if b_eval.prop.arg == true:
             b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
-            pt1 = eval_Sem(c, st)
-            pt2 = eval_Sem(com, pt1.prop.arg)
+            pt1 = eval_Sem(body, st)
+            pt2 = eval_Sem(c, pt1.prop.arg)
             pt = apply_theorem("Sem_while_loop", b_res, pt1, pt2,
-                               concl=Sem(T)(com, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
+                               concl=Sem(T)(c, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
             return pt.on_arg(function.fun_upd_norm_one_conv())
         else:
             b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
-            return apply_theorem("Sem_while_skip", b_res, concl=Sem(T)(com, st, st))
+            return apply_theorem("Sem_while_skip", b_res, concl=Sem(T)(c, st, st))
     else:
         raise NotImplementedError
 
@@ -162,25 +161,25 @@ def compute_wp(T, c, Q):
     computed precondition, and [...] contains the additional subgoals.
 
     """
-    if c.head.is_const_name("Skip"):  # Skip
+    if c.is_const("Skip"):  # Skip
         return apply_theorem("skip_rule", concl=Valid(T)(Q, c, Q))
-    elif c.head.is_const_name("Assign"):  # Assign a b
+    elif c.is_comb("Assign", 2):  # Assign a b
         a, b = c.args
         s = Var("s", T)
         P2 = Lambda(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
         return apply_theorem("assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
-    elif c.head.is_const_name("Seq"):  # Seq c1 c2
+    elif c.is_comb("Seq", 2):  # Seq c1 c2
         c1, c2 = c.args
         wp1 = compute_wp(T, c2, Q)  # Valid Q' c2 Q
         wp2 = compute_wp(T, c1, wp1.prop.args[0])  # Valid Q'' c1 Q'
         return apply_theorem("seq_rule", wp2, wp1)
-    elif c.head.is_const_name("Cond"):  # Cond b c1 c2
+    elif c.is_comb("Cond", 3):  # Cond b c1 c2
         b, c1, c2 = c.args
         wp1 = compute_wp(T, c1, Q)
         wp2 = compute_wp(T, c2, Q)
         res = apply_theorem("if_rule", wp1, wp2, inst={"b": b})
         return res
-    elif c.head.is_const_name("While"):  # While b I c
+    elif c.is_comb("While", 3):  # While b I c
         _, I, _ = c.args
         pt = apply_theorem("while_rule", concl=Valid(T)(I, c, Q))
         pt0 = ProofTerm.assume(pt.assums[0])
@@ -230,8 +229,8 @@ class vcg_macro(ProofTermMacro):
         self.limit = 'while_rule'
 
     def get_proof_term(self, goal, pts):
-        f, (P, c, Q) = goal.strip_comb()
-        assert f.is_const_name("Valid"), "vcg_macro"
+        assert goal.is_comb("Valid", 3), "vcg_macro"
+        P, c, Q = goal.args
 
         # Obtain the theorem [...] |- Valid P c Q
         T = Q.get_type().domain_type()
@@ -244,8 +243,8 @@ class vcg_tactic(Tactic):
     """Tactic corresponding to VCG macro."""
     def get_proof_term(self, goal, args, prevs):
         assert len(goal.hyps) == 0, "vcg_tactic"
-        f, (P, c, Q) = goal.prop.strip_comb()
-        assert f.is_const_name("Valid"), "vcg_tactic"
+        assert goal.prop.is_comb("Valid", 3), "vcg_tactic"
+        P, c, Q = goal.prop.args
 
         # Obtain the theorem [...] |- Valid P c Q
         T = Q.get_type().domain_type()
@@ -260,8 +259,8 @@ def vcg_solve(goal):
     solves the verification conditions using SMT.
     
     """
-    f, (P, c, Q) = goal.strip_comb()
-    assert f.is_const_name("Valid"), "vcg_solve"
+    assert goal.is_comb("Valid", 3), "vcg_solve"
+    P, c, Q = goal.args
 
     T = Q.get_type().domain_type()
     pt = vcg_norm(T, goal)
@@ -279,7 +278,7 @@ class vcg_method(Method):
             return [data]
 
         cur_th = state.get_proof_item(id).th
-        if len(cur_th.hyps) == 0 and cur_th.prop.head.is_const_name("Valid"):
+        if len(cur_th.hyps) == 0 and cur_th.prop.is_comb("Valid", 3):
             return [{}]
         else:
             return []
