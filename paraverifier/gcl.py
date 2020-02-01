@@ -3,6 +3,7 @@
 """Utility functions for GCL (Guarded Command Language)."""
 
 from kernel.type import TFun, Type, boolT
+from kernel import term
 from kernel.term import Term, Const
 from logic import basic
 from data.nat import natT, to_binary
@@ -43,12 +44,12 @@ def convert_term(var_map, s, t):
                 raise NotImplementedError
         elif t.is_equals():
             return Term.mk_equals(convert(t.arg1), convert(t.arg))
-        elif logic.is_neg(t):
-            return logic.neg(convert(t.arg))
-        elif logic.is_conj(t):
-            return logic.conj(convert(t.arg1), convert(t.arg))
-        elif logic.is_disj(t):
-            return logic.disj(convert(t.arg1), convert(t.arg))
+        elif t.is_not():
+            return term.Not(convert(t.arg))
+        elif t.is_conj():
+            return term.And(convert(t.arg1), convert(t.arg))
+        elif t.is_disj():
+            return term.Or(convert(t.arg1), convert(t.arg))
         elif t.get_type() == boolT:
             return BoolV(t)
         elif t.get_type() == natT:

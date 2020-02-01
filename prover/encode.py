@@ -5,7 +5,7 @@ Tseitin encoding from formulae in holpy to CNF.
 from collections import OrderedDict
 
 from kernel.type import boolT
-from kernel.term import Term, Var
+from kernel.term import Term, Var, And, Or, Not, Implies
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -14,12 +14,6 @@ from logic.conv import rewr_conv, every_conv, top_conv
 
 basic.load_theory('sat')
 
-conj = logic.mk_conj
-disj = logic.mk_disj
-neg = logic.neg
-imp = Term.mk_implies
-eq = Term.mk_equals
-
 
 class EncodingException(Exception):
     pass
@@ -27,32 +21,32 @@ class EncodingException(Exception):
 
 def logic_subterms(t):
     """Returns the list of logical subterms for a term t."""
-    if t.is_implies() or t.is_equals() or logic.is_conj(t) or logic.is_disj(t):
+    if t.is_implies() or t.is_equals() or t.is_conj() or t.is_disj():
         return logic_subterms(t.arg1) + logic_subterms(t.arg) + [t]
-    elif logic.is_neg(t):
+    elif t.is_not():
         return logic_subterms(t.arg) + [t]
     else:
         return [t]
 
 def encode_eq_conj(l, r1, r2):
     """Encoding for the term l = (r1 & r2)."""
-    return [disj(neg(l), r1), disj(neg(l), r2), disj(neg(r1), neg(r2), l)]
+    return [Or(Not(l), r1), Or(Not(l), r2), Or(Not(r1), Not(r2), l)]
 
 def encode_eq_disj(l, r1, r2):
     """Encoding for the term l = (r1 | r2)."""
-    return [disj(neg(l), r1, r2), disj(neg(r1), l), disj(neg(r2), l)]
+    return [Or(Not(l), r1, r2), Or(Not(r1), l), Or(Not(r2), l)]
 
 def encode_eq_imp(l, r1, r2):
     """Encoding for the term l = (r1 --> r2)."""
-    return [disj(neg(l), neg(r1), r2), disj(r1, l), disj(neg(r2), l)]
+    return [Or(Not(l), Not(r1), r2), Or(r1, l), Or(Not(r2), l)]
 
 def encode_eq_eq(l, r1, r2):
     """Encoding for the term l = (r1 = r2)."""
-    return [disj(neg(l), neg(r1), r2), disj(neg(l), r1, neg(r2)), disj(l, neg(r1), neg(r2)), disj(l, r1, r2)]
+    return [Or(Not(l), Not(r1), r2), Or(Not(l), r1, Not(r2)), Or(l, Not(r1), Not(r2)), Or(l, r1, r2)]
 
-def encode_eq_neg(l, r):
+def encode_eq_not(l, r):
     """Encoding for the term l = ~r."""
-    return [disj(l, r), disj(neg(l), neg(r))]
+    return [Or(l, r), Or(Not(l), Not(r))]
 
 def get_encode_proof(th):
     """Given resulting theorem for an encoding, obtain the proof
@@ -81,15 +75,15 @@ def get_encode_proof(th):
     pts = []
     for ptA in ptAs:
         rhs = ptA.prop.rhs
-        if logic.is_conj(rhs):
+        if rhs.is_conj():
             pts.append(ptA.on_prop(rewr_conv("encode_conj")))
-        elif logic.is_disj(rhs):
+        elif rhs.is_disj():
             pts.append(ptA.on_prop(rewr_conv("encode_disj")))
         elif rhs.is_implies():
             pts.append(ptA.on_prop(rewr_conv("encode_imp")))
         elif rhs.is_equals():
             pts.append(ptA.on_prop(rewr_conv("encode_eq")))
-        elif logic.is_neg(rhs):
+        elif rhs.is_not():
             pts.append(ptA.on_prop(rewr_conv("encode_not")))
 
     # Obtain the rewrite of the original formula.
@@ -129,7 +123,7 @@ def encode(t):
     clauses = []
     for i, st in enumerate(subterms):
         l = get_var(i)
-        if st.is_implies() or st.is_equals() or logic.is_conj(st) or logic.is_disj(st):
+        if st.is_implies() or st.is_equals() or st.is_conj() or st.is_disj():
             r1 = get_var(subterms_dict[st.arg1])
             r2 = get_var(subterms_dict[st.arg])
             f = st.head
@@ -138,14 +132,14 @@ def encode(t):
                 clauses.extend(encode_eq_imp(l, r1, r2))
             elif st.is_equals():
                 clauses.extend(encode_eq_eq(l, r1, r2))
-            elif logic.is_conj(st):
+            elif st.is_conj():
                 clauses.extend(encode_eq_conj(l, r1, r2))
             else:  # st.is_disj()
                 clauses.extend(encode_eq_disj(l, r1, r2))
-        elif logic.is_neg(st):
+        elif st.is_not():
             r = get_var(subterms_dict[st.arg])
-            eqs.append(Term.mk_equals(l, logic.neg(r)))
-            clauses.extend(encode_eq_neg(l, r))
+            eqs.append(Term.mk_equals(l, Not(r)))
+            clauses.extend(encode_eq_not(l, r))
         else:
             eqs.append(Term.mk_equals(l, st))
 
@@ -153,17 +147,17 @@ def encode(t):
 
     # Final proposition: under the equality assumptions and the original
     # term t, can derive the conjunction of the clauses.
-    th = Thm(eqs + [t], logic.mk_conj(*clauses))
+    th = Thm(eqs + [t], And(*clauses))
 
     # Final CNF: for each clause, get the list of disjuncts.
     cnf = []
     def literal(t):
-        if logic.is_neg(t):
+        if t.is_not():
             return (t.arg.name, False)
         else:
             return (t.name, True)
 
     for clause in clauses:
-        cnf.append(list(literal(t) for t in logic.strip_disj(clause)))
+        cnf.append(list(literal(t) for t in clause.strip_disj()))
 
     return cnf, th

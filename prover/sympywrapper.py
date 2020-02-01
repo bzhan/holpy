@@ -100,7 +100,7 @@ def convert(t):
 
 def solve_goal(goal):
     """Attempt to solve goal using sympy."""
-    if logic.is_neg(goal) and goal.arg.is_equals():
+    if goal.is_not() and goal.arg.is_equals():
         try:
             lhs, rhs = convert(goal.arg.lhs), convert(goal.arg.rhs)
         except SymPyException:
@@ -143,7 +143,7 @@ def solve_with_interval(goal, cond):
     var = convert(cond.arg1)
     interval = convert(cond.arg)
     
-    if logic.is_neg(goal) and goal.arg.is_equals():
+    if goal.is_not() and goal.arg.is_equals():
         try:
             sympy_goal = convert(goal.arg.arg1) - convert(goal.arg.arg)
         except SymPyException:

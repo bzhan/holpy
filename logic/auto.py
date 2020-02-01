@@ -80,12 +80,12 @@ def solve(goal, pts=None):
     # Next, consider the situation where one of the assumptions is
     # a conjunction or a disjunction.
     for i, pt in enumerate(pts):
-        if logic.is_conj(pt.prop):
+        if pt.prop.is_conj():
             pt1 = apply_theorem('conjD1', pt)
             pt2 = apply_theorem('conjD2', pt)
             return solve(goal, [pt1, pt2] + pts[:i] + pts[i+1:])
     
-        if logic.is_disj(pt.prop):
+        if pt.prop.is_disj():
             a1, a2 = pt.prop.args
             assume_pt1 = ProofTerm.assume(a1)
             assume_pt2 = ProofTerm.assume(a2)
@@ -96,13 +96,13 @@ def solve(goal, pts=None):
             return apply_theorem('disjE', pt, pt1, pt2)
 
     # Handle various logical connectives.
-    if logic.is_conj(goal):
+    if goal.is_conj():
         a1, a2 = goal.args
         pt1 = solve(a1, pts)
         pt2 = solve(a2, pts)
         return apply_theorem('conjI', pt1, pt2)
     
-    if logic.is_disj(goal):
+    if goal.is_disj():
         a1, a2 = goal.args
         try:
             pt1 = solve(a1, pts)
@@ -131,12 +131,12 @@ def solve(goal, pts=None):
     eq_pt = norm(goal, pts)
     goal = eq_pt.rhs
 
-    if logic.is_conj(goal):
+    if goal.is_conj():
         pt = solve(goal, pts)
         return ProofTerm.equal_elim(ProofTerm.symmetric(eq_pt), pt)
 
     # Call registered functions
-    if logic.is_neg(goal) and goal.arg.head in global_autos_neg:
+    if goal.is_not() and goal.arg.head in global_autos_neg:
         for f in global_autos_neg[goal.arg.head]:
             try:
                 pt = f(goal, pts)

@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.term import Var, Term
+from kernel.term import Var, Term, Implies
 from kernel.thm import Thm
 from kernel import theory
 from logic import context
@@ -30,7 +30,7 @@ def test_method(self, thy_name, *, vars=None, assms=None, concl, method_name, pr
     else:
         assms = []
     concl = parser.parse_term(concl)
-    state = server.parse_init_state(Term.mk_implies(*(assms + [concl])))
+    state = server.parse_init_state(Implies(*(assms + [concl])))
 
     # Obtain and run method
     if args is None:
@@ -75,7 +75,7 @@ class MethodTest(unittest.TestCase):
         # Build starting state
         assms = [parser.parse_term(t) for t in assms] if assms is not None else []
         concl = parser.parse_term(concl)
-        state = server.parse_init_state(Term.mk_implies(*(assms + [concl])))
+        state = server.parse_init_state(Implies(*(assms + [concl])))
 
         # Obtain method and run its search function
         method = theory.global_methods[method_name]

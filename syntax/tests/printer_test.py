@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, boolT
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, Not, true, false
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -36,12 +36,8 @@ xs = Var("xs", Type("list", Ta))
 ys = Var("ys", Type("list", Ta))
 zs = Var("zs", Type("list", Ta))
 eq = Term.mk_equals
-imp = Term.mk_implies
-conj = logic.mk_conj
-disj = logic.mk_disj
 abs = Term.mk_abs
 all = Term.mk_all
-neg = logic.neg
 exists = logic.mk_exists
 mk_if = logic.mk_if
 
@@ -54,61 +50,61 @@ class PrinterTest(unittest.TestCase):
 
             # Equality and implies
             (eq(a, b), "a = b"),
-            (imp(A, B), "A --> B"),
-            (imp(A, B, C), "A --> B --> C"),
-            (imp(imp(A, B), C), "(A --> B) --> C"),
-            (imp(A, eq(a, b)), "A --> a = b"),
-            (eq(imp(A, B), imp(B, C)), "(A --> B) <--> (B --> C)"),
+            (Implies(A, B), "A --> B"),
+            (Implies(A, B, C), "A --> B --> C"),
+            (Implies(Implies(A, B), C), "(A --> B) --> C"),
+            (Implies(A, eq(a, b)), "A --> a = b"),
+            (eq(Implies(A, B), Implies(B, C)), "(A --> B) <--> (B --> C)"),
             (eq(A, eq(B, C)), "A <--> B <--> C"),
             (eq(eq(A, B), C), "(A <--> B) <--> C"),
 
             # Conjunction and disjunction
-            (conj(A, B), "A & B"),
-            (disj(A, B), "A | B"),
-            (conj(A, conj(B, C)), "A & B & C"),
-            (conj(conj(A, B), C), "(A & B) & C"),
-            (disj(A, disj(B, C)), "A | B | C"),
-            (disj(disj(A, B), C), "(A | B) | C"),
-            (disj(conj(A, B), C), "A & B | C"),
-            (conj(disj(A, B), C), "(A | B) & C"),
-            (disj(A, conj(B, C)), "A | B & C"),
-            (conj(A, disj(B, C)), "A & (B | C)"),
-            (disj(conj(A, B), conj(B, C)), "A & B | B & C"),
-            (conj(disj(A, B), disj(B, C)), "(A | B) & (B | C)"),
+            (And(A, B), "A & B"),
+            (Or(A, B), "A | B"),
+            (And(A, And(B, C)), "A & B & C"),
+            (And(And(A, B), C), "(A & B) & C"),
+            (Or(A, Or(B, C)), "A | B | C"),
+            (Or(Or(A, B), C), "(A | B) | C"),
+            (Or(And(A, B), C), "A & B | C"),
+            (And(Or(A, B), C), "(A | B) & C"),
+            (Or(A, And(B, C)), "A | B & C"),
+            (And(A, Or(B, C)), "A & (B | C)"),
+            (Or(And(A, B), And(B, C)), "A & B | B & C"),
+            (And(Or(A, B), Or(B, C)), "(A | B) & (B | C)"),
 
             # Negation
-            (neg(A), "~A"),
-            (neg(neg(A)), "~~A"),
+            (Not(A), "~A"),
+            (Not(Not(A)), "~~A"),
 
             # Constants
-            (logic.true, "true"),
-            (logic.false, "false"),
+            (true, "true"),
+            (false, "false"),
 
             # Mixed
-            (imp(conj(A, B), C), "A & B --> C"),
-            (imp(A, disj(B, C)), "A --> B | C"),
-            (conj(A, imp(B, C)), "A & (B --> C)"),
-            (disj(imp(A, B), C), "(A --> B) | C"),
-            (neg(conj(A, B)), "~(A & B)"),
-            (neg(imp(A, B)), "~(A --> B)"),
-            (neg(eq(A, B)), "~(A <--> B)"),
-            (eq(neg(A), B), "~A <--> B"),
-            (eq(neg(A), neg(B)), "~A <--> ~B"),
-            (imp(A, eq(B, C)), "A --> B <--> C"),
-            (eq(imp(A, B), C), "(A --> B) <--> C"),
+            (Implies(And(A, B), C), "A & B --> C"),
+            (Implies(A, Or(B, C)), "A --> B | C"),
+            (And(A, Implies(B, C)), "A & (B --> C)"),
+            (Or(Implies(A, B), C), "(A --> B) | C"),
+            (Not(And(A, B)), "~(A & B)"),
+            (Not(Implies(A, B)), "~(A --> B)"),
+            (Not(eq(A, B)), "~(A <--> B)"),
+            (eq(Not(A), B), "~A <--> B"),
+            (eq(Not(A), Not(B)), "~A <--> ~B"),
+            (Implies(A, eq(B, C)), "A --> B <--> C"),
+            (eq(Implies(A, B), C), "(A --> B) <--> C"),
 
             # Abstraction
-            (abs(a, conj(P(a),Q(a))), "%a. P a & Q a"),
+            (abs(a, And(P(a),Q(a))), "%a. P a & Q a"),
 
             # Quantifiers
             (all(a, P(a)), "!a. P a"),
-            (all(a, all(b, conj(P(a),P(b)))), "!a. !b. P a & P b"),
-            (all(a, conj(P(a), Q(a))), "!a. P a & Q a"),
-            (conj(all(a, P(a)), Q(a)), "(!a1. P a1) & Q a"),
-            (all(a, imp(P(a), Q(a))), "!a. P a --> Q a"),
-            (imp(all(a, P(a)), Q(a)), "(!a1. P a1) --> Q a"),
-            (imp(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
-            (imp(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
+            (all(a, all(b, And(P(a),P(b)))), "!a. !b. P a & P b"),
+            (all(a, And(P(a), Q(a))), "!a. P a & Q a"),
+            (And(all(a, P(a)), Q(a)), "(!a1. P a1) & Q a"),
+            (all(a, Implies(P(a), Q(a))), "!a. P a --> Q a"),
+            (Implies(all(a, P(a)), Q(a)), "(!a1. P a1) --> Q a"),
+            (Implies(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
+            (Implies(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
             (eq(A, all(a, P(a))), "A <--> (!a. P a)"),
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
@@ -141,8 +137,8 @@ class PrinterTest(unittest.TestCase):
             (P(a), "P a"),
             (P(f(a)), "P (f a)"),
             (R(a,a), "R a a"),
-            (nn(conj(A,B)), "n (A & B)"),
-            (conj(nn(A), B), "n A & B"),
+            (nn(And(A,B)), "n (A & B)"),
+            (And(nn(A), B), "n A & B"),
         ]
 
         for t, s in test_data:
@@ -335,13 +331,13 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintUnicode(self):
         test_data = [
-            (conj(A, B), "A ∧ B"),
-            (disj(A, B), "A ∨ B"),
-            (imp(A, B), "A ⟶ B"),
+            (And(A, B), "A ∧ B"),
+            (Or(A, B), "A ∨ B"),
+            (Implies(A, B), "A ⟶ B"),
             (abs(a, P(a)), "λa. P a"),
             (all(a, P(a)), "∀a. P a"),
             (exists(a, P(a)), "∃a. P a"),
-            (neg(A), "¬A"),
+            (Not(A), "¬A"),
             (nat.plus(m, n), "m + n"),
             (nat.times(m, n), "m * n"),
         ]
@@ -370,7 +366,7 @@ class PrinterTest(unittest.TestCase):
         """Test printing of theorems with highlight."""
         A = Var('A', boolT)
         B = Var('B', boolT)
-        A_to_B = Term.mk_implies(A, B)
+        A_to_B = Implies(A, B)
         th = Thm([A, A_to_B], B)
         res = printer.print_thm(th, highlight=True)
         self.assertEqual(res, [

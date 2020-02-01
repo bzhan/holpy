@@ -1,6 +1,7 @@
 import unittest
 import json
 
+from kernel.term import Not
 from logic import logic
 from logic import basic
 from syntax import parser
@@ -67,7 +68,7 @@ class SATTest(unittest.TestCase):
         for problem in f_data:
             context.set_context('logic', vars=problem['vars'])
             prop = parser.parse_term(problem['prop'])
-            cnf, _ = encode.encode(logic.neg(prop))
+            cnf, _ = encode.encode(Not(prop))
             self.assertIsNone(sat.solve_cnf(cnf))
 
 

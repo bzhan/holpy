@@ -5,6 +5,12 @@ from collections.abc import Iterable
 check = True
 
 def checkinstance(*args):
+    """Performs type checking.
+
+    The first argument is the name of the function. The remaining
+    arguments come in pairs v, T, and it is checked that v has type T.
+
+    """
     if not check:
         return
 

@@ -1,19 +1,13 @@
 import unittest
 
 from kernel.type import boolT
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Implies, And, Or
 from kernel import report
 from kernel import theory
-from logic import logic
 from logic import basic
 from syntax import printer
 from prover import encode
 
-conj = logic.mk_conj
-disj = logic.mk_disj
-neg = logic.neg
-imp = Term.mk_implies
-eq = Term.mk_equals
 a = Var('a', boolT)
 b = Var('b', boolT)
 c = Var('c', boolT)
@@ -26,20 +20,20 @@ class EncodeTest(unittest.TestCase):
         basic.load_theory('sat')
 
     def testLogicSubterms(self):
-        t = disj(imp(a,conj(c,d)),imp(b,conj(c,e)))
+        t = Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
         res = [
-            a, c, d, conj(c,d), imp(a,conj(c,d)),
-            b, c, e, conj(c,e), imp(b,conj(c,e)),
-            disj(imp(a,conj(c,d)),imp(b,conj(c,e)))
+            a, c, d, And(c,d), Implies(a,And(c,d)),
+            b, c, e, And(c,e), Implies(b,And(c,e)),
+            Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
         ]
         self.assertEqual(encode.logic_subterms(t), res)
 
     def testEncode(self):
-        t = disj(imp(a,conj(c,d)),imp(b,conj(c,e)))
+        t = Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
         cnf, th = encode.encode(t)
         self.assertEqual(len(cnf), 16)
         self.assertEqual(len(th.hyps), 11)
-        self.assertEqual(len(logic.strip_conj(th.prop)), 16)
+        self.assertEqual(len(th.prop.strip_conj()), 16)
 
         pt = encode.get_encode_proof(th)
         self.assertEqual(pt.th, th)

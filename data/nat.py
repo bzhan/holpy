@@ -2,7 +2,7 @@
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Const
+from kernel.term import Term, Const, Not
 from kernel.thm import Thm
 from kernel import theory
 from kernel.theory import Method, global_methods
@@ -663,7 +663,7 @@ class nat_const_ineq_macro(ProofTermMacro):
 
     def can_eval(self, goal):
         assert isinstance(goal, Term), "nat_const_ineq_macro"
-        if not (logic.is_neg(goal) and goal.arg.is_equals()):
+        if not (goal.is_not() and goal.arg.is_equals()):
             return False
 
         m, n = goal.arg.args
@@ -683,7 +683,7 @@ class nat_const_ineq_macro(ProofTermMacro):
         return pt.on_prop(arg_conv(binop_conv(rewr_of_nat_conv(sym=True))))
 
 def nat_const_ineq(a, b):
-    goal = logic.neg(Term.mk_equals(a, b))
+    goal = Not(Term.mk_equals(a, b))
     return ProofTermDeriv("nat_const_ineq", goal, [])
 
 
@@ -763,7 +763,7 @@ class nat_const_less_macro(ProofTermMacro):
         assert from_binary_nat(m) < from_binary_nat(n)
         less_eq_goal = less_eq(m, n)
         less_eq_pt = nat_const_less_eq_macro().get_proof_term(less_eq_goal, [])
-        ineq_goal = logic.neg(Term.mk_equals(m, n))
+        ineq_goal = Not(Term.mk_equals(m, n))
         ineq_pt = nat_const_ineq_macro().get_proof_term(ineq_goal, [])
         return apply_theorem("less_lesseqI", less_eq_pt, ineq_pt)
 

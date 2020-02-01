@@ -4,6 +4,16 @@ from collections import OrderedDict
 from copy import copy
 
 from kernel.type import TFun, boolT
+from util import typecheck
+
+
+class TermException(Exception):
+    """Indicates error in processing terms."""
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
 
 class OpenTermException(Exception):
     pass
@@ -67,18 +77,45 @@ class Term():
         return self.ty == Term.SVAR
 
     def is_var(self):
+        """Return whether the term is a variable."""
         return self.ty == Term.VAR
 
-    def is_const(self):
-        return self.ty == Term.CONST
+    def is_const(self, name=None):
+        """Return whether the term is a constant.
 
-    def is_comb(self):
-        return self.ty == Term.COMB
+        name : optional str
+            If given, test whether the term has that name.
+
+        """
+        if self.ty != Term.CONST:
+            return False
+        else:
+            return name is None or self.name == name
+
+    def is_comb(self, name=None, nargs=None):
+        """Return whether the term is a combination.
+
+        name : optional str
+            If given, test whether the head of the term has that name.
+
+        nargs : optional int
+            Must be given together with name. If given, test whether the
+            head is applied to exactly that many arguments.
+
+        """
+        if self.ty != Term.COMB:
+            return False
+        elif name is not None:
+            return self.head.is_const(name) and (nargs is None or len(self.args) == nargs)
+        else:
+            return True
 
     def is_abs(self):
+        """Return whether the term is an abstraction."""
         return self.ty == Term.ABS
 
     def is_bound(self):
+        """Return whether the term is a bound variable."""
         return self.ty == Term.BOUND
 
     def __str__(self):
@@ -358,25 +395,20 @@ class Term():
 
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
-        return self.is_comb() and self.fun.is_comb() and not self.fun.fun.is_comb()
+        return len(self.args) == 2
 
     @property
     def arg1(self):
         """Given a term f a b, return a."""
         return self.fun.arg
 
+    def is_not(self):
+        """Whether self is of form ~A."""
+        return self.is_comb('neg', 1)
+
     def is_implies(self):
         """Whether self is of the form A --> B."""
-        return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name('implies')
-
-    @staticmethod
-    def mk_implies(*args):
-        """Construct the term s1 --> ... --> sn --> t."""
-        implies = Const("implies", TFun(boolT, boolT, boolT))
-        res = args[-1]
-        for s in reversed(args[:-1]):
-            res = implies(s, res)
-        return res
+        return self.is_comb('implies', 2)
 
     def strip_implies(self):
         """Given s1 --> ... --> sn --> t, return ([s1, ..., sn], t)."""
@@ -385,6 +417,28 @@ class Term():
             return ([self.arg1] + rest, c)
         else:
             return ([], self)
+
+    def is_conj(self):
+        """Whether t is of the form A & B."""
+        return self.is_comb('conj', 2)
+
+    def strip_conj(self):
+        """Given s1 & ... & sn, return [s1, ..., sn]."""
+        if self.is_conj():
+            return [self.arg1] + self.arg.strip_conj()
+        else:
+            return [self]
+
+    def is_disj(self):
+        """Whether t is of the form A | B."""
+        return self.is_comb('disj', 2)
+
+    def strip_disj(self):
+        """Given s1 | ... | sn, return [s1, ..., sn]."""
+        if self.is_disj():
+            return [self.arg1] + self.arg.strip_disj()
+        else:
+            return [self]
 
     def is_all(self):
         """Whether self is of the form !x. P x.
@@ -764,3 +818,47 @@ def get_consts(t):
         return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
     else:
         raise TypeError
+
+
+true = Const("true", boolT)
+false = Const("false", boolT)
+
+neg = Const("neg", TFun(boolT, boolT))
+conj = Const("conj", TFun(boolT, boolT, boolT))
+disj = Const("disj", TFun(boolT, boolT, boolT))
+implies = Const("implies", TFun(boolT, boolT, boolT))
+
+def Not(t):
+    """Return negation of boolean term t."""
+    typecheck.checkinstance('Not', t, Term)
+    return neg(t)
+
+def And(*args):
+    """Return the conjunction of the arguments."""
+    typecheck.checkinstance('And', args, [Term])
+    if not args:
+        return true
+    res = args[-1]
+    for s in reversed(args[:-1]):
+        res = conj(s, res)
+    return res
+
+def Or(*args):
+    """Return the disjunction of the arguments."""
+    typecheck.checkinstance('Or', args, [Term])
+    if not args:
+        return false
+    res = args[-1]
+    for s in reversed(args[:-1]):
+        res = disj(s, res)
+    return res
+
+def Implies(*args):
+    """Construct the term s1 --> ... --> sn --> t."""
+    typecheck.checkinstance('Implies', args, [Term])
+    if not args:
+        raise TermException("Implies: input must have at least one term.")
+    res = args[-1]
+    for s in reversed(args[:-1]):
+        res = implies(s, res)
+    return res

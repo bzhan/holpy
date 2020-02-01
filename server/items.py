@@ -5,7 +5,7 @@ import itertools
 
 from kernel.type import TVar, Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Var, Const
+from kernel.term import Term, Var, Const, And, Implies, Not
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -572,13 +572,13 @@ class Inductive(Item):
             prop = rule['prop']
             As, C = prop.strip_implies()
             eq_assums = [Term.mk_equals(var, arg) for var, arg in zip(vars, C.args)]
-            assum = Term.mk_implies(*(eq_assums + As), P)
+            assum = Implies(*(eq_assums + As), P)
             prop_vars = term.get_vars(prop)
             for var in reversed(term.get_vars(prop)):
                 assum = Term.mk_all(var, assum)
             assums.append(assum)
 
-        prop = Term.mk_implies(*([assum0] + assums + [P]))
+        prop = Implies(*([assum0] + assums + [P]))
         res.append(extension.Theorem(self.cname + "_cases", Thm([], prop)))
 
         return res
@@ -734,7 +734,7 @@ class Datatype(Item):
             B = Const(constr2['name'], constr2['type'])
             lhs = A(*lhs_vars)
             rhs = B(*rhs_vars)
-            neq = logic.neg(Term.mk_equals(lhs, rhs))
+            neq = Not(Term.mk_equals(lhs, rhs))
             th_name = "%s_%s_%s_neq" % (self.name, constr1['name'], constr2['name'])
             res.append(extension.Theorem(th_name, Thm([], neq)))
 
@@ -749,7 +749,7 @@ class Datatype(Item):
                 A = Const(constr['name'], constr['type'])
                 assum = Term.mk_equals(A(*lhs_vars), A(*rhs_vars))
                 concls = [Term.mk_equals(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
-                concl = logic.mk_conj(*concls)
+                concl = And(*concls)
                 th_name = "%s_%s_inject" % (self.name, constr['name'])
                 res.append(extension.Theorem(th_name, Thm.mk_implies(assum, concl)))
 
@@ -764,7 +764,7 @@ class Datatype(Item):
             args = [Var(nm, T2) for nm, T2 in zip(constr['args'], argT)]
             C = var_P(A(*args))
             As = [var_P(Var(nm, T2)) for nm, T2 in zip(constr['args'], argT) if T2 == T]
-            ind_assum = Term.mk_implies(*(As + [C]))
+            ind_assum = Implies(*(As + [C]))
             for arg in reversed(args):
                 ind_assum = Term.mk_all(arg, ind_assum)
             ind_assums.append(ind_assum)

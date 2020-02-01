@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from kernel.type import Type, TFun, boolT
 from kernel import term
-from kernel.term import Term, Const
+from kernel.term import Term, Const, Implies
 from kernel import macro
 from util import typecheck
 
@@ -95,7 +95,7 @@ class Thm():
     def mk_implies(*args):
         """Returns the theorem s1 --> ... --> sn --> t."""
         typecheck.checkinstance('mk_implies', args, [Term])
-        return Thm([], Term.mk_implies(*args))
+        return Thm([], Implies(*args))
 
     @staticmethod
     def mk_equals(x, y):
@@ -131,7 +131,7 @@ class Thm():
         ------------
         |- A --> B
         """
-        return Thm(tuple(t for t in th.hyps if t != A), Term.mk_implies(A, th.prop))
+        return Thm(tuple(t for t in th.hyps if t != A), Implies(A, th.prop))
 
     @staticmethod
     def implies_elim(th1, th2):

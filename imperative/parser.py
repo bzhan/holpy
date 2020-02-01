@@ -4,7 +4,7 @@ import json, os
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TFun
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Not, And, Or, Implies, true
 from kernel.report import ProofReport
 from kernel import theory
 from logic import basic
@@ -79,16 +79,16 @@ class HoareTransformer(Transformer):
         return Term.mk_equals(e1, e2)
 
     def ineq_cond(self, e1, e2):
-        return logic.neg(Term.mk_equals(e1, e2))
+        return Not(Term.mk_equals(e1, e2))
 
     def conj_cond(self, b1, b2):
-        return logic.conj(b1, b2)
+        return And(b1, b2)
 
     def disj_cond(self, b1, b2):
-        return logic.disj(b1, b2)
+        return Or(b1, b2)
 
     def true_cond(self):
-        return logic.true
+        return true
 
     def less_eq_cond(self, e1, e2):
         return nat.less_eq(e1, e2)
@@ -109,7 +109,7 @@ class HoareTransformer(Transformer):
 
     def while_cmd(self, b, c):
         While = imp.While(natFunT)
-        return While(Term.mk_abs(st, b), Term.mk_abs(st, logic.true), c)
+        return While(Term.mk_abs(st, b), Term.mk_abs(st, true), c)
 
     def while_cmd_inv(self, b, inv, c):
         While = imp.While(natFunT)

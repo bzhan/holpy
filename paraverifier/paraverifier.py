@@ -4,7 +4,7 @@ import os
 import json
 
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const
+from kernel.term import Term, Var, Const, And, Implies
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -138,9 +138,9 @@ class ParaSystem():
 
         inv_after = subst(inv)
         if hint == GUARD:
-            return Term.mk_implies(guard, inv_after)
+            return Implies(guard, inv_after)
         elif hint == PRE:
-            return Term.mk_implies(inv, inv_after)
+            return Implies(inv, inv_after)
         else:
             hint_ty, hint_inv_id, subst_vars = hint
             if hint_ty == INV:
@@ -148,7 +148,7 @@ class ParaSystem():
                 inv_var_nms = [v.name for v in inv_vars]
                 subst = dict((nm, Var(subst_var, natT)) for nm, subst_var in zip(inv_var_nms, subst_vars))
                 inv_subst = inv.subst(subst)
-                return Term.mk_implies(inv_subst, guard, inv_after)
+                return Implies(inv_subst, guard, inv_after)
 
     def verify_subgoal(self, inv_id, rule_id, case_id, hint):
         """Verify the subgoal from the given hints.
@@ -169,7 +169,7 @@ class ParaSystem():
         """Add the invariant for the system in GCL."""
         s = Var("s", gcl.stateT)
         invC = Const("inv", TFun(gcl.stateT, boolT))
-        inv_rhs = logic.mk_conj(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
+        inv_rhs = And(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
         prop = Term.mk_equals(invC(s), inv_rhs)
 
         exts = [
@@ -187,7 +187,7 @@ class ParaSystem():
         for i, (_, guard, assign) in enumerate(self.rules):
             t = gcl.convert_term(self.var_map, s, guard)
             t2 = gcl.mk_assign(self.var_map, s, assign)
-            rules.append({'name': "trans_rule" + str(i), 'prop': Term.mk_implies(t, transC(s, t2))})
+            rules.append({'name': "trans_rule" + str(i), 'prop': Implies(t, transC(s, t2))})
 
         item = items.Inductive()
         item.name = 'trans'
@@ -208,7 +208,7 @@ class ParaSystem():
 
         trans_pt = ProofTerm.assume(transC(s1,s2))
         # print(printer.print_thm(trans_pt.th))
-        P = Term.mk_implies(invC(s1), invC(s2))
+        P = Implies(invC(s1), invC(s2))
         ind_pt = apply_theorem("trans_cases", inst={"a1": s1, "a2": s2, "P": P})
         # print(printer.print_thm(ind_pt.th))
 
@@ -224,9 +224,9 @@ class ParaSystem():
             guard = ProofTerm.assume(As[2])
             inv_pre = ProofTerm.assume(As[3]).on_arg(rewr_conv(eq1)).on_prop(rewr_conv("inv_def"))
             C_goal = ProofTerm.assume(C).on_arg(rewr_conv(eq2)).on_prop(rewr_conv("inv_def"))
-            # for t in logic.strip_conj(inv_pre.prop):
+            # for t in inv_pre.prop.strip_conj():
             #     print("inv_pre: ", printer.print_term(t))
-            # for t in logic.strip_conj(C_goal.prop):
+            # for t in C_goal.prop.strip_conj():
             #     print("C_goal: ", printer.print_term(t))
 
 

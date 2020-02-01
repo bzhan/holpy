@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, boolT
-from kernel.term import Var, Term
+from kernel.term import Var, Term, Not, And, Or, true
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import TheoryException
@@ -39,7 +39,7 @@ class BasicTest(unittest.TestCase):
         A = Var("A", boolT)
         B = Var("B", boolT)
 
-        prf = Proof(logic.mk_conj(A, B))
+        prf = Proof(And(A, B))
         prf.add_item(1, "apply_theorem_for", args=("conjD1", {}, {'A': A, 'B': B}))
         prf.add_item(2, "implies_elim", prevs=[1, 0])
         prf.add_item(3, "apply_theorem_for", args=("conjD2", {}, {'A': A, 'B': B}))
@@ -48,8 +48,8 @@ class BasicTest(unittest.TestCase):
         prf.add_item(6, "substitution", args={"A": B, "B": A}, prevs=[5])
         prf.add_item(7, "implies_elim", prevs=[6, 4])
         prf.add_item(8, "implies_elim", prevs=[7, 2])
-        prf.add_item(9, "implies_intr", args=logic.mk_conj(A, B), prevs=[8])
-        th = Thm.mk_implies(logic.mk_conj(A, B), logic.mk_conj(B, A))
+        prf.add_item(9, "implies_intr", args=And(A, B), prevs=[8])
+        th = Thm.mk_implies(And(A, B), And(B, A))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testConjCommWithMacro(self):
@@ -58,12 +58,12 @@ class BasicTest(unittest.TestCase):
         A = Var("A", boolT)
         B = Var("B", boolT)
 
-        prf = Proof(logic.mk_conj(A, B))
+        prf = Proof(And(A, B))
         prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
         prf.add_item(2, "apply_theorem", args="conjD2", prevs=[0])
         prf.add_item(3, "apply_theorem", args="conjI", prevs=[2, 1])
-        prf.add_item(4, "implies_intr", args=logic.mk_conj(A, B), prevs=[3])
-        th = Thm.mk_implies(logic.mk_conj(A, B), logic.mk_conj(B, A))
+        prf.add_item(4, "implies_intr", args=And(A, B), prevs=[3])
+        th = Thm.mk_implies(And(A, B), And(B, A))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDisjComm(self):
@@ -71,21 +71,19 @@ class BasicTest(unittest.TestCase):
         basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
-        disjAB = logic.mk_disj(A, B)
-        disjBA = logic.mk_disj(B, A)
 
-        prf = Proof(disjAB)
+        prf = Proof(Or(A, B))
         prf.add_item(1, "theorem", args="disjI2")
         prf.add_item(2, "substitution", args={"A": B, "B": A}, prevs=[1])
         prf.add_item(3, "theorem", args="disjI1")
         prf.add_item(4, "substitution", args={"A": B, "B": A}, prevs=[3])
         prf.add_item(5, "theorem", args="disjE")
-        prf.add_item(6, "substitution", args={"A": A, "B": B, "C": disjBA}, prevs=[5])
+        prf.add_item(6, "substitution", args={"A": A, "B": B, "C": Or(B, A)}, prevs=[5])
         prf.add_item(7, "implies_elim", prevs=[6, 0])
         prf.add_item(8, "implies_elim", prevs=[7, 2])
         prf.add_item(9, "implies_elim", prevs=[8, 4])
-        prf.add_item(10, "implies_intr", args=disjAB, prevs=[9])
-        th = Thm.mk_implies(disjAB, disjBA)
+        prf.add_item(10, "implies_intr", args=Or(A, B), prevs=[9])
+        th = Thm.mk_implies(Or(A, B), Or(B, A))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDisjCommWithMacro(self):
@@ -93,10 +91,8 @@ class BasicTest(unittest.TestCase):
         basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
-        disjAB = logic.mk_disj(A, B)
-        disjBA = logic.mk_disj(B, A)
 
-        prf = Proof(disjAB)
+        prf = Proof(Or(A, B))
         prf.add_item(1, "assume", args=A)
         prf.add_item(2, "apply_theorem_for", args=("disjI2", {}, {"A": B, "B": A}), prevs=[1])
         prf.add_item(3, "implies_intr", args=A, prevs=[2])
@@ -104,8 +100,8 @@ class BasicTest(unittest.TestCase):
         prf.add_item(5, "apply_theorem_for", args=("disjI1", {}, {"A": B, "B": A}), prevs=[4])
         prf.add_item(6, "implies_intr", args=B, prevs=[5])
         prf.add_item(7, "apply_theorem", args="disjE", prevs=[0, 3, 6])
-        prf.add_item(8, "implies_intr", args=disjAB, prevs=[7])
-        th = Thm.mk_implies(disjAB, disjBA)
+        prf.add_item(8, "implies_intr", args=Or(A, B), prevs=[7])
+        th = Thm.mk_implies(Or(A, B), Or(B, A))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testAllConj(self):
@@ -115,10 +111,10 @@ class BasicTest(unittest.TestCase):
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
-        all_conj = Term.mk_all(x, logic.mk_conj(A(x), B(x)))
+        all_conj = Term.mk_all(x, And(A(x), B(x)))
         all_A = Term.mk_all(x, A(x))
         all_B = Term.mk_all(x, B(x))
-        conj_all = logic.mk_conj(all_A, all_B)
+        conj_all = And(all_A, all_B)
 
         prf = Proof(all_conj)
         prf.add_item(1, "forall_elim", args=x, prevs=[0])
@@ -145,10 +141,10 @@ class BasicTest(unittest.TestCase):
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
-        all_conj = Term.mk_all(x, logic.mk_conj(A(x), B(x)))
+        all_conj = Term.mk_all(x, And(A(x), B(x)))
         all_A = Term.mk_all(x, A(x))
         all_B = Term.mk_all(x, B(x))
-        conj_all = logic.mk_conj(all_A, all_B)
+        conj_all = And(all_A, all_B)
 
         prf = Proof(all_conj)
         prf.add_item(1, "forall_elim", args=x, prevs=[0])
@@ -165,38 +161,36 @@ class BasicTest(unittest.TestCase):
         """Proof of A --> ~~A."""
         basic.load_theory('logic_base')
         A = Var("A", boolT)
-        neg = logic.neg
 
         prf = Proof(A)
-        prf.add_item(1, "assume", args=neg(A))
+        prf.add_item(1, "assume", args=Not(A))
         prf.add_item(2, "apply_theorem_for", args=("negE", {}, {'A': A}))
         prf.add_item(3, "implies_elim", prevs=[2, 1])
         prf.add_item(4, "implies_elim", prevs=[3, 0])
-        prf.add_item(5, "implies_intr", args=neg(A), prevs=[4])
+        prf.add_item(5, "implies_intr", args=Not(A), prevs=[4])
         prf.add_item(6, "theorem", args="negI")
-        prf.add_item(7, "substitution", args={"A": neg(A)}, prevs=[6])
+        prf.add_item(7, "substitution", args={"A": Not(A)}, prevs=[6])
         prf.add_item(8, "implies_elim", prevs=[7, 5])
         prf.add_item(9, "implies_intr", args=A, prevs=[8])
-        th = Thm.mk_implies(A, neg(neg(A)))
+        th = Thm.mk_implies(A, Not(Not(A)))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testDoubleNegInvWithMacro(self):
         """Proof of ~~A --> A, using macros."""
         basic.load_theory('logic_base')
         A = Var("A", boolT)
-        neg = logic.neg
 
-        prf = Proof(neg(neg(A)))
+        prf = Proof(Not(Not(A)))
         prf.add_item(1, "apply_theorem_for", args=("classical", {}, {'A': A}))
         prf.add_item(2, "assume", args=A)
-        prf.add_item(3, "assume", args=neg(A))
+        prf.add_item(3, "assume", args=Not(A))
         prf.add_item(4, "apply_theorem", args="negE", prevs=[0, 3])
         prf.add_item(5, "apply_theorem_for", args=("falseE", {}, {'A': A}), prevs=[4])
         prf.add_item(6, "implies_intr", args=A, prevs=[2])
-        prf.add_item(7, "implies_intr", args=neg(A), prevs=[5])
+        prf.add_item(7, "implies_intr", args=Not(A), prevs=[5])
         prf.add_item(8, "apply_theorem", args="disjE", prevs=[1, 6, 7])
-        prf.add_item(9, "implies_intr", args=neg(neg(A)), prevs=[8])
-        th = Thm.mk_implies(neg(neg(A)), A)
+        prf.add_item(9, "implies_intr", args=Not(Not(A)), prevs=[8])
+        th = Thm.mk_implies(Not(Not(A)), A)
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testTrueAbsorb(self):
@@ -207,11 +201,11 @@ class BasicTest(unittest.TestCase):
         prf = Proof(A)
         prf.add_item(1, "theorem", args="trueI")
         prf.add_item(2, "theorem", args="conjI")
-        prf.add_item(3, "substitution", args={"A": logic.true, "B": A}, prevs=[2])
+        prf.add_item(3, "substitution", args={"A": true, "B": A}, prevs=[2])
         prf.add_item(4, "implies_elim", prevs=[3, 1])
         prf.add_item(5, "implies_elim", prevs=[4, 0])
         prf.add_item(6, "implies_intr", args=A, prevs=[5])
-        th = Thm.mk_implies(A, logic.mk_conj(logic.true, A))
+        th = Thm.mk_implies(A, And(true, A))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testExistsConjWithMacro(self):
@@ -221,11 +215,11 @@ class BasicTest(unittest.TestCase):
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
-        conjAB = logic.mk_conj(A(x), B(x))
+        conjAB = And(A(x), B(x))
         exists_conj = logic.mk_exists(x, conjAB)
         exists_A = logic.mk_exists(x, A(x))
         exists_B = logic.mk_exists(x, B(x))
-        conj_exists = logic.mk_conj(exists_A, exists_B)
+        conj_exists = And(exists_A, exists_B)
 
         prf = Proof(exists_conj)
         prf.add_item(1, "assume", args=conjAB)

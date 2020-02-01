@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, Type, boolT
-from kernel.term import Term, Var, Const, Comb, Abs, Bound
+from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies
 from logic import basic
 from logic import logic
 from data import nat
@@ -28,7 +28,7 @@ class InferTypeTest(unittest.TestCase):
         test_data = [
             # A1 --> A2
             (Const("implies", None)(Var("A1", None), Var("A2", None)),
-             Term.mk_implies(Var("A1", boolT), Var("A2", boolT))),
+             Implies(Var("A1", boolT), Var("A2", boolT))),
             # A1 = A2
             (Const("equals", None)(Var("A1", boolT), Var("A2", None)),
              Term.mk_equals(Var("A1", boolT), Var("A2", boolT))),

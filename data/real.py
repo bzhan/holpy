@@ -830,7 +830,7 @@ class real_norm_method(Method):
             return []
 
         cur_th = state.get_proof_item(id).th
-        if real_norm_macro().can_eval(state.cur_th.prop):
+        if real_norm_macro().can_eval(cur_th.prop):
             return [{}]
         else:
             return []

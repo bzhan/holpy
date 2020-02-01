@@ -2,6 +2,7 @@
 
 from kernel.type import TFun
 from kernel import term
+from kernel.term import true, false
 from data.int import intT
 from data import int as hol_int
 from data.list import listT, nth, length
@@ -134,7 +135,7 @@ class Const(Expr):
         if type(self.val) == int:
             return hol_int.to_binary_int(self.val)
         elif type(self.val) == bool:
-            return logic.true if self.val else logic.false
+            return true if self.val else false
         else:
             raise NotImplementedError
 
@@ -185,7 +186,7 @@ class Op(Expr):
             if self.op == "-":
                 return hol_int.uminus(e)
             elif self.op == "~":
-                return logic.neg(e)
+                return term.Not(e)
             else:
                 raise NotImplementedError
         elif len(self.args) == 2:
@@ -199,7 +200,7 @@ class Op(Expr):
             elif self.op == "==":
                 return term.Term.mk_equals(e1, e2)
             elif self.op == "!=":
-                return logic.neg(term.Term.mk_equals(e1, e2))
+                return term.Not(term.Term.mk_equals(e1, e2))
             elif self.op == "<=":
                 return hol_int.less_eq(e1, e2)
             elif self.op == "<":
@@ -209,11 +210,11 @@ class Op(Expr):
             elif self.op == ">":
                 return hol_int.less(e2, e1)
             elif self.op == "&":
-                return logic.conj(e1, e2)
+                return term.And(e1, e2)
             elif self.op == "|":
-                return logic.disj(e1, e2)
+                return term.Or(e1, e2)
             elif self.op == "-->":
-                return term.Term.mk_implies(e1, e2)
+                return term.Implies(e1, e2)
             elif self.op == "<-->":
                 return term.Term.mk_equals(e1, e2)
             else:

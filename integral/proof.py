@@ -4,7 +4,7 @@ from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const
+from kernel.term import Term, Var, Const, Not
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv
@@ -448,12 +448,12 @@ class combine_fraction(Conv):
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
             if b == d:
-                b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), self.conds)
+                b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), self.conds)
                 return pt.on_rhs(rewr_conv('real_divide_add_same', conds=[b_neq_0]),
                                  arg1_conv(auto.auto_conv(self.conds)))
             else:
-                b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), self.conds)
-                d_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(d, real.zero)), self.conds)
+                b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), self.conds)
+                d_neq_0 = auto.auto_solve(Not(Term.mk_equals(d, real.zero)), self.conds)
                 return pt.on_rhs(rewr_conv('real_divide_add', conds=[b_neq_0, d_neq_0]),
                                  arg1_conv(auto.auto_conv(self.conds)),
                                  arg_conv(try_conv(rewr_conv('real_mul_lid'))),
@@ -478,8 +478,8 @@ class combine_fraction(Conv):
             assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
-            b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), self.conds)
-            d_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(d, real.zero)), self.conds)
+            b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), self.conds)
+            d_neq_0 = auto.auto_solve(Not(Term.mk_equals(d, real.zero)), self.conds)
             return pt.on_rhs(rewr_conv('real_divide_mult', conds=[b_neq_0, d_neq_0]),
                              arg1_conv(auto.auto_conv(self.conds)),
                              arg_conv(try_conv(rewr_conv('real_mul_lid'))),
@@ -517,8 +517,8 @@ class fraction_rewr_conv(Conv):
 
         a, b = lhs_eq.rhs.args
         c, d = rhs_eq.rhs.args
-        b_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(b, real.zero)), conds)
-        d_neq_0 = auto.auto_solve(logic.neg(Term.mk_equals(d, real.zero)), conds)
+        b_neq_0 = auto.auto_solve(Not(Term.mk_equals(b, real.zero)), conds)
+        d_neq_0 = auto.auto_solve(Not(Term.mk_equals(d, real.zero)), conds)
         cross_eq = auto.auto_solve(Term.mk_equals(real.times(a, d), real.times(b, c)), conds)
         pt = apply_theorem('real_divide_eq', b_neq_0, d_neq_0, cross_eq)
 
@@ -801,15 +801,15 @@ class trig_rewr_conv(Conv):
             pt = refl(t)
         elif self.code == 'TR22':
             if real.is_plus(t) and t.arg.head == real.nat_power and t.arg.arg1.head == real.tan:
-                cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg.arg1.arg), real.zero))
+                cos_neq0 = Not(Term.mk_equals(real.cos(t.arg.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('tan_sec', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.tan:
-                cos_neq0 = logic.neg(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
+                cos_neq0 = Not(Term.mk_equals(real.cos(t.arg1.arg), real.zero))
                 cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
             elif t.head == real.nat_power and t.arg1.head == real.cot:
-                sin_neq0 = logic.neg(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
+                sin_neq0 = Not(Term.mk_equals(real.sin(t.arg1.arg), real.zero))
                 sin_neq0_pt = auto.auto_solve(sin_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
             else:

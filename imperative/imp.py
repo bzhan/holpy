@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
-from kernel.term import Term, Var, Const
+from kernel.term import Term, Var, Const, true
 from kernel.thm import Thm
 from kernel.macro import global_macros
 from kernel.theory import Method, global_methods
@@ -78,7 +78,7 @@ def eval_Sem(com, st):
         b, c1, c2 = args
         b_st = beta_norm(b(st))
         b_eval = norm_cond_cv.get_proof_term(b_st)
-        if b_eval.prop.arg == logic.true:
+        if b_eval.prop.arg == true:
             b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
             pt1 = eval_Sem(c1, st)
             return apply_theorem("Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
@@ -90,7 +90,7 @@ def eval_Sem(com, st):
         b, inv, c = args
         b_st = beta_norm(b(st))
         b_eval = norm_cond_cv.get_proof_term(b_st)
-        if b_eval.prop.arg == logic.true:
+        if b_eval.prop.arg == true:
             b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
             pt1 = eval_Sem(c, st)
             pt2 = eval_Sem(com, pt1.prop.arg)

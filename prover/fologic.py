@@ -6,7 +6,7 @@ Chapter 3, Handbook of Practical Logic and Automated Reasoning.
 
 from kernel.type import TFun
 from kernel import term
-from kernel.term import Term, Var, Abs
+from kernel.term import Term, Var, Abs, And, Or, Implies, Not, false, true
 from logic import logic
 from util import name
 
@@ -30,51 +30,51 @@ def has_bound0(fm):
 
 def simplify1(fm):
     """Simplify formula for one step."""
-    if logic.is_neg(fm):
-        if fm.arg == logic.false:
-            return logic.true
-        elif fm.arg == logic.true:
-            return logic.false
-        elif logic.is_neg(fm.arg):
+    if fm.is_not():
+        if fm.arg == false:
+            return true
+        elif fm.arg == true:
+            return false
+        elif fm.arg.is_not():
             return fm.arg.arg
         else:
             return fm
-    elif logic.is_conj(fm):
-        if fm.arg1 == logic.false or fm.arg == logic.false:
-            return logic.false
-        elif fm.arg1 == logic.true:
+    elif fm.is_conj():
+        if fm.arg1 == false or fm.arg == false:
+            return false
+        elif fm.arg1 == true:
             return fm.arg
-        elif fm.arg == logic.true:
+        elif fm.arg == true:
             return fm.arg1
         else:
             return fm
-    elif logic.is_disj(fm):
-        if fm.arg1 == logic.true or fm.arg == logic.true:
-            return logic.true
-        elif fm.arg1 == logic.false:
+    elif fm.is_disj():
+        if fm.arg1 == true or fm.arg == true:
+            return true
+        elif fm.arg1 == false:
             return fm.arg
-        elif fm.arg == logic.false:
+        elif fm.arg == false:
             return fm.arg1
         else:
             return fm
-    elif Term.is_implies(fm):
-        if fm.arg1 == logic.false or fm.arg == logic.true:
-            return logic.true
-        elif fm.arg1 == logic.true:
+    elif fm.is_implies():
+        if fm.arg1 == false or fm.arg == true:
+            return true
+        elif fm.arg1 == true:
             return fm.arg
-        elif fm.arg == logic.false:
-            return logic.neg(fm.arg1)
+        elif fm.arg == false:
+            return Not(fm.arg1)
         else:
             return fm
     elif Term.is_equals(fm):
-        if fm.arg1 == logic.true:
+        if fm.arg1 == true:
             return fm.arg
-        elif fm.arg == logic.true:
+        elif fm.arg == true:
             return fm.arg1
-        elif fm.arg1 == logic.false:
-            return logic.neg(fm.arg)
-        elif fm.arg == logic.false:
-            return logic.neg(fm.arg1)
+        elif fm.arg1 == false:
+            return Not(fm.arg)
+        elif fm.arg == false:
+            return Not(fm.arg1)
         else:
             return fm
     elif Term.is_all(fm) or logic.is_exists(fm):
@@ -91,9 +91,9 @@ def simplify(fm):
     Remove true, false, and vacuous forall/exists quantification.
 
     """
-    if logic.is_neg(fm):
-        return simplify1(logic.neg(simplify(fm.arg)))
-    elif logic.is_conj(fm) or logic.is_disj(fm) or Term.is_implies(fm) or Term.is_equals(fm):
+    if fm.is_not():
+        return simplify1(Not(simplify(fm.arg)))
+    elif fm.is_conj() or fm.is_disj() or Term.is_implies(fm) or Term.is_equals(fm):
         return simplify1(fm.head(simplify(fm.arg1), simplify(fm.arg)))
     elif Term.is_all(fm) or logic.is_exists(fm):
         assert fm.arg.is_abs()
@@ -103,36 +103,36 @@ def simplify(fm):
 
 def nnf(fm):
     """Negation normal form of a formula."""
-    if logic.is_conj(fm):
-        return logic.mk_conj(nnf(fm.arg1), nnf(fm.arg))
-    elif logic.is_disj(fm):
-        return logic.mk_disj(nnf(fm.arg1), nnf(fm.arg))
-    elif Term.is_implies(fm):
-        return logic.mk_disj(nnf(logic.neg(fm.arg1)), nnf(fm.arg))
+    if fm.is_conj():
+        return And(nnf(fm.arg1), nnf(fm.arg))
+    elif fm.is_disj():
+        return Or(nnf(fm.arg1), nnf(fm.arg))
+    elif fm.is_implies():
+        return Or(nnf(Not(fm.arg1)), nnf(fm.arg))
     elif Term.is_equals(fm):
-        return logic.mk_disj(logic.mk_conj(nnf(fm.arg1), nnf(fm.arg)),
-                             logic.mk_conj(nnf(logic.neg(fm.arg1)), nnf(logic.neg(fm.arg))))
-    elif logic.is_neg(fm):
+        return Or(And(nnf(fm.arg1), nnf(fm.arg)),
+                  And(nnf(Not(fm.arg1)), nnf(Not(fm.arg))))
+    elif fm.is_not():
         p = fm.arg
-        if logic.is_neg(p):
+        if p.is_not():
             return nnf(p.arg)
-        elif logic.is_conj(p):
-            return logic.mk_disj(nnf(logic.neg(p.arg1)), nnf(logic.neg(p.arg)))
-        elif logic.is_disj(p):
-            return logic.mk_conj(nnf(logic.neg(p.arg1)), nnf(logic.neg(p.arg)))
-        elif Term.is_implies(p):
-            return logic.mk_conj(nnf(p.arg1), nnf(logic.neg(p.arg)))
+        elif p.is_conj():
+            return Or(nnf(Not(p.arg1)), nnf(Not(p.arg)))
+        elif p.is_disj():
+            return And(nnf(Not(p.arg1)), nnf(Not(p.arg)))
+        elif p.is_implies():
+            return And(nnf(p.arg1), nnf(Not(p.arg)))
         elif Term.is_equals(p):
-            return logic.mk_disj(logic.mk_conj(nnf(p.arg1), nnf(logic.neg(p.arg))),
-                                 logic.mk_conj(nnf(logic.neg(p.arg1)), nnf(p.arg)))
+            return Or(And(nnf(p.arg1), nnf(Not(p.arg))),
+                      And(nnf(Not(p.arg1)), nnf(p.arg)))
         elif Term.is_all(p):
             assert p.arg.is_abs()
             exists_t = logic.exists_t(p.arg.var_T)
-            return exists_t(Abs(p.arg.var_name, p.arg.var_T, nnf(logic.neg(p.arg.body))))
+            return exists_t(Abs(p.arg.var_name, p.arg.var_T, nnf(Not(p.arg.body))))
         elif logic.is_exists(p):
             assert p.arg.is_abs()
             all_t = term.all_t(p.arg.var_T)
-            return all_t(Abs(p.arg.var_name, p.arg.var_T, nnf(logic.neg(p.arg.body))))
+            return all_t(Abs(p.arg.var_name, p.arg.var_T, nnf(Not(p.arg.body))))
         else:
             return fm
     elif Term.is_all(fm) or logic.is_exists(fm):
@@ -166,7 +166,7 @@ def skolem(fm):
             v = Var(nm, t.arg.var_T)
             body = t.arg.subst_bound(v)
             return Term.mk_all(v, rec(body))
-        elif logic.is_conj(t) or logic.is_disj(t):
+        elif t.is_conj() or t.is_disj():
             return t.head(rec(t.arg1), rec(t.arg))
         else:
             return t

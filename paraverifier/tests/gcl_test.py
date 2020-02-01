@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TFun, boolT
-from kernel.term import Var, Term
+from kernel.term import Var, Term, true, false
 from logic import basic
 from data.nat import natT, to_binary, zero, one
 from logic import logic
@@ -25,8 +25,8 @@ class GCLTest(unittest.TestCase):
             (b, s(Ident(one))),
             (to_binary(3), NatV(to_binary(3))),
             (eq(a(one), to_binary(3)), eq(s(Para(Ident(zero), one)), NatV(to_binary(3)))),
-            (logic.true, BoolV(logic.true)),
-            (eq(b, logic.false), eq(s(Ident(one)), BoolV(logic.false))),
+            (true, BoolV(true)),
+            (eq(b, false), eq(s(Ident(one)), BoolV(false))),
         ]
 
         for t, res in test_data:

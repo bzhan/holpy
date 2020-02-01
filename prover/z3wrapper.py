@@ -10,7 +10,7 @@ else:
 
 from kernel.type import TFun
 from kernel import term
-from kernel.term import Term, Var, boolT
+from kernel.term import Term, Var, boolT, Implies, true, false
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
@@ -93,14 +93,14 @@ def convert(t, var_names, assms, to_real):
             return z3.Implies(rec(t.arg1), rec(t.arg))
         elif t.is_equals():
             return rec(t.arg1) == rec(t.arg)
-        elif logic.is_conj(t):
+        elif t.is_conj():
             return z3.And(rec(t.arg1), rec(t.arg))
-        elif logic.is_disj(t):
+        elif t.is_disj():
             return z3.Or(rec(t.arg1), rec(t.arg))
         elif logic.is_if(t):
             b, t1, t2 = t.args
             return z3.If(rec(b), rec(t1), rec(t2))
-        elif logic.is_neg(t):
+        elif t.is_not():
             return z3.Not(rec(t.arg))
         elif t.head.is_const_name('plus'):
             return rec(t.arg1) + rec(t.arg)
@@ -159,9 +159,9 @@ def convert(t, var_names, assms, to_real):
         elif t.is_comb():
             return rec(t.fun)(rec(t.arg))
         elif t.is_const():
-            if t == logic.true:
+            if t == true:
                 return z3.BoolVal(True)
-            elif t == logic.false:
+            elif t == false:
                 return z3.BoolVal(False)
             else:
                 raise Z3Exception("convert: unsupported constant " + repr(t))
@@ -255,7 +255,7 @@ class Z3Macro(ProofMacro):
     def eval(self, args, prevs):
         if z3_loaded:
             assms = [prev.prop for prev in prevs]
-            assert solve(Term.mk_implies(*(assms + [args]))), "Z3: not solved."
+            assert solve(Implies(*(assms + [args]))), "Z3: not solved."
         else:
             print("Warning: Z3 is not installed")
 
@@ -294,7 +294,7 @@ class Z3Method(Method):
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
         goal = cur_item.th.prop
 
-        assert solve(Term.mk_implies(*(assms + [goal]))), "Z3 method: not solved"
+        assert solve(Implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)
 
 

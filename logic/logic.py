@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 from kernel.type import TVar, TFun, boolT
 from kernel import term
-from kernel.term import Term, SVar, Var, Const, Abs
+from kernel.term import Term, SVar, Var, Const, Abs, Implies, true, false
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel import macro
@@ -27,68 +27,8 @@ class TacticException(Exception):
 
 """Utility functions for logic."""
 
-conj = Const("conj", TFun(boolT, boolT, boolT))
-disj = Const("disj", TFun(boolT, boolT, boolT))
-neg = Const("neg", TFun(boolT, boolT))
-true = Const("true", boolT)
-false = Const("false", boolT)
-
 def exists_t(T):
     return Const("exists", TFun(TFun(T, boolT), boolT))
-
-def is_conj(t):
-    """Whether t is of the form A & B."""
-    return t.is_binop() and t.head == conj
-
-def mk_conj(*args):
-    """Construct the term s1 & ... & sn."""
-    if args:
-        assert isinstance(args[0], Term), "mk_conj: each argument must be a term"
-        if len(args) > 1:
-            return conj(args[0], mk_conj(*args[1:]))
-        else:
-            return args[0]
-    else:
-        return true
-
-def strip_conj(t):
-    """Given term of the form s1 & ... & sn, return the list
-    [s1, ..., sn].
-
-    """
-    if is_conj(t):
-        return [t.arg1] + strip_conj(t.arg)
-    else:
-        return [t]
-
-def is_disj(t):
-    """Whether t is of the form A | B."""
-    return t.is_binop() and t.head == disj
-
-def mk_disj(*args):
-    """Construct the term s1 | ... | sn."""
-    if args:
-        assert isinstance(args[0], Term), "mk_disj: each argument must be a term"
-        if len(args) > 1:
-            return disj(args[0], mk_disj(*args[1:]))
-        else:
-            return args[0]
-    else:
-        return false
-
-def strip_disj(t):
-    """Given term of the form s1 | ... | sn, return the list
-    [s1, ..., sn].
-
-    """
-    if is_disj(t):
-        return [t.arg1] + strip_disj(t.arg)
-    else:
-        return [t]
-
-def is_neg(t):
-    """Whether t is of the form ~ A."""
-    return t.is_comb() and t.fun == neg
 
 def is_exists(t):
     """Whether t is of the form ?x. P x."""
@@ -213,7 +153,7 @@ def strip_exists(t, names):
 class norm_bool_expr(Conv):
     """Normalize a boolean expression."""
     def get_proof_term(self, t):
-        if is_neg(t):
+        if t.is_not():
             if t.arg == true:
                 return rewr_conv("not_true").get_proof_term(t)
             elif t.arg == false:
@@ -226,7 +166,7 @@ class norm_bool_expr(Conv):
 class norm_conj_assoc_clauses(Conv):
     """Normalize (A_1 & ... & A_n) & (B_1 & ... & B_n)."""
     def get_proof_term(self, t):
-        if is_conj(t.arg1):
+        if t.arg1.is_conj():
             return then_conv(
                 rewr_conv("conj_assoc", sym=True),
                 arg_conv(norm_conj_assoc_clauses())
@@ -237,7 +177,7 @@ class norm_conj_assoc_clauses(Conv):
 class norm_conj_assoc(Conv):
     """Normalize conjunction with respect to associativity."""
     def get_proof_term(self, t):
-        if is_conj(t):
+        if t.is_conj():
             return then_conv(
                 binop_conv(norm_conj_assoc()),
                 norm_conj_assoc_clauses()
@@ -331,7 +271,7 @@ class apply_theorem_macro(ProofTermMacro):
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         As, C = subst_norm(th.prop, (tyinst, inst)).strip_implies()
-        new_prop = Term.mk_implies(*(As[len(prevs):] + [C]))
+        new_prop = Implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
         th = Thm(th.hyps + prev_hyps, new_prop)
@@ -640,7 +580,7 @@ class resolve_theorem_macro(ProofTermMacro):
     def get_proof_term(self, args, pts):
         th_name, goal = args
         pt = ProofTerm.theorem(th_name)
-        assert is_neg(pt.prop), "resolve_theorem_macro"
+        assert pt.prop.is_not(), "resolve_theorem_macro"
 
         # Match for variables in pt.
         tyinst, inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
@@ -693,7 +633,7 @@ class imp_conj_macro(ProofTermMacro):
 
     def eval(self, args, ths):
         def strip(t):
-            if is_conj(t):
+            if t.is_conj():
                 return strip(t.arg1).union(strip(t.arg))
             else:
                 return {t}
@@ -709,7 +649,7 @@ class imp_conj_macro(ProofTermMacro):
         def traverse_A(pt):
             # Given proof term showing a conjunction, put proof terms
             # showing atoms of the conjunction in dct.
-            if is_conj(pt.prop):
+            if pt.prop.is_conj():
                 traverse_A(apply_theorem('conjD1', pt))
                 traverse_A(apply_theorem('conjD2', pt))
             else:
@@ -717,7 +657,7 @@ class imp_conj_macro(ProofTermMacro):
 
         def traverse_C(t):
             # Return proof term with conclusion t
-            if is_conj(t):
+            if t.is_conj():
                 left = traverse_C(t.arg1)
                 right = traverse_C(t.arg)
                 return apply_theorem('conjI', left, right)

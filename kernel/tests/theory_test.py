@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import Type, TVar, TFun, boolT
-from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
 from kernel.macro import ProofMacro
@@ -89,7 +89,7 @@ class TheoryTest(unittest.TestCase):
             x,
             Term.mk_equals(x, y),
             Term.mk_equals(f, f),
-            Term.mk_implies(A, B),
+            Implies(A, B),
             Abs("x", Ta, Term.mk_equals(x, y)),
         ]
 
@@ -112,7 +112,7 @@ class TheoryTest(unittest.TestCase):
 
     def testCheckProof(self):
         """Proof of [A, A --> B] |- B."""
-        A_to_B = Term.mk_implies(A, B)
+        A_to_B = Implies(A, B)
         prf = Proof(A_to_B, A)
         prf.add_item(2, "implies_elim", prevs=[0, 1])
 

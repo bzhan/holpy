@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.term import Term
+from kernel.term import Term, true, false
 from kernel.thm import Thm
 from kernel.proof import ItemID
 from data import nat
@@ -162,9 +162,9 @@ class NatTest(unittest.TestCase):
 
     def testNatEqConv(self):
         test_data = [
-            ((0, 0), logic.true),
-            ((1, 1), logic.true),
-            ((0, 1), logic.false),
+            ((0, 0), true),
+            ((1, 1), true),
+            ((0, 1), false),
         ]
 
         for (a, b), res in test_data:

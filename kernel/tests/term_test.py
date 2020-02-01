@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import STVar, TVar, Type, TFun
 from kernel import term
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or
 from kernel.term import TermSubstitutionException, TypeCheckException
 
 Ta = TVar("a")
@@ -251,6 +251,53 @@ class TermTest(unittest.TestCase):
 
         for t, res in test_data:
             self.assertEqual(term.get_consts(t), res)
+
+    def testConj(self):
+        test_data = [
+            ([], term.true),
+            ([a], a),
+            ([a, b], term.conj(a, b)),
+            ([a, b, a], term.conj(a, term.conj(b, a)))
+        ]
+
+        for ts, res in test_data:
+            self.assertEqual(And(*ts), res)
+
+    def testConjFail(self):
+        self.assertRaises(TypeError, And, [a])
+
+    def testStripConj(self):
+        test_data = [
+            (a, [a]),
+            (And(a, b, a), [a, b, a])
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(t.strip_conj(), res)
+
+    def testDisj(self):
+        test_data = [
+            ([], term.false),
+            ([a], a),
+            ([a, b], term.disj(a, b)),
+            ([a, b, a], term.disj(a, term.disj(b, a)))
+        ]
+
+        for ts, res in test_data:
+            self.assertEqual(Or(*ts), res)
+
+    def testDisjFail(self):
+        self.assertRaises(TypeError, Or, [a])
+
+    def testStripDisj(self):
+        test_data = [
+            (a, [a]),
+            (Or(a, b, a), [a, b, a])
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(t.strip_disj(), res)
+
 
 
 if __name__ == "__main__":

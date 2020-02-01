@@ -5,7 +5,7 @@ import copy
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import HOLType, STVar, TVar, Type, TFun, boolT
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
@@ -315,19 +315,16 @@ class HOLTransformer(Transformer):
         return Const("equals", None)(lhs, rhs)
 
     def neg(self, t):
-        from logic import logic
-        return logic.neg(t)
+        return Not(t)
 
     def conj(self, s, t):
-        from logic import logic
-        return logic.mk_conj(s, t)
+        return And(s, t)
 
     def disj(self, s, t):
-        from logic import logic
-        return logic.mk_disj(s, t)
+        return Or(s, t)
 
     def imp(self, s, t):
-        return Term.mk_implies(s, t)
+        return Implies(s, t)
 
     def iff(self, s, t):
         return Const("equals", None)(s, t)

@@ -6,7 +6,7 @@ import os, json
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const, Abs
+from kernel.term import Term, Var, Const, Abs, true
 from logic import logic
 from logic import basic
 from imperative import expr
@@ -134,7 +134,7 @@ class HoareTransformer(Transformer):
         return com.Cond(b, c1, c2)
 
     def while_cmd(self, b, c):
-        return com.While(b, logic.true, c)
+        return com.While(b, true, c)
 
     def while_cmd_inv(self, b, inv, c):
         return com.While(b, inv, c)

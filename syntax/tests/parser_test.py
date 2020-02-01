@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, HOLType, boolT
-from kernel.term import Var, Term
+from kernel.term import Var, Term, And
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
@@ -382,7 +382,7 @@ class ParserTest(unittest.TestCase):
         C = Var('C', boolT)
         test_data = [
             ("|- A", Thm([], A)),
-            ("|- A & B", Thm([], logic.mk_conj(A, B))),
+            ("|- A & B", Thm([], And(A, B))),
             ("A |- B", Thm([A], B)),
             ("A, B |- C", Thm([A, B], C)),
         ]
@@ -402,9 +402,9 @@ class ParserTest(unittest.TestCase):
             ({'id': "5", 'rule': "substitution", 'args': "{A: B, B: A}", 'prevs': ["4"], 'th': ""},
              ProofItem(5, "substitution", args={'A': B, 'B': A}, prevs=[4])),
             ({'id': "8", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["7"], 'th': ""},
-             ProofItem(8, "implies_intr", args=logic.mk_conj(A, B), prevs=[7])),
+             ProofItem(8, "implies_intr", args=And(A, B), prevs=[7])),
             ({'id': "0", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"},
-             ProofItem(0, "sorry", th=Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
+             ProofItem(0, "sorry", th=Thm([And(A, B)], And(B, A)))),
             ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
             ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {}, {A: B, B: A}", 'prevs': [4], 'th': ""},

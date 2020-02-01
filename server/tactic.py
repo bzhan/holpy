@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel import term
-from kernel.term import Term
+from kernel.term import Term, Implies, Not
 from kernel.thm import Thm
 from kernel import theory
 from logic import logic
@@ -127,7 +127,7 @@ class resolve(Tactic):
         th_name = args
         th = theory.thy.get_theorem(th_name, svar=True)
 
-        assert logic.is_neg(th.prop), "resolve: prop is not a negation"
+        assert th.prop.is_not(), "resolve: prop is not a negation"
 
         # Checking that the theorem matches the fact is done here.
         return ProofTermDeriv('resolve_theorem', (args, goal.prop), prevs)
@@ -266,8 +266,8 @@ class cases(Tactic):
 
         As = goal.hyps
         C = goal.prop
-        goal1 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(args, C)))
-        goal2 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(logic.neg(args), C)))
+        goal1 = ProofTerm.sorry(Thm(goal.hyps, Implies(args, C)))
+        goal2 = ProofTerm.sorry(Thm(goal.hyps, Implies(Not(args), C)))
         return apply_theorem('classical_cases', goal1, goal2)
 
 class inst_exists_goal(Tactic):

@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import STVar, TVar, TFun, boolT
-from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, TypeCheckException
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
@@ -51,23 +51,23 @@ class ThmTest(unittest.TestCase):
 
     def testImpliesIntr(self):
         th = Thm([A], B)
-        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(A, th), Thm([], Implies(A,B)))
 
     def testImpliesIntr2(self):
         th = Thm([A, B], B)
-        self.assertEqual(Thm.implies_intr(A, th), Thm([B], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(A, th), Thm([B], Implies(A,B)))
 
     def testImpliesIntr3(self):
         th = Thm([], B)
-        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(A, th), Thm([], Implies(A,B)))
 
     def testImpliesElim(self):
-        th1 = Thm([], Term.mk_implies(A,B))
+        th1 = Thm([], Implies(A,B))
         th2 = Thm([], A)
         self.assertEqual(Thm.implies_elim(th1, th2), Thm([], B))
 
     def testImpliesElim2(self):
-        th1 = Thm([B], Term.mk_implies(A,B))
+        th1 = Thm([B], Implies(A,B))
         th2 = Thm([B], A)
         self.assertEqual(Thm.implies_elim(th1, th2), Thm([B], B))
 
@@ -77,7 +77,7 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.implies_elim, th1, th2)
 
     def testImpliesElimFail2(self):
-        th1 = Thm([], Term.mk_implies(A,B))
+        th1 = Thm([], Implies(A,B))
         th2 = Thm([], B)
         self.assertRaises(InvalidDerivationException, Thm.implies_elim, th1, th2)
 
@@ -128,23 +128,23 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.combination, th1, th2)
 
     def testEqualIntr(self):
-        th1 = Thm([A], Term.mk_implies(A,B))
-        th2 = Thm([B], Term.mk_implies(B,A))
+        th1 = Thm([A], Implies(A,B))
+        th2 = Thm([B], Implies(B,A))
         self.assertEqual(Thm.equal_intr(th1, th2), Thm([A,B], Term.mk_equals(A,B)))
 
     def testEqualIntrFail(self):
-        th1 = Thm([], Term.mk_implies(A,B))
+        th1 = Thm([], Implies(A,B))
         th2 = Thm([], A)
         self.assertRaises(InvalidDerivationException, Thm.equal_intr, th1, th2)
 
     def testEqualIntrFail2(self):
         th1 = Thm([], B)
-        th2 = Thm([], Term.mk_implies(B,A))
+        th2 = Thm([], Implies(B,A))
         self.assertRaises(InvalidDerivationException, Thm.equal_intr, th1, th2)
 
     def testEqualIntrFail3(self):
-        th1 = Thm([], Term.mk_implies(A,B))
-        th2 = Thm([], Term.mk_implies(A,B))
+        th1 = Thm([], Implies(A,B))
+        th2 = Thm([], Implies(A,B))
         self.assertRaises(InvalidDerivationException, Thm.equal_intr, th1, th2)
 
     def testEqualElim(self):
@@ -153,7 +153,7 @@ class ThmTest(unittest.TestCase):
         self.assertEqual(Thm.equal_elim(th1, th2), Thm([A,B], B))
 
     def testEqualElimFail(self):
-        th1 = Thm([A], Term.mk_implies(A,B))
+        th1 = Thm([A], Implies(A,B))
         th2 = Thm([B], A)
         self.assertRaises(InvalidDerivationException, Thm.equal_elim, th1, th2)
 
@@ -205,7 +205,7 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.abstraction, f(x), th)
 
     def testAbstractOverFail4(self):
-        th = Thm([], Term.mk_implies(x,y))
+        th = Thm([], Implies(x,y))
         self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
 
     def testForallIntr(self):
