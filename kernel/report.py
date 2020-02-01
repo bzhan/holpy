@@ -102,18 +102,17 @@ class ExtensionReport():
     def get_axioms(self):
         return self.axioms
 
-    @staticmethod
-    def _str_axiom(axiom):
-        (name, info) = axiom
-        if isinstance(info, int):
-            return "Type " + name + " with arity " + str(info)
-        elif isinstance(info, HOLType):
-            return name + " :: " + str(info)
-        elif isinstance(info, Thm):
-            return name + ": " + str(info)
-        else:
-            raise AssertionError("_str_axiom")
-
     def __str__(self):
-        return "Axiom added: " + str(len(self.axioms)) + "\n" + \
-            "\n".join(ExtensionReport._str_axiom(axiom) for axiom in self.axioms)
+        def print_axiom(axiom):
+            (name, info) = axiom
+            if isinstance(info, int):
+                return "Type " + name + " with arity " + str(info)
+            elif isinstance(info, HOLType):
+                return name + " :: " + str(info)
+            elif isinstance(info, Thm):
+                return name + ": " + str(info)
+            else:
+                raise TypeError
+
+        return "Axiom added: %s\n%s" % (
+            len(self.axioms), '\n'.join(print_axiom(axiom) for axiom in self.axioms))

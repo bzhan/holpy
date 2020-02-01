@@ -252,30 +252,6 @@ class Theory():
         else:
             return name
 
-    @staticmethod
-    def EmptyTheory():
-        """Empty theory, with the absolute minimum setup."""
-        thy = Theory()
-
-        # Fundamental data structures, needed for proof checking.
-        thy.add_data_type("type_sig")
-        thy.add_data_type("term_sig")
-        thy.add_data_type("theorems")
-        thy.add_data_type("theorems_svar")  # cache of version of theorem with SVar.
-        thy.add_data_type("attributes")
-        thy.add_data_type("overload")
-
-        # Fundamental types.
-        thy.add_type_sig("bool", 0)
-        thy.add_type_sig("fun", 2)
-
-        # Fundamental terms.
-        thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), boolT))
-        thy.add_term_sig("implies", TFun(boolT, boolT, boolT))
-        thy.add_term_sig("all", TFun(TFun(TVar("a"), boolT), boolT))
-        
-        return thy
-
     def check_type(self, T):
         """Check the well-formedness of the type T. This means checking
         that all type constructors exist and are instantiated with the right
@@ -527,6 +503,29 @@ class Theory():
 """Global theory"""
 thy = None
 
+def EmptyTheory():
+    """Empty theory, with the absolute minimum setup."""
+    thy = Theory()
+
+    # Fundamental data structures, needed for proof checking.
+    thy.add_data_type("type_sig")
+    thy.add_data_type("term_sig")
+    thy.add_data_type("theorems")
+    thy.add_data_type("theorems_svar")  # cache of version of theorem with SVar.
+    thy.add_data_type("attributes")
+    thy.add_data_type("overload")
+
+    # Fundamental types.
+    thy.add_type_sig("bool", 0)
+    thy.add_type_sig("fun", 2)
+
+    # Fundamental terms.
+    thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), boolT))
+    thy.add_term_sig("implies", TFun(boolT, boolT, boolT))
+    thy.add_term_sig("all", TFun(TFun(TVar("a"), boolT), boolT))
+    
+    return thy
+
 @contextlib.contextmanager
 def fresh_theory():
     # Record previous theory
@@ -534,7 +533,7 @@ def fresh_theory():
     prev_thy = thy
 
     # Set theory to empty
-    thy = Theory.EmptyTheory()
+    thy = EmptyTheory()
     try:
         yield None
     finally:

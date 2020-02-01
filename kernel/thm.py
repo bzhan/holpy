@@ -91,12 +91,6 @@ class Thm():
             if t.checked_get_type() != boolT:
                 raise term.TypeCheckException
 
-    @staticmethod
-    def mk_implies(*args):
-        """Returns the theorem s1 --> ... --> sn --> t."""
-        typecheck.checkinstance('mk_implies', args, [Term])
-        return Thm([], Implies(*args))
-
     def is_equals(self):
         """Check whether the proposition of the theorem is of the form x = y."""
         return self.prop.is_equals()

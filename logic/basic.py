@@ -203,7 +203,7 @@ def load_theory(filename, *, limit=None, username="master"):
     # Load imported theories
     depend_list = get_import_order(cache['imports'], username)
 
-    theory.thy = Theory.EmptyTheory()
+    theory.thy = theory.EmptyTheory()
     for prev_name in depend_list:
         prev_cache = load_theory_cache(prev_name, username)
         for item in prev_cache['content']:
