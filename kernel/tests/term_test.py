@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import STVar, TVar, Type, TFun
 from kernel import term
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary
 from kernel.term import TermException, TypeCheckException
 
 Ta = TVar("a")
@@ -297,6 +297,51 @@ class TermTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(t.strip_disj(), res)
 
+    def testBinary(self):
+        zero = term.nat_zero
+        one = term.nat_one
+        bit0 = term.bit0
+        bit1 = term.bit1
+        test_data = [
+            (0, zero),
+            (1, one),
+            (2, bit0(one)),
+            (3, bit1(one)),
+            (4, bit0(bit0(one))),
+            (5, bit1(bit0(one))),
+            (6, bit0(bit1(one))),
+            (7, bit1(bit1(one))),
+            (19, bit1(bit1(bit0(bit0(one))))),
+            (127, bit1(bit1(bit1(bit1(bit1(bit1(one))))))),
+        ]
+
+        for n, t in test_data:
+            self.assertEqual(Binary(n), t)
+            self.assertEqual(t.dest_binary(), n)
+
+    def testBinaryLarge(self):
+        test_data = [
+            100, 10000, 100000, 111111, 999999, 10101010101, 12345678987654321,
+        ]
+
+        for n in test_data:
+            self.assertEqual(Binary(n).dest_binary(), n)
+
+    def testIsBinary(self):
+        zero = term.nat_zero
+        one = term.nat_one
+        bit0 = term.bit0
+        bit1 = term.bit1
+        test_data = [
+            (zero, True),
+            (one, True),
+            (bit0(one), True),
+            (bit0, False),
+            (bit1, False),
+        ]
+
+        for n, b in test_data:
+            self.assertEqual(n.is_binary(), b)
 
 
 if __name__ == "__main__":

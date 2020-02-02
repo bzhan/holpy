@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from kernel.type import Type, TFun, boolT
+from kernel.type import Type, TFun, BoolType
 from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda
 from kernel import macro
@@ -88,7 +88,7 @@ class Thm():
         
         """
         for t in list(self.hyps) + [self.prop]:
-            if t.checked_get_type() != boolT:
+            if t.checked_get_type() != BoolType:
                 raise term.TypeCheckException
 
     def is_equals(self):
@@ -339,7 +339,7 @@ class Thm():
         """Construct the internal proposition _VAR(v)."""
         if not v.is_var():
             raise InvalidDerivationException("mk_VAR")
-        return Thm([], Const("_VAR", TFun(v.T, boolT))(v))
+        return Thm([], Const("_VAR", TFun(v.T, BoolType))(v))
 
     @staticmethod
     def convert_svar(th):

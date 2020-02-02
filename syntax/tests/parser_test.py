@@ -2,13 +2,12 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, HOLType, boolT
+from kernel.type import TVar, Type, TFun, HOLType, BoolType
 from kernel.term import Var, Term, And, Eq
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
 from data import nat
-from data import int
 from data import real
 from logic import basic
 from data import set
@@ -377,9 +376,9 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(t), ascii_s)
 
     def testParseThm(self):
-        A = Var('A', boolT)
-        B = Var('B', boolT)
-        C = Var('C', boolT)
+        A = Var('A', BoolType)
+        B = Var('B', BoolType)
+        C = Var('C', BoolType)
         test_data = [
             ("|- A", Thm([], A)),
             ("|- A & B", Thm([], And(A, B))),
@@ -392,8 +391,8 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(parser.parse_thm(s), th)
 
     def testParseProofRule(self):
-        A = Var('A', boolT)
-        B = Var('B', boolT)
+        A = Var('A', BoolType)
+        B = Var('B', BoolType)
         test_data = [
             ({'id': "0", 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""},
              ProofItem(0, "theorem", args="conjD1", prevs=[])),
@@ -426,8 +425,8 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(parser.parse_ind_constr(s), res)
 
     def testParseNamedThm(self):
-        A = Var('A', boolT)
-        B = Var('B', boolT)
+        A = Var('A', BoolType)
+        B = Var('B', BoolType)
         test_data = [
             ("conjI: A = B", ('conjI', Eq(A, B))),
             ("A = B", (None, Eq(A, B)))

@@ -2,8 +2,8 @@
 
 import unittest
 
-from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Not, Eq, Lambda, true
+from kernel.type import TFun, BoolType, NatType
+from kernel.term import Term, Var, Not, Eq, Lambda, true, Nat
 from kernel.thm import Thm
 from kernel import theory
 from kernel.report import ProofReport
@@ -16,33 +16,32 @@ from logic import basic
 from syntax import parser
 from syntax import printer
 
-natT = nat.natT
-natFunT = TFun(natT, natT)
+natFunT = TFun(NatType, NatType)
 Sem = imp.Sem(natFunT)
 Skip = imp.Skip(natFunT)
-Assign = imp.Assign(natT, natT)
+Assign = imp.Assign(NatType, NatType)
 Seq = imp.Seq(natFunT)
 Cond = imp.Cond(natFunT)
 While = imp.While(natFunT)
 Valid = imp.Valid(natFunT)
+
 zero = nat.zero
 one = nat.one
-to_binary = nat.to_binary_nat
 
 s = Var("s", natFunT)
 assn_true = Lambda(s, true)
 incr_one = Assign(zero, Lambda(s, nat.plus(s(zero), one)))
 
 def fun_upd_of_seq(*ns):
-    return mk_fun_upd(mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
+    return mk_fun_upd(mk_const_fun(NatType, zero), *[Nat(n) for n in ns])
 
 class HoareTest(unittest.TestCase):
     def setUp(self):
         basic.load_theory('hoare')
 
     def testEvalSem(self):
-        com = Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, to_binary(2))))
-        st = mk_const_fun(natT, zero)
+        com = Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, Nat(2))))
+        st = mk_const_fun(NatType, zero)
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
@@ -50,7 +49,7 @@ class HoareTest(unittest.TestCase):
 
     def testEvalSem2(self):
         com = Seq(incr_one, incr_one)
-        st = mk_const_fun(natT, zero)
+        st = mk_const_fun(NatType, zero)
         st2 = fun_upd_of_seq(0, 2)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
@@ -58,7 +57,7 @@ class HoareTest(unittest.TestCase):
 
     def testEvalSem3(self):
         com = Cond(Lambda(s, Eq(s(zero), zero)), incr_one, Skip)
-        st = mk_const_fun(natT, zero)
+        st = mk_const_fun(NatType, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
@@ -70,7 +69,7 @@ class HoareTest(unittest.TestCase):
 
     def testEvalSem4(self):
         com = Cond(Lambda(s, Not(Eq(s(zero), one))), incr_one, Skip)
-        st = mk_const_fun(natT, zero)
+        st = mk_const_fun(NatType, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
@@ -81,8 +80,8 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
-        com = While(Lambda(s, Not(Eq(s(zero), to_binary(3)))), assn_true, incr_one)
-        st = mk_const_fun(natT, zero)
+        com = While(Lambda(s, Not(Eq(s(zero), Nat(3)))), assn_true, incr_one)
+        st = mk_const_fun(NatType, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
@@ -90,13 +89,13 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(theory.thy.check_proof(prf, rpt), Thm([], goal))
 
     def testComputeWP(self):
-        Q = Var("Q", TFun(natFunT, boolT))
+        Q = Var("Q", TFun(natFunT, BoolType))
 
         test_data = [
             (Assign(zero, Lambda(s, one)),
              Lambda(s, Q(mk_fun_upd(s, zero, one)))),
-            (Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, to_binary(2)))),
-             Lambda(s, Q(mk_fun_upd(s, zero, one, one, to_binary(2))))),
+            (Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, Nat(2)))),
+             Lambda(s, Q(mk_fun_upd(s, zero, one, one, Nat(2))))),
         ]
 
         for c, P in test_data:
@@ -104,12 +103,12 @@ class HoareTest(unittest.TestCase):
             self.assertEqual(theory.thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
     def testVCG(self):
-        P = Var("P", TFun(natFunT, boolT))
-        Q = Var("Q", TFun(natFunT, boolT))
+        P = Var("P", TFun(natFunT, BoolType))
+        Q = Var("Q", TFun(natFunT, BoolType))
 
         test_data = [
             Assign(zero, Lambda(s, one)),
-            Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, to_binary(2)))),
+            Seq(Assign(zero, Lambda(s, one)), Assign(one, Lambda(s, Nat(2)))),
         ]
 
         for c in test_data:

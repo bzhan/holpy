@@ -2,14 +2,13 @@
 
 import unittest
 
-from kernel.type import boolT
+from kernel.type import BoolType, NatType
 from kernel.term import Term, Var, Eq, Lambda
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
-from data.nat import natT, plus, zero
 from server import tactic
 from syntax import parser
 from syntax import printer
@@ -74,12 +73,12 @@ class TacticTest(unittest.TestCase):
         )
 
     def testRule4(self):
-        n = Var("n", natT)
+        n = Var("n", NatType)
         self.run_test(
             'nat', tactic.rule(),
             vars={"n": "nat"},
             goal="n + 0 = n",
-            args=("nat_induct", ({}, {'P': Lambda(n, Eq(plus(n, zero), n)), 'x': n})),
+            args=("nat_induct", ({}, {'P': Lambda(n, Eq(n + 0, n)), 'x': n})),
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
         )
 
@@ -109,7 +108,7 @@ class TacticTest(unittest.TestCase):
         )
 
     def testInduct(self):
-        n = Var("n", natT)
+        n = Var("n", NatType)
         self.run_test(
             'nat', tactic.var_induct(),
             vars={"n": "nat"},
@@ -193,7 +192,7 @@ class TacticTest(unittest.TestCase):
         )
 
     def testCases(self):
-        A = Var('A', boolT)
+        A = Var('A', BoolType)
         self.run_test(
             'logic_base', tactic.cases(),
             vars={'A': 'bool', 'B': 'bool', 'C': 'bool'},

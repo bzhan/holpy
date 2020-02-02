@@ -4,8 +4,8 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import HOLType, STVar, TVar, Type, TFun, boolT
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies
+from kernel.type import HOLType, STVar, TVar, Type, TFun, BoolType, NatType
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
@@ -13,7 +13,6 @@ from kernel.proof import ProofItem
 from kernel import theory
 from kernel import extension
 from logic import context
-from data import binary
 from syntax import infertype
 
 
@@ -179,8 +178,8 @@ class HOLTransformer(Transformer):
             return Var(s, None)
 
     def typed_term(self, t, T):
-        if t.is_comb('of_nat', 1) and binary.is_binary(t.arg) and binary.from_binary(t.arg) >= 2:
-            t.fun.T = TFun(binary.natT, T)
+        if t.is_comb('of_nat', 1) and t.arg.is_binary() and t.arg.dest_binary() >= 2:
+            t.fun.T = TFun(NatType, T)
         else:
             t.T = T
         return t
@@ -191,7 +190,7 @@ class HOLTransformer(Transformer):
         elif int(n) == 1:
             return Const("one", None)
         else:
-            return Const("of_nat", None)(binary.to_binary(int(n)))
+            return Const("of_nat", None)(Binary(int(n)))
 
     def literal_list(self, *args):
         from data import list

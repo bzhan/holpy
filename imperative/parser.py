@@ -3,8 +3,8 @@
 import json, os
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TFun
-from kernel.term import Term, Var, Not, And, Or, Implies, Eq, Lambda, true
+from kernel.type import TFun, NatType
+from kernel.term import Term, Var, Not, And, Or, Implies, Eq, Lambda, true, Nat
 from kernel.report import ProofReport
 from kernel import theory
 from logic import basic
@@ -46,7 +46,7 @@ grammar = r"""
     %ignore WS
 """
 
-natFunT = TFun(nat.natT, nat.natT)
+natFunT = TFun(NatType, NatType)
 st = Var("s", natFunT)
 
 def str_to_nat(s):
@@ -60,14 +60,14 @@ class HoareTransformer(Transformer):
 
     def var_expr(self, s):
         if ord(s) >= ord('a') and ord(s) <= ord('z'):
-            return st(nat.to_binary_nat(str_to_nat(s)))
+            return st(Nat(str_to_nat(s)))
         elif ord(s) >= ord('A') and ord(s) <= ord('Z'):
-            return Var(s, nat.natT)
+            return Var(s, NatType)
         else:
             raise NotImplementedError
 
     def num_expr(self, n):
-        return nat.to_binary_nat(int(n))
+        return Nat(int(n))
 
     def plus_expr(self, e1, e2):
         return nat.plus(e1, e2)
@@ -100,8 +100,8 @@ class HoareTransformer(Transformer):
         return imp.Skip(natFunT)
 
     def assign_cmd(self, v, e):
-        Assign = imp.Assign(nat.natT, nat.natT)
-        return Assign(nat.to_binary_nat(str_to_nat(v)), Lambda(st, e))
+        Assign = imp.Assign(NatType, NatType)
+        return Assign(Nat(str_to_nat(v)), Lambda(st, e))
 
     def if_cmd(self, b, c1, c2):
         Cond = imp.Cond(natFunT)
@@ -142,12 +142,12 @@ def process_file(input, output):
     for run in content[:5]:
         if run['ty'] == 'eval':
             com = parse_com(run['com'])
-            st1 = mk_const_fun(nat.natT, nat.zero)
+            st1 = mk_const_fun(NatType, nat.zero)
             for k, v in sorted(run['init'].items()):
-                st1 = mk_fun_upd(st1, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
-            st2 = mk_const_fun(nat.natT, nat.zero)
+                st1 = mk_fun_upd(st1, Nat(str_to_nat(k)), Nat(v))
+            st2 = mk_const_fun(NatType, nat.zero)
             for k, v in sorted(run['final'].items()):
-                st2 = mk_fun_upd(st2, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
+                st2 = mk_fun_upd(st2, Nat(str_to_nat(k)), Nat(v))
             Sem = imp.Sem(natFunT)
             goal = Sem(com, st1, st2)
             prf = ProofTermDeriv("eval_Sem", goal, []).export()

@@ -2,13 +2,13 @@
 
 import unittest
 
-from kernel.term import Term, true, false
+from kernel.term import Term, Binary, Nat, true, false
 from kernel.thm import Thm
 from kernel.proof import ItemID
 from data import nat
+from data.nat import Suc, Pre
 from logic import basic
 from logic import logic
-from data.nat import zero, one
 from logic.tests.logic_test import test_macro
 from logic.tests.conv_test import test_conv
 from syntax import parser
@@ -17,22 +17,13 @@ basic.load_theory('nat')
 
 
 class NatTest(unittest.TestCase):
-    def testPlus(self):
-        self.assertEqual(nat.mk_plus(), zero)
-        self.assertEqual(nat.mk_plus(zero), zero)
-        self.assertEqual(nat.mk_plus(one), one)
-        self.assertEqual(nat.mk_plus(zero, one), nat.plus(zero, one))
-        self.assertEqual(nat.mk_plus(*([zero]*3)), nat.plus(nat.plus(zero, zero), zero))
-
     def testSucConv(self):
         test_data = [
             0, 1, 2, 3, 4, 5, 6, 7, 19, 127, 1000, 1001,
         ]
 
         for n in test_data:
-            t = nat.Suc(nat.to_binary(n))
-            t_res = nat.to_binary(n + 1)
-            test_conv(self, 'nat', nat.Suc_conv(), t=t, t_res=t_res)
+            test_conv(self, 'nat', nat.Suc_conv(), t=Suc(Binary(n)), t_res=Binary(n + 1))
 
     def testAddConv(self):
         test_data = [
@@ -50,9 +41,7 @@ class NatTest(unittest.TestCase):
         ]
 
         for m, n in test_data:
-            t = nat.mk_plus(nat.to_binary(m), nat.to_binary(n))
-            t_res = nat.to_binary(m + n)
-            test_conv(self, 'nat', nat.add_conv(), t=t, t_res=t_res)
+            test_conv(self, 'nat', nat.add_conv(), t=Binary(m) + Binary(n), t_res=Binary(m + n))
 
     def testMultConv(self):
         test_data = [
@@ -70,9 +59,7 @@ class NatTest(unittest.TestCase):
         ]
 
         for m, n in test_data:
-            t = nat.mk_times(nat.to_binary(m), nat.to_binary(n))
-            t_res = nat.to_binary(m * n)
-            test_conv(self, 'nat', nat.mult_conv(), t=t, t_res=t_res)
+            test_conv(self, 'nat', nat.mult_conv(), t=Binary(m) * Binary(n), t_res=Binary(m * n))
 
     def testNatConv(self):
         test_data = [
@@ -85,8 +72,7 @@ class NatTest(unittest.TestCase):
         ]
 
         for t, n in test_data:
-            t_res = nat.to_binary_nat(n)
-            test_conv(self, 'nat', nat.nat_conv(), t=t, t_res=t_res)
+            test_conv(self, 'nat', nat.nat_conv(), t=t, t_res=Nat(n))
 
     def testNormFull(self):
         test_data = [

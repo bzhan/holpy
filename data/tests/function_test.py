@@ -2,8 +2,8 @@
 
 import unittest
 
-from kernel.type import TVar, TFun
-from kernel.term import Var, Eq
+from kernel.type import TVar, TFun, NatType
+from kernel.term import Var, Eq, Nat
 from kernel.thm import Thm
 from kernel import theory
 from logic import basic
@@ -20,18 +20,17 @@ a2 = Var("a2", Ta)
 b1 = Var("b1", Ta)
 b2 = Var("b2", Ta)
 
-basic.load_theory('function')
-
-natT = nat.natT
 zero = nat.zero
 one = nat.one
-to_binary = nat.to_binary_nat
 
 def fun_upd_of_seq(*ns):
-    return mk_fun_upd(function.mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
+    return mk_fun_upd(function.mk_const_fun(NatType, zero), *[Nat(n) for n in ns])
 
 
 class FunctionTest(unittest.TestCase):
+    def setUp(self):
+        basic.load_theory('function')
+
     def testMkFunUpd(self):
         self.assertEqual(mk_fun_upd(f, a1, b1, a2, b2),
                          mk_fun_upd(mk_fun_upd(f, a1, b1), a2, b2))
@@ -45,7 +44,7 @@ class FunctionTest(unittest.TestCase):
         f = fun_upd_of_seq(1, 5)
         cv = function.fun_upd_eval_conv()
         prf = cv.get_proof_term(f(one)).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(f(one), to_binary(5))))
+        self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(f(one), Nat(5))))
         prf = cv.get_proof_term(f(zero)).export()
         self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(f(zero), zero)))
 

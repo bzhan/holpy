@@ -5,15 +5,15 @@ import math
 import sympy
 from sympy.ntheory.factor_ import factorint
 
-from kernel.type import Type, TFun, boolT
+from kernel.type import Type, TFun, BoolType, RealType
 from kernel import term
-from kernel.term import Term, Const, Eq
+from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
 from kernel import macro
-from data import binary
 from data import nat
 from data.set import setT
+from logic import term_ord
 from logic import logic
 from logic import auto
 from logic.logic import TacticException
@@ -26,135 +26,45 @@ from util import poly
 
 # Basic definitions
 
-realT = Type("real")
-zero = Const("zero", realT)
-one = Const("one", realT)
-of_nat = Const("of_nat", TFun(nat.natT, realT))
-plus = Const("plus", TFun(realT, realT, realT))
-minus = Const("minus", TFun(realT, realT, realT))
-uminus = Const("uminus", TFun(realT, realT))
-times = Const("times", TFun(realT, realT, realT))
-divides = Const("real_divide", TFun(realT, realT, realT))
-inverse = Const("real_inverse", TFun(realT, realT))
-equals = Const("equals", TFun(realT, realT, boolT))
-less_eq = Const("less_eq", TFun(realT, realT, boolT))
-less = Const("less", TFun(realT, realT, boolT))
-greater_eq = Const("greater_eq", TFun(realT, realT, boolT))
-greater = Const("greater", TFun(realT, realT, boolT))
-nat_power = Const("power", TFun(realT, nat.natT, realT))
-real_power = Const("power", TFun(realT, realT, realT))
-sqrt = Const("sqrt", TFun(realT, realT))
-pi = Const("pi", realT)
+zero = Const('zero', RealType)
+one = Const('one', RealType)
+plus = term.plus(RealType)
+minus = term.minus(RealType)
+uminus = term.uminus(RealType)
+times = term.times(RealType)
+divides = term.divides(RealType)
+nat_power = term.nat_power(RealType)
+real_power = term.real_power(RealType)
+of_nat = term.of_nat(RealType)
+equals = term.equals(RealType)
+less_eq = term.less_eq(RealType)
+less = term.less(RealType)
+greater_eq = term.greater_eq(RealType)
+greater = term.greater(RealType)
+
+inverse = Const("real_inverse", TFun(RealType, RealType))
+sqrt = Const("sqrt", TFun(RealType, RealType))
+pi = Const("pi", RealType)
 
 # Transcendental functions
 
-log = Const("log", TFun(realT, realT))
-exp = Const("exp", TFun(realT, realT))
-sin = Const("sin", TFun(realT, realT))
-cos = Const("cos", TFun(realT, realT))
-tan = Const("tan", TFun(realT, realT))
-cot = Const("cot", TFun(realT, realT))
-sec = Const("sec", TFun(realT, realT))
-csc = Const("csc", TFun(realT, realT))
-abs = Const("abs", TFun(realT, realT))
-sqrt = Const("sqrt", TFun(realT, realT))
-atn = Const("atn", TFun(realT, realT))
+log = Const("log", TFun(RealType, RealType))
+exp = Const("exp", TFun(RealType, RealType))
+sin = Const("sin", TFun(RealType, RealType))
+cos = Const("cos", TFun(RealType, RealType))
+tan = Const("tan", TFun(RealType, RealType))
+cot = Const("cot", TFun(RealType, RealType))
+sec = Const("sec", TFun(RealType, RealType))
+csc = Const("csc", TFun(RealType, RealType))
+abs = Const("abs", TFun(RealType, RealType))
+sqrt = Const("sqrt", TFun(RealType, RealType))
+atn = Const("atn", TFun(RealType, RealType))
 
 # Intervals
 
-closed_interval = Const("real_closed_interval", TFun(realT, realT, setT(realT)))
-open_interval = Const("real_open_interval", TFun(realT, realT, setT(realT)))
+closed_interval = Const("real_closed_interval", TFun(RealType, RealType, setT(RealType)))
+open_interval = Const("real_open_interval", TFun(RealType, RealType, setT(RealType)))
 
-
-def mk_plus(*args):
-    if not args:
-        return zero
-    elif len(args) == 1:
-        return args[0]
-    else:
-        return plus(mk_plus(*args[:-1]), args[-1])
-
-def mk_times(*args):
-    if not args:
-        return one
-    elif len(args) == 1:
-        return args[0]
-    else:
-        return times(mk_times(*args[:-1]), args[-1])
-
-def is_real(t):
-    return t.get_type() == realT
-
-def is_plus(t):
-    return t.is_binop() and t.head == plus
-
-def is_minus(t):
-    return t.is_binop() and t.head == minus
-
-def is_uminus(t):
-    return t.is_comb() and t.fun == uminus
-
-def is_times(t):
-    return t.is_binop() and t.head == times
-
-def is_divides(t):
-    return t.is_binop() and t.head == divides
-
-def is_nat_power(t):
-    return t.is_binop() and t.head == nat_power
-
-def is_real_power(t):
-    return t.is_binop() and t.head == real_power
-
-def is_less_eq(t):
-    return t.is_binop() and t.head == less_eq
-
-def is_less(t):
-    return t.is_binop() and t.head == less
-
-def to_binary_real(n):
-    """Convert a number n to HOL term of type real."""
-    if n < 0:
-        return uminus(to_binary_real(-n))
-
-    if isinstance(n, Fraction):
-        if n.denominator == 1:
-            return to_binary_real(n.numerator)
-        else:
-            return divides(to_binary_real(n.numerator), to_binary_real(n.denominator))
-        
-    if n == 0:
-        return zero
-    elif n == 1:
-        return one
-    else:
-        return of_nat(nat.to_binary(n))
-
-def is_binary_real(t):
-    """Determine whether a term of type real is a constant."""
-    if t.head == uminus and len(t.args) == 1:
-        return is_binary_real(t.arg)
-    elif t.head == divides and len(t.args) == 2:
-        return is_binary_real(t.arg1) and is_binary_real(t.arg)
-    else:
-        return t == zero or t == one or \
-               (t.is_comb() and t.fun == of_nat and
-                nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)
-
-def from_binary_real(t):
-    """Convert a term of type real to a number."""
-    assert isinstance(t, Term), "from_binary_real"
-    assert is_binary_real(t), "from_binary_real"
-    if t.head == uminus:
-        return -from_binary_real(t.arg)
-    elif t.head == divides:
-        return Fraction(from_binary_real(t.arg1)) / from_binary_real(t.arg)
-    elif t == zero:
-        return 0
-    elif t == one:
-        return 1
-    else:
-        return nat.from_binary(t.arg)
 
 def real_eval(t):
     """Evaluate t as a constant. Return an integer or rational number.
@@ -163,19 +73,19 @@ def real_eval(t):
 
     """
     def rec(t):
-        if is_binary_real(t):
-            return from_binary_real(t)
+        if t.is_number():
+            return t.dest_number()
         elif t.is_comb('of_nat', 1):
             return nat.nat_eval(t.arg)
-        elif is_plus(t):
+        elif t.is_plus():
             return rec(t.arg1) + rec(t.arg)
-        elif is_minus(t):
+        elif t.is_minus():
             return rec(t.arg1) - rec(t.arg)
-        elif is_uminus(t):
+        elif t.is_uminus():
             return -rec(t.arg)
-        elif is_times(t):
+        elif t.is_times():
             return rec(t.arg1) * rec(t.arg)
-        elif is_divides(t):
+        elif t.is_divides():
             denom = rec(t.arg)
             if denom == 0:
                 raise ConvException('real_eval: divide by zero')
@@ -183,9 +93,9 @@ def real_eval(t):
                 return rec(t.arg1)
             else:
                 return Fraction(rec(t.arg1)) / denom
-        elif is_nat_power(t):
+        elif t.is_nat_power():
             return rec(t.arg1) ** nat.nat_eval(t.arg)
-        elif is_real_power(t):
+        elif t.is_real_power():
             x, p = rec(t.arg1), rec(t.arg)
             if p == 0:
                 return 1
@@ -226,7 +136,7 @@ class real_eval_macro(ProofMacro):
 class real_eval_conv(Conv):
     """Simplify all arithmetic operations."""
     def get_proof_term(self, t):
-        simp_t = to_binary_real(real_eval(t))
+        simp_t = Real(real_eval(t))
         if simp_t == t:
             return refl(t)
         return ProofTermDeriv('real_eval', Eq(t, simp_t))
@@ -245,9 +155,9 @@ but not automatically expanded.
 
 def dest_monomial(t):
     """Remove the coefficient part of a monomial t."""
-    if is_times(t) and is_binary_real(t.arg1):
+    if t.is_times() and t.arg1.is_number():
         return t.arg
-    elif is_binary_real(t):
+    elif t.is_number():
         return one
     else:
         return t
@@ -256,9 +166,9 @@ class to_coeff_form(Conv):
     """Convert c to c * 1, x to 1 * x, and leave c * x unchanged."""
     def get_proof_term(self, t):
         pt = refl(t)
-        if is_times(t) and is_binary_real(t.arg1):
+        if t.is_times() and t.arg1.is_number():
             return pt
-        elif is_binary_real(t):  # c to c * 1
+        elif t.is_number():  # c to c * 1
             return pt.on_rhs(rewr_conv('real_mul_rid', sym=True))
         else:  # x to 1 * x
             return pt.on_rhs(rewr_conv('real_mul_lid', sym=True))
@@ -267,13 +177,13 @@ class from_coeff_form(Conv):
     """Convert c * 1 to c, 1 * x to x, and leave c * x unchanged."""
     def get_proof_term(self, t):
         pt = refl(t)
-        if t.arg == one:
+        if t.arg.is_one():
             return pt.on_rhs(rewr_conv('real_mul_rid'))
-        elif t.arg1 == one:
+        elif t.arg1.is_one():
             return pt.on_rhs(rewr_conv('real_mul_lid'))
-        elif t.arg == zero:
+        elif t.arg.is_zero():
             return pt.on_rhs(rewr_conv('real_mul_rzero'))
-        elif t.arg1 == zero:
+        elif t.arg1.is_zero():
             return pt.on_rhs(rewr_conv('real_mul_lzero'))
         else:
             return pt
@@ -303,31 +213,30 @@ def atom_less(t1, t2):
     elif not term.has_var(t2) and term.has_var(t1):
         return False
     else:
-        return t1 < t2
+        return term_ord.fast_compare(t1, t2) < 0
 
 class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + b."""
     def get_proof_term(self, t):
         pt = refl(t)
-        if t.arg1 == zero:
+        if t.arg1.is_zero():
             return pt.on_rhs(rewr_conv("real_add_lid"))
-        elif t.arg == zero:
+        elif t.arg.is_zero():
             return pt.on_rhs(rewr_conv("real_add_rid"))
-        elif is_plus(t.arg1):
+        elif t.arg1.is_plus():
             # Left side has more than one term. Compare last term with a
             m1, m2 = dest_monomial(t.arg1.arg), dest_monomial(t.arg)
             if m1 == m2:
-                pt = pt.on_rhs(
-                    rewr_conv('real_add_assoc', sym=True),
-                    arg_conv(combine_monomial()))
-                if pt.rhs.arg == zero:
+                pt = pt.on_rhs(rewr_conv('real_add_assoc', sym=True),
+                               arg_conv(combine_monomial()))
+                if pt.rhs.arg.is_zero():
                     pt = pt.on_rhs(rewr_conv('real_add_rid'))
                 return pt
             elif atom_less(m1, m2):
                 return pt
             else:
                 pt = pt.on_rhs(swap_add_r(), arg1_conv(self))
-                if pt.rhs.arg1 == zero:
+                if pt.rhs.arg1.is_zero():
                     pt = pt.on_rhs(rewr_conv('real_add_lid'))
                 return pt
         else:
@@ -344,7 +253,7 @@ class norm_add_polynomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + (b_1 + ... + b_m)."""
     def get_proof_term(self, t):
         pt = refl(t)
-        if is_plus(t.arg):
+        if t.arg.is_plus():
             return pt.on_rhs(rewr_conv('real_add_assoc'), arg1_conv(self), norm_add_monomial())
         else:
             return pt.on_rhs(norm_add_monomial())
@@ -354,11 +263,11 @@ auto.add_global_autos_norm(plus, norm_add_polynomial())
 
 def dest_atom(t):
     """Remove power part of an atom t."""
-    if t.head == exp:
+    if t.is_comb('exp', 1):
         return exp(one)
-    elif is_nat_power(t) and nat.is_binary_nat(t.arg):
+    elif t.is_nat_power() and t.arg.is_number():
         return t.arg1
-    elif is_real_power(t) and is_binary_real(t.arg):
+    elif t.is_real_power() and t.arg.is_number():
         return t.arg1
     else:
         return t
@@ -367,11 +276,11 @@ class to_exponent_form(Conv):
     """Convert x to x ^ 1, and leave x ^ n or x ^ r unchanged."""
     def get_proof_term(self, t):
         pt = refl(t)
-        if t.head == exp:
+        if t.is_comb('exp', 1):
             return pt
-        elif is_nat_power(t) and nat.is_binary_nat(t.arg):
+        elif t.is_nat_power() and t.arg.is_number():
             return pt
-        elif is_real_power(t) and is_binary_real(t.arg):
+        elif t.is_real_power() and t.arg.is_number():
             return pt
         else:
             return pt.on_rhs(rewr_conv('real_pow_1', sym=True))
@@ -380,13 +289,13 @@ class from_exponent_form(Conv):
     """Convert x ^ 1 to x, and leave x ^ n or x ^ r unchanged."""
     def get_proof_term(self, t):
         pt = refl(t)
-        if t.head == exp:
+        if t.is_comb('exp', 1):
             return pt
-        elif is_nat_power(t) and t.arg == nat.one:
+        elif t.is_nat_power() and t.arg.is_one():
             return pt.on_rhs(rewr_conv('real_pow_1'))
-        elif is_real_power(t) and t.arg == one:
+        elif t.is_real_power() and t.arg.is_one():
             return pt.on_rhs(rewr_conv('rpow_1'))
-        elif is_real_power(t) and t.arg == zero:
+        elif t.is_real_power() and t.arg.is_zero():
             return pt.on_rhs(rewr_conv('rpow_0'))
         else:
             return pt
@@ -406,33 +315,35 @@ class combine_atom(Conv):
 
     def get_proof_term(self, t):
         pt = refl(t).on_rhs(binop_conv(to_exponent_form()))
-        if pt.rhs.arg1.head == exp and pt.rhs.arg.head == exp:
+        if pt.rhs.arg1.is_comb('exp', 1) and pt.rhs.arg.is_comb('exp', 1):
             # Both sides are exponentials
-            return pt.on_rhs(rewr_conv('real_exp_add', sym=True), arg_conv(auto.auto_conv(self.conds)))
-        elif is_nat_power(pt.rhs.arg1) and is_nat_power(pt.rhs.arg):
+            return pt.on_rhs(rewr_conv('real_exp_add', sym=True),
+                             arg_conv(auto.auto_conv(self.conds)))
+        elif pt.rhs.arg1.is_nat_power() and pt.rhs.arg.is_nat_power():
             # Both sides are natural number powers, simply add
-            return pt.on_rhs(rewr_conv('real_pow_add', sym=True), arg_conv(nat.nat_conv()))
+            return pt.on_rhs(rewr_conv('real_pow_add', sym=True),
+                             arg_conv(nat.nat_conv()))
         else:
             # First check that x > 0 can be proved. If not, just return
             # without change.
             x = pt.rhs.arg1.arg1
             try:
-                x_ge_0 = auto.solve(greater(x, zero), self.conds)
+                x_gt_0 = auto.solve(x > 0, self.conds)
             except TacticException:
                 return refl(t)
 
             # Convert both sides to real powers
-            if is_nat_power(pt.rhs.arg1):
+            if pt.rhs.arg1.is_nat_power():
                 pt = pt.on_rhs(arg1_conv(rewr_conv('rpow_pow', sym=True)))
-            if is_nat_power(pt.rhs.arg):
+            if pt.rhs.arg.is_nat_power():
                 pt = pt.on_rhs(arg_conv(rewr_conv('rpow_pow', sym=True)))
-            pt = pt.on_rhs(rewr_conv('rpow_add', sym=True, conds=[x_ge_0]), arg_conv(real_eval_conv()))
+            pt = pt.on_rhs(rewr_conv('rpow_add', sym=True, conds=[x_gt_0]),
+                           arg_conv(real_eval_conv()))
 
             # Simplify back to nat if possible
-            if pt.rhs.arg.head == of_nat:
-                pt = pt.on_rhs(
-                    rewr_conv('rpow_pow'),
-                    arg_conv(rewr_conv('nat_of_nat_def', sym=True)))
+            if pt.rhs.arg.is_comb('of_nat', 1):
+                pt = pt.on_rhs(rewr_conv('rpow_pow'),
+                               arg_conv(rewr_conv('nat_of_nat_def', sym=True)))
 
             return pt.on_rhs(from_exponent_form())
 
@@ -457,25 +368,24 @@ class norm_mult_atom(Conv):
 
     def get_proof_term(self, t):
         pt = refl(t)
-        if t.arg1 == one:
+        if t.arg1.is_one():
             return pt.on_rhs(rewr_conv('real_mul_lid'))
-        elif t.arg == one:
+        elif t.arg.is_one():
             return pt.on_rhs(rewr_conv('real_mul_rid'))
-        elif is_times(t.arg1):
+        elif t.arg1.is_times():
             # Left side has more than one atom. Compare last atom with b
             m1, m2 = dest_atom(t.arg1.arg), dest_atom(t.arg)
             if m1 == m2:
-                pt = pt.on_rhs(
-                    rewr_conv('real_mult_assoc', sym=True),
-                    arg_conv(combine_atom(self.conds)))
-                if pt.rhs.arg == one:
+                pt = pt.on_rhs(rewr_conv('real_mult_assoc', sym=True),
+                               arg_conv(combine_atom(self.conds)))
+                if pt.rhs.arg.is_one():
                     pt = pt.on_rhs(rewr_conv('real_mul_rid'))
                 return pt
             elif atom_less(m1, m2):
                 return pt
             else:
                 pt = pt.on_rhs(swap_mult_r(), arg1_conv(self))
-                if pt.rhs.arg1 == one:
+                if pt.rhs.arg1.is_one():
                     pt = pt.on_rhs(rewr_conv('real_mul_lid'))
                 return pt
         else:
@@ -495,8 +405,10 @@ class norm_mult_monomial(Conv):
 
     def get_proof_term(self, t):
         pt = refl(t)
-        if is_times(t.arg):
-            return pt.on_rhs(rewr_conv('real_mult_assoc'), arg1_conv(self), norm_mult_atom(self.conds))
+        if t.arg.is_times():
+            return pt.on_rhs(rewr_conv('real_mult_assoc'),
+                             arg1_conv(self),
+                             norm_mult_atom(self.conds))
         else:
             return pt.on_rhs(norm_mult_atom(self.conds))
 
@@ -522,9 +434,9 @@ class norm_mult_monomials(Conv):
 def norm_mult(t, pts):
     """Normalization of mult. Assume two sides are in normal form."""
     pt = refl(t)
-    if is_plus(t.arg1):
+    if t.arg1.is_plus():
         return pt.on_rhs(rewr_conv('real_add_rdistrib'))
-    elif is_plus(t.arg):
+    elif t.arg.is_plus():
         return pt.on_rhs(rewr_conv('real_add_ldistrib'))
     else:
         return pt.on_rhs(norm_mult_monomials(pts))
@@ -534,7 +446,7 @@ auto.add_global_autos_norm(times, norm_mult)
 def norm_uminus(t, pts):
     """Normalization of uminus."""
     pt = refl(t)
-    if is_binary_real(t):
+    if t.is_number():
         return pt.on_rhs(real_eval_conv())
     else:
         return pt.on_rhs(rewr_conv('real_poly_neg1'))
@@ -546,7 +458,7 @@ auto.add_global_autos_norm(minus, auto.norm_rules(['real_poly_neg2']))
 def norm_divides(t, pts):
     """Normalization of divides."""
     pt = refl(t)
-    if is_binary_real(t):
+    if t.is_number():
         return pt.on_rhs(real_eval_conv())
     else:
         return pt.on_rhs(rewr_conv('real_divide_def'))
@@ -586,10 +498,9 @@ class real_nat_power_conv(Conv):
         a, p = t.args
 
         # Exponent is 2
-        if nat.is_binary_nat(p) and nat.from_binary_nat(p) == 2 and is_plus(a):
-            pt = refl(t)
-            pt = pt.on_rhs(rewr_conv('real_pow_2'), rewr_conv('real_add_rdistrib'))
-            return pt
+        if p.is_number() and p.dest_number() == 2 and a.is_plus():
+            return refl(t).on_rhs(rewr_conv('real_pow_2'),
+                                  rewr_conv('real_add_rdistrib'))
 
         return refl(t)
 
@@ -617,16 +528,14 @@ class real_power_conv(Conv):
         a, p = t.args
 
         # Exponent is an integer: apply rpow_pow
-        if is_binary_real(p) and p.is_comb() and binary.is_binary(p.arg):
-            pt = refl(t)
-            pt = pt.on_rhs(arg_conv(rewr_conv('real_of_nat_id', sym=True)),
-                           rewr_conv('rpow_pow'))
-            return pt
+        if p.is_number() and p.is_comb('of_nat', 1) and p.arg.is_binary():
+            return refl(t).on_rhs(arg_conv(rewr_conv('real_of_nat_id', sym=True)),
+                                  rewr_conv('rpow_pow'))
 
-        if not (is_binary_real(a) and is_binary_real(p)):
+        if not (a.is_number() and p.is_number()):
             raise ConvException
 
-        a, p = from_binary_real(a), from_binary_real(p)
+        a, p = a.dest_number(), p.dest_number()
         if a <= 0:
             raise ConvException
 
@@ -636,20 +545,19 @@ class real_power_conv(Conv):
         if len(keys) > 1 or (len(keys) == 1 and keys[0] != a):
             b1 = list(factors.keys())[0]
             b2 = a // b1
-            eq_th = refl(times(to_binary_real(b1), to_binary_real(b2))).on_rhs(real_eval_conv())
+            eq_th = refl(Real(b1) * b2).on_rhs(real_eval_conv())
             pt = refl(t).on_rhs(arg1_conv(rewr_conv(eq_th, sym=True)))
-            b1_gt_0 = auto.auto_solve(greater(to_binary_real(b1), zero))
-            b2_gt_0 = auto.auto_solve(greater(to_binary_real(b2), zero))
+            b1_gt_0 = auto.auto_solve(Real(b1) > 0)
+            b2_gt_0 = auto.auto_solve(Real(b2) > 0)
             pt = pt.on_rhs(rewr_conv('rpow_base_mult', conds=[b1_gt_0, b2_gt_0]))
             return pt
 
         # Case 2: exponent is not between 0 and 1
         if isinstance(p, Fraction) and p.numerator // p.denominator != 0:
             div, mod = divmod(p.numerator, p.denominator)
-            eq_th = refl(plus(to_binary_real(div), divides(to_binary_real(mod), to_binary_real(p.denominator))))
-            eq_th = eq_th.on_rhs(real_eval_conv())
+            eq_th = refl(Real(div) + Real(mod) / p.denominator).on_rhs(real_eval_conv())
             pt = refl(t).on_rhs(arg_conv(rewr_conv(eq_th, sym=True)))
-            a_gt_0 = auto.auto_solve(greater(to_binary_real(a), zero))
+            a_gt_0 = auto.auto_solve(Real(a) > 0)
             pt = pt.on_rhs(rewr_conv('rpow_add', conds=[a_gt_0]))
             return pt
 
@@ -720,35 +628,35 @@ def convert_to_poly(t):
     """Convert a term t to polynomial normal form."""
     if t.is_var():
         return poly.singleton(t)
-    elif is_binary_real(t):
-        return poly.constant(from_binary_real(t))
+    elif t.is_number():
+        return poly.constant(t.dest_number())
     elif t.is_comb('of_nat', 1):
         return nat.convert_to_poly(t.arg)
-    elif is_plus(t):
+    elif t.is_plus():
         t1, t2 = t.args
         return convert_to_poly(t1) + convert_to_poly(t2)
-    elif is_minus(t):
+    elif t.is_minus():
         t1, t2 = t.args
         return convert_to_poly(t1) - convert_to_poly(t2)
-    elif is_uminus(t):
+    elif t.is_uminus():
         return -convert_to_poly(t.arg)
-    elif is_times(t):
+    elif t.is_times():
         t1, t2 = t.args
         return convert_to_poly(t1) * convert_to_poly(t2)
-    elif is_divides(t):
+    elif t.is_divides():
         num, denom = t.args
         p_denom = convert_to_poly(denom)
         if p_denom.is_nonzero_constant():
             return convert_to_poly(num).scale(Fraction(1, p_denom.get_constant()))
         else:
             return poly.singleton(t)
-    elif is_nat_power(t):
+    elif t.is_nat_power():
         power = nat.convert_to_poly(t.arg)
         if power.is_constant():
             return convert_to_poly(t.arg1) ** power.get_constant()
         else:
             return poly.singleton(t)
-    elif is_real_power(t):
+    elif t.is_real_power():
         base = convert_to_poly(t.arg1)
         power = convert_to_poly(t.arg)
         if base.is_constant() and power.is_constant():
@@ -765,19 +673,19 @@ def from_mono(m):
     for base, power in m.factors:
         assert isinstance(base, Term), "from_mono: base is not a Term"
         baseT = base.get_type()
-        if baseT != realT:
-            base = Const('of_nat', TFun(baseT, realT))(base)
+        if baseT != RealType:
+            base = Const('of_nat', TFun(baseT, RealType))(base)
         if power == 1:
             factors.append(base)
         else:
-            factors.append(nat_power(base, nat.to_binary_nat(power)))
+            factors.append(nat_power(base, Nat(power)))
     if m.coeff != 1:
-        factors = [to_binary_real(m.coeff)] + factors
-    return mk_times(*factors)
+        factors = [Real(m.coeff)] + factors
+    return Prod(RealType, factors)
 
 def from_poly(p):
     """Convert a polynomial to a term t."""
-    return mk_plus(*(from_mono(m) for m in p.monomials))
+    return Sum(RealType, list(from_mono(m) for m in p.monomials))
 
 
 class real_norm_macro(ProofTermMacro):
@@ -796,7 +704,7 @@ class real_norm_macro(ProofTermMacro):
 
     def can_eval(self, goal):
         assert isinstance(goal, Term), "real_norm_macro"
-        if not (goal.is_equals() and goal.lhs.get_type() == realT):
+        if not (goal.is_equals() and goal.lhs.is_real()):
             return False
 
         t1, t2 = goal.args

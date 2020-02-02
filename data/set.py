@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, boolT
+from kernel.type import Type, TFun, BoolType
 from kernel.term import Term, Const, Lambda
 
 
@@ -21,7 +21,7 @@ def univ(T):
     return Const("univ", setT(T))
 
 def mem(T):
-    return Const("member", TFun(T, setT(T), boolT))
+    return Const("member", TFun(T, setT(T), BoolType))
 
 def inter(T):
     return Const("inter", TFun(setT(T), setT(T), setT(T)))
@@ -42,7 +42,7 @@ def is_mem(t):
     return t.is_comb('member', 2)
 
 def subset(T):
-    return Const("subset", TFun(setT(T), setT(T), boolT))
+    return Const("subset", TFun(setT(T), setT(T), BoolType))
 
 def mk_subset(A, B):
     return subset(A.get_type().args[0])(A, B)
@@ -107,7 +107,7 @@ def dest_literal_set(t):
 def collect(T):
     if T is None:
         return Const("collect", None)
-    return Const("collect", TFun(TFun(T, boolT), setT(T)))
+    return Const("collect", TFun(TFun(T, BoolType), setT(T)))
 
 def mk_collect(x, body):
     """Given term x and a term P possibly depending on x, return

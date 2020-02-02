@@ -3,7 +3,7 @@
 import traceback2
 import itertools
 
-from kernel.type import TVar, Type, TFun, boolT
+from kernel.type import TVar, Type, TFun, BoolType
 from kernel import term
 from kernel.term import Term, Var, Const, And, Implies, Not, Eq, Forall
 from kernel.thm import Thm
@@ -564,7 +564,7 @@ class Inductive(Item):
         for i, Targ in enumerate(Targs):
             vars.append(Var("_a" + str(i+1), Targ))
 
-        P = Var("P", boolT)
+        P = Var("P", BoolType)
         pred = Const(self.name, self.type)
         assum0 = pred(*vars)
         assums = []
@@ -754,7 +754,7 @@ class Datatype(Item):
         # Add the inductive theorem.
         tvars = [TVar(targ) for targ in self.args]
         T = Type(self.name, *tvars)
-        var_P = Var("P", TFun(T, boolT))
+        var_P = Var("P", TFun(T, BoolType))
         ind_assums = []
         for constr in self.constrs:
             A = Const(constr['name'], constr['type'])

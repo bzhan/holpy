@@ -2,14 +2,13 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, boolT
+from kernel.type import TVar, Type, TFun, BoolType, NatType, IntType, RealType
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, \
-    Not, Eq, Forall, Lambda, Exists, true, false
+    Not, Eq, Forall, Lambda, Exists, true, false, Nat, Int, Real
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
 from data import nat
-from data import int
 from data import real
 from data import list
 from data import set
@@ -20,19 +19,19 @@ from syntax import printer
 
 basic.load_theory('list')
 
-A = Var("A", boolT)
-B = Var("B", boolT)
-C = Var("C", boolT)
+A = Var("A", BoolType)
+B = Var("B", BoolType)
+C = Var("C", BoolType)
 Ta = TVar("a")
 a = Var("a", Ta)
 b = Var("b", Ta)
-P = Var("P", TFun(Ta, boolT))
-Q = Var("Q", TFun(Ta, boolT))
-R = Var("R", TFun(Ta, Ta, boolT))
-nn = Var("n", TFun(boolT, boolT))
-m = Var("m", nat.natT)
-n = Var("n", nat.natT)
-p = Var("p", nat.natT)
+P = Var("P", TFun(Ta, BoolType))
+Q = Var("Q", TFun(Ta, BoolType))
+R = Var("R", TFun(Ta, Ta, BoolType))
+nn = Var("n", TFun(BoolType, BoolType))
+m = Var("m", NatType)
+n = Var("n", NatType)
+p = Var("p", NatType)
 xs = Var("xs", Type("list", Ta))
 ys = Var("ys", Type("list", Ta))
 zs = Var("zs", Type("list", Ta))
@@ -42,7 +41,7 @@ class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
         test_data = [
             # Variables
-            (SVar("P", boolT), "?P"),
+            (SVar("P", BoolType), "?P"),
             (a, "a"),
 
             # Equality and implies
@@ -120,9 +119,9 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintRename(self):
         test_data = [
-            (Const("exists", TFun(TFun(nat.natT, boolT), boolT))(
-                Abs("x", nat.natT, nat.less(Bound(0), Var("x", nat.natT)))), "?x1. x1 < x"),
-            (Abs("x", nat.natT, nat.less(Bound(0), Var("x", nat.natT))), "%x1. x1 < x"),
+            (Const("exists", TFun(TFun(NatType, BoolType), BoolType))(
+                Abs("x", NatType, nat.less(Bound(0), Var("x", NatType)))), "?x1. x1 < x"),
+            (Abs("x", NatType, nat.less(Bound(0), Var("x", NatType))), "%x1. x1 < x"),
         ]
 
         for t, s in test_data:
@@ -167,9 +166,9 @@ class PrinterTest(unittest.TestCase):
     def testReal(self):
         basic.load_theory('real')
 
-        x = Var('x', real.realT)
-        y = Var('y', real.realT)
-        n = Var('n', nat.natT)
+        x = Var('x', RealType)
+        y = Var('y', RealType)
+        n = Var('n', NatType)
         test_data = [
             (real.plus(x, y), "x + y"),
             (real.times(x, y), "x * y"),
@@ -180,19 +179,19 @@ class PrinterTest(unittest.TestCase):
             (real.uminus(real.minus(x, y)), "-(x - y)"),
             (real.uminus(real.nat_power(x, n)), "-(x ^ n)"),
             (real.nat_power(real.uminus(x), n), "-x ^ n"),
-            (real.plus(x, real.of_nat(nat.to_binary_nat(2))), "x + of_nat 2"),
+            (real.plus(x, real.of_nat(Nat(2))), "x + of_nat 2"),
         ]
 
         for t, s in test_data:
             self.assertEqual(printer.print_term(t), s)
 
     def testPrintBinary(self):
-        m = Var("m", nat.natT)
+        m = Var("m", NatType)
         test_data = [
             (nat.one, "(1::nat)"),
-            (nat.to_binary_nat(2), "(2::nat)"),
-            (nat.to_binary_nat(3), "(3::nat)"),
-            (nat.plus(m, nat.one), "m + 1"),
+            (Nat(2), "(2::nat)"),
+            (Nat(3), "(3::nat)"),
+            (m + 1, "m + 1"),
         ]
 
         for t, s in test_data:
@@ -201,14 +200,14 @@ class PrinterTest(unittest.TestCase):
     def testPrintInt(self):
         basic.load_theory('int')
 
-        m = Var("m", int.intT)
+        m = Var("m", IntType)
         test_data = [
-            (int.zero, "(0::int)"),
-            (int.one, "(1::int)"),
-            (int.to_binary_int(2), "(2::int)"),
-            (int.to_binary_int(3), "(3::int)"),
-            (int.plus(m, int.one), "m + 1"),
-            (int.plus(int.one, int.to_binary_int(2)), "(1::int) + 2"),
+            (Int(0), "(0::int)"),
+            (Int(1), "(1::int)"),
+            (Int(2), "(2::int)"),
+            (Int(3), "(3::int)"),
+            (m + 1, "m + 1"),
+            (Int(1) + 2, "(1::int) + 2"),
         ]
 
         for t, s in test_data:
@@ -217,14 +216,14 @@ class PrinterTest(unittest.TestCase):
     def testPrintReal(self):
         basic.load_theory('real')
 
-        m = Var("m", real.realT)
+        m = Var("m", RealType)
         test_data = [
             (real.zero, "(0::real)"),
             (real.one, "(1::real)"),
-            (real.to_binary_real(2), "(2::real)"),
-            (real.to_binary_real(3), "(3::real)"),
+            (Real(2), "(2::real)"),
+            (Real(3), "(3::real)"),
             (real.plus(m, real.one), "m + 1"),
-            (real.plus(real.one, real.to_binary_real(2)), "(1::real) + 2"),
+            (real.plus(real.one, Real(2)), "(1::real) + 2"),
         ]
 
         for t, s in test_data:
@@ -255,7 +254,7 @@ class PrinterTest(unittest.TestCase):
         B = Var("B", set.setT(Ta))
         x = Var("x", Ta)
         y = Var("y", Ta)
-        P = Var("P", TFun(Ta, boolT))
+        P = Var("P", TFun(Ta, BoolType))
         S = Var("S", set.setT(set.setT(Ta)))
         test_data = [
             (set.empty_set(Ta), "({}::'a set)", "(∅::'a set)"),
@@ -277,8 +276,8 @@ class PrinterTest(unittest.TestCase):
             self.assertEqual(printer.print_term(t, unicode=True), s2)
 
     def testPrintInterval(self):
-        m = Var("m", nat.natT)
-        n = Var("n", nat.natT)
+        m = Var("m", NatType)
+        n = Var("n", NatType)
         test_data = [
             (interval.mk_interval(m, n), "{m..n}"),
             (interval.mk_interval(nat.one, m), "{1..m}"),
@@ -299,7 +298,7 @@ class PrinterTest(unittest.TestCase):
             (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
             (function.mk_comp(g, h), "g O h"),
             (function.mk_comp(g, h)(a), "(g O h) a"),
-            (function.mk_const_fun(nat.natT, nat.zero), "%x::nat. (0::nat)"),
+            (function.mk_const_fun(NatType, nat.zero), "%x::nat. (0::nat)"),
         ]
 
         basic.load_theory('function')
@@ -361,8 +360,8 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintThmHighlight(self):
         """Test printing of theorems with highlight."""
-        A = Var('A', boolT)
-        B = Var('B', boolT)
+        A = Var('A', BoolType)
+        B = Var('B', BoolType)
         A_to_B = Implies(A, B)
         th = Thm([A, A_to_B], B)
         res = printer.print_thm(th, highlight=True)

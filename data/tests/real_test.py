@@ -42,9 +42,9 @@ class RealTest(unittest.TestCase):
             ("x * (y + z)", "x * y + x * z"),
             ("of_nat 2 + x", "2 + x"),
             ("of_nat (m + n) + x", "of_nat m + of_nat n + x"),
-            ("of_nat (m * n) + x", "of_nat m * of_nat n + x"),
+            ("of_nat (m * n) + x", "x + of_nat m * of_nat n"),
             ("x ^ (1::nat)", "x"),
-            ("(x + y) ^ (2::nat)", "2 * x * y + x ^ (2::nat) + y ^ (2::nat)"),
+            ("(x + y) ^ (2::nat)", "x ^ (2::nat) + y ^ (2::nat) + 2 * x * y"),
             ("x ^ ((2::nat) - 1)", "x"),
             ("x ^ (0::nat) + y", "1 + y"),
         ]

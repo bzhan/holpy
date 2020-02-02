@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import boolT
+from kernel.type import BoolType
 from kernel.term import Term
 
 LEFT, RIGHT = range(2)
@@ -110,7 +110,7 @@ def get_info_for_fun(t):
     if t.is_const():
         if t.name == 'equals':
             Targs, _ = t.T.strip_type()
-            if Targs[0] == boolT:
+            if Targs[0] == BoolType:
                 return op_data['iff']
             else:
                 return op_data['equals']

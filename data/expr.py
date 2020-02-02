@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, boolT
-from kernel.term import Term, Const
+from kernel.type import Type, TFun, BoolType, NatType
+from kernel.term import Term, Const, Nat
 from kernel.thm import Thm
 from kernel.macro import global_macros
 from kernel.theory import Method, global_methods
@@ -9,7 +9,6 @@ from logic import logic
 from logic.logic import apply_theorem
 from data import nat
 from data import function
-from data.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
 from server.tactic import MacroTactic
@@ -19,12 +18,12 @@ from syntax import pprint, settings
 
 aexpT = Type("aexp")
 
-N = Const("N", TFun(natT, aexpT))
-V = Const("V", TFun(natT, aexpT))
+N = Const("N", TFun(NatType, aexpT))
+V = Const("V", TFun(NatType, aexpT))
 Plus = Const("Plus", TFun(aexpT, aexpT, aexpT))
 Times = Const("Times", TFun(aexpT, aexpT, aexpT))
 
-avalI = Const("avalI", TFun(TFun(natT, natT), aexpT, natT, boolT))
+avalI = Const("avalI", TFun(TFun(NatType, NatType), aexpT, NatType, BoolType))
 
 class prove_avalI_macro(ProofTermMacro):
     """Prove a theorem of the form avalI s t n."""
@@ -63,12 +62,12 @@ class prove_avalI_macro(ProofTermMacro):
         """
         def helper(t):
             if t.head == N:
-                return nat.from_binary_nat(t.args[0])
+                return t.args[0].dest_number()
             elif t.head == V:
                 x, = t.args
                 res = function.fun_upd_eval_conv().eval(s(x)).prop.rhs
-                assert nat.is_binary_nat(res), "get_avalI"
-                return nat.from_binary_nat(res)
+                assert res.is_number(), "get_avalI"
+                return res.dest_number()
             elif t.head == Plus:
                 a1, a2 = t.args
                 return helper(a1) + helper(a2)
@@ -83,7 +82,7 @@ class prove_avalI_macro(ProofTermMacro):
         assert len(ths) == 0, "prove_avalI_macro"
         s, t, n = goal.args
         res = self.get_avalI(s, t)
-        assert n == nat.to_binary_nat(res), "prove_avalI_macro: wrong result"
+        assert n == Nat(res), "prove_avalI_macro: wrong result"
         return Thm([], goal)
 
     def can_eval(self, goal):
@@ -96,7 +95,7 @@ class prove_avalI_macro(ProofTermMacro):
         except AssertionError:
             return False
 
-        return n == nat.to_binary_nat(res)
+        return n == Nat(res)
 
     def get_proof_term(self, goal, pts):
         assert isinstance(goal, Term), "prove_avalI_macro"

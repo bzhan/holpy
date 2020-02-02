@@ -3,8 +3,8 @@
 from fractions import Fraction
 
 from kernel import term
-from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const, Not, Eq, Lambda
+from kernel.type import TFun, BoolType, RealType
+from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv
@@ -16,21 +16,21 @@ from logic.context import Context
 from data import set
 from data import nat
 from data import real
-from data.real import realT
+from data.real import pi
 from data.integral import netT
 from syntax import printer
 from integral.expr import Expr, Location
 from integral.parser import parse_expr
 
 
-evalat = Const('evalat', TFun(TFun(realT, realT), realT, realT, realT))
-real_derivative = Const('real_derivative', TFun(TFun(realT, realT), realT, realT))
-real_integral = Const('real_integral', TFun(set.setT(realT), TFun(realT, realT), realT))
+evalat = Const('evalat', TFun(TFun(RealType, RealType), RealType, RealType, RealType))
+real_derivative = Const('real_derivative', TFun(TFun(RealType, RealType), RealType, RealType))
+real_integral = Const('real_integral', TFun(set.setT(RealType), TFun(RealType, RealType), RealType))
 
 
 # Introduction rules for real_continuous_on
 auto.add_global_autos(
-    Const('real_continuous_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
+    Const('real_continuous_on', TFun(TFun(RealType, RealType), set.setT(RealType), BoolType)),
     auto.solve_rules([
         # Continuous everywhere
         "real_continuous_on_const",
@@ -75,14 +75,14 @@ auto.add_global_autos(
 )
 
 auto.add_global_autos(
-    Const('real_integrable_on', TFun(TFun(realT, realT), set.setT(realT), boolT)),
+    Const('real_integrable_on', TFun(TFun(RealType, RealType), set.setT(RealType), BoolType)),
     auto.solve_rules([
         "real_integrable_continuous"
     ])
 )
 
 auto.add_global_autos(
-    Const('real_differentiable', TFun(TFun(realT, realT), netT(realT), boolT)),
+    Const('real_differentiable', TFun(TFun(RealType, RealType), netT(RealType), BoolType)),
     auto.solve_rules([
         # Differentiable everywhere
         "real_differentiable_const",
@@ -151,39 +151,27 @@ auto.add_global_autos_norm(
 class norm_sin_conv(Conv):
     """Normalization of an expression sin (r * pi)."""
     def get_proof_term(self, t):
-        if not (t.is_comb() and t.head == real.sin):
+        if not t.is_comb('sin', 1):
             raise ConvException('norm_sin_conv')
 
-        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+        if not (t.arg.is_times() and t.arg.arg == pi and t.arg.arg1.is_number()):
             raise ConvException('norm_sin_conv')
 
-        r = real.from_binary_real(t.arg.arg1)
+        r = t.arg.arg1.dest_number()
         if r >= 2:
-            eq = auto.auto_solve(Eq(
-                real.plus(real.times(real.to_binary_real(r-2), real.pi),
-                          real.times(real.to_binary_real(2), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq((r-2) * pi + 2 * pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic'))
 
         if r >= 1:
-            eq = auto.auto_solve(Eq(
-                real.plus(real.times(real.to_binary_real(r-1), real.pi),
-                          real.pi),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq((r-1) * pi + pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi'))
 
         if r >= Fraction(1,2):
-            eq = auto.auto_solve(Eq(
-                real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
-                          real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq(Fraction(1,2) * pi + (r-Fraction(1,2)) * pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_periodic_pi_div2'))
 
         if r > Fraction(1,4):
-            eq = auto.auto_solve(Eq(
-                real.minus(real.divides(real.pi, real.to_binary_real(2)),
-                           real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq(pi / 2 - (Fraction(1,2) - r) * pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_sin'))
 
         return refl(t)
@@ -193,39 +181,27 @@ auto.add_global_autos_norm(real.sin, norm_sin_conv())
 class norm_cos_conv(Conv):
     """Normalization of an expression cos (r * pi)."""
     def get_proof_term(self, t):
-        if not (t.is_comb() and t.head == real.cos):
+        if not t.is_comb('cos', 1):
             raise ConvException('norm_cos_conv')
 
-        if not (real.is_times(t.arg) and t.arg.arg == real.pi and real.is_binary_real(t.arg.arg1)):
+        if not (t.arg.is_times() and t.arg.arg == pi and t.arg.arg1.is_number()):
             raise ConvException('norm_cos_conv')
 
-        r = real.from_binary_real(t.arg.arg1)
+        r = t.arg.arg1.dest_number()
         if r >= 2:
-            eq = auto.auto_solve(Eq(
-                real.plus(real.times(real.to_binary_real(r-2), real.pi),
-                          real.times(real.to_binary_real(2), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq((r-2) * pi + 2 * pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic'))
 
         if r >= 1:
-            eq = auto.auto_solve(Eq(
-                real.plus(real.times(real.to_binary_real(r-1), real.pi),
-                          real.pi),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq((r-1) * pi + pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi'))
 
         if r >= Fraction(1,2):
-            eq = auto.auto_solve(Eq(
-                real.plus(real.times(real.to_binary_real(Fraction(1,2)), real.pi),
-                          real.times(real.to_binary_real(r-Fraction(1,2)), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq(Fraction(1,2) * pi + (r-Fraction(1,2)) * pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('cos_periodic_pi_div2'))
 
         if r > Fraction(1,4):
-            eq = auto.auto_solve(Eq(
-                real.minus(real.divides(real.pi, real.to_binary_real(2)),
-                           real.times(real.to_binary_real(Fraction(1,2) - r), real.pi)),
-                real.times(real.to_binary_real(r), real.pi)))
+            eq = auto.auto_solve(Eq(pi / 2 - (Fraction(1,2) - r) * pi, r * pi))
             return refl(t).on_rhs(arg_conv(rewr_conv(eq, sym=True)), rewr_conv('sin_cos'))
 
         return refl(t)
@@ -387,15 +363,15 @@ class real_integral_cong(Conv):
         if not S.is_comb('real_closed_interval', 2):
             raise ConvException
         a, b = S.args
-        le_pt = auto.auto_solve(real.less_eq(a, b))
+        le_pt = auto.auto_solve(a <= b)
 
         interval = real.open_interval(a, b)
         if f.is_const():
-            v = Var('x', realT)
+            v = Var('x', RealType)
             cond = set.mk_mem(v, interval)
             body = f(v)
         else:
-            v = Var(f.var_name, realT)
+            v = Var(f.var_name, RealType)
             cond = set.mk_mem(v, interval)
             body = f.subst_bound(v)
 
@@ -439,28 +415,28 @@ class combine_fraction(Conv):
 
     def get_proof_term(self, t):
         pt = refl(t)
-        if real.is_divides(t):
+        if t.is_divides():
             return pt
-        elif real.is_plus(t):
+        elif t.is_plus():
             pt = pt.on_rhs(binop_conv(self))
-            assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
+            assert pt.rhs.arg1.is_divides() and pt.rhs.arg.is_divides()
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
             if b == d:
-                b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), self.conds)
+                b_neq_0 = auto.auto_solve(Not(Eq(b, 0)), self.conds)
                 return pt.on_rhs(rewr_conv('real_divide_add_same', conds=[b_neq_0]),
                                  arg1_conv(auto.auto_conv(self.conds)))
             else:
-                b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), self.conds)
-                d_neq_0 = auto.auto_solve(Not(Eq(d, real.zero)), self.conds)
+                b_neq_0 = auto.auto_solve(Not(Eq(b, 0)), self.conds)
+                d_neq_0 = auto.auto_solve(Not(Eq(d, 0)), self.conds)
                 return pt.on_rhs(rewr_conv('real_divide_add', conds=[b_neq_0, d_neq_0]),
                                  arg1_conv(auto.auto_conv(self.conds)),
                                  arg_conv(try_conv(rewr_conv('real_mul_lid'))),
                                  arg_conv(try_conv(rewr_conv('real_mul_rid'))))
-        elif real.is_minus(t):
+        elif t.is_minus():
             return pt.on_rhs(rewr_conv('real_poly_neg2'), self)
-        elif real.is_real_power(t) and real.is_binary_real(t.arg):
-            p = real.from_binary_real(t.arg)
+        elif t.is_real_power() and t.arg.is_number():
+            p = t.arg.dest_number()
             if p == -1:
                 return pt.on_rhs(rewr_conv('rpow_neg_one', sym=True),
                                  rewr_conv('real_inverse_divide'))
@@ -472,13 +448,13 @@ class combine_fraction(Conv):
                 return pt
             else:
                 return pt.on_rhs(rewr_conv('real_divide_1'))
-        elif real.is_times(t):
+        elif t.is_times():
             pt = pt.on_rhs(binop_conv(self))
-            assert real.is_divides(pt.rhs.arg1) and real.is_divides(pt.rhs.arg)
+            assert pt.rhs.arg1.is_divides() and pt.rhs.arg.is_divides()
             b = pt.rhs.arg1.arg
             d = pt.rhs.arg.arg
-            b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), self.conds)
-            d_neq_0 = auto.auto_solve(Not(Eq(d, real.zero)), self.conds)
+            b_neq_0 = auto.auto_solve(Not(Eq(b, 0)), self.conds)
+            d_neq_0 = auto.auto_solve(Not(Eq(d, 0)), self.conds)
             return pt.on_rhs(rewr_conv('real_divide_mult', conds=[b_neq_0, d_neq_0]),
                              arg1_conv(auto.auto_conv(self.conds)),
                              arg_conv(try_conv(rewr_conv('real_mul_lid'))),
@@ -512,13 +488,13 @@ class fraction_rewr_conv(Conv):
         lhs_eq = lhs_eq.on_rhs(combine_fraction(conds))
         rhs_eq = rhs_eq.on_rhs(combine_fraction(conds))
 
-        assert real.is_divides(lhs_eq.rhs) and real.is_divides(rhs_eq.rhs)
+        assert lhs_eq.rhs.is_divides() and rhs_eq.rhs.is_divides()
 
         a, b = lhs_eq.rhs.args
         c, d = rhs_eq.rhs.args
-        b_neq_0 = auto.auto_solve(Not(Eq(b, real.zero)), conds)
-        d_neq_0 = auto.auto_solve(Not(Eq(d, real.zero)), conds)
-        cross_eq = auto.auto_solve(Eq(real.times(a, d), real.times(b, c)), conds)
+        b_neq_0 = auto.auto_solve(Not(Eq(b, 0)), conds)
+        d_neq_0 = auto.auto_solve(Not(Eq(d, 0)), conds)
+        cross_eq = auto.auto_solve(Eq(a * d, b * c), conds)
         pt = apply_theorem('real_divide_eq', b_neq_0, d_neq_0, cross_eq)
 
         return lhs_eq.transitive(pt, rhs_eq.symmetric())
@@ -550,7 +526,7 @@ def fraction_rewr_integral(expr, target):
 
     # Take variable x and assumption x in the domain of integration
     interval = real.open_interval(a, b)
-    v = Var(f.var_name, realT)
+    v = Var(f.var_name, RealType)
     cond = set.mk_mem(v, interval)
     body = f.subst_bound(v)
     target_body = target_f.subst_bound(v)
@@ -713,7 +689,7 @@ class integrate_by_parts(Conv):
         pt = eq_pt2.transitive(eq_pt)
 
         # Rewrite to agree with target
-        assert real.is_minus(pt.rhs) and real.is_minus(self.target)
+        assert pt.rhs.is_minus() and self.target.is_minus()
         eq_pt3 = fraction_rewr_integral(pt.rhs.arg, self.target.arg)
         pt = pt.on_rhs(arg_conv(rewr_conv(eq_pt3)))
         pt = pt.on_rhs(arg1_conv(simplify_rewr_conv(self.target.arg1)))
@@ -792,16 +768,16 @@ class trig_rewr_conv(Conv):
             # Handled by normalization
             pt = refl(t)
         elif self.code == 'TR22':
-            if real.is_plus(t) and t.arg.head == real.nat_power and t.arg.arg1.head == real.tan:
-                cos_neq0 = Not(Eq(real.cos(t.arg.arg1.arg), real.zero))
+            if t.is_plus() and t.arg.is_nat_power() and t.arg.arg1.is_comb('tan', 1):
+                cos_neq0 = Not(Eq(real.cos(t.arg.arg1.arg), 0))
                 cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('tan_sec', conds=[cos_neq0_pt]))
-            elif t.head == real.nat_power and t.arg1.head == real.tan:
-                cos_neq0 = Not(Eq(real.cos(t.arg1.arg), real.zero))
+            elif t.is_nat_power() and t.arg1.is_comb('tan', 1):
+                cos_neq0 = Not(Eq(real.cos(t.arg1.arg), 0))
                 cos_neq0_pt = auto.auto_solve(cos_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('tan_sec_alt', conds=[cos_neq0_pt]))
-            elif t.head == real.nat_power and t.arg1.head == real.cot:
-                sin_neq0 = Not(Eq(real.sin(t.arg1.arg), real.zero))
+            elif t.is_nat_power() and t.arg1.is_comb('cot', 1):
+                sin_neq0 = Not(Eq(real.sin(t.arg1.arg), 0))
                 sin_neq0_pt = auto.auto_solve(sin_neq0, conds)
                 pt = refl(t).on_rhs(rewr_conv('cot_csc_alt', conds=[sin_neq0_pt]))
             else:
@@ -867,10 +843,10 @@ class location_conv(Conv):
                 if not S.is_comb('real_closed_interval', 2):
                     raise ConvException
                 a, b = S.args
-                le_pt = auto.auto_solve(real.less_eq(a, b))
+                le_pt = auto.auto_solve(a <= b)
 
                 interval = real.open_interval(a, b)
-                v = Var(f.var_name, realT)
+                v = Var(f.var_name, RealType)
                 cond = set.mk_mem(v, interval)
                 body = f.subst_bound(v)
 
@@ -890,14 +866,14 @@ def get_at_location(loc, t):
     elif t.is_comb("evalat", 3):
         if loc.head == 0:
             f = t.args[0]
-            body = f.subst_bound(Var(f.var_name, realT))
+            body = f.subst_bound(Var(f.var_name, RealType))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
     elif t.is_comb("real_integral", 2):
         if loc.head == 0:
             f = t.args[1]
-            body = f.subst_bound(Var(f.var_name, realT))
+            body = f.subst_bound(Var(f.var_name, RealType))
             return get_at_location(loc.rest, body)
         else:
             raise NotImplementedError
@@ -908,35 +884,35 @@ def expr_to_holpy(expr):
     """Convert an expression to holpy term."""
     assert isinstance(expr, Expr), "expr_to_holpy"
     if expr.is_var():
-        return Var(expr.name, real.realT)
+        return Var(expr.name, RealType)
     elif expr.is_const():
-        return real.to_binary_real(expr.val)
+        return Real(expr.val)
     elif expr.is_op():
         if expr.op == '-' and len(expr.args) == 1:
-            return real.uminus(expr_to_holpy(expr.args[0]))
+            return -(expr_to_holpy(expr.args[0]))
 
         if len(expr.args) != 2:
             raise NotImplementedError
 
         a, b = [expr_to_holpy(arg) for arg in expr.args]
         if expr.op == '+':
-            return real.plus(a, b)
+            return a + b
         elif expr.op == '-':
-            return real.minus(a, b)
+            return a - b
         elif expr.op == '*':
-            return real.times(a, b)
+            return a * b
         elif expr.op == '/':
-            return real.divides(a, b)
+            return a / b
         elif expr.op == '^':
             if expr.args[1].is_const() and isinstance(expr.args[1].val, int) and expr.args[1].val >= 0:
-                return real.nat_power(a, nat.to_binary_nat(expr.args[1].val))
+                return a ** Nat(expr.args[1].val)
             else:
-                return real.real_power(a, b)
+                return a ** b
         else:
             raise NotImplementedError
     elif expr.is_fun():
         if expr.func_name == 'pi':
-            return real.pi
+            return pi
         
         if len(expr.args) != 1:
             raise NotImplementedError
@@ -970,12 +946,12 @@ def expr_to_holpy(expr):
         raise NotImplementedError
     elif expr.is_integral():
         a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = Var(expr.var, real.realT)
+        var = Var(expr.var, RealType)
         f = Lambda(var, expr_to_holpy(expr.body))
         return real_integral(real.closed_interval(a, b), f)
     elif expr.is_evalat():
         a, b = expr_to_holpy(expr.lower), expr_to_holpy(expr.upper)
-        var = Var(expr.var, real.realT)
+        var = Var(expr.var, RealType)
         f = Lambda(var, expr_to_holpy(expr.body))
         return evalat(f, a, b)
     else:
@@ -1017,7 +993,7 @@ def translate_item(item, target=None, *, debug=False):
             g = expr_to_holpy(parse_expr(step['params']['g']))
             ori_var = term.get_vars(g)[0]
             new_name = step['params']['var_name']
-            new_var = Var(new_name, realT)
+            new_var = Var(new_name, RealType)
             f = Lambda(new_var, f)
             g = Lambda(ori_var, g)
             cv = substitution(f, g, expected_loc)
@@ -1027,7 +1003,7 @@ def translate_item(item, target=None, *, debug=False):
             assert rewr_loc.is_comb("real_integral", 2), "translate_item: Substitution inverse"
             g = parse_expr(step['params']['g'])
             new_name = step['params']['var_name']
-            new_var = Var(new_name, realT)
+            new_var = Var(new_name, RealType)
             g = Lambda(new_var, expr_to_holpy(g))
             a = expr_to_holpy(parse_expr(step['params']['a']))
             b = expr_to_holpy(parse_expr(step['params']['b']))
@@ -1075,8 +1051,7 @@ def translate_item(item, target=None, *, debug=False):
             prev_id = int(step['params']['prev_id'])
             prev_pt = prev_pts[prev_id]
 
-            t1 = real.times(real.to_binary_real(Fraction(1, factor+1)),
-                            real.plus(prev_pt.rhs, real.times(real.to_binary_real(factor), prev_pt.rhs)))
+            t1 = Fraction(1, factor+1) * (prev_pt.rhs + factor * prev_pt.rhs)
             t1_pt = auto.auto_solve(Eq(prev_pt.rhs, t1))
             t1_pt = t1_pt.on_rhs(arg_conv(arg1_conv(rewr_conv(prev_pt, sym=True))),
                                  arg_conv(arg1_conv(rewr_conv(pt))), auto.auto_conv())

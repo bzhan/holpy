@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, Type, boolT
+from kernel.type import TVar, TFun, Type, BoolType, NatType
 from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies, Lambda, Eq
 from logic import basic
 from logic import logic
@@ -18,8 +18,8 @@ class InferTypeTest(unittest.TestCase):
     def setUp(self):
         basic.load_theory('list')
         context.ctxt = context.Context(vars={
-            "A" : boolT,
-            "P" : TFun(Ta, boolT),
+            "A" : BoolType,
+            "P" : TFun(Ta, BoolType),
             "a" : Ta,
             "b" : Ta,
         })
@@ -28,19 +28,19 @@ class InferTypeTest(unittest.TestCase):
         test_data = [
             # A1 --> A2
             (Const("implies", None)(Var("A1", None), Var("A2", None)),
-             Implies(Var("A1", boolT), Var("A2", boolT))),
+             Implies(Var("A1", BoolType), Var("A2", BoolType))),
             # A1 = A2
-            (Const("equals", None)(Var("A1", boolT), Var("A2", None)),
-             Eq(Var("A1", boolT), Var("A2", boolT))),
+            (Const("equals", None)(Var("A1", BoolType), Var("A2", None)),
+             Eq(Var("A1", BoolType), Var("A2", BoolType))),
             # a = b
             (Const("equals", None)(Var("a", None), Var("b", None)),
-             Const("equals", TFun(Ta, Ta, boolT))(Var("a", Ta), Var("b", Ta))),
+             Const("equals", TFun(Ta, Ta, BoolType))(Var("a", Ta), Var("b", Ta))),
             # %x. P x
             (Abs("x", None, Var("P", None)(Bound(0))),
-             Abs("x", Ta, Var("P", TFun(Ta, boolT))(Bound(0)))),
+             Abs("x", Ta, Var("P", TFun(Ta, BoolType))(Bound(0)))),
             # %x y. x = y
             (Abs("x", Ta, Abs("y", None, Const("equals", None)(Bound(1), Bound(0)))),
-             Abs("x", Ta, Abs("y", Ta, Const("equals", TFun(Ta, Ta, boolT))(Bound(1), Bound(0))))),
+             Abs("x", Ta, Abs("y", Ta, Const("equals", TFun(Ta, Ta, BoolType))(Bound(1), Bound(0))))),
             # [a]
             (Const("cons", None)(Var("a", None), Const("nil", None)),
              cons(Ta)(Var("a", Ta), Const("nil", listT(Ta)))),
@@ -51,7 +51,7 @@ class InferTypeTest(unittest.TestCase):
 
     def testInferTypeFail(self):
         test_data = [
-            (Const("implies", None)(Var("A1", nat.natT), Var("A2", None))),
+            (Const("implies", None)(Var("A1", NatType), Var("A2", None))),
             (Const("equals", None)(Var("A", None), Var("a", None)))
         ]
 

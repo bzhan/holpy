@@ -4,7 +4,7 @@ import unittest
 import io
 import json
 
-from kernel.type import TVar, TFun, boolT
+from kernel.type import TVar, TFun, BoolType
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel import theory
@@ -126,7 +126,7 @@ class ServerTest(unittest.TestCase):
     def testGetCtxt(self):
         context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
         state = server.parse_init_state("A & B --> B & A")
-        self.assertEqual(state.get_vars(0), {'A': boolT, 'B': boolT})
+        self.assertEqual(state.get_vars(0), {'A': BoolType, 'B': BoolType})
 
     def testAddLineBefore(self):
         context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})

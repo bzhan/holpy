@@ -8,9 +8,9 @@ if importlib.util.find_spec("z3"):
 else:
     z3_loaded = False
 
-from kernel.type import TFun
+from kernel.type import TFun, BoolType, NatType, IntType, RealType
 from kernel import term
-from kernel.term import Term, Var, boolT, Implies, true, false
+from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
@@ -18,8 +18,7 @@ from kernel import theory
 from logic import logic
 from logic import conv
 from logic.proofterm import ProofTermDeriv
-from data import nat, int
-from data.real import realT
+from data import nat
 from data import set as hol_set
 from syntax import pprint, settings
 from prover import fologic
@@ -37,11 +36,11 @@ class Z3Exception(Exception):
 def convert_type(T):
     if T.is_tvar():
         return z3.DeclareSort(T.name)
-    if T == nat.natT or T == int.intT:
+    if T == NatType or T == IntType:
         return z3.IntSort()
-    elif T == boolT:
+    elif T == BoolType:
         return z3.BoolSort()
-    elif T == realT:
+    elif T == RealType:
         return z3.RealSort()
     elif T.is_fun():
         domainT = convert_type(T.domain_type())
@@ -56,7 +55,7 @@ def convert_type(T):
         domainT = convert_type(T.args[0])
         if isinstance(domainT, tuple):
             raise Z3Exception("convert: unsupported type " + repr(T))
-        return (domainT, convert_type(boolT))
+        return (domainT, convert_type(BoolType))
     else:
         raise Z3Exception("convert: unsupported type " + repr(T))
 
@@ -72,7 +71,7 @@ def convert(t, var_names, assms, to_real):
     def rec(t):
         if t.is_var():
             z3_t = convert_const(t.name, t.T)
-            if t.T == nat.natT and t.name not in assms:
+            if t.T == NatType and t.name not in assms:
                 assms[t.name] = z3_t >= 0
             return z3_t
         elif t.is_forall():
@@ -87,8 +86,8 @@ def convert(t, var_names, assms, to_real):
             v = Var(nm, t.arg.var_T)
             z3_v = convert_const(nm, t.arg.var_T)
             return z3.Exists(z3_v, rec(t.arg.subst_bound(v)))
-        elif int.is_binary_int(t):
-            return int.from_binary_int(t)
+        elif t.is_number():
+            return t.dest_number()
         elif t.is_implies():
             return z3.Implies(rec(t.arg1), rec(t.arg))
         elif t.is_equals():
@@ -102,45 +101,39 @@ def convert(t, var_names, assms, to_real):
             return z3.If(rec(b), rec(t1), rec(t2))
         elif t.is_not():
             return z3.Not(rec(t.arg))
-        elif t.is_comb('plus', 2):
+        elif t.is_plus():
             return rec(t.arg1) + rec(t.arg)
-        elif t.is_comb('minus', 2):
+        elif t.is_minus():
             m, n = rec(t.arg1), rec(t.arg)
-            if t.arg1.get_type() == nat.natT:
+            if t.arg1.get_type() == NatType:
                 return z3.If(m >= n, m - n, 0)
             return m - n
-        elif t.is_comb('uminus', 1):
+        elif t.is_uminus():
             return -rec(t.arg)
-        elif t.is_comb('times', 2):
+        elif t.is_times():
             return rec(t.arg1) * rec(t.arg)
-        elif t.is_comb('less_eq', 2):
+        elif t.is_less_eq():
             return rec(t.arg1) <= rec(t.arg)
-        elif t.is_comb('less', 2):
+        elif t.is_less():
             return rec(t.arg1) < rec(t.arg)
-        elif t.is_comb('greater_eq', 2):
+        elif t.is_greater_eq():
             return rec(t.arg1) >= rec(t.arg)
-        elif t.is_comb('greater', 2):
+        elif t.is_greater():
             return rec(t.arg1) > rec(t.arg)
-        elif t.is_comb('real_divide', 2):
+        elif t.is_divides():
             return rec(t.arg1) / rec(t.arg)
-        elif t.is_const('zero'):
-            return 0
-        elif t.is_const('one'):
-            return 1
         elif t.is_comb('of_nat', 1):
-            if nat.is_binary(t.arg):
-                return nat.from_binary(t.arg)
-            elif t.get_type() == realT:
+            if t.get_type() == RealType:
                 if t.arg.is_var():
                     if t.arg.name not in to_real:
                         nm = name.get_variant_name("r" + t.arg.name, var_names)
                         var_names.append(nm)
                         to_real[t.arg.name] = nm
-                        z3_t = convert_const(nm, realT)
+                        z3_t = convert_const(nm, RealType)
                         assms[nm] = z3_t >= 0
                         return z3_t
                     else:
-                        return convert_const(to_real[t.arg.name], realT)
+                        return convert_const(to_real[t.arg.name], RealType)
                 return z3.ToReal(rec(t.arg))
             else:
                 raise Z3Exception("convert: unsupported of_nat " + repr(t))

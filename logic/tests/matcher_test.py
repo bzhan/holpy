@@ -2,12 +2,11 @@
 
 import unittest
 
-from kernel.type import TVar
+from kernel.type import TVar, NatType
 from kernel.term import Var, Const, Abs
 from logic import basic
 from logic import matcher
 from logic.matcher import first_order_match, MatchException
-from data.nat import natT
 from syntax import parser
 from logic import context
 

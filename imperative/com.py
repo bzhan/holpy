@@ -4,7 +4,6 @@
 
 from kernel.term import Term, Var
 from logic import logic
-from data import int
 from imperative import expr
 
 

@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, boolT
+from kernel.type import Type, TFun, BoolType
 from kernel.term import Term, Var, Const, Lambda, true
 from kernel.thm import Thm
 from kernel.macro import global_macros
@@ -32,19 +32,19 @@ def Seq(T):
     return Const("Seq", TFun(comT(T), comT(T), comT(T)))
 
 def Cond(T):
-    return Const("Cond", TFun(TFun(T, boolT), comT(T), comT(T), comT(T)))
+    return Const("Cond", TFun(TFun(T, BoolType), comT(T), comT(T), comT(T)))
 
 def While(T):
-    return Const("While", TFun(TFun(T, boolT), TFun(T, boolT), comT(T), comT(T)))
+    return Const("While", TFun(TFun(T, BoolType), TFun(T, BoolType), comT(T), comT(T)))
 
 def Sem(T):
-    return Const("Sem", TFun(comT(T), T, T, boolT))
+    return Const("Sem", TFun(comT(T), T, T, BoolType))
 
 def Valid(T):
-    return Const("Valid", TFun(TFun(T, boolT), comT(T), TFun(T, boolT), boolT))
+    return Const("Valid", TFun(TFun(T, BoolType), comT(T), TFun(T, BoolType), BoolType))
 
 def Entail(T):
-    return Const("Entail", TFun(TFun(T, boolT), TFun(T, boolT), boolT))
+    return Const("Entail", TFun(TFun(T, BoolType), TFun(T, BoolType), BoolType))
 
 # Normalize evaluation of function as well as arithmetic.
 norm_cv = then_conv(top_conv(function.fun_upd_eval_conv()), nat.norm_full())

@@ -1,10 +1,8 @@
 # Author: Bohua Zhan
 
-from kernel.type import TFun
+from kernel.type import TFun, IntType
 from kernel import term
-from kernel.term import Eq, true, false
-from data.int import intT
-from data import int as hol_int
+from kernel.term import Var, Eq, Not, true, false, Int
 from data.list import listT, nth, length
 from logic import logic
 from util import typecheck
@@ -45,9 +43,9 @@ class Var(Expr):
     def convert_hol(self, ctxt):
         assert self.name in ctxt
         if ctxt[self.name] == "int":
-            return term.Var(self.name, intT)
+            return term.Var(self.name, IntType)
         elif ctxt[self.name] == "int array":
-            return term.Var(self.name, listT(intT))
+            return term.Var(self.name, listT(IntType))
         else:
             raise NotImplementedError
 
@@ -133,7 +131,7 @@ class Const(Expr):
 
     def convert_hol(self, ctxt):
         if type(self.val) == int:
-            return hol_int.to_binary_int(self.val)
+            return Int(self.val)
         elif type(self.val) == bool:
             return true if self.val else false
         else:
@@ -184,31 +182,31 @@ class Op(Expr):
         if len(self.args) == 1:
             e = self.args[0].convert_hol(ctxt)
             if self.op == "-":
-                return hol_int.uminus(e)
+                return -e
             elif self.op == "~":
-                return term.Not(e)
+                return Not(e)
             else:
                 raise NotImplementedError
         elif len(self.args) == 2:
             e1, e2 = self.args[0].convert_hol(ctxt), self.args[1].convert_hol(ctxt)
             if self.op == "+":
-                return hol_int.plus(e1, e2)
+                return e1 + e2
             elif self.op == "-":
-                return hol_int.minus(e1, e2)
+                return e1 - e2
             elif self.op == "*":
-                return hol_int.times(e1, e2)
+                return e1 * e2
             elif self.op == "==":
-                return term.Eq(e1, e2)
+                return Eq(e1, e2)
             elif self.op == "!=":
-                return term.Not(term.Eq(e1, e2))
+                return Not(Eq(e1, e2))
             elif self.op == "<=":
-                return hol_int.less_eq(e1, e2)
+                return e1 <= e2
             elif self.op == "<":
-                return hol_int.less(e1, e2)
+                return e1 < e2
             elif self.op == ">=":
-                return hol_int.less_eq(e2, e1)
+                return e2 <= e1
             elif self.op == ">":
-                return hol_int.less(e2, e1)
+                return e2 < e1
             elif self.op == "&":
                 return term.And(e1, e2)
             elif self.op == "|":
@@ -339,6 +337,6 @@ zero = Const(0)
 one = Const(1)
 
 global_fnames = {
-    "abs": ("abs", TFun(intT, intT)),
-    "max": ("max", TFun(intT, intT, intT)),
+    "abs": ("abs", TFun(IntType, IntType)),
+    "max": ("max", TFun(IntType, IntType, IntType)),
 }

@@ -213,6 +213,8 @@ def load_theory(filename, *, limit=None, username="master"):
     # Make table for this later
     if filename == 'expr':
         from data import expr
+    if filename == 'real':
+        from data import real
 
     if limit == 'start':
         return None

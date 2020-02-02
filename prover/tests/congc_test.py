@@ -3,12 +3,11 @@
 import unittest
 
 from prover import congc
-from kernel.type import TVar, TFun
+from kernel.type import TVar, TFun, NatType
 from kernel.term import Term, Eq
 from kernel.thm import Thm
 from kernel import theory
 from logic import basic
-from data.nat import natT
 from syntax import parser, printer
 from logic import context
 
@@ -90,13 +89,13 @@ class CongClosureHOLTest(unittest.TestCase):
             'f': TFun(Ta, Ta),
             'g': TFun(Ta, Ta),
             'R': TFun(Ta, Ta, Ta),
-            'm': natT,
-            'n': natT,
-            'p': natT,
-            'q': natT,
-            'x': natT,
-            'y': natT,
-            'z': natT
+            'm': NatType,
+            'n': NatType,
+            'p': NatType,
+            'q': NatType,
+            'x': NatType,
+            'y': NatType,
+            'z': NatType
         })
         closure = congc.CongClosureHOL()
         for item in data:

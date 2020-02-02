@@ -4,7 +4,7 @@ from copy import copy
 from typing import Tuple
 import contextlib
 
-from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
+from kernel.type import HOLType, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
@@ -520,9 +520,9 @@ def EmptyTheory():
     thy.add_type_sig("fun", 2)
 
     # Fundamental terms.
-    thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), boolT))
-    thy.add_term_sig("implies", TFun(boolT, boolT, boolT))
-    thy.add_term_sig("all", TFun(TFun(TVar("a"), boolT), boolT))
+    thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), BoolType))
+    thy.add_term_sig("implies", TFun(BoolType, BoolType, BoolType))
+    thy.add_term_sig("all", TFun(TFun(TVar("a"), BoolType), BoolType))
     
     return thy
 

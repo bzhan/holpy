@@ -2,6 +2,22 @@
 
 from fractions import Fraction
 from collections.abc import Iterable
+from functools import cmp_to_key
+
+from kernel.term import Term
+from logic import term_ord
+
+
+def compare_fst(p1, p2):
+    if isinstance(p1[0], Term):
+        return term_ord.fast_compare(p1[0], p2[0])
+    else:
+        if len(p1[0]) != len(p2[0]):
+            return term_ord.compare_atom(len(p1[0]), len(p2[0]))
+        for i in range(len(p1[0])):
+            if p1[0][i] != p2[0][i]:
+                return compare_fst(p1[0][i], p2[0][i])
+            return 0
 
 def collect_pairs(ps):
     """Reduce a list of pairs by collecting into groups according to
@@ -18,7 +34,7 @@ def collect_pairs(ps):
             res[v] += c
         else:
             res[v] = c
-    return tuple(sorted((k, v) for k, v in res.items() if v != 0))
+    return tuple(sorted([(k, v) for k, v in res.items() if v != 0], key=cmp_to_key(compare_fst)))
 
 class Monomial:
     """Represents a monomial."""
@@ -62,7 +78,13 @@ class Monomial:
         return "Monomial(%s)" % str(self)
 
     def __le__(self, other):
-        return (self.factors, self.coeff) < (other.factors, other.coeff)
+        cp = term_ord.fast_compare_list(self.factors, other.factors)
+        if cp < 0:
+            return True
+        elif cp > 0:
+            return False
+        else:
+            return term_ord.compare_atom(self.coeff, other.coeff)
 
     def __lt__(self, other):
         return self <= other and self != other

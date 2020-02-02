@@ -1,6 +1,6 @@
 import unittest
 
-from kernel.type import boolT
+from kernel.type import BoolType
 from kernel.term import Term, Var, Implies, And, Or
 from kernel import report
 from kernel import theory
@@ -8,11 +8,11 @@ from logic import basic
 from syntax import printer
 from prover import encode
 
-a = Var('a', boolT)
-b = Var('b', boolT)
-c = Var('c', boolT)
-d = Var('d', boolT)
-e = Var('e', boolT)
+a = Var('a', BoolType)
+b = Var('b', BoolType)
+c = Var('c', BoolType)
+d = Var('d', BoolType)
+e = Var('e', BoolType)
 
 
 class EncodeTest(unittest.TestCase):

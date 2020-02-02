@@ -2,8 +2,9 @@
 
 from collections import OrderedDict
 from copy import copy
+from fractions import Fraction
 
-from kernel.type import TFun, boolT
+from kernel.type import HOLType, TFun, BoolType, NatType, IntType, RealType
 from util import typecheck
 
 
@@ -200,35 +201,6 @@ class Term():
             return self.n == other.n
         else:
             raise TypeError
-
-    def __le__(self, other):
-        """Fast version of comparison."""
-        if self.ty != other.ty:
-            return self.ty <= other.ty
-        elif self.is_svar() or self.is_var() or self.is_const():
-            return (self.name, self.T) <= (other.name, other.T)
-        elif self.is_comb():
-            return (self.fun, self.arg) <= (other.fun, other.arg)
-        elif self.is_abs():
-            return (self.var_T, self.body) <= (other.var_T, other.body)
-        elif self.is_bound():
-            return self.n <= other.n
-        else:
-            raise TypeError
-
-    def __lt__(self, other):
-        if self.ty != other.ty:
-            return self.ty < other.ty
-        elif self.is_svar() or self.is_var() or self.is_const():
-            return (self.name, self.T) < (other.name, other.T)
-        elif self.is_comb():
-            return (self.fun, self.arg) < (other.fun, other.arg)
-        elif self.is_abs():
-            return (self.var_T, self.body) < (other.var_T, other.body)
-        elif self.is_bound():
-            return self.n < other.n
-        else:
-            raise TypeError        
 
     def __copy__(self):
         """Returns a copy of self. Types are shared, the rest of
@@ -631,6 +603,224 @@ class Term():
         else:
             raise TypeError
 
+    def is_binary(self):
+        """Whether self is in standard binary form.
+        
+        Note binary form means no of_nat is applied.
+    
+        """
+        if self.is_const("zero") or self.is_const("one"):
+            return True
+        elif self.is_comb('bit0', 1) or self.is_comb('bit1', 1):
+            return self.arg.is_binary()
+        else:
+            return False
+
+    def dest_binary(self):
+        """Convert HOL binary form to Python integer.
+        
+        Note binary form means no of_nat is applied.
+
+        """
+        if self.is_const("zero"):
+            return 0
+        elif self.is_const("one"):
+            return 1
+        elif self.is_comb('bit0', 1):
+            return 2 * self.arg.dest_binary()
+        elif self.is_comb('bit1', 1):
+            return 2 * self.arg.dest_binary() + 1
+        else:
+            raise TermException('dest_binary: term is not in binary form.')
+
+    def is_nat(self):
+        return self.get_type() == NatType
+
+    def is_int(self):
+        return self.get_type() == IntType
+
+    def is_real(self):
+        return self.get_type() == RealType
+
+    def is_zero(self):
+        return self.is_const('zero')
+
+    def is_one(self):
+        return self.is_const('one')
+
+    def is_plus(self):
+        return self.is_comb('plus', 2)
+
+    def is_minus(self):
+        return self.is_comb('minus', 2)
+
+    def is_uminus(self):
+        return self.is_comb('uminus', 1)
+
+    def is_times(self):
+        return self.is_comb('times', 2)
+
+    def is_divides(self):
+        return self.is_comb('real_divide', 2)
+
+    def is_nat_power(self):
+        return self.is_comb('power', 2) and self.arg.get_type() == NatType
+
+    def is_real_power(self):
+        return self.is_comb('power', 2) and self.arg.get_type() == RealType
+
+    def is_number(self):
+        """Whether self represents a number."""
+        if self.is_zero():
+            return True
+        if self.is_one():
+            return True
+
+        if self.is_uminus():
+            return self.arg.is_number()
+        if self.is_divides():
+            return self.arg1.is_number() and self.arg.is_number() and not self.arg.is_zero()
+
+        return self.is_comb('of_nat', 1) and self.arg.is_binary()
+
+    def dest_number(self):
+        """Convert a term to a Python number."""
+        if self.is_zero():
+            return 0
+        if self.is_one():
+            return 1
+
+        if self.is_uminus():
+            return -self.arg.dest_number()
+        if self.is_divides():
+            num, denom = self.arg1.dest_number(), self.arg.dest_number()
+            if denom == 1:
+                return num
+            else:
+                return Fraction(num) / denom
+
+        if not self.is_comb('of_nat', 1) and self.arg.is_binary():
+            raise TermException('dest_number: term is not a number.')
+        return self.arg.dest_binary()
+
+    def __add__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        if not isinstance(other, Term):
+            return NotImplemented
+        return plus(T)(self, other)
+
+    def __radd__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return plus(T)(other, self)
+
+    def __sub__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return minus(T)(self, other)
+
+    def __rsub__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return minus(T)(other, self)
+
+    def __mul__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return times(T)(self, other)
+
+    def __rmul__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return times(T)(other, self)
+
+    def __truediv__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return divides(T)(self, other)
+
+    def __rtruediv__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return divides(T)(other, self)
+
+    def __neg__(self):
+        T = self.get_type()
+        return uminus(T)(self)
+
+    def __pos__(self):
+        return self
+
+    def __pow__(self, other):
+        T = self.get_type()
+        if isinstance(other, int) and other >= 0:
+            other = Number(NatType, other)
+        elif isinstance(other, (int, Fraction)):
+            other = Number(RealType, other)
+        if other.get_type() == NatType:
+            return nat_power(T)(self, other)
+        elif other.get_type() == RealType:
+            return real_power(T)(self, other)
+        else:
+            raise TermException('__pow__: unexpected type for exponent.')
+
+    def __rpow__(self, other):
+        if not isinstance(other, Term):
+            raise TermException('__rpow__: base must be a HOL term.')
+        base_T = other.get_type()
+        exponent_T = self.get_type()
+        if exponent_T == NatType:
+            return nat_power(base_T)(other, self)
+        elif exponent_T == RealType:
+            return real_power(base_T)(other, self)
+        else:
+            raise TermException('__rpow__: unexpected type for exponent.')
+
+    def is_less_eq(self):
+        return self.is_comb('less_eq', 2)
+
+    def is_less(self):
+        return self.is_comb('less', 2)
+
+    def is_greater_eq(self):
+        return self.is_comb('greater_eq', 2)
+
+    def is_greater(self):
+        return self.is_comb('greater', 2)
+
+    def __le__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return less_eq(T)(self, other)
+
+    def __lt__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return less(T)(self, other)
+
+    def __ge__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return greater_eq(T)(self, other)
+
+    def __gt__(self, other):
+        T = self.get_type()
+        if isinstance(other, (int, Fraction)):
+            other = Number(T, other)
+        return greater(T)(self, other)
+
 
 class SVar(Term):
     """Schematic variable, specified by name and type."""
@@ -775,20 +965,26 @@ def get_consts(t):
         raise TypeError
 
 
-true = Const("true", boolT)
-false = Const("false", boolT)
+true = Const("true", BoolType)
+false = Const("false", BoolType)
 
-neg = Const("neg", TFun(boolT, boolT))
-conj = Const("conj", TFun(boolT, boolT, boolT))
-disj = Const("disj", TFun(boolT, boolT, boolT))
-implies = Const("implies", TFun(boolT, boolT, boolT))
+neg = Const("neg", TFun(BoolType, BoolType))
+conj = Const("conj", TFun(BoolType, BoolType, BoolType))
+disj = Const("disj", TFun(BoolType, BoolType, BoolType))
+implies = Const("implies", TFun(BoolType, BoolType, BoolType))
 
 def equals(T):
     """Returns the equals constant for the given type."""
-    return Const("equals", TFun(T, T, boolT))
+    return Const("equals", TFun(T, T, BoolType))
 
 def Eq(s, t):
     """Construct the term s = t."""
+    if isinstance(s, (int, Fraction)):
+        assert isinstance(t, Term), "Eq: one of the arguments must be a term."
+        s = Number(t.get_type(), s)
+    elif isinstance(t, (int, Fraction)):
+        t = Number(s.get_type(), t)
+
     return equals(s.get_type())(s, t)
 
 def Not(t):
@@ -839,7 +1035,7 @@ def Lambda(x, body):
     return Abs(x.name, x.T, body.abstract_over(x))
 
 def forall(T):
-    return Const("all", TFun(TFun(T, boolT), boolT))
+    return Const("all", TFun(TFun(T, BoolType), BoolType))
  
 def Forall(x, body):
     """Construct the term !x. body.
@@ -854,7 +1050,7 @@ def Forall(x, body):
     return forall(x.T)(Lambda(x, body))
 
 def exists(T):
-    return Const("exists", TFun(TFun(T, boolT), boolT))
+    return Const("exists", TFun(TFun(T, BoolType), BoolType))
 
 def Exists(x, body):
     """Construct the term EX x. body.
@@ -866,3 +1062,115 @@ def Exists(x, body):
     if not x.is_var():
         raise TermException("Exists: x must be a variable. Got %s" % str(x))
     return exists(x.T)(Lambda(x, body))
+
+
+def plus(T):
+    return Const('plus', TFun(T, T, T))
+
+def minus(T):
+    return Const('minus', TFun(T, T, T))
+
+def uminus(T):
+    return Const('uminus', TFun(T, T))
+
+def times(T):
+    return Const('times', TFun(T, T, T))
+
+def divides(T):
+    return Const('real_divide', TFun(T, T, T))
+
+def of_nat(T):
+    return Const('of_nat', TFun(NatType, T))
+
+def nat_power(T):
+    return Const('power', TFun(T, NatType, T))
+
+def real_power(T):
+    return Const('power', TFun(T, RealType, T))
+
+def less_eq(T):
+    return Const('less_eq', TFun(T, T, BoolType))
+
+def less(T):
+    return Const('less', TFun(T, T, BoolType))
+
+def greater_eq(T):
+    return Const('greater_eq', TFun(T, T, BoolType))
+
+def greater(T):
+    return Const('greater', TFun(T, T, BoolType))
+
+# Binary bits 0 and 1
+nat_zero = Const('zero', NatType)
+nat_one = Const('one', NatType)
+bit0 = Const("bit0", TFun(NatType, NatType))
+bit1 = Const("bit1", TFun(NatType, NatType))
+
+def Binary(n):
+    """Convert Python integer n to HOL binary form.
+    
+    This function does not apply of_nat.
+    
+    """
+    typecheck.checkinstance('Binary', n, int)
+    if n == 0:
+        return nat_zero
+    elif n == 1:
+        return nat_one
+    elif n % 2 == 0:
+        return bit0(Binary(n // 2))
+    else:
+        return bit1(Binary(n // 2))
+
+def Number(T, x):
+    """Convert Python number x to HOL term with type T."""
+    if x == 0:
+        return Const('zero', T)
+    if x == 1:
+        return Const('one', T)
+    if x < 0:
+        assert T != NatType, "Number: natural numbers cannot be negative."
+        return uminus(T)(Number(T, -x))
+    if isinstance(x, Fraction):
+        if x.denominator == 1:
+            return Number(T, x.numerator)
+        else:
+            assert T != NatType, "Number: natural numbers cannot be fractions."
+            assert T != IntType, "Number: integers cannot be fractions."
+            return divides(T)(Number(T, x.numerator), Number(T, x.denominator))
+    
+    return of_nat(T)(Binary(x))
+
+def Nat(n):
+    """Construct natural number with value n."""
+    return Number(NatType, n)
+
+def Int(n):
+    """Construct integer with value n."""
+    return Number(IntType, n)
+
+def Real(r):
+    """Construct real number with value r."""
+    return Number(RealType, r)
+
+def Sum(T, ts):
+    """Compute the sum of a list of terms with type T."""
+    ts = list(ts)  # Coerce generators to list
+    typecheck.checkinstance('Sum', T, HOLType, ts, [Term])
+    if len(ts) == 0:
+        return Const('zero', T)
+    res = ts[0]
+    for t in ts[1:]:
+        res = res + t
+    return res
+
+def Prod(T, ts):
+    """Compute the product of a list of terms with type T."""
+    ts = list(ts)  # Coerce generators to list
+    typecheck.checkinstance('Prod', T, HOLType, ts, [Term])
+    if len(ts) == 0:
+        return Const('one', T)
+    res = ts[0]
+    for t in ts[1:]:
+        res = res * t
+    return res

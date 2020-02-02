@@ -97,10 +97,10 @@ class fun_upd_norm_one_conv(Conv):
         if is_fun_upd(t) and is_fun_upd(t.args[0]):
             f, a, b = t.args
             f2, a2, b2 = f.args
-            if nat.from_binary_nat(a) < nat.from_binary_nat(a2):
+            if a.dest_number() < a2.dest_number():
                 neq = nat.nat_const_ineq(a, a2)
                 return pt.on_rhs(rewr_conv("fun_upd_twist", conds=[neq]), argn_conv(0, self))
-            elif nat.from_binary_nat(a) == nat.from_binary_nat(a2):
+            elif a.dest_number() == a2.dest_number():
                 return pt.on_rhs(rewr_conv("fun_upd_upd"))
             else:
                 return pt

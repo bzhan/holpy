@@ -1,14 +1,13 @@
 # Author: Bohua Zhan
 
-from kernel.type import TFun
+from kernel.type import TFun, NatType
 from kernel.term import Const
 from logic.conv import Conv, rewr_conv, refl, arg_conv, arg1_conv
 from data import nat
-from data.nat import natT
 from data.set import setT
 
 def mk_interval(m, n):
-    return Const("nat_interval", TFun(natT, natT, setT(natT)))(m, n)
+    return Const("nat_interval", TFun(NatType, NatType, setT(NatType)))(m, n)
 
 def is_interval(t):
     return t.is_comb('nat_interval', 2)
@@ -21,7 +20,7 @@ class numseg_conv(Conv):
     def get_proof_term(self, t):
         assert is_interval(t), "numseg_conv"
         mt, nt = t.args
-        m, n = nat.from_binary_nat(mt), nat.from_binary_nat(nt)
+        m, n = mt.dest_number(), nt.dest_number()
         pt = refl(t)
         if n < m:
             less_goal = nat.less(nt, mt)

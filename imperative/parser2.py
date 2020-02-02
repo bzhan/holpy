@@ -5,7 +5,7 @@
 import os, json
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TFun, boolT
+from kernel.type import TFun, BoolType
 from kernel.term import Term, Var, Const, Abs, true
 from logic import logic
 from logic import basic

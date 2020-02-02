@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import boolT
+from kernel.type import BoolType
 from kernel.term import Term, Var, Eq
 from kernel.thm import Thm
 from kernel import theory
@@ -108,7 +108,7 @@ class ConvTest(unittest.TestCase):
         )
 
     def testRewrConv5(self):
-        cond = Var('P', boolT)
+        cond = Var('P', BoolType)
         test_conv(
             self, 'logic_base', rewr_conv('if_P', conds=[ProofTerm.sorry(Thm([], cond))]),
             vars={'a': "'a", 'b': "'a", 'P': "bool"},
@@ -205,7 +205,7 @@ class ConvTest(unittest.TestCase):
         )
 
     def testTopSweepConv3(self):
-        cond = Var('P', boolT)
+        cond = Var('P', BoolType)
         test_conv(
             self, 'logic_base', top_sweep_conv(rewr_conv('if_P', conds=[ProofTerm.sorry(Thm([], cond))])),
             vars={'a': "'a", 'b': "'a", 'P': "bool"},

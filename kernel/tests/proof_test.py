@@ -2,13 +2,13 @@
 
 import unittest
 
-from kernel.type import boolT
+from kernel.type import BoolType
 from kernel.term import Term, Var, Implies
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID
 
-A = Var("A", boolT)
-B = Var("B", boolT)
+A = Var("A", BoolType)
+B = Var("B", BoolType)
 A_to_B = Implies(A,B)
 
 class ProofTest(unittest.TestCase):

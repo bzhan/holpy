@@ -6,7 +6,6 @@ from kernel.type import HOLType
 from kernel import term
 from kernel import extension
 from kernel import theory
-from data import binary
 from syntax import settings
 from syntax import infertype
 from syntax import operator
@@ -279,7 +278,8 @@ def get_ast_term(t):
 
     def get_priority_pair(t):
         """Obtain the binding priority of the top-most operation of t."""
-        if nat.is_binary_nat(t) or list.is_literal_list(t):
+        if (t.is_number() and isinstance(t.dest_number(), int) and t.dest_number() >= 0) or \
+           list.is_literal_list(t):
             return 100, ATOM  # Nat atom case
         elif t.is_comb():
             op_data = operator.get_info_for_fun(t.head)
@@ -309,15 +309,10 @@ def get_ast_term(t):
         """
         # Some special cases:
         # Natural numbers:
-        if t.is_const("zero") or t.is_const("one") or \
-           (t.is_comb('of_nat', 1) and binary.is_binary(t.arg) and binary.from_binary(t.arg) >= 2):
+        if t.is_zero() or t.is_one() or \
+           (t.is_comb('of_nat', 1) and t.arg.is_binary() and t.arg.dest_binary() >= 2):
             # First find the number
-            if t.is_const("zero"):
-                n = 0
-            elif t.is_const("one"):
-                n = 1
-            else:
-                n = binary.from_binary(t.arg)
+            n = t.dest_number()
             res = Number(n, t.get_type())
             if (t.is_const() and hasattr(t, "print_type")) or \
                (t.is_comb() and hasattr(t.fun, "print_type")):

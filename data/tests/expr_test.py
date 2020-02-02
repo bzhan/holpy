@@ -2,8 +2,8 @@
 
 import unittest
 
-from kernel.type import TFun
-from kernel.term import Term, Var, Eq
+from kernel.type import TFun, NatType
+from kernel.term import Term, Var, Eq, Nat
 from kernel.thm import Thm
 from kernel import theory
 from logic import basic
@@ -14,13 +14,11 @@ from data.expr import N, V, Plus, Times
 from syntax import printer
 
 
-natT = nat.natT
 zero = nat.zero
 one = nat.one
-to_binary = nat.to_binary_nat
 
 def fun_upd_of_seq(*ns):
-    return function.mk_fun_upd(function.mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
+    return function.mk_fun_upd(function.mk_const_fun(NatType, zero), *[Nat(n) for n in ns])
 
 class ExprTest(unittest.TestCase):
     def setUp(self):
@@ -30,9 +28,9 @@ class ExprTest(unittest.TestCase):
         s = fun_upd_of_seq(1, 7)
 
         test_data = [
-            (Plus(V(one), N(to_binary(5))), to_binary(12)),
-            (Plus(V(zero), N(to_binary(5))), to_binary(5)),
-            (Times(V(one), N(to_binary(5))), to_binary(35)),
+            (Plus(V(one), N(Nat(5))), Nat(12)),
+            (Plus(V(zero), N(Nat(5))), Nat(5)),
+            (Times(V(one), N(Nat(5))), Nat(35)),
         ]
 
         macro = expr.prove_avalI_macro()
@@ -40,7 +38,7 @@ class ExprTest(unittest.TestCase):
             goal = expr.avalI(s, t, n)
 
             # Test get_avalI
-            self.assertEqual(to_binary(macro.get_avalI(s, t)), n)
+            self.assertEqual(Nat(macro.get_avalI(s, t)), n)
 
             # Test can_eval
             self.assertTrue(macro.can_eval(goal))
@@ -54,16 +52,16 @@ class ExprTest(unittest.TestCase):
 
     def testProveAvalIFail(self):
         s = fun_upd_of_seq(1, 7)
-        s2 = Var("s2", TFun(natT, natT))
+        s2 = Var("s2", TFun(NatType, NatType))
         s3 = function.mk_fun_upd(s2, zero, one)
         macro = expr.prove_avalI_macro()
 
         # Value does not match
-        self.assertFalse(macro.can_eval(expr.avalI(s, V(one), to_binary(5))))
+        self.assertFalse(macro.can_eval(expr.avalI(s, V(one), Nat(5))))
 
         # State cannot be evaluated
-        self.assertFalse(macro.can_eval(expr.avalI(s2, V(one), to_binary(5))))
-        self.assertFalse(macro.can_eval(expr.avalI(s3, V(one), to_binary(5))))
+        self.assertFalse(macro.can_eval(expr.avalI(s2, V(one), Nat(5))))
+        self.assertFalse(macro.can_eval(expr.avalI(s3, V(one), Nat(5))))
 
         # Goal is not avalI
         self.assertFalse(macro.can_eval(Eq(V(one), N(zero))))

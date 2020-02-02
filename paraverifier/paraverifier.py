@@ -3,15 +3,14 @@
 import os
 import json
 
-from kernel.type import TFun, boolT
-from kernel.term import Term, Var, Const, And, Implies, Eq
+from kernel.type import TFun, BoolType, NatType
+from kernel.term import Term, Var, Const, And, Implies, Eq, Nat
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
 from logic import basic
 from logic import logic
 from logic.logic import apply_theorem
-from data.nat import natT, to_binary_nat
 from logic.conv import rewr_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from prover import z3wrapper
@@ -82,7 +81,7 @@ class ParaSystem():
     def replace_states(self, t):
         """Replace states by their corresponding numbers."""
         if t in self.states:
-            return to_binary_nat(self.state_map[t])
+            return Nat(self.state_map[t])
         elif t.is_comb():
             return self.replace_states(t.fun)(self.replace_states(t.arg))
         else:
@@ -146,7 +145,7 @@ class ParaSystem():
             if hint_ty == INV:
                 inv_vars, inv = self.invs[hint_inv_id]
                 inv_var_nms = [v.name for v in inv_vars]
-                subst = dict((nm, Var(subst_var, natT)) for nm, subst_var in zip(inv_var_nms, subst_vars))
+                subst = dict((nm, Var(subst_var, NatType)) for nm, subst_var in zip(inv_var_nms, subst_vars))
                 inv_subst = inv.subst(subst)
                 return Implies(inv_subst, guard, inv_after)
 
@@ -168,12 +167,12 @@ class ParaSystem():
     def add_invariant(self):
         """Add the invariant for the system in GCL."""
         s = Var("s", gcl.stateT)
-        invC = Const("inv", TFun(gcl.stateT, boolT))
+        invC = Const("inv", TFun(gcl.stateT, BoolType))
         inv_rhs = And(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
         prop = Eq(invC(s), inv_rhs)
 
         exts = [
-            extension.Constant("inv", TFun(gcl.stateT, boolT)),
+            extension.Constant("inv", TFun(gcl.stateT, BoolType)),
             extension.Theorem("inv_def", Thm([], prop))
         ]
         theory.thy.unchecked_extend(exts)
@@ -181,7 +180,7 @@ class ParaSystem():
 
     def add_semantics(self):
         """Add the semantics of the system in GCL."""
-        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, boolT))
+        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, BoolType))
         s = Var("s", gcl.stateT)
         rules = []
         for i, (_, guard, assign) in enumerate(self.rules):
@@ -192,15 +191,15 @@ class ParaSystem():
         item = items.Inductive()
         item.name = 'trans'
         item.cname = 'trans'
-        item.type = TFun(gcl.stateT, gcl.stateT, boolT)
+        item.type = TFun(gcl.stateT, gcl.stateT, BoolType)
         item.rules = rules
         exts = item.get_extension()
         theory.thy.unchecked_extend(exts)
         # print(printer.print_extensions(exts))
 
     def get_proof(self):
-        invC = Const("inv", TFun(gcl.stateT, boolT))
-        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, boolT))
+        invC = Const("inv", TFun(gcl.stateT, BoolType))
+        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, BoolType))
         s1 = Var("s1", gcl.stateT)
         s2 = Var("s2", gcl.stateT)
         prop = Thm([], Implies(invC(s1), transC(s1,s2), invC(s2)))
@@ -244,19 +243,19 @@ def load_system(filename):
         vars.append(Var(nm, T))
 
     for i, nm in enumerate(data['states']):
-        theory.thy.add_term_sig(nm, natT)
-        theory.thy.add_theorem(nm + "_def", Thm([], Eq(Const(nm, natT), to_binary_nat(i))))
+        theory.thy.add_term_sig(nm, NatType)
+        theory.thy.add_theorem(nm + "_def", Thm([], Eq(Const(nm, NatType), Nat(i))))
 
-    states = [Const(nm, natT) for nm in data['states']]
+    states = [Const(nm, NatType) for nm in data['states']]
 
     rules = []
     for rule in data['rules']:
         if isinstance(rule['var'], str):
-            rule_var = Var(rule['var'], natT)
+            rule_var = Var(rule['var'], NatType)
             cur_vars = {v.name: v.T for v in vars + [rule_var]}
         else:
             assert isinstance(rule['var'], list)
-            rule_var = [Var(nm, natT) for nm in rule['var']]
+            rule_var = [Var(nm, NatType) for nm in rule['var']]
             cur_vars = {v.name: v.T for v in vars + rule_var}
 
         with context.fresh_context(vars=cur_vars):
@@ -268,7 +267,7 @@ def load_system(filename):
 
     invs = []
     for inv in data['invs']:
-        inv_vars = [Var(nm, natT) for nm in inv['vars']]
+        inv_vars = [Var(nm, NatType) for nm in inv['vars']]
         with context.fresh_context(vars={v.name: v.T for v in vars + inv_vars}):
             prop = parser.parse_term(inv['prop'])
         invs.append((inv_vars, prop))

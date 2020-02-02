@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, boolT
+from kernel.type import TVar, TFun, BoolType
 from kernel import term
 from kernel.term import Term, Var, Abs, Bound, And, Or, Eq, Forall, Exists
 from kernel.macro import global_macros
@@ -20,10 +20,10 @@ from syntax import parser
 from logic import context
 
 Ta = TVar("a")
-a = Var("a", boolT)
-b = Var("b", boolT)
-c = Var("c", boolT)
-d = Var("d", boolT)
+a = Var("a", BoolType)
+b = Var("b", BoolType)
+c = Var("c", BoolType)
+d = Var("d", BoolType)
 x = Var("x", Ta)
 y = Var("y", Ta)
 
@@ -125,8 +125,8 @@ class LogicTest(unittest.TestCase):
 
         Ta = TVar('a')
         x = Var('x', Ta)
-        P = Var('P', TFun(Ta, boolT))
-        C = Var('C', boolT)
+        P = Var('P', TFun(Ta, BoolType))
+        C = Var('C', BoolType)
         ex_P = Exists(x, P(x))
         pt1 = ProofTerm.assume(ex_P)
         pt2 = ProofTerm.variable('x', Ta)

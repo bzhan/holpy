@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import Type, TVar, TFun, boolT
+from kernel.type import Type, TVar, TFun, BoolType
 from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
@@ -20,9 +20,9 @@ x = Var("x", Ta)
 y = Var("y", Ta)
 z = Var("z", Ta)
 f = Var("f", Tab)
-A = Var("A", boolT)
-B = Var("B", boolT)
-C = Var("C", boolT)
+A = Var("A", BoolType)
+B = Var("B", BoolType)
+C = Var("C", BoolType)
 
 # A simple macro
 class beta_conv_rhs_macro(ProofMacro):
@@ -56,16 +56,16 @@ class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
         self.assertEqual(theory.thy.get_type_sig("bool"), 0)
         self.assertEqual(theory.thy.get_type_sig("fun"), 2)
-        self.assertEqual(theory.thy.get_term_sig("equals"), TFun(Ta,Ta,boolT))
-        self.assertEqual(theory.thy.get_term_sig("implies"), TFun(boolT,boolT,boolT))
+        self.assertEqual(theory.thy.get_term_sig("equals"), TFun(Ta,Ta,BoolType))
+        self.assertEqual(theory.thy.get_term_sig("implies"), TFun(BoolType,BoolType,BoolType))
 
     def testCheckType(self):
         test_data = [
             Ta,
             TFun(Ta, Tb),
             TFun(TFun(Ta, Ta), Tb),
-            TFun(boolT, boolT),
-            TFun(TFun(Ta, boolT), boolT),
+            TFun(BoolType, BoolType),
+            TFun(TFun(Ta, BoolType), BoolType),
         ]
 
         for T in test_data:
@@ -101,9 +101,9 @@ class TheoryTest(unittest.TestCase):
     def testCheckTermFail(self):
         test_data = [
             Const("random", Ta),
-            Const("equals", TFun(Ta, Tb, boolT)),
+            Const("equals", TFun(Ta, Tb, BoolType)),
             Const("equals", TFun(Ta, Ta, Tb)),
-            Const("implies", TFun(Ta, Ta, boolT)),
+            Const("implies", TFun(Ta, Ta, BoolType)),
             Comb(Const("random", Tab), x),
             f(Const("random", Ta)),
             Abs("x", Ta, Const("random", Ta)),
@@ -170,7 +170,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(1, "substitution", args={}, prevs=[0])
 
         rpt = ProofReport()
-        th = Thm([], Implies(SVar('A', boolT), SVar('A', boolT)))
+        th = Thm([], Implies(SVar('A', BoolType), SVar('A', BoolType)))
         self.assertEqual(theory.thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps_stat(), (1, 1, 0))
         self.assertEqual(rpt.th_names, {"trivial"})
@@ -218,7 +218,7 @@ class TheoryTest(unittest.TestCase):
 
     def testCheckProofFail7(self):
         """Typing error: type-checking failed."""
-        prf = Proof(Comb(Var("P", TFun(Tb, boolT)), x))
+        prf = Proof(Comb(Var("P", TFun(Tb, BoolType)), x))
 
         self.assertRaisesRegex(CheckProofException, "typing error", theory.thy.check_proof, prf)
 

@@ -2,7 +2,8 @@
 
 import unittest
 
-from kernel.term import Eq
+from kernel.type import NatType
+from kernel.term import Eq, Nat
 from kernel.thm import Thm
 from kernel import theory
 from data import nat
@@ -10,6 +11,7 @@ from data import interval
 from data import set
 from logic import basic
 from syntax import printer
+
 
 class IntervalTest(unittest.TestCase):
     def testNumsegConv(self):
@@ -22,10 +24,10 @@ class IntervalTest(unittest.TestCase):
 
         basic.load_theory('iterate')
         for m, n in test_data:
-            mt, nt = nat.to_binary_nat(m), nat.to_binary_nat(n)
+            mt, nt = Nat(m), Nat(n)
             t = interval.mk_interval(mt, nt)
             pt = interval.numseg_conv().get_proof_term(t)
-            rhs = set.mk_literal_set([nat.to_binary_nat(i) for i in range(m, n+1)], nat.natT)
+            rhs = set.mk_literal_set([Nat(i) for i in range(m, n+1)], NatType)
             prf = pt.export()
             self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(t, rhs)))
 

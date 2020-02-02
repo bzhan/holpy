@@ -8,6 +8,7 @@ on intervals.
 import sympy
 from fractions import Fraction
 
+from kernel.type import RealType
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
@@ -33,33 +34,31 @@ class SymPyException(Exception):
 def convert(t):
     """Convert term t to SymPy term."""
     if t.is_var():
-        if t.T == real.realT:
+        if t.T == RealType:
             return sympy.Symbol(t.name)
         else:
             raise SymPyException("convert: unexpected variable type: %s" % str(t.T))
     elif t == real.pi:
         return sympy.pi
-    elif nat.is_binary_nat(t):
-        return sympy.Number(nat.from_binary_nat(t))
-    elif real.is_binary_real(t):
-        val = real.from_binary_real(t)
+    elif t.is_number():
+        val = t.dest_number()
         if isinstance(val, Fraction):
             return sympy.Number(val.numerator) / sympy.Number(val.denominator)
         else:
             return sympy.Number(val)
-    elif real.is_plus(t):
+    elif t.is_plus():
         return convert(t.arg1) + convert(t.arg)
-    elif real.is_minus(t):
+    elif t.is_minus():
         return convert(t.arg1) - convert(t.arg)
-    elif real.is_uminus(t):
+    elif t.is_uminus():
         return -convert(t.arg)
-    elif real.is_times(t):
+    elif t.is_times():
         return convert(t.arg1) * convert(t.arg)
-    elif real.is_divides(t):
+    elif t.is_divides():
         return convert(t.arg1) / convert(t.arg)
-    elif real.is_nat_power(t) and nat.is_binary_nat(t.arg):
-        return convert(t.arg1) ** nat.from_binary_nat(t.arg)
-    elif real.is_real_power(t):
+    elif t.is_nat_power() and t.arg.is_number():
+        return convert(t.arg1) ** t.arg.dest_number()
+    elif t.is_real_power():
         return convert(t.arg1) ** convert(t.arg)
     elif t.is_comb('real_closed_interval', 2):
         return sympy.Interval(convert(t.arg1), convert(t.arg))
@@ -85,13 +84,13 @@ def convert(t):
         return sympy.sec(convert(t.arg))
     elif t.is_comb('csc', 1):
         return sympy.csc(convert(t.arg))
-    elif t.is_comb('greater_eq', 2):
+    elif t.is_greater_eq():
         return convert(t.arg1) >= convert(t.arg)
-    elif t.is_comb('greater', 2):
+    elif t.is_greater():
         return convert(t.arg1) > convert(t.arg)
-    elif t.is_comb('less_eq', 2):
+    elif t.is_less_eq():
         return convert(t.arg1) <= convert(t.arg)
-    elif t.is_comb('less', 2):
+    elif t.is_less():
         return convert(t.arg1) < convert(t.arg)
     else:
         raise SymPyException("Unable to convert " + str(t))
@@ -207,14 +206,14 @@ auto.add_global_autos(real.greater, sympy_solve)
 auto.add_global_autos(real.less_eq, sympy_solve)
 auto.add_global_autos(real.less, sympy_solve)
 
-auto.add_global_autos_neg(term.equals(real.realT), sympy_solve)
+auto.add_global_autos_neg(real.equals, sympy_solve)
 
 auto.add_global_autos(nat.greater_eq, sympy_solve)
 auto.add_global_autos(nat.greater, sympy_solve)
 auto.add_global_autos(nat.less_eq, sympy_solve)
 auto.add_global_autos(nat.less, sympy_solve)
 
-auto.add_global_autos_neg(term.equals(nat.natT), sympy_solve)
+auto.add_global_autos_neg(nat.equals, sympy_solve)
 
 global_macros.update({
     "sympy": SymPyMacro(),

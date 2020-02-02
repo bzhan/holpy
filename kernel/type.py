@@ -269,6 +269,10 @@ class HOLType():
         else:
             raise TypeError
 
+    def is_numeral_type(self):
+        return self in (NatType, IntType, RealType)
+
+
 class STVar(HOLType):
     """Schematic type variable."""
     def __init__(self, name):
@@ -298,4 +302,9 @@ def TFun(*args):
 
 
 """Boolean type."""
-boolT = Type("bool")
+BoolType = Type("bool")
+
+# Numeral types
+NatType = Type('nat')
+IntType = Type('int')
+RealType = Type('real')

@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import boolT, TFun, TVar
+from kernel.type import BoolType, TFun, TVar
 from logic import basic
 from syntax import parser
 from syntax import printer

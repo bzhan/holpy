@@ -2,8 +2,8 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, boolT
-from kernel.term import Var, Term, Not, And, Or, Eq, Implies, Forall, Exists, Lambda, true
+from kernel.type import TVar, TFun, BoolType, NatType
+from kernel.term import Var, Term, Not, And, Or, Eq, Implies, Forall, Exists, Lambda, true, Nat
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import TheoryException
@@ -36,8 +36,8 @@ class BasicTest(unittest.TestCase):
     def testConjComm(self):
         """Proof of commutativity of conjunction."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
-        B = Var("B", boolT)
+        A = Var("A", BoolType)
+        B = Var("B", BoolType)
 
         prf = Proof(And(A, B))
         prf.add_item(1, "apply_theorem_for", args=("conjD1", {}, {'A': A, 'B': B}))
@@ -55,8 +55,8 @@ class BasicTest(unittest.TestCase):
     def testConjCommWithMacro(self):
         """Proof of commutativity of conjunction, with macros."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
-        B = Var("B", boolT)
+        A = Var("A", BoolType)
+        B = Var("B", BoolType)
 
         prf = Proof(And(A, B))
         prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
@@ -69,8 +69,8 @@ class BasicTest(unittest.TestCase):
     def testDisjComm(self):
         """Proof of commutativity of disjunction."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
-        B = Var("B", boolT)
+        A = Var("A", BoolType)
+        B = Var("B", BoolType)
 
         prf = Proof(Or(A, B))
         prf.add_item(1, "theorem", args="disjI2")
@@ -89,8 +89,8 @@ class BasicTest(unittest.TestCase):
     def testDisjCommWithMacro(self):
         """Proof of commutativity of disjunction, with macros."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
-        B = Var("B", boolT)
+        A = Var("A", BoolType)
+        B = Var("B", BoolType)
 
         prf = Proof(Or(A, B))
         prf.add_item(1, "assume", args=A)
@@ -108,8 +108,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
         basic.load_theory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, boolT))
-        B = Var("B", TFun(Ta, boolT))
+        A = Var("A", TFun(Ta, BoolType))
+        B = Var("B", TFun(Ta, BoolType))
         x = Var("x", Ta)
         all_conj = Forall(x, And(A(x), B(x)))
         conj_all = And(Forall(x, A(x)), Forall(x, B(x)))
@@ -136,8 +136,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x), using macros."""
         basic.load_theory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, boolT))
-        B = Var("B", TFun(Ta, boolT))
+        A = Var("A", TFun(Ta, BoolType))
+        B = Var("B", TFun(Ta, BoolType))
         x = Var("x", Ta)
         all_conj = Forall(x, And(A(x), B(x)))
         conj_all = And(Forall(x, A(x)), Forall(x, B(x)))
@@ -156,7 +156,7 @@ class BasicTest(unittest.TestCase):
     def testDoubleNeg(self):
         """Proof of A --> ~~A."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
+        A = Var("A", BoolType)
 
         prf = Proof(A)
         prf.add_item(1, "assume", args=Not(A))
@@ -174,7 +174,7 @@ class BasicTest(unittest.TestCase):
     def testDoubleNegInvWithMacro(self):
         """Proof of ~~A --> A, using macros."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
+        A = Var("A", BoolType)
 
         prf = Proof(Not(Not(A)))
         prf.add_item(1, "apply_theorem_for", args=("classical", {}, {'A': A}))
@@ -192,7 +192,7 @@ class BasicTest(unittest.TestCase):
     def testTrueAbsorb(self):
         """Proof of A --> true & A."""
         basic.load_theory('logic_base')
-        A = Var("A", boolT)
+        A = Var("A", BoolType)
 
         prf = Proof(A)
         prf.add_item(1, "theorem", args="trueI")
@@ -208,8 +208,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x), using macros."""
         basic.load_theory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, boolT))
-        B = Var("B", TFun(Ta, boolT))
+        A = Var("A", TFun(Ta, BoolType))
+        B = Var("B", TFun(Ta, BoolType))
         x = Var("x", Ta)
         exists_conj = Exists(x, And(A(x), B(x)))
         conj_exists = And(Exists(x, A(x)), Exists(x, B(x)))
@@ -231,93 +231,85 @@ class BasicTest(unittest.TestCase):
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         basic.load_theory('nat')
-        n = Var("n", nat.natT)
+        n = Var("n", NatType)
         prf = Proof()
         prf.add_item(0, "theorem", args="nat_induct")
-        prf.add_item(1, "substitution", args={"P": Lambda(n, Eq(nat.plus(n,nat.zero),n)), "x": n}, prevs=[0])
+        prf.add_item(1, "substitution", args={"P": Lambda(n, Eq(n + 0, n)), "x": n}, prevs=[0])
         prf.add_item(2, "beta_norm", prevs=[1])
         prf.add_item(3, "theorem", args="nat_plus_def_1")
-        prf.add_item(4, "substitution", args={"n": nat.zero}, prevs=[3])
+        prf.add_item(4, "substitution", args={"n": Nat(0)}, prevs=[3])
         prf.add_item(5, "implies_elim", prevs=[2, 4])
-        prf.add_item(6, "assume", args=Eq(nat.plus(n,nat.zero), n))
+        prf.add_item(6, "assume", args=Eq(n + 0, n))
         prf.add_item(7, "theorem", args="nat_plus_def_2")
-        prf.add_item(8, "substitution", args={"m": n, "n": nat.zero}, prevs=[7])
+        prf.add_item(8, "substitution", args={"m": n, "n": Nat(0)}, prevs=[7])
         prf.add_item(9, "reflexive", args=nat.Suc)
         prf.add_item(10, "combination", prevs=[9, 6])
         prf.add_item(11, "transitive", prevs=[8, 10])
-        prf.add_item(12, "implies_intr", args=Eq(nat.plus(n,nat.zero), n), prevs=[11])
+        prf.add_item(12, "implies_intr", args=Eq(n + 0, n), prevs=[11])
         prf.add_item(13, "forall_intr", args=n, prevs=[12])
         prf.add_item(14, "implies_elim", prevs=[5, 13])
-        th = Thm([], Eq(nat.plus(n, nat.zero), n))
+        th = Thm([], Eq(n + 0, n))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testAddZeroRightWithMacro(self):
         """Proof of n + 0 = n by induction, using macros."""
         basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        eq = Eq
-        plus = nat.plus
-        zero = nat.zero
+        n = Var("n", NatType)
         S = nat.Suc
         prf = Proof()
-        prf.add_item(0, "reflexive", args=zero)
-        prf.add_item(1, "rewrite_goal", args=("nat_plus_def_1", eq(plus(zero,zero),zero)), prevs=[0])
-        prf.add_item(2, "assume", args=eq(plus(n,zero),n))
+        prf.add_item(0, "reflexive", args=Nat(0))
+        prf.add_item(1, "rewrite_goal", args=("nat_plus_def_1", Eq(Nat(0) + 0, 0)), prevs=[0])
+        prf.add_item(2, "assume", args=Eq(n + 0, n))
         prf.add_item(3, "reflexive", args=S)
         prf.add_item(4, "combination", prevs=[3, 2])
-        prf.add_item(5, "rewrite_goal", args=("nat_plus_def_2", eq(plus(S(n),zero),S(n))), prevs=[4])
-        prf.add_item(6, "implies_intr", args=eq(plus(n,zero),n), prevs=[5])
+        prf.add_item(5, "rewrite_goal", args=("nat_plus_def_2", Eq(S(n) + 0, S(n))), prevs=[4])
+        prf.add_item(6, "implies_intr", args=Eq(n + 0, n), prevs=[5])
         prf.add_item(7, "forall_intr", args=n, prevs=[6])
-        prf.add_item(8, "apply_theorem_for", args=("nat_induct", {}, {"P": Lambda(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 7])
-        th = Thm([], Eq(plus(n, zero), n))
+        prf.add_item(8, "apply_theorem_for", args=("nat_induct", {}, {"P": Lambda(n, Eq(n + 0, n)), "x": n}), prevs=[1, 7])
+        th = Thm([], Eq(n + 0, n))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        eq = Eq
+        n = Var("n", NatType)
         prf = Proof()
         prf.add_item(0, "theorem", args="nat_induct")
-        prf.add_item(1, "substitution", args={"P": Lambda(n, eq(nat.times(n,nat.zero),nat.zero)), "x": n}, prevs=[0])
+        prf.add_item(1, "substitution", args={"P": Lambda(n, Eq(n * 0, 0)), "x": n}, prevs=[0])
         prf.add_item(2, "beta_norm", prevs=[1])
         prf.add_item(3, "theorem", args="nat_times_def_1")
-        prf.add_item(4, "substitution", args={"n": nat.zero}, prevs=[3])
+        prf.add_item(4, "substitution", args={"n": Nat(0)}, prevs=[3])
         prf.add_item(5, "implies_elim", prevs=[2, 4])
-        prf.add_item(6, "assume", args=eq(nat.times(n,nat.zero), nat.zero))
+        prf.add_item(6, "assume", args=Eq(n * 0, 0))
         prf.add_item(7, "theorem", args="nat_times_def_2")
-        prf.add_item(8, "substitution", args={"m": n, "n": nat.zero}, prevs=[7])
+        prf.add_item(8, "substitution", args={"m": n, "n": Nat(0)}, prevs=[7])
         prf.add_item(9, "theorem", args="nat_plus_def_1")
-        prf.add_item(10, "substitution", args={"n": nat.times(n,nat.zero)}, prevs=[9])
+        prf.add_item(10, "substitution", args={"n": n * 0}, prevs=[9])
         prf.add_item(11, "transitive", prevs=[8, 10])
         prf.add_item(12, "transitive", prevs=[11, 6])
-        prf.add_item(13, "implies_intr", args=eq(nat.times(n,nat.zero), nat.zero), prevs=[12])
+        prf.add_item(13, "implies_intr", args=Eq(n * 0, 0), prevs=[12])
         prf.add_item(14, "forall_intr", args=n, prevs=[13])
         prf.add_item(15, "implies_elim", prevs=[5, 14])
-        th = Thm([], Eq(nat.times(n, nat.zero), nat.zero))
+        th = Thm([], Eq(n * 0, 0))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testMultZeroRightWithMacro(self):
         """Proof of n * 0 = 0 by induction, using macros."""
         basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        eq = Eq
-        zero = nat.zero
-        plus = nat.mk_plus
-        times = nat.mk_times
+        n = Var("n", NatType)
         S = nat.Suc
         prf = Proof()
-        prf.add_item(0, "reflexive", args=zero)
-        prf.add_item(1, "rewrite_goal", args=("nat_times_def_1", eq(times(zero,zero),zero)), prevs=[0])
-        prf.add_item(2, "assume", args=eq(times(n,zero),zero))
-        prf.add_item(3, "reflexive", args=times(n,zero))
-        prf.add_item(4, "rewrite_goal", args=("nat_plus_def_1", eq(plus(zero,times(n,zero)),times(n,zero))), prevs=[3])
+        prf.add_item(0, "reflexive", args=Nat(0))
+        prf.add_item(1, "rewrite_goal", args=("nat_times_def_1", Eq(Nat(0) * 0, 0)), prevs=[0])
+        prf.add_item(2, "assume", args=Eq(n * 0, 0))
+        prf.add_item(3, "reflexive", args=n * 0)
+        prf.add_item(4, "rewrite_goal", args=("nat_plus_def_1", Eq(0 + n * 0, n * 0)), prevs=[3])
         prf.add_item(5, "transitive", prevs=[4, 2])
-        prf.add_item(6, "rewrite_goal", args=("nat_times_def_2", eq(times(S(n),zero),zero)), prevs=[5])
-        prf.add_item(7, "implies_intr", args=eq(times(n,zero),zero), prevs=[6])
+        prf.add_item(6, "rewrite_goal", args=("nat_times_def_2", Eq(S(n) * 0, 0)), prevs=[5])
+        prf.add_item(7, "implies_intr", args=Eq(n * 0, 0), prevs=[6])
         prf.add_item(8, "forall_intr", args=n, prevs=[7])
-        prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Lambda(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
-        th = Thm([], Eq(times(n, zero), zero))
+        prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Lambda(n, Eq(n * 0, 0)), "x": n}), prevs=[1, 8])
+        th = Thm([], Eq(n * 0, 0))
         self.assertEqual(theory.thy.check_proof(prf), th)
 
     def testIntersection(self):

@@ -2,23 +2,22 @@
 
 """Utility functions for GCL (Guarded Command Language)."""
 
-from kernel.type import TFun, Type, boolT
+from kernel.type import TFun, Type, BoolType, NatType
 from kernel import term
-from kernel.term import Term, Const, Eq
+from kernel.term import Term, Const, Eq, Binary
 from logic import basic
-from data.nat import natT, to_binary
 from logic import logic
 from data import function
 
 thy = basic.load_theory("gcl")
 
 varType = Type("varType")
-Ident = Const("Ident", TFun(natT, varType))
-Para = Const("Para", TFun(varType, natT, varType))
+Ident = Const("Ident", TFun(NatType, varType))
+Para = Const("Para", TFun(varType, NatType, varType))
 
 scalarValue = Type("scalarValue")
-NatV = Const("NatV", TFun(natT, scalarValue))
-BoolV = Const("BoolV", TFun(boolT, scalarValue))
+NatV = Const("NatV", TFun(NatType, scalarValue))
+BoolV = Const("BoolV", TFun(BoolType, scalarValue))
 
 stateT = TFun(varType, scalarValue)
 
@@ -37,9 +36,9 @@ def convert_term(var_map, s, t):
     def convert(t):
         if t.head in var_map:
             if len(t.args) == 0:
-                return s(Ident(to_binary(var_map[t.head])))
+                return s(Ident(Binary(var_map[t.head])))
             elif len(t.args) == 1:
-                return s(Para(Ident(to_binary(var_map[t.head])), t.arg))
+                return s(Para(Ident(Binary(var_map[t.head])), t.arg))
             else:
                 raise NotImplementedError
         elif t.is_equals():
@@ -50,9 +49,9 @@ def convert_term(var_map, s, t):
             return term.And(convert(t.arg1), convert(t.arg))
         elif t.is_disj():
             return term.Or(convert(t.arg1), convert(t.arg))
-        elif t.get_type() == boolT:
+        elif t.get_type() == BoolType:
             return BoolV(t)
-        elif t.get_type() == natT:
+        elif t.get_type() == NatType:
             return NatV(t)
         else:
             raise NotImplementedError

@@ -2,7 +2,7 @@
 
 from typing import List, Tuple
 
-from kernel.type import TVar, TFun, boolT
+from kernel.type import TVar, TFun, BoolType
 from kernel import term
 from kernel.term import Term, SVar, Var, Const, Abs, Implies, Lambda, true, false
 from kernel.thm import Thm, InvalidDerivationException
@@ -37,7 +37,7 @@ def mk_exists1(x, body):
 
     """
     assert x.is_var(), "mk_exists1"
-    exists1_t = Const("exists1", TFun(TFun(x.T, boolT), boolT))
+    exists1_t = Const("exists1", TFun(TFun(x.T, BoolType), BoolType))
     return exists1_t(Lambda(x, body))
 
 def is_the(t):
@@ -50,7 +50,7 @@ def mk_the(x, body):
 
     """
     assert x.is_var(), "mk_the"
-    the_t = Const("The", TFun(TFun(x.T, boolT), x.T))
+    the_t = Const("The", TFun(TFun(x.T, BoolType), x.T))
     return the_t(Lambda(x, body))
 
 def subst_norm(t, instsp):
@@ -62,7 +62,7 @@ def subst_norm(t, instsp):
     return t.subst_type(tyinst).subst(inst).beta_norm()
 
 def if_t(T):
-    return Const("IF", TFun(boolT, T, T, T))
+    return Const("IF", TFun(BoolType, T, T, T))
 
 def is_if(t):
     """Whether t is of the form if P then x else y."""
