@@ -548,6 +548,13 @@ class Term():
         else:
             raise TypeError
 
+    def subst_norm(self, tyinst, inst):
+        """Substitute using the given instantiation, then normalize with
+        respect to beta-conversion.
+
+        """
+        return self.subst_type(tyinst).subst(inst).beta_norm()
+
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""
         if self.is_svar():

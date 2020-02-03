@@ -164,7 +164,8 @@ def solve_rules(th_names):
             except matcher.MatchException:
                 continue
 
-            As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+            tyinst, inst = instsp
+            As, _ = th.prop.subst_norm(tyinst, inst).strip_implies()
             try:
                 pts = [solve(A, pts) for A in As]
             except TacticException:
@@ -248,7 +249,8 @@ def norm_rules(th_names):
             except matcher.MatchException:
                 continue
 
-            As, C = logic.subst_norm(th.prop, instsp).strip_implies()
+            tyinst, inst = instsp
+            As, C = th.prop.subst_norm(tyinst, inst).strip_implies()
             try:
                 pts = [solve(A, pts) for A in As]
             except TacticException:

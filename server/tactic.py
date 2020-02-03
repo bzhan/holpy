@@ -100,7 +100,7 @@ class rule(Tactic):
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         # Substitute and normalize
-        As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+        As, _ = th.prop.subst_norm(tyinst, inst).strip_implies()
         goal_Alen = len(goal.assums)
         if goal_Alen > 0:
             As = As[:-goal_Alen]

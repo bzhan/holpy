@@ -53,14 +53,6 @@ def mk_the(x, body):
     the_t = Const("The", TFun(TFun(x.T, BoolType), x.T))
     return the_t(Lambda(x, body))
 
-def subst_norm(t, instsp):
-    """Substitute using the given instantiation, then normalize with
-    respect to beta-conversion.
-
-    """
-    tyinst, inst = instsp
-    return t.subst_type(tyinst).subst(inst).beta_norm()
-
 def if_t(T):
     return Const("IF", TFun(BoolType, T, T, T))
 
@@ -254,7 +246,7 @@ class apply_theorem_macro(ProofTermMacro):
         ts = [prev_th.prop for prev_th in prevs]
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
-        As, C = subst_norm(th.prop, (tyinst, inst)).strip_implies()
+        As, C = th.prop.subst_norm(tyinst, inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
