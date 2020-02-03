@@ -17,7 +17,12 @@ class TermException(Exception):
         return self.msg
 
 class TypeCheckException(Exception):
-    pass
+    """Indicates error in type checking of terms."""
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
 
 
 """Default parser for terms. If None, Term() is unable to parse string."""
@@ -174,15 +179,15 @@ class Term():
 
     def __repr__(self):
         if self.is_svar():
-            return "SVar(%s,%s)" % (self.name, self.T)
+            return "SVar(%s, %s)" % (self.name, self.T)
         elif self.is_var():
-            return "Var(%s,%s)" % (self.name, self.T)
+            return "Var(%s, %s)" % (self.name, self.T)
         elif self.is_const():
-            return "Const(%s,%s)" % (self.name, self.T)
+            return "Const(%s, %s)" % (self.name, self.T)
         elif self.is_comb():
-            return "Comb(%s,%s)" % (repr(self.fun), repr(self.arg))
+            return "Comb(%s, %s)" % (repr(self.fun), repr(self.arg))
         elif self.is_abs():
-            return "Abs(%s,%s,%s)" % (self.var_name, self.var_T, repr(self.body))
+            return "Abs(%s, %s, %s)" % (self.var_name, self.var_T, repr(self.body))
         elif self.is_bound():
             return "Bound(%s)" % self.n
         else:
@@ -266,33 +271,30 @@ class Term():
             return 1
         else:
             raise TypeError
-
-    def _get_type(self, bd_vars):
-        """Helper function for get_type. bd_vars is the list of types of
-        the bound variables.
-
-        """
-        if self.is_svar() or self.is_var() or self.is_const():
-            return self.T
-        elif self.is_comb():
-            type_fun = self.fun._get_type(bd_vars)
-            if type_fun.is_fun():
-                return type_fun.range_type()
-            else:
-                raise TypeCheckException
-        elif self.is_abs():
-            return TFun(self.var_T, self.body._get_type([self.var_T] + bd_vars))
-        elif self.is_bound():
-            if self.n >= len(bd_vars):
-                raise TermException("get_type: open term.")
-            else:
-                return bd_vars[self.n]
-        else:
-            raise TypeError
     
     def get_type(self):
-        """Returns type of the term with minimal type-checking."""
-        return self._get_type([])
+        """Returns type of the term with minimal type checking."""
+        def rec(t, bd_vars):
+            """Helper function. bd_vars is the list of types of the bound variables."""
+            if t.is_svar() or t.is_var() or t.is_const():
+                return t.T
+            elif t.is_comb():
+                type_fun = rec(t.fun, bd_vars)
+                if type_fun.is_fun():
+                    return type_fun.range_type()
+                else:
+                    raise TypeCheckException('function type expected in application')
+            elif t.is_abs():
+                return TFun(t.var_T, rec(t.body, [t.var_T] + bd_vars))
+            elif t.is_bound():
+                if t.n >= len(bd_vars):
+                    raise TypeCheckException("open term")
+                else:
+                    return bd_vars[t.n]
+            else:
+                raise TypeError
+
+        return rec(self, [])
 
     def is_open(self):
         """Whether t is an open term."""
@@ -609,16 +611,19 @@ class Term():
             elif t.is_comb():
                 funT = rec(t.fun, bd_vars)
                 argT = rec(t.arg, bd_vars)
-                if funT.is_fun() and funT.domain_type() == argT:
-                    return funT.range_type()
+                if not funT.is_fun():
+                    raise TypeCheckException('function type expected in application')
+                elif funT.domain_type() != argT:
+                    raise TypeCheckException(
+                        'type mismatch in application. Expected %s. Got %s' % (funT.domain_type(), argT))
                 else:
-                    raise TypeCheckException
+                    return funT.range_type()
             elif t.is_abs():
                 bodyT = rec(t.body, [t.var_T] + bd_vars)
                 return TFun(t.var_T, bodyT)
             elif t.is_bound():
                 if t.n >= len(bd_vars):
-                    raise TermException("Check type: open term")
+                    raise TypeCheckException("open term")
                 else:
                     return bd_vars[t.n]
             else:

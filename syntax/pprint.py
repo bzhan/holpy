@@ -720,7 +720,7 @@ def print_ast(ast, *, line_length=None):
             rec(ast.body)
             add_normal('}')
         elif ast.ty == 'stvar_name':
-            add_tvar("'?" + ast.name)
+            add_tvar("?'" + ast.name)
         elif ast.ty == 'tvar_name':
             add_tvar("'" + ast.name)
         elif ast.ty == 'type_constr':

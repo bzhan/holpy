@@ -7,7 +7,7 @@ from kernel.term import Term, Var, Const, Comb, Abs, Bound, Implies, Lambda, Eq
 from logic import basic
 from logic import logic
 from data import nat
-from data.list import listT, cons, mk_append, nil
+from data.list import ListType, cons, mk_append, nil
 from logic import context
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
@@ -43,7 +43,7 @@ class InferTypeTest(unittest.TestCase):
              Abs("x", Ta, Abs("y", Ta, Const("equals", TFun(Ta, Ta, BoolType))(Bound(1), Bound(0))))),
             # [a]
             (Const("cons", None)(Var("a", None), Const("nil", None)),
-             cons(Ta)(Var("a", Ta), Const("nil", listT(Ta)))),
+             cons(Ta)(Var("a", Ta), Const("nil", ListType(Ta)))),
         ]
 
         for t, res in test_data:
@@ -76,7 +76,7 @@ class InferTypeTest(unittest.TestCase):
             self.assertRaisesRegex(TypeInferenceException, "Infinite loop", type_infer, t)
 
     def testInferPrintedType(self):
-        t = Const("nil", listT(Ta))
+        t = Const("nil", ListType(Ta))
         infer_printed_type(t)
         self.assertTrue(hasattr(t, "print_type"))
 
@@ -84,7 +84,7 @@ class InferTypeTest(unittest.TestCase):
         infer_printed_type(t)
         self.assertFalse(hasattr(t.fun, "print_type"))
 
-        t = Eq(Const("nil", listT(Ta)), Const("nil", listT(Ta)))
+        t = Eq(Const("nil", ListType(Ta)), Const("nil", ListType(Ta)))
         infer_printed_type(t)
         self.assertFalse(hasattr(t.fun.fun, "print_type"))
         self.assertTrue(hasattr(t.arg1, "print_type"))

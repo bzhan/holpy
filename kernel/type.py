@@ -14,7 +14,12 @@ class TypeException(Exception):
 
 
 class TypeMatchException(Exception):
-    pass
+    """Indicates error when matching types."""
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
 
 
 """Default parser for types. If None, Type() is unable to parse type."""
@@ -123,7 +128,7 @@ class Type():
     def print_basic(self):
         """Basic printing function for types."""
         if self.is_stvar():
-            return "'?" + self.name
+            return "?'" + self.name
         elif self.is_tvar():
             return "'" + self.name
         elif self.is_tconst():
@@ -245,15 +250,15 @@ class Type():
         if self.is_stvar():
             if self.name in tyinst:
                 if T != tyinst[self.name]:
-                    raise TypeMatchException
+                    raise TypeMatchException('Unable to match %s with %s' % (T, tyinst[self.name]))
             else:
                 tyinst[self.name] = T
         elif self.is_tvar():
             if self != T:
-                raise TypeMatchException
+                raise TypeMatchException('Unable to match %s with %s' % (self, T))
         elif self.is_tconst():
             if (not T.is_tconst()) or T.name != self.name:
-                raise TypeMatchException
+                raise TypeMatchException('Unable to match %s with %s' % (self, T))
             else:
                 for arg, argT in zip(self.args, T.args):
                     arg.match_incr(argT, tyinst)
@@ -305,7 +310,7 @@ class Type():
 
     def convert_stvar(self):
         if self.is_stvar():
-            raise TypeMatchException("convert_stvar")
+            raise TypeException("convert_stvar")
         elif self.is_tvar():
             return STVar(self.name)
         elif self.is_tconst():

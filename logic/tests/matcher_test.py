@@ -137,7 +137,7 @@ class MatcherTest(unittest.TestCase):
             ("%x. ?f (?g x)", "%y. g (f y)", {'a': 'nat', 'b': 'nat', 'c': 'nat'}, {"f": "g", "g": "f"}),
         ]
 
-        svars = {'f': "'?b => '?c", 'g': "'?a => '?b"}
+        svars = {'f': "?'b => ?'c", 'g': "?'a => ?'b"}
         vars = {'g': 'nat => nat', 'f': 'nat => nat'}
         for pat, t, tyinst, inst in test_data:
             self.run_test('nat', pat, t, vars=vars, svars=svars, tyinst=tyinst, inst=inst)
@@ -161,7 +161,7 @@ class MatcherTest(unittest.TestCase):
             ("?x", "m", {"a": "nat"}, {"x": "m"}),
         ]
 
-        svars = {"x": "'?a"}
+        svars = {"x": "?'a"}
         vars = {"m": "nat"}
         for pat, t, tyinst, inst in test_data:
             self.run_test('nat', pat, t, vars=vars, svars=svars, tyinst=tyinst, inst=inst)

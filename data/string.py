@@ -2,7 +2,7 @@
 
 from kernel.type import TFun, TConst, NatType
 from kernel.term import Term, Const, Binary
-from data.list import listT, mk_literal_list, is_literal_list, dest_literal_list
+from data.list import ListType, mk_literal_list, is_literal_list, dest_literal_list
 
 """Utility functions for characters and strings."""
 
@@ -10,7 +10,7 @@ charT = TConst("char")
 stringT = TConst("string")
 
 Char = Const("Char", TFun(NatType, charT))
-String = Const("String", TFun(listT(charT), stringT))
+String = Const("String", TFun(ListType(charT), stringT))
 
 def mk_char(c):
     """Given a Python string of length 1, return the corresponding

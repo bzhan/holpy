@@ -89,7 +89,7 @@ class Thm():
         """
         for t in list(self.hyps) + [self.prop]:
             if t.checked_get_type() != BoolType:
-                raise term.TypeCheckException
+                raise term.TypeCheckException('expect boolean type for propositions')
 
     def is_equals(self):
         """Check whether the proposition of the theorem is of the form x = y."""
