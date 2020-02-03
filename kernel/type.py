@@ -8,17 +8,20 @@ class TypeMatchException(Exception):
     pass
 
 
-"""Default printer for types. If None, HOLType.print_basic is used."""
+"""Default parser for types. If None, Type() is unable to parse type."""
+type_parser = None
+
+"""Default printer for types. If None, Type.print_basic is used."""
 type_printer = None
 
 
-class HOLType():
+class Type():
     """Represents a type in higher-order logic.
     
-    Types in HOL are formed by two kinds of constructors: STVar, TVar and Type.
+    Types in HOL are formed by two kinds of constructors: STVar, TVar and TConst.
 
     STVar(name) represents a schematic type variable with the given name.
-    TVar(name) represents a type variable with the given name. Type(f, args)
+    TVar(name) represents a type variable with the given name. TConst(f, args)
     represents a type constant applied to a list of arguments.
     
     There are two fundamental type constants:
@@ -26,7 +29,7 @@ class HOLType():
     - booleans, with name "bool" and no arguments.
     
     - functions, with name "fun" and two arguments: the domain and codomain
-    types. Type("fun", a, b) is printed as a => b. The => sign associates to
+    types. TConst("fun", a, b) is printed as a => b. The => sign associates to
     the right.
     
     Further defined type constants include:
@@ -35,7 +38,7 @@ class HOLType():
     
     - lists, with name "list" and one argument.
 
-    - product, with name "prod" and two arguments. Type("prod", a, b) is
+    - product, with name "prod" and two arguments. TConst("prod", a, b) is
     printed as a * b.
     
     Examples:
@@ -56,24 +59,24 @@ class HOLType():
     nat list list: list of lists of natural numbers.
 
     """
-    # ty values for distinguishing between HOLType objects.
-    STVAR, TVAR, TYPE = range(3)
+    # ty values for distinguishing between Type objects.
+    STVAR, TVAR, TCONST = range(3)
     
     def is_stvar(self):
         """Return whether self is a schematic type variable."""
-        return self.ty == HOLType.STVAR
+        return self.ty == Type.STVAR
 
     def is_tvar(self):
         """Return whether self is a type variable."""
-        return self.ty == HOLType.TVAR
+        return self.ty == Type.TVAR
 
-    def is_type(self):
+    def is_tconst(self):
         """Return whether self is given by a type constructor."""
-        return self.ty == HOLType.TYPE
+        return self.ty == Type.TCONST
 
     def is_fun(self):
         """Whether self is of the form a => b."""
-        return self.is_type() and self.name == "fun"
+        return self.is_tconst() and self.name == "fun"
     
     def domain_type(self):
         """Given a type of form a => b, return a."""
@@ -102,7 +105,7 @@ class HOLType():
             return "'?" + self.name
         elif self.is_tvar():
             return "'" + self.name
-        elif self.is_type():
+        elif self.is_tconst():
             if len(self.args) == 0:
                 return self.name
             elif len(self.args) == 1:
@@ -134,8 +137,8 @@ class HOLType():
             return "STVar(%s)" % self.name
         if self.is_tvar():
             return "TVar(%s)" % self.name
-        elif self.is_type():
-            return "Type(%s, %s)" % (self.name, list(self.args))
+        elif self.is_tconst():
+            return "TConst(%s, %s)" % (self.name, list(self.args))
         else:
             raise TypeError
 
@@ -145,20 +148,20 @@ class HOLType():
                 self._hash_val = hash(("STVAR", self.name))
             if self.is_tvar():
                 self._hash_val = hash(("TVAR", self.name))
-            elif self.is_type():
-                self._hash_val = hash(("TYPE", self.name, tuple(hash(arg) for arg in self.args)))
+            elif self.is_tconst():
+                self._hash_val = hash(("TCONST", self.name, tuple(hash(arg) for arg in self.args)))
         return self._hash_val
     
     def __eq__(self, other):
         if other is None:
             return False
-        assert isinstance(other, HOLType), "cannot compare HOLType with %s" % str(type(other))
+        assert isinstance(other, Type), "cannot compare Type with %s" % str(type(other))
 
         if self.ty != other.ty:
             return False
         elif self.is_stvar() or self.is_tvar():
             return self.name == other.name
-        elif self.is_type():
+        elif self.is_tconst():
             return self.name == other.name and self.args == other.args
         else:
             raise TypeError
@@ -169,7 +172,7 @@ class HOLType():
             return self.ty <= other.ty
         elif self.is_stvar() or self.is_tvar():
             return self.name <= other.name
-        elif self.is_type():
+        elif self.is_tconst():
             return (self.name, self.args) <= (other.name, other.args)
         else:
             raise TypeError
@@ -180,7 +183,7 @@ class HOLType():
             return self.ty < other.ty
         elif self.is_stvar() or self.is_tvar():
             return self.name < other.name
-        elif self.is_type():
+        elif self.is_tconst():
             return (self.name, self.args) < (other.name, other.args)
         else:
             raise TypeError
@@ -189,7 +192,7 @@ class HOLType():
         """Return the size of the type."""
         if self.is_stvar() or self.is_tvar():
             return 1
-        elif self.is_type():
+        elif self.is_tconst():
             return 1 + sum(T.size() for T in self.args)
         else:
             raise TypeError
@@ -208,8 +211,8 @@ class HOLType():
                 return self
         elif self.is_tvar():
             return self
-        elif self.is_type():
-            return Type(self.name, *(T.subst(tyinst) for T in self.args))
+        elif self.is_tconst():
+            return TConst(self.name, *(T.subst(tyinst) for T in self.args))
         else:
             raise TypeError
 
@@ -227,8 +230,8 @@ class HOLType():
         elif self.is_tvar():
             if self != T:
                 raise TypeMatchException
-        elif self.is_type():
-            if (not T.is_type()) or T.name != self.name:
+        elif self.is_tconst():
+            if (not T.is_tconst()) or T.name != self.name:
                 raise TypeMatchException
             else:
                 for arg, argT in zip(self.args, T.args):
@@ -284,8 +287,8 @@ class HOLType():
             raise TypeMatchException("convert_stvar")
         elif self.is_tvar():
             return STVar(self.name)
-        elif self.is_type():
-            return Type(self.name, *(arg.convert_stvar() for arg in self.args))
+        elif self.is_tconst():
+            return TConst(self.name, *(arg.convert_stvar() for arg in self.args))
         else:
             raise TypeError
 
@@ -293,38 +296,38 @@ class HOLType():
         return self in (NatType, IntType, RealType)
 
 
-class STVar(HOLType):
+class STVar(Type):
     """Schematic type variable."""
     def __init__(self, name):
-        self.ty = HOLType.STVAR
+        self.ty = Type.STVAR
         self.name = name
 
-class TVar(HOLType):
+class TVar(Type):
     """Type variable."""
     def __init__(self, name):
-        self.ty = HOLType.TVAR
+        self.ty = Type.TVAR
         self.name = name
 
-class Type(HOLType):
+class TConst(Type):
     """Type constant, applied to a list of arguments."""
     def __init__(self, name, *args):
-        self.ty = HOLType.TYPE
+        self.ty = Type.TCONST
         self.name = name
         self.args = args
 
 def TFun(*args):
     """Returns the function type arg1 => arg2 => ... => argn."""
-    typecheck.checkinstance('TFun', args, [HOLType])
+    typecheck.checkinstance('TFun', args, [Type])
     res = args[-1]
     for arg in reversed(args[:-1]):
-        res = Type("fun", arg, res)
+        res = TConst("fun", arg, res)
     return res
 
 
 # Boolean type
-BoolType = Type("bool")
+BoolType = TConst("bool")
 
 # Numeral types
-NatType = Type('nat')
-IntType = Type('int')
-RealType = Type('real')
+NatType = TConst('nat')
+IntType = TConst('int')
+RealType = TConst('real')

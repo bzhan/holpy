@@ -4,7 +4,7 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import HOLType, STVar, TVar, Type, TFun, BoolType, NatType
+from kernel.type import Type, STVar, TVar, TConst, TFun, BoolType, NatType
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary
 from kernel import macro
 from kernel import term
@@ -159,7 +159,7 @@ class HOLTransformer(Transformer):
         return STVar(str(s))
 
     def type(self, *args):
-        return Type(str(args[-1]), *args[:-1])
+        return TConst(str(args[-1]), *args[:-1])
 
     def funtype(self, t1, t2):
         return TFun(t1, t2)
@@ -496,7 +496,7 @@ def parse_args(sig, args):
             return parse_inst(args)
         elif sig == macro.TyInst:
             return parse_tyinst(args)
-        elif sig == Tuple[str, HOLType]:
+        elif sig == Tuple[str, Type]:
             s1, s2 = args.split(",", 1)
             return s1, parse_type(s2)
         elif sig == Tuple[str, Term]:

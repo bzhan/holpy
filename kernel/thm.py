@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from kernel.type import Type, TFun, BoolType
+from kernel.type import TFun, BoolType
 from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda
 from kernel import macro

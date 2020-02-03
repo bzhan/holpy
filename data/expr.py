@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType, NatType
+from kernel.type import TConst, TFun, BoolType, NatType
 from kernel.term import Term, Const, Nat
 from kernel.thm import Thm
 from kernel.macro import global_macros
@@ -16,7 +16,7 @@ from syntax import pprint, settings
 
 """Automation for arithmetic expressions."""
 
-aexpT = Type("aexp")
+aexpT = TConst("aexp")
 
 N = Const("N", TFun(NatType, aexpT))
 V = Const("V", TFun(NatType, aexpT))

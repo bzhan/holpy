@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, BoolType, NatType, IntType, RealType
+from kernel.type import TVar, TConst, TFun, BoolType, NatType, IntType, RealType
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, \
     Not, Eq, Forall, Lambda, Exists, true, false, Nat, Int, Real
 from kernel.thm import Thm
@@ -32,9 +32,9 @@ nn = Var("n", TFun(BoolType, BoolType))
 m = Var("m", NatType)
 n = Var("n", NatType)
 p = Var("p", NatType)
-xs = Var("xs", Type("list", Ta))
-ys = Var("ys", Type("list", Ta))
-zs = Var("zs", Type("list", Ta))
+xs = Var("xs", TConst("list", Ta))
+ys = Var("ys", TConst("list", Ta))
+zs = Var("zs", TConst("list", Ta))
 mk_if = logic.mk_if
 
 class PrinterTest(unittest.TestCase):

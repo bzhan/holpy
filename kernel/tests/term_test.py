@@ -3,7 +3,7 @@
 import unittest
 
 from kernel import type as hol_type
-from kernel.type import STVar, TVar, Type, TFun
+from kernel.type import STVar, TVar, TFun
 from kernel import term
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary
 from kernel.term import TermException, TypeCheckException

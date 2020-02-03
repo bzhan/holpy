@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType, NatType
+from kernel.type import TFun, BoolType, NatType
 from kernel import term
 from kernel.term import Term, Const, Not, Eq, Binary, Nat
 from kernel.thm import Thm

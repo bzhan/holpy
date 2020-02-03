@@ -3,7 +3,7 @@
 from copy import copy
 
 from kernel import type as hol_type
-from kernel.type import HOLType
+from kernel.type import Type
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
@@ -39,7 +39,7 @@ def commas_join(strs):
 @settings.with_settings
 def print_type(T):
     """Pretty-printing for types."""
-    typecheck.checkinstance('print_type', T, HOLType)
+    typecheck.checkinstance('print_type', T, Type)
 
     ast = pprint.get_ast_type(T)
     return pprint.print_ast(ast)
@@ -67,16 +67,16 @@ def print_thm(th):
 @settings.with_settings
 def print_extension(ext):
     typecheck.checkinstance('print_extension', ext, extension.Extension)
-    if ext.ty == extension.TYPE:
+    if ext.is_tconst():
         return "Type " + ext.name + " " + str(ext.arity)
-    elif ext.ty == extension.CONSTANT:
+    elif ext.is_constant():
         ref_str = " (" + ext.ref_name + ")" if ext.ref_name != ext.name else ""
         return "Constant " + ext.name + " :: " + print_type(ext.T) + ref_str
-    elif ext.ty == extension.THEOREM:
+    elif ext.is_theorem():
         return "Theorem " + ext.name + ": " + print_term(ext.th.prop)
-    elif ext.ty == extension.ATTRIBUTE:
+    elif ext.is_attribute():
         return "Attribute " + ext.name + " [" + ext.attribute + "]"
-    elif ext.ty == extension.OVERLOAD:
+    elif ext.is_overload():
         return "Overload " + ext.name
     else:
         raise TypeError
@@ -108,7 +108,7 @@ def print_str_args(rule, args, th):
                 return pprint.Gray("⟨goal⟩")
             else:
                 return print_term(val)
-        elif isinstance(val, HOLType):
+        elif isinstance(val, Type):
             return print_type(val)
         else:
             return pprint.N(str(val))

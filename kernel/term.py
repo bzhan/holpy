@@ -4,7 +4,7 @@ from collections import OrderedDict
 from copy import copy
 from fractions import Fraction
 
-from kernel.type import HOLType, TFun, BoolType, NatType, IntType, RealType
+from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType
 from util import typecheck
 
 
@@ -19,6 +19,9 @@ class TermException(Exception):
 class TypeCheckException(Exception):
     pass
 
+
+"""Default parser for terms. If None, Term() is unable to parse string."""
+term_parser = None
 
 """Default printer for terms. If None, Term.print_basic is used."""
 term_printer = None
@@ -1179,7 +1182,7 @@ def Real(r):
 def Sum(T, ts):
     """Compute the sum of a list of terms with type T."""
     ts = list(ts)  # Coerce generators to list
-    typecheck.checkinstance('Sum', T, HOLType, ts, [Term])
+    typecheck.checkinstance('Sum', T, Type, ts, [Term])
     if len(ts) == 0:
         return Const('zero', T)
     res = ts[0]
@@ -1190,7 +1193,7 @@ def Sum(T, ts):
 def Prod(T, ts):
     """Compute the product of a list of terms with type T."""
     ts = list(ts)  # Coerce generators to list
-    typecheck.checkinstance('Prod', T, HOLType, ts, [Term])
+    typecheck.checkinstance('Prod', T, Type, ts, [Term])
     if len(ts) == 0:
         return Const('one', T)
     res = ts[0]

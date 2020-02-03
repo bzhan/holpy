@@ -1,13 +1,13 @@
 # Author: Bohua Zhan
 
-from kernel.type import TFun, Type, NatType
+from kernel.type import TFun, TConst, NatType
 from kernel.term import Term, Const, Binary
 from data.list import listT, mk_literal_list, is_literal_list, dest_literal_list
 
 """Utility functions for characters and strings."""
 
-charT = Type("char")
-stringT = Type("string")
+charT = TConst("char")
+stringT = TConst("string")
 
 Char = Const("Char", TFun(NatType, charT))
 String = Const("String", TFun(listT(charT), stringT))

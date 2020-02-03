@@ -51,7 +51,7 @@ def convert_type(T):
             return tuple([domainT] + rangeT)
         else:
             return (domainT, rangeT)
-    elif T.is_type() and T.name == 'set':
+    elif T.is_tconst() and T.name == 'set':
         domainT = convert_type(T.args[0])
         if isinstance(domainT, tuple):
             raise Z3Exception("convert: unsupported type " + repr(T))

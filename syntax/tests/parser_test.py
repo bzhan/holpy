@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, HOLType, BoolType
+from kernel.type import TVar, TConst, TFun, Type, BoolType
 from kernel.term import Var, Term, And, Eq
 from kernel.thm import Thm
 from kernel.proof import ProofItem
@@ -41,7 +41,7 @@ class ParserTest(unittest.TestCase):
         basic.load_theory('list')
         for s in test_data:
             T = parser.parse_type(s)
-            self.assertIsInstance(T, HOLType)
+            self.assertIsInstance(T, Type)
             self.assertEqual(str(T), s)
 
     def testParseUnicodeType(self):
@@ -52,7 +52,7 @@ class ParserTest(unittest.TestCase):
         basic.load_theory('list')
         for s in test_data:
             T = parser.parse_type(s)
-            self.assertIsInstance(T, HOLType)
+            self.assertIsInstance(T, Type)
             self.assertEqual(print_type(T, unicode=True), s)
 
     def testParseTypeIsString(self):
@@ -417,7 +417,7 @@ class ParserTest(unittest.TestCase):
     def testParseTypeInd(self):
         test_data = [
             ("cons (x ::'a) (xs ::'a list)",
-             {'name': 'cons', 'type': [TVar('a'), Type('list', TVar('a'))], 'args': ['x', 'xs']}),
+             {'name': 'cons', 'type': [TVar('a'), TConst('list', TVar('a'))], 'args': ['x', 'xs']}),
         ]
 
         basic.load_theory('list')

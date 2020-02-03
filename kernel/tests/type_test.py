@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import STVar, TVar, Type, TFun, BoolType, TypeMatchException
+from kernel.type import STVar, TVar, TConst, TFun, BoolType, TypeMatchException
 
 Ta = TVar("a")
 Tb = TVar("b")
@@ -15,10 +15,10 @@ class TypeTest(unittest.TestCase):
     def testReprType(self):
         test_data = [
             (Ta, "TVar(a)"),
-            (Type("bool"), "Type(bool, [])"),
-            (Type("list", Ta), "Type(list, [TVar(a)])"),
-            (Type("tree", Ta, Tb), "Type(tree, [TVar(a), TVar(b)])"),
-            (Type("fun", Ta, Tb), "Type(fun, [TVar(a), TVar(b)])"),
+            (TConst("bool"), "TConst(bool, [])"),
+            (TConst("list", Ta), "TConst(list, [TVar(a)])"),
+            (TConst("tree", Ta, Tb), "TConst(tree, [TVar(a), TVar(b)])"),
+            (TConst("fun", Ta, Tb), "TConst(fun, [TVar(a), TVar(b)])"),
         ]
 
         for T, repr_T in test_data:
@@ -28,19 +28,19 @@ class TypeTest(unittest.TestCase):
         test_data = [
             (Ta, "'a"),
             (TVar("ab"), "'ab"),
-            (Type("bool"), "bool"),
-            (Type("list", Ta), "'a list"),
-            (Type("list", Type("list", Ta)), "'a list list"),
-            (Type("tree", Ta, Tb), "('a, 'b) tree"),
+            (TConst("bool"), "bool"),
+            (TConst("list", Ta), "'a list"),
+            (TConst("list", TConst("list", Ta)), "'a list list"),
+            (TConst("tree", Ta, Tb), "('a, 'b) tree"),
             (TFun(Ta, Tb), "'a => 'b"),
             (TFun(Ta, Tb, Tc), "'a => 'b => 'c"),
             (TFun(TFun(Ta, Tb), Tc), "('a => 'b) => 'c"),
-            (TFun(Type("list", Ta), Tb), "'a list => 'b"),
-            (TFun(Ta, Type("list", Tb)), "'a => 'b list"),
-            (Type("list", TFun(Ta, Tb)), "('a => 'b) list"),
-            (Type("list", Type("list", TFun(Ta, Tb))), "('a => 'b) list list"),
-            (TFun(Type("list", Ta), Type("list", Tb)), "'a list => 'b list"),
-            (Type("list", TFun(Type("list", Ta), Tb)), "('a list => 'b) list"),
+            (TFun(TConst("list", Ta), Tb), "'a list => 'b"),
+            (TFun(Ta, TConst("list", Tb)), "'a => 'b list"),
+            (TConst("list", TFun(Ta, Tb)), "('a => 'b) list"),
+            (TConst("list", TConst("list", TFun(Ta, Tb))), "('a => 'b) list list"),
+            (TFun(TConst("list", Ta), TConst("list", Tb)), "'a list => 'b list"),
+            (TConst("list", TFun(TConst("list", Ta), Tb)), "('a list => 'b) list"),
         ]
 
         for T, str_T in test_data:
@@ -62,7 +62,7 @@ class TypeTest(unittest.TestCase):
             (STa, {"b" : Tb}, STa),
             (TFun(STa, Tb), {"a" : Tb}, TFun(Tb, Tb)),
             (TFun(STa, STb), {"a" : Tb, "b" : Ta}, TFun(Tb, Ta)),
-            (Type("list", STa), {"a" : Tb}, Type("list", Tb)),
+            (TConst("list", STa), {"a" : Tb}, TConst("list", Tb)),
         ]
 
         for T, tyinst, res in test_data:

@@ -2,7 +2,7 @@
 
 from copy import copy
 
-from kernel.type import HOLType
+from kernel.type import Type
 from kernel import term
 from kernel import extension
 from kernel import theory
@@ -221,14 +221,14 @@ class FunType(AST):
 @settings.with_settings
 def get_ast_type(T):
     """Obtain the abstract syntax tree for a type."""
-    typecheck.checkinstance('get_ast_type', T, HOLType)
+    typecheck.checkinstance('get_ast_type', T, Type)
 
     def helper(T):
         if T.is_stvar():
             return STVarName(T.name)
         elif T.is_tvar():
             return TVarName(T.name)
-        elif T.is_type():
+        elif T.is_tconst():
             if len(T.args) == 0:
                 return TypeConstr(T.name, [])
             elif len(T.args) == 1:
@@ -596,7 +596,7 @@ def print_ast(ast, *, line_length=None):
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
-            add_normal(ast.name, link={'name': ast.link_name, 'ty': extension.CONSTANT})
+            add_normal(ast.name, link={'name': ast.link_name, 'ty': extension.Extension.CONSTANT})
         elif ast.ty == "number":
             add_normal(str(ast.n))
         elif ast.ty == "list":
@@ -616,7 +616,7 @@ def print_ast(ast, *, line_length=None):
                 rec(e)
             add_normal("}")
         elif ast.ty == "operator":
-            add_normal(ast.symbol, link={'name': ast.link_name, 'ty': extension.CONSTANT})
+            add_normal(ast.symbol, link={'name': ast.link_name, 'ty': extension.Extension.CONSTANT})
         elif ast.ty == "binary_op":
             if line_length and print_length(print_ast(ast)) > line_length:
                 if ast.op.symbol in ("-->", "⟶"):

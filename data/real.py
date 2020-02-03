@@ -5,7 +5,7 @@ import math
 import sympy
 from sympy.ntheory.factor_ import factorint
 
-from kernel.type import Type, TFun, BoolType, RealType
+from kernel.type import TFun, BoolType, RealType
 from kernel import term
 from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm

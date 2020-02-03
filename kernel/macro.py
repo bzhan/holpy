@@ -2,10 +2,10 @@
 
 from typing import Dict
 
-from kernel.type import HOLType
+from kernel.type import Type
 from kernel.term import Term
 
-TyInst = Dict[str, HOLType]
+TyInst = Dict[str, Type]
 Inst = Dict[str, Term]
 
 

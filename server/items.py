@@ -3,7 +3,7 @@
 import traceback2
 import itertools
 
-from kernel.type import TVar, Type, TFun, BoolType
+from kernel.type import TVar, TConst, TFun, BoolType
 from kernel import term
 from kernel.term import Term, Var, Const, And, Implies, Not, Eq, Forall
 from kernel.thm import Thm
@@ -636,13 +636,13 @@ class AxType(Item):
     def get_extension(self):
         assert self.error is None, "get_extension"
         res = []
-        res.append(extension.Type(self.name, len(self.args)))
+        res.append(extension.TConst(self.name, len(self.args)))
         return res
 
     @settings.with_settings
     def get_display(self, line_length=80):
         Targs = [TVar(arg) for arg in self.args]
-        T = Type(self.name, *Targs)
+        T = TConst(self.name, *Targs)
         return {
             'ty': 'type.ax',
             'type': printer.print_type(T)
@@ -716,7 +716,7 @@ class Datatype(Item):
         res = []
 
         # Add to type and term signature.
-        res.append(extension.Type(self.name, len(self.args)))
+        res.append(extension.TConst(self.name, len(self.args)))
         for constr in self.constrs:
             res.append(extension.Constant(constr['name'], constr['type'], ref_name=constr['cname']))
 
@@ -753,7 +753,7 @@ class Datatype(Item):
 
         # Add the inductive theorem.
         tvars = [TVar(targ) for targ in self.args]
-        T = Type(self.name, *tvars)
+        T = TConst(self.name, *tvars)
         var_P = Var("P", TFun(T, BoolType))
         ind_assums = []
         for constr in self.constrs:
@@ -776,7 +776,7 @@ class Datatype(Item):
     @settings.with_settings
     def get_display(self, line_length=80):
         Targs = [TVar(arg) for arg in self.args]
-        T = Type(self.name, *Targs)
+        T = TConst(self.name, *Targs)
         constrs = []
         for constr in self.constrs:
             argsT, _ = constr['type'].strip_type()

@@ -1,6 +1,5 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type
 from kernel import term
 from kernel.term import Term, Var, Bound
 from kernel.thm import Thm, InvalidDerivationException

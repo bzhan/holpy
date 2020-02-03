@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import Type, TVar, TFun, BoolType
+from kernel.type import TConst, TVar, TFun, BoolType
 from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
@@ -73,14 +73,14 @@ class TheoryTest(unittest.TestCase):
 
     def testCheckTypeFail(self):
         test_data = [
-            Type("bool", Ta),
-            Type("bool", Ta, Ta),
-            Type("fun"),
-            Type("fun", Ta),
-            Type("fun", Ta, Ta, Ta),
-            TFun(Type("bool", Ta), Type("bool")),
-            TFun(Type("bool"), Type("bool", Ta)),
-            Type("random")
+            TConst("bool", Ta),
+            TConst("bool", Ta, Ta),
+            TConst("fun"),
+            TConst("fun", Ta),
+            TConst("fun", Ta, Ta, Ta),
+            TFun(TConst("bool", Ta), TConst("bool")),
+            TFun(TConst("bool"), TConst("bool", Ta)),
+            TConst("random")
         ]
 
         for T in test_data:
@@ -307,7 +307,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckedExtend3(self):
         """Axiomatized constant."""
         exts = [
-            extension.Type("nat", 0),
+            extension.TConst("nat", 0),
             extension.Constant("id", TFun(Ta,Ta))
         ]
         ext_report = theory.thy.checked_extend(exts)

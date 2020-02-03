@@ -79,7 +79,7 @@ def type_infer(t, *, forbid_internal=True):
             T2 = uf[int(T2.name[2:])]
 
         # Type constructors, recursively unify each argument
-        if T1.is_type() and T2.is_type() and T1.name == T2.name:
+        if T1.is_tconst() and T2.is_tconst() and T1.name == T2.name:
             for i in range(len(T1.args)):
                 unify(T1.args[i], T2.args[i])
 

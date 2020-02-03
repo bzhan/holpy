@@ -1,12 +1,12 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, Type, TFun, NatType
+from kernel.type import TVar, TConst, TFun, NatType
 from kernel.term import Term, Const
 
 """Utility functions for lists."""
 
 def listT(T):
-    return Type("list", T)
+    return TConst("list", T)
 
 def nil(T):
     if T is None:

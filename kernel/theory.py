@@ -4,7 +4,7 @@ from copy import copy
 from typing import Tuple
 import contextlib
 
-from kernel.type import HOLType, TVar, TFun, BoolType, TypeMatchException
+from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
@@ -150,7 +150,7 @@ class Theory():
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
 
             for _, v in sorted(inst.items()):
-                if not v.is_type():
+                if not v.is_tconst():
                     raise TheoryException("When overloading %s with %s: cannot instantiate to type variables" % (aT, T))
         else:
             # Make sure this name does not already occur in the theory
@@ -244,7 +244,7 @@ class Theory():
 
             baseT = []
             for _, v in sorted(inst.items()):
-                if v.is_type():
+                if v.is_tconst():
                     baseT.append(v)
 
             T_name = "_".join(T.name for T in baseT)
@@ -260,7 +260,7 @@ class Theory():
         """
         if T.is_stvar() or T.is_tvar():
             return None
-        elif T.is_type():
+        elif T.is_tconst():
             if not self.has_type_sig(T.name):
                 raise TheoryException("Unknown type %s" % T.name)        
             if self.get_type_sig(T.name) != len(T.args):
@@ -430,7 +430,7 @@ class Theory():
         if name == "theorem":
             return str
         elif name == "variable":
-            return Tuple[str, HOLType]
+            return Tuple[str, Type]
         elif name == "sorry" or name == "subproof":
             return None
         elif name in primitive_deriv:
@@ -442,34 +442,34 @@ class Theory():
 
     def extend_type(self, ext):
         """Extend the theory by adding a type."""
-        assert ext.ty == extension.TYPE, "extend_type"
+        assert ext.is_tconst(), "extend_type"
 
         self.add_type_sig(ext.name, ext.arity)
 
     def extend_constant(self, ext):
         """Extend the theory by adding a constant."""
-        assert ext.ty == extension.CONSTANT, "extend_constant"
+        assert ext.is_constant(), "extend_constant"
 
         self.add_term_sig(ext.name, ext.T)
 
     def extend_attribute(self, ext):
         """Extend the theory by adding an attribute."""
-        assert ext.ty == extension.ATTRIBUTE, "extend_attribute"
+        assert ext.is_attribute(), "extend_attribute"
 
         self.add_attribute(ext.name, ext.attribute)
 
     def unchecked_extend(self, exts):
         """Perform the given theory extension without proof checking."""
         for ext in exts:
-            if ext.ty == extension.TYPE:
+            if ext.is_tconst():
                 self.extend_type(ext)
-            elif ext.ty == extension.CONSTANT:
+            elif ext.is_constant():
                 self.extend_constant(ext)
-            elif ext.ty == extension.THEOREM:
+            elif ext.is_theorem():
                 self.add_theorem(ext.name, ext.th)
-            elif ext.ty == extension.ATTRIBUTE:
+            elif ext.is_attribute():
                 self.extend_attribute(ext)
-            elif ext.ty == extension.OVERLOAD:
+            elif ext.is_overload():
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError
@@ -479,20 +479,20 @@ class Theory():
         ext_report = ExtensionReport()
 
         for ext in exts:
-            if ext.ty == extension.TYPE:
+            if ext.is_tconst():
                 self.extend_type(ext)
-            elif ext.ty == extension.CONSTANT:
+            elif ext.is_constant():
                 self.extend_constant(ext)
-            elif ext.ty == extension.THEOREM:
+            elif ext.is_theorem():
                 if ext.prf:
                     self.check_proof(ext.prf)
                 else:  # No proof - add as axiom
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
-            elif ext.ty == extension.ATTRIBUTE:
+            elif ext.is_attribute():
                 self.extend_attribute(ext)
-            elif ext.ty == extension.OVERLOAD:
+            elif ext.is_overload():
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError

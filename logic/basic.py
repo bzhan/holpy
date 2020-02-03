@@ -166,7 +166,7 @@ def load_theory_cache(filename, username="master"):
                 exts = item.get_extension()
                 theory.thy.unchecked_extend(exts)
                 for ext in exts:
-                    if ext.ty == extension.CONSTANT:
+                    if ext.is_constant():
                         name = ext.ref_name
                     else:
                         name = ext.name

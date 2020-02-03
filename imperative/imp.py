@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType
+from kernel.type import TConst, TFun, BoolType
 from kernel.term import Term, Var, Const, Lambda, true
 from kernel.thm import Thm
 from kernel.macro import global_macros
@@ -20,7 +20,7 @@ from prover import z3wrapper
 """Automation for Hoare logic."""
 
 def comT(T):
-    return Type("com", T)
+    return TConst("com", T)
 
 def Skip(T):
     return Const("Skip", comT(T))
