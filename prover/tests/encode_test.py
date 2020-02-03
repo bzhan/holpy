@@ -5,7 +5,6 @@ from kernel.term import Term, Var, Implies, And, Or
 from kernel import report
 from kernel import theory
 from logic import basic
-from syntax import printer
 from prover import encode
 
 a = Var('a', BoolType)

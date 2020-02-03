@@ -11,7 +11,6 @@ from data import nat
 from data import expr
 from data import function
 from data.expr import N, V, Plus, Times
-from syntax import printer
 
 
 zero = nat.zero

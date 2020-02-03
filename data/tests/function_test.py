@@ -10,7 +10,6 @@ from logic import basic
 from data import nat
 from data import function
 from data.function import mk_fun_upd, strip_fun_upd
-from syntax import printer
 
 Ta = TVar("a")
 Tb = TVar("b")

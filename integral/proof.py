@@ -18,7 +18,6 @@ from data import nat
 from data import real
 from data.real import pi
 from data.integral import netT
-from syntax import printer
 from integral.expr import Expr, Location
 from integral.parser import parse_expr
 
@@ -400,8 +399,7 @@ class simplify_rewr_conv(Conv):
         target_eq = refl(self.target).on_rhs(auto.auto_conv(conds=conds))
 
         if target_eq.rhs != t_eq.rhs:
-            raise ConvException("simplify_rewr_conv: %s != %s" % (
-                printer.print_term(target_eq.rhs), printer.print_term(t_eq.rhs)))
+            raise ConvException("simplify_rewr_conv: %s != %s" % (target_eq.rhs, t_eq.rhs))
 
         return t_eq.transitive(target_eq.symmetric())
 
@@ -966,7 +964,7 @@ def translate_item(item, target=None, *, debug=False):
     prev_pts = [pt]
 
     if debug:
-        print("\n%s: %s" % (item['name'], printer.print_term(pt.rhs)))
+        print("\n%s: %s" % (item['name'], pt.rhs))
 
     for step in item['calc']:
         if 'location' in step:
@@ -1070,9 +1068,7 @@ def translate_item(item, target=None, *, debug=False):
             eq_pt1 = refl(expected).on_rhs(auto.auto_conv())
             eq_pt2 = refl(pt.rhs).on_rhs(auto.auto_conv())
             if eq_pt1.rhs != eq_pt2.rhs:
-                print("Unequal right side.\nExpected: %s\nGot:      %s" % (
-                    printer.print_term(eq_pt1.rhs), printer.print_term(eq_pt2.rhs)
-                ))
+                print("Unequal right side.\nExpected: %s\nGot:      %s" % (eq_pt1.rhs, eq_pt2.rhs))
                 raise AssertionError
             else:
                 pt = pt.transitive(eq_pt2, eq_pt1.symmetric())
@@ -1080,15 +1076,14 @@ def translate_item(item, target=None, *, debug=False):
         pt = ProofTermDeriv("transitive", None, [pt, ProofTerm.reflexive(expected)])
 
         if debug:
-            print("= %s" % printer.print_term(pt.rhs))
+            print("= %s" % pt.rhs)
         prev_pts.append(pt)
 
     assert pt.lhs == init, "translate_item: wrong left side."
     if target is not None:
         target = expr_to_holpy(parse_expr(target))
-        assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
-            printer.print_term(target), printer.print_term(pt.rhs))
+        assert pt.rhs == target, "translate_item. Expected %s, got %s" % (target, pt.rhs)
     elif not debug:
-        print(printer.print_term(pt.rhs))
+        print(pt.rhs)
 
     return pt

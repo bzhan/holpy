@@ -10,7 +10,6 @@ from data import nat
 from data import interval
 from data import set
 from logic import basic
-from syntax import printer
 
 
 class IntervalTest(unittest.TestCase):

@@ -8,6 +8,10 @@ class TypeMatchException(Exception):
     pass
 
 
+"""Default printer for types. If None, HOLType.print_basic is used."""
+type_printer = None
+
+
 class HOLType():
     """Represents a type in higher-order logic.
     
@@ -92,7 +96,8 @@ class HOLType():
         else:
             return ([], self)
         
-    def __str__(self):
+    def print_basic(self):
+        """Basic printing function for types."""
         if self.is_stvar():
             return "'?" + self.name
         elif self.is_tvar():
@@ -117,6 +122,12 @@ class HOLType():
                 return "(%s) %s" % (", ".join(str(t) for t in self.args), self.name)
         else:
             raise TypeError
+
+    def __str__(self):
+        if type_printer is None:
+            return self.print_basic()
+        else:
+            return type_printer(self)
 
     def __repr__(self):
         if self.is_stvar():
@@ -171,6 +182,15 @@ class HOLType():
             return self.name < other.name
         elif self.is_type():
             return (self.name, self.args) < (other.name, other.args)
+        else:
+            raise TypeError
+
+    def size(self):
+        """Return the size of the type."""
+        if self.is_stvar() or self.is_tvar():
+            return 1
+        elif self.is_type():
+            return 1 + sum(T.size() for T in self.args)
         else:
             raise TypeError
 
@@ -301,7 +321,7 @@ def TFun(*args):
     return res
 
 
-"""Boolean type."""
+# Boolean type
 BoolType = Type("bool")
 
 # Numeral types

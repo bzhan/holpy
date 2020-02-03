@@ -20,6 +20,10 @@ class TypeCheckException(Exception):
     pass
 
 
+"""Default printer for terms. If None, Term.print_basic is used."""
+term_printer = None
+
+
 class Term():
     """Represents a term in higher-order logic.
     
@@ -111,8 +115,8 @@ class Term():
         """Return whether the term is a bound variable."""
         return self.ty == Term.BOUND
 
-    def __str__(self):
-        """Printing function for terms. Note we do not yet handle collision
+    def print_basic(self):
+        """Basic printing function for terms. Note we do not yet handle collision
         in lambda terms.
 
         """
@@ -146,6 +150,12 @@ class Term():
                 raise TypeError
 
         return helper(self, [])
+
+    def __str__(self):
+        if term_printer is None:
+            return self.print_basic()
+        else:
+            return term_printer(self)
 
     def __repr__(self):
         if self.is_svar():
@@ -228,6 +238,19 @@ class Term():
         for arg in args:
             res = Comb(res, arg)
         return res
+
+    def size(self):
+        """Return the size of the term."""
+        if self.is_svar() or self.is_var() or self.is_const():
+            return 1
+        elif self.is_comb():
+            return 1 + self.fun.size() + self.arg.size()
+        elif self.is_abs():
+            return 1 + self.body.size()
+        elif self.is_bound():
+            return 1
+        else:
+            raise TypeError
 
     def _get_type(self, bd_vars):
         """Helper function for get_type. bd_vars is the list of types of

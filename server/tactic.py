@@ -10,7 +10,6 @@ from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, beta_norm_conv
     top_sweep_conv, has_rewrite
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
-from syntax import printer
 
 
 class Tactic:

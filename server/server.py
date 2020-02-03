@@ -13,7 +13,7 @@ from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import context
-from syntax import parser, printer, pprint
+from syntax import parser, printer
 from syntax import settings
 from logic.context import Context
 from server import tactic

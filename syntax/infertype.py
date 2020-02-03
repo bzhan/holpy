@@ -158,9 +158,9 @@ def type_infer(t, *, forbid_internal=True):
                     return resT
             except TypeInferenceException as e:
                 err_str = e.err + '\n'
-                err_str += "When infering type of " + str(t) + "\n"
-                err_str += "Type of %s: %s\n" % (t.fun, str(funT))
-                err_str += "Type of %s: %s\n" % (t.arg, str(argT))
+                err_str += "When infering type of " + t.print_basic() + "\n"
+                err_str += "Type of %s: %s\n" % (t.fun, funT.print_basic())
+                err_str += "Type of %s: %s\n" % (t.arg, argT.print_basic())
                 raise TypeInferenceException(err_str)
 
         # Abs case: if var_T is not known, make a new type. Recursively
@@ -265,16 +265,16 @@ def infer_printed_type(t):
                 replT = t.get_type()
                 if t.is_comb():
                     t = t.fun
-                if to_replace is None or len(str(replT)) < len(str(to_replaceT)):
+                if to_replace is None or replT.size() < to_replaceT.size():
                     to_replace = t
                     to_replaceT = replT
             elif t.is_const() and has_internalT(t.T):
-                if to_replace is None or len(str(t.T)) < len(str(to_replaceT)):
+                if to_replace is None or t.T.size() < to_replaceT.size():
                     to_replace = t
                     to_replaceT = t.T
             elif t.is_abs():
                 if has_internalT(t.var_T):
-                    if to_replace is None or len(str(t.var_T)) < len(str(to_replaceT)):
+                    if to_replace is None or t.var_T.size() < to_replaceT.size():
                         to_replace = t
                         to_replaceT = t.var_T
                 find_to_replace(t.body)

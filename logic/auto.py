@@ -9,7 +9,6 @@ from logic.logic import apply_theorem, TacticException
 from logic import matcher
 from logic.conv import Conv, ConvException, refl, eta_conv, top_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
-from syntax import printer
 from util import name
 
 
@@ -63,8 +62,7 @@ def solve(goal, pts=None):
 
     """
     if debug_auto:
-        print("Solve:", printer.print_term(goal),
-              [printer.print_term(pt.prop) for pt in pts])
+        print("Solve:", goal, [str(pt.prop) for pt in pts])
 
     if pts is None:
         pts = []
@@ -144,8 +142,7 @@ def solve(goal, pts=None):
             try:
                 pt = f(goal, pts)
                 if eq_pt.rhs != pt.prop:
-                    raise AssertionError("auto solve: %s != %s" % (
-                        printer.print_term(eq_pt.prop), printer.print_term(pt.prop)))
+                    raise AssertionError("auto solve: %s != %s" % (eq_pt.prop, pt.prop))
                 return eq_pt.symmetric().equal_elim(pt)
             except TacticException:
                 pass
@@ -189,8 +186,7 @@ def norm(t, pts=None):
 
     """
     if debug_auto:
-        print("Norm:", printer.print_term(t),
-              [printer.print_term(pt.prop) for pt in pts])
+        print("Norm:", t, [str(pt.prop) for pt in pts])
 
     # Do not normalize variables and abstractions
     if t.is_var() or t.is_abs():

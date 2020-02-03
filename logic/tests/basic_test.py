@@ -12,7 +12,6 @@ from logic import basic
 from logic import logic
 from data import nat
 from data import set
-from syntax import printer
 
 
 class BasicTest(unittest.TestCase):

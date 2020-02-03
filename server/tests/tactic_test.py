@@ -11,7 +11,6 @@ from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
 from server import tactic
 from syntax import parser
-from syntax import printer
 from logic import context
 
 

@@ -14,7 +14,6 @@ from logic import context
 from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
-from syntax import printer
 
 natFunT = TFun(NatType, NatType)
 Sem = imp.Sem(natFunT)

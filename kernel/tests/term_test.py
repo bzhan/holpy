@@ -2,6 +2,7 @@
 
 import unittest
 
+from kernel import type as hol_type
 from kernel.type import STVar, TVar, Type, TFun
 from kernel import term
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary
@@ -24,6 +25,13 @@ B0 = Bound(0)
 B1 = Bound(1)
 
 class TermTest(unittest.TestCase):
+    def setUp(self):
+        self.type_printer, self.term_printer = hol_type.type_printer, term.term_printer
+        hol_type.type_printer, term.term_printer = None, None
+
+    def tearDown(self):
+        hol_type.type_printer, term.term_printer = self.type_printer, self.term_printer
+
     def testReprTerm(self):
         test_data = [
             (a, "Var(a,'a)"),

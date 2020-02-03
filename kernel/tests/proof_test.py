@@ -2,7 +2,9 @@
 
 import unittest
 
+from kernel import type as hol_type
 from kernel.type import BoolType
+from kernel import term
 from kernel.term import Term, Var, Implies
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID
@@ -12,6 +14,13 @@ B = Var("B", BoolType)
 A_to_B = Implies(A,B)
 
 class ProofTest(unittest.TestCase):
+    def setUp(self):
+        self.type_printer, self.term_printer = hol_type.type_printer, term.term_printer
+        hol_type.type_printer, term.term_printer = None, None
+
+    def tearDown(self):
+        hol_type.type_printer, term.term_printer = self.type_printer, self.term_printer
+
     def testIncrIdAfter(self):
         test_data = [
             (("0", "0", 1), "1"),

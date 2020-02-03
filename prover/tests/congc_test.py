@@ -118,7 +118,7 @@ class CongClosureHOLTest(unittest.TestCase):
                 prf = closure.explain(s, t).export()
                 self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(s, t)))
                 if verbose:
-                    print("Proof of %s" % printer.print_term(Eq(s, t)))
+                    print("Proof of %s" % Eq(s, t))
                     print(printer.print_proof(prf))
             elif item[0] == MATCH:
                 _, pat, t, res = item

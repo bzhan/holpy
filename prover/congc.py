@@ -12,7 +12,6 @@ from kernel import term
 from kernel.term import Eq
 from kernel.thm import Thm
 from logic.proofterm import ProofTerm
-from syntax import printer
 
 EQ_CONST, EQ_COMB = range(2)
 
@@ -366,8 +365,7 @@ class CongClosureHOL:
         self.pts = {}
 
     def __str__(self):
-        index = "\n".join("%s: %s" % (s, printer.print_term(t))
-                          for s, t in self.index.items())
+        index = "\n".join("%s: %s" % (s, t) for s, t in self.index.items())
         return "Index:\n" + index + "\nClosure:\n" + str(self.closure)
 
     def add_const(self, t):

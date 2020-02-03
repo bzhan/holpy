@@ -10,7 +10,6 @@ from data import nat
 from data import function
 from paraverifier import gcl
 from paraverifier.gcl import Para, Ident, NatV, BoolV
-from syntax import printer
 
 
 zero = nat.zero

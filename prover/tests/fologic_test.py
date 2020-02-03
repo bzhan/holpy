@@ -5,7 +5,6 @@ import unittest
 from kernel.type import BoolType, TFun, TVar
 from logic import basic
 from syntax import parser
-from syntax import printer
 from logic import context
 from prover import fologic
 

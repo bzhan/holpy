@@ -69,12 +69,12 @@ class ParaSystem():
         for i, rule in enumerate(self.rules):
             _, guard, assigns = rule
             assigns_str = ", ".join("%s := %s" % (str(k), str(v)) for k, v in assigns.items())
-            res += "%d: [%s] %s" % (i, printer.print_term(guard), assigns_str) + "\n"
+            res += "%d: [%s] %s" % (i, guard, assigns_str) + "\n"
 
         res += "Number of invariants: %d\n" % len(self.invs)
         for i, inv in enumerate(self.invs):
             _, inv_term = inv
-            res += "%d: %s" % (i, printer.print_term(inv_term)) + "\n"
+            res += "%d: %s" % (i, inv_term) + "\n"
 
         return res
 
@@ -213,20 +213,20 @@ class ParaSystem():
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
         for ind_A in ind_As[1:-1]:
-            # print("ind_A: ", printer.print_term(ind_A))
+            # print("ind_A: ", ind_A)
             vars, As, C = logic.strip_all_implies(ind_A, ["s", "k"])
             # for A in As:
-            #     print("A: ", printer.print_term(A))
-            # print("C: ", printer.print_term(C))
+            #     print("A: ", A)
+            # print("C: ", C)
             eq1 = ProofTerm.assume(As[0])
             eq2 = ProofTerm.assume(As[1])
             guard = ProofTerm.assume(As[2])
             inv_pre = ProofTerm.assume(As[3]).on_arg(rewr_conv(eq1)).on_prop(rewr_conv("inv_def"))
             C_goal = ProofTerm.assume(C).on_arg(rewr_conv(eq2)).on_prop(rewr_conv("inv_def"))
             # for t in inv_pre.prop.strip_conj():
-            #     print("inv_pre: ", printer.print_term(t))
+            #     print("inv_pre: ", t)
             # for t in C_goal.prop.strip_conj():
-            #     print("C_goal: ", printer.print_term(t))
+            #     print("C_goal: ", t)
 
 
 def load_system(filename):

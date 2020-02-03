@@ -2,7 +2,9 @@
 
 from copy import copy
 
+from kernel import type as hol_type
 from kernel.type import HOLType
+from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
 from kernel import extension
@@ -171,3 +173,8 @@ def print_instsp(instsp):
     """Print a pair of type and term instantiations."""
     tyinst, inst = instsp
     return print_tyinst(tyinst) + ", " + print_inst(inst)
+
+
+# Set up default printing functions
+hol_type.type_printer = print_type
+term.term_printer = print_term
