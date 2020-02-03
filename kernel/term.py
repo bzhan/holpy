@@ -527,10 +527,10 @@ class Term():
         term t1[t2/x] which is beta-equivalent.
 
         """
-        if self.is_comb():
+        if self.is_comb() and self.fun.is_abs():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermException("beta_conv: input is not a combination.")
+            raise TermException("beta_conv: input is not in the form (%x. t1) t2.")
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
