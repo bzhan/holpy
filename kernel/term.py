@@ -73,6 +73,18 @@ class Term():
     # ty values for distinguishing between Term objects.
     SVAR, VAR, CONST, COMB, ABS, BOUND = range(6)
 
+    def __init__(self, arg):
+        if not isinstance(arg, Term):
+            if term_parser is not None:
+                t = term_parser(arg)
+            else:
+                raise TermException('Term: parser not found.')
+        else:
+            t = arg
+        
+        # Now copy the content of t onto self
+        self.__dict__.update(t.__dict__)
+
     def is_svar(self):
         return self.ty == Term.SVAR
 

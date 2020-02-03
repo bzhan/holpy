@@ -4,6 +4,7 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
+from kernel import type as hol_type
 from kernel.type import Type, STVar, TVar, TConst, TFun, BoolType, NatType
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary
 from kernel import macro
@@ -537,3 +538,7 @@ def parse_proof_rule(data):
     sig = theory.thy.get_proof_rule_sig(rule)
     args = parse_args(sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
+
+
+hol_type.type_parser = parse_type
+term.term_parser = parse_term

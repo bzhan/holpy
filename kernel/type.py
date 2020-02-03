@@ -4,6 +4,15 @@ from collections import OrderedDict
 from util import typecheck
 
 
+class TypeException(Exception):
+    """Indicates error in processing types."""
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+
 class TypeMatchException(Exception):
     pass
 
@@ -61,7 +70,19 @@ class Type():
     """
     # ty values for distinguishing between Type objects.
     STVAR, TVAR, TCONST = range(3)
-    
+
+    def __init__(self, arg):
+        if not isinstance(arg, Type):
+            if type_parser is not None:
+                T = type_parser(arg)
+            else:
+                raise TypeException('Type: parser not found.')
+        else:
+            T = arg
+
+        # Now copy the content of T onto self
+        self.__dict__.update(T.__dict__)
+
     def is_stvar(self):
         """Return whether self is a schematic type variable."""
         return self.ty == Type.STVAR

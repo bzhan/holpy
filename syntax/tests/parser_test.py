@@ -60,6 +60,13 @@ class ParserTest(unittest.TestCase):
         a = parser.parse_type('bool')
         self.assertEqual(type(a.name), str)
 
+    def testParseConstructor(self):
+        T = Type("'a => 'b")
+        self.assertEqual(T, TFun(TVar('a'), TVar('b')))
+
+        t = Term("(A::bool)")
+        self.assertEqual(t, Var('A', BoolType))
+
     def run_test(self, thy_name, *, vars=None, svars=None, s, Ts, unicode=False):
         context.set_context(thy_name, vars=vars, svars=svars)
 
