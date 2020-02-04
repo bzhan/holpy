@@ -4,7 +4,7 @@ from collections import OrderedDict, UserDict
 from copy import copy
 from fractions import Fraction
 
-from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst
+from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
 from util import typecheck
 
 
@@ -329,9 +329,17 @@ class Term():
                 raise TypeError
         return rec(self, 0)
 
-    def subst_type(self, tyinst):
-        """Perform substitution on type variables."""
-        typecheck.checkinstance('subst_type', tyinst, TyInst)
+    def subst_type(self, tyinst=None, **kwargs):
+        """Perform substitution on type variables.
+        
+        Parameters
+        ==========
+        tyinst : TyInst
+            Type instantiation to be substituted.
+
+        """
+        if tyinst is None:
+            tyinst = TyInst(**kwargs)
         if self.is_svar():
             return SVar(self.name, self.T.subst(tyinst))
         elif self.is_var():
@@ -365,35 +373,47 @@ class Term():
         else:
             raise TypeError
 
-    def subst(self, inst):
+    def subst(self, inst=None, **kwargs):
         """Perform substitution on term variables.
 
-        Here inst must be a dictionary mapping from variable names to the
-        substituted term. The type of the substituted term must match *exactly*
-        the type of the variable. If substitution on types is needed, it should
-        be performed before calling subst.
+        Parameters
+        ==========
+        inst : Inst
+            Instantiation to be substituted.
 
         """
-        typecheck.checkinstance('subst', inst, Inst)
-        if self.is_svar():
-            if self.name in inst:
-                t = inst[self.name]
-                if t.get_type() == self.T:
-                    return inst[self.name]
+        if inst is None:
+            inst = Inst(**kwargs)
+
+        # First match type variables.
+        svars = get_svars(self)
+        for v in svars:
+            if v.name in inst:
+                try:
+                    inst_T = inst[v.name].get_type()
+                    v.T.match_incr(inst_T, inst.tyinst)
+                except TypeMatchException:
+                    raise TermException("subst: type " + str(v.T) + " cannot match " + str(inst_T))
+
+        # Now apply substitution recursively.
+        def rec(t):
+            if t.is_svar():
+                if t.name in inst:
+                    return inst[t.name]
                 else:
-                    raise TermException("Type " + str(t.get_type()) + " != " + str(self.T))
+                    return t
+            elif t.is_var() or t.is_const():
+                return t
+            elif t.is_comb():
+                return Comb(rec(t.fun), rec(t.arg))
+            elif t.is_abs():
+                return Abs(t.var_name, t.var_T, rec(t.body))
+            elif t.is_bound():
+                return t
             else:
-                return self
-        elif self.is_var() or self.is_const():
-            return self
-        elif self.is_comb():
-            return Comb(self.fun.subst(inst), self.arg.subst(inst))
-        elif self.is_abs():
-            return Abs(self.var_name, self.var_T, self.body.subst(inst))
-        elif self.is_bound():
-            return self
-        else:
-            raise TypeError
+                raise TypeError
+
+        return rec(self.subst_type(inst.tyinst))
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
@@ -568,12 +588,14 @@ class Term():
         else:
             raise TypeError
 
-    def subst_norm(self, inst):
+    def subst_norm(self, inst=None, **kwargs):
         """Substitute using the given instantiation, then normalize with
         respect to beta-conversion.
 
         """
-        return self.subst_type(inst.tyinst).subst(inst).beta_norm()
+        if inst is None:
+            inst = Inst(**kwargs)
+        return self.subst(inst).beta_norm()
 
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""
@@ -1092,46 +1114,65 @@ def Implies(*args):
         res = implies(s, res)
     return res
 
-def Lambda(x, body):
-    """Construct the term lambda x. body.
+def Lambda(*args):
+    """Construct the term %x_1 ... x_n. body.
     
-    Here x must be a variable (or schematic variable) and body is a term
-    possibly depending on x.
+    The arguments are x_1, ..., x_n, body.
+
+    Here x_1, ..., x_n must be variables (or schematic variable) and
+    body is a term possibly depending on x_1, ..., x_n.
     
     """
-    typecheck.checkinstance('Lambda', x, Term, body, Term)
-    if not (x.is_var() or x.is_svar()):
-        raise TermException("Lambda: x must be a variable. Got %s" % str(x))
-    return Abs(x.name, x.T, body.abstract_over(x))
+    typecheck.checkinstance('Lambda', args, [Term])
+    if len(args) < 2:
+        raise TermException("Lambda: must provide two terms.")
+    body = args[-1]
+    for x in reversed(args[:-1]):
+        if not (x.is_var() or x.is_svar()):
+            raise TermException("Lambda: x must be a variable. Got %s" % str(x))
+        body = Abs(x.name, x.T, body.abstract_over(x))
+    return body
 
 def forall(T):
     return Const("all", TFun(TFun(T, BoolType), BoolType))
  
-def Forall(x, body):
-    """Construct the term !x. body.
+def Forall(*args):
+    """Construct the term !x_1 ... x_n. body.
     
-    Here x must be a variable (or schematic variable) and body is a term
-    possibly depending on x.
+    The arguments are x_1, ..., x_n, body.
+
+    Here x_1, ..., x_n must be variables (or schematic variable) and
+    body is a term possibly depending on x_1, ..., x_n.
 
     """
-    typecheck.checkinstance('Forall', x, Term, body, Term)
-    if not (x.is_var() or x.is_svar()):
-        raise TermException("Forall: x must be a variable. Got %s" % str(x))
-    return forall(x.T)(Lambda(x, body))
+    typecheck.checkinstance('Forall', args, [Term])
+    if len(args) < 2:
+        raise TermException("Forall: must provide two terms.")
+    body = args[-1]
+    for x in reversed(args[:-1]):
+        if not (x.is_var() or x.is_svar()):
+            raise TermException("Forall: x must be a variable. Got %s" % str(x))
+        body = forall(x.T)(Lambda(x, body))
+    return body
 
 def exists(T):
     return Const("exists", TFun(TFun(T, BoolType), BoolType))
 
-def Exists(x, body):
+def Exists(*args):
     """Construct the term EX x. body.
     
     Here x must be a variable and body is a term possibly depending on x.
     
     """
-    typecheck.checkinstance('Exists', x, Term, body, Term)
-    if not x.is_var():
-        raise TermException("Exists: x must be a variable. Got %s" % str(x))
-    return exists(x.T)(Lambda(x, body))
+    typecheck.checkinstance('Forall', args, [Term])
+    if len(args) < 2:
+        raise TermException("Forall: must provide two terms.")
+    body = args[-1]
+    for x in reversed(args[:-1]):
+        if not (x.is_var() or x.is_svar()):
+            raise TermException("Forall: x must be a variable. Got %s" % str(x))
+        body = exists(x.T)(Lambda(x, body))
+    return body
 
 
 def plus(T):

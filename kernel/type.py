@@ -25,7 +25,7 @@ class TypeMatchException(Exception):
 class TyInst(UserDict):
     """Instantiation of schematic type variables."""
     def __str__(self):
-        return ', '.join('%s := %s' % (nm, T) for nm, T in self.items())
+        return ', '.join("'%s := %s" % (nm, T) for nm, T in self.items())
 
     def __copy__(self):
         return TyInst(self)
@@ -232,7 +232,7 @@ class Type():
         else:
             raise TypeError
 
-    def subst(self, tyinst):
+    def subst(self, tyinst=None, **kwargs):
         """Simultaneously substitute for the type variables using tyinst.
         
         Parameters
@@ -241,7 +241,8 @@ class Type():
             Type instantiation to be substituted.
 
         """
-        typecheck.checkinstance('subst', tyinst, TyInst)
+        if tyinst is None:
+            tyinst = TyInst(**kwargs)
         if self.is_stvar():
             if self.name in tyinst:
                 return tyinst[self.name]

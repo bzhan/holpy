@@ -336,13 +336,13 @@ class PrinterTest(unittest.TestCase):
             (Forall(a, P(a)), "∀a. P a"),
             (Exists(a, P(a)), "∃a. P a"),
             (Not(A), "¬A"),
-            (nat.plus(m, n), "m + n"),
-            (nat.times(m, n), "m * n"),
+            (Lambda(m, m + 2), "λm::nat. m + 2"),
+            (Lambda(m, m + n), "λm. m + n"),
         ]
 
         with global_setting(unicode=True):
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t), s)
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintHighlight(self):
         """Test highlight"""
