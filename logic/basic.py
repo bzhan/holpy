@@ -145,6 +145,13 @@ def load_theory_cache(filename, username="master"):
         # No need to update cache
         return cache
 
+    # Load all required macros and methods for this file.
+    # Make table for this later.
+    if filename == 'expr':
+        from data import expr
+    if filename == 'real':
+        from data import real    
+
     # Load all imported theories
     depend_list = get_import_order(cache['imports'], username)
 
@@ -209,12 +216,6 @@ def load_theory(filename, *, limit=None, username="master"):
         for item in prev_cache['content']:
             if item.error is None:
                 theory.thy.unchecked_extend(item.get_extension())
-
-    # Make table for this later
-    if filename == 'expr':
-        from data import expr
-    if filename == 'real':
-        from data import real
 
     if limit == 'start':
         return None
