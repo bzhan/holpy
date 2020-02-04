@@ -254,7 +254,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "monoidal op ⊢ ∀a. op (neutral op) a = a"
+                    "th": "monoidal op ⊢ ∀x. op (neutral op) x = x"
                 },
                 {
                     "args": "",
@@ -276,7 +276,7 @@
                     "prevs": [
                         "2"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "monoidal op ⊢ ∀y. op a y = op y a"
                 },
                 {
@@ -285,7 +285,7 @@
                     "prevs": [
                         "5.1"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "monoidal op ⊢ op a (neutral op) = op (neutral op) a"
                 },
                 {
@@ -346,7 +346,7 @@
                     "th": "⊢ _VAR c"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀a. op (neutral op) a = a}",
+                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀x. op (neutral op) x = x}",
                     "id": "6.3",
                     "prevs": [
                         "3"
@@ -418,7 +418,7 @@
                     "prevs": [
                         "2"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "monoidal op ⊢ ∀y. op b y = op y b"
                 },
                 {
@@ -427,7 +427,7 @@
                     "prevs": [
                         "7.3"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "monoidal op ⊢ op b (op a c) = op (op a c) b"
                 },
                 {
@@ -436,7 +436,7 @@
                     "prevs": [
                         "2"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "monoidal op ⊢ ∀y. op b y = op y b"
                 },
                 {
@@ -445,11 +445,11 @@
                     "prevs": [
                         "7.5"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "monoidal op ⊢ op b c = op c b"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀a. op (neutral op) a = a}",
+                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀x. op (neutral op) x = x}",
                     "id": "7.7",
                     "prevs": [
                         "3"
@@ -775,11 +775,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "member_collect, x ∈ {x. x ∈ s ∧ ¬(f x = neutral op)} ⟷ x ∈ s ∧ ¬(f x = neutral op)",
+                    "args": "member_collect, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = neutral op)} ⟷ x ∈ s ∧ ¬(f x = neutral op)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ x ∈ {x. x ∈ s ∧ ¬(f x = neutral op)} ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                    "th": "⊢ x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = neutral op)} ⟷ x ∈ s ∧ ¬(f x = neutral op)"
                 },
                 {
                     "args": "support_def, x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)",
@@ -788,6 +788,15 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)"
                 }
             ],
@@ -1273,7 +1282,7 @@
                     "prevs": [
                         "1.1"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "support op f s = ∅ ⊢ x ∈ support op f s ⟷ x ∈ ∅"
                 },
                 {
@@ -1401,7 +1410,7 @@
                     "prevs": [
                         "1.2.10"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "⊢ ¬¬(f x = neutral op) ⟷ f x = neutral op"
                 },
                 {
@@ -1942,6 +1951,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ neutral plus = (0::real)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ neutral plus = (0::real)"
                 }
             ],
             "prop": "neutral plus = (0::real)",
@@ -1995,6 +2013,15 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
                 }
             ],
@@ -2050,6 +2077,15 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ monoidal (times::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ monoidal (times::real ⇒ real ⇒ real)"
                 }
             ],
@@ -2506,7 +2542,7 @@
                     "prevs": [
                         "0"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "⊢ -(sum s f) = -1 * sum s f"
                 },
                 {

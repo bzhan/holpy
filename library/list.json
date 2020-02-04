@@ -125,7 +125,6 @@
                     "args": "x # xs @ [] = x # xs",
                     "id": "1.3",
                     "prevs": [
-                        "1.2",
                         "1.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
@@ -160,6 +159,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ xs @ [] = xs"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ xs @ [] = xs"
                 }
             ],
@@ -278,13 +286,22 @@
                     "th": "⊢ ∀x. ∀xs. (xs @ ys) @ zs = xs @ ys @ zs ⟶ ((x # xs) @ ys) @ zs = (x # xs) @ ys @ zs"
                 },
                 {
-                    "args": "list_induct, {}, {P: λxs. (xs @ ys) @ zs = xs @ ys @ zs, x: xs}",
+                    "args": "list_induct, {a: 'a}, {P: λxs. (xs @ ys) @ zs = xs @ ys @ zs, x: xs}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ (xs @ ys) @ zs = xs @ ys @ zs"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ (xs @ ys) @ zs = xs @ ys @ zs"
                 }
             ],
@@ -440,13 +457,22 @@
                     "th": "⊢ ∀x. ∀xs. length (xs @ ys) = length xs + length ys ⟶ length ((x # xs) @ ys) = length (x # xs) + length ys"
                 },
                 {
-                    "args": "list_induct, {}, {P: λxs. length (xs @ ys) = length xs + length ys, x: xs}",
+                    "args": "list_induct, {a: 'a}, {P: λxs. length (xs @ ys) = length xs + length ys, x: xs}",
                     "id": "4",
                     "prevs": [
                         "2",
                         "3"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ length (xs @ ys) = length xs + length ys"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ length (xs @ ys) = length xs + length ys"
                 }
             ],
@@ -615,13 +641,22 @@
                     "th": "⊢ ∀x. ∀xs. rev (xs @ ys) = rev ys @ rev xs ⟶ rev ((x # xs) @ ys) = rev ys @ rev (x # xs)"
                 },
                 {
-                    "args": "list_induct, {}, {P: λxs. rev (xs @ ys) = rev ys @ rev xs, x: xs}",
+                    "args": "list_induct, {a: 'a}, {P: λxs. rev (xs @ ys) = rev ys @ rev xs, x: xs}",
                     "id": "4",
                     "prevs": [
                         "2",
                         "3"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ rev (xs @ ys) = rev ys @ rev xs"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ rev (xs @ ys) = rev ys @ rev xs"
                 }
             ],
@@ -815,13 +850,22 @@
                     "th": "⊢ ∀x::'a. ∀xs. rev (rev xs) = xs ⟶ rev (rev (x # xs)) = x # xs"
                 },
                 {
-                    "args": "list_induct, {}, {P: λxs::'a list. rev (rev xs) = xs, x: xs}",
+                    "args": "list_induct, {a: 'a}, {P: λxs::'a list. rev (rev xs) = xs, x: xs}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ rev (rev xs) = xs"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ rev (rev xs) = xs"
                 }
             ],
@@ -936,21 +980,21 @@
                     "th": "length (rev xs) = length xs ⊢ length (rev xs) = length xs"
                 },
                 {
-                    "args": "length xs + 1 = Suc (length xs)",
+                    "args": "length xs + Suc 0 = Suc (length xs)",
                     "id": "1.3",
                     "prevs": [],
                     "rule": "nat_norm",
-                    "th": "⊢ length xs + 1 = Suc (length xs)"
+                    "th": "⊢ length xs + Suc 0 = Suc (length xs)"
                 },
                 {
-                    "args": "length (rev xs) + 1 = Suc (length xs)",
+                    "args": "length (rev xs) + Suc 0 = Suc (length xs)",
                     "id": "1.4",
                     "prevs": [
                         "1.2",
                         "1.3"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "length (rev xs) = length xs ⊢ length (rev xs) + 1 = Suc (length xs)"
+                    "th": "length (rev xs) = length xs ⊢ length (rev xs) + Suc 0 = Suc (length xs)"
                 },
                 {
                     "args": "length_def_1, length (rev xs) + Suc (length ([]::'a list)) = Suc (length xs)",
@@ -1010,13 +1054,22 @@
                     "th": "⊢ ∀x::'a. ∀xs. length (rev xs) = length xs ⟶ length (rev (x # xs)) = length (x # xs)"
                 },
                 {
-                    "args": "list_induct, {}, {P: λxs::'a list. length (rev xs) = length xs, x: xs}",
+                    "args": "list_induct, {a: 'a}, {P: λxs::'a list. length (rev xs) = length xs, x: xs}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ length (rev xs) = length xs"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ length (rev xs) = length xs"
                 }
             ],

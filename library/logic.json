@@ -120,6 +120,15 @@
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ A ∧ B ⟷ B ∧ A"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ∧ B ⟷ B ∧ A"
                 }
             ],
             "prop": "A ∧ B ⟷ B ∧ A",
@@ -404,6 +413,15 @@
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ A ∨ B ⟷ B ∨ A"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ∨ B ⟷ B ∨ A"
                 }
             ],
             "prop": "A ∨ B ⟷ B ∨ A",
@@ -511,12 +529,12 @@
                     "th": "A ∧ B ∧ C ⊢ A"
                 },
                 {
-                    "args": "conjD2",
+                    "args": "conjD2, {}, {A: A, B: B ∧ C}",
                     "id": "0.2",
                     "prevs": [
                         "0.0"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "A ∧ B ∧ C ⊢ B ∧ C"
                 },
                 {
@@ -582,12 +600,12 @@
                     "th": "(A ∧ B) ∧ C ⊢ (A ∧ B) ∧ C"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "conjD1, {}, {A: A ∧ B, B: C}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "(A ∧ B) ∧ C ⊢ A ∧ B"
                 },
                 {
@@ -655,6 +673,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ A ∧ B ∧ C ⟷ (A ∧ B) ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ A ∧ B ∧ C ⟷ (A ∧ B) ∧ C"
                 }
             ],
@@ -1190,7 +1217,16 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ (¬¬A) = A"
+                    "th": "⊢ ¬¬A ⟷ A"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬¬A ⟷ A"
                 }
             ],
             "prop": "¬¬A ⟷ A",
@@ -1382,7 +1418,7 @@
                         "1.0",
                         "1.1.0"
                     ],
-                    "rule": "apply_fact_for",
+                    "rule": "apply_fact",
                     "th": "A ⟶ B, A ⊢ B"
                 },
                 {
@@ -1465,7 +1501,16 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ ¬A ∨ B ⟷ A ⟶ B"
+                    "th": "⊢ ¬A ∨ B ⟷ (A ⟶ B)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬A ∨ B ⟷ (A ⟶ B)"
                 }
             ],
             "prop": "¬A ∨ B ⟷ (A ⟶ B)",
@@ -1574,12 +1619,12 @@
                     "th": "A x ∧ B x ⊢ A x ∧ B x"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "conjD1, {}, {A: A x, B: B x}",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "A x ∧ B x ⊢ A x"
                 },
                 {
@@ -1589,15 +1634,15 @@
                         "3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "A x ∧ B x ⊢ ∃a. A a"
+                    "th": "A x ∧ B x ⊢ ∃a1. A a1"
                 },
                 {
-                    "args": "conjD2",
+                    "args": "conjD2, {}, {A: A x, B: B x}",
                     "id": "5",
                     "prevs": [
                         "2"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "A x ∧ B x ⊢ B x"
                 },
                 {
@@ -1607,7 +1652,7 @@
                         "5"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "A x ∧ B x ⊢ ∃a. B a"
+                    "th": "A x ∧ B x ⊢ ∃a1. B a1"
                 },
                 {
                     "args": "conjI",
@@ -1721,7 +1766,7 @@
                     "prevs": [
                         "0"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "∀x. A x ∧ B x ⊢ A x ∧ B x"
                 },
                 {
@@ -1763,7 +1808,7 @@
                     "prevs": [
                         "0"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "∀x. A x ∧ B x ⊢ A x ∧ B x"
                 },
                 {
@@ -1885,21 +1930,21 @@
                     "th": "A ∧ (B ∨ C) ⊢ A ∧ (B ∨ C)"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "conjD1, {}, {A: A, B: B ∨ C}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "A ∧ (B ∨ C) ⊢ A"
                 },
                 {
-                    "args": "conjD2",
+                    "args": "conjD2, {}, {A: A, B: B ∨ C}",
                     "id": "0.2",
                     "prevs": [
                         "0.0"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "A ∧ (B ∨ C) ⊢ B ∨ C"
                 },
                 {
@@ -2174,6 +2219,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ A ∧ (B ∨ C) ⟷ A ∧ B ∨ A ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ A ∧ (B ∨ C) ⟷ A ∧ B ∨ A ∧ C"
                 }
             ],
@@ -2664,6 +2718,15 @@
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ A ⟷ A ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ⟷ A ⟷ true"
                 }
             ],
             "prop": "A ⟷ A ⟷ true",
@@ -2897,6 +2960,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ ¬A ⟷ A ⟷ false"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ ¬A ⟷ A ⟷ false"
                 }
             ],
@@ -3233,7 +3305,7 @@
                         "0",
                         "2.1"
                     ],
-                    "rule": "implies_elim",
+                    "rule": "apply_fact",
                     "th": "(A ⟶ B) ⟶ A, ¬A ⊢ A"
                 },
                 {
@@ -3403,11 +3475,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q",
+                    "args": "(∃x. P x ∧ Q) ⟷ (∃x1. P x1) ∧ Q",
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ ∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q"
+                    "th": "⊢ (∃x. P x ∧ Q) ⟷ (∃x1. P x1) ∧ Q"
                 },
                 {
                     "args": "",
@@ -3416,7 +3488,7 @@
                         "0"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∃x. P x ∧ Q ⟷ (∃x1. P x1) ∧ Q"
+                    "th": "⊢ (∃x. P x ∧ Q) ⟷ (∃x1. P x1) ∧ Q"
                 }
             ],
             "prop": "(∃x. P x ∧ Q) ⟷ (∃x1. P x1) ∧ Q",
@@ -3488,7 +3560,7 @@
                         "0.2"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∀x. P x ⊢ ∃x. P x ⟶ (∀x1. P x1)"
+                    "th": "∀x. P x ⊢ ∃a1. P a1 ⟶ (∀x1. P x1)"
                 },
                 {
                     "args": "",
@@ -3552,14 +3624,14 @@
                     "th": "P x ⊢ P x"
                 },
                 {
-                    "args": "negE_gen, {}, {A: P x, C: ∀x. P x}",
+                    "args": "negE_gen, {}, {A: P x, C: ∀x1. P x1}",
                     "id": "1.4.1",
                     "prevs": [
                         "1.3",
                         "1.4.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬(P x), ¬(∀x. P x), P x ⊢ ∀x. P x"
+                    "th": "¬(P x), ¬(∀x. P x), P x ⊢ ∀x1. P x1"
                 },
                 {
                     "args": "",
@@ -3578,7 +3650,7 @@
                         "1.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬(∀x. P x), ¬(P x) ⊢ ∃x. P x ⟶ (∀x1. P x1)"
+                    "th": "¬(∀x. P x), ¬(P x) ⊢ ∃a1. P a1 ⟶ (∀x1. P x1)"
                 },
                 {
                     "args": "∃x. ¬(P x)",
@@ -3736,7 +3808,7 @@
                         "2.1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∀x. p x ⟶ q x, p a ⊢ ∃a. q a"
+                    "th": "∀x. p x ⟶ q x, p a ⊢ ∃a1. q a1"
                 },
                 {
                     "args": "",
@@ -3769,7 +3841,7 @@
                         "3.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "q b ⊢ ∃a. q a"
+                    "th": "q b ⊢ ∃a1. q a1"
                 },
                 {
                     "args": "",

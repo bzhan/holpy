@@ -1677,7 +1677,7 @@
                     "th": "∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n, ∀n. N ≤ n ⟶ n ∈ k ⟶ P n ⊢ ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n}",
+                    "args": "disjI2, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n}",
                     "id": "0.5",
                     "prevs": [
                         "0.4"
@@ -1816,7 +1816,7 @@
                         "1.1.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), finite k, ∀x. x ∈ k ⟶ x ≤ a ⊢ ∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), finite k, ∀x. x ∈ k ⟶ x ≤ a ⊢ ∃a1. ∀n. a1 ≤ n ⟶ n ∈ k ⟶ P n"
                 },
                 {
                     "args": "∃a. ∀x. x ∈ k ⟶ x ≤ a",
@@ -1839,11 +1839,11 @@
                     "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⊢ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n) ⟶ (∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n)"
                 },
                 {
-                    "args": "∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n",
+                    "args": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n",
                     "id": "1.2.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n ⊢ ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n"
+                    "th": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n"
                 },
                 {
                     "args": "N, nat",
@@ -1875,10 +1875,10 @@
                         "1.2.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), ∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n, ∀n. n ∈ k ⟶ N ≤ n ⟶ P n ⊢ ∃N. ∀n. N ≤ n ⟶ n ∈ k ⟶ P n"
+                    "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n, ∀n. n ∈ k ⟶ N ≤ n ⟶ P n ⊢ ∃a1. ∀n. a1 ≤ n ⟶ n ∈ k ⟶ P n"
                 },
                 {
-                    "args": "∃a1. ∀n. n ∈ k ⟶ a1 ≤ n ⟶ P n",
+                    "args": "∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ P n",
                     "id": "1.2.5",
                     "prevs": [
                         "1.2.0",
@@ -2181,7 +2181,7 @@
                     "prevs": [
                         "0.2.1.1.2"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "¬(finite k) ⊢ ∃n. x ≤ n ∧ n ∈ k"
                 },
                 {
@@ -2194,7 +2194,7 @@
                     "th": "¬(finite k) ⊢ ∃x1. ¬(x1 ∈ k ⟶ x ≤ x1 ⟶ false)"
                 },
                 {
-                    "args": "not_all, ¬(∀x1. x1 ∈ k ⟶ x ≤ x1 ⟶ false)",
+                    "args": "not_all, ¬(∀n. n ∈ k ⟶ x ≤ n ⟶ false)",
                     "id": "0.2.1.1.5",
                     "prevs": [
                         "0.2.1.1.4"
@@ -2213,7 +2213,7 @@
                     "th": "finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false, ¬(finite k) ⊢ ∀x. ¬(∀n. n ∈ k ⟶ x ≤ n ⟶ false)"
                 },
                 {
-                    "args": "not_exists, ¬(∃x. ∀n. n ∈ k ⟶ x ≤ n ⟶ false)",
+                    "args": "not_exists, ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ false)",
                     "id": "0.2.1.2",
                     "prevs": [
                         "0.2.1.1"
@@ -3199,7 +3199,7 @@
                         "1.1.14"
                     ],
                     "rule": "intros",
-                    "th": "0 < e ⊢ ∀x. max 0 (max (2 * abs a) (2 / e)) < of_nat x ⟶ abs (real_inverse (of_nat x + a)) < e"
+                    "th": "0 < e ⊢ ∀n. max 0 (max (2 * abs a) (2 / e)) < of_nat n ⟶ abs (real_inverse (of_nat n + a)) < e"
                 },
                 {
                     "args": "arch_eventually_lt, {}, {x: max 0 (max (2 * abs a) (2 / e))}",
@@ -3216,7 +3216,7 @@
                         "1.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "0 < e ⊢ eventually (λn. abs (real_inverse (of_nat n + a)) < e) sequentially"
+                    "th": "0 < e ⊢ eventually (λx. abs (real_inverse (of_nat x + a)) < e) sequentially"
                 },
                 {
                     "args": "",
@@ -3651,7 +3651,7 @@
                         "2.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "0 < e ⊢ eventually (λn. real_inverse (of_nat n + a) < e) sequentially"
+                    "th": "0 < e ⊢ eventually (λx. real_inverse (of_nat x + a) < e) sequentially"
                 },
                 {
                     "args": "",
@@ -4338,7 +4338,7 @@
                         "3.4.6"
                     ],
                     "rule": "intros",
-                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ ∀x1::nat. real_inverse e < real_inverse (abs x) ^ x1 ⟶ abs (x ^ x1) < e"
+                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ ∀n::nat. real_inverse e < real_inverse (abs x) ^ n ⟶ abs (x ^ n) < e"
                 },
                 {
                     "args": "eventually_mono",
@@ -4348,7 +4348,7 @@
                         "3.3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ eventually (λn. abs (x ^ n) < e) sequentially"
+                    "th": "1 < e, abs x < 1, ¬(x = 0) ⊢ eventually (λx1. abs (x ^ x1) < e) sequentially"
                 },
                 {
                     "args": "",
@@ -4582,11 +4582,11 @@
                     "th": "⊢ (∃a. ∀x. ¬(P x) ⟶ x ≤ a) ⟶ (∃N. ∀n. N ≤ n ⟶ P n)"
                 },
                 {
-                    "args": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1",
+                    "args": "∃a. ∀x. ¬(P x) ⟶ x ≤ a",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1 ⊢ ∃a1. ∀x. ¬(P x) ⟶ x ≤ a1"
+                    "th": "∃a. ∀x. ¬(P x) ⟶ x ≤ a ⊢ ∃a. ∀x. ¬(P x) ⟶ x ≤ a"
                 },
                 {
                     "args": "N, nat",
@@ -4618,10 +4618,10 @@
                         "1.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1, ∀x. ¬(P x) ⟶ x ≤ N ⊢ ∃N. ∀n. N ≤ n ⟶ P n"
+                    "th": "∃a. ∀x. ¬(P x) ⟶ x ≤ a, ∀x. ¬(P x) ⟶ x ≤ N ⊢ ∃a1. ∀n. a1 ≤ n ⟶ P n"
                 },
                 {
-                    "args": "∃a1. ∀x. ¬(P x) ⟶ x ≤ a1",
+                    "args": "∃a. ∀x. ¬(P x) ⟶ x ≤ a",
                     "id": "1.5",
                     "prevs": [
                         "1.0",
@@ -5157,7 +5157,7 @@
                     "prevs": [
                         "0.6.1.1.8.0"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "∀x. x ∈ {y. ∃m1. y = f m1 ∧ m1 < N} ⟷ false ⊢ f 0 ∈ {y. ∃m1. y = f m1 ∧ m1 < N} ⟷ false"
                 },
                 {
@@ -5439,7 +5439,7 @@
                         "0.6.1.4"
                     ],
                     "rule": "intros",
-                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∀n. N ≤ n ⟶ f n ≤ b, ¬(N = 0) ⊢ ∀n. f n ≤ max b (sup ({y. ∃m. y = f m ∧ m < N}))"
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∀n. N ≤ n ⟶ f n ≤ b, ¬(N = 0) ⊢ ∀m. f m ≤ max b (sup ({y. ∃m1. y = f m1 ∧ m1 < N}))"
                 },
                 {
                     "args": "exI, {a: real}, {P: λb. ∀n. f n ≤ b, a: max b (sup ({y. ∃m. y = f m ∧ m < N}))}",
@@ -5468,7 +5468,7 @@
                         "0.6"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∀n. N ≤ n ⟶ f n ≤ b ⊢ ∃a1. ∀n. f n ≤ a1"
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∀n. N ≤ n ⟶ f n ≤ b ⊢ ∃b. ∀n. f n ≤ b"
                 },
                 {
                     "args": "∃N. ∀n. N ≤ n ⟶ f n ≤ b, ∃b. ∃N. ∀n. N ≤ n ⟶ f n ≤ b",
@@ -5503,11 +5503,11 @@
                     "th": "⊢ (∃b. ∀n. f n ≤ b) ⟶ (∃b. eventually (λn. f n ≤ b) sequentially)"
                 },
                 {
-                    "args": "∃a1. ∀n. f n ≤ a1",
+                    "args": "∃b. ∀n. f n ≤ b",
                     "id": "2.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∃a1. ∀n. f n ≤ a1 ⊢ ∃a1. ∀n. f n ≤ a1"
+                    "th": "∃b. ∀n. f n ≤ b ⊢ ∃b. ∀n. f n ≤ b"
                 },
                 {
                     "args": "b, real",
@@ -5539,10 +5539,10 @@
                         "2.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃a1. ∀n. f n ≤ a1, ∀n. f n ≤ b ⊢ ∃a1. eventually (λn. f n ≤ a1) sequentially"
+                    "th": "∃b. ∀n. f n ≤ b, ∀n. f n ≤ b ⊢ ∃a1. eventually (λn. f n ≤ a1) sequentially"
                 },
                 {
-                    "args": "∃a1. ∀n. f n ≤ a1",
+                    "args": "∃b. ∀n. f n ≤ b",
                     "id": "2.5",
                     "prevs": [
                         "2.0",
@@ -6323,7 +6323,7 @@
                         "0.6.1.4"
                     ],
                     "rule": "intros",
-                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ ∀n. min b (inf ({y. ∃m. y = f m ∧ m < N})) ≤ f n"
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n, ¬(N = 0) ⊢ ∀m. min b (inf ({y. ∃m1. y = f m1 ∧ m1 < N})) ≤ f m"
                 },
                 {
                     "args": "exI, {a: real}, {P: λb. ∀n. b ≤ f n, a: min b (inf ({y. ∃m. y = f m ∧ m < N}))}",
@@ -6352,7 +6352,7 @@
                         "0.6"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n ⊢ ∃a1. ∀n. a1 ≤ f n"
+                    "th": "∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∀n. N ≤ n ⟶ b ≤ f n ⊢ ∃b. ∀n. b ≤ f n"
                 },
                 {
                     "args": "∃N. ∀n. N ≤ n ⟶ b ≤ f n, ∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n",
@@ -6378,11 +6378,11 @@
                     "th": "⊢ (∃b. ∀n. b ≤ f n) ⟶ (∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n)"
                 },
                 {
-                    "args": "∃a1. ∀n. a1 ≤ f n",
+                    "args": "∃b. ∀n. b ≤ f n",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∃a1. ∀n. a1 ≤ f n ⊢ ∃a1. ∀n. a1 ≤ f n"
+                    "th": "∃b. ∀n. b ≤ f n ⊢ ∃b. ∀n. b ≤ f n"
                 },
                 {
                     "args": "b, real",
@@ -6414,10 +6414,10 @@
                         "1.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃a1. ∀n. a1 ≤ f n, ∀n. b ≤ f n ⊢ ∃b. ∃N. ∀n. N ≤ n ⟶ b ≤ f n"
+                    "th": "∃b. ∀n. b ≤ f n, ∀n. b ≤ f n ⊢ ∃a1. ∃N. ∀n. N ≤ n ⟶ a1 ≤ f n"
                 },
                 {
-                    "args": "∃a1. ∀n. a1 ≤ f n",
+                    "args": "∃b. ∀n. b ≤ f n",
                     "id": "1.5",
                     "prevs": [
                         "1.0",
@@ -7925,13 +7925,13 @@
                     "th": "abs (x1 - x) < abs (a - x), x ∈ {x1. x1 < a} ⊢ x1 < a"
                 },
                 {
-                    "args": "member_collect, x1 ∈ {x2. x2 < a}",
+                    "args": "member_collect, x1 ∈ {x. x < a}",
                     "id": "0.4.3",
                     "prevs": [
                         "0.4.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "x ∈ {x1. x1 < a}, abs (x1 - x) < abs (a - x) ⊢ x1 ∈ {x2. x2 < a}"
+                    "th": "x ∈ {x1. x1 < a}, abs (x1 - x) < abs (a - x) ⊢ x1 ∈ {x. x < a}"
                 },
                 {
                     "args": "",

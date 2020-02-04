@@ -109,6 +109,15 @@
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ x + (y + z) = x + y + z"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + (y + z) = x + y + z"
                 }
             ],
             "prop": "x + (y + z) = x + y + z",
@@ -139,6 +148,15 @@
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ x + y = y + x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y = y + x"
                 }
             ],
             "prop": "x + y = y + x",
@@ -166,6 +184,15 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
+                    "th": "⊢ 0 + x = x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ 0 + x = x"
                 }
             ],
@@ -247,6 +274,15 @@
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ -x + x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -x + x = 0"
                 }
             ],
             "prop": "-x + x = 0",
@@ -274,6 +310,15 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
+                    "th": "⊢ x * (y * z) = x * y * z"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * (y * z) = x * y * z"
                 }
             ],
@@ -343,6 +388,15 @@
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ x ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≤ x"
                 }
             ],
             "prop": "x ≤ x",
@@ -370,6 +424,15 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
+                    "th": "⊢ x ≤ y ∧ y ≤ x ⟷ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x ≤ y ∧ y ≤ x ⟷ x = y"
                 }
             ],
@@ -414,6 +477,15 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
+                    "th": "⊢ x ≤ y ∨ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x ≤ y ∨ y ≤ x"
                 }
             ],
@@ -762,6 +834,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ x + -x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + -x = 0"
                 }
             ],
             "prop": "x + -x = 0",
@@ -893,6 +974,15 @@
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ x + y = x + z ⟷ y = z"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y = x + z ⟷ y = z"
                 }
             ],
             "prop": "x + y = x + z ⟷ y = z",
@@ -983,6 +1073,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ x + z = y + z ⟷ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + z = y + z ⟷ x = y"
                 }
             ],
             "prop": "x + z = y + z ⟷ x = y",
@@ -1035,6 +1134,15 @@
                         "1"
                     ],
                     "rule": "rewrite_fact",
+                    "th": "⊢ x * 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * 0 = 0"
                 }
             ],
@@ -1094,6 +1202,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ 0 * x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 * x = 0"
                 }
             ],
             "prop": "0 * x = 0",
@@ -1144,6 +1261,15 @@
                         "1"
                     ],
                     "rule": "rewrite_fact",
+                    "th": "⊢ --x = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ --x = x"
                 }
             ],
@@ -1219,6 +1345,15 @@
                     ],
                     "rule": "rewrite_fact",
                     "th": "⊢ x * -y = -(x * y)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x * -y = -(x * y)"
                 }
             ],
             "prop": "x * -y = -(x * y)",
@@ -1284,6 +1419,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ -x * y = -(x * y)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -x * y = -(x * y)"
                 }
             ],
             "prop": "-x * y = -(x * y)",
@@ -1320,7 +1464,7 @@
                     "th": "⊢ 0 = x + -x"
                 },
                 {
-                    "args": " real_add_rid, 0 = x + (-x + 0)",
+                    "args": "real_add_rid, 0 = x + (-x + 0)",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1471,6 +1615,15 @@
                         "1"
                     ],
                     "rule": "rewrite_fact",
+                    "th": "⊢ -(0::real) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ -(0::real) = 0"
                 }
             ],
@@ -1638,6 +1791,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ -x ≤ y ⟷ 0 ≤ x + y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ -x ≤ y ⟷ 0 ≤ x + y"
                 }
             ],
@@ -1837,6 +1999,15 @@
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "⊢ -x ≤ -y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -x ≤ -y ⟷ y ≤ x"
                 }
             ],
             "prop": "-x ≤ -y ⟷ y ≤ x",
@@ -2004,16 +2175,9 @@
                 {
                     "args": "",
                     "id": "1.5",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "x + y ≤ 0 ⊢ x ≤ -y"
-                },
-                {
-                    "args": "",
-                    "id": "1.6",
                     "prevs": [
                         "1.0",
-                        "1.5"
+                        "1.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ x + y ≤ 0 ⟶ x ≤ -y"
@@ -2026,6 +2190,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ x ≤ -y ⟷ x + y ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x ≤ -y ⟷ x + y ≤ 0"
                 }
             ],
@@ -3076,6 +3249,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ (0::real) ≤ of_nat n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (0::real) ≤ of_nat n"
                 }
             ],
             "prop": "(0::real) ≤ of_nat n",
@@ -3168,8 +3350,7 @@
                     "id": "3.3",
                     "prevs": [
                         "3.1",
-                        "3.2",
-                        "3.1"
+                        "3.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "(of_nat::nat ⇒ real) x ^ n = of_nat (x ^ n) ⊢ (of_nat::nat ⇒ real) x * of_nat x ^ n = of_nat (x * x ^ n)"
@@ -3211,6 +3392,15 @@
                         "3"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ (of_nat::nat ⇒ real) x ^ n = of_nat (x ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ (of_nat::nat ⇒ real) x ^ n = of_nat (x ^ n)"
                 }
             ],
@@ -3699,16 +3889,25 @@
                     "th": "⊢ (if (0::real) ≤ of_nat n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n"
                 },
                 {
-                    "args": "abs_def, abs ((of_nat::nat ⇒ real) n) = of_nat n",
+                    "args": "abs_def, (abs::real ⇒ real) (of_nat n) = of_nat n",
                     "id": "4",
                     "prevs": [
                         "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ abs ((of_nat::nat ⇒ real) n) = of_nat n"
+                    "th": "⊢ (abs::real ⇒ real) (of_nat n) = of_nat n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (abs::real ⇒ real) (of_nat n) = of_nat n"
                 }
             ],
-            "prop": "abs ((of_nat::nat ⇒ real) n) = of_nat n",
+            "prop": "(abs::real ⇒ real) (of_nat n) = of_nat n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3762,6 +3961,15 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
+                    "th": "⊢ abs (-x) = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ abs (-x) = abs x"
                 }
             ],
@@ -4163,6 +4371,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ x < y ∨ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x < y ∨ y ≤ x"
                 }
             ],
             "prop": "x < y ∨ y ≤ x",
@@ -4229,7 +4446,7 @@
                         "0"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "x < y ⊢ ¬y ≤ x"
+                    "th": "x < y ⊢ ¬(y ≤ x)"
                 },
                 {
                     "args": "real_le_total, {}, {x: x, y: y}",
@@ -4843,32 +5060,32 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ¬y ≤ x ∧ y ≤ x ⟶ false"
+                    "th": "⊢ ¬(y ≤ x) ∧ y ≤ x ⟶ false"
                 },
                 {
-                    "args": "¬y ≤ x ∧ y ≤ x",
+                    "args": "¬(y ≤ x) ∧ y ≤ x",
                     "id": "0.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬y ≤ x ∧ y ≤ x ⊢ ¬y ≤ x ∧ y ≤ x"
+                    "th": "¬(y ≤ x) ∧ y ≤ x ⊢ ¬(y ≤ x) ∧ y ≤ x"
                 },
                 {
-                    "args": "conjD1, {}, {A: ¬y ≤ x, B: y ≤ x}",
+                    "args": "conjD1, {}, {A: ¬(y ≤ x), B: y ≤ x}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬y ≤ x ∧ y ≤ x ⊢ ¬y ≤ x"
+                    "th": "¬(y ≤ x) ∧ y ≤ x ⊢ ¬(y ≤ x)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ¬y ≤ x, B: y ≤ x}",
+                    "args": "conjD2, {}, {A: ¬(y ≤ x), B: y ≤ x}",
                     "id": "0.2",
                     "prevs": [
                         "0.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬y ≤ x ∧ y ≤ x ⊢ y ≤ x"
+                    "th": "¬(y ≤ x) ∧ y ≤ x ⊢ y ≤ x"
                 },
                 {
                     "args": "negE",
@@ -4878,7 +5095,7 @@
                         "0.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "¬y ≤ x ∧ y ≤ x ⊢ false"
+                    "th": "¬(y ≤ x) ∧ y ≤ x ⊢ false"
                 },
                 {
                     "args": "",
@@ -4888,7 +5105,7 @@
                         "0.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬y ≤ x ∧ y ≤ x ⟶ false"
+                    "th": "⊢ ¬(y ≤ x) ∧ y ≤ x ⟶ false"
                 },
                 {
                     "args": "negI",
@@ -4897,7 +5114,7 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ ¬(¬y ≤ x ∧ y ≤ x)"
+                    "th": "⊢ ¬(¬(y ≤ x) ∧ y ≤ x)"
                 },
                 {
                     "args": "real_less_def, ¬(x < y ∧ y ≤ x)",
@@ -4906,6 +5123,15 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ ¬(x < y ∧ y ≤ x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ ¬(x < y ∧ y ≤ x)"
                 }
             ],
@@ -4996,6 +5222,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ 0 ≤ x - y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x - y ⟷ y ≤ x"
                 }
             ],
             "prop": "0 ≤ x - y ⟷ y ≤ x",
@@ -5075,6 +5310,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ -(x - y) = y - x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(x - y) = y - x"
                 }
             ],
             "prop": "-(x - y) = y - x",
@@ -5132,26 +5376,26 @@
                     "id": "1",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "⊢ ¬0 ≤ y - x + 0 ⟷ ¬x ≤ y"
+                    "th": "⊢ ¬(0 ≤ y - x + 0) ⟷ ¬(x ≤ y)"
                 },
                 {
-                    "args": "real_le_lneg, ¬-(y - x) ≤ 0 ⟷ ¬x ≤ y",
+                    "args": "real_le_lneg, ¬(-(y - x) ≤ 0) ⟷ ¬(x ≤ y)",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ ¬-(y - x) ≤ 0 ⟷ ¬x ≤ y"
+                    "th": "⊢ ¬(-(y - x) ≤ 0) ⟷ ¬(x ≤ y)"
                 },
                 {
-                    "args": "¬x - y ≤ 0 ⟷ ¬x ≤ y",
+                    "args": "¬(x - y ≤ 0) ⟷ ¬(x ≤ y)",
                     "id": "3",
                     "prevs": [
                         "0",
                         "2"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "⊢ ¬x - y ≤ 0 ⟷ ¬x ≤ y"
+                    "th": "⊢ ¬(x - y ≤ 0) ⟷ ¬(x ≤ y)"
                 },
                 {
                     "args": "real_less_def, 0 < x - y ⟷ y < x",
@@ -5160,6 +5404,15 @@
                         "3"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ 0 < x - y ⟷ y < x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ 0 < x - y ⟷ y < x"
                 }
             ],
@@ -5227,11 +5480,11 @@
                     "th": "⊢ x - y = 0 ⟷ x - y ≤ 0 ∧ 0 ≤ x - y"
                 },
                 {
-                    "args": "real_not_lt, x - y ≤ 0 ⟷ ¬0 < x - y",
+                    "args": "real_not_lt, x - y ≤ 0 ⟷ ¬(0 < x - y)",
                     "id": "1",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ x - y ≤ 0 ⟷ ¬0 < x - y"
+                    "th": "⊢ x - y ≤ 0 ⟷ ¬(0 < x - y)"
                 },
                 {
                     "args": "real_le_antisym, x ≤ y ∧ y ≤ x ⟷ x = y",
@@ -5241,22 +5494,22 @@
                     "th": "⊢ x ≤ y ∧ y ≤ x ⟷ x = y"
                 },
                 {
-                    "args": "real_not_lt, ¬y < x ∧ y ≤ x ⟷ x = y",
+                    "args": "real_not_lt, ¬(y < x) ∧ y ≤ x ⟷ x = y",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ ¬y < x ∧ y ≤ x ⟷ x = y"
+                    "th": "⊢ ¬(y < x) ∧ y ≤ x ⟷ x = y"
                 },
                 {
-                    "args": "real_sub_lt, ¬0 < x - y ∧ y ≤ x ⟷ x = y",
+                    "args": "real_sub_lt, ¬(0 < x - y) ∧ y ≤ x ⟷ x = y",
                     "id": "4",
                     "prevs": [
                         "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ ¬0 < x - y ∧ y ≤ x ⟷ x = y"
+                    "th": "⊢ ¬(0 < x - y) ∧ y ≤ x ⟷ x = y"
                 },
                 {
                     "args": "x - y ≤ 0 ∧ y ≤ x ⟷ x = y",
@@ -5285,6 +5538,15 @@
                         "6"
                     ],
                     "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ x - y = 0 ⟷ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x - y = 0 ⟷ x = y"
                 }
             ],
@@ -5689,11 +5951,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "(if 0 ≤ abs x then abs x else -abs x) = (if 0 ≤ x then x else -x)",
+                    "args": "(if 0 ≤ abs x then abs x else -(abs x)) = (if 0 ≤ x then x else -x)",
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ (if 0 ≤ abs x then abs x else -abs x) = (if 0 ≤ x then x else -x)"
+                    "th": "⊢ (if 0 ≤ abs x then abs x else -(abs x)) = (if 0 ≤ x then x else -x)"
                 },
                 {
                     "args": "abs_def, abs (abs x) = abs x",
@@ -5702,6 +5964,15 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ abs (abs x) = abs x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ abs (abs x) = abs x"
                 }
             ],
@@ -6374,11 +6645,11 @@
                     "th": "⊢ 0 ≤ x ⟶ abs (x * y) = abs x * abs y"
                 },
                 {
-                    "args": "¬0 ≤ x ⟶ abs (x * y) = abs x * abs y",
+                    "args": "¬(0 ≤ x) ⟶ abs (x * y) = abs x * abs y",
                     "id": "1",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ ¬0 ≤ x ⟶ abs (x * y) = abs x * abs y"
+                    "th": "⊢ ¬(0 ≤ x) ⟶ abs (x * y) = abs x * abs y"
                 },
                 {
                     "args": "classical_cases",
@@ -6388,6 +6659,15 @@
                         "1"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ abs (x * y) = abs x * abs y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ abs (x * y) = abs x * abs y"
                 }
             ],
@@ -6983,11 +7263,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_abs_nat, abs ((of_nat::nat ⇒ real) 1) = of_nat 1",
+                    "args": "real_abs_nat, (abs::real ⇒ real) of_nat 1 = of_nat 1",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ abs ((of_nat::nat ⇒ real) 1) = of_nat 1"
+                    "th": "⊢ (abs::real ⇒ real) of_nat 1 = of_nat 1"
                 },
                 {
                     "args": "real_one_def, abs (1::real) = 1",
@@ -8006,13 +8286,13 @@
                     "th": "x = 0 ⊢ real_inverse 0 = -(real_inverse 0)"
                 },
                 {
-                    "args": "real_neg_0, real_inverse (-0) = -(real_inverse 0)",
+                    "args": "real_neg_0, real_inverse -0 = -(real_inverse 0)",
                     "id": "0.3",
                     "prevs": [
                         "0.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "x = 0 ⊢ real_inverse (-0) = -(real_inverse 0)"
+                    "th": "x = 0 ⊢ real_inverse -0 = -(real_inverse 0)"
                 },
                 {
                     "args": "real_inverse (-x) = -(real_inverse x)",
@@ -16235,7 +16515,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "¬(n = 0), x ^ n = 1 ⊢ abs x = abs (of_nat 1)"
+                    "th": "¬(n = 0), x ^ n = 1 ⊢ abs x = abs of_nat 1"
                 },
                 {
                     "args": "real_abs_nat, abs x = of_nat 1",
@@ -18074,7 +18354,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "x ≤ of_nat n ⊢ ∃a. x < of_nat a"
+                    "th": "x ≤ of_nat n ⊢ ∃a1. x < of_nat a1"
                 },
                 {
                     "args": "∃n. x ≤ of_nat n",
@@ -18086,7 +18366,7 @@
                         "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∃a. x < of_nat a"
+                    "th": "⊢ ∃n. x < of_nat n"
                 }
             ],
             "prop": "∃n. x < of_nat n",
@@ -18190,7 +18470,7 @@
                         "1.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "0 < x, y / x < of_nat n ⊢ ∃a. y < of_nat a * x"
+                    "th": "0 < x, y / x < of_nat n ⊢ ∃a1. y < of_nat a1 * x"
                 },
                 {
                     "args": "∃n. y / x < of_nat n",
@@ -18407,7 +18687,7 @@
                         "0.9"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "0 < e, real_inverse e < of_nat n ⊢ ∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e"
+                    "th": "0 < e, real_inverse e < of_nat n ⊢ ∃a1. ¬(a1 = 0) ∧ 0 < real_inverse (of_nat a1) ∧ real_inverse (of_nat a1) < e"
                 },
                 {
                     "args": "∃n. real_inverse e < of_nat n",
@@ -18881,7 +19161,7 @@
                     "prevs": [
                         "3"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "1 < x ⊢ ∃n. y < of_nat n * (x - 1)"
                 },
                 {
@@ -19334,7 +19614,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "0 < y, x < 1 ⊢ ∃a1::nat. x ^ a1 < y"
+                    "th": "0 < y, x < 1 ⊢ ∃n::nat. x ^ n < y"
                 },
                 {
                     "args": "",
@@ -23251,7 +23531,7 @@
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "0 ≤ x ⊢ ∃y. y ^ (2::nat) = x"
+                    "th": "0 ≤ x ⊢ ∃a1. a1 ^ (2::nat) = x"
                 },
                 {
                     "args": "",
@@ -24589,7 +24869,7 @@
                         "1.9"
                     ],
                     "rule": "intros",
-                    "th": "x < y ⊢ ∀x. ∀y. 0 ≤ x ⟶ x < y ⟶ sqrt x < sqrt y"
+                    "th": "x < y ⊢ ∀a. ∀b. 0 ≤ a ⟶ a < b ⟶ sqrt a < sqrt b"
                 },
                 {
                     "args": "",
@@ -24721,7 +25001,7 @@
                     "prevs": [
                         "1"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "x < y ⊢ ∀y1. 0 ≤ -y ⟶ -y < y1 ⟶ sqrt (-y) < sqrt y1"
                 },
                 {
@@ -24730,7 +25010,7 @@
                     "prevs": [
                         "3.2.1"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "x < y ⊢ 0 ≤ -y ⟶ -y < -x ⟶ sqrt (-y) < sqrt (-x)"
                 },
                 {

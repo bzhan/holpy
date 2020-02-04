@@ -1773,7 +1773,7 @@
                     "th": "⊢ ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) (real_closed_interval (max 0 a) b)"
                 },
                 {
-                    "args": "real_closed_interval_def, ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({p. max 0 a ≤ p ∧ p ≤ b})",
+                    "args": "real_closed_interval_def, ∀a. ∀b. real_integrable_on (λx. exp (-(x ^ (2::nat)))) ({x. max 0 a ≤ x ∧ x ≤ b})",
                     "id": "22",
                     "prevs": [
                         "21"

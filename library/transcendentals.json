@@ -2126,7 +2126,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ abs ((of_nat::nat ⇒ real) 1) = of_nat 1"
+                    "th": "⊢ (abs::real ⇒ real) of_nat 1 = of_nat 1"
                 },
                 {
                     "args": "real_one_def",
@@ -5851,7 +5851,7 @@
                     "prevs": [
                         "1.3"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
@@ -6370,14 +6370,14 @@
                     "th": "cos x = 1 ⊢ cos x = 1"
                 },
                 {
-                    "args": "negE_gen, {}, {A: cos x = 1, C: ∃a1. 0 < a1 ∧ cos a1 < 0}",
+                    "args": "negE_gen, {}, {A: cos x = 1, C: ∃x. 0 < x ∧ cos x < 0}",
                     "id": "8.1",
                     "prevs": [
                         "4",
                         "8.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "0 < x ∧ ¬(cos x = 1), cos x = 1 ⊢ ∃a1. 0 < a1 ∧ cos a1 < 0"
+                    "th": "0 < x ∧ ¬(cos x = 1), cos x = 1 ⊢ ∃x. 0 < x ∧ cos x < 0"
                 },
                 {
                     "args": "",
@@ -6398,7 +6398,7 @@
                         "8"
                     ],
                     "rule": "apply_theorem",
-                    "th": "0 < x ∧ ¬(cos x = 1) ⊢ ∃a1. 0 < a1 ∧ cos a1 < 0"
+                    "th": "0 < x ∧ ¬(cos x = 1) ⊢ ∃x. 0 < x ∧ cos x < 0"
                 },
                 {
                     "args": "∃x. 0 < x ∧ ¬(cos x = 1)",
@@ -6410,7 +6410,7 @@
                         "9"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∃a1. 0 < a1 ∧ cos a1 < 0"
+                    "th": "⊢ ∃x. 0 < x ∧ cos x < 0"
                 }
             ],
             "prop": "∃x. 0 < x ∧ cos x < 0",
@@ -9690,22 +9690,22 @@
                     "th": "⊢ real_sgn 1 * exp (log 1 / of_nat n) = 1"
                 },
                 {
-                    "args": "real_one_def, real_sgn (of_nat 1) * exp (log (of_nat 1) / of_nat n) = of_nat 1",
+                    "args": "real_one_def, real_sgn of_nat 1 * exp (log of_nat 1 / of_nat n) = of_nat 1",
                     "id": "6",
                     "prevs": [
                         "5"
                     ],
                     "rule": "rewrite_goal_sym",
-                    "th": "⊢ real_sgn (of_nat 1) * exp (log (of_nat 1) / of_nat n) = of_nat 1"
+                    "th": "⊢ real_sgn of_nat 1 * exp (log of_nat 1 / of_nat n) = of_nat 1"
                 },
                 {
-                    "args": "real_abs_nat, real_sgn (of_nat 1) * exp (log (abs (of_nat 1)) / of_nat n) = of_nat 1",
+                    "args": "real_abs_nat, real_sgn of_nat 1 * exp (log (abs of_nat 1) / of_nat n) = of_nat 1",
                     "id": "7",
                     "prevs": [
                         "6"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ real_sgn (of_nat 1) * exp (log (abs (of_nat 1)) / of_nat n) = of_nat 1"
+                    "th": "⊢ real_sgn of_nat 1 * exp (log (abs of_nat 1) / of_nat n) = of_nat 1"
                 },
                 {
                     "args": "real_one_def, real_sgn 1 * exp (log (abs 1) / of_nat n) = 1",
@@ -10642,7 +10642,7 @@
                     "prevs": [
                         "1.1"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "⊢ ∀y. ¬(of_nat n = (0::real)) ⟶ of_nat n * (y / of_nat n) = y"
                 },
                 {
@@ -10651,7 +10651,7 @@
                     "prevs": [
                         "1.4"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "⊢ ¬(of_nat n = (0::real)) ⟶ of_nat n * (log (abs x) / of_nat n) = log (abs x)"
                 },
                 {
@@ -14178,7 +14178,7 @@
                         "1.2.2.9"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1"
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃a1. ∃n1. odd a1 ∧ odd n1 ∧ of_nat n = of_nat a1 / of_nat n1"
                 },
                 {
                     "args": "",
@@ -15914,14 +15914,14 @@
                     "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if y = 0 then 1 else 0) = (if y = 0 then 1 else 0)"
                 },
                 {
-                    "args": "if_P, (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-0))) else exp (y * log (-0))) = (if y = 0 then 1 else 0)",
+                    "args": "if_P, (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log -0)) else exp (y * log -0)) = (if y = 0 then 1 else 0)",
                     "id": "3",
                     "prevs": [
                         "2",
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-0))) else exp (y * log (-0))) = (if y = 0 then 1 else 0)"
+                    "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log -0)) else exp (y * log -0)) = (if y = 0 then 1 else 0)"
                 },
                 {
                     "args": "real_real_power_def, (0::real) ^ y = (if y = 0 then 1 else 0)",

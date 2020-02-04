@@ -1796,7 +1796,7 @@
                         "3.8"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m), ∀m. ∀n. m ≤ n ⟶ s n ≤ s m, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e) ⊢ ∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - l) < e)"
+                    "th": "∀n. abs (s n) ≤ b, (∀m. ∀n. m ≤ n ⟶ s m ≤ s n) ∨ (∀m. ∀n. m ≤ n ⟶ s n ≤ s m), ∀m. ∀n. m ≤ n ⟶ s n ≤ s m, ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e) ⊢ ∃a1. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (s n - a1) < e)"
                 },
                 {
                     "args": "∃l. ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (-(s n) - l) < e)",
