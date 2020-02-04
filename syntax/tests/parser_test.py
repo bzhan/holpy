@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TConst, TFun, Type, BoolType
-from kernel.term import Var, Term, And, Eq
+from kernel.term import Var, Term, And, Eq, Inst
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
@@ -406,7 +406,7 @@ class ParserTest(unittest.TestCase):
             ({'id': "2", 'rule': "implies_elim", 'args': "", 'prevs': ["1", "0"], 'th': ""},
              ProofItem(2, "implies_elim", prevs=[1, 0])),
             ({'id': "5", 'rule': "substitution", 'args': "{A: B, B: A}", 'prevs': ["4"], 'th': ""},
-             ProofItem(5, "substitution", args={'A': B, 'B': A}, prevs=[4])),
+             ProofItem(5, "substitution", args=Inst(A=B, B=A), prevs=[4])),
             ({'id': "8", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["7"], 'th': ""},
              ProofItem(8, "implies_intr", args=And(A, B), prevs=[7])),
             ({'id': "0", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"},
@@ -414,7 +414,7 @@ class ParserTest(unittest.TestCase):
             ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
             ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {}, {A: B, B: A}", 'prevs': [4], 'th': ""},
-             ProofItem(5, "apply_theorem_for", args=("disjI1", {}, {'A': B, 'B': A}), prevs=[4])),
+             ProofItem(5, "apply_theorem_for", args=("disjI1", Inst(A=B, B=A)), prevs=[4])),
         ]
 
         context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})

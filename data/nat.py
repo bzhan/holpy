@@ -2,7 +2,7 @@
 
 from kernel.type import TFun, BoolType, NatType
 from kernel import term
-from kernel.term import Term, Const, Not, Eq, Binary, Nat
+from kernel.term import Term, Const, Not, Eq, Binary, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
 from kernel.theory import Method, global_methods
@@ -560,7 +560,7 @@ def ineq_zero_proof_term(n):
     elif n % 2 == 0:
         return apply_theorem("bit0_nonzero", ineq_zero_proof_term(n // 2))
     else:
-        return apply_theorem("bit1_nonzero", inst={"m": Binary(n // 2)})
+        return apply_theorem("bit1_nonzero", inst=Inst(m=Binary(n // 2)))
 
 def ineq_one_proof_term(n):
     """Returns the inequality n ~= 1."""
@@ -568,7 +568,7 @@ def ineq_one_proof_term(n):
     if n == 0:
         return apply_theorem("ineq_sym", ProofTerm.theorem("one_nonzero"))
     elif n % 2 == 0:
-        return apply_theorem("bit0_neq_one", inst={"m": Binary(n // 2)})
+        return apply_theorem("bit0_neq_one", inst=Inst(m=Binary(n // 2)))
     else:
         return apply_theorem("bit1_neq_one", ineq_zero_proof_term(n // 2))
 
@@ -588,7 +588,7 @@ def ineq_proof_term(m, n):
     elif m % 2 == 1 and n % 2 == 1:
         return apply_theorem("bit1_neq", ineq_proof_term(m // 2, n // 2))
     elif m % 2 == 0 and n % 2 == 1:
-        return apply_theorem("bit0_bit1_neq", inst={"m": Binary(m // 2), "n": Binary(n // 2)})
+        return apply_theorem("bit0_bit1_neq", inst=Inst(m=Binary(m // 2), n=Binary(n // 2)))
     else:
         return apply_theorem("ineq_sym", ineq_proof_term(n, m))
 

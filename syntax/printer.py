@@ -5,7 +5,7 @@ from copy import copy
 from kernel import type as hol_type
 from kernel.type import Type
 from kernel import term
-from kernel.term import Term
+from kernel.term import Term, Inst
 from kernel.thm import Thm
 from kernel import extension
 from kernel import proof
@@ -99,7 +99,7 @@ def print_type_constr(constr):
 @settings.with_settings
 def print_str_args(rule, args, th):
     def str_val(val):
-        if isinstance(val, dict):
+        if isinstance(val, Inst):
             items = sorted(val.items(), key = lambda pair: pair[0])
             return pprint.N('{') + commas_join(pprint.N(key + ': ') + str_val(val)
                                                for key, val in items) + pprint.N('}')

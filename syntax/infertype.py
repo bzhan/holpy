@@ -2,7 +2,7 @@
 
 """Hindley-Milner type inference algorithm."""
 
-from kernel.type import STVar, TFun
+from kernel.type import STVar, TFun, TyInst
 from kernel.term import Term
 from kernel import term
 from kernel import theory
@@ -135,7 +135,7 @@ def type_infer(t, *, forbid_internal=True):
                         T = context.ctxt.defs[t.name]
                     else:
                         raise e
-                tyinst = dict()
+                tyinst = TyInst()
                 for STv in T.get_stvars():
                     tyinst[STv.name] = new_type()
                 t.T = T.subst(tyinst)
@@ -187,7 +187,7 @@ def type_infer(t, *, forbid_internal=True):
     infer(t, [])
 
     # Replace vars and constants with the appropriate type.
-    tyinst = dict()
+    tyinst = TyInst()
     for i in range(num_internal):
         tyinst['_t' + str(i)] = uf[i]
 

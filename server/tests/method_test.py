@@ -406,6 +406,16 @@ class MethodTest(unittest.TestCase):
             gaps=["image (f O g) s = t"]
         )
 
+    def testRewriteGoal4(self):
+        test_method(self,
+            'set',
+            vars={'f': "'a => 'b", 's': "'a set", 't': "'a set"},
+            concl='(∃x1. x1 ∈ s) ⟷ x ∈ image f s',
+            method_name='rewrite_goal',
+            args={'theorem': 'in_image'},
+            gaps=["(∃x1. x1 ∈ s) ⟷ (∃x1. x = f x1 & x1 ∈ s)"]
+        )
+
     def testRewriteGoalWithPrev(self):
         test_method(self,
             'nat',

@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import STVar, TVar, TConst, TFun, BoolType, TypeMatchException
+from kernel.type import STVar, TVar, TConst, TFun, BoolType, TyInst, TypeMatchException
 
 Ta = TVar("a")
 Tb = TVar("b")
@@ -58,15 +58,15 @@ class TypeTest(unittest.TestCase):
 
     def testSubst(self):
         test_data = [
-            (STa, {"a" : Tb}, Tb),
-            (STa, {"b" : Tb}, STa),
-            (TFun(STa, Tb), {"a" : Tb}, TFun(Tb, Tb)),
-            (TFun(STa, STb), {"a" : Tb, "b" : Ta}, TFun(Tb, Ta)),
-            (TConst("list", STa), {"a" : Tb}, TConst("list", Tb)),
+            (STa, Tb),
+            (STb, Ta),
+            (TFun(STa, Tb), TFun(Tb, Tb)),
+            (TFun(STa, STb), TFun(Tb, Ta)),
+            (TConst("list", STa), TConst("list", Tb)),
         ]
 
-        for T, tyinst, res in test_data:
-            self.assertEqual(T.subst(tyinst), res)
+        for T, res in test_data:
+            self.assertEqual(T.subst(TyInst(a=Tb, b=Ta)), res)
 
     def testMatch(self):
         test_data = [
@@ -77,7 +77,7 @@ class TypeTest(unittest.TestCase):
         ]
 
         for pat, T, tyinst in test_data:
-            self.assertEqual(pat.match(T), tyinst)
+            self.assertEqual(pat.match(T), TyInst(tyinst))
 
     def testMatchFail(self):
         test_data = [

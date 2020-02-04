@@ -4,7 +4,7 @@ import os
 import json
 
 from kernel.type import TFun, BoolType, NatType
-from kernel.term import Term, Var, Const, And, Implies, Eq, Nat
+from kernel.term import Term, Var, Const, And, Implies, Eq, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -145,7 +145,7 @@ class ParaSystem():
             if hint_ty == INV:
                 inv_vars, inv = self.invs[hint_inv_id]
                 inv_var_nms = [v.name for v in inv_vars]
-                subst = dict((nm, Var(subst_var, NatType)) for nm, subst_var in zip(inv_var_nms, subst_vars))
+                subst = Inst((nm, Var(subst_var, NatType)) for nm, subst_var in zip(inv_var_nms, subst_vars))
                 inv_subst = inv.subst(subst)
                 return Implies(inv_subst, guard, inv_after)
 
@@ -208,7 +208,7 @@ class ParaSystem():
         trans_pt = ProofTerm.assume(transC(s1,s2))
         # print(printer.print_thm(trans_pt.th))
         P = Implies(invC(s1), invC(s2))
-        ind_pt = apply_theorem("trans_cases", inst={"a1": s1, "a2": s2, "P": P})
+        ind_pt = apply_theorem("trans_cases", inst=Inst(a1=s1, a2=s2, P=P))
         # print(printer.print_thm(ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()

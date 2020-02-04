@@ -1,10 +1,10 @@
 # Author: Bohua Zhan
 
-from collections import OrderedDict
+from collections import OrderedDict, UserDict
 from copy import copy
 from fractions import Fraction
 
-from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType
+from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst
 from util import typecheck
 
 
@@ -23,6 +23,24 @@ class TypeCheckException(Exception):
 
     def __str__(self):
         return self.msg
+
+class Inst(UserDict):
+    """Instantiation of schematic variables."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tyinst = TyInst()
+
+    def __str__(self):
+        res = ''
+        if self.tyinst:
+            res = str(self.tyinst) + ', '
+        res += ', '.join('%s := %s' % (nm, t) for nm, t in self.items())
+        return res
+
+    def __copy__(self):
+        res = Inst(self)
+        res.tyinst = copy(self.tyinst)
+        return res
 
 
 """Default parser for terms. If None, Term() is unable to parse string."""
@@ -313,6 +331,7 @@ class Term():
 
     def subst_type(self, tyinst):
         """Perform substitution on type variables."""
+        typecheck.checkinstance('subst_type', tyinst, TyInst)
         if self.is_svar():
             return SVar(self.name, self.T.subst(tyinst))
         elif self.is_var():
@@ -330,6 +349,7 @@ class Term():
 
     def subst_type_inplace(self, tyinst):
         """Perform substitution on type variables."""
+        typecheck.checkinstance('subst_type_inplace', tyinst, TyInst)
         if hasattr(self, "_hash_val"):
             del self._hash_val
         if self.is_svar() or self.is_var() or self.is_const():
@@ -354,7 +374,7 @@ class Term():
         be performed before calling subst.
 
         """
-        assert isinstance(inst, dict), "inst must be a dictionary"
+        typecheck.checkinstance('subst', inst, Inst)
         if self.is_svar():
             if self.name in inst:
                 t = inst[self.name]
@@ -548,12 +568,12 @@ class Term():
         else:
             raise TypeError
 
-    def subst_norm(self, tyinst, inst):
+    def subst_norm(self, inst):
         """Substitute using the given instantiation, then normalize with
         respect to beta-conversion.
 
         """
-        return self.subst_type(tyinst).subst(inst).beta_norm()
+        return self.subst_type(inst.tyinst).subst(inst).beta_norm()
 
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""

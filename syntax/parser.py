@@ -5,8 +5,8 @@ import copy
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel import type as hol_type
-from kernel.type import Type, STVar, TVar, TConst, TFun, BoolType, NatType
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary
+from kernel.type import Type, STVar, TVar, TConst, TFun, BoolType, NatType, TyInst
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary, Inst
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
@@ -506,7 +506,10 @@ def parse_args(sig, args):
         elif sig == Tuple[str, macro.TyInst, macro.Inst]:
             s1, s2 = args.split(",", 1)
             tyinst, inst = parse_instsp(s2)
-            return s1, tyinst, inst
+            tyinst = TyInst(tyinst)
+            inst = Inst(inst)
+            inst.tyinst = tyinst
+            return s1, inst
         elif sig == List[Term]:
             return parse_term_list(args)
         else:

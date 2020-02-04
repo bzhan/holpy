@@ -3,9 +3,9 @@
 import unittest
 
 from kernel import type as hol_type
-from kernel.type import STVar, TVar, TFun
+from kernel.type import STVar, TVar, TFun, TyInst
 from kernel import term
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary, Inst
 from kernel.term import TermException, TypeCheckException
 
 Ta = TVar("a")
@@ -114,30 +114,30 @@ class TermTest(unittest.TestCase):
 
     def testSubstType(self):
         test_data = [
-            (Var('a', STa), {"a" : Tb}, Var("a", Tb)),
-            (Const("c", STa), {"a" : Tb}, Const("c", Tb)),
-            (Var("f", TFun(STa,Tb))(Var("a", STa)), {"a" : Tb}, Var("f", TFun(Tb,Tb))(Var("a", Tb))),
-            (Abs("x", STa, B0), {"a" : Tb}, Abs("x", Tb, B0)),
-            (Abs("x", STa, Var('a', STa)), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
+            (Var('a', STa), Var("a", Tb)),
+            (Const("c", STa), Const("c", Tb)),
+            (Var("f", TFun(STa,Tb))(Var("a", STa)), Var("f", TFun(Tb,Tb))(Var("a", Tb))),
+            (Abs("x", STa, B0), Abs("x", Tb, B0)),
+            (Abs("x", STa, Var('a', STa)), Abs("x", Tb, Var("a", Tb))),
         ]
 
-        for t, tyinst, res in test_data:
-            self.assertEqual(t.subst_type(tyinst), res)
+        for t, res in test_data:
+            self.assertEqual(t.subst_type(TyInst(a=Tb)), res)
 
     def testSubst(self):
         test_data = [
-            (SVar('a', Ta), {"a" : c}, c),
-            (c, {"a" : c}, c),
-            (f(SVar('a', Ta)), {"a" : c}, f(c)),
-            (Abs("x", Ta, B0), {"a" : c}, Abs("x", Ta, B0)),
-            (Abs("x", Ta, SVar('a', Ta)), {"a" : c}, Abs("x", Ta, c)),
+            (SVar('a', Ta), c),
+            (c, c),
+            (f(SVar('a', Ta)), f(c)),
+            (Abs("x", Ta, B0), Abs("x", Ta, B0)),
+            (Abs("x", Ta, SVar('a', Ta)), Abs("x", Ta, c)),
         ]
 
-        for t, inst, res in test_data:
-            self.assertEqual(t.subst(inst), res)
+        for t, res in test_data:
+            self.assertEqual(t.subst(Inst(a=c)), res)
 
     def testSubstFail(self):
-        self.assertRaises(TermException, SVar('a', TVar('a')).subst, {"a" : b})
+        self.assertRaises(TermException, SVar('a', TVar('a')).subst, Inst(a=b))
 
     def testSubstBound(self):
         test_data = [

@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
+from kernel.type import TyInst
 from kernel import term
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel.proof import ItemID, Proof, ProofStateException
 from kernel.theory import Method, get_method
@@ -297,7 +298,7 @@ class apply_forward_step(Method):
         return pprint.N(data['theorem'] + " (f)")
 
     def apply(self, state, id, data, prevs):
-        inst = dict()
+        inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
                 if key.startswith("param_"):
@@ -317,11 +318,11 @@ class apply_forward_step(Method):
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         macro = logic.apply_theorem_macro(with_inst=True)
-        res_th = macro.eval((data['theorem'], dict(), inst), prev_ths)
+        res_th = macro.eval((data['theorem'], inst), prev_ths)
 
         state.add_line_before(id, 1)
         if inst:
-            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], dict(), inst), prevs=prevs)
+            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], inst), prevs=prevs)
         else:
             state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
@@ -367,13 +368,13 @@ class apply_backward_step(Method):
         return pprint.N(data['theorem'] + " (b)")
 
     def apply(self, state, id, data, prevs):
-        inst = dict()
+        inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
                 if key.startswith("param_"):
                     inst[key[6:]] = parser.parse_term(val)
         if inst:
-            state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
+            state.apply_tactic(id, tactic.rule(), args=(data['theorem'], inst), prevs=prevs)
         else:
             state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 

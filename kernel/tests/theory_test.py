@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TConst, TVar, TFun, BoolType
-from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Inst, TyInst
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
 from kernel.macro import ProofMacro
@@ -153,7 +153,7 @@ class TheoryTest(unittest.TestCase):
         x_eq_y = Eq(x,y)
         prf = Proof()
         prf.add_item(0, "theorem", args="trivial")
-        prf.add_item(1, "substitution", args={"A" : x_eq_y}, prevs=[0])
+        prf.add_item(1, "substitution", args=Inst(A=x_eq_y), prevs=[0])
 
         rpt = ProofReport()
         th = Thm([], Implies(x_eq_y,x_eq_y))
@@ -167,7 +167,7 @@ class TheoryTest(unittest.TestCase):
         x_eq_y = Eq(x,y)
         prf = Proof()
         prf.add_item(0, "theorem", args="trivial")
-        prf.add_item(1, "substitution", args={}, prevs=[0])
+        prf.add_item(1, "substitution", args=Inst(), prevs=[0])
 
         rpt = ProofReport()
         th = Thm([], Implies(SVar('A', BoolType), SVar('A', BoolType)))
@@ -288,7 +288,7 @@ class TheoryTest(unittest.TestCase):
         # Proof of |- id x = x from |- id = (%x. x)
         prf = Proof()
         prf.add_item(0, "theorem", args="id_def")  # id = (%x. x)
-        prf.add_item(1, "subst_type", args={'a': TVar('a')}, prevs=[0])  # id = (%x. x)
+        prf.add_item(1, "subst_type", args=TyInst(a=TVar('a')), prevs=[0])  # id = (%x. x)
         prf.add_item(2, "reflexive", args=x)  # x = x
         prf.add_item(3, "combination", prevs=[1, 2])  # id x = (%x. x) x
         prf.add_item(4, "beta_conv", args=id_def(x))  # (%x. x) x = x

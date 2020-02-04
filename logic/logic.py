@@ -2,9 +2,9 @@
 
 from typing import List, Tuple
 
-from kernel.type import TVar, TFun, BoolType
+from kernel.type import TVar, TFun, TyInst, BoolType
 from kernel import term
-from kernel.term import Term, SVar, Var, Const, Abs, Implies, Lambda, true, false
+from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, true, false
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel import macro
@@ -211,8 +211,8 @@ class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
     results in the proof.
 
-    If with_inst is set, the signature is (th_name, tyinst, inst),
-    where th_name is the name of the theorem, and tyinst, inst are
+    If with_inst is set, the signature is (th_name, inst),
+    where th_name is the name of the theorem, and inst are
     the instantiations of type and term variables.
 
     If with_inst is not set, the signature is th_name, where th_name
@@ -226,11 +226,11 @@ class apply_theorem_macro(ProofTermMacro):
         self.limit = None
 
     def eval(self, args, prevs):
-        tyinst, inst = dict(), dict()
         if self.with_inst:
-            name, tyinst, inst = args
+            name, inst = args
         else:
             name = args
+            inst = Inst()
         th = theory.thy.get_theorem(name, svar=True)
         As, C = th.prop.strip_implies()
 
@@ -240,13 +240,13 @@ class apply_theorem_macro(ProofTermMacro):
         svars = term.get_svars(th.prop)
         for v in svars:
             if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), tyinst)
+                v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
 
         pats = As[:len(prevs)]
         ts = [prev_th.prop for prev_th in prevs]
-        matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
+        matcher.first_order_match_list_incr(pats, ts, inst)
 
-        As, C = th.prop.subst_norm(tyinst, inst).strip_implies()
+        As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
@@ -259,11 +259,11 @@ class apply_theorem_macro(ProofTermMacro):
         return th
 
     def get_proof_term(self, args, pts):
-        tyinst, inst = dict(), dict()
         if self.with_inst:
-            name, tyinst, inst = args
+            name, inst = args
         else:
             name = args
+            inst = Inst()
         th = theory.thy.get_theorem(name, svar=True)
         As, C = th.prop.strip_implies()
 
@@ -273,14 +273,14 @@ class apply_theorem_macro(ProofTermMacro):
         svars = term.get_svars(th.prop)
         for v in svars:
             if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), tyinst)
+                v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
 
         pats = As[:len(pts)]
         ts = [pt.prop for pt in pts]
-        matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
+        matcher.first_order_match_list_incr(pats, ts, inst)
 
         pt = ProofTerm.theorem(name)
-        pt = pt.subst_type(tyinst).substitution(inst)
+        pt = pt.subst_type(inst.tyinst).substitution(inst)
         if pt.prop.beta_norm() != pt.prop:
             pt = beta_norm_conv().apply_to_pt(pt)
         pt = pt.implies_elim(*pts)
@@ -319,14 +319,13 @@ class apply_fact_macro(ProofTermMacro):
 
         if self.with_inst:
             assert len(args) == len(new_names), "apply_fact_macro: wrong number of args."
-            tyinst, inst = {}, {nm: v for nm, v in zip(new_names, args)}
+            inst = Inst({nm: v for nm, v in zip(new_names, args)})
         else:
-            tyinst, inst = dict(), dict()
+            inst = Inst()
             for idx, pt_prev in enumerate(pt_prevs):
-                matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
+                matcher.first_order_match_incr(As[idx], pt_prev.prop, inst)
 
-        if tyinst:
-            pt = ProofTerm.subst_type(tyinst, pt)
+        pt = pt.subst_type(inst.tyinst)
         for new_var in new_vars:
             if new_var.name in inst:
                 pt = pt.forall_elim(inst[new_var.name])
@@ -555,35 +554,33 @@ class resolve_theorem_macro(ProofTermMacro):
         assert pt.prop.is_not(), "resolve_theorem_macro"
 
         # Match for variables in pt.
-        tyinst, inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
-        pt = pt.subst_type(tyinst).substitution(inst)
+        inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
+        pt = pt.subst_type(inst.tyinst).substitution(inst)
         pt = apply_theorem('negE', pt, pts[0])  # false
         return apply_theorem('falseE', pt, concl=goal)
 
 
-def apply_theorem(th_name, *pts, concl=None, tyinst=None, inst=None):
+def apply_theorem(th_name, *pts, concl=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
 
-    The function takes optional arguments concl, tyinst, and inst. Matching
-    always starts with tyinst and inst. If conclusion is specified, it is
+    The function takes optional arguments concl, inst. Matching
+    always starts with inst. If conclusion is specified, it is
     matched next. Finally, the assumptions are matched.
 
     """
     typecheck.checkinstance('apply_theorem', pts, [ProofTerm])
-    if concl is None and tyinst is None and inst is None:
+    if concl is None and inst is None:
         # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", th_name, pts)
     else:
         pt = ProofTerm.theorem(th_name)
-        if tyinst is None:
-            tyinst = dict()
         if inst is None:
-            inst = dict()
+            inst = Inst()
         if concl is not None:
-            matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+            matcher.first_order_match_incr(pt.concl, concl, inst)
         for i, prev in enumerate(pts):
-            matcher.first_order_match_incr(pt.assums[i], prev.prop, (tyinst, inst))
-        return ProofTermDeriv("apply_theorem_for", (th_name, tyinst, inst), pts)
+            matcher.first_order_match_incr(pt.assums[i], prev.prop, inst)
+        return ProofTermDeriv("apply_theorem_for", (th_name, inst), pts)
 
 def conj_thms(*pts):
     assert len(pts) > 0, 'conj_thms: input list is empty.'

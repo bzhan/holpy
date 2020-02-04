@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
+from kernel.type import TyInst
 from kernel import term
-from kernel.term import Term, Implies, Not, Lambda
+from kernel.term import Term, Implies, Not, Lambda, Inst
 from kernel.thm import Thm
 from kernel import theory
 from logic import logic
@@ -60,9 +61,9 @@ class rule(Tactic):
     """
     def get_proof_term(self, goal, *, args=None, prevs=None):
         if isinstance(args, tuple):
-            th_name, instsp = args
+            th_name, inst = args
         else:
-            th_name, instsp = args, None
+            th_name, inst = args, None
         assert isinstance(th_name, str), "rule: theorem name must be a string"
 
         if prevs is None:
@@ -73,34 +74,32 @@ class rule(Tactic):
 
         # Length of prevs is at most length of As
         assert len(prevs) <= len(As), "rule: too many previous facts"
-        if instsp is None:
-            instsp = (dict(), dict())
+        if inst is None:
+            inst = Inst()
 
-        tyinst, inst = instsp
         svars = term.get_svars(th.prop)
         for v in svars:
             if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), tyinst)
+                v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
 
         # Match the conclusion and assumptions. Either the conclusion
         # or the list of assumptions must be a first-order pattern.
         if matcher.is_pattern(C, []):
-            matcher.first_order_match_incr(C, goal.prop, instsp)
+            matcher.first_order_match_incr(C, goal.prop, inst)
             for pat, prev in zip(As, prevs):
-                matcher.first_order_match_incr(pat, prev.prop, instsp)
+                matcher.first_order_match_incr(pat, prev.prop, inst)
         else:
             for pat, prev in zip(As, prevs):
-                matcher.first_order_match_incr(pat, prev.prop, instsp)
-            matcher.first_order_match_incr(C, goal.prop, instsp)
+                matcher.first_order_match_incr(pat, prev.prop, inst)
+            matcher.first_order_match_incr(C, goal.prop, inst)
 
         # Check that every variable in the theorem has an instantiation.
-        tyinst, inst = instsp
         unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         # Substitute and normalize
-        As, _ = th.prop.subst_norm(tyinst, inst).strip_implies()
+        As, _ = th.prop.subst_norm(inst).strip_implies()
         goal_Alen = len(goal.assums)
         if goal_Alen > 0:
             As = As[:-goal_Alen]
@@ -112,7 +111,7 @@ class rule(Tactic):
         if set(term.get_svars(th.assums)) != set(term.get_svars(th.prop)) or \
            set(term.get_stvars(th.assums)) != set(term.get_stvars(th.prop)) or \
            not matcher.is_pattern_list(th.assums, []):
-            return apply_theorem(th_name, *pts, tyinst=tyinst, inst=inst)
+            return apply_theorem(th_name, *pts, inst=inst)
         else:
             return apply_theorem(th_name, *pts)
 
@@ -158,9 +157,9 @@ class var_induct(Tactic):
         f, args = th.concl.strip_comb()
         if len(args) != 1:
             raise NotImplementedError
-        instsp = matcher.first_order_match(args[0], var)
-        instsp[1][f.name] = P
-        return rule().get_proof_term(goal, args=(th_name, instsp))
+        inst = matcher.first_order_match(args[0], var)
+        inst[f.name] = P
+        return rule().get_proof_term(goal, args=(th_name, inst))
 
 class rewrite_goal(Tactic):
     """Rewrite the goal using a theorem."""
@@ -232,17 +231,16 @@ class apply_prev(Tactic):
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
-        instsp = dict(), dict()
-        matcher.first_order_match_incr(C, goal.prop, instsp)
+        inst = Inst()
+        matcher.first_order_match_incr(C, goal.prop, inst)
         for idx, prev_pt in enumerate(prev_pts):
-            matcher.first_order_match_incr(As[idx], prev_pt.prop, instsp)
+            matcher.first_order_match_incr(As[idx], prev_pt.prop, inst)
 
-        tyinst, inst = instsp
         unmatched_vars = [v for v in new_names if v not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
-        pt = pt.subst_type(tyinst)
+        pt = pt.subst_type(inst.tyinst)
         for new_name in new_names:
             pt = pt.forall_elim(inst[new_name])
         if pt.prop.beta_norm() != pt.prop:
@@ -280,4 +278,7 @@ class inst_exists_goal(Tactic):
             str(C.arg.var_T), str(argT)
         )
 
-        return rule().get_proof_term(goal, args=('exI', ({'a': argT}, {'P': C.arg, 'a': args})))
+        tyinst = TyInst(a=argT)
+        inst = Inst(P=C.arg, a=args)
+        inst.tyinst = tyinst
+        return rule().get_proof_term(goal, args=('exI', inst))

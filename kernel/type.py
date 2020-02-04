@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from collections import OrderedDict
+from collections import OrderedDict, UserDict
 from util import typecheck
 
 
@@ -20,6 +20,15 @@ class TypeMatchException(Exception):
 
     def __str__(self):
         return self.msg
+
+
+class TyInst(UserDict):
+    """Instantiation of schematic type variables."""
+    def __str__(self):
+        return ', '.join('%s := %s' % (nm, T) for nm, T in self.items())
+
+    def __copy__(self):
+        return TyInst(self)
 
 
 """Default parser for types. If None, Type() is unable to parse type."""
@@ -224,12 +233,15 @@ class Type():
             raise TypeError
 
     def subst(self, tyinst):
-        """Given a dictionary tyinst mapping from names to types,
-        simultaneously substitute for the type variables using the
-        dictionary.
+        """Simultaneously substitute for the type variables using tyinst.
+        
+        Parameters
+        ==========
+        tyinst : TyInst
+            Type instantiation to be substituted.
 
         """
-        assert isinstance(tyinst, dict), "tyinst must be a dictionary"
+        typecheck.checkinstance('subst', tyinst, TyInst)
         if self.is_stvar():
             if self.name in tyinst:
                 return tyinst[self.name]
@@ -243,8 +255,12 @@ class Type():
             raise TypeError
 
     def match_incr(self, T, tyinst):
-        """Incremental match. Match self (as a pattern) with T. Here tyinst
-        is the current instantiation. This is updated by the function.
+        """Incremental type matching of self with T.
+        
+        Parameters
+        ==========
+        tyinst : TyInst
+            The current instantiation. This is updated by the function.
 
         """
         if self.is_stvar():
@@ -266,11 +282,13 @@ class Type():
             raise TypeError
 
     def match(self, T):
-        """Match self (as a pattern) with T. Returns either a dictionary
-        containing the match, or raise TypeMatchException.
+        """Type matching of self with T.
+        
+        Return the resulting instantiation, or raise TypeMatchException
+        if matching fails.
 
         """
-        tyinst = dict()
+        tyinst = TyInst()
         self.match_incr(T, tyinst)
         return tyinst
 

@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
+from kernel.type import TyInst
 from kernel import term
-from kernel.term import Term, Var, Bound
+from kernel.term import Term, Var, Bound, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from logic.proofterm import ProofTerm, refl
@@ -149,10 +150,9 @@ class eta_conv(Conv):
             raise ConvException("eta_conv")
 
         eq_pt = ProofTerm.theorem('eta_conversion')
-        eq_pt = eq_pt.subst_type({
-            'a': t2.fun.get_type().domain_type(),
-            'b': t2.fun.get_type().range_type()})
-        eq_pt = eq_pt.substitution({'f': t2.fun})
+        eq_pt = eq_pt.subst_type(
+            TyInst(a=t2.fun.get_type().domain_type(), b=t2.fun.get_type().range_type()))
+        eq_pt = eq_pt.substitution(Inst(f=t2.fun))
         return eq_pt
 
 class abs_conv(Conv):
@@ -316,15 +316,15 @@ class rewr_conv(Conv):
         if len(self.As) != len(self.conds):
             raise ConvException("rewr_conv: number of conds does not agree")
 
-        instsp = dict(), dict()
+        inst = Inst()
         ts = [cond.prop for cond in self.conds]
         if not self.sym:
             lhs = self.C.lhs
         else:
             lhs = self.C.rhs
         try:
-            matcher.first_order_match_list_incr(self.As, ts, instsp)
-            matcher.first_order_match_incr(lhs, t, instsp)
+            matcher.first_order_match_list_incr(self.As, ts, inst)
+            matcher.first_order_match_incr(lhs, t, inst)
         except matcher.MatchException:
             raise ConvException("rewr_conv: cannot match %s with %s" % (lhs, t))
 
@@ -333,8 +333,7 @@ class rewr_conv(Conv):
             raise ConvException("rewr_conv: unmatched vars")
 
         pt = self.eq_pt
-        tyinst, inst = instsp
-        pt = pt.subst_type(tyinst).substitution(inst)
+        pt = pt.subst_type(inst.tyinst).substitution(inst)
         pt = pt.implies_elim(*self.conds)
         if self.sym:
             pt = pt.symmetric()
@@ -378,14 +377,14 @@ def has_rewrite(th, t, *, sym=False, conds=None):
         return False
 
     ts = [cond.prop for cond in conds]
-    instsp = dict(), dict()
+    inst = Inst()
     try:
-        matcher.first_order_match_list_incr(As, ts, instsp)
+        matcher.first_order_match_list_incr(As, ts, inst)
     except matcher.MatchException:
         return False
 
     def rec(t):
-        if not t.is_open() and matcher.can_first_order_match_incr(C.lhs, t, instsp):
+        if not t.is_open() and matcher.can_first_order_match_incr(C.lhs, t, inst):
             return True
 
         if t.is_comb():

@@ -160,12 +160,11 @@ def solve_rules(th_names):
             if theory.thy.has_theorem(th_name):
                 th = theory.thy.get_theorem(th_name, svar=True)
             try:
-                instsp = matcher.first_order_match(th.concl, goal)
+                inst = matcher.first_order_match(th.concl, goal)
             except matcher.MatchException:
                 continue
 
-            tyinst, inst = instsp
-            As, _ = th.prop.subst_norm(tyinst, inst).strip_implies()
+            As, _ = th.prop.subst_norm(inst).strip_implies()
             try:
                 pts = [solve(A, pts) for A in As]
             except TacticException:
@@ -245,12 +244,11 @@ def norm_rules(th_names):
                 continue
 
             try:
-                instsp = matcher.first_order_match(th.concl.lhs, t)
+                inst = matcher.first_order_match(th.concl.lhs, t)
             except matcher.MatchException:
                 continue
 
-            tyinst, inst = instsp
-            As, C = th.prop.subst_norm(tyinst, inst).strip_implies()
+            As, C = th.prop.subst_norm(inst).strip_implies()
             try:
                 pts = [solve(A, pts) for A in As]
             except TacticException:

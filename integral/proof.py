@@ -4,7 +4,7 @@ from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, BoolType, RealType
-from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real
+from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real, Inst
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv
@@ -556,14 +556,12 @@ def apply_subst_thm(f, g, a, b):
         is_le = False
 
     if is_le:
-        eq_pt = apply_theorem('real_integral_substitution_simple_incr',
-            inst={'a': a, 'b': b, 'f': f, 'g': g})
+        eq_pt = apply_theorem('real_integral_substitution_simple_incr', inst=Inst(a=a, b=b, f=f, g=g))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
     else:
-        eq_pt = apply_theorem('real_integral_substitution_simple_decr',
-            inst={'a': a, 'b': b, 'f': f, 'g': g})
+        eq_pt = apply_theorem('real_integral_substitution_simple_decr', inst=Inst(a=a, b=b, f=f, g=g))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
@@ -677,7 +675,7 @@ class integrate_by_parts(Conv):
             raise NotImplementedError
 
         eq_pt = apply_theorem('real_integration_by_parts_simple_evalat',
-            inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
+                              inst=Inst(a=a, b=b, u=self.u, v=self.v))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
@@ -801,7 +799,7 @@ class split_region_conv(Conv):
             raise ConvException('split_region')
         a, b = S.args
 
-        eq_pt = apply_theorem('real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
+        eq_pt = apply_theorem('real_integral_combine', inst=Inst(a=a, b=b, c=self.c, f=f))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
