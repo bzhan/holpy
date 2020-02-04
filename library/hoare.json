@@ -103,7 +103,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem_basic, {a: 'a}, {f: λf::'a. f, s: s}",
+                    "args": "Sem_basic, {f: λf::'a. f, s: s}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -136,7 +136,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem_basic, {a: 'a ⇒ 'b}, {f: λf. (f)(a := b f), s: s}",
+                    "args": "Sem_basic, {f: λf. (f)(a := b f), s: s}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",

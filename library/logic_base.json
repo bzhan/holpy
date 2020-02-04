@@ -434,7 +434,7 @@
                     "th": "¬A, A ⊢ false"
                 },
                 {
-                    "args": "falseE, {}, {A: C}",
+                    "args": "falseE, {A: C}",
                     "id": "3",
                     "prevs": [
                         "2"

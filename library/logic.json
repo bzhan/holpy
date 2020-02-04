@@ -3056,14 +3056,14 @@
                     "th": "¬true ⊢ ¬true"
                 },
                 {
-                    "args": "trueI, {}, {}",
+                    "args": "trueI, {}",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "¬true ⊢ true"
                 },
                 {
-                    "args": "negE, {}, {A: true}",
+                    "args": "negE, {A: true}",
                     "id": "0.2",
                     "prevs": [
                         "0.0",
@@ -3096,7 +3096,7 @@
                     "th": "false ⊢ false"
                 },
                 {
-                    "args": "falseE, {}, {A: ¬true}",
+                    "args": "falseE, {A: ¬true}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -3114,7 +3114,7 @@
                     "th": "⊢ false ⟶ ¬true"
                 },
                 {
-                    "args": "iffI, {}, {A: ¬true, B: false}",
+                    "args": "iffI, {A: ¬true, B: false}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -3147,7 +3147,7 @@
                     "th": "¬false ⊢ ¬false"
                 },
                 {
-                    "args": "trueI, {}, {}",
+                    "args": "trueI, {}",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3200,7 +3200,7 @@
                     "th": "⊢ false ⟶ false"
                 },
                 {
-                    "args": "negI, {}, {A: false}",
+                    "args": "negI, {A: false}",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
@@ -3218,7 +3218,7 @@
                     "th": "⊢ true ⟶ ¬false"
                 },
                 {
-                    "args": "iffI, {}, {A: ¬false, B: true}",
+                    "args": "iffI, {A: ¬false, B: true}",
                     "id": "2",
                     "prevs": [
                         "0",

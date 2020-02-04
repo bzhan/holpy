@@ -1442,7 +1442,7 @@
                     "th": "member x A ⊢ member x A"
                 },
                 {
-                    "args": "disjI1, {}, {A: member x A, B: member x B}",
+                    "args": "disjI1, {A: member x A, B: member x B}",
                     "id": "0.2",
                     "prevs": [
                         "0.1"

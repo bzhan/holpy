@@ -518,7 +518,7 @@
                     "th": "⊢ ∀n. n + Suc y = Suc (n + y) ⟶ Suc n + Suc y = Suc (Suc n + y)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + Suc y = Suc (x + y), x: x}",
+                    "args": "nat_induct, {P: λx. x + Suc y = Suc (x + y), x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -1236,7 +1236,7 @@
                     "th": "⊢ ∀n. n * Suc y = n + n * y ⟶ Suc n * Suc y = Suc n + Suc n * y"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x * Suc y = x + x * y, x: x}",
+                    "args": "nat_induct, {P: λx. x * Suc y = x + x * y, x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
