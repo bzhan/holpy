@@ -144,7 +144,6 @@ class eval_Sem_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("eval_Sem: (solves)")
 
@@ -283,7 +282,6 @@ class vcg_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply VCG")
 

@@ -5,15 +5,17 @@ import unittest
 from syntax import parser
 from syntax import pprint
 from logic import context
+from syntax.settings import settings, global_setting
 
 
 class PPrintTest(unittest.TestCase):
-    def run_test(self, thy_name, s, expected_res, *, line_length=80):
+    def run_test(self, thy_name, s, expected_res, **kwargs):
         context.set_context(thy_name)
         t = parser.parse_term(s)
-        ast = pprint.get_ast_term(t, unicode=True)
-        res = pprint.print_ast(ast, line_length=line_length)
-        self.assertEqual(res, expected_res)
+        with global_setting(**kwargs):
+            ast = pprint.get_ast_term(t)
+            res = pprint.print_ast(ast)
+            self.assertEqual(res, expected_res)
 
     def testPPrint1(self):
         self.run_test(
@@ -27,7 +29,8 @@ class PPrintTest(unittest.TestCase):
                 'has_integral (λx. f x * g2 x) (f b * g b - f a * g a - y) ',
                 '  (real_closed_interval a b) ',
                 '⟶ has_integral (λx. f2 x * g x) y (real_closed_interval a b)'
-            ]
+            ],
+            unicode=True, line_length=80
         )
 
     def testPPrint2(self):
@@ -39,36 +42,34 @@ class PPrintTest(unittest.TestCase):
                 '⟶ long_constant_2 ',
                 '   ⟶ long_constant1 ∧ long_constant_2'
             ],
-            line_length=40
+            unicode=True, line_length=40
         )
 
     def testPPrint3(self):
-        context.set_context('realanalysis')
-
-        s = "real_bounded t ∧ t ⊆ s ⟶ real_bounded s"
-        t = parser.parse_term(s)
-        ast = pprint.get_ast_term(t, unicode=True)
-        res = pprint.print_ast(ast, highlight=True, line_length=80)
-        expected_res = [[
-            {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 1},
-            {'text': ' ', 'color': 0},
-            {'text': 't', 'color': 2},
-            {'text': ' ', 'color': 0},
-            {'text': '∧', 'color': 0, 'link_name': 'conj', 'link_ty': 1},
-            {'text': ' ', 'color': 0},
-            {'text': 't', 'color': 2},
-            {'text': ' ', 'color': 0},
-            {'text': '⊆', 'color': 0, 'link_name': 'subset', 'link_ty': 1},
-            {'text': ' ', 'color': 0},
-            {'text': 's', 'color': 2},
-            {'text': ' ', 'color': 0},
-            {'text': '⟶', 'color': 0, 'link_name': 'implies', 'link_ty': 1},
-            {'text': ' ', 'color': 0},
-            {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 1},
-            {'text': ' ', 'color': 0},
-            {'text': 's', 'color': 2}
-        ]]
-        self.assertEqual(res, expected_res)
+        self.run_test(
+            'realanalysis',
+            "real_bounded t ∧ t ⊆ s ⟶ real_bounded s",
+            [[
+                {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 1},
+                {'text': ' ', 'color': 0},
+                {'text': 't', 'color': 2},
+                {'text': ' ', 'color': 0},
+                {'text': '∧', 'color': 0, 'link_name': 'conj', 'link_ty': 1},
+                {'text': ' ', 'color': 0},
+                {'text': 't', 'color': 2},
+                {'text': ' ', 'color': 0},
+                {'text': '⊆', 'color': 0, 'link_name': 'subset', 'link_ty': 1},
+                {'text': ' ', 'color': 0},
+                {'text': 's', 'color': 2},
+                {'text': ' ', 'color': 0},
+                {'text': '⟶', 'color': 0, 'link_name': 'implies', 'link_ty': 1},
+                {'text': ' ', 'color': 0},
+                {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 1},
+                {'text': ' ', 'color': 0},
+                {'text': 's', 'color': 2}
+            ]],
+            unicode=True, highlight=True, line_length=80
+        )
 
 
 if __name__ == "__main__":

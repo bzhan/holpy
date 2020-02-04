@@ -210,7 +210,8 @@ def load_json_file():
     for item in cache['content']:
         if item.error is None:
             theory.thy.unchecked_extend(item.get_extension())
-        output_item = item.export_web(line_length=line_length)
+        with settings.global_setting(line_length=line_length):
+            output_item = item.export_web()
         f_data['content'].append(output_item)
 
     if data['profile']:
@@ -274,15 +275,16 @@ def search_method():
     goal_id = data['step']['goal_id']
 
     search_res = state.search_method(goal_id, fact_ids)
-    for res in search_res:
-        if '_goal' in res:
-            res['_goal'] = [printer.print_term(t, unicode=True) for t in res['_goal']]
-        if '_fact' in res:
-            res['_fact'] = [printer.print_term(t, unicode=True) for t in res['_fact']]
+    with settings.global_setting(unicode=True):
+        for res in search_res:
+            if '_goal' in res:
+                res['_goal'] = [printer.print_term(t) for t in res['_goal']]
+            if '_fact' in res:
+                res['_fact'] = [printer.print_term(t) for t in res['_fact']]
 
     vars = state.get_vars(goal_id)
-    print_vars = dict((k, printer.print_type(v, unicode=True, highlight=True))
-                      for k, v in vars.items())
+    with settings.global_setting(unicode=True, highlight=True):
+        print_vars = dict((k, printer.print_type(v)) for k, v in vars.items())
     print("Response:", time.perf_counter() - start_time)
 
     if data['profile']:
@@ -326,7 +328,8 @@ def check_modify():
     item = items.parse_edit(edit_item)
     if item.error is None:
         theory.thy.unchecked_extend(item.get_extension())
-    output_item = item.export_web(line_length=line_length)
+    with settings.global_setting(line_length=line_length):
+        output_item = item.export_web()
 
     return jsonify({
         'item': output_item

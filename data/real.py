@@ -743,7 +743,6 @@ class real_norm_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("real_norm: (solves)")
 

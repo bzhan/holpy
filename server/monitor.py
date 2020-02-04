@@ -15,6 +15,7 @@ from server import method
 from logic import logic
 from server import items
 from syntax import parser
+from syntax.settings import settings, global_setting
 
 
 def check_proof(item, *, rewrite):
@@ -23,7 +24,8 @@ def check_proof(item, *, rewrite):
         state = server.parse_init_state(item.prop)
         history = state.parse_steps(item.steps)
         if rewrite:
-            item.proof = state.export_proof(unicode=True, highlight=False)
+            with global_setting(unicode=True):
+                item.proof = state.export_proof()
 
         for step in history:
             if 'error' in step:
@@ -100,7 +102,8 @@ def check_theory(filename, username='master', rewrite=False):
             new_thy = theory.thy
 
             # Check consistency with edit_item
-            edit_item = item.get_display(unicode=True, highlight=False)
+            with global_setting(unicode=True, highlight=False):
+                edit_item = item.get_display()
             theory.thy = old_thy
             item2 = items.parse_edit(edit_item)
             if item.ty == 'thm':

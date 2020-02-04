@@ -6,7 +6,7 @@ from kernel.type import Type
 from kernel import term
 from kernel import extension
 from kernel import theory
-from syntax import settings
+from syntax.settings import settings, global_setting
 from syntax import infertype
 from syntax import operator
 from util import name
@@ -218,7 +218,6 @@ class FunType(AST):
         self.arg2 = arg2
 
 
-@settings.with_settings
 def get_ast_type(T):
     """Obtain the abstract syntax tree for a type."""
     typecheck.checkinstance('get_ast_type', T, Type)
@@ -240,7 +239,7 @@ def get_ast_type(T):
             elif T.is_fun():
                 # 'a => 'b => 'c associates to the right. So parenthesis is
                 # needed to express ('a => 'b) => 'c.
-                fun_op = " ⇒ " if settings.unicode() else " => "
+                fun_op = " ⇒ " if settings.unicode else " => "
                 arg1_ast = helper(T.args[0])
                 if T.args[0].is_fun():
                     arg1_ast = Bracket(arg1_ast)
@@ -258,11 +257,10 @@ term_ast = dict()
 
 ATOM, FUN_APPL, UNARY, BINARY, BINDER = range(5)
 
-@settings.with_settings
 def get_ast_term(t):
     """Obtain the abstract syntax tree for a term."""
-    if (t, settings.unicode()) in term_ast:
-        return term_ast[(t, settings.unicode())]
+    if (t, settings.unicode) in term_ast:
+        return term_ast[(t, settings.unicode)]
 
     typecheck.checkinstance('get_ast_term', t, term.Term)
     var_names = [v.name for v in term.get_vars(t)]
@@ -331,7 +329,7 @@ def get_ast_term(t):
         elif set.is_literal_set(t):
             items = set.dest_literal_set(t)
             if set.is_empty_set(t):
-                res = Operator("∅", t.T, "empty_set") if settings.unicode() else Operator("{}", t.T, "empty_set")
+                res = Operator("∅", t.T, "empty_set") if settings.unicode else Operator("{}", t.T, "empty_set")
                 if hasattr(t, "print_type"):
                     res = Bracket(ShowType(res, get_ast_type(res.T)))
                 return res
@@ -393,7 +391,7 @@ def get_ast_term(t):
                     op_data.assoc == operator.RIGHT and get_priority(arg1) <= op_data.priority):
                     arg1_ast = Bracket(arg1_ast)
 
-                op_str = op_data.unicode_op if settings.unicode() else op_data.ascii_op
+                op_str = op_data.unicode_op if settings.unicode else op_data.ascii_op
                 op_name = theory.thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
                 op_ast = Operator(op_str, t.head.get_type(), op_name)
 
@@ -408,7 +406,7 @@ def get_ast_term(t):
 
             # Unary case
             elif op_data and op_data.arity == operator.UNARY:
-                op_str = op_data.unicode_op if settings.unicode() else op_data.ascii_op
+                op_str = op_data.unicode_op if settings.unicode else op_data.ascii_op
                 op_name = theory.thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
                 op_ast = Operator(op_str, t.head.get_type(), op_name)
 
@@ -421,7 +419,7 @@ def get_ast_term(t):
 
             # Next, the case of binders
             elif binder_data and t.arg.is_abs():
-                binder_str = binder_data.unicode_op if settings.unicode() else binder_data.ascii_op
+                binder_str = binder_data.unicode_op if settings.unicode else binder_data.ascii_op
                 op_ast = Binder(binder_str)
 
                 nm = name.get_variant_name(t.arg.var_name, var_names)
@@ -456,7 +454,7 @@ def get_ast_term(t):
                 return FunAppl(fun_ast, arg_ast)
 
         elif t.is_abs():
-            op_ast = Binder("λ") if settings.unicode() else Binder("%")
+            op_ast = Binder("λ") if settings.unicode else Binder("%")
 
             nm = name.get_variant_name(t.var_name, var_names)
             var_names.append(nm)
@@ -481,19 +479,20 @@ def get_ast_term(t):
     infertype.infer_printed_type(copy_t)
 
     ast = helper(copy_t, [])
-    term_ast[(t, settings.unicode())] = ast
+    term_ast[(t, settings.unicode)] = ast
     return ast
 
-def print_length(res):
-    if settings.highlight():
+def print_length(ast):
+    with global_setting(line_length=None):
+        res = print_ast(ast)
+    if settings.highlight:
         return sum(len(node['text']) for node in res)
     else:
         return len(res)
 
 # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
-@settings.with_settings
 def N(s, *, link=None):
-    if settings.highlight():
+    if settings.highlight:
         res = {'text': s, 'color': 0}
         if link:
             if link['name'] == s:
@@ -505,56 +504,49 @@ def N(s, *, link=None):
     else:
         return s
 
-@settings.with_settings
 def B(s):
     """Bound variable"""
-    if settings.highlight():
+    if settings.highlight:
         return [{'text': s, 'color': 1}]
     else:
         return s
 
-@settings.with_settings
 def V(s):
     """Free variable"""
-    if settings.highlight():
+    if settings.highlight:
         return [{'text': s, 'color': 2}]
     else:
         return s
 
-@settings.with_settings
 def TV(s):
     """Type variable"""
-    if settings.highlight():
+    if settings.highlight:
         return [{'text': s, 'color': 3}]
     else:
         return s
 
-@settings.with_settings
 def Gray(s):
     """Grey output"""
-    if settings.highlight():
+    if settings.highlight:
         return [{'text': s, 'color': 4}]
     else:
         return s
 
-@settings.with_settings
 def KWRed(s):
     """Red keyword"""
-    if settings.highlight():
+    if settings.highlight:
         return [{'text': s, 'color': 5}]
     else:
         return s
 
-@settings.with_settings
 def KWGreen(s):
     """Green keyword"""
-    if settings.highlight():
+    if settings.highlight:
         return [{'text': s, 'color': 6}]
     else:
         return s
 
-@settings.with_settings
-def print_ast(ast, *, line_length=None):
+def print_ast(ast):
     res = [[]]
     cur_line = 0
     indent = 0
@@ -618,7 +610,7 @@ def print_ast(ast, *, line_length=None):
         elif ast.ty == "operator":
             add_normal(ast.symbol, link={'name': ast.link_name, 'ty': extension.Extension.CONSTANT})
         elif ast.ty == "binary_op":
-            if line_length and print_length(print_ast(ast)) > line_length:
+            if settings.line_length and print_length(ast) > settings.line_length:
                 if ast.op.symbol in ("-->", "⟶"):
                     rec(ast.arg1)
                     add_normal(" ")
@@ -656,7 +648,7 @@ def print_ast(ast, *, line_length=None):
         elif ast.ty == "bound":
             add_bound(ast.name)
         elif ast.ty == "fun_appl":
-            if line_length and print_length(print_ast(ast)) > line_length:
+            if settings.line_length and print_length(ast) > settings.line_length:
                 rec(ast.fun)
                 add_normal(' ')
                 indent += 2
@@ -668,7 +660,7 @@ def print_ast(ast, *, line_length=None):
                 add_normal(' ')
                 rec(ast.arg)
         elif ast.ty == "ite":
-            if line_length and print_length(print_ast(ast)) > line_length:
+            if settings.line_length and print_length(ast) > settings.line_length:
                 add_normal('if ')
                 rec(ast.cond)
                 add_normal(' then ')
@@ -748,10 +740,10 @@ def print_ast(ast, *, line_length=None):
     rec(ast)
 
     for i in range(len(res)):
-        if not settings.highlight():
+        if not settings.highlight:
             res[i] = ''.join(res[i])
 
-    if not line_length:
+    if not settings.line_length:
         res = res[0]
 
     return res

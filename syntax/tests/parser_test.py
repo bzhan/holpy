@@ -13,6 +13,7 @@ from logic import basic
 from data import set
 from syntax.printer import print_term, print_type
 from syntax import parser
+from syntax.settings import settings, global_setting
 from logic import context
 
 
@@ -53,7 +54,8 @@ class ParserTest(unittest.TestCase):
         for s in test_data:
             T = parser.parse_type(s)
             self.assertIsInstance(T, Type)
-            self.assertEqual(print_type(T, unicode=True), s)
+            with global_setting(unicode=True):
+                self.assertEqual(print_type(T), s)
 
     def testParseTypeIsString(self):
         basic.load_theory('logic_base')
@@ -67,14 +69,14 @@ class ParserTest(unittest.TestCase):
         t = Term("(A::bool)")
         self.assertEqual(t, Var('A', BoolType))
 
-    def run_test(self, thy_name, *, vars=None, svars=None, s, Ts, unicode=False):
+    def run_test(self, thy_name, *, vars=None, svars=None, s, Ts):
         context.set_context(thy_name, vars=vars, svars=svars)
 
         t = parser.parse_term(s)
         T = parser.parse_type(Ts)
         self.assertIsInstance(t, Term)
         self.assertEqual(t.checked_get_type(), T)
-        self.assertEqual(print_term(t, unicode=unicode), s)
+        self.assertEqual(print_term(t), s)
 
     def testParseTerm(self):
         test_data = [
@@ -296,7 +298,8 @@ class ParserTest(unittest.TestCase):
                 "P": "'a => bool", "S": "'a set set", "f": "'a set => 'a set"}
         for s1, s2, Ts in test_data:
             self.run_test('set', vars=vars, s=s1, Ts=Ts)
-            self.run_test('set', vars=vars, s=s2, Ts=Ts, unicode=True)
+            with global_setting(unicode=True):
+                self.run_test('set', vars=vars, s=s2, Ts=Ts)
 
     def testParseString(self):
         test_data = [

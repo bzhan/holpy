@@ -11,7 +11,7 @@ from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
 from logic import context
-from syntax import parser, printer, pprint, settings
+from syntax import parser, printer, pprint
 from server import tactic
 
 
@@ -27,7 +27,6 @@ class cut_method(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         id = data['goal_id']
         with context.fresh_context(vars=state.get_vars(id)):
@@ -59,7 +58,6 @@ class cases_method(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         id = data['goal_id']
         with context.fresh_context(vars=state.get_vars(id)):
@@ -90,7 +88,6 @@ class apply_prev_method(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply fact (b)")
 
@@ -113,7 +110,6 @@ class rewrite_goal_with_prev_method(Method):
         else:
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]        
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("rewrite with fact")
 
@@ -154,7 +150,6 @@ class rewrite_goal(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         if 'sym' in data and data['sym'] == 'true':
             return pprint.N(data['theorem'] + " (sym, r)")
@@ -200,7 +195,6 @@ class rewrite_fact(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         if 'sym' in data and data['sym'] == 'true':
             return pprint.N(data['theorem'] + " (sym, r)")
@@ -241,7 +235,6 @@ class rewrite_fact_with_prev(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("rewrite fact with fact")
 
@@ -293,7 +286,6 @@ class apply_forward_step(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (f)")
 
@@ -363,7 +355,6 @@ class apply_backward_step(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (b)")
 
@@ -406,7 +397,6 @@ class apply_resolve_step(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Resolve using " + data['theorem'])
 
@@ -435,7 +425,6 @@ class introduction(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         res = "introduction"
         if 'names' in data and data['names'] != "":
@@ -486,7 +475,6 @@ class revert_intro(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("revert intro")
 
@@ -522,7 +510,6 @@ class exists_elim(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Instantiate exists fact")
 
@@ -588,7 +575,6 @@ class forall_elim(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Forall elimination")
 
@@ -622,7 +608,6 @@ class inst_exists_goal(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Instantiate exists goal")
 
@@ -663,7 +648,6 @@ class induction(Method):
                 results.append({'theorem': name})
         return results
 
-    @settings.with_settings
     def display_step(self, state, data):
         if 'var' in data:
             return pprint.N("Induction " + data['theorem'] + " var: " + data['var'])
@@ -690,7 +674,6 @@ class new_var(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         T = parser.parse_type(data['type'])
         return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(T)
@@ -719,7 +702,6 @@ class apply_fact(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply fact (f) %s onto %s" % (data['fact_ids'][0], ", ".join(data['fact_ids'][1:])))
 
@@ -741,7 +723,6 @@ def apply_method(state, step):
         "apply_method: illegal dependence."
     return method.apply(state, goal_id, step, fact_ids)
 
-@settings.with_settings
 def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
     try:
@@ -754,7 +735,6 @@ def output_step(state, step):
         res += pprint.N(' using ' + ','.join(step['fact_ids']))
     return res
 
-@settings.with_settings
 def output_hint(state, step):
     method = theory.global_methods[step['method_name']]
     res = method.display_step(state, step)

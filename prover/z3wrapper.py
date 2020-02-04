@@ -274,7 +274,6 @@ class Z3Method(Method):
 
         return [{}]
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply Z3")
 

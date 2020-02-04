@@ -124,7 +124,6 @@ class prove_avalI_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("prove_avalI: (solves)")
 

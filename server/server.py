@@ -14,7 +14,7 @@ from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import context
 from syntax import parser, printer
-from syntax import settings
+from syntax.settings import settings, global_setting
 from logic.context import Context
 from server import tactic
 from server import method
@@ -63,18 +63,21 @@ class ProofState():
         res.rpt = copy.copy(self.rpt)
         return res
 
-    @settings.with_settings
     def export_proof(self):
         return sum([printer.export_proof_item(item) for item in self.prf.items], [])
 
     def json_data(self):
         """Export proof in json format."""
-        res = {
-            "vars": {v.name: str(v.T) for v in self.vars},
-            "proof": self.export_proof(unicode=True, highlight=True),
-            "num_gaps": len(self.rpt.gaps),
-            "method_sig": theory.get_method_sig(),
-        }
+        with global_setting(unicode=True):
+            vars = {v.name: printer.print_type(v.T) for v in self.vars}
+
+        with global_setting(unicode=True, highlight=True):
+            res = {
+                "vars": vars,
+                "proof": self.export_proof(),
+                "num_gaps": len(self.rpt.gaps),
+                "method_sig": theory.get_method_sig(),
+            }
         return res
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
@@ -173,7 +176,8 @@ class ProofState():
                     r['goal_id'] = str(id)
                     if prevs:
                         r['fact_ids'] = list(str(id) for id in perm_prevs)
-                    r['display'] = method.output_hint(self, r, highlight=True, unicode=True)
+                    with global_setting(unicode=True, highlight=True):
+                        r['display'] = method.output_hint(self, r)
                 results.extend(res)
 
         # If there is an element in results that solves the goal,
@@ -221,7 +225,8 @@ class ProofState():
         """
         history = []
         for step in steps:
-            step_output = method.output_step(self, step, unicode=True, highlight=True)
+            with global_setting(unicode=True, highlight=True):
+                step_output = method.output_step(self, step)
             history.append({
                 'step_output': step_output,
                 'goal_id': step['goal_id'],

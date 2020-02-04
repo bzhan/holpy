@@ -13,7 +13,7 @@ from logic import context
 from syntax import parser
 from syntax import printer
 from syntax import pprint
-from syntax import settings
+from syntax.settings import settings, global_setting
 
 
 class ItemException(Exception):
@@ -42,8 +42,7 @@ class Item:
         """
         raise NotImplementedError
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         """Obtain data for display or edit.
         
         Normally, use highlight=False, unicode=True for edit, and
@@ -60,12 +59,15 @@ class Item:
         """Export the object to JSON format."""
         raise NotImplementedError
 
-    def export_web(self, line_length=80):
+    def export_web(self):
         res = self.export_json()
-        res['display'] = self.get_display(highlight=True, unicode=True, line_length=line_length)
-        res['edit'] = self.get_display(highlight=False, unicode=True, line_length=line_length)
+        with global_setting(highlight=True, unicode=True):
+            res['display'] = self.get_display()
+        with global_setting(highlight=False, unicode=True):
+            res['edit'] = self.get_display()
         if self.error is None:
-            res['ext'] = printer.print_extensions(self.get_extension())
+            with global_setting(highlight=False, unicode=True, line_length=None):
+                res['ext'] = printer.print_extensions(self.get_extension())
         else:
             res['error'] = {
                 "err_type": self.error.__class__.__name__,
@@ -77,12 +79,12 @@ class Item:
 
 def export_term(t):
     """Function for printing a term for export to json."""
-    res = printer.print_term(t, unicode=True, line_length=80)
+    with global_setting(unicode=True, line_length=80):
+        res = printer.print_term(t)
     if len(res) == 1:
         res = res[0]
     return res
 
-@settings.with_settings
 def display_raw(s):
     """Display unparsed type or term."""
     if isinstance(s, str):
@@ -90,14 +92,13 @@ def display_raw(s):
     else:
         return [pprint.N(line) for line in s]
 
-@settings.with_settings
-def display_term(t, line_length):
+def display_term(t):
     """Display parsed term."""
-    res = printer.print_term(t, line_length=line_length)
-    if settings.highlight():
-        return res
-    else:
+    res = printer.print_term(t)
+    if not settings.highlight and settings.line_length is not None:
         return '\n'.join(res)
+    else:
+        return res
 
 
 class Constant(Item):
@@ -138,8 +139,7 @@ class Constant(Item):
             res.append(extension.Overload(self.name))
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         return {
             'ty': 'def.ax',
             'name': self.name,
@@ -151,11 +151,12 @@ class Constant(Item):
         self.parse(edit_data)
 
     def export_json(self):
-        res = {
-            'ty': 'def.ax',
-            'name': self.name,
-            'type': self.type if self.error else printer.print_type(self.type, unicode=True)
-        }
+        with global_setting(unicode=True):
+            res = {
+                'ty': 'def.ax',
+                'name': self.name,
+                'type': self.type if self.error else printer.print_type(self.type)
+            }
         if self.overloaded:
             res['overloaded'] = True
         return res
@@ -211,19 +212,18 @@ class Axiom(Item):
             res.append(extension.Attribute(self.name, attr))
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         if self.error:
             disp_vars = [pprint.N(nm + ' :: ' + T) for nm, T in self.vars.items()]
             disp_prop = display_raw(self.prop)
         else:
             disp_vars = [pprint.N(nm + ' :: ') + printer.print_type(T) for nm, T in self.vars.items()]
-            disp_prop = display_term(self.prop, line_length)
+            disp_prop = display_term(self.prop)
 
         return {
             'ty': 'thm.ax',
             'name': self.name,
-            'vars': disp_vars if settings.highlight() else '\n'.join(disp_vars),
+            'vars': disp_vars if settings.highlight else '\n'.join(disp_vars),
             'prop': disp_prop,
             'attributes': self.attributes
         }
@@ -238,13 +238,14 @@ class Axiom(Item):
         self.parse(edit_data)
 
     def export_json(self):
-        res = {
-            'ty': 'thm.ax',
-            'name': self.name,
-            'vars': self.vars if self.error else \
-                dict((nm, printer.print_type(T, unicode=True)) for nm, T in self.vars.items()),
-            'prop': self.prop if self.error else export_term(self.prop)
-        }
+        with global_setting(unicode=True):
+            res = {
+                'ty': 'thm.ax',
+                'name': self.name,
+                'vars': self.vars if self.error else \
+                    dict((nm, printer.print_type(T)) for nm, T in self.vars.items()),
+                'prop': self.prop if self.error else export_term(self.prop)
+            }
         if self.attributes:
             res['attributes'] = self.attributes
         return res
@@ -276,9 +277,8 @@ class Theorem(Axiom):
     def get_extension(self):
         return super().get_extension()
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
-        res = super().get_display(line_length=line_length)
+    def get_display(self):
+        res = super().get_display()
         res['ty'] = 'thm'
         return res
 
@@ -366,14 +366,13 @@ class Definition(Item):
             res.append(extension.Attribute(self.cname + "_def", attr))
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         if self.error:
             disp_type = display_raw(self.type)
             disp_prop = display_raw(self.prop)
         else:
             disp_type = printer.print_type(self.type)
-            disp_prop = display_term(self.prop, line_length)
+            disp_prop = display_term(self.prop)
         
         return {
             'ty': 'def',
@@ -387,12 +386,13 @@ class Definition(Item):
         self.parse(edit_data)
 
     def export_json(self):
-        res = {
-            'ty': 'def',
-            'name': self.name,
-            'type': self.type if self.error else printer.print_type(self.type, unicode=True),
-            'prop': self.prop if self.error else export_term(self.prop)
-        }
+        with global_setting(unicode=True):
+            res = {
+                'ty': 'def',
+                'name': self.name,
+                'type': self.type if self.error else printer.print_type(self.type),
+                'prop': self.prop if self.error else export_term(self.prop)
+            }
         if self.attributes:
             res['attributes'] = self.attributes
         return res
@@ -471,20 +471,20 @@ class Fun(Item):
             res.append(extension.Attribute(th_name, "hint_rewrite"))
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         if self.error:
             disp_type = display_raw(self.type)
             disp_rules = [rule['prop'] for rule in self.rules]
         else:
             disp_type = printer.print_type(self.type)
-            disp_rules = [printer.print_term(rule['prop']) for rule in self.rules]
+            with global_setting(line_length=None):
+                disp_rules = [printer.print_term(rule['prop']) for rule in self.rules]
         
         return {
             'ty': 'def.ind',
             'name': self.name,
             'type': disp_type,
-            'rules': disp_rules if settings.highlight() else '\n'.join(disp_rules)
+            'rules': disp_rules if settings.highlight else '\n'.join(disp_rules)
         }
 
     def parse_edit(self, edit_data):
@@ -495,13 +495,14 @@ class Fun(Item):
         self.parse(edit_data)
 
     def export_json(self):
-        return {
-            'ty': 'def.ind',
-            'name': self.name,
-            'type': self.type if self.error else printer.print_type(self.type, unicode=True),
-            'rules': [{'prop': rule['prop'] if self.error else export_term(rule['prop'])}
-                      for rule in self.rules]
-        }
+        with global_setting(unicode=True):
+            return {
+                'ty': 'def.ind',
+                'name': self.name,
+                'type': self.type if self.error else printer.print_type(self.type),
+                'rules': [{'prop': rule['prop'] if self.error else export_term(rule['prop'])}
+                          for rule in self.rules]
+            }
 
 class Inductive(Item):
     """Inductively defined predicate.
@@ -583,21 +584,21 @@ class Inductive(Item):
 
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         if self.error:
             disp_type = display_raw(self.type)
             disp_rules = [pprint.N(rule['name'] + ": " + rule['prop']) for rule in self.rules]
         else:
             disp_type = printer.print_type(self.type)
-            disp_rules = [pprint.N(rule['name'] + ": ") + printer.print_term(rule['prop'])
-                          for rule in self.rules]
+            with global_setting(line_length=None):
+                disp_rules = [pprint.N(rule['name'] + ": ") + printer.print_term(rule['prop'])
+                            for rule in self.rules]
         
         return {
             'ty': 'def.pred',
             'name': self.name,
             'type': disp_type,
-            'rules': disp_rules if settings.highlight() else '\n'.join(disp_rules)
+            'rules': disp_rules if settings.highlight else '\n'.join(disp_rules)
         }
 
     def parse_edit(self, edit_data):
@@ -609,13 +610,15 @@ class Inductive(Item):
         self.parse(edit_data)
 
     def export_json(self):
-        return {
-            'ty': 'def.pred',
-            'name': self.name,
-            'type': self.type if self.error else printer.print_type(self.type, unicode=True),
-            'rules': [{'name': rule['name'], 'prop': rule['prop'] if self.error else export_term(rule['prop'])}
-                      for rule in self.rules]
-        }
+        with global_setting(unicode=True):
+            return {
+                'ty': 'def.pred',
+                'name': self.name,
+                'type': self.type if self.error else printer.print_type(self.type),
+                'rules': [{'name': rule['name'],
+                           'prop': rule['prop'] if self.error else export_term(rule['prop'])}
+                          for rule in self.rules]
+            }
 
 class AxType(Item):
     """Axiomatic types."""
@@ -639,8 +642,7 @@ class AxType(Item):
         res.append(extension.TConst(self.name, len(self.args)))
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         Targs = [TVar(arg) for arg in self.args]
         T = TConst(self.name, *Targs)
         return {
@@ -773,8 +775,7 @@ class Datatype(Item):
 
         return res
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         Targs = [TVar(arg) for arg in self.args]
         T = TConst(self.name, *Targs)
         constrs = []
@@ -788,7 +789,7 @@ class Datatype(Item):
         return {
             'ty': 'type.ind',
             'type': printer.print_type(T),
-            'constrs': constrs if settings.highlight() else '\n'.join(constrs)
+            'constrs': constrs if settings.highlight else '\n'.join(constrs)
         }
 
     def parse_edit(self, edit_data):
@@ -842,8 +843,7 @@ class Header(Item):
     def get_extension(self):
         return []
 
-    @settings.with_settings
-    def get_display(self, line_length=80):
+    def get_display(self):
         return {
             'ty': 'header',
             'depth': self.depth,
