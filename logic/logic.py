@@ -222,7 +222,7 @@ class apply_theorem_macro(ProofTermMacro):
     def __init__(self, *, with_inst=False):
         self.level = 1
         self.with_inst = with_inst
-        self.sig = Tuple[str, macro.TyInst, macro.Inst] if with_inst else str
+        self.sig = Tuple[str, macro.Inst] if with_inst else str
         self.limit = None
 
     def eval(self, args, prevs):

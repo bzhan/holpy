@@ -115,7 +115,7 @@ class LogicTest(unittest.TestCase):
         test_macro(
             self, 'set', 'apply_theorem_for',
             vars={'A': 'nat set'},
-            args="subset_trans, {a: nat}, {A: A}",
+            args="subset_trans, {A: A}",
             res="!B. !C. A Sub B --> B Sub C --> A Sub C"
         )
 

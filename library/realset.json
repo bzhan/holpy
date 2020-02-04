@@ -120,14 +120,14 @@
                     "th": "¬((∅::real set) = ∅) ⊢ ¬((∅::real set) = ∅)"
                 },
                 {
-                    "args": "eq_refl, {a: real set}, {x: (∅::real set)}",
+                    "args": "eq_refl, {x: (∅::real set)}",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ (∅::real set) = ∅"
                 },
                 {
-                    "args": "negE_gen, {}, {A: (∅::real set) = ∅, C: ∃b::real. false ∧ (∀x. false ⟶ x ≤ b)}",
+                    "args": "negE_gen, {A: (∅::real set) = ∅, C: ∃b::real. false ∧ (∀x. false ⟶ x ≤ b)}",
                     "id": "1.2",
                     "prevs": [
                         "1.0",
@@ -400,7 +400,7 @@
                     "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
                 },
                 {
-                    "args": "sup_finite_lemma, {}, {s: s}",
+                    "args": "sup_finite_lemma, {s: s}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -410,7 +410,7 @@
                     "th": "finite s, ¬(s = ∅) ⊢ ∃b. b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b)"
                 },
                 {
-                    "args": "sup, {}, {s: s}",
+                    "args": "sup, {s: s}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -433,7 +433,7 @@
                     "th": "b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b) ⊢ b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b)"
                 },
                 {
-                    "args": "conjD2, {}, {A: b ∈ s, B: ∀x. x ∈ s ⟶ x ≤ b}",
+                    "args": "conjD2, {A: b ∈ s, B: ∀x. x ∈ s ⟶ x ≤ b}",
                     "id": "6",
                     "prevs": [
                         "5"
@@ -442,7 +442,7 @@
                     "th": "b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b) ⊢ ∀x. x ∈ s ⟶ x ≤ b"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
+                    "args": "exI, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
                     "id": "7",
                     "prevs": [
                         "6"
@@ -461,7 +461,7 @@
                     "th": "¬(s = ∅), b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b) ⊢ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "args": "conjD1, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
                     "id": "9",
                     "prevs": [
                         "8"
@@ -470,7 +470,7 @@
                     "th": "¬(s = ∅), b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b) ⊢ ∀x. x ∈ s ⟶ x ≤ sup s"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "args": "conjD2, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
                     "id": "10",
                     "prevs": [
                         "8"
@@ -479,7 +479,7 @@
                     "th": "¬(s = ∅), b ∈ s ∧ (∀x. x ∈ s ⟶ x ≤ b) ⊢ ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b"
                 },
                 {
-                    "args": "conjD1, {}, {A: b ∈ s, B: ∀x. x ∈ s ⟶ x ≤ b}",
+                    "args": "conjD1, {A: b ∈ s, B: ∀x. x ∈ s ⟶ x ≤ b}",
                     "id": "11",
                     "prevs": [
                         "5"
@@ -729,7 +729,7 @@
                     "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
                 },
                 {
-                    "args": "sup_finite, {}, {s: s}",
+                    "args": "sup_finite, {s: s}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -772,7 +772,7 @@
                     "th": "finite s, ¬(s = ∅), a ≤ sup s ⊢ sup s ∈ s ∧ a ≤ sup s"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. x ∈ s ∧ a ≤ x, a: sup s}",
+                    "args": "exI, {P: λx. x ∈ s ∧ a ≤ x, a: sup s}",
                     "id": "3.3",
                     "prevs": [
                         "3.2"
@@ -805,7 +805,7 @@
                     "th": "∃x. x ∈ s ∧ a ≤ x ⊢ ∃x. x ∈ s ∧ a ≤ x"
                 },
                 {
-                    "args": "conjD2, {}, {A: sup s ∈ s, B: ∀x. x ∈ s ⟶ x ≤ sup s}",
+                    "args": "conjD2, {A: sup s ∈ s, B: ∀x. x ∈ s ⟶ x ≤ sup s}",
                     "id": "4.1",
                     "prevs": [
                         "2"
@@ -828,7 +828,7 @@
                     "th": "a1 ∈ s ∧ a ≤ a1 ⊢ a1 ∈ s ∧ a ≤ a1"
                 },
                 {
-                    "args": "conjD1, {}, {A: a1 ∈ s, B: a ≤ a1}",
+                    "args": "conjD1, {A: a1 ∈ s, B: a ≤ a1}",
                     "id": "4.4",
                     "prevs": [
                         "4.3"
@@ -837,7 +837,7 @@
                     "th": "a1 ∈ s ∧ a ≤ a1 ⊢ a1 ∈ s"
                 },
                 {
-                    "args": "conjD2, {}, {A: a1 ∈ s, B: a ≤ a1}",
+                    "args": "conjD2, {A: a1 ∈ s, B: a ≤ a1}",
                     "id": "4.5",
                     "prevs": [
                         "4.3"
@@ -1022,7 +1022,7 @@
                     "th": "∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ b"
                 },
                 {
-                    "args": "sup, {}, {s: s}",
+                    "args": "sup, {s: s}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -1031,7 +1031,7 @@
                     "th": "¬(s = ∅) ⊢ (∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
+                    "args": "exI, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -1050,7 +1050,7 @@
                     "th": "¬(s = ∅), ∀x. x ∈ s ⟶ x ≤ b ⊢ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "args": "conjD2, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
                     "id": "5",
                     "prevs": [
                         "4"
@@ -1164,7 +1164,7 @@
                     "th": "∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ b"
                 },
                 {
-                    "args": "sup, {}, {s: s}",
+                    "args": "sup, {s: s}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1190,7 +1190,7 @@
                     "th": "y ∈ s ⊢ (∃b. ∀x. x ∈ s ⟶ x ≤ b) ⟶ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
+                    "args": "exI, {P: λa1. ∀x. x ∈ s ⟶ x ≤ a1, a: b}",
                     "id": "6",
                     "prevs": [
                         "2"
@@ -1209,7 +1209,7 @@
                     "th": "y ∈ s, ∀x. x ∈ s ⟶ x ≤ b ⊢ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "args": "conjD1, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
                     "id": "8",
                     "prevs": [
                         "7"
@@ -1374,7 +1374,7 @@
                     "th": "∀x. x ∈ s ⟶ x ≤ b ⊢ ∀x. x ∈ s ⟶ x ≤ b"
                 },
                 {
-                    "args": "real_le_refl, {}, {x: a}",
+                    "args": "real_le_refl, {x: a}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1522,7 +1522,7 @@
                     "th": "¬false ⊢ ¬false"
                 },
                 {
-                    "args": "sup, {}, {s: s}",
+                    "args": "sup, {s: s}",
                     "id": "3.4.1",
                     "prevs": [
                         "0",
@@ -1532,7 +1532,7 @@
                     "th": "¬(s = ∅), ∃b. ∀x. x ∈ s ⟶ x ≤ b ⊢ (∀x. x ∈ s ⟶ x ≤ sup s) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
+                    "args": "conjD2, {A: ∀x. x ∈ s ⟶ x ≤ sup s, B: ∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ sup s ≤ b}",
                     "id": "3.4.2",
                     "prevs": [
                         "3.4.1"
@@ -1867,7 +1867,7 @@
                     "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
                 },
                 {
-                    "args": "inf_finite, {}, {s: s}",
+                    "args": "inf_finite, {s: s}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -1877,7 +1877,7 @@
                     "th": "finite s, ¬(s = ∅) ⊢ inf s ∈ s ∧ (∀x. x ∈ s ⟶ inf s ≤ x)"
                 },
                 {
-                    "args": "conjD1, {}, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
+                    "args": "conjD1, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -1886,7 +1886,7 @@
                     "th": "finite s, ¬(s = ∅) ⊢ inf s ∈ s"
                 },
                 {
-                    "args": "conjD2, {}, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
+                    "args": "conjD2, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
                     "id": "4",
                     "prevs": [
                         "2"
@@ -2125,7 +2125,7 @@
                     "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
                 },
                 {
-                    "args": "inf_finite, {}, {s: s}",
+                    "args": "inf_finite, {s: s}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -2135,7 +2135,7 @@
                     "th": "finite s, ¬(s = ∅) ⊢ inf s ∈ s ∧ (∀x. x ∈ s ⟶ inf s ≤ x)"
                 },
                 {
-                    "args": "conjD1, {}, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
+                    "args": "conjD1, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -2144,7 +2144,7 @@
                     "th": "finite s, ¬(s = ∅) ⊢ inf s ∈ s"
                 },
                 {
-                    "args": "conjD2, {}, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
+                    "args": "conjD2, {A: inf s ∈ s, B: ∀x. x ∈ s ⟶ inf s ≤ x}",
                     "id": "4",
                     "prevs": [
                         "2"
@@ -2177,7 +2177,7 @@
                     "th": "finite s, ¬(s = ∅), inf s ≤ a ⊢ inf s ∈ s ∧ inf s ≤ a"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. x ∈ s ∧ x ≤ a, a: inf s}",
+                    "args": "exI, {P: λx. x ∈ s ∧ x ≤ a, a: inf s}",
                     "id": "5.2",
                     "prevs": [
                         "5.1"
@@ -2420,7 +2420,7 @@
                     "th": "∀x. x ∈ s ⟶ a ≤ x ⊢ ∀x. x ∈ s ⟶ a ≤ x"
                 },
                 {
-                    "args": "inf, {}, {s: s}",
+                    "args": "inf, {s: s}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2446,7 +2446,7 @@
                     "th": "y ∈ s ⊢ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ⟶ (∀x. x ∈ s ⟶ inf s ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. ∀x. x ∈ s ⟶ a1 ≤ x, a: a}",
+                    "args": "exI, {P: λa1. ∀x. x ∈ s ⟶ a1 ≤ x, a: a}",
                     "id": "6",
                     "prevs": [
                         "2"
@@ -2465,7 +2465,7 @@
                     "th": "y ∈ s, ∀x. x ∈ s ⟶ a ≤ x ⊢ (∀x. x ∈ s ⟶ inf s ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ inf s ≤ x, B: ∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s}",
+                    "args": "conjD1, {A: ∀x. x ∈ s ⟶ inf s ≤ x, B: ∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s}",
                     "id": "8",
                     "prevs": [
                         "7"
@@ -2611,7 +2611,7 @@
                     "th": "∀x. x ∈ s ⟶ b ≤ x ⊢ ∀x. x ∈ s ⟶ b ≤ x"
                 },
                 {
-                    "args": "inf, {}, {s: s}",
+                    "args": "inf, {s: s}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -2620,7 +2620,7 @@
                     "th": "¬(s = ∅) ⊢ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ⟶ (∀x. x ∈ s ⟶ inf s ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. ∀x. x ∈ s ⟶ a1 ≤ x, a: b}",
+                    "args": "exI, {P: λa1. ∀x. x ∈ s ⟶ a1 ≤ x, a: b}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -2639,7 +2639,7 @@
                     "th": "¬(s = ∅), ∀x. x ∈ s ⟶ b ≤ x ⊢ (∀x. x ∈ s ⟶ inf s ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ inf s ≤ x, B: ∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s}",
+                    "args": "conjD2, {A: ∀x. x ∈ s ⟶ inf s ≤ x, B: ∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s}",
                     "id": "5",
                     "prevs": [
                         "4"
@@ -2760,7 +2760,7 @@
                     "th": "∀x. x ∈ s ⟶ b ≤ x ⊢ ∀x. x ∈ s ⟶ b ≤ x"
                 },
                 {
-                    "args": "real_le_refl, {}, {x: a}",
+                    "args": "real_le_refl, {x: a}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2903,7 +2903,7 @@
                     "th": "¬(∃x. x ∈ s ∧ x < c) ⊢ ∀x. ¬(x ∈ s) ∨ c ≤ x"
                 },
                 {
-                    "args": "inf, {}, {s: s}",
+                    "args": "inf, {s: s}",
                     "id": "4.4",
                     "prevs": [
                         "0",
@@ -2913,7 +2913,7 @@
                     "th": "¬(s = ∅), ∃b. ∀x. x ∈ s ⟶ b ≤ x ⊢ (∀x. x ∈ s ⟶ inf s ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ inf s ≤ x, B: ∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s}",
+                    "args": "conjD2, {A: ∀x. x ∈ s ⟶ inf s ≤ x, B: ∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ inf s}",
                     "id": "4.5",
                     "prevs": [
                         "4.4"
@@ -3429,7 +3429,7 @@
                     "th": "∀c. (∀x. x ∈ s ⟶ c ≤ x) ⟷ c ≤ l ⊢ ∀x. x ∈ s ⟶ l ≤ x"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ s ⟶ b ≤ x, a: l}",
+                    "args": "exI, {P: λb. ∀x. x ∈ s ⟶ b ≤ x, a: l}",
                     "id": "0.4",
                     "prevs": [
                         "0.3"
@@ -3673,7 +3673,7 @@
                     "th": "¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ⊢ ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ¬(s = ∅), B: ∃b. ∀x. x ∈ s ⟶ b ≤ x}",
+                    "args": "conjD1, {A: ¬(s = ∅), B: ∃b. ∀x. x ∈ s ⟶ b ≤ x}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -3682,7 +3682,7 @@
                     "th": "¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ⊢ ¬(s = ∅)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ¬(s = ∅), B: ∃b. ∀x. x ∈ s ⟶ b ≤ x}",
+                    "args": "conjD2, {A: ¬(s = ∅), B: ∃b. ∀x. x ∈ s ⟶ b ≤ x}",
                     "id": "1.2",
                     "prevs": [
                         "1.0"
@@ -3732,7 +3732,7 @@
                     "th": "¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x), ∀x. x ∈ s ⟶ b ≤ x ⊢ ¬(s = ∅) ∧ (∃b1. ∀x. x ∈ s ⟶ b1 ≤ x) ∧ inf s = b"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λl. ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l, a: b}",
+                    "args": "exI, {P: λl. ¬(s = ∅) ∧ (∃b. ∀x. x ∈ s ⟶ b ≤ x) ∧ inf s = l, a: b}",
                     "id": "1.8",
                     "prevs": [
                         "1.7"

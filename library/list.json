@@ -152,7 +152,7 @@
                     "th": "⊢ ∀x::'a. ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "list_induct, {a: 'a}, {P: λxs::'a list. xs @ [] = xs, x: xs}",
+                    "args": "list_induct, {P: λxs::'a list. xs @ [] = xs, x: xs}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -286,7 +286,7 @@
                     "th": "⊢ ∀x. ∀xs. (xs @ ys) @ zs = xs @ ys @ zs ⟶ ((x # xs) @ ys) @ zs = (x # xs) @ ys @ zs"
                 },
                 {
-                    "args": "list_induct, {a: 'a}, {P: λxs. (xs @ ys) @ zs = xs @ ys @ zs, x: xs}",
+                    "args": "list_induct, {P: λxs. (xs @ ys) @ zs = xs @ ys @ zs, x: xs}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -457,7 +457,7 @@
                     "th": "⊢ ∀x. ∀xs. length (xs @ ys) = length xs + length ys ⟶ length ((x # xs) @ ys) = length (x # xs) + length ys"
                 },
                 {
-                    "args": "list_induct, {a: 'a}, {P: λxs. length (xs @ ys) = length xs + length ys, x: xs}",
+                    "args": "list_induct, {P: λxs. length (xs @ ys) = length xs + length ys, x: xs}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -641,7 +641,7 @@
                     "th": "⊢ ∀x. ∀xs. rev (xs @ ys) = rev ys @ rev xs ⟶ rev ((x # xs) @ ys) = rev ys @ rev (x # xs)"
                 },
                 {
-                    "args": "list_induct, {a: 'a}, {P: λxs. rev (xs @ ys) = rev ys @ rev xs, x: xs}",
+                    "args": "list_induct, {P: λxs. rev (xs @ ys) = rev ys @ rev xs, x: xs}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -850,7 +850,7 @@
                     "th": "⊢ ∀x::'a. ∀xs. rev (rev xs) = xs ⟶ rev (rev (x # xs)) = x # xs"
                 },
                 {
-                    "args": "list_induct, {a: 'a}, {P: λxs::'a list. rev (rev xs) = xs, x: xs}",
+                    "args": "list_induct, {P: λxs::'a list. rev (rev xs) = xs, x: xs}",
                     "id": "3",
                     "prevs": [
                         "1",
@@ -1054,7 +1054,7 @@
                     "th": "⊢ ∀x::'a. ∀xs. length (rev xs) = length xs ⟶ length (rev (x # xs)) = length (x # xs)"
                 },
                 {
-                    "args": "list_induct, {a: 'a}, {P: λxs::'a list. length (rev xs) = length xs, x: xs}",
+                    "args": "list_induct, {P: λxs::'a list. length (rev xs) = length xs, x: xs}",
                     "id": "2",
                     "prevs": [
                         "0",

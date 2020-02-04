@@ -100,7 +100,7 @@
                     "th": "⊢ countable (univ::nat set)"
                 },
                 {
-                    "args": "subset_univ, {a: nat}, {A: s}",
+                    "args": "subset_univ, {A: s}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -211,7 +211,7 @@
                     "th": "countable s ⊢ countable s"
                 },
                 {
-                    "args": "inter_subset_id, {a: 'a}, {A: s, B: t}",
+                    "args": "inter_subset_id, {A: s, B: t}",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -252,7 +252,7 @@
                     "th": "countable t ⊢ countable t"
                 },
                 {
-                    "args": "inter_subset_id, {a: 'a}, {A: t, B: s}",
+                    "args": "inter_subset_id, {A: t, B: s}",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -400,7 +400,7 @@
                     "th": "countable (s ∪ t) ⊢ countable (s ∪ t)"
                 },
                 {
-                    "args": "subset_union_id, {a: 'a}, {A: s, B: t}",
+                    "args": "subset_union_id, {A: s, B: t}",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -417,7 +417,7 @@
                     "th": "countable (s ∪ t) ⊢ countable s"
                 },
                 {
-                    "args": "subset_union_id, {a: 'a}, {A: t, B: s}",
+                    "args": "subset_union_id, {A: t, B: s}",
                     "id": "0.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -477,7 +477,7 @@
                     "th": "countable s ∧ countable t ⊢ countable s ∧ countable t"
                 },
                 {
-                    "args": "conjD1, {}, {A: countable s, B: countable t}",
+                    "args": "conjD1, {A: countable s, B: countable t}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -486,7 +486,7 @@
                     "th": "countable s ∧ countable t ⊢ countable s"
                 },
                 {
-                    "args": "conjD2, {}, {A: countable s, B: countable t}",
+                    "args": "conjD2, {A: countable s, B: countable t}",
                     "id": "1.2",
                     "prevs": [
                         "1.0"
@@ -626,14 +626,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "finite_empty, {a: 'a}, {}",
+                    "args": "finite_empty, {}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ finite (∅::'a set)"
                 },
                 {
-                    "args": "finite_insert, {a: 'a}, {A: (∅::'a set), x: x}",
+                    "args": "finite_insert, {A: (∅::'a set), x: x}",
                     "id": "1",
                     "prevs": [
                         "0"

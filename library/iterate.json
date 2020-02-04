@@ -230,7 +230,7 @@
                     "th": "monoidal op ⊢ (∀x. ∀y. op x y = op y x) ∧ (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. ∀y. op x y = op y x, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
+                    "args": "conjD1, {A: ∀x. ∀y. op x y = op y x, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -239,7 +239,7 @@
                     "th": "monoidal op ⊢ ∀x. ∀y. op x y = op y x"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. ∀y. op x y = op y x, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
+                    "args": "conjD2, {A: ∀x. ∀y. op x y = op y x, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -346,7 +346,7 @@
                     "th": "⊢ _VAR c"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀x. op (neutral op) x = x}",
+                    "args": "conjD1, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀x. op (neutral op) x = x}",
                     "id": "6.3",
                     "prevs": [
                         "3"
@@ -449,7 +449,7 @@
                     "th": "monoidal op ⊢ op b c = op c b"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀x. op (neutral op) x = x}",
+                    "args": "conjD1, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀x. op (neutral op) x = x}",
                     "id": "7.7",
                     "prevs": [
                         "3"
@@ -1111,7 +1111,7 @@
                     "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ ¬(f x = neutral op)"
                 },
                 {
-                    "args": "conjD1, {}, {A: x ∈ s, B: ¬(f x = neutral op)}",
+                    "args": "conjD1, {A: x ∈ s, B: ¬(f x = neutral op)}",
                     "id": "0.1.1.1",
                     "prevs": [
                         "0.1.1.0"
@@ -1120,7 +1120,7 @@
                     "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s"
                 },
                 {
-                    "args": "conjD2, {}, {A: x ∈ s, B: ¬(f x = neutral op)}",
+                    "args": "conjD2, {A: x ∈ s, B: ¬(f x = neutral op)}",
                     "id": "0.1.1.2",
                     "prevs": [
                         "0.1.1.0"
@@ -1378,7 +1378,7 @@
                     "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
                 },
                 {
-                    "args": "negE_gen, {}, {A: x ∈ s, C: f x = neutral op}",
+                    "args": "negE_gen, {A: x ∈ s, C: f x = neutral op}",
                     "id": "1.2.9.1",
                     "prevs": [
                         "1.2.9.0",
@@ -2679,7 +2679,7 @@
                     "th": "finite s ⊢ finite s"
                 },
                 {
-                    "args": "sum_add, {a: 'a}, {f: f, g: λx. -(g x), s: s}",
+                    "args": "sum_add, {f: f, g: λx. -(g x), s: s}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -2965,7 +2965,7 @@
                     "th": "∃x. x ∈ s ⟶ 0 < f x ⊢ ∃x. x ∈ s ⟶ 0 < f x"
                 },
                 {
-                    "args": "real_le_refl, {}, {x: (0::real)}",
+                    "args": "real_le_refl, {x: (0::real)}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",

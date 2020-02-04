@@ -158,22 +158,6 @@ def print_proof(prf):
     typecheck.checkinstance('print_proof', prf, proof.Proof)
     return '\n'.join(print_proof_item(item) for item in prf.items)
 
-@settings.with_settings
-def print_tyinst(tyinst):
-    """Print a type instantiation."""
-    return "{" + ", ".join(nm + ": " + print_type(T) for nm, T in sorted(tyinst.items())) + "}"
-
-@settings.with_settings
-def print_inst(inst):
-    """Print a term instantiation."""
-    return "{" + ", ".join(nm + ": " + print_term(t) for nm, t in sorted(inst.items())) + "}"
-
-@settings.with_settings
-def print_instsp(instsp):
-    """Print a pair of type and term instantiations."""
-    tyinst, inst = instsp
-    return print_tyinst(tyinst) + ", " + print_inst(inst)
-
 
 # Set up default printing functions
 hol_type.type_printer = print_type

@@ -128,8 +128,6 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
-    instsp: tyinst "," inst
-    
     var_decl: CNAME "::" type  // variable declaration
 
     ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
@@ -372,9 +370,6 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
-    def instsp(self, *args):
-        return tuple(args)
-
     def ind_constr(self, *args):
         constrs = {}
         constrs['name'] = str(args[0])
@@ -404,7 +399,6 @@ thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
 named_thm_parser = get_parser_for("named_thm")
-instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
 term_list_parser = get_parser_for("term_list")
@@ -444,11 +438,12 @@ def parse_inst(s):
     inst = inst_parser.parse(s)
     for k in inst:
         inst[k] = infertype.type_infer(inst[k])
-    return inst
+    return Inst(inst)
 
 def parse_tyinst(s):
     """Parse a type instantiation."""
-    return tyinst_parser.parse(s)
+    tyinst = tyinst_parser.parse(s)
+    return TyInst(tyinst)
 
 def parse_named_thm(s):
     """Parse a named theorem."""
@@ -457,13 +452,6 @@ def parse_named_thm(s):
         return (None, infertype.type_infer(res[0]))
     else:
         return (str(res[0]), infertype.type_infer(res[1]))
-
-def parse_instsp(s):
-    """Parse type and term instantiations."""
-    tyinst, inst = instsp_parser.parse(s)
-    for k in inst:
-        inst[k] = infertype.type_infer(inst[k])
-    return tyinst, inst
 
 def parse_ind_constr(s):
     """Parse a constructor for an inductive type definition."""
@@ -503,12 +491,9 @@ def parse_args(sig, args):
         elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
             return s1, parse_term(s2)
-        elif sig == Tuple[str, macro.TyInst, macro.Inst]:
+        elif sig == Tuple[str, macro.Inst]:
             s1, s2 = args.split(",", 1)
-            tyinst, inst = parse_instsp(s2)
-            tyinst = TyInst(tyinst)
-            inst = Inst(inst)
-            inst.tyinst = tyinst
+            inst = parse_inst(s2)
             return s1, inst
         elif sig == List[Term]:
             return parse_term_list(args)

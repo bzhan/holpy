@@ -185,14 +185,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem_Assign, {a: nat, b: nat}, {a: (0::nat), b: λs::nat ⇒ nat. (1::nat), s: λx::nat. (0::nat)}",
+                    "args": "Sem_Assign, {a: (0::nat), b: λs::nat ⇒ nat. (1::nat), s: λx::nat. (0::nat)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ Sem (Assign (0::nat) (λs. (1::nat))) (λx. 0) ((λx. 0)(0 := 1))"
                 },
                 {
-                    "args": "Sem_Assign, {a: nat, b: nat}, {a: (1::nat), b: λs::nat ⇒ nat. (2::nat), s: (λx::nat. (0::nat))(0 := 1)}",
+                    "args": "Sem_Assign, {a: (1::nat), b: λs::nat ⇒ nat. (2::nat), s: (λx::nat. (0::nat))(0 := 1)}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -604,7 +604,7 @@
                     "th": "Sem (Assign a b) s s2 ⊢ Sem (Assign a b) s s2"
                 },
                 {
-                    "args": "Sem_Assign_elim, {a: 'a, b: 'b}, {a: a, b: b, s: s, s2: s2}",
+                    "args": "Sem_Assign_elim, {a: a, b: b, s: s, s2: s2}",
                     "id": "0.4",
                     "prevs": [
                         "0.3"
@@ -743,7 +743,7 @@
                     "th": "Sem (Seq c1 c2) s s2 ⊢ Sem (Seq c1 c2) s s2"
                 },
                 {
-                    "args": "Sem_Seq_elim, {a: 'a}, {c1: c1, c2: c2, s: s, s2: s2}",
+                    "args": "Sem_Seq_elim, {c1: c1, c2: c2, s: s, s2: s2}",
                     "id": "2.4",
                     "prevs": [
                         "2.3"
@@ -773,7 +773,7 @@
                     "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c1 s s3 ∧ Sem c2 s3 s2"
                 },
                 {
-                    "args": "conjD1, {}, {A: Sem c1 s s3, B: Sem c2 s3 s2}",
+                    "args": "conjD1, {A: Sem c1 s s3, B: Sem c2 s3 s2}",
                     "id": "2.5.2",
                     "prevs": [
                         "2.5.1"
@@ -782,7 +782,7 @@
                     "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c1 s s3"
                 },
                 {
-                    "args": "conjD2, {}, {A: Sem c1 s s3, B: Sem c2 s3 s2}",
+                    "args": "conjD2, {A: Sem c1 s s3, B: Sem c2 s3 s2}",
                     "id": "2.5.3",
                     "prevs": [
                         "2.5.1"

@@ -70,7 +70,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. g x ≤ b) net}) l}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_inf ({b. eventually (λx. g x ≤ b) net}) l}",
                     "id": "3.1",
                     "prevs": [
                         "3.0"
@@ -124,7 +124,7 @@
                     "th": "⊢ ∀x. f x = g x ⟶ f x ≤ b ⟷ g x ≤ b"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx. f x = g x ⟶ f x ≤ b ⟷ g x ≤ b, net: net}",
+                    "args": "always_eventually, {P: λx. f x = g x ⟶ f x ≤ b ⟷ g x ≤ b, net: net}",
                     "id": "4.1.2",
                     "prevs": [
                         "4.1.1"
@@ -172,7 +172,7 @@
                     "th": "eventually (λx. f x = g x) net, has_limsup f l net, has_inf ({b. eventually (λx. f x ≤ b) net}) l ⊢ has_inf ({b. eventually (λx. g x ≤ b) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. g x ≤ b) net}) l}",
+                    "args": "disjI2, {A: trivial_limit net, B: has_inf ({b. eventually (λx. g x ≤ b) net}) l}",
                     "id": "4.3",
                     "prevs": [
                         "4.2"
@@ -366,7 +366,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: eventually (λx. f x < b) net}",
+                    "args": "negE_gen, {A: trivial_limit net, C: eventually (λx. f x < b) net}",
                     "id": "4.1",
                     "prevs": [
                         "0",
@@ -400,7 +400,7 @@
                     "th": "has_inf ({b. eventually (λx. f x ≤ b) net}) l ⊢ has_inf ({b. eventually (λx. f x ≤ b) net}) l"
                 },
                 {
-                    "args": "has_inf_approach, {}, {c: b, l: l, s: {b. eventually (λx. f x ≤ b) net}}",
+                    "args": "has_inf_approach, {c: b, l: l, s: {b. eventually (λx. f x ≤ b) net}}",
                     "id": "5.1",
                     "prevs": [
                         "5.0",
@@ -433,7 +433,7 @@
                     "th": "eventually (λx. f x ≤ c) net ∧ c < b ⊢ eventually (λx. f x ≤ c) net ∧ c < b"
                 },
                 {
-                    "args": "conjD1, {}, {A: eventually (λx. f x ≤ c) net, B: c < b}",
+                    "args": "conjD1, {A: eventually (λx. f x ≤ c) net, B: c < b}",
                     "id": "5.5",
                     "prevs": [
                         "5.4"
@@ -442,7 +442,7 @@
                     "th": "eventually (λx. f x ≤ c) net ∧ c < b ⊢ eventually (λx. f x ≤ c) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: eventually (λx. f x ≤ c) net, B: c < b}",
+                    "args": "conjD2, {A: eventually (λx. f x ≤ c) net, B: c < b}",
                     "id": "5.6",
                     "prevs": [
                         "5.4"
@@ -460,7 +460,7 @@
                     "th": "eventually (λx. f x ≤ c) net ∧ c < b ⊢ ∀x. f x ≤ c ⟶ f x < b"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx. f x ≤ c ⟶ f x < b, net: net}",
+                    "args": "always_eventually, {P: λx. f x ≤ c ⟶ f x < b, net: net}",
                     "id": "5.8",
                     "prevs": [
                         "5.7"
@@ -650,7 +650,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -796,7 +796,7 @@
                     "th": "tendsto_real f l net, ¬(trivial_limit net) ⊢ ¬(eventually (λx. f x ≤ l + 1) net ⟷ false)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. ¬(eventually (λx1. f x1 ≤ x) net ⟷ false), a: l + 1}",
+                    "args": "exI, {P: λx. ¬(eventually (λx1. f x1 ≤ x) net ⟷ false), a: l + 1}",
                     "id": "3.3",
                     "prevs": [
                         "3.2"
@@ -989,7 +989,7 @@
                     "th": "tendsto_real f l net, ¬(trivial_limit net), l < c ⊢ eventually (λx. f x ≤ (l + c) / 2) net ∧ (l + c) / 2 < c"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. eventually (λx1. f x1 ≤ x) net ∧ x < c, a: (l + c) / 2}",
+                    "args": "exI, {P: λx. eventually (λx1. f x1 ≤ x) net ∧ x < c, a: (l + c) / 2}",
                     "id": "3.10.10",
                     "prevs": [
                         "3.10.9"
@@ -1047,7 +1047,7 @@
                     "th": "tendsto_real f l net, ¬(trivial_limit net) ⊢ has_inf ({b. eventually (λx. f x ≤ b) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
+                    "args": "disjI2, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
                     "id": "3.14",
                     "prevs": [
                         "3.13"
@@ -1391,7 +1391,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "eventually_trivial, {a: 'a}, {P: λx. f x ≤ l, net: net}",
+                    "args": "eventually_trivial, {P: λx. f x ≤ l, net: net}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -1400,7 +1400,7 @@
                     "th": "has_limsup f l net, trivial_limit net ⊢ eventually (λx. f x ≤ l) net"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. eventually (λx. f x ≤ b) net, a: l}",
+                    "args": "exI, {P: λb. eventually (λx. f x ≤ b) net, a: l}",
                     "id": "2.2",
                     "prevs": [
                         "2.1"
@@ -1442,7 +1442,7 @@
                     "th": "has_inf ({b. eventually (λx. f x ≤ b) net}) l ⊢ ¬({b. eventually (λx. f x ≤ b) net} = ∅) ∧ (∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ¬({b. eventually (λx. f x ≤ b) net} = ∅), B: (∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c))}",
+                    "args": "conjD2, {A: ¬({b. eventually (λx. f x ≤ b) net} = ∅), B: (∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c))}",
                     "id": "3.2",
                     "prevs": [
                         "3.1"
@@ -1451,7 +1451,7 @@
                     "th": "has_inf ({b. eventually (λx. f x ≤ b) net}) l ⊢ (∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ l ≤ x) ∧ (∀c. l < c ⟶ (∃x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ l ≤ x, B: ∀c. l < c ⟶ (∃x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c)}",
+                    "args": "conjD2, {A: ∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ l ≤ x, B: ∀c. l < c ⟶ (∃x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c)}",
                     "id": "3.3",
                     "prevs": [
                         "3.2"
@@ -1509,7 +1509,7 @@
                     "th": "eventually (λx1. f x1 ≤ x) net ∧ x < l + 1 ⊢ eventually (λx1. f x1 ≤ x) net ∧ x < l + 1"
                 },
                 {
-                    "args": "conjD1, {}, {A: eventually (λx1. f x1 ≤ x) net, B: x < l + 1}",
+                    "args": "conjD1, {A: eventually (λx1. f x1 ≤ x) net, B: x < l + 1}",
                     "id": "3.10",
                     "prevs": [
                         "3.9"
@@ -1518,7 +1518,7 @@
                     "th": "eventually (λx1. f x1 ≤ x) net ∧ x < l + 1 ⊢ eventually (λx1. f x1 ≤ x) net"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. eventually (λx. f x ≤ a1) net, a: x}",
+                    "args": "exI, {P: λa1. eventually (λx. f x ≤ a1) net, a: x}",
                     "id": "3.11",
                     "prevs": [
                         "3.10"
@@ -1745,7 +1745,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "negE_gen, {A: trivial_limit net, C: ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "4.1",
                     "prevs": [
                         "0",
@@ -2008,7 +2008,7 @@
                     "th": "trivial_limit net ∨ has_inf ({b. eventually (λx. f x ≤ b) net}) l ⊢ trivial_limit net ∨ has_inf ({b. eventually (λx. f x ≤ b) net}) l"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))}",
+                    "args": "disjI1, {A: trivial_limit net, B: (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))}",
                     "id": "0.1.1",
                     "prevs": [
                         "0.0"
@@ -2041,7 +2041,7 @@
                     "th": "trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
                     "id": "0.2.1",
                     "prevs": [
                         "0.0"
@@ -2230,7 +2230,7 @@
                     "th": "¬(trivial_limit net), has_limsup f l net ⊢ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))}",
+                    "args": "disjI2, {A: trivial_limit net, B: (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))}",
                     "id": "1.1.4",
                     "prevs": [
                         "1.1.3"
@@ -2277,7 +2277,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
+                    "args": "negE_gen, {A: trivial_limit net, C: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
                     "id": "1.2.1.1",
                     "prevs": [
                         "1.0",
@@ -2311,7 +2311,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD2, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "1.2.2.1",
                     "prevs": [
                         "1.2.2.0"
@@ -2320,7 +2320,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD1, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "1.2.2.2",
                     "prevs": [
                         "1.2.2.0"
@@ -2398,7 +2398,7 @@
                     "th": "¬(trivial_limit net), trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ ¬(eventually (λx. f x ≤ l + 1) net ⟷ false)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. ¬(eventually (λx1. f x1 ≤ x) net ⟷ false), a: l + 1}",
+                    "args": "exI, {P: λx. ¬(eventually (λx1. f x1 ≤ x) net ⟷ false), a: l + 1}",
                     "id": "1.2.2.5",
                     "prevs": [
                         "1.2.2.4"
@@ -2599,7 +2599,7 @@
                     "th": "¬(trivial_limit net), trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), l < c ⊢ (l + c) / 2 ∈ {b. eventually (λx. f x ≤ b) net} ∧ (l + c) / 2 < c"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c, a: (l + c) / 2}",
+                    "args": "exI, {P: λx. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ∧ x < c, a: (l + c) / 2}",
                     "id": "1.2.2.17.7",
                     "prevs": [
                         "1.2.2.17.6"
@@ -2669,7 +2669,7 @@
                     "th": "trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), ¬(trivial_limit net) ⊢ has_inf ({b. eventually (λx. f x ≤ b) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
+                    "args": "disjI2, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) l}",
                     "id": "1.2.4",
                     "prevs": [
                         "1.2.3"
@@ -3118,7 +3118,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))}",
+                    "args": "disjI1, {A: trivial_limit net, B: (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))}",
                     "id": "0.3.1",
                     "prevs": [
                         "0.3.0"
@@ -3151,7 +3151,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD1, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "0.4.1",
                     "prevs": [
                         "0.4.0"
@@ -3160,7 +3160,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ ∀c. l < c ⟶ eventually (λx. f x ≤ c) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD2, {A: ∀c. l < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "0.4.2",
                     "prevs": [
                         "0.4.0"
@@ -3186,7 +3186,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), ∃l. trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ eventually (λx. f x ≤ l + 1) net"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. eventually (λx. f x ≤ b) net, a: l + 1}",
+                    "args": "exI, {P: λb. eventually (λx. f x ≤ b) net, a: l + 1}",
                     "id": "0.4.5",
                     "prevs": [
                         "0.4.4"
@@ -3212,7 +3212,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), ∃l. trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ ¬(eventually (λx. f x ≤ l - 1) net)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λc. ¬(eventually (λx. f x ≤ c) net), a: l - 1}",
+                    "args": "exI, {P: λc. ¬(eventually (λx. f x ≤ c) net), a: l - 1}",
                     "id": "0.4.8",
                     "prevs": [
                         "0.4.7"
@@ -3231,7 +3231,7 @@
                     "th": "∃l. trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), trivial_limit net ∨ (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)), (∀c. l < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < l ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))}",
+                    "args": "disjI2, {A: trivial_limit net, B: (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))}",
                     "id": "0.4.10",
                     "prevs": [
                         "0.4.9"
@@ -3311,7 +3311,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) 0}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_inf ({b. eventually (λx. f x ≤ b) net}) 0}",
                     "id": "2.1.1",
                     "prevs": [
                         "2.1.0"
@@ -3320,7 +3320,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)), trivial_limit net ⊢ trivial_limit net ∨ has_inf ({b. eventually (λx. f x ≤ b) net}) 0"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λl. trivial_limit net ∨ has_inf ({b. eventually (λx. f x ≤ b) net}) l, a: (0::real)}",
+                    "args": "exI, {P: λl. trivial_limit net ∨ has_inf ({b. eventually (λx. f x ≤ b) net}) l, a: (0::real)}",
                     "id": "2.1.2",
                     "prevs": [
                         "2.1.1"
@@ -3353,7 +3353,7 @@
                     "th": "(∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)) ⊢ (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∃b. eventually (λx. f x ≤ b) net, B: ∃c. ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD1, {A: ∃b. eventually (λx. f x ≤ b) net, B: ∃c. ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "2.2.1",
                     "prevs": [
                         "2.2.0"
@@ -3362,7 +3362,7 @@
                     "th": "(∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)) ⊢ ∃b. eventually (λx. f x ≤ b) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∃b. eventually (λx. f x ≤ b) net, B: ∃c. ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD2, {A: ∃b. eventually (λx. f x ≤ b) net, B: ∃c. ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "2.2.2",
                     "prevs": [
                         "2.2.0"
@@ -3534,7 +3534,7 @@
                     "th": "¬(c ≤ x) ⊢ ∀x1. f x1 ≤ x ⟶ f x1 ≤ c"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx1. f x1 ≤ x ⟶ f x1 ≤ c, net: net}",
+                    "args": "always_eventually, {P: λx1. f x1 ≤ x ⟶ f x1 ≤ c, net: net}",
                     "id": "2.2.10.2.2",
                     "prevs": [
                         "2.2.10.2.1"
@@ -3602,7 +3602,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)), (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)), ¬(eventually (λx. f x ≤ c) net) ⊢ ∀x. x ∈ {b. eventually (λx1. f x1 ≤ b) net} ⟶ c ≤ x"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {b1. eventually (λx1. f x1 ≤ b1) net} ⟶ b ≤ x, a: c}",
+                    "args": "exI, {P: λb. ∀x. x ∈ {b1. eventually (λx1. f x1 ≤ b1) net} ⟶ b ≤ x, a: c}",
                     "id": "2.2.12",
                     "prevs": [
                         "2.2.11"
@@ -3630,7 +3630,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)), (∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬(eventually (λx. f x ≤ c) net)), ¬(eventually (λx. f x ≤ c) net) ⊢ ∃l. has_inf ({b. eventually (λx. f x ≤ b) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: ∃x. has_inf ({b. eventually (λx1. f x1 ≤ b) net}) x}",
+                    "args": "disjI2, {A: trivial_limit net, B: ∃x. has_inf ({b. eventually (λx1. f x1 ≤ b) net}) x}",
                     "id": "2.2.15",
                     "prevs": [
                         "2.2.14"
@@ -4123,7 +4123,7 @@
                     "th": "⊢ ∀x. f x ≤ g x ∧ g x < c ⟶ f x ≤ c"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx. f x ≤ g x ∧ g x < c ⟶ f x ≤ c, net: net}",
+                    "args": "always_eventually, {P: λx. f x ≤ g x ∧ g x < c ⟶ f x ≤ c, net: net}",
                     "id": "4.3.4",
                     "prevs": [
                         "4.3.3"
@@ -4423,7 +4423,7 @@
                     "th": "¬(trivial_limit net) ⊢ ¬(trivial_limit net)"
                 },
                 {
-                    "args": "reallim_const, {a: 'a}, {a: b, net: net}",
+                    "args": "reallim_const, {a: b, net: net}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -4729,7 +4729,7 @@
                     "th": "(∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)) ⊢ (∀c. l < c ⟶ eventually (λx. a x ≤ c) sequentially) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) sequentially))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit sequentially, B: (∀c. l < c ⟶ eventually (λx. a x ≤ c) sequentially) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) sequentially))}",
+                    "args": "disjI2, {A: trivial_limit sequentially, B: (∀c. l < c ⟶ eventually (λx. a x ≤ c) sequentially) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) sequentially))}",
                     "id": "1.6",
                     "prevs": [
                         "1.5"
@@ -4957,7 +4957,7 @@
                     "th": "finite k ∨ (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k))) ⊢ finite k ∨ (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))"
                 },
                 {
-                    "args": "disjI1, {}, {A: finite k, B: (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))}",
+                    "args": "disjI1, {A: finite k, B: (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))}",
                     "id": "0.1.1",
                     "prevs": [
                         "0.0"
@@ -4990,7 +4990,7 @@
                     "th": "finite k ∨ (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)) ⊢ finite k ∨ (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))"
                 },
                 {
-                    "args": "disjI1, {}, {A: finite k, B: (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))}",
+                    "args": "disjI1, {A: finite k, B: (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))}",
                     "id": "0.2.1",
                     "prevs": [
                         "0.0"
@@ -5071,7 +5071,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "negE_gen, {}, {A: finite k, C: (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))}",
+                    "args": "negE_gen, {A: finite k, C: (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))}",
                     "id": "1.1.1.1",
                     "prevs": [
                         "1.0",
@@ -5114,7 +5114,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k))) ⊢ (∀c. l < c ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. l < c ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c))}",
+                    "args": "conjD1, {A: ∀c. l < c ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c))}",
                     "id": "1.1.2.2",
                     "prevs": [
                         "1.1.2.1"
@@ -5123,7 +5123,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k))) ⊢ ∀c. l < c ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. l < c ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c))}",
+                    "args": "conjD2, {A: ∀c. l < c ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c))}",
                     "id": "1.1.2.3",
                     "prevs": [
                         "1.1.2.1"
@@ -5177,7 +5177,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "negE_gen, {}, {A: finite k, C: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c}",
+                    "args": "negE_gen, {A: finite k, C: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c}",
                     "id": "1.1.2.4.3.1",
                     "prevs": [
                         "1.0",
@@ -5266,7 +5266,7 @@
                     "th": "(∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k))), c < l ⊢ ¬(finite k) ∧ ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ¬(finite k), B: ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)}",
+                    "args": "conjD2, {A: ¬(finite k), B: ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)}",
                     "id": "1.1.2.5.4",
                     "prevs": [
                         "1.1.2.5.3"
@@ -5362,7 +5362,7 @@
                     "th": "finite k ∨ (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k))), ¬(finite k) ⊢ (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))}",
+                    "args": "disjI2, {A: finite k, B: (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))}",
                     "id": "1.1.4",
                     "prevs": [
                         "1.1.3"
@@ -5409,7 +5409,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "negE_gen, {}, {A: finite k, C: (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))}",
+                    "args": "negE_gen, {A: finite k, C: (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))}",
                     "id": "1.2.1.1",
                     "prevs": [
                         "1.0",
@@ -5443,7 +5443,7 @@
                     "th": "(∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)) ⊢ (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)}",
+                    "args": "conjD1, {A: ∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)}",
                     "id": "1.2.2.1",
                     "prevs": [
                         "1.2.2.0"
@@ -5452,7 +5452,7 @@
                     "th": "(∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)) ⊢ ∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)}",
+                    "args": "conjD2, {A: ∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)}",
                     "id": "1.2.2.2",
                     "prevs": [
                         "1.2.2.0"
@@ -5492,7 +5492,7 @@
                     "th": "(∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)), ¬(finite k), finite k ∨ (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)), l < c ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c}",
+                    "args": "disjI2, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c}",
                     "id": "1.2.2.3.3",
                     "prevs": [
                         "1.2.2.3.2"
@@ -5667,7 +5667,7 @@
                     "th": "finite k ∨ (∀c. l < c ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ a n ≤ c)) ∧ (∀c. c < l ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ c < a n)), ¬(finite k) ⊢ (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))}",
+                    "args": "disjI2, {A: finite k, B: (∀c. l < c ⟶ eventually (λx. a x ≤ c) (within sequentially k)) ∧ (∀c. c < l ⟶ ¬(eventually (λx. a x ≤ c) (within sequentially k)))}",
                     "id": "1.2.4",
                     "prevs": [
                         "1.2.3"
@@ -6165,7 +6165,7 @@
                     "th": "0 < e ⊢ 0 < e"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)}",
+                    "args": "conjD1, {A: ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)}",
                     "id": "2.2",
                     "prevs": [
                         "1"
@@ -6174,7 +6174,7 @@
                     "th": "has_limsup a l sequentially ⊢ ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)}",
+                    "args": "conjD2, {A: ∀c. l < c ⟶ (∃N. ∀n. N ≤ n ⟶ a n ≤ c), B: ∀c. c < l ⟶ (∀N. ∃n. N ≤ n ∧ c < a n)}",
                     "id": "2.3",
                     "prevs": [
                         "1"
@@ -6367,7 +6367,7 @@
                     "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, n ≤ M ∧ l - e < a M ⊢ ∀m. m ∈ {m1. m1 ≥ n} ⟶ a m ≤ l + e / 2"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b, a: l + e / 2}",
+                    "args": "exI, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b, a: l + e / 2}",
                     "id": "2.12.7",
                     "prevs": [
                         "2.12.6"
@@ -6403,14 +6403,14 @@
                     "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, n ≤ M ∧ l - e < a M ⊢ ∃b. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ x ≤ b"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: a M}",
+                    "args": "eq_refl, {x: a M}",
                     "id": "2.12.11",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ a M = a M"
                 },
                 {
-                    "args": "conjD1, {}, {A: n ≤ M, B: l - e < a M}",
+                    "args": "conjD1, {A: n ≤ M, B: l - e < a M}",
                     "id": "2.12.12",
                     "prevs": [
                         "2.12.4"
@@ -6447,7 +6447,7 @@
                     "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2, N ≤ n, n ≤ M ∧ l - e < a M ⊢ a M = a M ∧ M ∈ {m. m ≥ n}"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λx. a M = a x ∧ x ∈ {m. m ≥ n}, a: M}",
+                    "args": "exI, {P: λx. a M = a x ∧ x ∈ {m. m ≥ n}, a: M}",
                     "id": "2.12.16",
                     "prevs": [
                         "2.12.15"
@@ -6663,7 +6663,7 @@
                     "th": "has_limsup a l sequentially, 0 < e, ∀n. N ≤ n ⟶ a n ≤ l + e / 2 ⊢ ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e, a: N}",
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e, a: N}",
                     "id": "2.13",
                     "prevs": [
                         "2.12"
@@ -7072,7 +7072,7 @@
                     "th": "has_limsup a l sequentially ⊢ has_limsup a l sequentially"
                 },
                 {
-                    "args": "has_limsup_sequentially_imp_reallim_sup, {}, {a: a, l: l}",
+                    "args": "has_limsup_sequentially_imp_reallim_sup, {a: a, l: l}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
@@ -7142,7 +7142,7 @@
                     "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ (∃b. ∀n. a n ≤ b) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
+                    "args": "conjD2, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
@@ -7151,7 +7151,7 @@
                     "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
+                    "args": "conjD1, {A: ∃b. ∀n. a n ≤ b, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < e)}",
                     "id": "1.3",
                     "prevs": [
                         "1.1"
@@ -7277,7 +7277,7 @@
                     "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ 0 < c - l ∧ l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < c - l, B: l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)}",
+                    "args": "conjD2, {A: 0 < c - l, B: l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)}",
                     "id": "1.6.7.4",
                     "prevs": [
                         "1.6.7.3"
@@ -7286,7 +7286,7 @@
                     "th": "∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ l - (c - l) < sup (image a ({m. m ≥ n})) ∧ sup (image a ({m. m ≥ n})) < l + (c - l)"
                 },
                 {
-                    "args": "conjD2, {}, {A: l - (c - l) < sup (image a ({m. m ≥ n})), B: sup (image a ({m. m ≥ n})) < l + (c - l)}",
+                    "args": "conjD2, {A: l - (c - l) < sup (image a ({m. m ≥ n})), B: sup (image a ({m. m ≥ n})) < l + (c - l)}",
                     "id": "1.6.7.5",
                     "prevs": [
                         "1.6.7.4"
@@ -7304,7 +7304,7 @@
                     "th": "∀n. a n ≤ b ⊢ ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b, a: b}",
+                    "args": "exI, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ a x ≤ b, a: b}",
                     "id": "1.6.7.7",
                     "prevs": [
                         "1.6.7.6"
@@ -7340,7 +7340,7 @@
                     "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ ∃b. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ x ≤ b"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: a n}",
+                    "args": "eq_refl, {x: a n}",
                     "id": "1.6.7.11",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7364,7 +7364,7 @@
                     "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l, N ≤ n ⊢ a n = a n ∧ n ∈ {m. m ≥ n}"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
+                    "args": "exI, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
                     "id": "1.6.7.14",
                     "prevs": [
                         "1.6.7.13"
@@ -7439,7 +7439,7 @@
                     "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, l < c, ∀n. N ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. N ≤ n ⟶ a n ≤ c"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ a n ≤ c, a: N}",
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ a n ≤ c, a: N}",
                     "id": "1.6.8",
                     "prevs": [
                         "1.6.7"
@@ -7539,7 +7539,7 @@
                     "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c"
                 },
                 {
-                    "args": "sup_approach, {}, {c: c, s: {y. ∃k. y = a k ∧ k ≥ max N M}}",
+                    "args": "sup_approach, {c: c, s: {y. ∃k. y = a k ∧ k ≥ max N M}}",
                     "id": "1.7.2.6",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7571,7 +7571,7 @@
                     "th": "(∃b. ∀n. a n ≤ b) ∧ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially, ∀n. a n ≤ b, c < l, ∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ ∀z. z ∈ {y. ∃x. y = a x ∧ x ≥ max N M} ⟶ z ≤ b"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ⟶ x ≤ b, a: b}",
+                    "args": "exI, {P: λb. ∀x. x ∈ {y. ∃k. y = a k ∧ k ≥ max N M} ⟶ x ≤ b, a: b}",
                     "id": "1.7.2.10",
                     "prevs": [
                         "1.7.2.9"
@@ -7615,7 +7615,7 @@
                     "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ 0 < l - c ∧ l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < l - c, B: l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)}",
+                    "args": "conjD2, {A: 0 < l - c, B: l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)}",
                     "id": "1.7.2.15",
                     "prevs": [
                         "1.7.2.14"
@@ -7624,7 +7624,7 @@
                     "th": "∀n. M ≤ n ⟶ abs (sup (image a ({m. m ≥ n})) - l) < l - c ⊢ l - (l - c) < sup (image a ({m. m ≥ max N M})) ∧ sup (image a ({m. m ≥ max N M})) < l + (l - c)"
                 },
                 {
-                    "args": "conjD1, {}, {A: l - (l - c) < sup (image a ({m. m ≥ max N M})), B: sup (image a ({m. m ≥ max N M})) < l + (l - c)}",
+                    "args": "conjD1, {A: l - (l - c) < sup (image a ({m. m ≥ max N M})), B: sup (image a ({m. m ≥ max N M})) < l + (l - c)}",
                     "id": "1.7.2.16",
                     "prevs": [
                         "1.7.2.15"
@@ -8278,7 +8278,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))}",
+                    "args": "disjI1, {A: trivial_limit net, B: (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))}",
                     "id": "4.1",
                     "prevs": [
                         "4.0"
@@ -8332,14 +8332,14 @@
                     "th": "a * b < c ⊢ a * b < c"
                 },
                 {
-                    "args": "real_continuous_const, {a: real}, {c: a, net: atreal 0}",
+                    "args": "real_continuous_const, {c: a, net: atreal 0}",
                     "id": "5.1.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ real_continuous (λx. a) (atreal 0)"
                 },
                 {
-                    "args": "real_continuous_at_id, {}, {x: (0::real)}",
+                    "args": "real_continuous_at_id, {x: (0::real)}",
                     "id": "5.1.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -8356,7 +8356,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c ⊢ real_continuous (λx. a + x) (atreal 0)"
                 },
                 {
-                    "args": "real_continuous_const, {a: real}, {c: b, net: atreal 0}",
+                    "args": "real_continuous_const, {c: b, net: atreal 0}",
                     "id": "5.1.5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -8443,7 +8443,7 @@
                     "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ 0 < d"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < d, B: ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b}",
+                    "args": "conjD2, {A: 0 < d, B: ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b}",
                     "id": "5.1.15",
                     "prevs": [
                         "5.1.13"
@@ -8522,7 +8522,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ 0 < d ∧ (∀x. abs x < d ⟶ (a + x) * (b + x) < c)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λd. 0 < d ∧ (∀x. abs x < d ⟶ (a + x) * (b + x) < c), a: d}",
+                    "args": "exI, {P: λd. 0 < d ∧ (∀x. abs x < d ⟶ (a + x) * (b + x) < c), a: d}",
                     "id": "5.1.18",
                     "prevs": [
                         "5.1.17"
@@ -8531,7 +8531,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), a * b < c, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ ∃a1. 0 < a1 ∧ (∀x. abs x < a1 ⟶ (a + x) * (b + x) < c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < d, B: ∀x. abs x < d ⟶ (a + x) * (b + x) < c}",
+                    "args": "conjD2, {A: 0 < d, B: ∀x. abs x < d ⟶ (a + x) * (b + x) < c}",
                     "id": "5.1.19",
                     "prevs": [
                         "5.1.17"
@@ -8600,7 +8600,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "eventually_trivial, {a: 'a}, {P: λx. abs (g x - b) < d / 2 ⟶ f x * g x ≤ c, net: net}",
+                    "args": "eventually_trivial, {P: λx. abs (g x - b) < d / 2 ⟶ f x * g x ≤ c, net: net}",
                     "id": "5.1.25.1",
                     "prevs": [
                         "5.1.25.0"
@@ -8633,7 +8633,7 @@
                     "th": "(∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)) ⊢ (∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. a < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)}",
+                    "args": "conjD1, {A: ∀c. a < c ⟶ eventually (λx. f x ≤ c) net, B: ∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)}",
                     "id": "5.1.26.1",
                     "prevs": [
                         "5.1.26.0"
@@ -8670,7 +8670,7 @@
                     "th": "(∀c. a < c ⟶ eventually (λx. f x ≤ c) net) ∧ (∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net)), 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < c - a * b) ⊢ eventually (λx. f x ≤ a + d / 2) net"
                 },
                 {
-                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
+                    "args": "conjI, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
                     "id": "5.1.26.5",
                     "prevs": [
                         "2",
@@ -8974,7 +8974,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ ¬(0 ≤ c)"
                 },
                 {
-                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
+                    "args": "conjI, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
                     "id": "5.2.2.3.3",
                     "prevs": [
                         "2",
@@ -8993,7 +8993,7 @@
                     "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net"
                 },
                 {
-                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net, B: eventually (λx. f x * g x ≤ c) net}",
+                    "args": "conjI, {A: eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net, B: eventually (λx. f x * g x ≤ c) net}",
                     "id": "5.2.2.3.5",
                     "prevs": [
                         "5.2.2.3.4",
@@ -9029,7 +9029,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, b = 0, eventually (λx. f x * g x ≤ c) net ⊢ eventually (λx. 0 ≤ c) net"
                 },
                 {
-                    "args": "eventually_happens, {a: 'a}, {P: λx::'a. 0 ≤ c, net: net}",
+                    "args": "eventually_happens, {P: λx::'a. 0 ≤ c, net: net}",
                     "id": "5.2.2.3.9",
                     "prevs": [
                         "5.2.2.3.8"
@@ -9052,7 +9052,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: 0 ≤ c}",
+                    "args": "negE_gen, {A: trivial_limit net, C: 0 ≤ c}",
                     "id": "5.2.2.3.10.1",
                     "prevs": [
                         "5.0",
@@ -9171,14 +9171,14 @@
                     "th": "0 < b ⊢ 0 < b"
                 },
                 {
-                    "args": "real_continuous_const, {a: real}, {c: a, net: atreal 0}",
+                    "args": "real_continuous_const, {c: a, net: atreal 0}",
                     "id": "5.2.3.1.1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ real_continuous (λx. a) (atreal 0)"
                 },
                 {
-                    "args": "real_continuous_at_id, {}, {x: (0::real)}",
+                    "args": "real_continuous_at_id, {x: (0::real)}",
                     "id": "5.2.3.1.1.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9195,7 +9195,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b ⊢ real_continuous (λx. a + x) (atreal 0)"
                 },
                 {
-                    "args": "real_continuous_const, {a: real}, {c: b, net: atreal 0}",
+                    "args": "real_continuous_const, {c: b, net: atreal 0}",
                     "id": "5.2.3.1.1.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9282,7 +9282,7 @@
                     "th": "0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ 0 < d"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < d, B: ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c}",
+                    "args": "conjD2, {A: 0 < d, B: ∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c}",
                     "id": "5.2.3.1.1.14",
                     "prevs": [
                         "5.2.3.1.1.12"
@@ -9361,7 +9361,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c) ⊢ 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x))"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λd. 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x)), a: d}",
+                    "args": "exI, {P: λd. 0 < d ∧ (∀x. abs x < d ⟶ c < (a + x) * (b + x)), a: d}",
                     "id": "5.2.3.1.1.18",
                     "prevs": [
                         "5.2.3.1.1.17"
@@ -9456,7 +9456,7 @@
                     "th": "tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net"
                 },
                 {
-                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
+                    "args": "conjI, {A: eventually (λx. 0 ≤ f x) net, B: eventually (λx. 0 ≤ g x) net}",
                     "id": "5.2.3.1.1.22.6",
                     "prevs": [
                         "2",
@@ -9475,7 +9475,7 @@
                     "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net ⊢ eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net"
                 },
                 {
-                    "args": "conjI, {}, {A: eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net, B: eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net}",
+                    "args": "conjI, {A: eventually (λx. 0 ≤ f x ∧ 0 ≤ g x) net, B: eventually (λx. abs (g x - b) < min b (d1 / 2) / 2) net}",
                     "id": "5.2.3.1.1.22.8",
                     "prevs": [
                         "5.2.3.1.1.22.7",
@@ -9494,7 +9494,7 @@
                     "th": "eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, tendsto_real g b net, 0 < b, 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net"
                 },
                 {
-                    "args": "conjI, {}, {A: eventually (λx. f x * g x ≤ c) net, B: eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net}",
+                    "args": "conjI, {A: eventually (λx. f x * g x ≤ c) net, B: eventually (λx. (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2) net}",
                     "id": "5.2.3.1.1.22.10",
                     "prevs": [
                         "5.2.3.1.0",
@@ -9534,7 +9534,7 @@
                     "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2"
                 },
                 {
-                    "args": "conjD1, {}, {A: f x * g x ≤ c, B: (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2}",
+                    "args": "conjD1, {A: f x * g x ≤ c, B: (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2}",
                     "id": "5.2.3.1.1.22.12.2",
                     "prevs": [
                         "5.2.3.1.1.22.12.1"
@@ -9543,7 +9543,7 @@
                     "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ f x * g x ≤ c"
                 },
                 {
-                    "args": "conjD2, {}, {A: f x * g x ≤ c, B: (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2}",
+                    "args": "conjD2, {A: f x * g x ≤ c, B: (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2}",
                     "id": "5.2.3.1.1.22.12.3",
                     "prevs": [
                         "5.2.3.1.1.22.12.1"
@@ -9552,7 +9552,7 @@
                     "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2"
                 },
                 {
-                    "args": "conjD1, {}, {A: 0 ≤ f x ∧ 0 ≤ g x, B: abs (g x - b) < min b (d1 / 2) / 2}",
+                    "args": "conjD1, {A: 0 ≤ f x ∧ 0 ≤ g x, B: abs (g x - b) < min b (d1 / 2) / 2}",
                     "id": "5.2.3.1.1.22.12.4",
                     "prevs": [
                         "5.2.3.1.1.22.12.3"
@@ -9561,7 +9561,7 @@
                     "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ 0 ≤ f x ∧ 0 ≤ g x"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 ≤ f x ∧ 0 ≤ g x, B: abs (g x - b) < min b (d1 / 2) / 2}",
+                    "args": "conjD2, {A: 0 ≤ f x ∧ 0 ≤ g x, B: abs (g x - b) < min b (d1 / 2) / 2}",
                     "id": "5.2.3.1.1.22.12.5",
                     "prevs": [
                         "5.2.3.1.1.22.12.3"
@@ -9570,7 +9570,7 @@
                     "th": "f x * g x ≤ c ∧ (0 ≤ f x ∧ 0 ≤ g x) ∧ abs (g x - b) < min b (d1 / 2) / 2 ⊢ abs (g x - b) < min b (d1 / 2) / 2"
                 },
                 {
-                    "args": "conjD1, {}, {A: 0 < d1, B: ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)}",
+                    "args": "conjD1, {A: 0 < d1, B: ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)}",
                     "id": "5.2.3.1.1.22.12.6",
                     "prevs": [
                         "5.2.3.1.1.20"
@@ -9579,7 +9579,7 @@
                     "th": "0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)) ⊢ 0 < d1"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < d1, B: ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)}",
+                    "args": "conjD2, {A: 0 < d1, B: ∀x. abs x < d1 ⟶ c < (a + x) * (b + x)}",
                     "id": "5.2.3.1.1.22.12.7",
                     "prevs": [
                         "5.2.3.1.1.20"
@@ -9742,7 +9742,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ a - min b (d1 / 2) / 2 < a ∧ ¬¬(eventually (λx. f x ≤ a - min b (d1 / 2) / 2) net)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. x < a ∧ ¬¬(eventually (λx1. f x1 ≤ x) net), a: a - min b (d1 / 2) / 2}",
+                    "args": "exI, {P: λx. x < a ∧ ¬¬(eventually (λx1. f x1 ≤ x) net), a: a - min b (d1 / 2) / 2}",
                     "id": "5.2.3.1.1.22.16",
                     "prevs": [
                         "5.2.3.1.1.22.15"
@@ -9769,7 +9769,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net), c < a * b, ¬(b = 0), eventually (λx. f x * g x ≤ c) net, 0 < b, 0 < d ∧ (∀x1. abs (x1 - 0) < d ⟶ abs ((a + x1) * (b + x1) - (a + 0) * (b + 0)) < a * b - c), 0 < d1 ∧ (∀x. abs x < d1 ⟶ c < (a + x) * (b + x)), ¬false ⊢ ¬(∀x. x < a ⟶ ¬(eventually (λx1. f x1 ≤ x) net))"
                 },
                 {
-                    "args": "disjI2, {}, {A: ¬(∀c. a < c ⟶ eventually (λx. f x ≤ c) net), B: ¬(∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net))}",
+                    "args": "disjI2, {A: ¬(∀c. a < c ⟶ eventually (λx. f x ≤ c) net), B: ¬(∀c. c < a ⟶ ¬(eventually (λx. f x ≤ c) net))}",
                     "id": "5.2.3.1.1.22.19",
                     "prevs": [
                         "5.2.3.1.1.22.18"
@@ -9942,7 +9942,7 @@
                     "th": "has_limsup f a net, tendsto_real g b net, eventually (λx. 0 ≤ f x) net, eventually (λx. 0 ≤ g x) net, ¬(trivial_limit net) ⊢ (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))}",
+                    "args": "disjI2, {A: trivial_limit net, B: (∀c. a * b < c ⟶ eventually (λx. f x * g x ≤ c) net) ∧ (∀c. c < a * b ⟶ ¬(eventually (λx. f x * g x ≤ c) net))}",
                     "id": "5.4",
                     "prevs": [
                         "5.3"
@@ -11184,7 +11184,7 @@
                     "th": "¬(finite k) ⊢ ¬(finite k)"
                 },
                 {
-                    "args": "reallim_const, {a: nat}, {a: (0::real), net: within sequentially k}",
+                    "args": "reallim_const, {a: (0::real), net: within sequentially k}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11209,7 +11209,7 @@
                     "th": "has_limsup f b (within sequentially k), ∀x. 0 ≤ f x, ¬(finite k) ⊢ ¬(trivial_limit (within sequentially k))"
                 },
                 {
-                    "args": "always_eventually, {a: nat}, {P: λx. 0 ≤ f x, net: within sequentially k}",
+                    "args": "always_eventually, {P: λx. 0 ≤ f x, net: within sequentially k}",
                     "id": "6",
                     "prevs": [
                         "1"
@@ -11328,7 +11328,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ g x) net}) l}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ g x) net}) l}",
                     "id": "3.1",
                     "prevs": [
                         "3.0"
@@ -11382,7 +11382,7 @@
                     "th": "⊢ ∀x. f x = g x ⟶ b ≤ f x ⟷ b ≤ g x"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx. f x = g x ⟶ b ≤ f x ⟷ b ≤ g x, net: net}",
+                    "args": "always_eventually, {P: λx. f x = g x ⟶ b ≤ f x ⟷ b ≤ g x, net: net}",
                     "id": "4.1.2",
                     "prevs": [
                         "4.1.1"
@@ -11430,7 +11430,7 @@
                     "th": "eventually (λx. f x = g x) net, has_liminf f l net, has_sup ({b. eventually (λx. b ≤ f x) net}) l ⊢ has_sup ({b. eventually (λx. b ≤ g x) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ g x) net}) l}",
+                    "args": "disjI2, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ g x) net}) l}",
                     "id": "4.3",
                     "prevs": [
                         "4.2"
@@ -11623,7 +11623,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: eventually (λx. b < f x) net}",
+                    "args": "negE_gen, {A: trivial_limit net, C: eventually (λx. b < f x) net}",
                     "id": "4.1",
                     "prevs": [
                         "0",
@@ -11657,7 +11657,7 @@
                     "th": "has_sup ({b. eventually (λx. b ≤ f x) net}) l ⊢ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
                 },
                 {
-                    "args": "has_sup_approach, {}, {c: b, l: l, s: {b. eventually (λx. b ≤ f x) net}}",
+                    "args": "has_sup_approach, {c: b, l: l, s: {b. eventually (λx. b ≤ f x) net}}",
                     "id": "5.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11698,7 +11698,7 @@
                     "th": "eventually (λx. c ≤ f x) net ∧ b < c ⊢ eventually (λx. c ≤ f x) net ∧ b < c"
                 },
                 {
-                    "args": "conjD1, {}, {A: eventually (λx. c ≤ f x) net, B: b < c}",
+                    "args": "conjD1, {A: eventually (λx. c ≤ f x) net, B: b < c}",
                     "id": "5.6",
                     "prevs": [
                         "5.5"
@@ -11707,7 +11707,7 @@
                     "th": "eventually (λx. c ≤ f x) net ∧ b < c ⊢ eventually (λx. c ≤ f x) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: eventually (λx. c ≤ f x) net, B: b < c}",
+                    "args": "conjD2, {A: eventually (λx. c ≤ f x) net, B: b < c}",
                     "id": "5.7",
                     "prevs": [
                         "5.5"
@@ -11725,7 +11725,7 @@
                     "th": "eventually (λx. c ≤ f x) net ∧ b < c ⊢ ∀x. c ≤ f x ⟶ b < f x"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx. c ≤ f x ⟶ b < f x, net: net}",
+                    "args": "always_eventually, {P: λx. c ≤ f x ⟶ b < f x, net: net}",
                     "id": "5.9",
                     "prevs": [
                         "5.8"
@@ -11923,7 +11923,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -12097,7 +12097,7 @@
                     "th": "tendsto_real f l net, ¬(trivial_limit net), ∀x. x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟷ false, ¬false ⊢ ¬(l - 1 ∈ {b. eventually (λx. b ≤ f x) net} ⟷ false)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. ¬(x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟷ false), a: l - 1}",
+                    "args": "exI, {P: λx. ¬(x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟷ false), a: l - 1}",
                     "id": "2.1.1.4",
                     "prevs": [
                         "2.1.1.3"
@@ -12329,7 +12329,7 @@
                     "th": "tendsto_real f l net, ¬(trivial_limit net), c < l ⊢ (l + c) / 2 ∈ {b. eventually (λx. b ≤ f x) net} ∧ c < (l + c) / 2"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. x ∈ {b. eventually (λx1. b ≤ f x1) net} ∧ c < x, a: (l + c) / 2}",
+                    "args": "exI, {P: λx. x ∈ {b. eventually (λx1. b ≤ f x1) net} ∧ c < x, a: (l + c) / 2}",
                     "id": "2.7.11",
                     "prevs": [
                         "2.7.10"
@@ -12378,7 +12378,7 @@
                     "th": "tendsto_real f l net, ¬(trivial_limit net) ⊢ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
+                    "args": "disjI2, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
                     "id": "2.11",
                     "prevs": [
                         "2.10"
@@ -12735,7 +12735,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "eventually_trivial, {a: 'a}, {P: λx. l ≤ f x, net: net}",
+                    "args": "eventually_trivial, {P: λx. l ≤ f x, net: net}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -12744,7 +12744,7 @@
                     "th": "has_liminf f l net, trivial_limit net ⊢ eventually (λx. l ≤ f x) net"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. eventually (λx. b ≤ f x) net, a: l}",
+                    "args": "exI, {P: λb. eventually (λx. b ≤ f x) net, a: l}",
                     "id": "2.2",
                     "prevs": [
                         "2.1"
@@ -12777,7 +12777,7 @@
                     "th": "¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)) ⊢ ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ¬({b. eventually (λx. b ≤ f x) net} = ∅), B: (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x))}",
+                    "args": "conjD2, {A: ¬({b. eventually (λx. b ≤ f x) net} = ∅), B: (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x))}",
                     "id": "3.1",
                     "prevs": [
                         "3.0"
@@ -12786,7 +12786,7 @@
                     "th": "¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)) ⊢ (∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l) ∧ (∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l, B: ∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)}",
+                    "args": "conjD2, {A: ∀x. eventually (λx1. x ≤ f x1) net ⟶ x ≤ l, B: ∀c. c < l ⟶ (∃x. eventually (λx1. x ≤ f x1) net ∧ c < x)}",
                     "id": "3.2",
                     "prevs": [
                         "3.1"
@@ -12844,7 +12844,7 @@
                     "th": "eventually (λx1. x ≤ f x1) net ∧ l - 1 < x ⊢ eventually (λx1. x ≤ f x1) net"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. eventually (λx. b ≤ f x) net, a: x}",
+                    "args": "exI, {P: λb. eventually (λx. b ≤ f x) net, a: x}",
                     "id": "3.9",
                     "prevs": [
                         "3.8"
@@ -13077,7 +13077,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "negE_gen, {A: trivial_limit net, C: ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "4.1",
                     "prevs": [
                         "0",
@@ -13337,7 +13337,7 @@
                     "th": "trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l ⊢ trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))}",
+                    "args": "disjI1, {A: trivial_limit net, B: (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))}",
                     "id": "0.1.1",
                     "prevs": [
                         "0.0"
@@ -13370,7 +13370,7 @@
                     "th": "trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
                     "id": "0.2.1",
                     "prevs": [
                         "0.0"
@@ -13559,7 +13559,7 @@
                     "th": "¬(trivial_limit net), has_liminf f l net ⊢ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))}",
+                    "args": "disjI2, {A: trivial_limit net, B: (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))}",
                     "id": "2.1.4",
                     "prevs": [
                         "2.1.3"
@@ -13606,7 +13606,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: has_liminf f l net}",
+                    "args": "negE_gen, {A: trivial_limit net, C: has_liminf f l net}",
                     "id": "2.2.1.1",
                     "prevs": [
                         "2.0",
@@ -13640,7 +13640,7 @@
                     "th": "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "conjD1, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "2.2.2.1",
                     "prevs": [
                         "2.2.2.0"
@@ -13649,7 +13649,7 @@
                     "th": "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ ∀c. c < l ⟶ eventually (λx. c ≤ f x) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "conjD2, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "2.2.2.2",
                     "prevs": [
                         "2.2.2.0"
@@ -13727,7 +13727,7 @@
                     "th": "¬(trivial_limit net), trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ ¬(eventually (λx. l - 1 ≤ f x) net ⟷ false)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. ¬(eventually (λx1. x ≤ f x1) net ⟷ false), a: l - 1}",
+                    "args": "exI, {P: λx. ¬(eventually (λx1. x ≤ f x1) net ⟷ false), a: l - 1}",
                     "id": "2.2.2.5",
                     "prevs": [
                         "2.2.2.4"
@@ -13934,7 +13934,7 @@
                     "th": "¬(trivial_limit net), trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), c < l ⊢ eventually (λx. (l + c) / 2 ≤ f x) net ∧ c < (l + c) / 2"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. eventually (λx1. x ≤ f x1) net ∧ c < x, a: (l + c) / 2}",
+                    "args": "exI, {P: λx. eventually (λx1. x ≤ f x1) net ∧ c < x, a: (l + c) / 2}",
                     "id": "2.2.2.12.6",
                     "prevs": [
                         "2.2.2.12.5"
@@ -13992,7 +13992,7 @@
                     "th": "¬(trivial_limit net), trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ has_sup ({b. eventually (λx. b ≤ f x) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
+                    "args": "disjI2, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) l}",
                     "id": "2.2.2.17",
                     "prevs": [
                         "2.2.2.16"
@@ -14449,7 +14449,7 @@
                     "th": "∃l. trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ ∃l. trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))}",
+                    "args": "disjI1, {A: trivial_limit net, B: (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))}",
                     "id": "0.2",
                     "prevs": [
                         "0.0"
@@ -14518,7 +14518,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))}",
+                    "args": "negE_gen, {A: trivial_limit net, C: (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))}",
                     "id": "1.4.1",
                     "prevs": [
                         "1.0",
@@ -14552,7 +14552,7 @@
                     "th": "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "conjD1, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "1.5.1",
                     "prevs": [
                         "1.5.0"
@@ -14561,7 +14561,7 @@
                     "th": "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ ∀c. c < l ⟶ eventually (λx. c ≤ f x) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "conjD2, {A: ∀c. c < l ⟶ eventually (λx. c ≤ f x) net, B: ∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "1.5.2",
                     "prevs": [
                         "1.5.0"
@@ -14587,7 +14587,7 @@
                     "th": "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), ¬(trivial_limit net), ∃l. trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ eventually (λx. l - 1 ≤ f x) net"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. eventually (λx. b ≤ f x) net, a: l - 1}",
+                    "args": "exI, {P: λb. eventually (λx. b ≤ f x) net, a: l - 1}",
                     "id": "1.5.5",
                     "prevs": [
                         "1.5.4"
@@ -14613,7 +14613,7 @@
                     "th": "(∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), ¬(trivial_limit net), ∃l. trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ ¬(eventually (λx. l + 1 ≤ f x) net)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λc. ¬(eventually (λx. c ≤ f x) net), a: l + 1}",
+                    "args": "exI, {P: λc. ¬(eventually (λx. c ≤ f x) net), a: l + 1}",
                     "id": "1.5.8",
                     "prevs": [
                         "1.5.7"
@@ -14653,7 +14653,7 @@
                     "th": "trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)), ¬(trivial_limit net), ∃l. trivial_limit net ∨ (∀c. c < l ⟶ eventually (λx. c ≤ f x) net) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ f x) net)) ⊢ (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))}",
+                    "args": "disjI2, {A: trivial_limit net, B: (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))}",
                     "id": "1.7",
                     "prevs": [
                         "1.6"
@@ -14723,7 +14723,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) 0}",
+                    "args": "disjI1, {A: trivial_limit net, B: has_sup ({b. eventually (λx. b ≤ f x) net}) 0}",
                     "id": "4.1.1",
                     "prevs": [
                         "4.1.0"
@@ -14732,7 +14732,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)), trivial_limit net ⊢ trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) 0"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λl. trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l, a: (0::real)}",
+                    "args": "exI, {P: λl. trivial_limit net ∨ has_sup ({b. eventually (λx. b ≤ f x) net}) l, a: (0::real)}",
                     "id": "4.1.2",
                     "prevs": [
                         "4.1.1"
@@ -14779,7 +14779,7 @@
                     "th": "trivial_limit net ⊢ trivial_limit net"
                 },
                 {
-                    "args": "negE_gen, {}, {A: trivial_limit net, C: ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∃b. ∀x. x ∈ {b1. eventually (λx1. b1 ≤ f x1) net} ⟶ x ≤ b)}",
+                    "args": "negE_gen, {A: trivial_limit net, C: ¬({b. eventually (λx. b ≤ f x) net} = ∅) ∧ (∃b. ∀x. x ∈ {b1. eventually (λx1. b1 ≤ f x1) net} ⟶ x ≤ b)}",
                     "id": "4.2.1.1",
                     "prevs": [
                         "4.2.0",
@@ -14813,7 +14813,7 @@
                     "th": "(∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)) ⊢ (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∃b. eventually (λx. b ≤ f x) net, B: ∃c. ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "conjD1, {A: ∃b. eventually (λx. b ≤ f x) net, B: ∃c. ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "4.2.2.1",
                     "prevs": [
                         "4.2.2.0"
@@ -14822,7 +14822,7 @@
                     "th": "(∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)) ⊢ ∃b. eventually (λx. b ≤ f x) net"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∃b. eventually (λx. b ≤ f x) net, B: ∃c. ¬(eventually (λx. c ≤ f x) net)}",
+                    "args": "conjD2, {A: ∃b. eventually (λx. b ≤ f x) net, B: ∃c. ¬(eventually (λx. c ≤ f x) net)}",
                     "id": "4.2.2.2",
                     "prevs": [
                         "4.2.2.0"
@@ -14920,7 +14920,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)), ¬(trivial_limit net), (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)), eventually (λx. b ≤ f x) net, ¬(eventually (λx. c ≤ f x) net) ⊢ ¬(b ∈ {b1. eventually (λx. b1 ≤ f x) net} ⟷ false)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. ¬(x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟷ false), a: b}",
+                    "args": "exI, {P: λx. ¬(x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟷ false), a: b}",
                     "id": "4.2.2.10",
                     "prevs": [
                         "4.2.2.9"
@@ -15068,7 +15068,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)), ¬(trivial_limit net), (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)), eventually (λx. b ≤ f x) net, ¬(eventually (λx. c ≤ f x) net) ⊢ ∀x. x ∈ {b. eventually (λx1. b ≤ f x1) net} ⟶ x ≤ c"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {b1. eventually (λx1. b1 ≤ f x1) net} ⟶ x ≤ b, a: c}",
+                    "args": "exI, {P: λb. ∀x. x ∈ {b1. eventually (λx1. b1 ≤ f x1) net} ⟶ x ≤ b, a: c}",
                     "id": "4.2.2.16",
                     "prevs": [
                         "4.2.2.15"
@@ -15123,7 +15123,7 @@
                     "th": "trivial_limit net ∨ (∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬(eventually (λx. c ≤ f x) net)), ¬(trivial_limit net) ⊢ ∃l. has_sup ({b. eventually (λx. b ≤ f x) net}) l"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit net, B: ∃x. has_sup ({b. eventually (λx1. b ≤ f x1) net}) x}",
+                    "args": "disjI2, {A: trivial_limit net, B: ∃x. has_sup ({b. eventually (λx1. b ≤ f x1) net}) x}",
                     "id": "4.2.5",
                     "prevs": [
                         "4.2.4"
@@ -15615,7 +15615,7 @@
                     "th": "m < c ∧ c < l ⊢ m < c ∧ c < l"
                 },
                 {
-                    "args": "conjD1, {}, {A: m < c, B: c < l}",
+                    "args": "conjD1, {A: m < c, B: c < l}",
                     "id": "4.1.1",
                     "prevs": [
                         "4.1.0"
@@ -15624,7 +15624,7 @@
                     "th": "m < c ∧ c < l ⊢ m < c"
                 },
                 {
-                    "args": "conjD2, {}, {A: m < c, B: c < l}",
+                    "args": "conjD2, {A: m < c, B: c < l}",
                     "id": "4.1.2",
                     "prevs": [
                         "4.1.0"
@@ -15665,7 +15665,7 @@
                     "th": "⊢ ∀x. c < f x ∧ f x ≤ g x ⟶ c ≤ g x"
                 },
                 {
-                    "args": "always_eventually, {a: 'a}, {P: λx. c < f x ∧ f x ≤ g x ⟶ c ≤ g x, net: net}",
+                    "args": "always_eventually, {P: λx. c < f x ∧ f x ≤ g x ⟶ c ≤ g x, net: net}",
                     "id": "4.1.3.3",
                     "prevs": [
                         "4.1.3.2"
@@ -15983,7 +15983,7 @@
                     "th": "¬(trivial_limit net) ⊢ ¬(trivial_limit net)"
                 },
                 {
-                    "args": "reallim_const, {a: 'a}, {a: b, net: net}",
+                    "args": "reallim_const, {a: b, net: net}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -16162,7 +16162,7 @@
                     "th": "(∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ⊢ ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ ¬(∃N. ∀n. N ≤ n ⟶ c ≤ a n)}",
+                    "args": "conjD2, {A: ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ ¬(∃N. ∀n. N ≤ n ⟶ c ≤ a n)}",
                     "id": "0.2.2",
                     "prevs": [
                         "0.2.0"
@@ -16344,7 +16344,7 @@
                     "th": "(∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c)) ⊢ (∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(∃N. ∀n. N ≤ n ⟶ c ≤ a n))"
                 },
                 {
-                    "args": "disjI2, {}, {A: trivial_limit sequentially, B: (∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(∃N. ∀n. N ≤ n ⟶ c ≤ a n))}",
+                    "args": "disjI2, {A: trivial_limit sequentially, B: (∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(∃N. ∀n. N ≤ n ⟶ c ≤ a n))}",
                     "id": "1.9",
                     "prevs": [
                         "1.8"
@@ -16629,7 +16629,7 @@
                     "th": "has_liminf a l (within sequentially k) ⊢ has_liminf a l (within sequentially k)"
                 },
                 {
-                    "args": "disjI1, {}, {A: finite k, B: (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))}",
+                    "args": "disjI1, {A: finite k, B: (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))}",
                     "id": "0.1.1",
                     "prevs": [
                         "0.0"
@@ -16671,7 +16671,7 @@
                     "th": "finite k, finite k ∨ (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)) ⊢ trivial_limit (within sequentially k)"
                 },
                 {
-                    "args": "disjI1, {}, {A: trivial_limit (within sequentially k), B: (∀c. c < l ⟶ eventually (λx. c ≤ a x) (within sequentially k)) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ a x) (within sequentially k)))}",
+                    "args": "disjI1, {A: trivial_limit (within sequentially k), B: (∀c. c < l ⟶ eventually (λx. c ≤ a x) (within sequentially k)) ∧ (∀c. l < c ⟶ ¬(eventually (λx. c ≤ a x) (within sequentially k)))}",
                     "id": "0.2.2",
                     "prevs": [
                         "0.2.1"
@@ -16761,7 +16761,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "negE_gen, {}, {A: finite k, C: (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))}",
+                    "args": "negE_gen, {A: finite k, C: (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))}",
                     "id": "1.1.1.1",
                     "prevs": [
                         "1.0",
@@ -16795,7 +16795,7 @@
                     "th": "(∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))) ⊢ (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))}",
+                    "args": "conjD1, {A: ∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))}",
                     "id": "1.1.2.1",
                     "prevs": [
                         "1.1.2.0"
@@ -16849,7 +16849,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "negE_gen, {}, {A: finite k, C: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n}",
+                    "args": "negE_gen, {A: finite k, C: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n}",
                     "id": "1.1.2.2.3.1",
                     "prevs": [
                         "1.0",
@@ -16898,7 +16898,7 @@
                     "th": "¬(finite k), finite k ∨ (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))), (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))) ⊢ ∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))}",
+                    "args": "conjD2, {A: ∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))}",
                     "id": "1.1.2.3",
                     "prevs": [
                         "1.1.2.0"
@@ -16947,7 +16947,7 @@
                     "th": "(∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))), l < c ⊢ ¬(finite k) ∧ ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ¬(finite k), B: ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)}",
+                    "args": "conjD2, {A: ¬(finite k), B: ¬(∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)}",
                     "id": "1.1.2.4.4",
                     "prevs": [
                         "1.1.2.4.3"
@@ -17043,7 +17043,7 @@
                     "th": "finite k ∨ (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n))), ¬(finite k) ⊢ (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))}",
+                    "args": "disjI2, {A: finite k, B: (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c))}",
                     "id": "1.1.4",
                     "prevs": [
                         "1.1.3"
@@ -17090,7 +17090,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "negE_gen, {}, {A: finite k, C: (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)))}",
+                    "args": "negE_gen, {A: finite k, C: (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)))}",
                     "id": "1.2.1.1",
                     "prevs": [
                         "1.0",
@@ -17145,7 +17145,7 @@
                     "th": "c < l ⊢ c < l"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)}",
+                    "args": "conjD1, {A: ∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)}",
                     "id": "1.2.2.1.2",
                     "prevs": [
                         "1.2.2.0"
@@ -17164,7 +17164,7 @@
                     "th": "(∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)), ¬(finite k), finite k ∨ (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)), c < l ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n}",
+                    "args": "disjI2, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n}",
                     "id": "1.2.2.1.4",
                     "prevs": [
                         "1.2.2.1.3"
@@ -17205,7 +17205,7 @@
                     "th": "l < c ⊢ l < c"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)}",
+                    "args": "conjD2, {A: ∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)}",
                     "id": "1.2.2.2.2",
                     "prevs": [
                         "1.2.2.0"
@@ -17339,7 +17339,7 @@
                     "th": "finite k ∨ (∀c. c < l ⟶ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. n ∈ k ∧ N ≤ n ∧ a n < c)), ¬(finite k) ⊢ (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)))"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)))}",
+                    "args": "disjI2, {A: finite k, B: (∀c. c < l ⟶ finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ ¬(finite k ∨ (∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ c ≤ a n)))}",
                     "id": "1.2.4",
                     "prevs": [
                         "1.2.3"
@@ -17826,7 +17826,7 @@
                     "th": "has_liminf a l sequentially ⊢ (∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)) ∧ (∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c)}",
+                    "args": "conjD1, {A: ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c)}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -17835,7 +17835,7 @@
                     "th": "has_liminf a l sequentially ⊢ ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c)}",
+                    "args": "conjD2, {A: ∀c. c < l ⟶ (∃N. ∀n. N ≤ n ⟶ c ≤ a n), B: ∀c. l < c ⟶ (∀N. ∃n. N ≤ n ∧ a n < c)}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -18020,7 +18020,7 @@
                     "th": "∀x. x ∈ image a ({m. m ≥ n}) ⟷ false ⊢ false ⟷ a n ∈ image a ({m. m ≥ n})"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: a n}",
+                    "args": "eq_refl, {x: a n}",
                     "id": "4.10.6.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -18053,7 +18053,7 @@
                     "th": "has_liminf a l sequentially, 0 < e, ∀n. N ≤ n ⟶ l - e / 2 ≤ a n, N ≤ n, n ≤ M ∧ a M < l + e, ∀x. x ∈ image a ({m. m ≥ n}) ⟷ false ⊢ a n = a n ∧ n ∈ {m. m ≥ n}"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
+                    "args": "exI, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
                     "id": "4.10.6.7",
                     "prevs": [
                         "4.10.6.6"
@@ -18226,7 +18226,7 @@
                     "th": "has_liminf a l sequentially, 0 < e, ∀n. N ≤ n ⟶ l - e / 2 ≤ a n, N ≤ n, n ≤ M ∧ a M < l + e ⊢ l - e < inf (image a ({m. m ≥ n}))"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ b ≤ x, a: l - e / 2}",
+                    "args": "exI, {P: λb. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ b ≤ x, a: l - e / 2}",
                     "id": "4.10.16",
                     "prevs": [
                         "4.10.13"
@@ -18235,7 +18235,7 @@
                     "th": "has_liminf a l sequentially, 0 < e, ∀n. N ≤ n ⟶ l - e / 2 ≤ a n, N ≤ n, n ≤ M ∧ a M < l + e ⊢ ∃a1. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ a1 ≤ x"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: a M}",
+                    "args": "eq_refl, {x: a M}",
                     "id": "4.10.17",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -18270,7 +18270,7 @@
                     "th": "has_liminf a l sequentially, 0 < e, ∀n. N ≤ n ⟶ l - e / 2 ≤ a n, N ≤ n, n ≤ M ∧ a M < l + e ⊢ a M = a M ∧ M ∈ {m. m ≥ n}"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λx. a M = a x ∧ x ∈ {m. m ≥ n}, a: M}",
+                    "args": "exI, {P: λx. a M = a x ∧ x ∈ {m. m ≥ n}, a: M}",
                     "id": "4.10.21",
                     "prevs": [
                         "4.10.20"
@@ -18360,7 +18360,7 @@
                     "th": "has_liminf a l sequentially, 0 < e, ∀n. N ≤ n ⟶ l - e / 2 ≤ a n ⊢ ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e, a: N}",
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e, a: N}",
                     "id": "4.11",
                     "prevs": [
                         "4.10"
@@ -18835,7 +18835,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)) ⊢ (∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e))"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∃b. ∀n. b ≤ a n, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)}",
+                    "args": "conjD2, {A: ∃b. ∀n. b ≤ a n, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -18947,7 +18947,7 @@
                     "th": "∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c, N ≤ n ⊢ 0 < l - c ∧ l - (l - c) < inf (image a ({m. m ≥ n})) ∧ inf (image a ({m. m ≥ n})) < l + (l - c)"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < l - c, B: l - (l - c) < inf (image a ({m. m ≥ n})) ∧ inf (image a ({m. m ≥ n})) < l + (l - c)}",
+                    "args": "conjD2, {A: 0 < l - c, B: l - (l - c) < inf (image a ({m. m ≥ n})) ∧ inf (image a ({m. m ≥ n})) < l + (l - c)}",
                     "id": "1.2.7.4",
                     "prevs": [
                         "1.2.7.3"
@@ -18956,7 +18956,7 @@
                     "th": "∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c, N ≤ n ⊢ l - (l - c) < inf (image a ({m. m ≥ n})) ∧ inf (image a ({m. m ≥ n})) < l + (l - c)"
                 },
                 {
-                    "args": "conjD1, {}, {A: l - (l - c) < inf (image a ({m. m ≥ n})), B: inf (image a ({m. m ≥ n})) < l + (l - c)}",
+                    "args": "conjD1, {A: l - (l - c) < inf (image a ({m. m ≥ n})), B: inf (image a ({m. m ≥ n})) < l + (l - c)}",
                     "id": "1.2.7.5",
                     "prevs": [
                         "1.2.7.4"
@@ -18991,7 +18991,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), c < l, ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c, N ≤ n ⊢ c ≤ inf (image a ({m. m ≥ n}))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∃b. ∀n. b ≤ a n, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)}",
+                    "args": "conjD1, {A: ∃b. ∀n. b ≤ a n, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)}",
                     "id": "1.2.7.9",
                     "prevs": [
                         "1.0"
@@ -19055,7 +19055,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), c < l, ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c, N ≤ n, ∀n. b ≤ a n ⊢ ∀x. x ∈ {m. m ≥ n} ⟶ b ≤ a x"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ b ≤ a x, a: b}",
+                    "args": "exI, {P: λb. ∀x. x ∈ {m. m ≥ n} ⟶ b ≤ a x, a: b}",
                     "id": "1.2.7.13",
                     "prevs": [
                         "1.2.7.12"
@@ -19091,7 +19091,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), c < l, ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c, N ≤ n, ∀n. b ≤ a n ⊢ ∃b. ∀x. x ∈ image a ({m. m ≥ n}) ⟶ b ≤ x"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: a n}",
+                    "args": "eq_refl, {x: a n}",
                     "id": "1.2.7.17",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -19124,7 +19124,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), c < l, ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c, N ≤ n, ∀n. b ≤ a n ⊢ a n = a n ∧ n ∈ {m. m ≥ n}"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
+                    "args": "exI, {P: λx. a n = a x ∧ x ∈ {m. m ≥ n}, a: n}",
                     "id": "1.2.7.21",
                     "prevs": [
                         "1.2.7.20"
@@ -19176,7 +19176,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), c < l, ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < l - c ⊢ ∀n. N ≤ n ⟶ c ≤ a n"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ c ≤ a n, a: N}",
+                    "args": "exI, {P: λN. ∀n. N ≤ n ⟶ c ≤ a n, a: N}",
                     "id": "1.2.8",
                     "prevs": [
                         "1.2.7"
@@ -19276,7 +19276,7 @@
                     "th": "∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l ⊢ ∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l"
                 },
                 {
-                    "args": "inf_approach, {}, {c: c, s: image a ({m. m ≥ max N M})}",
+                    "args": "inf_approach, {c: c, s: image a ({m. m ≥ max N M})}",
                     "id": "1.3.2.6",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -19379,7 +19379,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l ⊢ ¬(image a ({m. m ≥ max N M}) = ∅)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∃b. ∀n. b ≤ a n, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)}",
+                    "args": "conjD1, {A: ∃b. ∀n. b ≤ a n, B: ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)}",
                     "id": "1.3.2.13",
                     "prevs": [
                         "1.0"
@@ -19470,7 +19470,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l, ∀n. b ≤ a n ⊢ ∀x. x ∈ image a ({m. m ≥ max N M}) ⟶ b ≤ x"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. ∀x. x ∈ image a ({m. m ≥ max N M}) ⟶ b ≤ x, a: b}",
+                    "args": "exI, {P: λb. ∀x. x ∈ image a ({m. m ≥ max N M}) ⟶ b ≤ x, a: b}",
                     "id": "1.3.2.20",
                     "prevs": [
                         "1.3.2.19"
@@ -19514,7 +19514,7 @@
                     "th": "∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l ⊢ 0 < c - l ∧ l - (c - l) < inf (image a ({m. m ≥ max N M})) ∧ inf (image a ({m. m ≥ max N M})) < l + (c - l)"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < c - l, B: l - (c - l) < inf (image a ({m. m ≥ max N M})) ∧ inf (image a ({m. m ≥ max N M})) < l + (c - l)}",
+                    "args": "conjD2, {A: 0 < c - l, B: l - (c - l) < inf (image a ({m. m ≥ max N M})) ∧ inf (image a ({m. m ≥ max N M})) < l + (c - l)}",
                     "id": "1.3.2.25",
                     "prevs": [
                         "1.3.2.24"
@@ -19523,7 +19523,7 @@
                     "th": "∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l ⊢ l - (c - l) < inf (image a ({m. m ≥ max N M})) ∧ inf (image a ({m. m ≥ max N M})) < l + (c - l)"
                 },
                 {
-                    "args": "conjD2, {}, {A: l - (c - l) < inf (image a ({m. m ≥ max N M})), B: inf (image a ({m. m ≥ max N M})) < l + (c - l)}",
+                    "args": "conjD2, {A: l - (c - l) < inf (image a ({m. m ≥ max N M})), B: inf (image a ({m. m ≥ max N M})) < l + (c - l)}",
                     "id": "1.3.2.26",
                     "prevs": [
                         "1.3.2.25"
@@ -19584,7 +19584,7 @@
                     "th": "y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x} ∧ y < c ⊢ y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x} ∧ y < c"
                 },
                 {
-                    "args": "conjD1, {}, {A: y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x}, B: y < c}",
+                    "args": "conjD1, {A: y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x}, B: y < c}",
                     "id": "1.3.2.33",
                     "prevs": [
                         "1.3.2.32"
@@ -19616,7 +19616,7 @@
                     "th": "z ∈ {m. m ≥ max N M} ∧ y = a z ⊢ z ∈ {m. m ≥ max N M} ∧ y = a z"
                 },
                 {
-                    "args": "conjD1, {}, {A: z ∈ {m. m ≥ max N M}, B: y = a z}",
+                    "args": "conjD1, {A: z ∈ {m. m ≥ max N M}, B: y = a z}",
                     "id": "1.3.2.37",
                     "prevs": [
                         "1.3.2.36"
@@ -19643,7 +19643,7 @@
                     "th": "z ∈ {m. m ≥ max N M} ∧ y = a z ⊢ N ≤ z"
                 },
                 {
-                    "args": "conjD2, {}, {A: z ∈ {m. m ≥ max N M}, B: y = a z}",
+                    "args": "conjD2, {A: z ∈ {m. m ≥ max N M}, B: y = a z}",
                     "id": "1.3.2.40",
                     "prevs": [
                         "1.3.2.36"
@@ -19652,7 +19652,7 @@
                     "th": "z ∈ {m. m ≥ max N M} ∧ y = a z ⊢ y = a z"
                 },
                 {
-                    "args": "conjD2, {}, {A: y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x}, B: y < c}",
+                    "args": "conjD2, {A: y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x}, B: y < c}",
                     "id": "1.3.2.41",
                     "prevs": [
                         "1.3.2.32"
@@ -19681,7 +19681,7 @@
                     "th": "(∃b. ∀n. b ≤ a n) ∧ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < e)), l < c, ∀n. M ≤ n ⟶ abs (inf (image a ({m. m ≥ n})) - l) < c - l, ∀n. b ≤ a n, y ∈ {y1. ∃x. x ∈ {m. m ≥ max N M} ∧ y1 = a x} ∧ y < c, z ∈ {m. m ≥ max N M} ∧ y = a z ⊢ N ≤ z ∧ a z < c"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λn. N ≤ n ∧ a n < c, a: z}",
+                    "args": "exI, {P: λn. N ≤ n ∧ a n < c, a: z}",
                     "id": "1.3.2.44",
                     "prevs": [
                         "1.3.2.43"
@@ -20422,7 +20422,7 @@
                     "th": "finite k ⊢ finite k"
                 },
                 {
-                    "args": "real_summable_finite, {}, {f: a, s: k}",
+                    "args": "real_summable_finite, {f: a, s: k}",
                     "id": "3.1",
                     "prevs": [
                         "3.0"
@@ -20455,7 +20455,7 @@
                     "th": "¬(finite k) ⊢ ¬(finite k)"
                 },
                 {
-                    "args": "reallim_const, {a: nat}, {a: (0::real), net: within sequentially k}",
+                    "args": "reallim_const, {a: (0::real), net: within sequentially k}",
                     "id": "4.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -20530,7 +20530,7 @@
                     "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ∀n. n ∈ k ⟶ 0 ≤ n ⟶ 0 ≤ a n"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ a n, a: (0::nat)}",
+                    "args": "exI, {P: λN. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ a n, a: (0::nat)}",
                     "id": "4.5",
                     "prevs": [
                         "4.4"
@@ -20548,7 +20548,7 @@
                     "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k) ⊢ ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n)"
                 },
                 {
-                    "args": "disjI2, {}, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n)}",
+                    "args": "disjI2, {A: finite k, B: ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ 0 ≤ root n (a n)}",
                     "id": "4.7",
                     "prevs": [
                         "4.6"
@@ -20587,7 +20587,7 @@
                     "th": "¬(finite k) ⊢ infinite k"
                 },
                 {
-                    "args": "infinite_nonempty, {a: nat}, {s: k}",
+                    "args": "infinite_nonempty, {s: k}",
                     "id": "4.11",
                     "prevs": [
                         "4.10"
@@ -20672,7 +20672,7 @@
                     "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), b < 1 ⊢ abs (b + (1 - b) / 2) < 1"
                 },
                 {
-                    "args": "real_summable_gp, {}, {s: k, x: b + (1 - b) / 2}",
+                    "args": "real_summable_gp, {s: k, x: b + (1 - b) / 2}",
                     "id": "4.16.4",
                     "prevs": [
                         "4.16.3"
@@ -20727,7 +20727,7 @@
                     "th": "N + 1 ≤ n ⊢ ¬(n = 0)"
                 },
                 {
-                    "args": "le_0, {}, {n: n}",
+                    "args": "le_0, {n: n}",
                     "id": "4.16.6.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -20764,7 +20764,7 @@
                     "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ a n = root n (a n) ^ n"
                 },
                 {
-                    "args": "root_pos_le, {}, {n: n, x: a n}",
+                    "args": "root_pos_le, {n: n, x: a n}",
                     "id": "4.16.6.8",
                     "prevs": [
                         "4.16.6.5"
@@ -20802,7 +20802,7 @@
                     "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, N + 1 ≤ n, n ∈ k ⊢ root n (a n) ≤ b + (1 - b) / 2"
                 },
                 {
-                    "args": "real_pow_le2, {}, {n: n, x: root n (a n), y: b + (1 - b) / 2}",
+                    "args": "real_pow_le2, {n: n, x: root n (a n), y: b + (1 - b) / 2}",
                     "id": "4.16.6.12",
                     "prevs": [
                         "4.16.6.8",
@@ -20862,7 +20862,7 @@
                     "th": "∀n. n ∈ k ⟶ 0 ≤ a n, b < 1, has_limsup (λn. root n (a n)) b (within sequentially k), ¬(finite k), ∃N. ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2, ∀n. n ∈ k ⟶ N ≤ n ⟶ root n (a n) < b + (1 - b) / 2 ⊢ ∀i. i ≥ N + 1 ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀i. i ≥ N ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i, a: N + 1}",
+                    "args": "exI, {P: λN. ∀i. i ≥ N ⟶ i ∈ k ⟶ abs (a i) ≤ (b + (1 - b) / 2) ^ i, a: N + 1}",
                     "id": "4.16.8",
                     "prevs": [
                         "4.16.7"
@@ -21592,7 +21592,7 @@
                     "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N, 0 < e ⊢ ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λN. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e, a: N}",
+                    "args": "exI, {P: λN. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e, a: N}",
                     "id": "3.4.3",
                     "prevs": [
                         "3.4.2"
@@ -21612,7 +21612,7 @@
                     "th": "has_limsup (λn. root n (abs (a n))) b (within sequentially k), real_compact s, ∀x. x ∈ s ⟶ b * abs x < 1, finite k, ∀x. x ∈ k ⟶ x ≤ N ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - sum k (λi. a i * x ^ i)) < e)"
                 },
                 {
-                    "args": "exI, {a: real ⇒ real}, {P: λl. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e), a: λx. sum k (λi. a i * x ^ i)}",
+                    "args": "exI, {P: λl. ∀e. 0 < e ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. a i * x ^ i) - l x) < e), a: λx. sum k (λi. a i * x ^ i)}",
                     "id": "3.5",
                     "prevs": [
                         "3.4"
@@ -21933,7 +21933,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "finite_inter_natseg, {}, {m: (0::nat), n: n, s: k}",
+                    "args": "finite_inter_natseg, {m: (0::nat), n: n, s: k}",
                     "id": "5.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -22341,7 +22341,7 @@
                     "th": "∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y ⊢ ∀x. ∀y. of_nat m - 1 ≤ x ⟶ x ≤ y ⟶ y ≤ of_nat n ⟶ f x ≤ f y"
                 },
                 {
-                    "args": "real_sum_integral_ubound_decreasing, {}, {f: λz. -(g z), g: λz. -(f z), m: m, n: n}",
+                    "args": "real_sum_integral_ubound_decreasing, {f: λz. -(g z), g: λz. -(f z), m: m, n: n}",
                     "id": "3",
                     "prevs": [
                         "0"
@@ -23414,7 +23414,7 @@
                     "th": "a ≤ b ⊢ a ≤ b"
                 },
                 {
-                    "args": "subset_refl, {a: real}, {A: real_closed_interval a b}",
+                    "args": "subset_refl, {A: real_closed_interval a b}",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -23485,7 +23485,7 @@
                     "th": "x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ x ∧ x ≤ b"
                 },
                 {
-                    "args": "conjD1, {}, {A: a ≤ x, B: x ≤ b}",
+                    "args": "conjD1, {A: a ≤ x, B: x ≤ b}",
                     "id": "1.1.3",
                     "prevs": [
                         "1.1.2"
@@ -23494,7 +23494,7 @@
                     "th": "x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ x"
                 },
                 {
-                    "args": "conjD2, {}, {A: a ≤ x, B: x ≤ b}",
+                    "args": "conjD2, {A: a ≤ x, B: x ≤ b}",
                     "id": "1.1.4",
                     "prevs": [
                         "1.1.2"
@@ -23812,7 +23812,7 @@
                     "th": "closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s"
                 },
                 {
-                    "args": "ends_in_real_segment1, {}, {a: a, b: b}",
+                    "args": "ends_in_real_segment1, {a: a, b: b}",
                     "id": "0.1.2.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -23829,7 +23829,7 @@
                     "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ⟶ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s"
                 },
                 {
-                    "args": "ends_in_real_segment2, {}, {a: a, b: b}",
+                    "args": "ends_in_real_segment2, {a: a, b: b}",
                     "id": "0.1.2.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",

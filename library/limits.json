@@ -103,7 +103,7 @@
                     "th": "0 < e ⊢ 0 < e"
                 },
                 {
-                    "args": "has_limit_D1, {}, {e: e, f: f, x: x}",
+                    "args": "has_limit_D1, {e: e, f: f, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -144,7 +144,7 @@
                     "th": "∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e, has_limit f x, 0 < e ⊢ abs (f n - x) < e"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λn. abs (f n - x) < e, a: n}",
+                    "args": "exI, {P: λn. abs (f n - x) < e, a: n}",
                     "id": "7",
                     "prevs": [
                         "6"
@@ -239,7 +239,7 @@
                     "th": "x < y ⊢ x < y"
                 },
                 {
-                    "args": "has_limit_D2, {}, {e: y - x, f: f, x: x}",
+                    "args": "has_limit_D2, {e: y - x, f: f, x: x}",
                     "id": "2.1",
                     "prevs": [
                         "0"

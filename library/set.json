@@ -362,7 +362,7 @@
                     "th": "true ⊢ true"
                 },
                 {
-                    "args": "member_univ, {a: 'a}, {x: x}",
+                    "args": "member_univ, {x: x}",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -855,7 +855,7 @@
                     "th": "x ∈ A ⊢ x ∈ A"
                 },
                 {
-                    "args": "member_univ, {a: 'a}, {x: x}",
+                    "args": "member_univ, {x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1739,7 +1739,7 @@
                     "th": "⊢ ∀x. ¬(f x = {x1. ¬(x1 ∈ f x1)})"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λS. ∀x. ¬(f x = S), a: {x. ¬(x ∈ f x)}}",
+                    "args": "exI, {P: λS. ∀x. ¬(f x = S), a: {x. ¬(x ∈ f x)}}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -2019,7 +2019,7 @@
                     "th": "y = x ⊢ y = x"
                 },
                 {
-                    "args": "disjI1, {}, {A: y = x, B: y ∈ ∅}",
+                    "args": "disjI1, {A: y = x, B: y ∈ ∅}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -2295,7 +2295,7 @@
                     "th": "x ∈ A ∧ A ∈ ∅ ⊢ x ∈ A ∧ A ∈ ∅"
                 },
                 {
-                    "args": "conjD2, {}, {A: x ∈ A, B: A ∈ ∅}",
+                    "args": "conjD2, {A: x ∈ A, B: A ∈ ∅}",
                     "id": "0.1.3",
                     "prevs": [
                         "0.1.2"
@@ -2507,7 +2507,7 @@
                     "th": "∀A. A ∈ ∅ ⟶ x ∈ A ⊢ ∀A. A ∈ ∅ ⟶ x ∈ A"
                 },
                 {
-                    "args": "member_univ, {a: 'a}, {x: x}",
+                    "args": "member_univ, {x: x}",
                     "id": "0.1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2736,7 +2736,7 @@
                     "th": "x ∈ A, A ∈ S ⊢ x ∈ A ∧ A ∈ S"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λA. x ∈ A ∧ A ∈ S, a: A}",
+                    "args": "exI, {P: λA. x ∈ A ∧ A ∈ S, a: A}",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
@@ -3170,7 +3170,7 @@
                     "th": "x ∈ C ∧ C ∈ A ∪ B ⊢ x ∈ C ∧ C ∈ A ∪ B"
                 },
                 {
-                    "args": "conjD1, {}, {A: x ∈ C, B: C ∈ A ∪ B}",
+                    "args": "conjD1, {A: x ∈ C, B: C ∈ A ∪ B}",
                     "id": "0.1.4",
                     "prevs": [
                         "0.1.3"
@@ -3179,7 +3179,7 @@
                     "th": "x ∈ C ∧ C ∈ A ∪ B ⊢ x ∈ C"
                 },
                 {
-                    "args": "conjD2, {}, {A: x ∈ C, B: C ∈ A ∪ B}",
+                    "args": "conjD2, {A: x ∈ C, B: C ∈ A ∪ B}",
                     "id": "0.1.5",
                     "prevs": [
                         "0.1.3"
@@ -3221,7 +3221,7 @@
                     "th": "x ∈ C ∧ C ∈ A ∪ B, C ∈ A ⊢ x ∈ C ∧ C ∈ A"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λA1. x ∈ A1 ∧ A1 ∈ A, a: C}",
+                    "args": "exI, {P: λA1. x ∈ A1 ∧ A1 ∈ A, a: C}",
                     "id": "0.1.7.2",
                     "prevs": [
                         "0.1.7.1"
@@ -3239,7 +3239,7 @@
                     "th": "x ∈ ⋃(A ∪ B), x ∈ C ∧ C ∈ A ∪ B, C ∈ A ⊢ x ∈ ⋃A"
                 },
                 {
-                    "args": "disjI1, {}, {A: x ∈ ⋃A, B: x ∈ ⋃B}",
+                    "args": "disjI1, {A: x ∈ ⋃A, B: x ∈ ⋃B}",
                     "id": "0.1.7.4",
                     "prevs": [
                         "0.1.7.3"
@@ -3282,7 +3282,7 @@
                     "th": "x ∈ C ∧ C ∈ A ∪ B, x ∈ ⋃(A ∪ B), C ∈ B ⊢ x ∈ C ∧ C ∈ B"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λA. x ∈ A ∧ A ∈ B, a: C}",
+                    "args": "exI, {P: λA. x ∈ A ∧ A ∈ B, a: C}",
                     "id": "0.1.8.2",
                     "prevs": [
                         "0.1.8.1"
@@ -3300,7 +3300,7 @@
                     "th": "x ∈ ⋃(A ∪ B), x ∈ C ∧ C ∈ A ∪ B, C ∈ B ⊢ x ∈ ⋃B"
                 },
                 {
-                    "args": "disjI2, {}, {A: x ∈ ⋃A, B: x ∈ ⋃B}",
+                    "args": "disjI2, {A: x ∈ ⋃A, B: x ∈ ⋃B}",
                     "id": "0.1.8.4",
                     "prevs": [
                         "0.1.8.3"
@@ -3430,7 +3430,7 @@
                     "th": "x ∈ C ∧ C ∈ A ⊢ C ∈ A"
                 },
                 {
-                    "args": "disjI1, {}, {A: C ∈ A, B: C ∈ B}",
+                    "args": "disjI1, {A: C ∈ A, B: C ∈ B}",
                     "id": "0.2.2.6",
                     "prevs": [
                         "0.2.2.5"
@@ -3458,7 +3458,7 @@
                     "th": "x ∈ ⋃A ∪ ⋃B, x ∈ ⋃A, x ∈ C ∧ C ∈ A ⊢ x ∈ C ∧ C ∈ A ∪ B"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λA1. x ∈ A1 ∧ A1 ∈ A ∪ B, a: C}",
+                    "args": "exI, {P: λA1. x ∈ A1 ∧ A1 ∈ A ∪ B, a: C}",
                     "id": "0.2.2.9",
                     "prevs": [
                         "0.2.2.8"
@@ -3535,7 +3535,7 @@
                     "th": "x ∈ C ∧ C ∈ B ⊢ C ∈ B"
                 },
                 {
-                    "args": "disjI2, {}, {A: C ∈ A, B: C ∈ B}",
+                    "args": "disjI2, {A: C ∈ A, B: C ∈ B}",
                     "id": "0.2.3.6",
                     "prevs": [
                         "0.2.3.5"
@@ -3563,7 +3563,7 @@
                     "th": "x ∈ ⋃A ∪ ⋃B, x ∈ ⋃B, x ∈ C ∧ C ∈ B ⊢ x ∈ C ∧ C ∈ A ∪ B"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λA1. x ∈ A1 ∧ A1 ∈ A ∪ B, a: C}",
+                    "args": "exI, {P: λA1. x ∈ A1 ∧ A1 ∈ A ∪ B, a: C}",
                     "id": "0.2.3.9",
                     "prevs": [
                         "0.2.3.8"
@@ -4664,7 +4664,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "disjI2, {}, {A: x ∈ t, B: x ∈ s}",
+                    "args": "disjI2, {A: x ∈ t, B: x ∈ s}",
                     "id": "0.1.1.1",
                     "prevs": [
                         "0.1.1.0"
@@ -4697,7 +4697,7 @@
                     "th": "x ∈ t ⊢ x ∈ t"
                 },
                 {
-                    "args": "disjI1, {}, {A: x ∈ t, B: x ∈ s}",
+                    "args": "disjI1, {A: x ∈ t, B: x ∈ s}",
                     "id": "0.1.2.1",
                     "prevs": [
                         "0.1.2.0"
@@ -4765,7 +4765,7 @@
                     "th": "x ∈ t ⊢ x ∈ t"
                 },
                 {
-                    "args": "disjI2, {}, {A: x ∈ s, B: x ∈ t}",
+                    "args": "disjI2, {A: x ∈ s, B: x ∈ t}",
                     "id": "0.2.1.1",
                     "prevs": [
                         "0.2.1.0"
@@ -4798,7 +4798,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "disjI1, {}, {A: x ∈ s, B: x ∈ t}",
+                    "args": "disjI1, {A: x ∈ s, B: x ∈ t}",
                     "id": "0.2.2.1",
                     "prevs": [
                         "0.2.2.0"
@@ -5219,7 +5219,7 @@
                     "th": "s ∩ t = ∅, ∃x. x ∈ s ∧ x ∈ t, x ∈ s ∧ x ∈ t ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "member_empty, {a: 'a}, {x: x}",
+                    "args": "member_empty, {x: x}",
                     "id": "0.1.6",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5319,7 +5319,7 @@
                     "th": "x ∈ s ∩ t ⊢ x ∈ s ∧ x ∈ t"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. x ∈ s ∧ x ∈ t, a: x}",
+                    "args": "exI, {P: λx. x ∈ s ∧ x ∈ t, a: x}",
                     "id": "1.1.1.2",
                     "prevs": [
                         "1.1.1.1"
@@ -5328,7 +5328,7 @@
                     "th": "¬(∃x. x ∈ s ∧ x ∈ t), x ∈ s ∩ t ⊢ ∃a1. a1 ∈ s ∧ a1 ∈ t"
                 },
                 {
-                    "args": "negE_gen, {}, {A: ∃x. x ∈ s ∧ x ∈ t, C: x ∈ ∅}",
+                    "args": "negE_gen, {A: ∃x. x ∈ s ∧ x ∈ t, C: x ∈ ∅}",
                     "id": "1.1.1.3",
                     "prevs": [
                         "1.0",
@@ -5791,7 +5791,7 @@
                     "th": "s = ∅ ⊢ s = ∅"
                 },
                 {
-                    "args": "finite_empty, {a: 'a}, {}",
+                    "args": "finite_empty, {}",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6234,7 +6234,7 @@
                     "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11"
                 },
                 {
-                    "args": "conjD1, {}, {A: x11 = x ∨ x11 ∈ s, B: x1 = f x11}",
+                    "args": "conjD1, {A: x11 = x ∨ x11 ∈ s, B: x1 = f x11}",
                     "id": "0.1.3",
                     "prevs": [
                         "0.1.2"
@@ -6243,7 +6243,7 @@
                     "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 = x ∨ x11 ∈ s"
                 },
                 {
-                    "args": "conjD2, {}, {A: x11 = x ∨ x11 ∈ s, B: x1 = f x11}",
+                    "args": "conjD2, {A: x11 = x ∨ x11 ∈ s, B: x1 = f x11}",
                     "id": "0.1.4",
                     "prevs": [
                         "0.1.2"
@@ -6285,7 +6285,7 @@
                     "th": "(x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, x11 = x ⊢ x1 = f x"
                 },
                 {
-                    "args": "disjI1, {}, {A: x1 = f x, B: ∃x. x ∈ s ∧ x1 = f x}",
+                    "args": "disjI1, {A: x1 = f x, B: ∃x. x ∈ s ∧ x1 = f x}",
                     "id": "0.1.5.3",
                     "prevs": [
                         "0.1.5.2"
@@ -6328,7 +6328,7 @@
                     "th": "x11 ∈ s, ∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11 ⊢ x11 ∈ s ∧ x1 = f x11"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. x ∈ s ∧ x1 = f x, a: x11}",
+                    "args": "exI, {P: λx. x ∈ s ∧ x1 = f x, a: x11}",
                     "id": "0.1.6.2",
                     "prevs": [
                         "0.1.6.1"
@@ -6337,7 +6337,7 @@
                     "th": "∃x11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, x11 ∈ s ⊢ ∃a1. a1 ∈ s ∧ x1 = f a1"
                 },
                 {
-                    "args": "disjI2, {}, {A: x1 = f x, B: ∃x. x ∈ s ∧ x1 = f x}",
+                    "args": "disjI2, {A: x1 = f x, B: ∃x. x ∈ s ∧ x1 = f x}",
                     "id": "0.1.6.3",
                     "prevs": [
                         "0.1.6.2"
@@ -6408,14 +6408,14 @@
                     "th": "x1 = f x ⊢ x1 = f x"
                 },
                 {
-                    "args": "eq_refl, {a: 'a}, {x: x}",
+                    "args": "eq_refl, {x: x}",
                     "id": "0.2.1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ x = x"
                 },
                 {
-                    "args": "disjI1, {}, {A: x = x, B: x ∈ s}",
+                    "args": "disjI1, {A: x = x, B: x ∈ s}",
                     "id": "0.2.1.2",
                     "prevs": [
                         "0.2.1.1"
@@ -6434,7 +6434,7 @@
                     "th": "x1 = f x ∨ (∃x2. x2 ∈ s ∧ x1 = f x2), x1 = f x ⊢ (x = x ∨ x ∈ s) ∧ x1 = f x"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, a: x}",
+                    "args": "exI, {P: λx11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, a: x}",
                     "id": "0.2.1.4",
                     "prevs": [
                         "0.2.1.3"
@@ -6490,7 +6490,7 @@
                     "th": "x2 ∈ s ∧ x1 = f x2 ⊢ x2 ∈ s"
                 },
                 {
-                    "args": "disjI2, {}, {A: x2 = x, B: x2 ∈ s}",
+                    "args": "disjI2, {A: x2 = x, B: x2 ∈ s}",
                     "id": "0.2.2.4",
                     "prevs": [
                         "0.2.2.3"
@@ -6518,7 +6518,7 @@
                     "th": "x1 = f x ∨ (∃x2. x2 ∈ s ∧ x1 = f x2), ∃x. x ∈ s ∧ x1 = f x, x2 ∈ s ∧ x1 = f x2 ⊢ (x2 = x ∨ x2 ∈ s) ∧ x1 = f x2"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, a: x2}",
+                    "args": "exI, {P: λx11. (x11 = x ∨ x11 ∈ s) ∧ x1 = f x11, a: x2}",
                     "id": "0.2.2.7",
                     "prevs": [
                         "0.2.2.6"
@@ -6890,7 +6890,7 @@
                     "th": "x = f x1 ∧ x1 ∈ s ⊢ x = f x1 ∧ x1 ∈ s"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ s, a: x1}",
+                    "args": "exI, {P: λx1. x = f x1 ∧ x1 ∈ s, a: x1}",
                     "id": "0.1.3.1",
                     "prevs": [
                         "0.1.3.0"
@@ -6899,7 +6899,7 @@
                     "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ⊢ ∃a1. x = f a1 ∧ a1 ∈ s"
                 },
                 {
-                    "args": "disjI1, {}, {A: ∃x1. x = f x1 ∧ x1 ∈ s, B: ∃x1. x = f x1 ∧ x1 ∈ t}",
+                    "args": "disjI1, {A: ∃x1. x = f x1 ∧ x1 ∈ s, B: ∃x1. x = f x1 ∧ x1 ∈ t}",
                     "id": "0.1.3.2",
                     "prevs": [
                         "0.1.3.1"
@@ -6932,7 +6932,7 @@
                     "th": "x = f x1 ∧ x1 ∈ t ⊢ x = f x1 ∧ x1 ∈ t"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ t, a: x1}",
+                    "args": "exI, {P: λx1. x = f x1 ∧ x1 ∈ t, a: x1}",
                     "id": "0.1.4.1",
                     "prevs": [
                         "0.1.4.0"
@@ -6941,7 +6941,7 @@
                     "th": "∃x1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, x = f x1 ∧ x1 ∈ t ⊢ ∃a1. x = f a1 ∧ a1 ∈ t"
                 },
                 {
-                    "args": "disjI2, {}, {A: ∃x1. x = f x1 ∧ x1 ∈ s, B: ∃x1. x = f x1 ∧ x1 ∈ t}",
+                    "args": "disjI2, {A: ∃x1. x = f x1 ∧ x1 ∈ s, B: ∃x1. x = f x1 ∧ x1 ∈ t}",
                     "id": "0.1.4.2",
                     "prevs": [
                         "0.1.4.1"
@@ -7026,7 +7026,7 @@
                     "th": "x = f a ∧ a ∈ s ⊢ x = f a ∧ a ∈ s"
                 },
                 {
-                    "args": "disjI1, {}, {A: x = f a ∧ a ∈ s, B: x = f a ∧ a ∈ t}",
+                    "args": "disjI1, {A: x = f a ∧ a ∈ s, B: x = f a ∧ a ∈ t}",
                     "id": "0.2.1.3",
                     "prevs": [
                         "0.2.1.2"
@@ -7035,7 +7035,7 @@
                     "th": "x = f a ∧ a ∈ s ⊢ x = f a ∧ a ∈ s ∨ x = f a ∧ a ∈ t"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, a: a}",
+                    "args": "exI, {P: λx1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, a: a}",
                     "id": "0.2.1.4",
                     "prevs": [
                         "0.2.1.3"
@@ -7085,7 +7085,7 @@
                     "th": "x = f b ∧ b ∈ t ⊢ x = f b ∧ b ∈ t"
                 },
                 {
-                    "args": "disjI2, {}, {A: x = f b ∧ b ∈ s, B: x = f b ∧ b ∈ t}",
+                    "args": "disjI2, {A: x = f b ∧ b ∈ s, B: x = f b ∧ b ∈ t}",
                     "id": "0.2.2.3",
                     "prevs": [
                         "0.2.2.2"
@@ -7094,7 +7094,7 @@
                     "th": "x = f b ∧ b ∈ t ⊢ x = f b ∧ b ∈ s ∨ x = f b ∧ b ∈ t"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, a: b}",
+                    "args": "exI, {P: λx1. x = f x1 ∧ x1 ∈ s ∨ x = f x1 ∧ x1 ∈ t, a: b}",
                     "id": "0.2.2.4",
                     "prevs": [
                         "0.2.2.3"
@@ -7416,7 +7416,7 @@
                     "th": "x = x1 ∧ x1 ∈ s ⊢ x = x1 ∧ x1 ∈ s"
                 },
                 {
-                    "args": "conjD1, {}, {A: x = x1, B: x1 ∈ s}",
+                    "args": "conjD1, {A: x = x1, B: x1 ∈ s}",
                     "id": "0.1.3",
                     "prevs": [
                         "0.1.2"
@@ -7471,7 +7471,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "eq_refl, {a: 'a}, {x: x}",
+                    "args": "eq_refl, {x: x}",
                     "id": "0.2.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7488,7 +7488,7 @@
                     "th": "x ∈ s ⊢ x = x ∧ x ∈ s"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = x1 ∧ x1 ∈ s, a: x}",
+                    "args": "exI, {P: λx1. x = x1 ∧ x1 ∈ s, a: x}",
                     "id": "0.2.3",
                     "prevs": [
                         "0.2.2"
@@ -7696,7 +7696,7 @@
                     "th": "x = f (g x1) ∧ x1 ∈ s ⊢ x = f (g x1)"
                 },
                 {
-                    "args": "eq_refl, {a: 'b}, {x: g x1}",
+                    "args": "eq_refl, {x: g x1}",
                     "id": "0.1.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7722,7 +7722,7 @@
                     "th": "∃x1. x = f (g x1) ∧ x1 ∈ s, x = f (g x1) ∧ x1 ∈ s ⊢ g x1 = g x1 ∧ x1 ∈ s"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. g x1 = g x ∧ x ∈ s, a: x1}",
+                    "args": "exI, {P: λx. g x1 = g x ∧ x ∈ s, a: x1}",
                     "id": "0.1.7",
                     "prevs": [
                         "0.1.6"
@@ -7741,7 +7741,7 @@
                     "th": "∃x1. x = f (g x1) ∧ x1 ∈ s, x = f (g x1) ∧ x1 ∈ s ⊢ x = f (g x1) ∧ (∃x2. g x1 = g x2 ∧ x2 ∈ s)"
                 },
                 {
-                    "args": "exI, {a: 'b}, {P: λx1. x = f x1 ∧ (∃x2. x1 = g x2 ∧ x2 ∈ s), a: g x1}",
+                    "args": "exI, {P: λx1. x = f x1 ∧ (∃x2. x1 = g x2 ∧ x2 ∈ s), a: g x1}",
                     "id": "0.1.9",
                     "prevs": [
                         "0.1.8"
@@ -7791,7 +7791,7 @@
                     "th": "x = f a ∧ (∃x1. a = g x1 ∧ x1 ∈ s) ⊢ x = f a ∧ (∃x1. a = g x1 ∧ x1 ∈ s)"
                 },
                 {
-                    "args": "conjD1, {}, {A: x = f a, B: ∃x. a = g x ∧ x ∈ s}",
+                    "args": "conjD1, {A: x = f a, B: ∃x. a = g x ∧ x ∈ s}",
                     "id": "0.2.3",
                     "prevs": [
                         "0.2.2"
@@ -7800,7 +7800,7 @@
                     "th": "x = f a ∧ (∃x1. a = g x1 ∧ x1 ∈ s) ⊢ x = f a"
                 },
                 {
-                    "args": "conjD2, {}, {A: x = f a, B: ∃x. a = g x ∧ x ∈ s}",
+                    "args": "conjD2, {A: x = f a, B: ∃x. a = g x ∧ x ∈ s}",
                     "id": "0.2.4",
                     "prevs": [
                         "0.2.2"
@@ -7823,7 +7823,7 @@
                     "th": "a = g b ∧ b ∈ s ⊢ a = g b ∧ b ∈ s"
                 },
                 {
-                    "args": "conjD1, {}, {A: a = g b, B: b ∈ s}",
+                    "args": "conjD1, {A: a = g b, B: b ∈ s}",
                     "id": "0.2.7",
                     "prevs": [
                         "0.2.6"
@@ -7861,7 +7861,7 @@
                     "th": "a = g b ∧ b ∈ s, x = f a ∧ (∃x1. a = g x1 ∧ x1 ∈ s), ∃x1. x = f x1 ∧ (∃x2. x1 = g x2 ∧ x2 ∈ s) ⊢ x = f (g b) ∧ b ∈ s"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = f (g x1) ∧ x1 ∈ s, a: b}",
+                    "args": "exI, {P: λx1. x = f (g x1) ∧ x1 ∈ s, a: b}",
                     "id": "0.2.11",
                     "prevs": [
                         "0.2.10"
@@ -8215,7 +8215,7 @@
                     "th": "s ⊆ t, x ∈ image f s, x = f x1 ∧ x1 ∈ s ⊢ x = f x1 ∧ x1 ∈ t"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx1. x = f x1 ∧ x1 ∈ t, a: x1}",
+                    "args": "exI, {P: λx1. x = f x1 ∧ x1 ∈ t, a: x1}",
                     "id": "1.9",
                     "prevs": [
                         "1.8"
@@ -8523,7 +8523,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "finite_empty, {a: nat}, {}",
+                    "args": "finite_empty, {}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -8586,7 +8586,7 @@
                     "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite ({m. m < n})"
                 },
                 {
-                    "args": "finite_insert, {a: nat}, {A: {i. i < n}, x: n}",
+                    "args": "finite_insert, {A: {i. i < n}, x: n}",
                     "id": "4.3",
                     "prevs": [
                         "4.2"
@@ -8595,7 +8595,7 @@
                     "th": "finite ({m. m < n}) ∧ card ({m. m < n}) = n ⊢ finite (insert n ({i. i < n}))"
                 },
                 {
-                    "args": "card_insert, {a: nat}, {s: {m. m < n}, x: n}",
+                    "args": "card_insert, {s: {m. m < n}, x: n}",
                     "id": "4.4",
                     "prevs": [
                         "4.2"
@@ -8611,7 +8611,7 @@
                     "th": "⊢ ¬(n ∈ {m. m < n})"
                 },
                 {
-                    "args": "conjD2, {}, {A: finite ({m. m < n}), B: card ({m. m < n}) = n}",
+                    "args": "conjD2, {A: finite ({m. m < n}), B: card ({m. m < n}) = n}",
                     "id": "4.6",
                     "prevs": [
                         "4.1"
@@ -8679,7 +8679,7 @@
                     "th": "⊢ ∀n. finite ({m. m < n}) ∧ card ({m. m < n}) = n ⟶ finite ({m. m < Suc n}) ∧ card ({m. m < Suc n}) = Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. finite ({m. m < n}) ∧ card ({m. m < n}) = n, x: n}",
+                    "args": "nat_induct, {P: λn. finite ({m. m < n}) ∧ card ({m. m < n}) = n, x: n}",
                     "id": "5",
                     "prevs": [
                         "3",
@@ -8835,7 +8835,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "has_size_natseg_lt, {}, {n: n}",
+                    "args": "has_size_natseg_lt, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -8908,7 +8908,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "has_size_natseg_lt, {}, {n: n}",
+                    "args": "has_size_natseg_lt, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9142,7 +9142,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "has_size_natseg_lt, {}, {n: Suc n}",
+                    "args": "has_size_natseg_lt, {n: Suc n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9209,7 +9209,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "has_size_natseg_le, {}, {n: n}",
+                    "args": "has_size_natseg_le, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9282,7 +9282,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "has_size_natseg_le, {}, {n: n}",
+                    "args": "has_size_natseg_le, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9490,7 +9490,7 @@
                     "th": "∀x. x ∈ s ⟶ x ≤ n ⊢ ∀x. x ∈ s ⟶ x ≤ n"
                 },
                 {
-                    "args": "finite_natseg_le, {}, {n: n}",
+                    "args": "finite_natseg_le, {n: n}",
                     "id": "1.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9746,7 +9746,7 @@
                     "th": "n ∈ s ∧ N < n ⊢ n ∈ s ∧ N < n"
                 },
                 {
-                    "args": "conjD2, {}, {A: n ∈ s, B: N < n}",
+                    "args": "conjD2, {A: n ∈ s, B: N < n}",
                     "id": "0.1.4",
                     "prevs": [
                         "0.1.3"
@@ -9783,7 +9783,7 @@
                     "th": "∀x. ∃x1. x1 ∈ s ∧ x < x1, n ∈ s ∧ N < n ⊢ N ≤ n ∧ n ∈ s"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λn. N ≤ n ∧ n ∈ s, a: n}",
+                    "args": "exI, {P: λn. N ≤ n ∧ n ∈ s, a: n}",
                     "id": "0.1.8",
                     "prevs": [
                         "0.1.7"
@@ -9875,7 +9875,7 @@
                     "th": "Suc N ≤ n ∧ n ∈ s ⊢ n ∈ s"
                 },
                 {
-                    "args": "conjD1, {}, {A: Suc N ≤ n, B: n ∈ s}",
+                    "args": "conjD1, {A: Suc N ≤ n, B: n ∈ s}",
                     "id": "1.1.5",
                     "prevs": [
                         "1.1.3"
@@ -9903,7 +9903,7 @@
                     "th": "∀N. ∃n. N ≤ n ∧ n ∈ s, Suc N ≤ n ∧ n ∈ s ⊢ n ∈ s ∧ N < n"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λx1. x1 ∈ s ∧ N < x1, a: n}",
+                    "args": "exI, {P: λx1. x1 ∈ s ∧ N < x1, a: n}",
                     "id": "1.1.8",
                     "prevs": [
                         "1.1.7"
@@ -10198,7 +10198,7 @@
                     "th": "finite (univ::nat set) ⊢ finite (univ::nat set)"
                 },
                 {
-                    "args": "nat_finite_avoid, {}, {s: (univ::nat set)}",
+                    "args": "nat_finite_avoid, {s: (univ::nat set)}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"

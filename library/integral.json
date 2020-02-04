@@ -55,7 +55,7 @@
                     "th": "has_integral f i s ⊢ has_integral f i s"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λy. has_integral f y s, a: i}",
+                    "args": "exI, {P: λy. has_integral f y s, a: i}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -155,7 +155,7 @@
                     "th": "has_integral f (integral s f) s ⊢ has_integral f (integral s f) s"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa1. has_integral f a1 s, a: integral s f}",
+                    "args": "exI, {P: λa1. has_integral f a1 s, a: integral s f}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -319,7 +319,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "args": "eq_refl, {x: (0::real)}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",

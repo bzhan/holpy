@@ -350,7 +350,7 @@
                     "th": "¬A ⟶ C ⊢ ¬A ⟶ C"
                 },
                 {
-                    "args": "classical, {}, {A: A}",
+                    "args": "classical, {A: A}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -566,7 +566,7 @@
                     "th": "¬Q ⟶ ¬P, ¬Q ⊢ ¬P"
                 },
                 {
-                    "args": "negE_gen, {}, {A: P, C: Q}",
+                    "args": "negE_gen, {A: P, C: Q}",
                     "id": "3.2",
                     "prevs": [
                         "3.1",
@@ -730,7 +730,7 @@
                     "th": "y = x, ¬(x = y) ⊢ ¬(x = x)"
                 },
                 {
-                    "args": "eq_refl, {a: 'a}, {x: x}",
+                    "args": "eq_refl, {x: x}",
                     "id": "1.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1198,7 +1198,7 @@
                     "th": "¬P ⊢ ¬P"
                 },
                 {
-                    "args": "negE_gen, {}, {A: P, C: (if ¬P then a else b) = b}",
+                    "args": "negE_gen, {A: P, C: (if ¬P then a else b) = b}",
                     "id": "1.1",
                     "prevs": [
                         "1.0",

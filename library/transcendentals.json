@@ -197,7 +197,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_neg_mul, {}, {x: x}",
+                    "args": "real_exp_neg_mul, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -213,14 +213,14 @@
                     "th": "⊢ 1 = exp x * exp (-x)"
                 },
                 {
-                    "args": "real_exp_nz, {}, {x: x}",
+                    "args": "real_exp_nz, {x: x}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ ¬(exp x = 0)"
                 },
                 {
-                    "args": "real_mul_linv, {}, {x: exp x}",
+                    "args": "real_mul_linv, {x: exp x}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -229,7 +229,7 @@
                     "th": "⊢ real_inverse (exp x) * exp x = 1"
                 },
                 {
-                    "args": "real_mult_comm, {}, {x: exp (-x), y: (1::real)}",
+                    "args": "real_mult_comm, {x: exp (-x), y: (1::real)}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -552,7 +552,7 @@
                     "th": "⊢ ∀n. exp (of_nat n * x) = exp x ^ n ⟶ exp (of_nat (Suc n) * x) = exp x ^ Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. exp (of_nat n * x) = exp x ^ n, x: n}",
+                    "args": "nat_induct, {P: λn. exp (of_nat n * x) = exp x ^ n, x: n}",
                     "id": "5",
                     "prevs": [
                         "3",
@@ -806,7 +806,7 @@
                     "th": "⊢ x = x / 2 + x / 2"
                 },
                 {
-                    "args": "real_le_square, {}, {x: exp (x / 2)}",
+                    "args": "real_le_square, {x: exp (x / 2)}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -884,14 +884,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "args": "real_exp_pos_le, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ 0 ≤ exp x"
                 },
                 {
-                    "args": "real_exp_nz, {}, {x: x}",
+                    "args": "real_exp_nz, {x: x}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1001,7 +1001,7 @@
                     "th": "1 + x < 0 ⊢ 1 + x ≤ 0"
                 },
                 {
-                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "args": "real_exp_pos_le, {x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1145,7 +1145,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_exp_le_x, {}, {x: x}",
+                    "args": "real_exp_le_x, {x: x}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1232,7 +1232,7 @@
                     "th": "x < y ⊢ 0 < y - x"
                 },
                 {
-                    "args": "real_exp_lt_1, {}, {x: y - x}",
+                    "args": "real_exp_lt_1, {x: y - x}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -1257,7 +1257,7 @@
                     "th": "⊢ ∀a. ∀b. 0 < a ⟶ 1 < b / a ⟶ a < b"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: x}",
+                    "args": "real_exp_pos_lt, {x: x}",
                     "id": "5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1705,7 +1705,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "args": "real_exp_pos_le, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2007,7 +2007,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_circle, {}, {x: x}",
+                    "args": "sin_circle, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2122,7 +2122,7 @@
             "num_gaps": 1,
             "proof": [
                 {
-                    "args": "real_abs_nat, {}, {n: (1::nat)}",
+                    "args": "real_abs_nat, {n: (1::nat)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2147,14 +2147,14 @@
                     "th": "⊢ (1::real) = abs 1"
                 },
                 {
-                    "args": "sin_circle, {}, {x: x}",
+                    "args": "sin_circle, {x: x}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ sin x ^ (2::nat) + cos x ^ (2::nat) = 1"
                 },
                 {
-                    "args": "real_le_square, {}, {x: cos x}",
+                    "args": "real_le_square, {x: cos x}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2355,7 +2355,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_bound, {}, {x: x}",
+                    "args": "sin_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2428,7 +2428,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_bound, {}, {x: x}",
+                    "args": "sin_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2501,7 +2501,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "cos_bound, {}, {x: x}",
+                    "args": "cos_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2574,7 +2574,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "cos_bound, {}, {x: x}",
+                    "args": "cos_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2928,7 +2928,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_circle, {}, {x: x}",
+                    "args": "sin_circle, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3075,7 +3075,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_lt, {}, {x: x}",
+                    "args": "real_exp_pos_lt, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3164,7 +3164,7 @@
                     "th": "exp (log x) = x ⊢ x = exp (log x)"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log x}",
+                    "args": "real_exp_pos_lt, {x: log x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3317,7 +3317,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -3326,7 +3326,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -3512,7 +3512,7 @@
                     "th": "log x = log y ⊢ exp (log x) = exp (log y)"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2.2",
                     "prevs": [
                         "0"
@@ -3521,7 +3521,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "2.3",
                     "prevs": [
                         "1"
@@ -3777,7 +3777,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -3914,7 +3914,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "log_inv, {}, {x: y}",
+                    "args": "log_inv, {x: y}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -4071,7 +4071,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -4080,7 +4080,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -4322,7 +4322,7 @@
                     "th": "x < y ⊢ x < y"
                 },
                 {
-                    "args": "real_lt_trans, {}, {x: (0::real), y: x, z: y}",
+                    "args": "real_lt_trans, {x: (0::real), y: x, z: y}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -4332,7 +4332,7 @@
                     "th": "0 < x, x < y ⊢ 0 < y"
                 },
                 {
-                    "args": "log_mono_lt, {}, {x: x, y: y}",
+                    "args": "log_mono_lt, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4427,7 +4427,7 @@
                     "th": "log x < log y ⊢ log x < log y"
                 },
                 {
-                    "args": "log_mono_lt, {}, {x: x, y: y}",
+                    "args": "log_mono_lt, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4508,7 +4508,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -4517,7 +4517,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -4769,7 +4769,7 @@
                     "th": "0 < x, x ≤ y ⊢ 0 < y"
                 },
                 {
-                    "args": "log_mono_le, {}, {x: x, y: y}",
+                    "args": "log_mono_le, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4869,7 +4869,7 @@
                     "th": "log x ≤ log y ⊢ log x ≤ log y"
                 },
                 {
-                    "args": "log_mono_le, {}, {x: x, y: y}",
+                    "args": "log_mono_le, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4942,7 +4942,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_pow_lt, {}, {n: n, x: x}",
+                    "args": "real_pow_lt, {n: n, x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -4951,7 +4951,7 @@
                     "th": "0 < x ⊢ 0 < x ^ n"
                 },
                 {
-                    "args": "exp_log, {}, {x: x ^ n}",
+                    "args": "exp_log, {x: x ^ n}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -4960,7 +4960,7 @@
                     "th": "0 < x ⊢ exp (log (x ^ n)) = x ^ n"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "3",
                     "prevs": [
                         "0"
@@ -5091,7 +5091,7 @@
                     "th": "0 < 1 + x ⊢ 0 < 1 + x"
                 },
                 {
-                    "args": "exp_log, {}, {x: 1 + x}",
+                    "args": "exp_log, {x: 1 + x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -5100,7 +5100,7 @@
                     "th": "0 < 1 + x ⊢ exp (log (1 + x)) = 1 + x"
                 },
                 {
-                    "args": "real_exp_le_x, {}, {x: x}",
+                    "args": "real_exp_le_x, {x: x}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5248,7 +5248,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -5257,7 +5257,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "real_exp_le_x, {}, {x: x}",
+                    "args": "real_exp_le_x, {x: x}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5647,7 +5647,7 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "real_le_refl, {}, {x: 1 - cos x}",
+                    "args": "real_le_refl, {x: 1 - cos x}",
                     "id": "1.3.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5686,7 +5686,7 @@
                     "th": "2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x) ⊢ 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
-                    "args": "real_pos, {}, {n: bit0 1}",
+                    "args": "real_pos, {n: bit0 1}",
                     "id": "1.3.4.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5769,7 +5769,7 @@
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ ∀n. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x) ⟶ 2 ^ Suc n * (1 - cos x) ≤ 1 - cos (2 ^ Suc n * x)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn::nat. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x), x: n}",
+                    "args": "nat_induct, {P: λn::nat. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x), x: n}",
                     "id": "1.3.5",
                     "prevs": [
                         "1.3.3",
@@ -5789,7 +5789,7 @@
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ ∀n::nat. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
-                    "args": "real_arch_pow2, {}, {x: 1 / (1 - cos x)}",
+                    "args": "real_arch_pow2, {x: 1 / (1 - cos x)}",
                     "id": "1.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5827,7 +5827,7 @@
                     "th": "cos x < 1 ⊢ 0 < 1 - cos x"
                 },
                 {
-                    "args": "real_lt_ldiv_eq, {}, {x: (1::real), y: (2::real) ^ n, z: 1 - cos x}",
+                    "args": "real_lt_ldiv_eq, {x: (1::real), y: (2::real) ^ n, z: 1 - cos x}",
                     "id": "1.9",
                     "prevs": [
                         "1.8"
@@ -5855,7 +5855,7 @@
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
-                    "args": "real_lte_trans, {}, {x: (1::real), y: 2 ^ n * (1 - cos x), z: 1 - cos (2 ^ n * x)}",
+                    "args": "real_lte_trans, {x: (1::real), y: 2 ^ n * (1 - cos x), z: 1 - cos (2 ^ n * x)}",
                     "id": "1.12",
                     "prevs": [
                         "1.10",
@@ -6236,7 +6236,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1) ⊢ 0 < x ∧ ¬(cos x = 1)"
                 },
                 {
-                    "args": "conjD1, {}, {A: 0 < x, B: ¬(cos x = 1)}",
+                    "args": "conjD1, {A: 0 < x, B: ¬(cos x = 1)}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -6245,7 +6245,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1) ⊢ 0 < x"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < x, B: ¬(cos x = 1)}",
+                    "args": "conjD2, {A: 0 < x, B: ¬(cos x = 1)}",
                     "id": "4",
                     "prevs": [
                         "2"
@@ -6254,7 +6254,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1) ⊢ ¬(cos x = 1)"
                 },
                 {
-                    "args": "cos_ubound, {}, {x: x}",
+                    "args": "cos_ubound, {x: x}",
                     "id": "5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6284,7 +6284,7 @@
                     "th": "cos x < 1 ⊢ cos x < 1"
                 },
                 {
-                    "args": "cos_goesnegative_lemma, {}, {x: x}",
+                    "args": "cos_goesnegative_lemma, {x: x}",
                     "id": "7.1",
                     "prevs": [
                         "7.0"
@@ -6307,7 +6307,7 @@
                     "th": "cos (2 ^ n * x) < 0 ⊢ cos (2 ^ n * x) < 0"
                 },
                 {
-                    "args": "real_lt_pow2, {}, {n: n}",
+                    "args": "real_lt_pow2, {n: n}",
                     "id": "7.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6334,7 +6334,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1), cos x < 1, cos (2 ^ n * x) < 0 ⊢ 0 < 2 ^ n * x ∧ cos (2 ^ n * x) < 0"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. 0 < x ∧ cos x < 0, a: 2 ^ n * x}",
+                    "args": "exI, {P: λx. 0 < x ∧ cos x < 0, a: 2 ^ n * x}",
                     "id": "7.7",
                     "prevs": [
                         "7.6"
@@ -6370,7 +6370,7 @@
                     "th": "cos x = 1 ⊢ cos x = 1"
                 },
                 {
-                    "args": "negE_gen, {}, {A: cos x = 1, C: ∃x. 0 < x ∧ cos x < 0}",
+                    "args": "negE_gen, {A: cos x = 1, C: ∃x. 0 < x ∧ cos x < 0}",
                     "id": "8.1",
                     "prevs": [
                         "4",
@@ -6598,7 +6598,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_double, {}, {x: pi / 2}",
+                    "args": "sin_double, {x: pi / 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6870,7 +6870,7 @@
                     "th": "2 * sin (pi / 2) = 0, sin (pi / 2) = 0, ¬(cos (pi / 2) = 0) ⊢ ¬(sin (pi / 2) ≤ 0)"
                 },
                 {
-                    "args": "disjI1, {}, {A: ¬(sin (pi / 2) ≤ 0), B: ¬(0 ≤ sin (pi / 2))}",
+                    "args": "disjI1, {A: ¬(sin (pi / 2) ≤ 0), B: ¬(0 ≤ sin (pi / 2))}",
                     "id": "6.3.1.13",
                     "prevs": [
                         "6.3.1.12"
@@ -7279,7 +7279,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_circle, {}, {x: pi / 2}",
+                    "args": "sin_circle, {x: pi / 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -8292,7 +8292,7 @@
                     "th": "⊢ sin 0 = 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: sin 0 = 0, B: cos 0 = 0}",
+                    "args": "disjI1, {A: sin 0 = 0, B: cos 0 = 0}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -8372,7 +8372,7 @@
                     "th": "⊢ sin pi = 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: sin pi = 0, B: cos pi = 0}",
+                    "args": "disjI1, {A: sin pi = 0, B: cos pi = 0}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -9809,7 +9809,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat 2}",
+                    "args": "real_exp_pos_lt, {x: log (abs x) / of_nat 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9869,7 +9869,7 @@
                     "th": "⊢ real_sgn (root 2 x) = real_sgn x"
                 },
                 {
-                    "args": "real_abs_pos, {}, {x: x}",
+                    "args": "real_abs_pos, {x: x}",
                     "id": "7",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -10414,7 +10414,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat n}",
+                    "args": "real_exp_pos_lt, {x: log (abs x) / of_nat n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11110,7 +11110,7 @@
                     "th": "n = Suc (2 * m) ⊢ n = Suc (2 * m)"
                 },
                 {
-                    "args": "nat_zero_Suc_neq, {}, {n: 2 * m}",
+                    "args": "nat_zero_Suc_neq, {n: 2 * m}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11879,7 +11879,7 @@
                     "th": "0 < x ⊢ 0 < real_sgn x"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat n}",
+                    "args": "real_exp_pos_lt, {x: log (abs x) / of_nat n}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11991,7 +11991,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "root_pos_lt, {}, {n: n, x: x}",
+                    "args": "root_pos_lt, {n: n, x: x}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -12000,7 +12000,7 @@
                     "th": "0 < x ⊢ 0 < root n x"
                 },
                 {
-                    "args": "disjI1, {}, {A: 0 < root n x, B: 0 = root n x}",
+                    "args": "disjI1, {A: 0 < root n x, B: 0 = root n x}",
                     "id": "2.2",
                     "prevs": [
                         "2.1"
@@ -12059,7 +12059,7 @@
                     "th": "0 = x, 0 ≤ x ⊢ 0 = root n x"
                 },
                 {
-                    "args": "disjI2, {}, {A: 0 < root n x, B: 0 = root n x}",
+                    "args": "disjI2, {A: 0 < root n x, B: 0 = root n x}",
                     "id": "3.4",
                     "prevs": [
                         "3.3"
@@ -12259,7 +12259,7 @@
                     "th": "¬¬(x ≤ 0) ⊢ 0 ≤ -x"
                 },
                 {
-                    "args": "root_pos_le, {}, {n: n, x: -x}",
+                    "args": "root_pos_le, {n: n, x: -x}",
                     "id": "0.2.4",
                     "prevs": [
                         "0.2.3"
@@ -12349,7 +12349,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "root_pos_lt, {}, {n: n, x: x}",
+                    "args": "root_pos_lt, {n: n, x: x}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -12572,7 +12572,7 @@
                     "th": "¬¬(x < 0) ⊢ 0 < -x"
                 },
                 {
-                    "args": "root_pos_lt, {}, {n: n, x: -x}",
+                    "args": "root_pos_lt, {n: n, x: -x}",
                     "id": "0.2.4",
                     "prevs": [
                         "0.2.3"
@@ -12662,7 +12662,7 @@
                     "th": "0 ≤ x ⊢ 0 ≤ x"
                 },
                 {
-                    "args": "root_pos_le, {}, {n: n, x: x}",
+                    "args": "root_pos_le, {n: n, x: x}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -12888,14 +12888,14 @@
                     "th": "exp (log (abs x) / of_nat n) = 0 ⊢ ¬¬(exp (log (abs x) / of_nat n) = 0)"
                 },
                 {
-                    "args": "real_exp_nz, {}, {x: log (abs x) / of_nat n}",
+                    "args": "real_exp_nz, {x: log (abs x) / of_nat n}",
                     "id": "0.2.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ ¬(exp (log (abs x) / of_nat n) = 0)"
                 },
                 {
-                    "args": "negE_gen, {}, {A: ¬(exp (log (abs x) / of_nat n) = 0), C: x = 0}",
+                    "args": "negE_gen, {A: ¬(exp (log (abs x) / of_nat n) = 0), C: x = 0}",
                     "id": "0.2.3",
                     "prevs": [
                         "0.2.1",
@@ -12959,7 +12959,7 @@
                     "th": "x = 0 ⊢ real_sgn x = 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: real_sgn x = 0, B: exp (log (abs x) / of_nat n) = 0}",
+                    "args": "disjI1, {A: real_sgn x = 0, B: exp (log (abs x) / of_nat n) = 0}",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
@@ -13289,7 +13289,7 @@
                     "th": "¬(y = 0) ⊢ 0 < abs y"
                 },
                 {
-                    "args": "log_mul, {}, {x: abs x, y: abs y}",
+                    "args": "log_mul, {x: abs x, y: abs y}",
                     "id": "1.2.4",
                     "prevs": [
                         "1.2.2",
@@ -13681,7 +13681,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
@@ -13869,7 +13869,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q"
                 },
                 {
-                    "args": "conjD1, {}, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD1, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.4",
                     "prevs": [
                         "1.2.1.3"
@@ -13878,7 +13878,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd p"
                 },
                 {
-                    "args": "conjD2, {}, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD2, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.5",
                     "prevs": [
                         "1.2.1.3"
@@ -13887,7 +13887,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q ∧ of_nat n = of_nat p / of_nat q"
                 },
                 {
-                    "args": "conjD1, {}, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD1, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.6",
                     "prevs": [
                         "1.2.1.5"
@@ -13896,7 +13896,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q"
                 },
                 {
-                    "args": "conjD2, {}, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD2, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.7",
                     "prevs": [
                         "1.2.1.5"
@@ -14163,7 +14163,7 @@
                     "th": "¬(0 < x), ¬(x = 0), odd n ⊢ odd n ∧ odd 1 ∧ of_nat n = of_nat n / of_nat 1"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λn1. odd n ∧ odd n1 ∧ of_nat n = of_nat n / of_nat n1, a: (1::nat)}",
+                    "args": "exI, {P: λn1. odd n ∧ odd n1 ∧ of_nat n = of_nat n / of_nat n1, a: (1::nat)}",
                     "id": "1.2.2.9",
                     "prevs": [
                         "1.2.2.8"
@@ -14172,7 +14172,7 @@
                     "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃a1. odd n ∧ odd a1 ∧ of_nat n = of_nat n / of_nat a1"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λm. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, a: n}",
+                    "args": "exI, {P: λm. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, a: n}",
                     "id": "1.2.2.10",
                     "prevs": [
                         "1.2.2.9"
@@ -14211,7 +14211,7 @@
                     "th": "¬(0 < x), ¬(x = 0) ⊢ 0 < -x"
                 },
                 {
-                    "args": "exp_log, {}, {x: -x}",
+                    "args": "exp_log, {x: -x}",
                     "id": "1.2.5",
                     "prevs": [
                         "1.2.4"
@@ -15181,7 +15181,7 @@
                     "th": "y = 0 ⊢ y = 0"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "args": "eq_refl, {x: (0::real)}",
                     "id": "1.1.1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -15891,7 +15891,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "args": "eq_refl, {x: (0::real)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -16008,7 +16008,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: y * log x}",
+                    "args": "real_exp_pos_lt, {x: y * log x}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -16111,7 +16111,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "rpow_pos_lt, {}, {x: x, y: y}",
+                    "args": "rpow_pos_lt, {x: x, y: y}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -16345,7 +16345,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_lt_trans, {}, {x: (0::real), y: x, z: y}",
+                    "args": "real_lt_trans, {x: (0::real), y: x, z: y}",
                     "id": "4.1",
                     "prevs": [
                         "4.0",

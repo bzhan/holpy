@@ -101,7 +101,7 @@
                     "th": "∀n. ¬(x + of_nat n = 0) ⊢ real_differentiable gamma (atreal x)"
                 },
                 {
-                    "args": "real_differentiable_atreal_within, {}, {f: gamma, s: s, x: x}",
+                    "args": "real_differentiable_atreal_within, {f: gamma, s: s, x: x}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -175,7 +175,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "subsetE, {a: real}, {A: s, B: {x::real. ∀n. ¬(x + of_nat n = 0)}, x: x}",
+                    "args": "subsetE, {A: s, B: {x::real. ∀n. ¬(x + of_nat n = 0)}, x: x}",
                     "id": "1.2",
                     "prevs": [
                         "0"
@@ -203,7 +203,7 @@
                     "th": "s ⊆ {x. ∀n. ¬(x + of_nat n = 0)}, x ∈ s ⊢ ∀n. ¬(x + of_nat n = 0)"
                 },
                 {
-                    "args": "real_differentiable_within_gamma, {}, {s: s, x: x}",
+                    "args": "real_differentiable_within_gamma, {s: s, x: x}",
                     "id": "1.5",
                     "prevs": [
                         "1.4"
@@ -326,7 +326,7 @@
                     "th": "∀n. ¬(x + of_nat n = 0) ⊢ real_continuous gamma (atreal x)"
                 },
                 {
-                    "args": "real_continuous_atreal_withinreal, {}, {f: gamma, s: s, x: x}",
+                    "args": "real_continuous_atreal_withinreal, {f: gamma, s: s, x: x}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -400,7 +400,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "subsetE, {a: real}, {A: s, B: {x::real. ∀n. ¬(x + of_nat n = 0)}, x: x}",
+                    "args": "subsetE, {A: s, B: {x::real. ∀n. ¬(x + of_nat n = 0)}, x: x}",
                     "id": "1.2",
                     "prevs": [
                         "0"
@@ -428,7 +428,7 @@
                     "th": "s ⊆ {x. ∀n. ¬(x + of_nat n = 0)}, x ∈ s ⊢ ∀n. ¬(x + of_nat n = 0)"
                 },
                 {
-                    "args": "real_continuous_within_gamma, {}, {s: s, x: x}",
+                    "args": "real_continuous_within_gamma, {s: s, x: x}",
                     "id": "1.5",
                     "prevs": [
                         "1.4"
@@ -535,14 +535,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_differentiable_atreal_recip_gamma, {}, {x: x}",
+                    "args": "real_differentiable_atreal_recip_gamma, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ real_differentiable (real_inverse ∘ gamma) (atreal x)"
                 },
                 {
-                    "args": "real_differentiable_atreal_within, {}, {f: real_inverse ∘ gamma, s: s, x: x}",
+                    "args": "real_differentiable_atreal_within, {f: real_inverse ∘ gamma, s: s, x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -608,7 +608,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "real_differentiable_within_recip_gamma, {}, {s: s, x: x}",
+                    "args": "real_differentiable_within_recip_gamma, {s: s, x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -676,7 +676,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_differentiable_atreal_recip_gamma, {}, {x: x}",
+                    "args": "real_differentiable_atreal_recip_gamma, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -727,14 +727,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_continuous_atreal_recip_gamma:, {}, {x: x}",
+                    "args": "real_continuous_atreal_recip_gamma:, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ real_continuous (real_inverse ∘ gamma) (atreal x)"
                 },
                 {
-                    "args": "real_continuous_atreal_withinreal, {}, {f: real_inverse ∘ gamma, s: s, x: x}",
+                    "args": "real_continuous_atreal_withinreal, {f: real_inverse ∘ gamma, s: s, x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -800,7 +800,7 @@
                     "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
-                    "args": "real_continuous_withinreal_recip_gamm, {}, {s: s, x: x}",
+                    "args": "real_continuous_withinreal_recip_gamm, {s: s, x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1323,7 +1323,7 @@
                     "th": "0 < x ⊢ has_real_integral (λt. t ^ (x - 1) / exp t) (gamma x) ({t. 0 ≤ t})"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λy. has_real_integral (λt. t ^ (x - 1) / exp t) y ({t. 0 ≤ t}), a: gamma x}",
+                    "args": "exI, {P: λy. has_real_integral (λt. t ^ (x - 1) / exp t) y ({t. 0 ≤ t}), a: gamma x}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -1471,7 +1471,7 @@
             "num_gaps": 9,
             "proof": [
                 {
-                    "args": "euler_has_real_integral_gamma, {}, {x: 1 / 2}",
+                    "args": "euler_has_real_integral_gamma, {x: 1 / 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1512,7 +1512,7 @@
                     "th": "⊢ has_real_integral (λt. t ^ -(1 / 2) / exp t) (gamma (1 / 2)) ({t. 0 ≤ t})"
                 },
                 {
-                    "args": "has_real_integral_rmul, {}, {c: real_inverse 2, f: λt. t ^ -(1 / 2) / exp t, k: gamma (1 / 2), s: {t::real. 0 ≤ t}}",
+                    "args": "has_real_integral_rmul, {c: real_inverse 2, f: λt. t ^ -(1 / 2) / exp t, k: gamma (1 / 2), s: {t::real. 0 ≤ t}}",
                     "id": "5",
                     "prevs": [
                         "4"
@@ -1539,7 +1539,7 @@
                     "th": "⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e)))"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))}",
+                    "args": "conjD1, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))}",
                     "id": "8",
                     "prevs": [
                         "7"
@@ -1548,7 +1548,7 @@
                     "th": "⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b)"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))}",
+                    "args": "conjD2, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ {t. 0 ≤ t} then x ^ -(1 / 2) / exp x / 2 else 0) - gamma (1 / 2) / 2) < e))}",
                     "id": "9",
                     "prevs": [
                         "7"
@@ -1670,14 +1670,14 @@
                     "th": "a ≤ b ⊢ a ≤ b"
                 },
                 {
-                    "args": "has_real_integral_substitution_strong, {}, {a: a, b: b, c: a ^ (2::nat), d: b ^ (2::nat), f: λt. t ^ (1 / 2 - 1) / exp t / 2, g: λx::real. x ^ (2::nat), g1: λx::real. 2 * x, k: {(0::real)}}",
+                    "args": "has_real_integral_substitution_strong, {a: a, b: b, c: a ^ (2::nat), d: b ^ (2::nat), f: λt. t ^ (1 / 2 - 1) / exp t / 2, g: λx::real. x ^ (2::nat), g1: λx::real. 2 * x, k: {(0::real)}}",
                     "id": "19.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ countable ({(0::real)}) ⟶ real_integrable_on (λt. t ^ (1 / 2 - 1) / exp t / 2) (real_closed_interval (a ^ (2::nat)) (b ^ (2::nat))) ⟶ real_continuous_on (λx. x ^ (2::nat)) (real_closed_interval a b) ⟶ image (λx. x ^ (2::nat)) (real_closed_interval a b) ⊆ real_closed_interval (a ^ (2::nat)) (b ^ (2::nat)) ⟶ (∀x. x ∈ diff (real_closed_interval a b) ({0}) ⟶ has_real_derivative (λx1. x1 ^ (2::nat)) (2 * x) (within (atreal x) (real_closed_interval a b)) ∧ real_continuous (λt. t ^ (1 / 2 - 1) / exp t / 2) (within (atreal (x ^ (2::nat))) (real_closed_interval (a ^ (2::nat)) (b ^ (2::nat))))) ⟶ a ≤ b ⟶ a ^ (2::nat) ≤ b ^ (2::nat) ⟶ a ^ (2::nat) ≤ b ^ (2::nat) ⟶ has_real_integral (λx. x ^ (2::nat) ^ (1 / 2 - 1) / exp (x ^ (2::nat)) / 2 * (2 * x)) (real_integral (real_closed_interval (a ^ (2::nat)) (b ^ (2::nat))) (λt. t ^ (1 / 2 - 1) / exp t / 2)) (real_closed_interval a b)"
                 },
                 {
-                    "args": "countable_sing, {a: real}, {x: (0::real)}",
+                    "args": "countable_sing, {x: (0::real)}",
                     "id": "19.5",
                     "prevs": [],
                     "rule": "apply_theorem_for",

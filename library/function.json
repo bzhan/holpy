@@ -22,7 +22,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "eq_refl, {a: 'a}, {x: a}",
+                    "args": "eq_refl, {x: a}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1499,14 +1499,14 @@
                     "th": "⊢ _VAR y"
                 },
                 {
-                    "args": "eq_refl, {a: 'a}, {x: y}",
+                    "args": "eq_refl, {x: y}",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ y = y"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. x = y, a: y}",
+                    "args": "exI, {P: λx. x = y, a: y}",
                     "id": "0.2",
                     "prevs": [
                         "0.1"
@@ -1639,7 +1639,7 @@
                     "th": "(g ∘ f) x = (g ∘ f) y ⊢ g (f x) = g (f y)"
                 },
                 {
-                    "args": "injectiveD, {a: 'b, b: 'c}, {f: g, x: f x, y: f y}",
+                    "args": "injectiveD, {f: g, x: f x, y: f y}",
                     "id": "2.4",
                     "prevs": [
                         "1",
@@ -1649,7 +1649,7 @@
                     "th": "injective g, (g ∘ f) x = (g ∘ f) y ⊢ f x = f y"
                 },
                 {
-                    "args": "injectiveD, {a: 'a, b: 'b}, {f: f, x: x, y: y}",
+                    "args": "injectiveD, {f: f, x: x, y: y}",
                     "id": "2.5",
                     "prevs": [
                         "0",
@@ -1769,7 +1769,7 @@
                     "th": "⊢ _VAR y"
                 },
                 {
-                    "args": "surjectiveD, {a: 'b, b: 'c}, {f: g, y: y}",
+                    "args": "surjectiveD, {f: g, y: y}",
                     "id": "2.1",
                     "prevs": [
                         "1"
@@ -1792,7 +1792,7 @@
                     "th": "g z = y ⊢ g z = y"
                 },
                 {
-                    "args": "surjectiveD, {a: 'a, b: 'b}, {f: f, y: z}",
+                    "args": "surjectiveD, {f: f, y: z}",
                     "id": "2.4",
                     "prevs": [
                         "0"
@@ -1825,7 +1825,7 @@
                     "th": "f x = z, surjective f, surjective g, g z = y ⊢ g (f x) = y"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: λx. g (f x) = y, a: x}",
+                    "args": "exI, {P: λx. g (f x) = y, a: x}",
                     "id": "2.8",
                     "prevs": [
                         "2.7"

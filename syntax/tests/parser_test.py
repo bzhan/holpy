@@ -413,7 +413,7 @@ class ParserTest(unittest.TestCase):
              ProofItem(0, "sorry", th=Thm([And(A, B)], And(B, A)))),
             ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
-            ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {}, {A: B, B: A}", 'prevs': [4], 'th': ""},
+            ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {A: B, B: A}", 'prevs': [4], 'th': ""},
              ProofItem(5, "apply_theorem_for", args=("disjI1", Inst(A=B, B=A)), prevs=[4])),
         ]
 
