@@ -42,6 +42,9 @@ class Inst(UserDict):
         res.tyinst = copy(self.tyinst)
         return res
 
+    def __bool__(self):
+        return bool(self.tyinst) or bool(self.keys())
+
 
 """Default parser for terms. If None, Term() is unable to parse string."""
 term_parser = None

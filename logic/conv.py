@@ -333,7 +333,7 @@ class rewr_conv(Conv):
             raise ConvException("rewr_conv: unmatched vars")
 
         pt = self.eq_pt
-        pt = pt.subst_type(inst.tyinst).substitution(inst)
+        pt = pt.substitution(inst)
         pt = pt.implies_elim(*self.conds)
         if self.sym:
             pt = pt.symmetric()

@@ -77,11 +77,6 @@ class rule(Tactic):
         if inst is None:
             inst = Inst()
 
-        svars = term.get_svars(th.prop)
-        for v in svars:
-            if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
-
         # Match the conclusion and assumptions. Either the conclusion
         # or the list of assumptions must be a first-order pattern.
         if matcher.is_pattern(C, []):
@@ -278,7 +273,4 @@ class inst_exists_goal(Tactic):
             str(C.arg.var_T), str(argT)
         )
 
-        tyinst = TyInst(a=argT)
-        inst = Inst(P=C.arg, a=args)
-        inst.tyinst = tyinst
-        return rule().get_proof_term(goal, args=('exI', inst))
+        return rule().get_proof_term(goal, args=('exI', Inst(P=C.arg, a=args)))
