@@ -65,7 +65,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
         self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
         if print_proof:
             print("Final state:")
-            print(printer.print_proof(thy, state.prf))
+            print(state.prf)
         if print_stat:
             total = len(val['steps'])
             print("%20s %5d %5d %5d" % (val['name'], total, num_found, total - num_found))

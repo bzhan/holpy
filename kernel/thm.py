@@ -55,11 +55,11 @@ class Thm():
 
     @property
     def lhs(self):
-        return self.prop.lhs
+        return self.concl.lhs
 
     @property
     def rhs(self):
-        return self.prop.rhs
+        return self.concl.rhs
 
     def __str__(self):
         """Print the given theorem."""

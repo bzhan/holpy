@@ -149,11 +149,7 @@ class eta_conv(Conv):
         if not (t2.is_comb() and t2.arg == v and not t2.fun.occurs_var(v)):
             raise ConvException("eta_conv")
 
-        eq_pt = ProofTerm.theorem('eta_conversion')
-        eq_pt = eq_pt.subst_type(
-            TyInst(a=t2.fun.get_type().domain_type(), b=t2.fun.get_type().range_type()))
-        eq_pt = eq_pt.substitution(Inst(f=t2.fun))
-        return eq_pt
+        return ProofTerm.theorem('eta_conversion').substitution(f=t2.fun)
 
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""

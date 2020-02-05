@@ -38,7 +38,7 @@ def test_conv(self, thy_name, cv, *, vars=None, t, t_res=None, failed=None, assm
         msg="\nExpected: %s\nGot %s" % (printer.print_thm(expected_th), printer.print_thm(res_th)))
     pt = cv.get_proof_term(t)
     prf = pt.export()
-    self.assertEqual(theory.thy.check_proof(prf), res_th)
+    self.assertEqual(theory.check_proof(prf), res_th)
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):

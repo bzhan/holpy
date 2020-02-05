@@ -27,7 +27,7 @@ class ProofTermTest(unittest.TestCase):
 
         prf = pt3.export()
         self.assertEqual(len(prf.items), 3)
-        self.assertEqual(theory.thy.check_proof(prf), pt3.th)
+        self.assertEqual(theory.check_proof(prf), pt3.th)
 
     def testExport2(self):
         """Repeated theorems."""
@@ -38,7 +38,7 @@ class ProofTermTest(unittest.TestCase):
 
         prf = pt4.export()
         self.assertEqual(len(prf.items), 4)
-        self.assertEqual(theory.thy.check_proof(prf), pt4.th)
+        self.assertEqual(theory.check_proof(prf), pt4.th)
 
     def testExport3(self):
         """Case with atoms."""
@@ -51,7 +51,7 @@ class ProofTermTest(unittest.TestCase):
         prf.add_item(1, rule="sorry", th=Thm([], Eq(y,z)))
         pt3.export(prf=prf)
 
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(x,z)))
+        self.assertEqual(theory.check_proof(prf), Thm([], Eq(x,z)))
 
 
 if __name__ == "__main__":

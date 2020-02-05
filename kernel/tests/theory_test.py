@@ -119,7 +119,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(2, "implies_elim", prevs=[0, 1])
 
         rpt = ProofReport()
-        self.assertEqual(theory.thy.check_proof(prf, rpt), Thm([A_to_B, A], B))
+        self.assertEqual(theory.check_proof(prf, rpt), Thm([A_to_B, A], B))
         self.assertEqual(rpt.steps, 3)
 
     def testCheckProof2(self):
@@ -128,7 +128,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(1, "implies_intr", args=A, prevs=[0])
 
         rpt = ProofReport()
-        self.assertEqual(theory.thy.check_proof(prf, rpt), Thm([], Implies(A,A)))
+        self.assertEqual(theory.check_proof(prf, rpt), Thm([], Implies(A,A)))
         self.assertEqual(rpt.steps, 2)
 
     def testCheckProof3(self):
@@ -143,7 +143,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         th = Thm([x_eq_y, y_eq_z], Eq(f(z),f(x)))
-        self.assertEqual(theory.thy.check_proof(prf, rpt), th)
+        self.assertEqual(theory.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps, 6)
 
     def testCheckProof4(self):
@@ -157,7 +157,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         th = Thm([], Implies(x_eq_y,x_eq_y))
-        self.assertEqual(theory.thy.check_proof(prf, rpt), th)
+        self.assertEqual(theory.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps, 2)
 
     def testCheckProof5(self):
@@ -171,7 +171,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         th = Thm([], Implies(SVar('A', BoolType), SVar('A', BoolType)))
-        self.assertEqual(theory.thy.check_proof(prf, rpt), th)
+        self.assertEqual(theory.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps_stat(), (1, 1, 0))
         self.assertEqual(rpt.th_names, {"trivial"})
 
@@ -180,68 +180,68 @@ class TheoryTest(unittest.TestCase):
         prf = Proof()
         prf.add_item(0, "implies_intr", prevs=[1])
 
-        self.assertRaisesRegex(CheckProofException, "id 0 cannot depend on 1", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "id 0 cannot depend on 1", theory.check_proof, prf)
 
     def testCheckProofFail2(self):
         """Invalid derivation."""
         prf = Proof(A)
         prf.add_item(1, "symmetric", prevs=[0])
 
-        self.assertRaisesRegex(CheckProofException, "invalid derivation", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "invalid derivation", theory.check_proof, prf)
 
     def testCheckProofFail3(self):
         """Invalid input to derivation."""
         prf = Proof(A)
         prf.add_item(1, "implies_intr", prevs=[0])
 
-        self.assertRaisesRegex(CheckProofException, "invalid input to derivation", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "invalid input to derivation", theory.check_proof, prf)
 
     def testCheckProofFail4(self):
         """Output does not match."""
         prf = Proof(A)
         prf.add_item(1, "implies_intr", args=A, prevs=[0], th = Thm([], Implies(A,B)))
 
-        self.assertRaisesRegex(CheckProofException, "output does not match", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "output does not match", theory.check_proof, prf)
 
     def testCheckProofFail5(self):
         """Theorem not found."""
         prf = Proof()
         prf.add_item(0, "theorem", args="random")
 
-        self.assertRaisesRegex(CheckProofException, "theorem not found", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "theorem not found", theory.check_proof, prf)
 
     def testCheckProofFail6(self):
         """Typing error: statement is not non-boolean."""
         prf = Proof(x)
 
-        self.assertRaisesRegex(CheckProofException, "typing error", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "typing error", theory.check_proof, prf)
 
     def testCheckProofFail7(self):
         """Typing error: type-checking failed."""
         prf = Proof(Comb(Var("P", TFun(Tb, BoolType)), x))
 
-        self.assertRaisesRegex(CheckProofException, "typing error", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "typing error", theory.check_proof, prf)
 
     def testCheckProofFail8(self):
         """Proof method not found."""
         prf = Proof()
         prf.add_item(0, "random")
 
-        self.assertRaisesRegex(CheckProofException, "proof method not found", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "proof method not found", theory.check_proof, prf)
 
     def testAssumsSubset(self):
         """res_th is OK if assumptions is a subset of that of seq.th."""
         prf = Proof()
         prf.add_item(0, "assume", args=A, th=Thm([A, B], A))
 
-        self.assertEqual(theory.thy.check_proof(prf), Thm([A, B], A))
+        self.assertEqual(theory.check_proof(prf), Thm([A, B], A))
 
     def testAssumsSubsetFail(self):
         """res_th is not OK if assumptions is not a subset of that of seq.th."""
         prf = Proof()
         prf.add_item(0, "assume", args=A, th=Thm([], A))
 
-        self.assertRaisesRegex(CheckProofException, "output does not match", theory.thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "output does not match", theory.check_proof, prf)
 
     def testCheckProofGap(self):
         """Check proof with gap."""
@@ -251,7 +251,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(2, "implies_elim", prevs=[0, 1])
 
         rpt = ProofReport()
-        self.assertEqual(theory.thy.check_proof(prf, rpt), Thm([], B))
+        self.assertEqual(theory.check_proof(prf, rpt), Thm([], B))
         self.assertEqual(rpt.gaps, [Thm([], Implies(A, B)), Thm([], A)])
 
     def testUncheckedExtend(self):

@@ -83,7 +83,7 @@ class ProofState():
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""
         self.rpt = report.ProofReport()
-        return theory.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
+        return theory.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def add_line_before(self, id, n):
         """Add n lines before the given id."""

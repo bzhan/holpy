@@ -52,7 +52,7 @@ def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="
     if not eval_only:
         pt = macro.get_proof_term(args, prevs)
         prf = pt.export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm(assms, res))
+        self.assertEqual(theory.check_proof(prf), Thm(assms, res))
 
 class LogicTest(unittest.TestCase):
     def testGetForallName(self):
@@ -134,7 +134,7 @@ class LogicTest(unittest.TestCase):
         pt4 = ProofTerm.sorry(Thm([P(x)], C))
         pt4 = ProofTermDeriv('intros', args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
         prf = pt4.export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([ex_P], C))
+        self.assertEqual(theory.check_proof(prf), Thm([ex_P], C))
 
     def testRewriteGoal(self):
         test_macro(
