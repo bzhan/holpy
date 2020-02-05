@@ -10,7 +10,7 @@ from kernel import theory
 from kernel.macro import Macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
     top_conv, top_sweep_conv, beta_conv, beta_norm_conv, has_rewrite
-from kernel.proofterm import ProofTerm, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, refl
 from logic import matcher
 from util import name
 from util import typecheck
@@ -571,7 +571,7 @@ def apply_theorem(th_name, *pts, concl=None, inst=None):
     typecheck.checkinstance('apply_theorem', pts, [ProofTerm])
     if concl is None and inst is None:
         # Normal case, can use apply_theorem
-        return ProofTermDeriv("apply_theorem", th_name, pts)
+        return ProofTerm("apply_theorem", th_name, pts)
     else:
         pt = ProofTerm.theorem(th_name)
         if inst is None:
@@ -580,7 +580,7 @@ def apply_theorem(th_name, *pts, concl=None, inst=None):
             matcher.first_order_match_incr(pt.concl, concl, inst)
         for i, prev in enumerate(pts):
             matcher.first_order_match_incr(pt.assums[i], prev.prop, inst)
-        return ProofTermDeriv("apply_theorem_for", (th_name, inst), pts)
+        return ProofTerm("apply_theorem_for", (th_name, inst), pts)
 
 def conj_thms(*pts):
     assert len(pts) > 0, 'conj_thms: input list is empty.'

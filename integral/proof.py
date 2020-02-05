@@ -11,7 +11,7 @@ from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from kernel.proofterm import ProofTerm, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, refl
 from logic.context import Context
 from data import set
 from data import nat
@@ -1071,7 +1071,7 @@ def translate_item(item, target=None, *, debug=False):
             else:
                 pt = pt.transitive(eq_pt2, eq_pt1.symmetric())
 
-        pt = ProofTermDeriv("transitive", None, [pt, ProofTerm.reflexive(expected)])
+        pt = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(expected)])
 
         if debug:
             print("= %s" % pt.rhs)

@@ -9,7 +9,7 @@ from kernel.theory import register_macro
 from kernel.macro import Macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from kernel.proofterm import ProofTerm, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, refl
 from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
@@ -226,7 +226,7 @@ class nat_eval_conv(Conv):
         simp_t = Nat(nat_eval(t))
         if simp_t == t:
             return refl(t)
-        return ProofTermDeriv('nat_eval', Eq(t, simp_t))
+        return ProofTerm('nat_eval', Eq(t, simp_t))
 
 auto.add_global_autos_norm(plus, nat_eval_conv())
 auto.add_global_autos_norm(minus, nat_eval_conv())
@@ -627,7 +627,7 @@ class nat_const_ineq_macro(Macro):
         return pt.on_prop(arg_conv(binop_conv(rewr_of_nat_conv(sym=True))))
 
 def nat_const_ineq(a, b):
-    return ProofTermDeriv("nat_const_ineq", Not(Eq(a, b)), [])
+    return ProofTerm("nat_const_ineq", Not(Eq(a, b)), [])
 
 
 @register_method('nat_const_ineq')
@@ -692,7 +692,7 @@ class nat_const_less_eq_macro(Macro):
         return ex_eq.on_prop(rewr_conv('less_eq_exist', sym=True))
 
 def nat_less_eq(t1, t2):
-    return ProofTermDeriv("nat_const_less_eq", t1 <= t2)
+    return ProofTerm("nat_const_less_eq", t1 <= t2)
 
 @register_macro('nat_const_less')
 class nat_const_less_macro(Macro):
@@ -712,7 +712,7 @@ class nat_const_less_macro(Macro):
         return apply_theorem("less_lesseqI", less_eq_pt, ineq_pt)
 
 def nat_less(t1, t2):
-    return ProofTermDeriv("nat_const_less", t1 < t2)
+    return ProofTerm("nat_const_less", t1 < t2)
 
 class nat_eq_conv(Conv):
     """Simplify equality a = b to either True or False."""

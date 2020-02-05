@@ -9,7 +9,7 @@ from logic import logic
 from logic import matcher
 from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, beta_norm_conv, \
     top_sweep_conv, has_rewrite
-from kernel.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from logic.logic import apply_theorem
 
 
@@ -50,7 +50,7 @@ class MacroTactic(Tactic):
         else:
             args = (goal.prop,) + args
 
-        return ProofTermDeriv(self.macro, args, prevs)
+        return ProofTerm(self.macro, args, prevs)
 
 class rule(Tactic):
     """Apply a theorem in the backward direction.
@@ -123,7 +123,7 @@ class resolve(Tactic):
         assert th.prop.is_not(), "resolve: prop is not a negation"
 
         # Checking that the theorem matches the fact is done here.
-        return ProofTermDeriv('resolve_theorem', (args, goal.prop), prevs)
+        return ProofTerm('resolve_theorem', (args, goal.prop), prevs)
 
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
@@ -141,7 +141,7 @@ class intros(Tactic):
         pt = ProofTerm.sorry(Thm(list(goal.hyps) + As, C))
         ptAs = [ProofTerm.assume(A) for A in As]
         ptVars = [ProofTerm.variable(var.name, var.T) for var in vars]
-        return ProofTermDeriv('intros', None, ptVars + ptAs + [pt])
+        return ProofTerm('intros', None, ptVars + ptAs + [pt])
 
 class var_induct(Tactic):
     """Apply induction rule on a variable."""
@@ -179,11 +179,11 @@ class rewrite_goal(Tactic):
         else:
             macro_name = 'rewrite_goal'
         if new_goal.is_equals() and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv(macro_name, args=(th_name, C), prevs=prevs)
+            return ProofTerm(macro_name, args=(th_name, C), prevs=prevs)
         else:
             new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))
             assert new_goal.prop != goal.prop, "rewrite: unable to apply theorem"
-            return ProofTermDeriv(macro_name, args=(th_name, C), prevs=[new_goal] + prevs)
+            return ProofTerm(macro_name, args=(th_name, C), prevs=[new_goal] + prevs)
 
 class rewrite_goal_with_prev(Tactic):
     def get_proof_term(self, goal, *, args=None, prevs=None):
@@ -213,7 +213,7 @@ class rewrite_goal_with_prev(Tactic):
         prevs = list(prevs)
         if not new_goal.is_reflexive():
             prevs.append(ProofTerm.sorry(Thm(goal.hyps, new_goal)))
-        return ProofTermDeriv('rewrite_goal_with_prev', args=C, prevs=prevs)
+        return ProofTerm('rewrite_goal_with_prev', args=C, prevs=prevs)
 
 class apply_prev(Tactic):
     """Applies an existing fact in the backward direction."""
@@ -246,9 +246,9 @@ class apply_prev(Tactic):
         new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in inst_As[len(prev_pts):]]
         if set(new_names).issubset({v.name for v in term.get_vars(As)}) and \
            matcher.is_pattern_list(As, []):
-            return ProofTermDeriv('apply_fact', args=None, prevs=prevs + new_goals)
+            return ProofTerm('apply_fact', args=None, prevs=prevs + new_goals)
         else:
-            return ProofTermDeriv('apply_fact_for', args=inst_arg, prevs=prevs + new_goals)
+            return ProofTerm('apply_fact_for', args=inst_arg, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""

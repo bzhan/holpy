@@ -6,7 +6,7 @@ from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel.proof import ItemID, Proof, ProofStateException
 from kernel import theory
-from kernel.proofterm import ProofTermAtom
+from kernel.proofterm import ProofTerm
 from logic import matcher
 from logic import logic
 from logic import context
@@ -130,7 +130,7 @@ class apply_prev(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             pt = tactic.apply_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
@@ -154,7 +154,7 @@ class rewrite_goal_with_prev(Method):
     def search(self, state, id, prevs, data=None):
         try:
             cur_item = state.get_proof_item(id)
-            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = tactic.rewrite_goal_with_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
         except (AssertionError, matcher.MatchException):
             return []
@@ -177,7 +177,7 @@ class rewrite_goal(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -226,7 +226,7 @@ class rewrite_fact(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -258,7 +258,7 @@ class rewrite_fact(Method):
 
     def apply(self, state, id, data, prevs):
         try:
-            prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            prev_pts = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             sym_b = 'sym' in data and data['sym'] == 'true'
             pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(data['theorem'], prev_pts)
         except InvalidDerivationException as e:
@@ -284,7 +284,7 @@ class rewrite_fact_with_prev(Method):
         self.limit = None
 
     def search(self, state, id, prevs, data=None):
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             macro = logic.rewrite_fact_with_prev_macro()
             pt = macro.get_proof_term(args=None, pts=prevs)
@@ -297,7 +297,7 @@ class rewrite_fact_with_prev(Method):
 
     def apply(self, state, id, data, prevs):
         try:
-            prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            prev_pts = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = logic.rewrite_fact_with_prev_macro().get_proof_term(None, prev_pts)
         except AssertionError as e:
             raise e
@@ -392,7 +392,7 @@ class apply_backward_step(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -440,7 +440,7 @@ class apply_resolve_step(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 

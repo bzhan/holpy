@@ -9,7 +9,7 @@ from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
 from logic.conv import Conv, ConvException, refl, eta_conv, top_conv
-from kernel.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from util import name
 
 
@@ -285,7 +285,7 @@ class auto_macro(Macro):
 
 
 def auto_solve(t, pts=None):
-    return ProofTermDeriv('auto', args=t, prevs=pts)
+    return ProofTerm('auto', args=t, prevs=pts)
 
 class auto_conv(Conv):
     """Applies auto macro in conversion."""
@@ -299,4 +299,4 @@ class auto_conv(Conv):
         if t == eq_t.rhs:
             return refl(t)
         else:
-            return ProofTermDeriv('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
+            return ProofTerm('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)

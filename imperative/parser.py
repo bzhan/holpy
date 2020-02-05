@@ -12,7 +12,7 @@ from logic import logic
 from data import nat
 from data.function import mk_const_fun, mk_fun_upd
 from imperative import imp
-from kernel.proofterm import ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from syntax import json_output
 
 """Parsing for simple imperative programs."""
@@ -149,7 +149,7 @@ def process_file(input, output):
                 st2 = mk_fun_upd(st2, Nat(str_to_nat(k)), Nat(v))
             Sem = imp.Sem(natFunT)
             goal = Sem(com, st1, st2)
-            prf = ProofTermDeriv("eval_Sem", goal, []).export()
+            prf = ProofTerm("eval_Sem", goal, []).export()
             rpt = ProofReport()
             th = theory.check_proof(prf, rpt)
             output.add_theorem("eval" + str(eval_count), th, prf)

@@ -10,7 +10,7 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID, ProofStateException
 from kernel import report
 from kernel import theory
-from kernel.proofterm import ProofTerm, ProofTermAtom
+from kernel.proofterm import ProofTerm
 from logic import logic, matcher
 from logic import context
 from logic import tactic
@@ -189,7 +189,7 @@ class ProofState():
     def apply_tactic(self, id, tactic, args=None, prevs=None):
         id = ItemID(id)
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
-        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, self.get_proof_item(prev).th) for prev in prevs]
         
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "apply_tactic: id is not a gap"

@@ -10,7 +10,7 @@ from data import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, beta_norm_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
-from kernel.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from logic.logic import apply_theorem
 from logic.tactic import Tactic, MacroTactic
 from syntax import pprint, settings
@@ -257,7 +257,7 @@ class vcg_tactic(Tactic):
         pt = vcg_norm(T, goal.prop)
 
         ptAs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
-        return ProofTermDeriv("vcg", goal.prop, ptAs)
+        return ProofTerm("vcg", goal.prop, ptAs)
 
 
 def vcg_solve(goal):
@@ -270,8 +270,8 @@ def vcg_solve(goal):
 
     T = Q.get_type().domain_type()
     pt = vcg_norm(T, goal)
-    vc_pt = [ProofTermDeriv("z3", vc, []) for vc in pt.assums]
-    return ProofTermDeriv("vcg", goal, vc_pt)
+    vc_pt = [ProofTerm("z3", vc, []) for vc in pt.assums]
+    return ProofTerm("vcg", goal, vc_pt)
 
 
 @register_method('vcg')

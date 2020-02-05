@@ -14,7 +14,7 @@ from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from kernel.proofterm import ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from kernel import theory
 from logic import logic
 from logic import conv
@@ -261,7 +261,7 @@ class Z3Macro(Macro):
         raise NotImplementedError
 
 def apply_z3(t):
-    return ProofTermDeriv('z3', args=t)
+    return ProofTerm('z3', args=t)
 
 
 @register_method('z3')

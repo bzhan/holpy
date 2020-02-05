@@ -7,7 +7,7 @@ from kernel.term import Term, Var, Eq, Lambda, Inst
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
-from kernel.proofterm import ProofTerm, ProofTermAtom
+from kernel.proofterm import ProofTerm
 from logic import basic
 from logic import tactic
 from logic import context
@@ -21,7 +21,7 @@ class TacticTest(unittest.TestCase):
 
         assms = [parser.parse_term(prev) for prev in prevs] if prevs is not None else []
         prf = Proof(*assms)
-        prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
+        prevs = [ProofTerm.atom(i, Thm.assume(assm)) for i, assm in enumerate(assms)]
         goal = parser.parse_term(goal)
         goal_pt = ProofTerm.sorry(Thm(assms, goal))
 

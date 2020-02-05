@@ -19,7 +19,7 @@ from logic import auto
 from logic.logic import TacticException
 from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, Conv, ConvException
 from logic.tactic import MacroTactic
-from kernel.proofterm import refl, ProofTermDeriv
+from kernel.proofterm import refl, ProofTerm
 from syntax import pprint, settings
 from server.method import Method, register_method
 from util import poly
@@ -141,7 +141,7 @@ class real_eval_conv(Conv):
         simp_t = Real(real_eval(t))
         if simp_t == t:
             return refl(t)
-        return ProofTermDeriv('real_eval', Eq(t, simp_t))
+        return ProofTerm('real_eval', Eq(t, simp_t))
 
 
 """Normalization of polynomials.
@@ -724,7 +724,7 @@ class real_norm_conv(Conv):
         if t2 == t:
             return refl(t)
         else:
-            return ProofTermDeriv('real_norm', Eq(t, t2))
+            return ProofTerm('real_norm', Eq(t, t2))
 
 
 @register_method('real_norm')

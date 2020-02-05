@@ -12,7 +12,7 @@ from logic import basic
 from logic import logic
 from logic.logic import apply_theorem
 from logic.conv import rewr_conv
-from kernel.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer

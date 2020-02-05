@@ -9,7 +9,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
 from kernel import theory
-from kernel.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from logic import logic
 from logic import basic
 from logic import matcher
@@ -131,7 +131,7 @@ class LogicTest(unittest.TestCase):
         pt2 = ProofTerm.variable('x', Ta)
         pt3 = ProofTerm.assume(P(x))
         pt4 = ProofTerm.sorry(Thm([P(x)], C))
-        pt4 = ProofTermDeriv('intros', args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
+        pt4 = ProofTerm('intros', args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
         prf = pt4.export()
         self.assertEqual(theory.check_proof(prf), Thm([ex_P], C))
 

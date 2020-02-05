@@ -14,13 +14,13 @@ from kernel.term import Term
 from kernel.thm import Thm
 from kernel.macro import Macro
 from kernel.theory import register_macro
+from kernel.proofterm import ProofTerm
 from data import nat
 from data import real
 from data import set as hol_set
 from logic import auto
 from logic import logic
 from logic.logic import TacticException
-from kernel.proofterm import ProofTermDeriv
 import integral
 
 
@@ -197,7 +197,7 @@ def sympy_solve(goal, pts):
     macro = SymPyMacro()
     if macro.can_eval(goal, pts):
         th = Thm(sum([th.hyps for th in pts], ()), goal)
-        return ProofTermDeriv('sympy', args=goal, prevs=pts, th=th)
+        return ProofTerm('sympy', args=goal, prevs=pts, th=th)
     else:
         raise TacticException
 
