@@ -2,9 +2,9 @@
 
 from collections import OrderedDict
 
-from kernel.type import TFun, BoolType
+from kernel.type import TFun, BoolType, TyInst
 from kernel import term
-from kernel.term import Term, Const, Implies, Eq, Forall, Lambda
+from kernel.term import Term, Const, Implies, Eq, Forall, Lambda, Inst
 from kernel import macro
 from util import typecheck
 from syntax.settings import settings
@@ -362,8 +362,8 @@ primitive_deriv = {
     "combination" : (Thm.combination, None),
     "equal_intr" : (Thm.equal_intr, None),
     "equal_elim" : (Thm.equal_elim, None),
-    "subst_type" : (Thm.subst_type, macro.TyInst),
-    "substitution" : (Thm.substitution, macro.Inst),
+    "subst_type" : (Thm.subst_type, TyInst),
+    "substitution" : (Thm.substitution, Inst),
     "beta_conv" : (Thm.beta_conv, Term),
     "abstraction" : (Thm.abstraction, Term),
     "forall_intr" : (Thm.forall_intr, Term),

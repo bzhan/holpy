@@ -5,9 +5,6 @@ from typing import Dict
 from kernel.type import Type
 from kernel.term import Term
 
-TyInst = Dict[str, Type]
-Inst = Dict[str, Term]
-
 
 """Global store of macros. Keys are names of the macros,
 values are the corresponding macro objects.

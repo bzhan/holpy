@@ -24,30 +24,6 @@ A = Var("A", BoolType)
 B = Var("B", BoolType)
 C = Var("C", BoolType)
 
-# A simple macro
-class beta_conv_rhs_macro(ProofMacro):
-    """Reduce the right side of th by beta-conversion."""
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-
-    def eval(self, args, ths):
-        th = ths[0]
-        assert th.prop.is_equals(), "beta_conv_rhs"
-        rhs = th.prop.rhs
-
-        return Thm.transitive(th, Thm.beta_conv(rhs))
-
-    def expand(self, prefix, args, prevs):
-        id, th = prevs[0]
-        assert th.prop.is_equals(), "beta_conv_rhs"
-        rhs = th.prop.rhs
-
-        prf = Proof()
-        prf.add_item(ItemID(prefix.id + (0,)), "beta_conv", args=rhs)
-        prf.add_item(ItemID(prefix.id + (1,)), "transitive", prevs=[id, ItemID(prefix.id + (0,))])
-        return prf
-
 
 class TheoryTest(unittest.TestCase):
     def setUp(self):
