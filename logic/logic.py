@@ -231,7 +231,7 @@ class apply_theorem_macro(ProofTermMacro):
         else:
             name = args
             inst = Inst()
-        th = theory.thy.get_theorem(name, svar=True)
+        th = theory.get_theorem(name)
         As, C = th.prop.strip_implies()
 
         assert len(prevs) <= len(As), "apply_theorem: too many prevs."
@@ -264,7 +264,7 @@ class apply_theorem_macro(ProofTermMacro):
         else:
             name = args
             inst = Inst()
-        th = theory.thy.get_theorem(name, svar=True)
+        th = theory.get_theorem(name)
         As, C = th.prop.strip_implies()
 
         assert len(pts) <= len(As), "apply_theorem: too many prevs."

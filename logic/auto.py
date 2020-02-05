@@ -158,7 +158,7 @@ def solve_rules(th_names):
     def solve_fun(goal, pts):
         for th_name in th_names:
             if theory.thy.has_theorem(th_name):
-                th = theory.thy.get_theorem(th_name, svar=True)
+                th = theory.get_theorem(th_name)
             try:
                 inst = matcher.first_order_match(th.concl, goal)
             except matcher.MatchException:
@@ -239,7 +239,7 @@ def norm_rules(th_names):
     def norm_fun(t, pts):
         for th_name in th_names:
             if theory.thy.has_theorem(th_name):
-                th = theory.thy.get_theorem(th_name, svar=True)
+                th = theory.get_theorem(th_name)
             else:
                 continue
 

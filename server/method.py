@@ -297,7 +297,7 @@ class apply_forward_step(Method):
                     if val != '':
                         inst[key[6:]] = parser.parse_term(val)
 
-        th = theory.thy.get_theorem(data['theorem'], svar=True)
+        th = theory.get_theorem(data['theorem'])
 
         # Check whether to ask for parameters
         As, C = th.prop.strip_implies()

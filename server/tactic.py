@@ -69,7 +69,7 @@ class rule(Tactic):
         if prevs is None:
             prevs = []
         
-        th = theory.thy.get_theorem(th_name, svar=True)
+        th = theory.get_theorem(th_name)
         As, C = th.assums, th.concl
 
         # Length of prevs is at most length of As
@@ -118,7 +118,7 @@ class resolve(Tactic):
     def get_proof_term(self, goal, args, prevs):
         assert isinstance(args, str) and len(prevs) == 1, "resolve: type"
         th_name = args
-        th = theory.thy.get_theorem(th_name, svar=True)
+        th = theory.get_theorem(th_name)
 
         assert th.prop.is_not(), "resolve: prop is not a negation"
 
@@ -148,7 +148,7 @@ class var_induct(Tactic):
     def get_proof_term(self, goal, *, args=None, prevs=None):
         th_name, var = args
         P = Lambda(var, goal.prop)
-        th = theory.thy.get_theorem(th_name, svar=True)
+        th = theory.get_theorem(th_name)
         f, args = th.concl.strip_comb()
         if len(args) != 1:
             raise NotImplementedError

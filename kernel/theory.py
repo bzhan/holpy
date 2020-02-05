@@ -185,8 +185,19 @@ class Theory():
         data = self.get_data("theorems")
         return name in data
     
-    def get_theorem(self, name, svar=False):
-        """Returns the theorem under that name."""
+    def get_theorem(self, name, *, svar=True):
+        """Obtain the theorem with the given name.
+        
+        Parameters:
+        ===========
+        name : str
+            Name of the theorem to lookup.
+        
+        svar : Optional bool (default True)
+            Whether to use schematic variables (instead of variables) in the
+            returned result.
+
+        """
         data = self.get_data("theorems")
         if name not in data:
             raise TheoryException("Theorem " + name + " not found")
@@ -329,7 +340,7 @@ class Theory():
         if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
-                res_th = self.get_theorem(seq.args, svar=True)
+                res_th = self.get_theorem(seq.args)
                 if rpt is not None:
                     rpt.apply_theorem(seq.args)
             except TheoryException:
@@ -540,6 +551,9 @@ def fresh_theory():
         # Recover previous theory
         thy = prev_thy
 
+
+def get_theorem(name, *, svar=True):
+    return thy.get_theorem(name, svar=svar)
 
 global_methods = dict()
 

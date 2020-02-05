@@ -361,7 +361,7 @@ def has_rewrite(th, t, *, sym=False, conds=None):
 
     """
     if isinstance(th, str):
-        th = theory.thy.get_theorem(th, svar=True)
+        th = theory.get_theorem(th)
 
     if sym:
         th = Thm.symmetric(th)

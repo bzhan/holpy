@@ -7,6 +7,7 @@ from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda
 from kernel import macro
 from util import typecheck
+from syntax.settings import settings
 
 
 class InvalidDerivationException(Exception):
@@ -62,11 +63,12 @@ class Thm():
 
     def __str__(self):
         """Print the given theorem."""
+        turnstile = "⊢" if settings.unicode else "|-"
         if self.hyps:
             str_hyps = ", ".join(str(hyp) for hyp in self.hyps)
-            return str_hyps + " |- " + str(self.prop)
+            return str_hyps + ' ' + turnstile + ' ' + str(self.prop)
         else:
-            return "|- " + str(self.prop)
+            return turnstile + ' ' + str(self.prop)
 
     def __repr__(self):
         return str(self)

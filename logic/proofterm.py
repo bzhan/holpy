@@ -264,7 +264,7 @@ class ProofTermDeriv(ProofTerm):
             nm, T = args
             self.th = Thm.mk_VAR(Var(nm, T))
         elif rule == 'theorem':
-            self.th = theory.thy.get_theorem(args, svar=True)
+            self.th = theory.get_theorem(args)
         elif rule in primitive_deriv:
             rule_fun, _ = primitive_deriv[rule]
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)

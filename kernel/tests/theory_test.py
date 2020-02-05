@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TConst, TVar, TFun, BoolType
+from kernel.type import TConst, TVar, STVar, TFun, BoolType
 from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Inst, TyInst
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
@@ -267,16 +267,16 @@ class TheoryTest(unittest.TestCase):
 
         self.assertEqual(theory.thy.unchecked_extend(exts), None)
         self.assertEqual(theory.thy.get_term_sig("id"), TFun(Ta, Ta))
-        self.assertEqual(theory.thy.get_theorem("id_def"), Thm([], Eq(id_const, id_def)))
-        self.assertEqual(theory.thy.get_theorem("id.simps"), Thm([], Eq(id_const, x)))
+        self.assertEqual(theory.get_theorem("id_def", svar=False), Thm([], Eq(id_const, id_def)))
+        self.assertEqual(theory.get_theorem("id.simps", svar=False), Thm([], Eq(id_const, x)))
 
     def testCheckedExtend(self):
         """Checked extension: adding an axiom."""
-        id_simps = Eq(Comb(Const("id", TFun(Ta,Ta)),x), x)
+        id_simps = Eq(Comb(Const("id", TFun(Ta,Ta)), x), x)
         exts = [extension.Theorem("id.simps", Thm([], id_simps))]
 
         ext_report = theory.thy.checked_extend(exts)
-        self.assertEqual(theory.thy.get_theorem("id.simps"), Thm([], id_simps))
+        self.assertEqual(theory.get_theorem("id.simps", svar=False), Thm([], id_simps))
         self.assertEqual(ext_report.get_axioms(), [("id.simps", Thm([], id_simps))])
 
     def testCheckedExtend2(self):
@@ -301,7 +301,7 @@ class TheoryTest(unittest.TestCase):
         ]
 
         ext_report = theory.thy.checked_extend(exts)
-        self.assertEqual(theory.thy.get_theorem("id.simps"), Thm([], id_simps))
+        self.assertEqual(theory.get_theorem("id.simps", svar=False), Thm([], id_simps))
         self.assertEqual(ext_report.get_axioms(), [('id_def', Thm([], Eq(id_const, id_def)))])
 
     def testCheckedExtend3(self):

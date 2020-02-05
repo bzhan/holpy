@@ -17,17 +17,17 @@ from data import set
 class BasicTest(unittest.TestCase):
     def testLoadTheory(self):
         basic.load_theory('logic_base')
-        self.assertIsInstance(theory.thy.get_theorem('conjI'), Thm)
-        self.assertRaises(TheoryException, theory.thy.get_theorem, 'conj_comm')
+        self.assertIsInstance(theory.get_theorem('conjI'), Thm)
+        self.assertRaises(TheoryException, theory.get_theorem, 'conj_comm')
 
         basic.load_theory('logic')
-        self.assertIsInstance(theory.thy.get_theorem('conjI'), Thm)
-        self.assertIsInstance(theory.thy.get_theorem('conj_comm'), Thm)
+        self.assertIsInstance(theory.get_theorem('conjI'), Thm)
+        self.assertIsInstance(theory.get_theorem('conj_comm'), Thm)
 
     def testLoadTheoryWithLimit(self):
         basic.load_theory('logic_base', limit=('thm.ax', 'conjD1'))
-        self.assertIsInstance(theory.thy.get_theorem('conjI'), Thm)
-        self.assertRaises(TheoryException, theory.thy.get_theorem, 'conjD1')
+        self.assertIsInstance(theory.get_theorem('conjI'), Thm)
+        self.assertRaises(TheoryException, theory.get_theorem, 'conjD1')
 
     def testLoadTheoryWithLimitFail(self):
         self.assertRaises(TheoryException, basic.load_theory, 'logic_base', limit=('thm.ax', 'conj'))
