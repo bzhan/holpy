@@ -5,11 +5,11 @@ from kernel import term
 from kernel.term import Term, Const, Not, Eq, Binary, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
-from kernel.theory import Method, global_methods
-from kernel import macro
+from kernel.theory import Method, global_macros, global_methods
+from kernel.macro import Macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, ProofTermDeriv, refl
 from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
@@ -204,7 +204,7 @@ class nat_conv(Conv):
             raise ConvException("nat_conv")
 
 # Conversion using a macro
-class nat_eval_macro(ProofMacro):
+class nat_eval_macro(Macro):
     """Simplify all arithmetic operations."""
     def __init__(self):
         self.level = 0  # No expand implemented
@@ -491,7 +491,7 @@ class norm_full(Conv):
             return pt
 
 
-class nat_norm_macro(ProofTermMacro):
+class nat_norm_macro(Macro):
     """Attempt to prove goal by normalization."""
 
     def __init__(self):
@@ -591,7 +591,7 @@ def ineq_proof_term(m, n):
     else:
         return apply_theorem("ineq_sym", ineq_proof_term(n, m))
 
-class nat_const_ineq_macro(ProofTermMacro):
+class nat_const_ineq_macro(Macro):
     """Given m and n, with m ~= n, return the inequality theorem."""
     def __init__(self):
         self.level = 10
@@ -649,7 +649,7 @@ class nat_const_ineq_method(Method):
         assert len(prevs) == 0, "nat_const_ineq_method"
         state.apply_tactic(id, MacroTactic('nat_const_ineq'))
 
-class nat_const_less_eq_macro(ProofTermMacro):
+class nat_const_less_eq_macro(Macro):
     """Given m and n, with m <= n, return the less-equal theorem."""
     def __init__(self):
         self.level = 10
@@ -684,7 +684,7 @@ class nat_const_less_eq_macro(ProofTermMacro):
 def nat_less_eq(t1, t2):
     return ProofTermDeriv("nat_const_less_eq", t1 <= t2)
 
-class nat_const_less_macro(ProofTermMacro):
+class nat_const_less_macro(Macro):
     """Given m and n, with m < n, return the less-than theorem."""
     def __init__(self):
         self.level = 10
@@ -719,7 +719,7 @@ class nat_eq_conv(Conv):
             return nat_const_ineq(a, b).on_prop(rewr_conv("eq_false"))
 
 
-macro.global_macros.update({
+global_macros.update({
     "nat_eval": nat_eval_macro(),
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),

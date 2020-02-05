@@ -11,7 +11,7 @@ from copy import copy
 from kernel import term
 from kernel.term import Eq
 from kernel.thm import Thm
-from logic.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm
 
 EQ_CONST, EQ_COMB = range(2)
 

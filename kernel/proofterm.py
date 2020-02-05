@@ -1,10 +1,9 @@
 # Author: Bohua Zhan
 
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, primitive_deriv
-from kernel import theory
 from kernel.proof import Proof, ItemID
-from kernel.macro import ProofMacro, get_macro
+from kernel import theory
 from util import typecheck
 
 
@@ -20,29 +19,38 @@ class ProofTerm():
     """
     ATOM, DERIV = range(2)
 
+    def __str__(self):
+        return "ProofTerm(%s)" % self.th
+
     @property
     def hyps(self):
+        """Hypothesis of a proof term."""
         return self.th.hyps
 
     @property
     def prop(self):
+        """Propositions of a proof term."""
         return self.th.prop
 
     @property
     def assums(self):
+        """Assumptions of the proposition of a proof term."""
         return self.th.assums
 
     @property
     def concl(self):
+        """Conclusion of the proposition of a proof term."""
         return self.th.concl
 
     @property
     def lhs(self):
-        return self.th.prop.lhs
+        """Left side of the equality of a proof term."""
+        return self.th.concl.lhs
 
     @property
     def rhs(self):
-        return self.th.prop.rhs
+        """Right side of the equality of a proof term."""
+        return self.th.concl.rhs
 
     @staticmethod
     def atom(id, th):
@@ -89,13 +97,17 @@ class ProofTerm():
             pt = ProofTermDeriv("implies_elim", None, [pt, assum_pt])
         return pt
 
-    def subst_type(self, tyinst):
+    def subst_type(self, tyinst=None, **kwargs):
+        if tyinst is None:
+            tyinst = TyInst(**kwargs)
         if tyinst:
             return ProofTermDeriv("subst_type", tyinst, [self])
         else:
             return self
 
-    def substitution(self, inst):
+    def substitution(self, inst=None, **kwargs):
+        if inst is None:
+            inst = Inst(**kwargs)
         if inst:
             return ProofTermDeriv("substitution", inst, [self])
         else:
@@ -264,31 +276,15 @@ class ProofTermDeriv(ProofTerm):
             nm, T = args
             self.th = Thm.mk_VAR(Var(nm, T))
         elif rule == 'theorem':
-            self.th = theory.thy.get_theorem(args, svar=True)
+            self.th = theory.get_theorem(args)
         elif rule in primitive_deriv:
             rule_fun, _ = primitive_deriv[rule]
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
-            macro = get_macro(rule)
+            macro = theory.get_macro(rule)
             if th is None:
                 self.th = macro.eval(args, prev_ths)
             else:
                 self.th = th
         self.args = args
         self.prevs = prevs
-
-class ProofTermMacro(ProofMacro):
-    """Encapsulates a standard way for writing macros: by first
-    constructing a proof term, then export the proof term.
-
-    """
-    def eval(self, args, prevs):
-        pts = [ProofTerm.sorry(prev) for prev in prevs]
-        return self.get_proof_term(args, pts).th
-
-    def get_proof_term(self, args, prevs):
-        raise NotImplementedError
-
-    def expand(self, prefix, args, prevs):
-        pts = tuple([ProofTerm.atom(id, prev) for id, prev in prevs])
-        return self.get_proof_term(args, pts).export(prefix)

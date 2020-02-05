@@ -3,14 +3,14 @@
 from kernel.type import TConst, TFun, BoolType
 from kernel.term import Term, Var, Const, Lambda, Inst, true
 from kernel.thm import Thm
-from kernel.macro import global_macros
-from kernel.theory import Method, global_methods
+from kernel.macro import Macro
+from kernel.theory import Method, global_macros, global_methods
 from data import nat
 from data import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, beta_norm_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from kernel.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import pprint, settings
 from server.tactic import Tactic, MacroTactic
@@ -102,7 +102,7 @@ def eval_Sem(c, st):
     else:
         raise NotImplementedError
 
-class eval_Sem_macro(ProofTermMacro):
+class eval_Sem_macro(Macro):
     """Prove a theorem of the form Sem com st st2."""
     def __init__(self):
         self.level = 10
@@ -214,7 +214,7 @@ def vcg_norm(T, goal):
     return pt.on_assums(rewr_conv("Entail_def"), beta_norm_conv(),
                         top_conv(function.fun_upd_eval_conv()))
 
-class vcg_macro(ProofTermMacro):
+class vcg_macro(Macro):
     """Macro wrapper for verification condition generation.
     
     Compute the verification conditions for a hoare triple, then

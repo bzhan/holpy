@@ -12,7 +12,7 @@ from logic import logic
 from data import nat
 from data.function import mk_const_fun, mk_fun_upd
 from imperative import imp
-from logic.proofterm import ProofTermDeriv
+from kernel.proofterm import ProofTermDeriv
 from syntax import json_output
 
 """Parsing for simple imperative programs."""
@@ -151,7 +151,7 @@ def process_file(input, output):
             goal = Sem(com, st1, st2)
             prf = ProofTermDeriv("eval_Sem", goal, []).export()
             rpt = ProofReport()
-            th = theory.thy.check_proof(prf, rpt)
+            th = theory.check_proof(prf, rpt)
             output.add_theorem("eval" + str(eval_count), th, prf)
             eval_count += 1
         elif run['ty'] == 'vcg':
@@ -162,7 +162,7 @@ def process_file(input, output):
             goal = Valid(pre, com, post)
             prf = imp.vcg_solve(goal).export()
             rpt = ProofReport()
-            th = theory.thy.check_proof(prf, rpt)
+            th = theory.check_proof(prf, rpt)
             output.add_theorem("vcg" + str(vcg_count), th, prf)
             vcg_count += 1
         else:

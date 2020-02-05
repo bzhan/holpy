@@ -10,7 +10,7 @@ from data.integral import within, atreal
 from integral import proof
 from logic import auto
 from logic import context
-from logic.proofterm import refl, ProofTerm
+from kernel.proofterm import refl, ProofTerm
 from logic.conv import top_conv, arg_conv
 from logic.logic import TacticException
 from syntax import parser

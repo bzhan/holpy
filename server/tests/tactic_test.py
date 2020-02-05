@@ -7,7 +7,7 @@ from kernel.term import Term, Var, Eq, Lambda, Inst
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
-from logic.proofterm import ProofTerm, ProofTermAtom
+from kernel.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
 from server import tactic
 from syntax import parser
@@ -35,7 +35,7 @@ class TacticTest(unittest.TestCase):
         # Export and check proof
         prefix = ItemID(len(prevs)-1) if len(prevs) > 0 else ItemID(len(prevs))
         prf = pt.export(prefix=prefix, prf=prf, subproof=False)
-        self.assertEqual(theory.thy.check_proof(prf), Thm(assms, goal))
+        self.assertEqual(theory.check_proof(prf), Thm(assms, goal))
 
         # Test agreement of new goals
         new_goals = [parser.parse_term(new_goal)

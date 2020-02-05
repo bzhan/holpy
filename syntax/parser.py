@@ -481,9 +481,9 @@ def parse_args(sig, args):
             return args
         elif sig == Term:
             return parse_term(args)
-        elif sig == macro.Inst:
+        elif sig == Inst:
             return parse_inst(args)
-        elif sig == macro.TyInst:
+        elif sig == TyInst:
             return parse_tyinst(args)
         elif sig == Tuple[str, Type]:
             s1, s2 = args.split(",", 1)
@@ -491,7 +491,7 @@ def parse_args(sig, args):
         elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
             return s1, parse_term(s2)
-        elif sig == Tuple[str, macro.Inst]:
+        elif sig == Tuple[str, Inst]:
             s1, s2 = args.split(",", 1)
             inst = parse_inst(s2)
             return s1, inst

@@ -5,12 +5,11 @@ import unittest
 from kernel.type import TVar, TFun, BoolType
 from kernel import term
 from kernel.term import Term, Var, Abs, Bound, And, Or, Eq, Forall, Exists
-from kernel.macro import global_macros
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
 from kernel import theory
-from logic.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm, ProofTermDeriv
 from logic import logic
 from logic import basic
 from logic import matcher
@@ -31,7 +30,7 @@ def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="
                limit=None, eval_only=False):
     context.set_context(thy_name, vars=vars, limit=limit)
 
-    macro = global_macros[macro]
+    macro = theory.global_macros[macro]
     assms = [parser.parse_term(assm) for assm in assms] if assms is not None else []
     prev_ths = [Thm([assm], assm) for assm in assms]
     prevs = [ProofTerm.assume(assm) for assm in assms]
@@ -52,7 +51,7 @@ def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="
     if not eval_only:
         pt = macro.get_proof_term(args, prevs)
         prf = pt.export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm(assms, res))
+        self.assertEqual(theory.check_proof(prf), Thm(assms, res))
 
 class LogicTest(unittest.TestCase):
     def testGetForallName(self):
@@ -134,7 +133,7 @@ class LogicTest(unittest.TestCase):
         pt4 = ProofTerm.sorry(Thm([P(x)], C))
         pt4 = ProofTermDeriv('intros', args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
         prf = pt4.export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([ex_P], C))
+        self.assertEqual(theory.check_proof(prf), Thm([ex_P], C))
 
     def testRewriteGoal(self):
         test_macro(

@@ -132,23 +132,6 @@ def export_proof_item(item):
     else:
         return [res]
 
-def print_proof_item(item):
-    """Print the given proof item."""
-    str_id = str(item.id)
-    str_args = " " + print_str_args(item.rule, item.args, item.th) if item.args else ""
-    str_prevs = " from " + ", ".join(str(prev) for prev in item.prevs) if item.prevs else ""
-    str_th = print_thm(item.th) + " by " if item.th else ""
-    cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs
-    if item.subproof:
-        return cur_line + "\n" + "\n".join(print_proof_item(item) for item in item.subproof.items)
-    else:
-        return cur_line
-
-def print_proof(prf):
-    """Print the given proof."""
-    typecheck.checkinstance('print_proof', prf, proof.Proof)
-    return '\n'.join(print_proof_item(item) for item in prf.items)
-
 
 # Set up default printing functions
 hol_type.type_printer = print_type

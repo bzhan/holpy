@@ -7,7 +7,7 @@ from kernel.thm import Thm, InvalidDerivationException
 from kernel.proof import ItemID, Proof, ProofStateException
 from kernel.theory import Method, get_method
 from kernel import theory
-from logic.proofterm import ProofTermAtom
+from kernel.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
 from logic import context
@@ -297,7 +297,7 @@ class apply_forward_step(Method):
                     if val != '':
                         inst[key[6:]] = parser.parse_term(val)
 
-        th = theory.thy.get_theorem(data['theorem'], svar=True)
+        th = theory.get_theorem(data['theorem'])
 
         # Check whether to ask for parameters
         As, C = th.prop.strip_implies()

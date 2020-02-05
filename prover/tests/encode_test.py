@@ -38,7 +38,7 @@ class EncodeTest(unittest.TestCase):
         self.assertEqual(pt.th, th)
         
         rpt = report.ProofReport()
-        self.assertEqual(theory.thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
+        self.assertEqual(theory.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
 
 

@@ -8,7 +8,6 @@ from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
-from kernel.macro import ProofMacro, has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
@@ -185,8 +184,19 @@ class Theory():
         data = self.get_data("theorems")
         return name in data
     
-    def get_theorem(self, name, svar=False):
-        """Returns the theorem under that name."""
+    def get_theorem(self, name, *, svar=True):
+        """Obtain the theorem with the given name.
+        
+        Parameters:
+        ===========
+        name : str
+            Name of the theorem to lookup.
+        
+        svar : Optional bool (default True)
+            Whether to use schematic variables (instead of variables) in the
+            returned result.
+
+        """
         data = self.get_data("theorems")
         if name not in data:
             raise TheoryException("Theorem " + name + " not found")
@@ -329,7 +339,7 @@ class Theory():
         if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
-                res_th = self.get_theorem(seq.args, svar=True)
+                res_th = self.get_theorem(seq.args)
                 if rpt is not None:
                     rpt.apply_theorem(seq.args)
             except TheoryException:
@@ -541,6 +551,14 @@ def fresh_theory():
         thy = prev_thy
 
 
+def get_theorem(name, *, svar=True):
+    return thy.get_theorem(name, svar=svar)
+
+def check_proof(prf, rpt=None, *, no_gaps=False, compute_only=False, check_level=0):
+    return thy.check_proof(prf, rpt, no_gaps=no_gaps, compute_only=compute_only, check_level=check_level)
+
+
+"""Global store for methods."""
 global_methods = dict()
 
 def has_method(name):
@@ -576,3 +594,25 @@ class Method:
 
     def apply(self, state, id, args, prevs):
         pass
+
+
+"""Global store of macros. Keys are names of the macros,
+values are the corresponding macro objects.
+
+When each macro is defined, it is first put into this dictionary.
+It is added to the theory only when a theory file contains an
+extension adding it by name.
+
+"""
+global_macros = dict()
+
+def has_macro(name):
+    if name in global_macros:
+        macro = global_macros[name]
+        return macro.limit is None or thy.has_theorem(macro.limit)
+    else:
+        return False
+
+def get_macro(name):
+    assert has_macro(name), "get_macro: %s is not available." % name
+    return global_macros[name]

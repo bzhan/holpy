@@ -2,13 +2,13 @@
 
 from kernel import term
 from kernel.term import Term, Var
-from kernel import macro
+from kernel.macro import Macro
 from kernel import theory
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
 from logic.conv import Conv, ConvException, refl, eta_conv, top_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from kernel.proofterm import ProofTerm, ProofTermDeriv
 from util import name
 
 
@@ -158,7 +158,7 @@ def solve_rules(th_names):
     def solve_fun(goal, pts):
         for th_name in th_names:
             if theory.thy.has_theorem(th_name):
-                th = theory.thy.get_theorem(th_name, svar=True)
+                th = theory.get_theorem(th_name)
             try:
                 inst = matcher.first_order_match(th.concl, goal)
             except matcher.MatchException:
@@ -239,7 +239,7 @@ def norm_rules(th_names):
     def norm_fun(t, pts):
         for th_name in th_names:
             if theory.thy.has_theorem(th_name):
-                th = theory.thy.get_theorem(th_name, svar=True)
+                th = theory.get_theorem(th_name)
             else:
                 continue
 
@@ -261,7 +261,7 @@ def norm_rules(th_names):
 
     return norm_fun
 
-class auto_macro(ProofTermMacro):
+class auto_macro(Macro):
     """Macro applying auto.solve."""
     def __init__(self):
         self.level = 1
@@ -299,6 +299,6 @@ class auto_conv(Conv):
             return ProofTermDeriv('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
 
 
-macro.global_macros.update({
+theory.global_macros.update({
     "auto": auto_macro()
 })

@@ -5,7 +5,7 @@ from kernel import term
 from kernel.term import Term, Var, Bound, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
-from logic.proofterm import ProofTerm, refl
+from kernel.proofterm import ProofTerm, refl
 from logic import matcher
 from util import name
 from util import typecheck
@@ -149,11 +149,7 @@ class eta_conv(Conv):
         if not (t2.is_comb() and t2.arg == v and not t2.fun.occurs_var(v)):
             raise ConvException("eta_conv")
 
-        eq_pt = ProofTerm.theorem('eta_conversion')
-        eq_pt = eq_pt.subst_type(
-            TyInst(a=t2.fun.get_type().domain_type(), b=t2.fun.get_type().range_type()))
-        eq_pt = eq_pt.substitution(Inst(f=t2.fun))
-        return eq_pt
+        return ProofTerm.theorem('eta_conversion').substitution(f=t2.fun)
 
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
@@ -361,7 +357,7 @@ def has_rewrite(th, t, *, sym=False, conds=None):
 
     """
     if isinstance(th, str):
-        th = theory.thy.get_theorem(th, svar=True)
+        th = theory.get_theorem(th)
 
     if sym:
         th = Thm.symmetric(th)

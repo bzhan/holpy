@@ -8,7 +8,7 @@ from logic.tests.conv_test import test_conv
 from logic.tests.logic_test import test_macro
 from logic import context
 from logic import auto
-from logic.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm
 from data import real
 from syntax import parser
 from prover import sympywrapper

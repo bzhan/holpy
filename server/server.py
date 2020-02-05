@@ -11,7 +11,7 @@ from kernel.proof import ProofItem, Proof, ItemID, ProofStateException
 from kernel import report
 from kernel import theory
 from logic import logic, matcher
-from logic.proofterm import ProofTerm, ProofTermAtom
+from kernel.proofterm import ProofTerm, ProofTermAtom
 from logic import context
 from syntax import parser, printer
 from syntax.settings import settings, global_setting
@@ -83,7 +83,7 @@ class ProofState():
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""
         self.rpt = report.ProofReport()
-        return theory.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
+        return theory.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def add_line_before(self, id, n):
         """Add n lines before the given id."""
