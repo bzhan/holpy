@@ -15,7 +15,7 @@ from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
 from server.tactic import MacroTactic
-from server.method import Method, global_methods
+from server.method import Method, register_method
 from syntax import pprint, settings
 from util import poly
 
@@ -527,6 +527,8 @@ class nat_norm_macro(Macro):
         assert pt1.prop.rhs == pt2.prop.rhs, "nat_norm_macro: normalization is not equal."
         return pt1.transitive(pt2.symmetric())
 
+
+@register_method('nat_norm')
 class nat_norm_method(Method):
     """Apply nat_norm macro."""
     def __init__(self):
@@ -594,6 +596,7 @@ def ineq_proof_term(m, n):
     else:
         return apply_theorem("ineq_sym", ineq_proof_term(n, m))
 
+
 @register_macro('nat_const_ineq')
 class nat_const_ineq_macro(Macro):
     """Given m and n, with m ~= n, return the inequality theorem."""
@@ -627,6 +630,7 @@ def nat_const_ineq(a, b):
     return ProofTermDeriv("nat_const_ineq", Not(Eq(a, b)), [])
 
 
+@register_method('nat_const_ineq')
 class nat_const_ineq_method(Method):
     """Apply nat_const_ineq macro."""
     def __init__(self):
@@ -724,9 +728,3 @@ class nat_eq_conv(Conv):
             return refl(a).on_prop(rewr_conv("eq_true"))
         else:
             return nat_const_ineq(a, b).on_prop(rewr_conv("eq_false"))
-
-
-global_methods.update({
-    "nat_norm": nat_norm_method(),
-    "nat_const_ineq": nat_const_ineq_method(),
-})

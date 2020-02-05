@@ -42,6 +42,13 @@ def get_method_sig():
             sig[name] = global_methods[name].sig
     return sig
 
+def register_method(name):
+    def decorator(method_cls):
+        assert name not in global_methods, 'register_method: %s already exists' % name
+        global_methods[name] = method_cls()
+        return method_cls
+    return decorator
+
 
 class Method:
     """Methods represent potential actions on the state."""
@@ -52,6 +59,7 @@ class Method:
         pass
 
 
+@register_method('cut')
 class cut_method(Method):
     """Insert intermediate goal."""
     def __init__(self):
@@ -83,6 +91,8 @@ class cut_method(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'sorry', th=Thm(hyps, C))
 
+
+@register_method('cases')
 class cases_method(Method):
     """Case analysis."""
     def __init__(self):
@@ -110,7 +120,9 @@ class cases_method(Method):
 
         state.apply_tactic(id, tactic.cases(), args=A)
 
-class apply_prev_method(Method):
+
+@register_method('apply_prev')
+class apply_prev(Method):
     """Apply previous fact."""
     def __init__(self):
         self.sig = []
@@ -131,7 +143,9 @@ class apply_prev_method(Method):
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
 
-class rewrite_goal_with_prev_method(Method):
+
+@register_method('rewrite_goal_with_prev')
+class rewrite_goal_with_prev(Method):
     """Rewrite using previous fact."""
     def __init__(self):
         self.sig = []
@@ -153,6 +167,8 @@ class rewrite_goal_with_prev_method(Method):
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
 
+
+@register_method('rewrite_goal')
 class rewrite_goal(Method):
     """Rewrite using a theorem."""
     def __init__(self):
@@ -200,6 +216,8 @@ class rewrite_goal(Method):
             sym_b = False
         state.apply_tactic(id, tactic.rewrite_goal(sym=sym_b), args=data['theorem'], prevs=prevs)
 
+
+@register_method('rewrite_fact')
 class rewrite_fact(Method):
     """Rewrite fact using a theorem."""
     def __init__(self):
@@ -257,6 +275,8 @@ class rewrite_fact(Method):
         if new_id is not None:
             state.replace_id(id2, new_id)
 
+
+@register_method('rewrite_fact_with_prev')
 class rewrite_fact_with_prev(Method):
     """Rewrite fact using a previous equality."""
     def __init__(self):
@@ -290,6 +310,8 @@ class rewrite_fact_with_prev(Method):
         if new_id is not None:
             state.replace_id(id2, new_id)
 
+
+@register_method('apply_forward_step')
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
@@ -360,6 +382,8 @@ class apply_forward_step(Method):
         if new_id is not None:
             state.replace_id(id2, new_id)
 
+
+@register_method('apply_backward_step')
 class apply_backward_step(Method):
     """Apply theorem in the backward direction."""
     def __init__(self):
@@ -406,6 +430,8 @@ class apply_backward_step(Method):
         else:
             state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 
+
+@register_method('apply_resolve_step')
 class apply_resolve_step(Method):
     """Resolve using a theorem ~A and a fact A."""
     def __init__(self):
@@ -440,6 +466,8 @@ class apply_resolve_step(Method):
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.resolve(), args=data['theorem'], prevs=prevs)
 
+
+@register_method('introduction')
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
@@ -500,6 +528,7 @@ class introduction(Method):
                 state.replace_id(item.id, new_id)
 
 
+@register_method('revert_intro')
 class revert_intro(Method):
     """Reverse an introduction."""
     def __init__(self):
@@ -530,6 +559,7 @@ class revert_intro(Method):
         state.remove_line(prevs[0])
 
 
+@register_method('exists_elim')
 class exists_elim(Method):
     """Make use of an exists fact."""
     def __init__(self):
@@ -595,6 +625,7 @@ class exists_elim(Method):
             i += 1
 
 
+@register_method('forall_elim')
 class forall_elim(Method):
     """Elimination of forall statement."""
     def __init__(self):
@@ -626,6 +657,8 @@ class forall_elim(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim_gen', args=t, prevs=prevs)
 
+
+@register_method('inst_exists_goal')
 class inst_exists_goal(Method):
     """Instantiate an exists goal."""
     def __init__(self):
@@ -658,12 +691,15 @@ class inst_exists_goal(Method):
 
         state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
+
+@register_method('induction')
 class induction(Method):
     """Apply induction."""
     def __init__(self):
         self.sig = ['theorem', 'var']
         self.limit = None
         self.no_order = True
+
     def search(self, state, id, prevs, data=None):
         if data:
             return [data]
@@ -699,6 +735,8 @@ class induction(Method):
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
 
+
+@register_method('new_var')
 class new_var(Method):
     """Create new variable."""
     def __init__(self):
@@ -720,6 +758,8 @@ class new_var(Method):
         T = parser.parse_type(data['type'])
         state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
 
+
+@register_method('apply_fact')
 class apply_fact(Method):
     """When one of the prevs is an forall/implies fact, apply that fact
     to the remaining prevs.
@@ -787,25 +827,3 @@ def output_hint(state, step):
         res += pprint.KWGreen(" fact ") + printer.commas_join(facts)
 
     return res
-
-
-global_methods.update({
-    "cut": cut_method(),
-    "cases": cases_method(),
-    "apply_prev": apply_prev_method(),
-    "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),
-    "rewrite_goal": rewrite_goal(),
-    "rewrite_fact": rewrite_fact(),
-    "rewrite_fact_with_prev": rewrite_fact_with_prev(),
-    "apply_forward_step": apply_forward_step(),
-    "apply_backward_step": apply_backward_step(),
-    "apply_resolve_step": apply_resolve_step(),
-    "apply_fact": apply_fact(),
-    "introduction": introduction(),
-    "revert_intro": revert_intro(),
-    "forall_elim": forall_elim(),
-    "exists_elim": exists_elim(),
-    "inst_exists_goal": inst_exists_goal(),
-    "induction": induction(),
-    "new_var": new_var(),
-})

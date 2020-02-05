@@ -14,7 +14,7 @@ from kernel.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import pprint, settings
 from server.tactic import Tactic, MacroTactic
-from server.method import Method, global_methods
+from server.method import Method, register_method
 from prover import z3wrapper
 
 
@@ -128,6 +128,8 @@ class eval_Sem_macro(Macro):
         assert st2 == pt.prop.arg, "eval_Sem_macro: wrong result."
         return pt
 
+
+@register_method('eval_Sem')
 class eval_Sem_method(Method):
     """Apply eval_Sem macro."""
     def __init__(self):
@@ -271,6 +273,8 @@ def vcg_solve(goal):
     vc_pt = [ProofTermDeriv("z3", vc, []) for vc in pt.assums]
     return ProofTermDeriv("vcg", goal, vc_pt)
 
+
+@register_method('vcg')
 class vcg_method(Method):
     """Method corresponding to VCG."""
     def __init__(self):
@@ -292,9 +296,3 @@ class vcg_method(Method):
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, vcg_tactic(), prevs=prevs)
-
-
-global_methods.update({
-    "eval_Sem": eval_Sem_method(),
-    "vcg": vcg_method(),
-})

@@ -11,7 +11,7 @@ from data import nat
 from data import function
 from logic.conv import arg_conv
 from kernel.proofterm import ProofTerm
-from server.method import Method, global_methods
+from server.method import Method, register_method
 from server.tactic import MacroTactic
 from syntax import pprint, settings
 
@@ -108,6 +108,8 @@ class prove_avalI_macro(Macro):
         assert n == pt.prop.arg, "prove_avalI_macro: wrong result."
         return pt
 
+
+@register_method('prove_avalI')
 class prove_avalI_method(Method):
     """Apply prove_avalI macro."""
     def __init__(self):
@@ -133,8 +135,3 @@ class prove_avalI_method(Method):
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "prove_avalI_method"
         state.apply_tactic(id, MacroTactic('prove_avalI'))
-
-
-global_methods.update({
-    "prove_avalI": prove_avalI_method(),
-})

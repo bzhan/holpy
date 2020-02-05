@@ -21,7 +21,7 @@ from logic import conv
 from data import nat
 from data import set as hol_set
 from syntax import pprint, settings
-from server.method import Method, global_methods
+from server.method import Method, register_method
 from prover import fologic
 from util import name
 
@@ -264,6 +264,7 @@ def apply_z3(t):
     return ProofTermDeriv('z3', args=t)
 
 
+@register_method('z3')
 class Z3Method(Method):
     """Method invoking SMT solver Z3."""
     def __init__(self):
@@ -291,8 +292,3 @@ class Z3Method(Method):
 
         assert solve(Implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)
-
-
-global_methods.update({
-    "z3": Z3Method(),
-})

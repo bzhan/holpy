@@ -21,7 +21,7 @@ from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, Conv, ConvExc
 from kernel.proofterm import refl, ProofTermDeriv
 from syntax import pprint, settings
 from server.tactic import MacroTactic
-from server.method import Method, global_methods
+from server.method import Method, register_method
 from util import poly
 
 
@@ -727,6 +727,7 @@ class real_norm_conv(Conv):
             return ProofTermDeriv('real_norm', Eq(t, t2))
 
 
+@register_method('real_norm')
 class real_norm_method(Method):
     """Apply real_norm macro."""
     def __init__(self):
@@ -752,8 +753,3 @@ class real_norm_method(Method):
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "real_norm_method"
         state.apply_tactic(id, MacroTactic('real_norm'))
-
-
-global_methods.update({
-    "real_norm": real_norm_method()
-})
