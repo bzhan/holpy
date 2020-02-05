@@ -10,13 +10,13 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID, ProofStateException
 from kernel import report
 from kernel import theory
-from logic import logic, matcher
 from kernel.proofterm import ProofTerm, ProofTermAtom
+from logic import logic, matcher
 from logic import context
+from logic import tactic
+from logic.context import Context
 from syntax import parser, printer
 from syntax.settings import settings, global_setting
-from logic.context import Context
-from server import tactic
 from server import method
 from util import typecheck
 

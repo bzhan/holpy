@@ -18,9 +18,9 @@ from logic import logic
 from logic import auto
 from logic.logic import TacticException
 from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, Conv, ConvException
+from logic.tactic import MacroTactic
 from kernel.proofterm import refl, ProofTermDeriv
 from syntax import pprint, settings
-from server.tactic import MacroTactic
 from server.method import Method, register_method
 from util import poly
 

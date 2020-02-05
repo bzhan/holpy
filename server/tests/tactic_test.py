@@ -9,9 +9,9 @@ from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
 from kernel.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
-from server import tactic
-from syntax import parser
+from logic import tactic
 from logic import context
+from syntax import parser
 
 
 class TacticTest(unittest.TestCase):

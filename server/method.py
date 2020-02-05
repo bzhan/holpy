@@ -10,8 +10,8 @@ from kernel.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
 from logic import context
+from logic import tactic
 from syntax import parser, printer, pprint
-from server import tactic
 
 
 """Global store for methods."""

@@ -11,11 +11,12 @@ from kernel import theory
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
+from logic import context
+from logic import tactic
+from server import method, server
+from server.server import ProofState
 from syntax import parser
 from syntax import printer
-from logic import context
-from server import tactic, method, server
-from server.server import ProofState
 from imperative import imp
 
 

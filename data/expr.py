@@ -7,12 +7,12 @@ from kernel.macro import Macro
 from kernel.theory import register_macro
 from logic import logic
 from logic.logic import apply_theorem
+from logic.tactic import MacroTactic
 from data import nat
 from data import function
 from logic.conv import arg_conv
 from kernel.proofterm import ProofTerm
 from server.method import Method, register_method
-from server.tactic import MacroTactic
 from syntax import pprint, settings
 
 """Automation for arithmetic expressions."""

@@ -12,8 +12,8 @@ from logic.conv import arg_conv, then_conv, top_conv, beta_conv, beta_norm_conv,
     every_conv, rewr_conv, assums_conv, beta_norm
 from kernel.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
+from logic.tactic import Tactic, MacroTactic
 from syntax import pprint, settings
-from server.tactic import Tactic, MacroTactic
 from server.method import Method, register_method
 from prover import z3wrapper
 

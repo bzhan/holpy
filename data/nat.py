@@ -14,7 +14,7 @@ from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
-from server.tactic import MacroTactic
+from logic.tactic import MacroTactic
 from server.method import Method, register_method
 from syntax import pprint, settings
 from util import poly
