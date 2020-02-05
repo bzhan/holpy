@@ -6,7 +6,6 @@ from kernel.type import TConst, TVar, STVar, TFun, BoolType
 from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Inst, TyInst
 from kernel.thm import Thm
 from kernel.proof import Proof, ItemID
-from kernel.macro import ProofMacro
 from kernel import theory
 from kernel.theory import Theory, TheoryException, CheckProofException
 from kernel import extension

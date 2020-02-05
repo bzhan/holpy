@@ -8,7 +8,7 @@ from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
-from kernel.macro import ProofMacro, has_macro, get_macro
+from kernel.macro import has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
 

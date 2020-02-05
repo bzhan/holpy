@@ -12,14 +12,14 @@ from kernel.type import RealType
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
-from kernel.macro import global_macros
+from kernel.macro import Macro, global_macros
 from data import nat
 from data import real
 from data import set as hol_set
 from logic import auto
 from logic import logic
 from logic.logic import TacticException
-from kernel.proofterm import ProofMacro, ProofTermDeriv
+from kernel.proofterm import ProofTermDeriv
 import integral
 
 
@@ -166,7 +166,7 @@ def solve_with_interval(goal, cond):
     # print("Result: ", res)
     return res == interval
 
-class SymPyMacro(ProofMacro):
+class SymPyMacro(Macro):
     """Macro invoking sympy."""
     def __init__(self):
         self.level = 0  # No expand implemented for sympy.
@@ -185,9 +185,6 @@ class SymPyMacro(ProofMacro):
         assert self.can_eval(goal, prevs), "sympy: not solved."
 
         return Thm(sum([th.hyps for th in prevs], ()), goal)
-
-    def expand(self, prefix, args, prevs):
-        raise NotImplementedError
 
 
 def sympy_solve(goal, pts):

@@ -10,7 +10,7 @@ from kernel import term
 from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
-from kernel import macro
+from kernel.macro import Macro, global_macros
 from data import nat
 from data.set import setT
 from logic import term_ord
@@ -18,7 +18,7 @@ from logic import logic
 from logic import auto
 from logic.logic import TacticException
 from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, Conv, ConvException
-from kernel.proofterm import refl, ProofMacro, ProofTermMacro, ProofTermDeriv
+from kernel.proofterm import refl, ProofTermDeriv
 from syntax import pprint, settings
 from server.tactic import MacroTactic
 from util import poly
@@ -119,7 +119,7 @@ def real_eval(t):
     else:
         return res
 
-class real_eval_macro(ProofMacro):
+class real_eval_macro(Macro):
     """Simplify all arithmetic operations."""
     def __init__(self):
         self.level = 0  # No expand implemented
@@ -688,7 +688,7 @@ def from_poly(p):
     return Sum(RealType, list(from_mono(m) for m in p.monomials))
 
 
-class real_norm_macro(ProofTermMacro):
+class real_norm_macro(Macro):
     """Attempt to prove goal by normalization."""
 
     def __init__(self):
@@ -751,7 +751,7 @@ class real_norm_method(Method):
         state.apply_tactic(id, MacroTactic('real_norm'))
 
 
-macro.global_macros.update({
+global_macros.update({
     "real_eval": real_eval_macro(),
     "real_norm": real_norm_macro()
 })

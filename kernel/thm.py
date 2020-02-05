@@ -5,7 +5,6 @@ from collections import OrderedDict
 from kernel.type import TFun, BoolType, TyInst
 from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda, Inst
-from kernel import macro
 from util import typecheck
 from syntax.settings import settings
 

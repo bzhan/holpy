@@ -2,9 +2,7 @@
 
 from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, primitive_deriv
-from kernel import theory
 from kernel.proof import Proof, ItemID
-from kernel.macro import ProofMacro, get_macro
 from util import typecheck
 
 
@@ -277,11 +275,13 @@ class ProofTermDeriv(ProofTerm):
             nm, T = args
             self.th = Thm.mk_VAR(Var(nm, T))
         elif rule == 'theorem':
+            from kernel import theory
             self.th = theory.get_theorem(args)
         elif rule in primitive_deriv:
             rule_fun, _ = primitive_deriv[rule]
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
+            from kernel.macro import get_macro
             macro = get_macro(rule)
             if th is None:
                 self.th = macro.eval(args, prev_ths)
@@ -289,19 +289,3 @@ class ProofTermDeriv(ProofTerm):
                 self.th = th
         self.args = args
         self.prevs = prevs
-
-class ProofTermMacro(ProofMacro):
-    """Encapsulates a standard way for writing macros: by first
-    constructing a proof term, then export the proof term.
-
-    """
-    def eval(self, args, prevs):
-        pts = [ProofTerm.sorry(prev) for prev in prevs]
-        return self.get_proof_term(args, pts).th
-
-    def get_proof_term(self, args, prevs):
-        raise NotImplementedError
-
-    def expand(self, prefix, args, prevs):
-        pts = tuple([ProofTerm.atom(id, prev) for id, prev in prevs])
-        return self.get_proof_term(args, pts).export(prefix)

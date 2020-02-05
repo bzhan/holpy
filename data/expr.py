@@ -3,14 +3,14 @@
 from kernel.type import TConst, TFun, BoolType, NatType
 from kernel.term import Term, Const, Nat
 from kernel.thm import Thm
-from kernel.macro import global_macros
+from kernel.macro import Macro, global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
 from logic.logic import apply_theorem
 from data import nat
 from data import function
 from logic.conv import arg_conv
-from kernel.proofterm import ProofTermMacro, ProofTerm
+from kernel.proofterm import ProofTerm
 from server.tactic import MacroTactic
 from syntax import pprint, settings
 
@@ -25,7 +25,7 @@ Times = Const("Times", TFun(aexpT, aexpT, aexpT))
 
 avalI = Const("avalI", TFun(TFun(NatType, NatType), aexpT, NatType, BoolType))
 
-class prove_avalI_macro(ProofTermMacro):
+class prove_avalI_macro(Macro):
     """Prove a theorem of the form avalI s t n."""
     def __init__(self):
         self.level = 10

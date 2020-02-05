@@ -12,7 +12,7 @@ from kernel.type import TFun, BoolType, NatType, IntType, RealType
 from kernel import term
 from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
-from kernel.macro import ProofMacro, global_macros
+from kernel.macro import Macro, global_macros
 from kernel.theory import Method, global_methods
 from kernel import theory
 from logic import logic
@@ -238,7 +238,7 @@ def solve(t, debug=False):
         s.add(A)
     return str(s.check()) == 'unsat'
 
-class Z3Macro(ProofMacro):
+class Z3Macro(Macro):
     """Macro invoking SMT solver Z3."""
     def __init__(self):
         self.level = 0  # No expand implemented for Z3.
