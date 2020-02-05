@@ -3,7 +3,8 @@
 from kernel.type import TFun
 from kernel import term
 from kernel.term import Term, Const, Abs
-from kernel.macro import Macro, global_macros
+from kernel.macro import Macro
+from kernel.theory import global_macros
 from data import nat
 from logic import logic
 from logic.conv import Conv, rewr_conv, then_conv, arg_conv, argn_conv

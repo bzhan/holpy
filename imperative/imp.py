@@ -3,8 +3,8 @@
 from kernel.type import TConst, TFun, BoolType
 from kernel.term import Term, Var, Const, Lambda, Inst, true
 from kernel.thm import Thm
-from kernel.macro import Macro, global_macros
-from kernel.theory import Method, global_methods
+from kernel.macro import Macro
+from kernel.theory import Method, global_macros, global_methods
 from data import nat
 from data import function
 from logic import logic

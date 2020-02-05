@@ -3,6 +3,7 @@
 from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, primitive_deriv
 from kernel.proof import Proof, ItemID
+from kernel import theory
 from util import typecheck
 
 
@@ -275,14 +276,12 @@ class ProofTermDeriv(ProofTerm):
             nm, T = args
             self.th = Thm.mk_VAR(Var(nm, T))
         elif rule == 'theorem':
-            from kernel import theory
             self.th = theory.get_theorem(args)
         elif rule in primitive_deriv:
             rule_fun, _ = primitive_deriv[rule]
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
-            from kernel.macro import get_macro
-            macro = get_macro(rule)
+            macro = theory.get_macro(rule)
             if th is None:
                 self.th = macro.eval(args, prev_ths)
             else:

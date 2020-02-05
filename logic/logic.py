@@ -7,7 +7,7 @@ from kernel import term
 from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, true, false
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
-from kernel.macro import Macro, global_macros
+from kernel.macro import Macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
     top_conv, top_sweep_conv, beta_conv, beta_norm_conv, has_rewrite
 from kernel.proofterm import ProofTerm, ProofTermDeriv, refl
@@ -639,7 +639,7 @@ class imp_conj_macro(Macro):
         return concl.implies_intr(A)
 
 
-global_macros.update({
+theory.global_macros.update({
     "beta_norm": beta_norm_macro(),
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),

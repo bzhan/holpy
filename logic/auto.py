@@ -2,7 +2,7 @@
 
 from kernel import term
 from kernel.term import Term, Var
-from kernel.macro import Macro, global_macros
+from kernel.macro import Macro
 from kernel import theory
 from logic import logic
 from logic.logic import apply_theorem, TacticException
@@ -299,6 +299,6 @@ class auto_conv(Conv):
             return ProofTermDeriv('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
 
 
-global_macros.update({
+theory.global_macros.update({
     "auto": auto_macro()
 })

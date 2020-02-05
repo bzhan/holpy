@@ -8,7 +8,6 @@ from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
-from kernel.macro import has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
@@ -558,6 +557,8 @@ def get_theorem(name, *, svar=True):
 def check_proof(prf, rpt=None, *, no_gaps=False, compute_only=False, check_level=0):
     return thy.check_proof(prf, rpt, no_gaps=no_gaps, compute_only=compute_only, check_level=check_level)
 
+
+"""Global store for methods."""
 global_methods = dict()
 
 def has_method(name):
@@ -593,3 +594,25 @@ class Method:
 
     def apply(self, state, id, args, prevs):
         pass
+
+
+"""Global store of macros. Keys are names of the macros,
+values are the corresponding macro objects.
+
+When each macro is defined, it is first put into this dictionary.
+It is added to the theory only when a theory file contains an
+extension adding it by name.
+
+"""
+global_macros = dict()
+
+def has_macro(name):
+    if name in global_macros:
+        macro = global_macros[name]
+        return macro.limit is None or thy.has_theorem(macro.limit)
+    else:
+        return False
+
+def get_macro(name):
+    assert has_macro(name), "get_macro: %s is not available." % name
+    return global_macros[name]

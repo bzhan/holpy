@@ -5,8 +5,8 @@ from kernel import term
 from kernel.term import Term, Const, Not, Eq, Binary, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
-from kernel.theory import Method, global_methods
-from kernel.macro import Macro, global_macros
+from kernel.theory import Method, global_macros, global_methods
+from kernel.macro import Macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from kernel.proofterm import ProofTerm, ProofTermDeriv, refl

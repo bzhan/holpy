@@ -12,8 +12,8 @@ from kernel.type import TFun, BoolType, NatType, IntType, RealType
 from kernel import term
 from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
-from kernel.macro import Macro, global_macros
-from kernel.theory import Method, global_methods
+from kernel.macro import Macro
+from kernel.theory import Method, global_macros, global_methods
 from kernel import theory
 from logic import logic
 from logic import conv

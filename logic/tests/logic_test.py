@@ -5,7 +5,6 @@ import unittest
 from kernel.type import TVar, TFun, BoolType
 from kernel import term
 from kernel.term import Term, Var, Abs, Bound, And, Or, Eq, Forall, Exists
-from kernel.macro import global_macros
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
@@ -31,7 +30,7 @@ def test_macro(self, thy_name, macro, *, vars=None, assms=None, res=None, args="
                limit=None, eval_only=False):
     context.set_context(thy_name, vars=vars, limit=limit)
 
-    macro = global_macros[macro]
+    macro = theory.global_macros[macro]
     assms = [parser.parse_term(assm) for assm in assms] if assms is not None else []
     prev_ths = [Thm([assm], assm) for assm in assms]
     prevs = [ProofTerm.assume(assm) for assm in assms]

@@ -7,29 +7,6 @@ from kernel.term import Term
 from kernel.proofterm import ProofTerm
 
 
-"""Global store of macros. Keys are names of the macros,
-values are the corresponding macro objects.
-
-When each macro is defined, it is first put into this dictionary.
-It is added to the theory only when a theory file contains an
-extension adding it by name.
-
-"""
-global_macros = dict()
-
-def has_macro(name):
-    from kernel import theory
-    if name in global_macros:
-        macro = global_macros[name]
-        return macro.limit is None or theory.thy.has_theorem(macro.limit)
-    else:
-        return False
-
-def get_macro(name):
-    assert has_macro(name), "get_macro: %s is not available." % name
-    return global_macros[name]
-
-
 class Macro():
     """A proof macro represents a derived proof method.
     

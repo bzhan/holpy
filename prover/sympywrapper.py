@@ -12,7 +12,8 @@ from kernel.type import RealType
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
-from kernel.macro import Macro, global_macros
+from kernel.macro import Macro
+from kernel.theory import global_macros
 from data import nat
 from data import real
 from data import set as hol_set
