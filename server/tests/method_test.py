@@ -7,6 +7,7 @@ from kernel.thm import Thm
 from kernel import theory
 from logic import context
 from server import method
+from server.method import global_methods
 from server import server
 from syntax import parser
 
@@ -78,7 +79,7 @@ class MethodTest(unittest.TestCase):
         state = server.parse_init_state(Implies(*(assms + [concl])))
 
         # Obtain method and run its search function
-        method = theory.global_methods[method_name]
+        method = global_methods[method_name]
         search_res = state.apply_search(len(assms), method, prevs=prevs)
         self.assertEqual([res['theorem'] for res in search_res], res)
 

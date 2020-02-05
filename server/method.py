@@ -5,7 +5,6 @@ from kernel import term
 from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel.proof import ItemID, Proof, ProofStateException
-from kernel.theory import Method, get_method
 from kernel import theory
 from kernel.proofterm import ProofTermAtom
 from logic import matcher
@@ -13,6 +12,44 @@ from logic import logic
 from logic import context
 from syntax import parser, printer, pprint
 from server import tactic
+
+
+"""Global store for methods."""
+global_methods = dict()
+
+def has_method(name):
+    if name in global_methods:
+        method = global_methods[name]
+        return method.limit is None or theory.thy.has_theorem(method.limit)
+    else:
+        return False
+
+def get_method(name):
+    assert has_method(name), "get_method: %s is not available" % name
+    return global_methods[name]
+
+def get_all_methods():
+    res = dict()
+    for name in global_methods:
+        if has_method(name):
+            res[name] = global_methods[name]
+    return res
+
+def get_method_sig():
+    sig = dict()
+    for name in global_methods:
+        if has_method(name):
+            sig[name] = global_methods[name].sig
+    return sig
+
+
+class Method:
+    """Methods represent potential actions on the state."""
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, args, prevs):
+        pass
 
 
 class cut_method(Method):
@@ -726,7 +763,7 @@ def apply_method(state, step):
 def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
     try:
-        method = theory.global_methods[step['method_name']]
+        method = global_methods[step['method_name']]
         res = method.display_step(state, step)
     except Exception as e:
         res = pprint.N(step['method_name'])
@@ -736,7 +773,7 @@ def output_step(state, step):
     return res
 
 def output_hint(state, step):
-    method = theory.global_methods[step['method_name']]
+    method = global_methods[step['method_name']]
     res = method.display_step(state, step)
     if '_goal' in step:
         if step['_goal']:
@@ -752,7 +789,7 @@ def output_hint(state, step):
     return res
 
 
-theory.global_methods.update({
+global_methods.update({
     "cut": cut_method(),
     "cases": cases_method(),
     "apply_prev": apply_prev_method(),

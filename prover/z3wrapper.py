@@ -13,14 +13,15 @@ from kernel import term
 from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
 from kernel.macro import Macro
-from kernel.theory import Method, register_macro, global_methods
+from kernel.theory import register_macro
+from kernel.proofterm import ProofTermDeriv
 from kernel import theory
 from logic import logic
 from logic import conv
-from kernel.proofterm import ProofTermDeriv
 from data import nat
 from data import set as hol_set
 from syntax import pprint, settings
+from server.method import Method, global_methods
 from prover import fologic
 from util import name
 

@@ -4,7 +4,7 @@ from kernel.type import TConst, TFun, BoolType
 from kernel.term import Term, Var, Const, Lambda, Inst, true
 from kernel.thm import Thm
 from kernel.macro import Macro
-from kernel.theory import Method, register_macro, global_methods
+from kernel.theory import register_macro
 from data import nat
 from data import function
 from logic import logic
@@ -14,6 +14,7 @@ from kernel.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import pprint, settings
 from server.tactic import Tactic, MacroTactic
+from server.method import Method, global_methods
 from prover import z3wrapper
 
 

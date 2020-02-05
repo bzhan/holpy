@@ -45,7 +45,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 search_res = state.search_method(step['goal_id'], step['fact_ids'])
                 found = 0
                 for res in search_res:
-                    m = theory.global_methods[res['method_name']]
+                    m = method.global_methods[res['method_name']]
                     if res['method_name'] == step['method_name'] and \
                        all(sig not in res or sig not in step or res[sig] == step[sig] for sig in m.sig):
                         if print_search:
@@ -57,7 +57,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 assert found <= 1, "test_val: multiple found"
                 if found == 0:
                     if print_search:
-                        m = theory.global_methods[step['method_name']]
+                        m = method.global_methods[step['method_name']]
                         print('- ' + m.display_step(state, step))
                 else:
                     num_found += 1

@@ -9,7 +9,7 @@ from kernel.type import TFun, BoolType, RealType
 from kernel import term
 from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
-from kernel.theory import Method, register_macro, global_methods
+from kernel.theory import register_macro
 from kernel.macro import Macro
 from data import nat
 from data.set import setT
@@ -21,6 +21,7 @@ from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, Conv, ConvExc
 from kernel.proofterm import refl, ProofTermDeriv
 from syntax import pprint, settings
 from server.tactic import MacroTactic
+from server.method import Method, global_methods
 from util import poly
 
 

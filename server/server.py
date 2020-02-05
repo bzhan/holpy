@@ -76,7 +76,7 @@ class ProofState():
                 "vars": vars,
                 "proof": self.export_proof(),
                 "num_gaps": len(self.rpt.gaps),
-                "method_sig": theory.get_method_sig(),
+                "method_sig": method.get_method_sig(),
             }
         return res
 
@@ -162,7 +162,7 @@ class ProofState():
         id = ItemID(id)
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
         results = []
-        all_methods = theory.get_all_methods()
+        all_methods = method.get_all_methods()
         for name in all_methods:
             cur_method = all_methods[name]
             if hasattr(cur_method, 'no_order'):

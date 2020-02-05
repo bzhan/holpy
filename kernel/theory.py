@@ -558,44 +558,6 @@ def check_proof(prf, rpt=None, *, no_gaps=False, compute_only=False, check_level
     return thy.check_proof(prf, rpt, no_gaps=no_gaps, compute_only=compute_only, check_level=check_level)
 
 
-"""Global store for methods."""
-global_methods = dict()
-
-def has_method(name):
-    if name in global_methods:
-        method = global_methods[name]
-        return method.limit is None or thy.has_theorem(method.limit)
-    else:
-        return False
-
-def get_method(name):
-    assert has_method(name), "get_method: %s is not available" % name
-    return global_methods[name]
-
-def get_all_methods():
-    res = dict()
-    for name in global_methods:
-        if has_method(name):
-            res[name] = global_methods[name]
-    return res
-
-def get_method_sig():
-    sig = dict()
-    for name in global_methods:
-        if has_method(name):
-            sig[name] = global_methods[name].sig
-    return sig
-
-
-class Method:
-    """Methods represent potential actions on the state."""
-    def search(self, state, id, prevs):
-        pass
-
-    def apply(self, state, id, args, prevs):
-        pass
-
-
 """Global store of macros. Keys are names of the macros,
 values are the corresponding macro objects.
 

@@ -5,7 +5,7 @@ from kernel import term
 from kernel.term import Term, Const, Not, Eq, Binary, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
-from kernel.theory import Method, global_methods, register_macro
+from kernel.theory import register_macro
 from kernel.macro import Macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
@@ -15,6 +15,7 @@ from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
 from server.tactic import MacroTactic
+from server.method import Method, global_methods
 from syntax import pprint, settings
 from util import poly
 
