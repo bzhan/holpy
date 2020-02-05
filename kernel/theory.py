@@ -616,3 +616,10 @@ def has_macro(name):
 def get_macro(name):
     assert has_macro(name), "get_macro: %s is not available." % name
     return global_macros[name]
+
+def register_macro(name):
+    def decorator(macro_cls):
+        assert name not in global_macros, 'register_macro: %s already exists' % name
+        global_macros[name] = macro_cls()
+        return macro_cls
+    return decorator

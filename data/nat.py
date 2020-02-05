@@ -5,7 +5,7 @@ from kernel import term
 from kernel.term import Term, Const, Not, Eq, Binary, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
-from kernel.theory import Method, global_macros, global_methods
+from kernel.theory import Method, global_methods, register_macro
 from kernel.macro import Macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
@@ -204,6 +204,7 @@ class nat_conv(Conv):
             raise ConvException("nat_conv")
 
 # Conversion using a macro
+@register_macro('nat_eval')
 class nat_eval_macro(Macro):
     """Simplify all arithmetic operations."""
     def __init__(self):
@@ -491,6 +492,7 @@ class norm_full(Conv):
             return pt
 
 
+@register_macro('nat_norm')
 class nat_norm_macro(Macro):
     """Attempt to prove goal by normalization."""
 
@@ -591,6 +593,7 @@ def ineq_proof_term(m, n):
     else:
         return apply_theorem("ineq_sym", ineq_proof_term(n, m))
 
+@register_macro('nat_const_ineq')
 class nat_const_ineq_macro(Macro):
     """Given m and n, with m ~= n, return the inequality theorem."""
     def __init__(self):
@@ -649,6 +652,8 @@ class nat_const_ineq_method(Method):
         assert len(prevs) == 0, "nat_const_ineq_method"
         state.apply_tactic(id, MacroTactic('nat_const_ineq'))
 
+
+@register_macro('nat_const_less_eq')
 class nat_const_less_eq_macro(Macro):
     """Given m and n, with m <= n, return the less-equal theorem."""
     def __init__(self):
@@ -684,6 +689,7 @@ class nat_const_less_eq_macro(Macro):
 def nat_less_eq(t1, t2):
     return ProofTermDeriv("nat_const_less_eq", t1 <= t2)
 
+@register_macro('nat_const_less')
 class nat_const_less_macro(Macro):
     """Given m and n, with m < n, return the less-than theorem."""
     def __init__(self):
@@ -718,14 +724,6 @@ class nat_eq_conv(Conv):
         else:
             return nat_const_ineq(a, b).on_prop(rewr_conv("eq_false"))
 
-
-global_macros.update({
-    "nat_eval": nat_eval_macro(),
-    "nat_norm": nat_norm_macro(),
-    "nat_const_ineq": nat_const_ineq_macro(),
-    "nat_const_less_eq": nat_const_less_eq_macro(),
-    "nat_const_less": nat_const_less_macro(),
-})
 
 global_methods.update({
     "nat_norm": nat_norm_method(),

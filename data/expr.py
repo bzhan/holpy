@@ -4,7 +4,7 @@ from kernel.type import TConst, TFun, BoolType, NatType
 from kernel.term import Term, Const, Nat
 from kernel.thm import Thm
 from kernel.macro import Macro
-from kernel.theory import Method, global_macros, global_methods
+from kernel.theory import Method, global_methods, register_macro
 from logic import logic
 from logic.logic import apply_theorem
 from data import nat
@@ -25,6 +25,8 @@ Times = Const("Times", TFun(aexpT, aexpT, aexpT))
 
 avalI = Const("avalI", TFun(TFun(NatType, NatType), aexpT, NatType, BoolType))
 
+
+@register_macro('prove_avalI')
 class prove_avalI_macro(Macro):
     """Prove a theorem of the form avalI s t n."""
     def __init__(self):
@@ -131,10 +133,6 @@ class prove_avalI_method(Method):
         assert len(prevs) == 0, "prove_avalI_method"
         state.apply_tactic(id, MacroTactic('prove_avalI'))
 
-
-global_macros.update({
-    "prove_avalI": prove_avalI_macro(),
-})
 
 global_methods.update({
     "prove_avalI": prove_avalI_method(),

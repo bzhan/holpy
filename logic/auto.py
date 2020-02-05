@@ -4,6 +4,7 @@ from kernel import term
 from kernel.term import Term, Var
 from kernel.macro import Macro
 from kernel import theory
+from kernel.theory import register_macro
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
@@ -261,6 +262,8 @@ def norm_rules(th_names):
 
     return norm_fun
 
+
+@register_macro('auto')
 class auto_macro(Macro):
     """Macro applying auto.solve."""
     def __init__(self):
@@ -297,8 +300,3 @@ class auto_conv(Conv):
             return refl(t)
         else:
             return ProofTermDeriv('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
-
-
-theory.global_macros.update({
-    "auto": auto_macro()
-})

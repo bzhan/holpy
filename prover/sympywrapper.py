@@ -13,7 +13,7 @@ from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
 from kernel.macro import Macro
-from kernel.theory import global_macros
+from kernel.theory import register_macro
 from data import nat
 from data import real
 from data import set as hol_set
@@ -167,6 +167,8 @@ def solve_with_interval(goal, cond):
     # print("Result: ", res)
     return res == interval
 
+
+@register_macro('sympy')
 class SymPyMacro(Macro):
     """Macro invoking sympy."""
     def __init__(self):
@@ -212,7 +214,3 @@ auto.add_global_autos(nat.less_eq, sympy_solve)
 auto.add_global_autos(nat.less, sympy_solve)
 
 auto.add_global_autos_neg(nat.equals, sympy_solve)
-
-global_macros.update({
-    "sympy": SymPyMacro(),
-})

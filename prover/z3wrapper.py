@@ -13,7 +13,7 @@ from kernel import term
 from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
 from kernel.macro import Macro
-from kernel.theory import Method, global_macros, global_methods
+from kernel.theory import Method, register_macro, global_methods
 from kernel import theory
 from logic import logic
 from logic import conv
@@ -238,6 +238,8 @@ def solve(t, debug=False):
         s.add(A)
     return str(s.check()) == 'unsat'
 
+
+@register_macro('z3')
 class Z3Macro(Macro):
     """Macro invoking SMT solver Z3."""
     def __init__(self):
@@ -289,10 +291,6 @@ class Z3Method(Method):
         assert solve(Implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)
 
-
-global_macros.update({
-    "z3": Z3Macro(),
-})
 
 global_methods.update({
     "z3": Z3Method(),

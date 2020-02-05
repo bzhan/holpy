@@ -9,7 +9,7 @@ from kernel.type import TFun, BoolType, RealType
 from kernel import term
 from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
-from kernel.theory import Method, global_macros, global_methods
+from kernel.theory import Method, register_macro, global_methods
 from kernel.macro import Macro
 from data import nat
 from data.set import setT
@@ -119,6 +119,7 @@ def real_eval(t):
     else:
         return res
 
+@register_macro('real_eval')
 class real_eval_macro(Macro):
     """Simplify all arithmetic operations."""
     def __init__(self):
@@ -688,6 +689,7 @@ def from_poly(p):
     return Sum(RealType, list(from_mono(m) for m in p.monomials))
 
 
+@register_macro('real_norm')
 class real_norm_macro(Macro):
     """Attempt to prove goal by normalization."""
 
@@ -750,11 +752,6 @@ class real_norm_method(Method):
         assert len(prevs) == 0, "real_norm_method"
         state.apply_tactic(id, MacroTactic('real_norm'))
 
-
-global_macros.update({
-    "real_eval": real_eval_macro(),
-    "real_norm": real_norm_macro()
-})
 
 global_methods.update({
     "real_norm": real_norm_method()

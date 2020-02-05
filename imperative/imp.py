@@ -4,7 +4,7 @@ from kernel.type import TConst, TFun, BoolType
 from kernel.term import Term, Var, Const, Lambda, Inst, true
 from kernel.thm import Thm
 from kernel.macro import Macro
-from kernel.theory import Method, global_macros, global_methods
+from kernel.theory import Method, register_macro, global_methods
 from data import nat
 from data import function
 from logic import logic
@@ -102,6 +102,8 @@ def eval_Sem(c, st):
     else:
         raise NotImplementedError
 
+
+@register_macro('eval_Sem')
 class eval_Sem_macro(Macro):
     """Prove a theorem of the form Sem com st st2."""
     def __init__(self):
@@ -214,6 +216,8 @@ def vcg_norm(T, goal):
     return pt.on_assums(rewr_conv("Entail_def"), beta_norm_conv(),
                         top_conv(function.fun_upd_eval_conv()))
 
+
+@register_macro('vcg')
 class vcg_macro(Macro):
     """Macro wrapper for verification condition generation.
     
@@ -288,11 +292,6 @@ class vcg_method(Method):
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, vcg_tactic(), prevs=prevs)
 
-
-global_macros.update({
-    "eval_Sem": eval_Sem_macro(),
-    "vcg": vcg_macro(),
-})
 
 global_methods.update({
     "eval_Sem": eval_Sem_method(),
