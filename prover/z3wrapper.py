@@ -17,7 +17,7 @@ from kernel.theory import Method, global_methods
 from kernel import theory
 from logic import logic
 from logic import conv
-from logic.proofterm import ProofTermDeriv
+from kernel.proofterm import ProofTermDeriv
 from data import nat
 from data import set as hol_set
 from syntax import pprint, settings

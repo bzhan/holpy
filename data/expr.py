@@ -10,7 +10,7 @@ from logic.logic import apply_theorem
 from data import nat
 from data import function
 from logic.conv import arg_conv
-from logic.proofterm import ProofTermMacro, ProofTerm
+from kernel.proofterm import ProofTermMacro, ProofTerm
 from server.tactic import MacroTactic
 from syntax import pprint, settings
 

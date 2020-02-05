@@ -10,7 +10,7 @@ from data import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, beta_norm_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from kernel.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import pprint, settings
 from server.tactic import Tactic, MacroTactic

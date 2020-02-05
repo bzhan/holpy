@@ -7,7 +7,7 @@ from kernel.term import Term, Var, Eq, Lambda, Inst
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
-from logic.proofterm import ProofTerm, ProofTermAtom
+from kernel.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
 from server import tactic
 from syntax import parser

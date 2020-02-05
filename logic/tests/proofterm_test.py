@@ -8,7 +8,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel import theory
 from logic import basic
-from logic.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm
 
 basic.load_theory('logic_base')
 

@@ -6,7 +6,7 @@ from kernel.type import BoolType
 from kernel.term import Term, Var, Eq
 from kernel.thm import Thm
 from kernel import theory
-from logic.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm
 from logic import conv
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     top_sweep_conv, arg_conv, rewr_conv, has_rewrite, ConvException

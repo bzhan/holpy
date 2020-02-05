@@ -10,7 +10,7 @@ from kernel import theory
 from kernel import macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
     top_conv, top_sweep_conv, beta_conv, beta_norm_conv, has_rewrite
-from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
+from kernel.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
 from logic import matcher
 from util import name
 from util import typecheck

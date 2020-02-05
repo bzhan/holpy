@@ -9,7 +9,7 @@ from kernel.theory import Method, global_methods
 from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
 from logic import auto
 from logic.logic import apply_theorem
 from logic import logic

@@ -19,7 +19,7 @@ from data import set as hol_set
 from logic import auto
 from logic import logic
 from logic.logic import TacticException
-from logic.proofterm import ProofMacro, ProofTermDeriv
+from kernel.proofterm import ProofMacro, ProofTermDeriv
 import integral
 
 

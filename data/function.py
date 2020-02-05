@@ -7,7 +7,7 @@ from kernel.macro import global_macros
 from data import nat
 from logic import logic
 from logic.conv import Conv, rewr_conv, then_conv, arg_conv, argn_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, refl
+from kernel.proofterm import ProofTerm, ProofTermMacro, refl
 
 """Utility functions for the function library."""
 

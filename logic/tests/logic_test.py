@@ -10,7 +10,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
 from kernel import theory
-from logic.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm, ProofTermDeriv
 from logic import logic
 from logic import basic
 from logic import matcher

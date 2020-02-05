@@ -8,7 +8,7 @@ from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
 from logic.conv import Conv, ConvException, refl, eta_conv, top_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from kernel.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from util import name
 
 

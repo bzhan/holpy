@@ -7,7 +7,7 @@ from kernel.thm import Thm, InvalidDerivationException
 from kernel.proof import ItemID, Proof, ProofStateException
 from kernel.theory import Method, get_method
 from kernel import theory
-from logic.proofterm import ProofTermAtom
+from kernel.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
 from logic import context

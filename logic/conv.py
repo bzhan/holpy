@@ -5,7 +5,7 @@ from kernel import term
 from kernel.term import Term, Var, Bound, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
-from logic.proofterm import ProofTerm, refl
+from kernel.proofterm import ProofTerm, refl
 from logic import matcher
 from util import name
 from util import typecheck

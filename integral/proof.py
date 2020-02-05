@@ -11,7 +11,7 @@ from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from logic.proofterm import ProofTerm, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, ProofTermDeriv, refl
 from logic.context import Context
 from data import set
 from data import nat

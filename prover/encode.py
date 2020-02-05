@@ -9,7 +9,7 @@ from kernel.term import Term, Var, And, Or, Not, Implies, Eq
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
-from logic.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm
 from logic.conv import rewr_conv, every_conv, top_conv
 
 basic.load_theory('sat')
