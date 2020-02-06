@@ -20,7 +20,7 @@ class MatchException(Exception):
     def __init__(self, trace):
         self.trace = trace
 
-    def __str__(self):
+    def get_trace(self):
         pat, t = self.trace[-1]
         trace = '\n'.join("%s --- %s" % (pat, t) for pat, t in self.trace)
         return "When matching %s with %s\nTrace:\n%s" % (pat, t, trace)

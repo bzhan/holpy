@@ -322,7 +322,7 @@ class rewr_conv(Conv):
             matcher.first_order_match_list_incr(self.As, ts, inst)
             matcher.first_order_match_incr(lhs, t, inst)
         except matcher.MatchException:
-            raise ConvException("rewr_conv: cannot match %s with %s" % (lhs, t))
+            raise ConvException("rewr_conv: cannot match left side")
 
         # Check that every variable in the theorem has an instantiation
         if set(term.get_svars(self.As + [lhs])) != set(term.get_svars(self.As + [self.C])):
