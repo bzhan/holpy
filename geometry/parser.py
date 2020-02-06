@@ -6,7 +6,9 @@ from geometry.expr import Fact, Rule, Line, Circle
 
 grammar = r"""
     
-    ?fact: CNAME "(" CNAME ("," CNAME)* ")"
+    PRE: ("¬"|CNAME) (CNAME)*
+    
+    ?fact: PRE "(" CNAME ("," CNAME)* ")"
     ?rule: fact ":-" fact ("," fact)*
     ?line: "line" "(" CNAME ("," CNAME)* ")"
     ?circle: "circle" "(" CNAME ("," CNAME)* ")"
@@ -26,6 +28,8 @@ class GeometryTransformer(Transformer):
     def fact(self, pred_name, *args):
         pred_name = str(pred_name)
         args = list(str(arg) for arg in args)
+        if pred_name[0] == "¬":
+            return Fact(pred_name[1:], args, negation=True)
         return Fact(pred_name, args)
 
     def rule(self, concl, *assums):

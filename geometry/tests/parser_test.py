@@ -10,6 +10,7 @@ class ParserTest(unittest.TestCase):
         test_data = [
             ("coll(A0, C, B)", Fact("coll", ["A0", "C", "B"])),
             ("coll(A,C,B)", Fact("coll", ["A", "C", "B"])),
+            ("¬coll(A, C, B)", Fact("coll", ["A", "C", "B"], negation=True)),
         ]
 
         for s, f in test_data:

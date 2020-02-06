@@ -24,7 +24,7 @@ ruleset_raw = {
     "D40": "eqangle(a, c, b, c) :- para(a, b)",
     "D41": "eqangle(P, A, P, B, Q, A, Q, B) :- cyclic(A, B, P, Q)",
     # TODO: Support symbol "¬". Argument "¬coll(P,Q,A,B)" in D42, D58 has been ignored.
-    "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B)",
+    "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B), ¬coll(P, Q, A, B)",
     # Match facts that are not "cyclic" or "circle" first. The order of arguments in D43 differ from the
     # original version.
     "D43": "cong(A, B, P, Q) :- eqangle(C, A, C, B, R, P, R, Q), cyclic(A, B, C, P, Q, R)",
@@ -33,7 +33,7 @@ ruleset_raw = {
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
     "D53": "perp(A, B, B, C) :- circle(O, A, B, C), coll(O, A, C)",
     "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
-    "D58": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(A, C, B, C, P, R, Q, R)",
+    "D58": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(A, C, B, C, P, R, Q, R), ¬coll(A, B, C)",
     "D61": "contri(A, B, C, P, Q, R) :- simtri(A, B, C, P, Q, R), cong(A, B, P, Q)",
     "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
     # TODO: Handle eqratio.

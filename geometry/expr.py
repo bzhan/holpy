@@ -19,7 +19,7 @@ class Fact:
             number -1 represents no requirement.
     """
 
-    def __init__(self, pred_name: str, args: Sequence[str], *, updated=False, lemma=None, cond=None):
+    def __init__(self, pred_name: str, args: Sequence[str], *, updated=False, lemma=None, cond=None, negation=False):
         self.pred_name = pred_name
         self.args = args
         self.updated = updated
@@ -27,6 +27,7 @@ class Fact:
         if cond is None:
             cond = []
         self.cond = cond
+        self.negation = negation
 
         # Whether a fact is shadowed by another
         self.shadowed = False
@@ -187,6 +188,8 @@ class Rule:
     """
     def __init__(self, assums: Sequence[Fact], concl: Fact):
         self.assums = assums
+        self.assums_pos = [a for a in self.assums if not a.negation]
+        self.assums_neg = [a for a in self.assums if a.negation]
         self.concl = concl
 
     def __eq__(self, other):
@@ -488,6 +491,7 @@ class Prover:
 
         elif arg_ty == PonL:
             # para, perp, or eqangle, matching points
+
             # Generate possible lines selections (two lines in one selection).
             if f.pred_name == "eqangle":
                 groups = make_pairs(f.args, pair_len=4)
@@ -550,20 +554,20 @@ class Prover:
         -> [].
         """
         rule = self.ruleset[rule_name]
-        assert len(facts) == len(rule.assums)
+        assert len(facts) == len(rule.assums_pos)
 
         # TODO: flip
         # When trying to obtain contri or simtri from eqangles,
         # There exists the scenario that we need to "flip" one triangle to make its shape as same as
         # another triangle. But the full-angle of the triangle will be changed when "flipping".
-        # (The conventional angle will not be changed after "flipping")
+        # (The general type angle will not be changed after "flipping")
         # E.g.
         # Original: eqangle(A, B, C, D, E, F, G, H)
         # Flipped:  eqangle(C, D, A, B, E, F, G, H)
 
-        # instantiation and list of subfacts used
+        # Match positive facts. Save matching result in insts.
         insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
-        for assum, fact in zip(rule.assums, facts):  # match the arguments recursively
+        for assum, fact in zip(rule.assums_pos, facts):  # match the arguments recursively
             new_insts = []
             # flip = fact.pred_name == 'eqangle' and rule.concl.pred_name in ('simtri', 'contri')
             for inst, subfacts in insts:
@@ -585,17 +589,20 @@ class Prover:
                             extended_t_inst[ch] = (list(line.args)[i], list(line.args)[i+1])
                         insts.append((extended_t_inst, subfacts))
 
-        for inst, subfacts in insts:  # An inst represents one matching result of match_expr
+
+        # Get new facts, according to insts
+        for inst, subfacts in insts:
+
+            # Get correct form of arguments in a fact
             if rule.concl.args[0].islower():
                 concl_args = []  # type: List[str]
-
                 for i in rule.concl.args:
                     concl_args.extend((inst[i][0], inst[i][1]))
             else:
                 concl_args = [inst[i] for i in rule.concl.args]
-            fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
-            # print(fact)
 
+            # Generate new fact
+            fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
             # Check if fact is trivial
             if self.check_trivial(fact):
                 continue
@@ -608,22 +615,41 @@ class Prover:
             if exists:
                 continue
 
-            new_facts = [fact]
-            for target in self.hyps:
-                if not target.shadowed and self.check_imply(fact, target):
-                    target.shadowed = True
+            # Check if those assums with negation are satisfied.
+            # If not satisfied, any post processes will not be conducted. 
+            fact_valid = True
+            if len(rule.assums_neg) > 0:
+                for assum in rule.assums_neg:
+                    # Get a fact from assum.
+                    if assum.args[0].islower():
+                        tmp_args = []  # type: List[str]
+                        for i in rule.concl.args:
+                            tmp_args.append(inst[i][0])
+                    else:
+                        tmp_args = [inst[i][0] for i in rule.concl.args]
+                    tmp_fact = Fact(assum.pred_name, tmp_args)
+                    # Check if exist a fact that can imply the negation assum.
+                    for hyp in self.hyps:
+                        if self.check_imply(tmp_fact, hyp):
+                            fact_valid = False
 
-                if not target.shadowed:
-                    new_fact = self.combine_facts(fact, target)
-                    if new_fact:
-                        fact.shadowed = True
+            if fact_valid:
+                new_facts = [fact]
+                for target in self.hyps:
+                    if not target.shadowed and self.check_imply(fact, target):
                         target.shadowed = True
-                        fact = new_fact
-                        new_facts.append(new_fact)
+
+                    if not target.shadowed:
+                        new_fact = self.combine_facts(fact, target)
+                        if new_fact:
+                            fact.shadowed = True
+                            target.shadowed = True
+                            fact = new_fact
+                            new_facts.append(new_fact)
+                self.hyps.extend(new_facts)
 
             # for new_fact in new_facts:
             #     print(new_fact.lemma, new_fact)
-            self.hyps.extend(new_facts)
 
     def compute_lines(self):
         self.lines = []
@@ -640,6 +666,9 @@ class Prover:
                 elif hyp.pred_name == 'circle':
                     self.circles.append(Circle(hyp.args[1:], center=hyp.args[0]))
 
+    def compute_angles(self):
+        pass
+
     def search_step(self, only_updated=False) -> None:
         """One step of searching fixpoint.
 
@@ -654,7 +683,7 @@ class Prover:
 
         avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
         for rule_name, rule in self.ruleset.items():
-            for facts in itertools.permutations(avail_hyps, len(rule.assums)):
+            for facts in itertools.permutations(avail_hyps, len(rule.assums_pos)):
                 if any(fact.shadowed for fact in facts):
                     continue
                 if only_updated and all(not fact.updated for fact in facts):
@@ -678,8 +707,8 @@ class Prover:
             self.search_step(only_updated=True)
             for fact in self.hyps:
                 if self.check_imply(fact, self.concl):
-                    # print("Last updated lines:", self.lines)
-                    # print("Last updated hyps: ", self.hyps)
+                    print("Last updated lines:", self.lines)
+                    print("Last updated hyps: ", self.hyps)
                     return fact
         print("Last updated lines:", self.lines)
         print("Last updated hyps: ", self.hyps)
