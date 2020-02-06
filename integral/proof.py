@@ -520,7 +520,7 @@ def fraction_rewr_integral(expr, target):
 
     # The domains of integration should now be equal
     target_S, target_f = target_pt.rhs.args
-    assert S == target_S, 'fraction_rewr_integral'
+    assert S == target_S, 'fraction_rewr_integral: %s != %s' % (S, target_S)
 
     # Take variable x and assumption x in the domain of integration
     interval = real.open_interval(a, b)

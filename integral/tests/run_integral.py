@@ -231,7 +231,7 @@ class RunIntegral(unittest.TestCase):
             "UCDAVIS/Exponentials",
             "UCDAVIS/Trigonometric",
             "UCDAVIS/Byparts",
-            "UCDAVIS/LogAndArctangent"
+            "UCDAVIS/LogAndArctangent",
             "UCDAVIS/PartialFraction",
         ]
         test_only = None
@@ -259,7 +259,7 @@ class RunIntegral(unittest.TestCase):
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(100)
 
 
 if __name__ == "__main__":
