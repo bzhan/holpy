@@ -5839,6 +5839,43 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_lt_neg2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-x < -y ⟷ y < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ -x < -y ⟷ y < x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -x < -y ⟷ y < x"
+                }
+            ],
+            "prop": "-x < -y ⟷ y < x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_abs_zero",
             "num_gaps": 0,
             "proof": [
