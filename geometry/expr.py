@@ -50,12 +50,16 @@ class Fact:
                 return self.args == other.args
 
     def __str__(self):
-        if self.pred_name == 'eqangle' and self.args[0].isupper():
-            return " = ".join("∠[%s%s,%s%s]" % tuple(self.args[4*i:4*i+4]) for i in range(len(self.args) // 4))
-        elif self.pred_name == 'contri':
-            return " ≌ ".join("△%s%s%s" % tuple(self.args[3*i:3*i+3]) for i in range(len(self.args) // 3))
+        if self.negation:
+            pre = "¬"
         else:
-            return "%s(%s)" % (self.pred_name, ",".join(self.args))
+            pre = ""
+        if self.pred_name == 'eqangle' and self.args[0].isupper():
+            return pre + " = ".join("∠[%s%s,%s%s]" % tuple(self.args[4*i:4*i+4]) for i in range(len(self.args) // 4))
+        elif self.pred_name == 'contri':
+            return pre + " ≌ ".join("△%s%s%s" % tuple(self.args[3*i:3*i+3]) for i in range(len(self.args) // 3))
+        else:
+            return pre + "%s(%s)" % (self.pred_name, ",".join(self.args))
 
     def __repr__(self):
         return str(self)
@@ -589,7 +593,6 @@ class Prover:
                             extended_t_inst[ch] = (list(line.args)[i], list(line.args)[i+1])
                         insts.append((extended_t_inst, subfacts))
 
-
         # Get new facts, according to insts
         for inst, subfacts in insts:
 
@@ -616,22 +619,23 @@ class Prover:
                 continue
 
             # Check if those assums with negation are satisfied.
-            # If not satisfied, any post processes will not be conducted. 
+            # If not satisfied, all of the post processes will not be conducted.
             fact_valid = True
             if len(rule.assums_neg) > 0:
                 for assum in rule.assums_neg:
                     # Get a fact from assum.
                     if assum.args[0].islower():
                         tmp_args = []  # type: List[str]
-                        for i in rule.concl.args:
+                        for i in assum.args:
                             tmp_args.append(inst[i][0])
                     else:
-                        tmp_args = [inst[i][0] for i in rule.concl.args]
-                    tmp_fact = Fact(assum.pred_name, tmp_args)
+                        tmp_args = [inst[i][0] for i in assum.args]
+                    tmp_fact = Fact(assum.pred_name, tmp_args, negation=True)
                     # Check if exist a fact that can imply the negation assum.
                     for hyp in self.hyps:
                         if self.check_imply(tmp_fact, hyp):
                             fact_valid = False
+                            print("✘ New fact", fact, "has been removed for not satisfying", tmp_fact, ".")
 
             if fact_valid:
                 new_facts = [fact]
@@ -707,13 +711,12 @@ class Prover:
             self.search_step(only_updated=True)
             for fact in self.hyps:
                 if self.check_imply(fact, self.concl):
-                    print("Last updated lines:", self.lines)
-                    print("Last updated hyps: ", self.hyps)
+                    # print("Last updated lines:", self.lines)
+                    # print("Last updated hyps: ", self.hyps)
                     return fact
         print("Last updated lines:", self.lines)
         print("Last updated hyps: ", self.hyps)
-        assert False, "Fixpoint reached without proving goal."
-        return None
+        return False
 
     def combine_facts(self, fact, goal) -> Optional[Fact]:
         """

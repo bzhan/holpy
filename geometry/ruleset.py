@@ -23,7 +23,6 @@ ruleset_raw = {
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",
     "D40": "eqangle(a, c, b, c) :- para(a, b)",
     "D41": "eqangle(P, A, P, B, Q, A, Q, B) :- cyclic(A, B, P, Q)",
-    # TODO: Support symbol "¬". Argument "¬coll(P,Q,A,B)" in D42, D58 has been ignored.
     "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B), ¬coll(P, Q, A, B)",
     # Match facts that are not "cyclic" or "circle" first. The order of arguments in D43 differ from the
     # original version.
