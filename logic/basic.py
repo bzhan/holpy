@@ -147,10 +147,14 @@ def load_theory_cache(filename, username="master"):
 
     # Load all required macros and methods for this file.
     # Make table for this later.
+    if filename == 'logic':
+        from prover import z3wrapper
     if filename == 'expr':
         from data import expr
     if filename == 'real':
-        from data import real    
+        from data import real
+    if filename == 'hoare':
+        from imperative import imp
 
     # Load all imported theories
     depend_list = get_import_order(cache['imports'], username)
