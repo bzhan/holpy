@@ -39,6 +39,9 @@ class ProofTerm():
         self.args = args
         self.prevs = prevs
 
+    def __repr__(self):
+        return str(self)
+
     def __str__(self):
         return "ProofTerm(%s)" % self.th
 
