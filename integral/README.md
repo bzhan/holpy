@@ -26,5 +26,6 @@ Examples covered so far (more to be added in the future):
   * Trigonometric: 27/27
   * Integration by parts: 22/23
   * Logarithms and Arctangent: 20/22
+  * Partial fraction: 16/20
 
-Total: 150/163 (92%)
+Total: 166/183 (90.7%)
