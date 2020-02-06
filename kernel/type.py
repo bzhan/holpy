@@ -192,6 +192,9 @@ class Type():
             return False
         assert isinstance(other, Type), "cannot compare Type with %s" % str(type(other))
 
+        if id(self) == id(other):
+            return True
+
         if self.ty != other.ty:
             return False
         elif self.is_stvar() or self.is_tvar():

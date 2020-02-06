@@ -239,6 +239,9 @@ class Term():
         """
         assert isinstance(other, Term), "cannot compare Term with %s" % str(type(other))
 
+        if id(self) == id(other):
+            return True
+
         if self.ty != other.ty:
             return False
         elif self.is_svar() or self.is_var() or self.is_const():
