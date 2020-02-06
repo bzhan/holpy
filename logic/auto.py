@@ -55,6 +55,8 @@ def add_global_autos_norm(head, f):
         global_autos_norm[head].append(f)
 
 
+solve_record = dict()
+
 def solve(goal, pts=None):
     """The main automation function.
     
@@ -129,26 +131,34 @@ def solve(goal, pts=None):
         pt = solve(goal, pts)
         return eq_pt.symmetric().equal_elim(pt)
 
+    res_pt = None
+
+    if not pts and goal in solve_record:
+        res_pt = solve_record[goal]
+
     # Call registered functions
-    if goal.is_not() and goal.arg.head in global_autos_neg:
+    elif goal.is_not() and goal.arg.head in global_autos_neg:
         for f in global_autos_neg[goal.arg.head]:
             try:
-                pt = f(goal, pts)
-                return eq_pt.symmetric().equal_elim(pt)
+                res_pt = f(goal, pts)
+                break
             except TacticException:
                 pass
 
-    if goal.head in global_autos:
+    elif goal.head in global_autos:
         for f in global_autos[goal.head]:
             try:
-                pt = f(goal, pts)
-                if eq_pt.rhs != pt.prop:
-                    raise AssertionError("auto solve: %s != %s" % (eq_pt.prop, pt.prop))
-                return eq_pt.symmetric().equal_elim(pt)
+                res_pt = f(goal, pts)
+                break
             except TacticException:
                 pass
 
-    raise TacticException
+    if res_pt is not None:
+        if not pts:
+            solve_record[goal] = res_pt
+        return eq_pt.symmetric().equal_elim(res_pt)
+    else:
+        raise TacticException
 
 
 def solve_rules(th_names):
@@ -179,6 +189,8 @@ def solve_rules(th_names):
     return solve_fun
 
 
+norm_record = dict()
+
 def norm(t, pts=None):
     """The main normalization function.
     
@@ -196,6 +208,10 @@ def norm(t, pts=None):
     # No further work for numbers
     if t.is_number():
         return refl(t)
+
+    # Record
+    if not pts and t in norm_record:
+        return norm_record[t]
 
     eq_pt = refl(t.head)
 
@@ -221,17 +237,21 @@ def norm(t, pts=None):
 
         if eq_pt.rhs == ori_rhs:
             # Unchanged, normalization stops here
-            return eq_pt
+            res_pt = eq_pt
         else:
             # Head changed, continue apply norm
             eq_pt2 = norm(eq_pt.rhs, pts)
             if eq_pt2.lhs != eq_pt.rhs:
                 eq_pt2 = eq_pt2.on_lhs(top_conv(eta_conv()))
-            return eq_pt.transitive(eq_pt2)
+            res_pt = eq_pt.transitive(eq_pt2)
     else:
         # No normalization rule available for this head
-        return eq_pt
-    
+        res_pt = eq_pt
+
+    if not pts:
+        norm_record[t] = res_pt
+    return res_pt
+
 def norm_rules(th_names):
     """Return a normalization function that tries to apply each of the
     rewriting rules.
@@ -300,3 +320,13 @@ class auto_conv(Conv):
             return refl(t)
         else:
             return ProofTerm('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
+
+
+"""Managing cache records."""
+def cache_stats():
+    return "Norm: %d\nSolve: %d" % (len(norm_record), len(solve_record))
+
+def clear_cache():
+    global norm_record, solve_record
+    norm_record = dict()
+    solve_record = dict()

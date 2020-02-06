@@ -5,8 +5,10 @@
 import traceback2
 import json
 import copy
+import time
+from pstats import Stats
+import cProfile
 
-from kernel.proof import Proof
 from kernel import theory
 from logic import basic
 from logic import context
@@ -74,6 +76,8 @@ def check_proof(item, *, rewrite):
 
 def check_theory(filename, username='master', rewrite=False):
     """Check the theory with the given name."""
+    start_time = time.perf_counter()
+
     data = basic.load_json_data(filename, username)
     basic.load_theory(filename, limit='start', username=username)
 
@@ -139,7 +143,73 @@ def check_theory(filename, username='master', rewrite=False):
         with open(basic.user_file(filename, username), 'w+', encoding='utf-8') as f:
             json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
+    stat['exec_time'] = time.perf_counter() - start_time
+
     return {
         'data': res,
         'stat': stat
     }
+
+
+if __name__ == "__main__":
+    import sys, getopt
+
+    opts, args = getopt.getopt(sys.argv[1:], 'p')
+
+    basic.load_metadata()
+    files = []
+    if not args:
+        # Load all file names.
+        for name, cache in basic.theory_cache['master'].items():
+            files.append((cache['order'], name))
+        files.sort()
+        files = [name for _, name in files]
+    else:
+        # Load provided names
+        files = args
+
+    profile = False
+    for opt, arg in opts:
+        if opt == '-p':
+            profile = True
+
+    if profile:
+        pr = cProfile.Profile()
+        pr.enable()
+
+    def print_stat(filename, stat):
+        return '%17s | %4d | %7d | %6d | %7d | %7d | %9d | %7d | %9d | %8d | %5.2f' % (
+            filename, stat['OK'], stat['Partial'], stat['Failed'], stat['NoSteps'], stat['ProofOK'],
+            stat['ProofFail'], stat['ParseOK'], stat['ParseFail'], stat['EditFail'], stat['exec_time'])
+
+    print('       File       |  OK  | Partial | Failed | NoSteps | ProofOK | ProofFail | ParseOK | ParseFail | EditFail | Time')
+    print('--------------------------------------------------------------------------------------------------------------------')
+    total_stat = {
+        'OK': 0, 'Partial': 0, 'Failed': 0, 'NoSteps': 0,
+        'ProofOK': 0, 'ProofFail': 0, 'ParseOK': 0, 'ParseFail': 0, 'EditFail': 0, 'exec_time': 0.0
+    }
+    for filename in files:
+        res = check_theory(filename)
+        print(print_stat(filename, res['stat']))
+        for s in total_stat.keys():
+            total_stat[s] += res['stat'][s]
+
+    if len(files) > 1:
+        print('--------------------------------------------------------------------------------------------------------------------')
+        print(print_stat('Total', total_stat))
+    else:
+        print()
+        print(' Item type |           Name           |   Status   ')
+        print('---------------------------------------------------')
+        for line in res['data']:
+            if 'err_type' in line:
+                err = " %s: %s" % (line['err_type'], line['err_str'])
+            else:
+                err = ''
+            print("%10s | %24s | %9s%s" % (line['ty'], line['name'], line['status'], err))
+
+    if profile:
+        p = Stats(pr)
+        p.strip_dirs()
+        p.sort_stats('cumtime')
+        p.print_stats(100)
