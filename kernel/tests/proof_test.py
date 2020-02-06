@@ -2,8 +2,10 @@
 
 import unittest
 
+from kernel import type as hol_type
 from kernel.type import BoolType
-from kernel.term import Term, Var, Implies
+from kernel import term
+from kernel.term import Term, Var, Implies, Inst
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID
 
@@ -12,6 +14,13 @@ B = Var("B", BoolType)
 A_to_B = Implies(A,B)
 
 class ProofTest(unittest.TestCase):
+    def setUp(self):
+        self.type_printer, self.term_printer = hol_type.type_printer, term.term_printer
+        hol_type.type_printer, term.term_printer = None, None
+
+    def tearDown(self):
+        hol_type.type_printer, term.term_printer = self.type_printer, self.term_printer
+
     def testIncrIdAfter(self):
         test_data = [
             (("0", "0", 1), "1"),
@@ -49,14 +58,14 @@ class ProofTest(unittest.TestCase):
             (ProofItem(1, "assume", args=A_to_B),
              "1: assume implies A B",
              {'id': 1, 'th': '', 'rule': 'assume', 'args': 'implies A B', 'prevs': []}),
-            (ProofItem(5, "substitution", args={"A": B, "B": A}, prevs=[4]),
+            (ProofItem(5, "substitution", args=Inst(A=B, B=A), prevs=[4]),
              "5: substitution {A: B, B: A} from 4",
              {'id': 5, 'th': '', 'rule': 'substitution', 'args': '{A: B, B: A}', 'prevs': [4]}),
             (ProofItem(6, "implies_elim", prevs=[5, 3]),
              "6: implies_elim from 5, 3",
              {'id': 6, 'th': '', 'rule': 'implies_elim', 'args': '', 'prevs': [5, 3]}),
-            (ProofItem(1, "apply_theorem_for", args=("conjD2", {}, {"A": B, "B": A}), prevs=[0]),
-             "1: apply_theorem_for conjD2, {}, {A: B, B: A} from 0",
+            (ProofItem(1, "apply_theorem_for", args=("conjD2", Inst(A=B, B=A)), prevs=[0]),
+             "1: apply_theorem_for conjD2, {A: B, B: A} from 0",
              {'id': 1, 'th': '', 'rule': 'apply_theorem_for', 'args': 'conjD2, {A: B, B: A}', 'prevs': [0]})
         ]
 

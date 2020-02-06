@@ -145,6 +145,17 @@ def load_theory_cache(filename, username="master"):
         # No need to update cache
         return cache
 
+    # Load all required macros and methods for this file.
+    # Make table for this later.
+    if filename == 'logic':
+        from prover import z3wrapper
+    if filename == 'expr':
+        from data import expr
+    if filename == 'real':
+        from data import real
+    if filename == 'hoare':
+        from imperative import imp
+
     # Load all imported theories
     depend_list = get_import_order(cache['imports'], username)
 
@@ -166,7 +177,7 @@ def load_theory_cache(filename, username="master"):
                 exts = item.get_extension()
                 theory.thy.unchecked_extend(exts)
                 for ext in exts:
-                    if ext.ty == extension.CONSTANT:
+                    if ext.is_constant():
                         name = ext.ref_name
                     else:
                         name = ext.name
@@ -209,12 +220,6 @@ def load_theory(filename, *, limit=None, username="master"):
         for item in prev_cache['content']:
             if item.error is None:
                 theory.thy.unchecked_extend(item.get_extension())
-
-    # Make table for this later
-    if filename == 'expr':
-        from data import expr
-    if filename == 'real':
-        from data import real
 
     if limit == 'start':
         return None

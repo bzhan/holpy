@@ -3,16 +3,15 @@
 import unittest
 
 from kernel.type import BoolType, NatType
-from kernel.term import Term, Var, Eq, Lambda
+from kernel.term import Term, Var, Eq, Lambda, Inst
 from kernel.thm import Thm
 from kernel.proof import Proof, ProofItem, ItemID
 from kernel import theory
-from logic.proofterm import ProofTerm, ProofTermAtom
+from kernel.proofterm import ProofTerm
 from logic import basic
-from server import tactic
-from syntax import parser
-from syntax import printer
+from logic import tactic
 from logic import context
+from syntax import parser
 
 
 class TacticTest(unittest.TestCase):
@@ -22,7 +21,7 @@ class TacticTest(unittest.TestCase):
 
         assms = [parser.parse_term(prev) for prev in prevs] if prevs is not None else []
         prf = Proof(*assms)
-        prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
+        prevs = [ProofTerm.atom(i, Thm.assume(assm)) for i, assm in enumerate(assms)]
         goal = parser.parse_term(goal)
         goal_pt = ProofTerm.sorry(Thm(assms, goal))
 
@@ -36,7 +35,7 @@ class TacticTest(unittest.TestCase):
         # Export and check proof
         prefix = ItemID(len(prevs)-1) if len(prevs) > 0 else ItemID(len(prevs))
         prf = pt.export(prefix=prefix, prf=prf, subproof=False)
-        self.assertEqual(theory.thy.check_proof(prf), Thm(assms, goal))
+        self.assertEqual(theory.check_proof(prf), Thm(assms, goal))
 
         # Test agreement of new goals
         new_goals = [parser.parse_term(new_goal)
@@ -78,7 +77,7 @@ class TacticTest(unittest.TestCase):
             'nat', tactic.rule(),
             vars={"n": "nat"},
             goal="n + 0 = n",
-            args=("nat_induct", ({}, {'P': Lambda(n, Eq(n + 0, n)), 'x': n})),
+            args=("nat_induct", Inst(P=Lambda(n, Eq(n + 0, n)), x=n)),
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
         )
 

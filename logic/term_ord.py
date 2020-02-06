@@ -42,7 +42,7 @@ def fast_compare_typ(T1, T2):
         return compare_atom(T1.ty, T2.ty)
     elif T1.is_stvar() or T1.is_tvar():
         return compare_atom(T1.name, T2.name)
-    elif T1.is_type():
+    elif T1.is_tconst():
         return compare_pair((T1.name, T1.args), (T2.name, T2.args),
                             compare_atom, lambda l1, l2: compare_list(l1, l2, fast_compare_typ))
     else:

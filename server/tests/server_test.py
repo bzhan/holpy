@@ -11,11 +11,12 @@ from kernel import theory
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
+from logic import context
+from logic import tactic
+from server import method, server
+from server.server import ProofState
 from syntax import parser
 from syntax import printer
-from logic import context
-from server import tactic, method, server
-from server.server import ProofState
 from imperative import imp
 
 
@@ -45,7 +46,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 search_res = state.search_method(step['goal_id'], step['fact_ids'])
                 found = 0
                 for res in search_res:
-                    m = theory.global_methods[res['method_name']]
+                    m = method.global_methods[res['method_name']]
                     if res['method_name'] == step['method_name'] and \
                        all(sig not in res or sig not in step or res[sig] == step[sig] for sig in m.sig):
                         if print_search:
@@ -57,7 +58,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 assert found <= 1, "test_val: multiple found"
                 if found == 0:
                     if print_search:
-                        m = theory.global_methods[step['method_name']]
+                        m = method.global_methods[step['method_name']]
                         print('- ' + m.display_step(state, step))
                 else:
                     num_found += 1
@@ -65,7 +66,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
         self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
         if print_proof:
             print("Final state:")
-            print(printer.print_proof(thy, state.prf))
+            print(state.prf)
         if print_stat:
             total = len(val['steps'])
             print("%20s %5d %5d %5d" % (val['name'], total, num_found, total - num_found))

@@ -197,7 +197,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_neg_mul, {}, {x: x}",
+                    "args": "real_exp_neg_mul, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -213,14 +213,14 @@
                     "th": "⊢ 1 = exp x * exp (-x)"
                 },
                 {
-                    "args": "real_exp_nz, {}, {x: x}",
+                    "args": "real_exp_nz, {x: x}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ ¬(exp x = 0)"
                 },
                 {
-                    "args": "real_mul_linv, {}, {x: exp x}",
+                    "args": "real_mul_linv, {x: exp x}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -229,7 +229,7 @@
                     "th": "⊢ real_inverse (exp x) * exp x = 1"
                 },
                 {
-                    "args": "real_mult_comm, {}, {x: exp (-x), y: (1::real)}",
+                    "args": "real_mult_comm, {x: exp (-x), y: (1::real)}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -552,7 +552,7 @@
                     "th": "⊢ ∀n. exp (of_nat n * x) = exp x ^ n ⟶ exp (of_nat (Suc n) * x) = exp x ^ Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. exp (of_nat n * x) = exp x ^ n, x: n}",
+                    "args": "nat_induct, {P: λn. exp (of_nat n * x) = exp x ^ n, x: n}",
                     "id": "5",
                     "prevs": [
                         "3",
@@ -806,7 +806,7 @@
                     "th": "⊢ x = x / 2 + x / 2"
                 },
                 {
-                    "args": "real_le_square, {}, {x: exp (x / 2)}",
+                    "args": "real_le_square, {x: exp (x / 2)}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -884,14 +884,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "args": "real_exp_pos_le, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ 0 ≤ exp x"
                 },
                 {
-                    "args": "real_exp_nz, {}, {x: x}",
+                    "args": "real_exp_nz, {x: x}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1001,7 +1001,7 @@
                     "th": "1 + x < 0 ⊢ 1 + x ≤ 0"
                 },
                 {
-                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "args": "real_exp_pos_le, {x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1145,7 +1145,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_exp_le_x, {}, {x: x}",
+                    "args": "real_exp_le_x, {x: x}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1232,7 +1232,7 @@
                     "th": "x < y ⊢ 0 < y - x"
                 },
                 {
-                    "args": "real_exp_lt_1, {}, {x: y - x}",
+                    "args": "real_exp_lt_1, {x: y - x}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -1257,7 +1257,7 @@
                     "th": "⊢ ∀a. ∀b. 0 < a ⟶ 1 < b / a ⟶ a < b"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: x}",
+                    "args": "real_exp_pos_lt, {x: x}",
                     "id": "5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1705,7 +1705,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_le, {}, {x: x}",
+                    "args": "real_exp_pos_le, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2007,7 +2007,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_circle, {}, {x: x}",
+                    "args": "sin_circle, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2122,11 +2122,11 @@
             "num_gaps": 1,
             "proof": [
                 {
-                    "args": "real_abs_nat, {}, {n: (1::nat)}",
+                    "args": "real_abs_nat, {n: (1::nat)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ abs ((of_nat::nat ⇒ real) 1) = of_nat 1"
+                    "th": "⊢ (abs::real ⇒ real) of_nat 1 = of_nat 1"
                 },
                 {
                     "args": "real_one_def",
@@ -2147,14 +2147,14 @@
                     "th": "⊢ (1::real) = abs 1"
                 },
                 {
-                    "args": "sin_circle, {}, {x: x}",
+                    "args": "sin_circle, {x: x}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ sin x ^ (2::nat) + cos x ^ (2::nat) = 1"
                 },
                 {
-                    "args": "real_le_square, {}, {x: cos x}",
+                    "args": "real_le_square, {x: cos x}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2355,7 +2355,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_bound, {}, {x: x}",
+                    "args": "sin_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2428,7 +2428,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_bound, {}, {x: x}",
+                    "args": "sin_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2501,7 +2501,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "cos_bound, {}, {x: x}",
+                    "args": "cos_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2574,7 +2574,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "cos_bound, {}, {x: x}",
+                    "args": "cos_bound, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -2928,7 +2928,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_circle, {}, {x: x}",
+                    "args": "sin_circle, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3075,7 +3075,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_lt, {}, {x: x}",
+                    "args": "real_exp_pos_lt, {x: x}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3164,7 +3164,7 @@
                     "th": "exp (log x) = x ⊢ x = exp (log x)"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log x}",
+                    "args": "real_exp_pos_lt, {x: log x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3317,7 +3317,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -3326,7 +3326,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -3512,7 +3512,7 @@
                     "th": "log x = log y ⊢ exp (log x) = exp (log y)"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2.2",
                     "prevs": [
                         "0"
@@ -3521,7 +3521,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "2.3",
                     "prevs": [
                         "1"
@@ -3777,7 +3777,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -3914,7 +3914,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "log_inv, {}, {x: y}",
+                    "args": "log_inv, {x: y}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -4071,7 +4071,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -4080,7 +4080,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -4322,7 +4322,7 @@
                     "th": "x < y ⊢ x < y"
                 },
                 {
-                    "args": "real_lt_trans, {}, {x: (0::real), y: x, z: y}",
+                    "args": "real_lt_trans, {x: (0::real), y: x, z: y}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -4332,7 +4332,7 @@
                     "th": "0 < x, x < y ⊢ 0 < y"
                 },
                 {
-                    "args": "log_mono_lt, {}, {x: x, y: y}",
+                    "args": "log_mono_lt, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4427,7 +4427,7 @@
                     "th": "log x < log y ⊢ log x < log y"
                 },
                 {
-                    "args": "log_mono_lt, {}, {x: x, y: y}",
+                    "args": "log_mono_lt, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4508,7 +4508,7 @@
                     "th": "0 < y ⊢ 0 < y"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -4517,7 +4517,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "exp_log, {}, {x: y}",
+                    "args": "exp_log, {x: y}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -4769,7 +4769,7 @@
                     "th": "0 < x, x ≤ y ⊢ 0 < y"
                 },
                 {
-                    "args": "log_mono_le, {}, {x: x, y: y}",
+                    "args": "log_mono_le, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4869,7 +4869,7 @@
                     "th": "log x ≤ log y ⊢ log x ≤ log y"
                 },
                 {
-                    "args": "log_mono_le, {}, {x: x, y: y}",
+                    "args": "log_mono_le, {x: x, y: y}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -4942,7 +4942,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_pow_lt, {}, {n: n, x: x}",
+                    "args": "real_pow_lt, {n: n, x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -4951,7 +4951,7 @@
                     "th": "0 < x ⊢ 0 < x ^ n"
                 },
                 {
-                    "args": "exp_log, {}, {x: x ^ n}",
+                    "args": "exp_log, {x: x ^ n}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -4960,7 +4960,7 @@
                     "th": "0 < x ⊢ exp (log (x ^ n)) = x ^ n"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "3",
                     "prevs": [
                         "0"
@@ -5091,7 +5091,7 @@
                     "th": "0 < 1 + x ⊢ 0 < 1 + x"
                 },
                 {
-                    "args": "exp_log, {}, {x: 1 + x}",
+                    "args": "exp_log, {x: 1 + x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -5100,7 +5100,7 @@
                     "th": "0 < 1 + x ⊢ exp (log (1 + x)) = 1 + x"
                 },
                 {
-                    "args": "real_exp_le_x, {}, {x: x}",
+                    "args": "real_exp_le_x, {x: x}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5248,7 +5248,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -5257,7 +5257,7 @@
                     "th": "0 < x ⊢ exp (log x) = x"
                 },
                 {
-                    "args": "real_exp_le_x, {}, {x: x}",
+                    "args": "real_exp_le_x, {x: x}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5647,7 +5647,7 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "real_le_refl, {}, {x: 1 - cos x}",
+                    "args": "real_le_refl, {x: 1 - cos x}",
                     "id": "1.3.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5686,7 +5686,7 @@
                     "th": "2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x) ⊢ 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
-                    "args": "real_pos, {}, {n: bit0 1}",
+                    "args": "real_pos, {n: bit0 1}",
                     "id": "1.3.4.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5769,7 +5769,7 @@
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ ∀n. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x) ⟶ 2 ^ Suc n * (1 - cos x) ≤ 1 - cos (2 ^ Suc n * x)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn::nat. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x), x: n}",
+                    "args": "nat_induct, {P: λn::nat. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x), x: n}",
                     "id": "1.3.5",
                     "prevs": [
                         "1.3.3",
@@ -5789,7 +5789,7 @@
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ ∀n::nat. 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
-                    "args": "real_arch_pow2, {}, {x: 1 / (1 - cos x)}",
+                    "args": "real_arch_pow2, {x: 1 / (1 - cos x)}",
                     "id": "1.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -5827,7 +5827,7 @@
                     "th": "cos x < 1 ⊢ 0 < 1 - cos x"
                 },
                 {
-                    "args": "real_lt_ldiv_eq, {}, {x: (1::real), y: (2::real) ^ n, z: 1 - cos x}",
+                    "args": "real_lt_ldiv_eq, {x: (1::real), y: (2::real) ^ n, z: 1 - cos x}",
                     "id": "1.9",
                     "prevs": [
                         "1.8"
@@ -5851,11 +5851,11 @@
                     "prevs": [
                         "1.3"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "cos x < 1, ¬(∃n::nat. cos (2 ^ n * x) < 0) ⊢ 2 ^ n * (1 - cos x) ≤ 1 - cos (2 ^ n * x)"
                 },
                 {
-                    "args": "real_lte_trans, {}, {x: (1::real), y: 2 ^ n * (1 - cos x), z: 1 - cos (2 ^ n * x)}",
+                    "args": "real_lte_trans, {x: (1::real), y: 2 ^ n * (1 - cos x), z: 1 - cos (2 ^ n * x)}",
                     "id": "1.12",
                     "prevs": [
                         "1.10",
@@ -6236,7 +6236,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1) ⊢ 0 < x ∧ ¬(cos x = 1)"
                 },
                 {
-                    "args": "conjD1, {}, {A: 0 < x, B: ¬(cos x = 1)}",
+                    "args": "conjD1, {A: 0 < x, B: ¬(cos x = 1)}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -6245,7 +6245,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1) ⊢ 0 < x"
                 },
                 {
-                    "args": "conjD2, {}, {A: 0 < x, B: ¬(cos x = 1)}",
+                    "args": "conjD2, {A: 0 < x, B: ¬(cos x = 1)}",
                     "id": "4",
                     "prevs": [
                         "2"
@@ -6254,7 +6254,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1) ⊢ ¬(cos x = 1)"
                 },
                 {
-                    "args": "cos_ubound, {}, {x: x}",
+                    "args": "cos_ubound, {x: x}",
                     "id": "5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6284,7 +6284,7 @@
                     "th": "cos x < 1 ⊢ cos x < 1"
                 },
                 {
-                    "args": "cos_goesnegative_lemma, {}, {x: x}",
+                    "args": "cos_goesnegative_lemma, {x: x}",
                     "id": "7.1",
                     "prevs": [
                         "7.0"
@@ -6307,7 +6307,7 @@
                     "th": "cos (2 ^ n * x) < 0 ⊢ cos (2 ^ n * x) < 0"
                 },
                 {
-                    "args": "real_lt_pow2, {}, {n: n}",
+                    "args": "real_lt_pow2, {n: n}",
                     "id": "7.4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6334,7 +6334,7 @@
                     "th": "0 < x ∧ ¬(cos x = 1), cos x < 1, cos (2 ^ n * x) < 0 ⊢ 0 < 2 ^ n * x ∧ cos (2 ^ n * x) < 0"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. 0 < x ∧ cos x < 0, a: 2 ^ n * x}",
+                    "args": "exI, {P: λx. 0 < x ∧ cos x < 0, a: 2 ^ n * x}",
                     "id": "7.7",
                     "prevs": [
                         "7.6"
@@ -6370,14 +6370,14 @@
                     "th": "cos x = 1 ⊢ cos x = 1"
                 },
                 {
-                    "args": "negE_gen, {}, {A: cos x = 1, C: ∃a1. 0 < a1 ∧ cos a1 < 0}",
+                    "args": "negE_gen, {A: cos x = 1, C: ∃x. 0 < x ∧ cos x < 0}",
                     "id": "8.1",
                     "prevs": [
                         "4",
                         "8.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "0 < x ∧ ¬(cos x = 1), cos x = 1 ⊢ ∃a1. 0 < a1 ∧ cos a1 < 0"
+                    "th": "0 < x ∧ ¬(cos x = 1), cos x = 1 ⊢ ∃x. 0 < x ∧ cos x < 0"
                 },
                 {
                     "args": "",
@@ -6398,7 +6398,7 @@
                         "8"
                     ],
                     "rule": "apply_theorem",
-                    "th": "0 < x ∧ ¬(cos x = 1) ⊢ ∃a1. 0 < a1 ∧ cos a1 < 0"
+                    "th": "0 < x ∧ ¬(cos x = 1) ⊢ ∃x. 0 < x ∧ cos x < 0"
                 },
                 {
                     "args": "∃x. 0 < x ∧ ¬(cos x = 1)",
@@ -6410,7 +6410,7 @@
                         "9"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∃a1. 0 < a1 ∧ cos a1 < 0"
+                    "th": "⊢ ∃x. 0 < x ∧ cos x < 0"
                 }
             ],
             "prop": "∃x. 0 < x ∧ cos x < 0",
@@ -6598,7 +6598,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_double, {}, {x: pi / 2}",
+                    "args": "sin_double, {x: pi / 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6870,7 +6870,7 @@
                     "th": "2 * sin (pi / 2) = 0, sin (pi / 2) = 0, ¬(cos (pi / 2) = 0) ⊢ ¬(sin (pi / 2) ≤ 0)"
                 },
                 {
-                    "args": "disjI1, {}, {A: ¬(sin (pi / 2) ≤ 0), B: ¬(0 ≤ sin (pi / 2))}",
+                    "args": "disjI1, {A: ¬(sin (pi / 2) ≤ 0), B: ¬(0 ≤ sin (pi / 2))}",
                     "id": "6.3.1.13",
                     "prevs": [
                         "6.3.1.12"
@@ -7279,7 +7279,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_circle, {}, {x: pi / 2}",
+                    "args": "sin_circle, {x: pi / 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -8292,7 +8292,7 @@
                     "th": "⊢ sin 0 = 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: sin 0 = 0, B: cos 0 = 0}",
+                    "args": "disjI1, {A: sin 0 = 0, B: cos 0 = 0}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -8372,7 +8372,7 @@
                     "th": "⊢ sin pi = 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: sin pi = 0, B: cos pi = 0}",
+                    "args": "disjI1, {A: sin pi = 0, B: cos pi = 0}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -8442,7 +8442,92 @@
                 "hint_rewrite"
             ],
             "name": "tan_npi",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "eq_refl, {x: (0::real)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (0::real) = 0, B: cos (of_nat n * pi) = 0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0 ∨ cos (of_nat n * pi) = 0"
+                },
+                {
+                    "args": "real_div_eq_0, 0 / cos (of_nat n * pi) = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 / cos (of_nat n * pi) = 0"
+                },
+                {
+                    "args": "sin_npi, sin (of_nat n * pi) / cos (of_nat n * pi) = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (of_nat n * pi) / cos (of_nat n * pi) = 0"
+                },
+                {
+                    "args": "tan_def, tan (of_nat n * pi) = 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (of_nat n * pi) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (of_nat n * pi) = 0"
+                }
+            ],
             "prop": "tan (of_nat n * pi) = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_npi"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_eq_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat"
@@ -8453,7 +8538,94 @@
                 "hint_rewrite"
             ],
             "name": "tan_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_mul_lneg, -(sin x) * real_inverse (cos x) = -(sin x * real_inverse (cos x))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(sin x) * real_inverse (cos x) = -(sin x * real_inverse (cos x))"
+                },
+                {
+                    "args": "real_divide_def, -(sin x) / cos x = -(sin x / cos x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(sin x) / cos x = -(sin x / cos x)"
+                },
+                {
+                    "args": "cos_neg, -(sin x) / cos (-x) = -(sin x / cos x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(sin x) / cos (-x) = -(sin x / cos x)"
+                },
+                {
+                    "args": "sin_neg, sin (-x) / cos (-x) = -(sin x / cos x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (-x) / cos (-x) = -(sin x / cos x)"
+                },
+                {
+                    "args": "tan_def, tan (-x) = -(tan x)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (-x) = -(tan x)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (-x) = -(tan x)"
+                }
+            ],
             "prop": "tan (-x) = -(tan x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_neg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8464,7 +8636,107 @@
                 "hint_rewrite"
             ],
             "name": "tan_periodic_pi",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(sin x) * -(real_inverse (cos x)) = sin x * real_inverse (cos x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -(sin x) * -(real_inverse (cos x)) = sin x * real_inverse (cos x)"
+                },
+                {
+                    "args": "real_inv_neg, -(sin x) * real_inverse (-(cos x)) = sin x * real_inverse (cos x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(sin x) * real_inverse (-(cos x)) = sin x * real_inverse (cos x)"
+                },
+                {
+                    "args": "real_divide_def, -(sin x) / -(cos x) = sin x / cos x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(sin x) / -(cos x) = sin x / cos x"
+                },
+                {
+                    "args": "cos_periodic_pi, -(sin x) / cos (x + pi) = sin x / cos x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(sin x) / cos (x + pi) = sin x / cos x"
+                },
+                {
+                    "args": "sin_periodic_pi, sin (x + pi) / cos (x + pi) = sin x / cos x",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (x + pi) / cos (x + pi) = sin x / cos x"
+                },
+                {
+                    "args": "tan_def, tan (x + pi) = tan x",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (x + pi) = tan x"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (x + pi) = tan x"
+                }
+            ],
             "prop": "tan (x + pi) = tan x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_periodic_pi"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_periodic_pi"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_neg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -8475,7 +8747,222 @@
                 "hint_rewrite"
             ],
             "name": "tan_periodic_npi",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_rid, tan (x + 0) = tan x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (x + 0) = tan x"
+                },
+                {
+                    "args": "real_mul_lzero, tan (x + 0 * pi) = tan x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (x + 0 * pi) = tan x"
+                },
+                {
+                    "args": "real_zero_def, tan (x + of_nat 0 * pi) = tan x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ tan (x + of_nat 0 * pi) = tan x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. tan (x + of_nat n * pi) = tan x ⟶ tan (x + of_nat (Suc n) * pi) = tan x"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "tan (x + of_nat n * pi) = tan x",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + of_nat n * pi) = tan x"
+                },
+                {
+                    "args": "tan_periodic_pi, tan (x + of_nat n * pi + pi) = tan x",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + of_nat n * pi + pi) = tan x"
+                },
+                {
+                    "args": "real_add_assoc, tan (x + (of_nat n * pi + pi)) = tan x",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + (of_nat n * pi + pi)) = tan x"
+                },
+                {
+                    "args": "real_mul_lid, tan (x + (of_nat n * pi + 1 * pi)) = tan x",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + (of_nat n * pi + 1 * pi)) = tan x"
+                },
+                {
+                    "args": "real_add_rdistrib, tan (x + (of_nat n + 1) * pi) = tan x",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + (of_nat n + 1) * pi) = tan x"
+                },
+                {
+                    "args": "real_one_def, tan (x + (of_nat n + of_nat 1) * pi) = tan x",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + (of_nat n + of_nat 1) * pi) = tan x"
+                },
+                {
+                    "args": "real_of_nat_add, tan (x + of_nat (n + 1) * pi) = tan x",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + of_nat (n + 1) * pi) = tan x"
+                },
+                {
+                    "args": "add_1_right, tan (x + of_nat (Suc n) * pi) = tan x",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "tan (x + of_nat n * pi) = tan x ⊢ tan (x + of_nat (Suc n) * pi) = tan x"
+                },
+                {
+                    "args": "",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. tan (x + of_nat n * pi) = tan x ⟶ tan (x + of_nat (Suc n) * pi) = tan x"
+                },
+                {
+                    "args": "nat_induct, {P: λn. tan (x + of_nat n * pi) = tan x, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tan (x + of_nat n * pi) = tan x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (x + of_nat n * pi) = tan x"
+                }
+            ],
             "prop": "tan (x + of_nat n * pi) = tan x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rdistrib"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_assoc"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_periodic_pi"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat",
@@ -8488,10 +8975,146 @@
                 "hint_backward1"
             ],
             "name": "tan_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "¬(cos y = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos y = 0) ⊢ ¬(cos y = 0)"
+                },
+                {
+                    "args": "¬(cos (x + y) = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos (x + y) = 0) ⊢ ¬(cos (x + y) = 0)"
+                },
+                {
+                    "args": "cos_add",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(cos (x + y) = 0) ⊢ ¬(cos x * cos y - sin x * sin y = 0)"
+                },
+                {
+                    "args": "∀cx. ∀cy. ∀sx. ∀sy. ¬(cx = 0) ⟶ ¬(cy = 0) ⟶ ¬(cx * cy - sx * sy = 0) ⟶ (sx * cy + cx * sy) / (cx * cy - sx * sy) = (sx / cx + sy / cy) / (1 - sx / cx * (sy / cy))",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀cx. ∀cy. ∀sx. ∀sy. ¬(cx = 0) ⟶ ¬(cy = 0) ⟶ ¬(cx * cy - sx * sy = 0) ⟶ (sx * cy + cx * sy) / (cx * cy - sx * sy) = (sx / cx + sy / cy) / (1 - sx / cx * (sy / cy))"
+                },
+                {
+                    "args": "cos x, cos y, sin x, sin y",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x + y) = 0) ⊢ (sin x * cos y + cos x * sin y) / (cos x * cos y - sin x * sin y) = (sin x / cos x + sin y / cos y) / (1 - sin x / cos x * (sin y / cos y))"
+                },
+                {
+                    "args": "sin_add, sin (x + y) / (cos x * cos y - sin x * sin y) = (sin x / cos x + sin y / cos y) / (1 - sin x / cos x * (sin y / cos y))",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x + y) = 0) ⊢ sin (x + y) / (cos x * cos y - sin x * sin y) = (sin x / cos x + sin y / cos y) / (1 - sin x / cos x * (sin y / cos y))"
+                },
+                {
+                    "args": "cos_add, sin (x + y) / cos (x + y) = (sin x / cos x + sin y / cos y) / (1 - sin x / cos x * (sin y / cos y))",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x + y) = 0) ⊢ sin (x + y) / cos (x + y) = (sin x / cos x + sin y / cos y) / (1 - sin x / cos x * (sin y / cos y))"
+                },
+                {
+                    "args": "tan_def, tan (x + y) = (tan x + tan y) / (1 - tan x * tan y)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x + y) = 0) ⊢ tan (x + y) = (tan x + tan y) / (1 - tan x * tan y)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ ¬(cos (x + y) = 0) ⟶ tan (x + y) = (tan x + tan y) / (1 - tan x * tan y)"
+                }
+            ],
             "prop": [
                 "¬(cos x = 0) ",
                 "⟶ ¬(cos y = 0) ",
                 "   ⟶ ¬(cos (x + y) = 0) ⟶ tan (x + y) = (tan x + tan y) / (1 - tan x * tan y)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_add"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_add"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cos_add"
+                },
+                {
+                    "goal": "!cx::real. !cy. !sx. !sy. ~(cx = 0) --> ~(cy = 0) --> ~(cx *cy - sx * sy = 0) --> (sx * cy + cx * sy) / (cx * cy - sx * sy) = (sx / cx + sy / cy) / (1 - sx / cx * (sy / cy))",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -8505,10 +9128,175 @@
                 "hint_backward1"
             ],
             "name": "tan_sub",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "¬(cos y = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos y = 0) ⊢ ¬(cos y = 0)"
+                },
+                {
+                    "args": "¬(cos (x - y) = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos (x - y) = 0) ⊢ ¬(cos (x - y) = 0)"
+                },
+                {
+                    "args": "1 + tan x * tan y = 1 - -(tan x * tan y)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ 1 + tan x * tan y = 1 - -(tan x * tan y)"
+                },
+                {
+                    "args": "real_mul_rneg, 1 + tan x * tan y = 1 - tan x * -(tan y)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x - y) = 0) ⊢ 1 + tan x * tan y = 1 - tan x * -(tan y)"
+                },
+                {
+                    "args": "cos_neg, ¬(cos (-y) = 0)",
+                    "id": "5",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x - y) = 0) ⊢ ¬(cos (-y) = 0)"
+                },
+                {
+                    "args": "real_minus_def",
+                    "id": "6",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(cos (x - y) = 0) ⊢ ¬(cos (x + -y) = 0)"
+                },
+                {
+                    "args": "tan_add",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x - y) = 0) ⊢ tan (x + -y) = (tan x + tan (-y)) / (1 - tan x * tan (-y))"
+                },
+                {
+                    "args": "tan_neg, tan (x + -y) = (tan x + -(tan y)) / (1 - tan x * -(tan y))",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x - y) = 0) ⊢ tan (x + -y) = (tan x + -(tan y)) / (1 - tan x * -(tan y))"
+                },
+                {
+                    "args": "tan (x + -y) = (tan x + -(tan y)) / (1 + tan x * tan y)",
+                    "id": "9",
+                    "prevs": [
+                        "4",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x - y) = 0) ⊢ tan (x + -y) = (tan x + -(tan y)) / (1 + tan x * tan y)"
+                },
+                {
+                    "args": "real_minus_def, tan (x - y) = (tan x - tan y) / (1 + tan x * tan y)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0), ¬(cos (x - y) = 0) ⊢ tan (x - y) = (tan x - tan y) / (1 + tan x * tan y)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ ¬(cos (x - y) = 0) ⟶ tan (x - y) = (tan x - tan y) / (1 + tan x * tan y)"
+                }
+            ],
             "prop": [
                 "¬(cos x = 0) ",
                 "⟶ ¬(cos y = 0) ",
                 "   ⟶ ¬(cos (x - y) = 0) ⟶ tan (x - y) = (tan x - tan y) / (1 + tan x * tan y)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal": "(1 + tan x * tan y) = (1 - tan x * (-tan y))",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rneg"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "tan_neg"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_add"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -8521,7 +9309,573 @@
                 "hint_rewrite"
             ],
             "name": "tan_double",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ cos x = 0 ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "cos x = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "cos x = 0 ⊢ cos x = 0"
+                },
+                {
+                    "args": "2 * sin x * 0 * real_inverse (cos (2 * x)) = 2 * (sin x * 0) * real_inverse (1 - (sin x * 0) ^ (2::nat))",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ 2 * sin x * 0 * real_inverse (cos (2 * x)) = 2 * (sin x * 0) * real_inverse (1 - (sin x * 0) ^ (2::nat))"
+                },
+                {
+                    "args": "real_inv_0, 2 * sin x * 0 * real_inverse (cos (2 * x)) = 2 * (sin x * real_inverse 0) * real_inverse (1 - (sin x * real_inverse 0) ^ (2::nat))",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0 ⊢ 2 * sin x * 0 * real_inverse (cos (2 * x)) = 2 * (sin x * real_inverse 0) * real_inverse (1 - (sin x * real_inverse 0) ^ (2::nat))"
+                },
+                {
+                    "args": "real_divide_def, 2 * sin x * 0 * real_inverse (cos (2 * x)) = 2 * (sin x / 0) * real_inverse (1 - (sin x / 0) ^ (2::nat))",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0 ⊢ 2 * sin x * 0 * real_inverse (cos (2 * x)) = 2 * (sin x / 0) * real_inverse (1 - (sin x / 0) ^ (2::nat))"
+                },
+                {
+                    "args": "real_divide_def, 2 * sin x * 0 / cos (2 * x) = 2 * (sin x / 0) / (1 - (sin x / 0) ^ (2::nat))",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0 ⊢ 2 * sin x * 0 / cos (2 * x) = 2 * (sin x / 0) / (1 - (sin x / 0) ^ (2::nat))"
+                },
+                {
+                    "args": "2 * sin x * cos x / cos (2 * x) = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "cos x = 0 ⊢ 2 * sin x * cos x / cos (2 * x) = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))"
+                },
+                {
+                    "args": "sin_double, sin (2 * x) / cos (2 * x) = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0 ⊢ sin (2 * x) / cos (2 * x) = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))"
+                },
+                {
+                    "args": "tan_def, tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0 ⊢ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos x = 0 ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(cos x = 0) ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(cos x = 0) ⊢ cos (2 * x) = 0 ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "cos (2 * x) = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "cos (2 * x) = 0 ⊢ cos (2 * x) = 0"
+                },
+                {
+                    "args": "cos_double",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos (2 * x) = 0 ⊢ cos x ^ (2::nat) - sin x ^ (2::nat) = 0"
+                },
+                {
+                    "args": "real_sub_0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos (2 * x) = 0 ⊢ cos x ^ (2::nat) = sin x ^ (2::nat)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos (2 * x) = 0 ⊢ sin x ^ (2::nat) = cos x ^ (2::nat)"
+                },
+                {
+                    "args": "real_pow_nz, {n: (2::nat), x: cos x}",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x ^ (2::nat) = 0)"
+                },
+                {
+                    "args": "real_mul_linv, {x: cos x ^ (2::nat)}",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(cos x = 0) ⊢ real_inverse (cos x ^ (2::nat)) * cos x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "real_mult_comm",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(cos x = 0) ⊢ cos x ^ (2::nat) * real_inverse (cos x ^ (2::nat)) = 1"
+                },
+                {
+                    "args": "real_mul_rzero, sin (2 * x) * 0 = 2 * (sin x * real_inverse (cos x)) * 0",
+                    "id": "1.1.7",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (2 * x) * 0 = 2 * (sin x * real_inverse (cos x)) * 0"
+                },
+                {
+                    "args": "real_inv_0, sin (2 * x) * real_inverse 0 = 2 * (sin x * real_inverse (cos x)) * real_inverse 0",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ sin (2 * x) * real_inverse 0 = 2 * (sin x * real_inverse (cos x)) * real_inverse 0"
+                },
+                {
+                    "args": "real_sub_refl, sin (2 * x) * real_inverse 0 = 2 * (sin x * real_inverse (cos x)) * real_inverse (1 - 1)",
+                    "id": "1.1.9",
+                    "prevs": [
+                        "1.1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ sin (2 * x) * real_inverse 0 = 2 * (sin x * real_inverse (cos x)) * real_inverse (1 - 1)"
+                },
+                {
+                    "args": "sin (2 * x) * real_inverse 0 = 2 * (sin x * real_inverse (cos x)) * real_inverse (1 - cos x ^ (2::nat) * real_inverse (cos x ^ (2::nat)))",
+                    "id": "1.1.10",
+                    "prevs": [
+                        "1.1.6",
+                        "1.1.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ sin (2 * x) * real_inverse 0 = 2 * (sin x * real_inverse (cos x)) * real_inverse (1 - cos x ^ (2::nat) * real_inverse (cos x ^ (2::nat)))"
+                },
+                {
+                    "args": "real_divide_def, sin (2 * x) * real_inverse 0 = 2 * (sin x / cos x) * real_inverse (1 - cos x ^ (2::nat) / cos x ^ (2::nat))",
+                    "id": "1.1.11",
+                    "prevs": [
+                        "1.1.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ sin (2 * x) * real_inverse 0 = 2 * (sin x / cos x) * real_inverse (1 - cos x ^ (2::nat) / cos x ^ (2::nat))"
+                },
+                {
+                    "args": "real_divide_def, sin (2 * x) / 0 = 2 * (sin x / cos x) / (1 - cos x ^ (2::nat) / cos x ^ (2::nat))",
+                    "id": "1.1.12",
+                    "prevs": [
+                        "1.1.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ sin (2 * x) / 0 = 2 * (sin x / cos x) / (1 - cos x ^ (2::nat) / cos x ^ (2::nat))"
+                },
+                {
+                    "args": "sin (2 * x) / 0 = 2 * (sin x / cos x) / (1 - sin x ^ (2::nat) / cos x ^ (2::nat))",
+                    "id": "1.1.13",
+                    "prevs": [
+                        "1.1.3",
+                        "1.1.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "cos (2 * x) = 0, ¬(cos x = 0) ⊢ sin (2 * x) / 0 = 2 * (sin x / cos x) / (1 - sin x ^ (2::nat) / cos x ^ (2::nat))"
+                },
+                {
+                    "args": "real_pow_div, sin (2 * x) / 0 = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))",
+                    "id": "1.1.14",
+                    "prevs": [
+                        "1.1.13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ sin (2 * x) / 0 = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))"
+                },
+                {
+                    "args": "sin (2 * x) / cos (2 * x) = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))",
+                    "id": "1.1.15",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "cos (2 * x) = 0, ¬(cos x = 0) ⊢ sin (2 * x) / cos (2 * x) = 2 * (sin x / cos x) / (1 - (sin x / cos x) ^ (2::nat))"
+                },
+                {
+                    "args": "tan_def, tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))",
+                    "id": "1.1.16",
+                    "prevs": [
+                        "1.1.15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), cos (2 * x) = 0 ⊢ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.17",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.16"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(cos x = 0) ⊢ cos (2 * x) = 0 ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos (x + x) = 0) ⟶ tan (x + x) = (tan x + tan x) / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "¬(cos (x + x) = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos (x + x) = 0) ⊢ ¬(cos (x + x) = 0)"
+                },
+                {
+                    "args": "tan_add",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0), ¬(cos (x + x) = 0) ⊢ tan (x + x) = (tan x + tan x) / (1 - tan x * tan x)"
+                },
+                {
+                    "args": "real_pow_2, tan (x + x) = (tan x + tan x) / (1 - tan x ^ (2::nat))",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos (x + x) = 0) ⊢ tan (x + x) = (tan x + tan x) / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos (x + x) = 0) ⟶ tan (x + x) = (tan x + tan x) / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "real_mul_2, ¬(cos (2 * x) = 0) ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos (2 * x) = 0) ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0) ⊢ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))"
+                }
+            ],
             "prop": "tan (2 * x) = 2 * tan x / (1 - tan x ^ (2::nat))",
+            "steps": [
+                {
+                    "case": "cos x = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_double"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_0"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "cos (2* x) = 0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cos_double"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_div"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_forward_step",
+                    "param_n": "(2::nat)",
+                    "theorem": "real_pow_nz"
+                },
+                {
+                    "goal_id": "1.1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.4"
+                    ],
+                    "goal_id": "1.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5"
+                    ],
+                    "goal_id": "1.1.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.6"
+                    ],
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_refl"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_0"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_2"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -9544,10 +10898,931 @@
         {
             "attributes": [
                 "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_bounds",
+            "prop": "-1 ≤ y ⟶ y ≤ 1 ⟶ 0 ≤ acs y ∧ acs y ≤ pi",
+            "ty": "thm",
+            "vars": {
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_neg",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ acs (-x) = pi - acs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sin_acs_nz",
+            "prop": "-1 < x ⟶ x < 1 ⟶ ¬(sin (acs x) = 0)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_mono_lt_eq",
+            "prop": "abs x ≤ 1 ⟶ abs y ≤ 1 ⟶ acs x < acs y ⟷ y < x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_mono_le_eq",
+            "prop": "abs x ≤ 1 ⟶ abs y ≤ 1 ⟶ acs x ≤ acs y ⟷ y ≤ x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_mono_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x ≤ 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x ≤ 1 ⊢ abs x ≤ 1"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "abs y ≤ 1",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs y ≤ 1 ⊢ abs y ≤ 1"
+                },
+                {
+                    "args": "acs_mono_lt_eq, {x: y, y: x}",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs y ≤ 1, abs x ≤ 1 ⊢ acs y < acs x ⟷ x < y"
+                },
+                {
+                    "args": "acs y < acs x",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs y ≤ 1, abs x ≤ 1, x < y ⊢ acs y < acs x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x ≤ 1 ⟶ x < y ⟶ abs y ≤ 1 ⟶ acs y < acs x"
+                }
+            ],
+            "prop": "abs x ≤ 1 ⟶ x < y ⟶ abs y ≤ 1 ⟶ acs y < acs x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "2",
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "acs_mono_lt_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_mono_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x ≤ 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x ≤ 1 ⊢ abs x ≤ 1"
+                },
+                {
+                    "args": "x ≤ y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "abs y ≤ 1",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs y ≤ 1 ⊢ abs y ≤ 1"
+                },
+                {
+                    "args": "acs_mono_le_eq, {x: y, y: x}",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs y ≤ 1, abs x ≤ 1 ⊢ acs y ≤ acs x ⟷ x ≤ y"
+                },
+                {
+                    "args": "acs y ≤ acs x",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs y ≤ 1, abs x ≤ 1, x ≤ y ⊢ acs y ≤ acs x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x ≤ 1 ⟶ x ≤ y ⟶ abs y ≤ 1 ⟶ acs y ≤ acs x"
+                }
+            ],
+            "prop": "abs x ≤ 1 ⟶ x ≤ y ⟶ abs y ≤ 1 ⟶ acs y ≤ acs x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "2",
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "acs_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
                 "hint_forward"
             ],
             "name": "sin_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-1 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-1 ≤ x ⊢ -1 ≤ x"
+                },
+                {
+                    "args": "x ≤ 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ 1 ⊢ x ≤ 1"
+                },
+                {
+                    "args": "acs_bounds, {y: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ 0 ≤ acs x ∧ acs x ≤ pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ 0 ≤ acs x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ acs x ≤ pi"
+                },
+                {
+                    "args": "sin_pos_pi_le",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ 0 ≤ sin (acs x)"
+                },
+                {
+                    "args": "sin_circle, {x: acs x}",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sin (acs x) ^ (2::nat) + cos (acs x) ^ (2::nat) = 1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ 1 = sin (acs x) ^ (2::nat) + cos (acs x) ^ (2::nat)"
+                },
+                {
+                    "args": "cos_acs, {y: x}",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ cos (acs x) = x"
+                },
+                {
+                    "args": "∀a::real. ∀b. a = a + b - b",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. a = a + b - b"
+                },
+                {
+                    "args": "sin (acs x) ^ (2::nat), x ^ (2::nat)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ sin (acs x) ^ (2::nat) = sin (acs x) ^ (2::nat) + x ^ (2::nat) - x ^ (2::nat)"
+                },
+                {
+                    "args": "sin (acs x) ^ (2::nat) = sin (acs x) ^ (2::nat) + cos (acs x) ^ (2::nat) - x ^ (2::nat)",
+                    "id": "11",
+                    "prevs": [
+                        "8",
+                        "10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ sin (acs x) ^ (2::nat) = sin (acs x) ^ (2::nat) + cos (acs x) ^ (2::nat) - x ^ (2::nat)"
+                },
+                {
+                    "args": "sin (acs x) ^ (2::nat) = 1 - x ^ (2::nat)",
+                    "id": "12",
+                    "prevs": [
+                        "7",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ sin (acs x) ^ (2::nat) = 1 - x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_unique",
+                    "id": "13",
+                    "prevs": [
+                        "5",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ sqrt (1 - x ^ (2::nat)) = sin (acs x)"
+                },
+                {
+                    "args": "eq_sym_eq, sin (acs x) = sqrt (1 - x ^ (2::nat))",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "-1 ≤ x, x ≤ 1 ⊢ sin (acs x) = sqrt (1 - x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -1 ≤ x ⟶ x ≤ 1 ⟶ sin (acs x) = sqrt (1 - x ^ (2::nat))"
+                }
+            ],
             "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ sin (acs x) = sqrt (1 - x ^ (2::nat))",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_unique"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_pos_pi_le"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "acs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "param_x": "acs x",
+                    "theorem": "sin_circle"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "cos_acs"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. a = a + b -b ",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_inj",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x ≤ 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x ≤ 1 ⊢ abs x ≤ 1"
+                },
+                {
+                    "args": "abs y ≤ 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs y ≤ 1 ⊢ abs y ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ acs x ≤ acs y ∧ acs y ≤ acs x ⟶ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "acs x ≤ acs y ∧ acs y ≤ acs x",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "acs x ≤ acs y ∧ acs y ≤ acs x ⊢ acs x ≤ acs y ∧ acs y ≤ acs x"
+                },
+                {
+                    "args": "conjD1, {A: acs x ≤ acs y, B: acs y ≤ acs x}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "acs x ≤ acs y ∧ acs y ≤ acs x ⊢ acs x ≤ acs y"
+                },
+                {
+                    "args": "conjD2, {A: acs x ≤ acs y, B: acs y ≤ acs x}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "acs x ≤ acs y ∧ acs y ≤ acs x ⊢ acs y ≤ acs x"
+                },
+                {
+                    "args": "acs_mono_le_eq, {x: y, y: x}",
+                    "id": "2.3",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs y ≤ 1, abs x ≤ 1 ⊢ acs y ≤ acs x ⟷ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs y ≤ 1, abs x ≤ 1, acs x ≤ acs y ∧ acs y ≤ acs x ⊢ x ≤ y"
+                },
+                {
+                    "args": "acs_mono_le_eq, {x: x, y: y}",
+                    "id": "2.5",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ acs x ≤ acs y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5",
+                        "2.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs x ≤ 1, abs y ≤ 1, acs x ≤ acs y ∧ acs y ≤ acs x ⊢ y ≤ x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.4",
+                        "2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ 1, abs y ≤ 1, acs x ≤ acs y ∧ acs y ≤ acs x ⊢ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.0",
+                        "2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ acs x ≤ acs y ∧ acs y ≤ acs x ⟶ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ x ≤ y ∧ y ≤ x ⟶ acs x ≤ acs y ∧ acs y ≤ acs x"
+                },
+                {
+                    "args": "x ≤ y ∧ y ≤ x",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ∧ y ≤ x ⊢ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y ∧ y ≤ x ⊢ y ≤ x"
+                },
+                {
+                    "args": "acs_mono_le",
+                    "id": "3.2",
+                    "prevs": [
+                        "1",
+                        "3.1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ 1, abs y ≤ 1, x ≤ y ∧ y ≤ x ⊢ acs x ≤ acs y"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y ∧ y ≤ x ⊢ x ≤ y"
+                },
+                {
+                    "args": "acs_mono_le",
+                    "id": "3.4",
+                    "prevs": [
+                        "0",
+                        "3.3",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ 1, abs y ≤ 1, x ≤ y ∧ y ≤ x ⊢ acs y ≤ acs x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.2",
+                        "3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ 1, abs y ≤ 1, x ≤ y ∧ y ≤ x ⊢ acs x ≤ acs y ∧ acs y ≤ acs x"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ x ≤ y ∧ y ≤ x ⟶ acs x ≤ acs y ∧ acs y ≤ acs x"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ acs x ≤ acs y ∧ acs y ≤ acs x ⟷ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "real_le_antisym, acs x = acs y ⟷ x = y",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x ≤ 1, abs y ≤ 1 ⊢ acs x = acs y ⟷ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x ≤ 1 ⟶ abs y ≤ 1 ⟶ acs x = acs y ⟷ x = y"
+                }
+            ],
+            "prop": "abs x ≤ 1 ⟶ abs y ≤ 1 ⟶ acs x = acs y ⟷ x = y",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "acs_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2.3",
+                        "2.2"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "acs_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2.5",
+                        "2.1"
+                    ],
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "acs_mono_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "acs_mono_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_atn",
+            "prop": "-1 < x ⟶ x < 1 ⟶ acs x = pi / 2 - atn (x / sqrt (1 - x ^ (2::nat)))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_plus_acs",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ asn x + acs x = pi / 2",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_acs",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ asn x = pi / 2 - acs x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_asn",
+            "prop": "-1 ≤ x ⟶ x ≤ 1 ⟶ acs x = pi / 2 - asn x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_atn",
+            "prop": "-1 < x ⟶ x < 1 ⟶ asn x = atn (x / sqrt (1 - x ^ (2::nat)))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_acs_sqrt_pos",
+            "prop": "0 ≤ x ⟶ x ≤ 1 ⟶ asn x = acs (sqrt (1 - x ^ (2::nat)))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "asn_acs_sqrt_neg",
+            "prop": "-1 ≤ x ⟶ x ≤ 0 ⟶ asn x = -(acs (sqrt (1 - x ^ (2::nat))))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_asn_sqrt_pos",
+            "prop": "0 ≤ x ⟶ x ≤ 1 ⟶ acs x = asn (sqrt (1 - x ^ (2::nat)))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "acs_asn_sqrt_neg",
+            "prop": "-1 ≤ x ⟶ x ≤ 0 ⟶ acs x = -(asn (sqrt (1 - x ^ (2::nat))))",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -9690,22 +11965,22 @@
                     "th": "⊢ real_sgn 1 * exp (log 1 / of_nat n) = 1"
                 },
                 {
-                    "args": "real_one_def, real_sgn (of_nat 1) * exp (log (of_nat 1) / of_nat n) = of_nat 1",
+                    "args": "real_one_def, real_sgn of_nat 1 * exp (log of_nat 1 / of_nat n) = of_nat 1",
                     "id": "6",
                     "prevs": [
                         "5"
                     ],
                     "rule": "rewrite_goal_sym",
-                    "th": "⊢ real_sgn (of_nat 1) * exp (log (of_nat 1) / of_nat n) = of_nat 1"
+                    "th": "⊢ real_sgn of_nat 1 * exp (log of_nat 1 / of_nat n) = of_nat 1"
                 },
                 {
-                    "args": "real_abs_nat, real_sgn (of_nat 1) * exp (log (abs (of_nat 1)) / of_nat n) = of_nat 1",
+                    "args": "real_abs_nat, real_sgn of_nat 1 * exp (log (abs of_nat 1) / of_nat n) = of_nat 1",
                     "id": "7",
                     "prevs": [
                         "6"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ real_sgn (of_nat 1) * exp (log (abs (of_nat 1)) / of_nat n) = of_nat 1"
+                    "th": "⊢ real_sgn of_nat 1 * exp (log (abs of_nat 1) / of_nat n) = of_nat 1"
                 },
                 {
                     "args": "real_one_def, real_sgn 1 * exp (log (abs 1) / of_nat n) = 1",
@@ -9809,7 +12084,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat 2}",
+                    "args": "real_exp_pos_lt, {x: log (abs x) / of_nat 2}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -9869,7 +12144,7 @@
                     "th": "⊢ real_sgn (root 2 x) = real_sgn x"
                 },
                 {
-                    "args": "real_abs_pos, {}, {x: x}",
+                    "args": "real_abs_pos, {x: x}",
                     "id": "7",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -10414,7 +12689,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat n}",
+                    "args": "real_exp_pos_lt, {x: log (abs x) / of_nat n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -10642,7 +12917,7 @@
                     "prevs": [
                         "1.1"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "⊢ ∀y. ¬(of_nat n = (0::real)) ⟶ of_nat n * (y / of_nat n) = y"
                 },
                 {
@@ -10651,7 +12926,7 @@
                     "prevs": [
                         "1.4"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "forall_elim_gen",
                     "th": "⊢ ¬(of_nat n = (0::real)) ⟶ of_nat n * (log (abs x) / of_nat n) = log (abs x)"
                 },
                 {
@@ -11110,7 +13385,7 @@
                     "th": "n = Suc (2 * m) ⊢ n = Suc (2 * m)"
                 },
                 {
-                    "args": "nat_zero_Suc_neq, {}, {n: 2 * m}",
+                    "args": "nat_zero_Suc_neq, {n: 2 * m}",
                     "id": "4",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11879,7 +14154,7 @@
                     "th": "0 < x ⊢ 0 < real_sgn x"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: log (abs x) / of_nat n}",
+                    "args": "real_exp_pos_lt, {x: log (abs x) / of_nat n}",
                     "id": "3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -11991,7 +14266,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "root_pos_lt, {}, {n: n, x: x}",
+                    "args": "root_pos_lt, {n: n, x: x}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -12000,7 +14275,7 @@
                     "th": "0 < x ⊢ 0 < root n x"
                 },
                 {
-                    "args": "disjI1, {}, {A: 0 < root n x, B: 0 = root n x}",
+                    "args": "disjI1, {A: 0 < root n x, B: 0 = root n x}",
                     "id": "2.2",
                     "prevs": [
                         "2.1"
@@ -12059,7 +14334,7 @@
                     "th": "0 = x, 0 ≤ x ⊢ 0 = root n x"
                 },
                 {
-                    "args": "disjI2, {}, {A: 0 < root n x, B: 0 = root n x}",
+                    "args": "disjI2, {A: 0 < root n x, B: 0 = root n x}",
                     "id": "3.4",
                     "prevs": [
                         "3.3"
@@ -12259,7 +14534,7 @@
                     "th": "¬¬(x ≤ 0) ⊢ 0 ≤ -x"
                 },
                 {
-                    "args": "root_pos_le, {}, {n: n, x: -x}",
+                    "args": "root_pos_le, {n: n, x: -x}",
                     "id": "0.2.4",
                     "prevs": [
                         "0.2.3"
@@ -12349,7 +14624,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "root_pos_lt, {}, {n: n, x: x}",
+                    "args": "root_pos_lt, {n: n, x: x}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -12572,7 +14847,7 @@
                     "th": "¬¬(x < 0) ⊢ 0 < -x"
                 },
                 {
-                    "args": "root_pos_lt, {}, {n: n, x: -x}",
+                    "args": "root_pos_lt, {n: n, x: -x}",
                     "id": "0.2.4",
                     "prevs": [
                         "0.2.3"
@@ -12662,7 +14937,7 @@
                     "th": "0 ≤ x ⊢ 0 ≤ x"
                 },
                 {
-                    "args": "root_pos_le, {}, {n: n, x: x}",
+                    "args": "root_pos_le, {n: n, x: x}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -12888,14 +15163,14 @@
                     "th": "exp (log (abs x) / of_nat n) = 0 ⊢ ¬¬(exp (log (abs x) / of_nat n) = 0)"
                 },
                 {
-                    "args": "real_exp_nz, {}, {x: log (abs x) / of_nat n}",
+                    "args": "real_exp_nz, {x: log (abs x) / of_nat n}",
                     "id": "0.2.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ ¬(exp (log (abs x) / of_nat n) = 0)"
                 },
                 {
-                    "args": "negE_gen, {}, {A: ¬(exp (log (abs x) / of_nat n) = 0), C: x = 0}",
+                    "args": "negE_gen, {A: ¬(exp (log (abs x) / of_nat n) = 0), C: x = 0}",
                     "id": "0.2.3",
                     "prevs": [
                         "0.2.1",
@@ -12959,7 +15234,7 @@
                     "th": "x = 0 ⊢ real_sgn x = 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: real_sgn x = 0, B: exp (log (abs x) / of_nat n) = 0}",
+                    "args": "disjI1, {A: real_sgn x = 0, B: exp (log (abs x) / of_nat n) = 0}",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
@@ -13289,7 +15564,7 @@
                     "th": "¬(y = 0) ⊢ 0 < abs y"
                 },
                 {
-                    "args": "log_mul, {}, {x: abs x, y: abs y}",
+                    "args": "log_mul, {x: abs x, y: abs y}",
                     "id": "1.2.4",
                     "prevs": [
                         "1.2.2",
@@ -13642,6 +15917,1476 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_root_inv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = 0 ⟶ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "real_mul_lzero, 0 * exp (log (abs (real_inverse 0)) / of_nat n) = 0 * real_inverse (exp (log (abs 0) / of_nat n))",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * exp (log (abs (real_inverse 0)) / of_nat n) = 0 * real_inverse (exp (log (abs 0) / of_nat n))"
+                },
+                {
+                    "args": "real_sgn_0, real_sgn 0 * exp (log (abs (real_inverse 0)) / of_nat n) = real_sgn 0 * real_inverse (exp (log (abs 0) / of_nat n))",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0 ⊢ real_sgn 0 * exp (log (abs (real_inverse 0)) / of_nat n) = real_sgn 0 * real_inverse (exp (log (abs 0) / of_nat n))"
+                },
+                {
+                    "args": "real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0 ⊢ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = 0 ⟶ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(x = 0) ⟶ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "real_abs_nz, {x: x}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x = 0) ⊢ 0 < abs x"
+                },
+                {
+                    "args": "log_inv, {x: abs x}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x = 0) ⊢ log (real_inverse (abs x)) = -(log (abs x))"
+                },
+                {
+                    "args": "real_mul_lneg, real_sgn x * exp (-(log (abs x)) * real_inverse (of_nat n)) = real_sgn x * exp (-(log (abs x) * real_inverse (of_nat n)))",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn x * exp (-(log (abs x)) * real_inverse (of_nat n)) = real_sgn x * exp (-(log (abs x) * real_inverse (of_nat n)))"
+                },
+                {
+                    "args": "real_divide_def, real_sgn x * exp (-(log (abs x)) / of_nat n) = real_sgn x * exp (-(log (abs x) / of_nat n))",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0) ⊢ real_sgn x * exp (-(log (abs x)) / of_nat n) = real_sgn x * exp (-(log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "real_exp_neg, real_sgn x * exp (-(log (abs x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(x = 0) ⊢ real_sgn x * exp (-(log (abs x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "real_sgn x * exp (log (real_inverse (abs x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.2",
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x = 0) ⊢ real_sgn x * exp (log (real_inverse (abs x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "real_abs_inv, real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0) ⊢ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.0",
+                        "1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = 0) ⟶ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_sgn x * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "real_inv_sgn, real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_inverse (real_sgn x) * real_inverse (exp (log (abs x) / of_nat n))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_inverse (real_sgn x) * real_inverse (exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "real_inv_mul, real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_inverse (real_sgn x * exp (log (abs x) / of_nat n))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn x * exp (log (abs (real_inverse x)) / of_nat n) = real_inverse (real_sgn x * exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "real_sgn_inv, real_sgn (real_inverse x) * exp (log (abs (real_inverse x)) / of_nat n) = real_inverse (real_sgn x * exp (log (abs x) / of_nat n))",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (real_inverse x) * exp (log (abs (real_inverse x)) / of_nat n) = real_inverse (real_sgn x * exp (log (abs x) / of_nat n))"
+                },
+                {
+                    "args": "root_def, root n (real_inverse x) = real_inverse (root n x)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root n (real_inverse x) = real_inverse (root n x)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ root n (real_inverse x) = real_inverse (root n x)"
+                }
+            ],
+            "prop": "root n (real_inverse x) = real_inverse (root n x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_inv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_sgn"
+                },
+                {
+                    "case": "x = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_0"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_inv"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_abs_nz"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "log_inv"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_neg"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_root_div",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_root_inv, root n x * root n (real_inverse y) = root n x * real_inverse (root n y)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root n x * root n (real_inverse y) = root n x * real_inverse (root n y)"
+                },
+                {
+                    "args": "real_root_mul, root n (x * real_inverse y) = root n x * real_inverse (root n y)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root n (x * real_inverse y) = root n x * real_inverse (root n y)"
+                },
+                {
+                    "args": "real_divide_def, root n (x / y) = root n x / root n y",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root n (x / y) = root n x / root n y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ root n (x / y) = root n x / root n y"
+                }
+            ],
+            "prop": "root n (x / y) = root n x / root n y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_root_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_root_inv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "root_mono_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y ⊢ ∀x. ∀y. 0 ≤ x ⟶ x < y ⟶ root n x < root n y"
+                },
+                {
+                    "args": "a, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "0 ≤ a",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ a ⊢ 0 ≤ a"
+                },
+                {
+                    "args": "a < b",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a < b ⊢ a < b"
+                },
+                {
+                    "args": "0 ≤ b",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.2",
+                        "2.3"
+                    ],
+                    "rule": "z3",
+                    "th": "0 ≤ a, a < b ⊢ 0 ≤ b"
+                },
+                {
+                    "args": "root_pos_le, {n: n, x: b}",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ 0 ≤ root n b"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ 0 < a ⟶ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "0 < a",
+                    "id": "2.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < a ⊢ 0 < a"
+                },
+                {
+                    "args": "real_lt_trans, {x: (0::real), y: a, z: b}",
+                    "id": "2.6.1",
+                    "prevs": [
+                        "2.6.0",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 < a, a < b ⊢ 0 < b"
+                },
+                {
+                    "args": "abs a < abs b",
+                    "id": "2.6.2",
+                    "prevs": [
+                        "2.6.0",
+                        "2.3"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < a, a < b ⊢ abs a < abs b"
+                },
+                {
+                    "args": "real_mul_lid, 1 * abs a < 1 * abs b",
+                    "id": "2.6.3",
+                    "prevs": [
+                        "2.6.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, 0 < a ⊢ 1 * abs a < 1 * abs b"
+                },
+                {
+                    "args": "real_pow_one, 1 ^ n * abs a < 1 ^ n * abs b",
+                    "id": "2.6.4",
+                    "prevs": [
+                        "2.6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, 0 < a ⊢ 1 ^ n * abs a < 1 ^ n * abs b"
+                },
+                {
+                    "args": "if_P, 1 ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b",
+                    "id": "2.6.5",
+                    "prevs": [
+                        "2.6.4",
+                        "2.6.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, 0 < a, 0 < a, a < b ⊢ 1 ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "if_P, (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b",
+                    "id": "2.6.6",
+                    "prevs": [
+                        "2.6.5",
+                        "2.6.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, 0 < a, 0 < a ⊢ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2.6.7",
+                    "prevs": [
+                        "2.6.0",
+                        "2.6.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ 0 < a ⟶ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ ¬(0 < a) ⟶ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "¬(0 < a)",
+                    "id": "2.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 < a) ⊢ ¬(0 < a)"
+                },
+                {
+                    "args": "",
+                    "id": "2.7.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a) ⊢ a < 0 ⟶ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "a < 0",
+                    "id": "2.7.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a < 0 ⊢ a < 0"
+                },
+                {
+                    "args": "(if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b",
+                    "id": "2.7.1.1",
+                    "prevs": [
+                        "2.7.1.0",
+                        "2.2"
+                    ],
+                    "rule": "z3",
+                    "th": "a < 0, 0 ≤ a ⊢ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2.7.1.2",
+                    "prevs": [
+                        "2.7.1.0",
+                        "2.7.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a) ⊢ a < 0 ⟶ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2.7.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a) ⊢ ¬(a < 0) ⟶ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "¬(a < 0)",
+                    "id": "2.7.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a < 0) ⊢ ¬(a < 0)"
+                },
+                {
+                    "args": "real_let_trans, {x: (0::real), y: a, z: b}",
+                    "id": "2.7.2.1",
+                    "prevs": [
+                        "2.2",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ a, a < b ⊢ 0 < b"
+                },
+                {
+                    "args": "0 < abs b",
+                    "id": "2.7.2.2",
+                    "prevs": [
+                        "2.7.2.1"
+                    ],
+                    "rule": "z3",
+                    "th": "0 ≤ a, a < b ⊢ 0 < abs b"
+                },
+                {
+                    "args": "real_mul_lid, 0 < 1 * abs b",
+                    "id": "2.7.2.3",
+                    "prevs": [
+                        "2.7.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0) ⊢ 0 < 1 * abs b"
+                },
+                {
+                    "args": "real_pow_one, 0 < 1 ^ n * abs b",
+                    "id": "2.7.2.4",
+                    "prevs": [
+                        "2.7.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0) ⊢ 0 < 1 ^ n * abs b"
+                },
+                {
+                    "args": "real_mul_lzero, 0 * abs a < 1 ^ n * abs b",
+                    "id": "2.7.2.5",
+                    "prevs": [
+                        "2.7.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0) ⊢ 0 * abs a < 1 ^ n * abs b"
+                },
+                {
+                    "args": "if_not_P, (if n = 0 then 1 else 0) * abs a < 1 ^ n * abs b",
+                    "id": "2.7.2.6",
+                    "prevs": [
+                        "2.7.2.5",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0), ¬(n = 0) ⊢ (if n = 0 then 1 else 0) * abs a < 1 ^ n * abs b"
+                },
+                {
+                    "args": "real_pow_zero, 0 ^ n * abs a < 1 ^ n * abs b",
+                    "id": "2.7.2.7",
+                    "prevs": [
+                        "2.7.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0) ⊢ 0 ^ n * abs a < 1 ^ n * abs b"
+                },
+                {
+                    "args": "if_P, 0 ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b",
+                    "id": "2.7.2.8",
+                    "prevs": [
+                        "2.7.2.7",
+                        "2.7.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0), 0 ≤ a, a < b ⊢ 0 ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "if_not_P, (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b",
+                    "id": "2.7.2.9",
+                    "prevs": [
+                        "2.7.2.8",
+                        "2.7.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(a < 0), ¬(a < 0) ⊢ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2.7.2.10",
+                    "prevs": [
+                        "2.7.2.0",
+                        "2.7.2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a) ⊢ ¬(a < 0) ⟶ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.7.3",
+                    "prevs": [
+                        "2.7.1",
+                        "2.7.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a) ⊢ (if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "if_not_P, (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b",
+                    "id": "2.7.4",
+                    "prevs": [
+                        "2.7.3",
+                        "2.7.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(0 < a), ¬(0 < a) ⊢ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "",
+                    "id": "2.7.5",
+                    "prevs": [
+                        "2.7.0",
+                        "2.7.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ ¬(0 < a) ⟶ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.6",
+                        "2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(n = 0), x < y, 0 ≤ a, a < b ⊢ (if 0 < a then 1 else if a < 0 then -1 else 0) ^ n * abs a < (if 0 < b then 1 else if b < 0 then -1 else 0) ^ n * abs b"
+                },
+                {
+                    "args": "real_sgn_def, real_sgn a ^ n * abs a < real_sgn b ^ n * abs b",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ real_sgn a ^ n * abs a < real_sgn b ^ n * abs b"
+                },
+                {
+                    "args": "if_not_P, (if n = 0 then 1 else real_sgn a ^ n * abs a) < (if n = 0 then 1 else real_sgn b ^ n * abs b)",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.9",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(n = 0) ⊢ (if n = 0 then 1 else real_sgn a ^ n * abs a) < (if n = 0 then 1 else real_sgn b ^ n * abs b)"
+                },
+                {
+                    "args": "root_works_2, root n a ^ n < root n b ^ n",
+                    "id": "2.11",
+                    "prevs": [
+                        "2.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b ⊢ root n a ^ n < root n b ^ n"
+                },
+                {
+                    "args": "real_pow_lt2_rev",
+                    "id": "2.12",
+                    "prevs": [
+                        "2.5",
+                        "2.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), x < y, 0 ≤ a, a < b, ¬(n = 0), x < y, 0 ≤ a, a < b ⊢ root n a < root n b"
+                },
+                {
+                    "args": "",
+                    "id": "2.13",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.3",
+                        "2.12"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y ⊢ ∀a. ∀b. 0 ≤ a ⟶ a < b ⟶ root n a < root n b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y ⊢ 0 ≤ x ⟶ root n x < root n y"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x, y",
+                    "id": "3.1",
+                    "prevs": [
+                        "2",
+                        "3.0",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(n = 0), x < y, 0 ≤ x ⊢ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y ⊢ 0 ≤ x ⟶ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y ⊢ ¬(0 ≤ x) ⟶ root n x < root n y"
+                },
+                {
+                    "args": "¬(0 ≤ x)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ x) ⊢ ¬(0 ≤ x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x) ⊢ 0 ≤ y ⟶ root n x < root n y"
+                },
+                {
+                    "args": "0 ≤ y",
+                    "id": "4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "root_le_0, ¬(0 ≤ root n x)",
+                    "id": "4.1.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), 0 ≤ y ⊢ ¬(0 ≤ root n x)"
+                },
+                {
+                    "args": "real_less_def, root n x < 0",
+                    "id": "4.1.2",
+                    "prevs": [
+                        "4.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), 0 ≤ y ⊢ root n x < 0"
+                },
+                {
+                    "args": "root_le_0, 0 ≤ root n y",
+                    "id": "4.1.3",
+                    "prevs": [
+                        "4.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), 0 ≤ y ⊢ 0 ≤ root n y"
+                },
+                {
+                    "args": "real_lte_trans",
+                    "id": "4.1.4",
+                    "prevs": [
+                        "4.1.2",
+                        "4.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), 0 ≤ y, ¬(n = 0), x < y, ¬(0 ≤ x), 0 ≤ y ⊢ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.5",
+                    "prevs": [
+                        "4.1.0",
+                        "4.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x) ⊢ 0 ≤ y ⟶ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x) ⊢ ¬(0 ≤ y) ⟶ root n x < root n y"
+                },
+                {
+                    "args": "¬(0 ≤ y)",
+                    "id": "4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ y) ⊢ ¬(0 ≤ y)"
+                },
+                {
+                    "args": "0 ≤ -y",
+                    "id": "4.2.1",
+                    "prevs": [
+                        "4.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(0 ≤ y) ⊢ 0 ≤ -y"
+                },
+                {
+                    "args": "real_lt_neg2, -y < -x",
+                    "id": "4.2.2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), ¬(0 ≤ y) ⊢ -y < -x"
+                },
+                {
+                    "args": "-y, -x",
+                    "id": "4.2.3",
+                    "prevs": [
+                        "2",
+                        "4.2.1",
+                        "4.2.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), ¬(0 ≤ y) ⊢ root n (-y) < root n (-x)"
+                },
+                {
+                    "args": "root_neg, -(root n y) < -(root n x)",
+                    "id": "4.2.4",
+                    "prevs": [
+                        "4.2.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), ¬(0 ≤ y) ⊢ -(root n y) < -(root n x)"
+                },
+                {
+                    "args": "real_lt_neg2, root n x < root n y",
+                    "id": "4.2.5",
+                    "prevs": [
+                        "4.2.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), ¬(0 ≤ y) ⊢ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.6",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x) ⊢ ¬(0 ≤ y) ⟶ root n x < root n y"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.1",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), x < y, ¬(0 ≤ x), ¬(n = 0), x < y, ¬(0 ≤ x) ⊢ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), x < y ⊢ ¬(0 ≤ x) ⟶ root n x < root n y"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), x < y, ¬(n = 0), x < y ⊢ root n x < root n y"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ x < y ⟶ root n x < root n y"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ x < y ⟶ root n x < root n y",
+            "steps": [
+                {
+                    "goal": "!x. !y. 0 <= x --> x < y --> root n x < root n y",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "a, b"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "param_n": "n",
+                    "theorem": "real_pow_lt2_rev"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "root_pos_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.2",
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_works_2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "case": "0 < a",
+                    "goal_id": "2.6",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.0"
+                    ],
+                    "goal_id": "2.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.0",
+                        "2.3"
+                    ],
+                    "goal_id": "2.6.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.1"
+                    ],
+                    "goal_id": "2.6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "2.6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
+                {
+                    "goal_id": "2.6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.0",
+                        "2.3"
+                    ],
+                    "goal_id": "2.6.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.7.0"
+                    ],
+                    "goal_id": "2.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "case": "a < 0",
+                    "goal_id": "2.7.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.7.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.7.1.0",
+                        "2.2"
+                    ],
+                    "goal_id": "2.7.1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2.7.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.7.2.0"
+                    ],
+                    "goal_id": "2.7.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.2",
+                        "2.3"
+                    ],
+                    "goal_id": "2.7.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "fact_ids": [
+                        "2.7.2.1"
+                    ],
+                    "goal_id": "2.7.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "2.7.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.7.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.7.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "2.7.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
+                {
+                    "goal_id": "2.7.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "2.7.2.1"
+                    ],
+                    "goal_id": "2.7.2.2",
+                    "method_name": "z3"
+                },
+                {
+                    "case": "0 <= x",
+                    "goal_id": "3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "0 <= y",
+                    "goal_id": "4.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "param_y": "(0::real)",
+                    "theorem": "real_lte_trans"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_le_0"
+                },
+                {
+                    "goal_id": "4.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_le_0"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_lt_neg2"
+                },
+                {
+                    "goal_id": "4.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "root_neg"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4.2.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.2.0"
+                    ],
+                    "goal_id": "4.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_lt_neg2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "root_mono_le",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "x ≤ y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y ⊢ n = 0 ⟶ root n x ≤ root n y"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x ≤ y, n = 0 ⊢ real_sgn x * exp (log (abs x) * real_inverse 0) ≤ real_sgn y * exp (log (abs y) * real_inverse 0)"
+                },
+                {
+                    "args": "real_divide_def, real_sgn x * exp (log (abs x) / 0) ≤ real_sgn y * exp (log (abs y) / 0)",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ y, n = 0 ⊢ real_sgn x * exp (log (abs x) / 0) ≤ real_sgn y * exp (log (abs y) / 0)"
+                },
+                {
+                    "args": "real_zero_def, real_sgn x * exp (log (abs x) / of_nat 0) ≤ real_sgn y * exp (log (abs y) / of_nat 0)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x ≤ y, n = 0 ⊢ real_sgn x * exp (log (abs x) / of_nat 0) ≤ real_sgn y * exp (log (abs y) / of_nat 0)"
+                },
+                {
+                    "args": "root_def, root 0 x ≤ root 0 y",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ y, n = 0 ⊢ root 0 x ≤ root 0 y"
+                },
+                {
+                    "args": "root n x ≤ root n y",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, x ≤ y ⊢ root n x ≤ root n y"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y ⊢ n = 0 ⟶ root n x ≤ root n y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x ≤ y ⊢ ¬(n = 0) ⟶ root n x ≤ root n y"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y, x ≤ y ⊢ root n x ≤ root n y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≤ y ⟶ root n x ≤ root n y"
+                }
+            ],
+            "prop": "x ≤ y ⟶ root n x ≤ root n y",
+            "steps": [
+                {
+                    "case": "n = 0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "power",
             "prop": [
                 "x ^ y = ",
@@ -13681,7 +17426,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "exp_log, {}, {x: x}",
+                    "args": "exp_log, {x: x}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
@@ -13869,7 +17614,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q"
                 },
                 {
-                    "args": "conjD1, {}, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD1, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.4",
                     "prevs": [
                         "1.2.1.3"
@@ -13878,7 +17623,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd p"
                 },
                 {
-                    "args": "conjD2, {}, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD2, {A: odd p, B: odd q ∧ of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.5",
                     "prevs": [
                         "1.2.1.3"
@@ -13887,7 +17632,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q ∧ of_nat n = of_nat p / of_nat q"
                 },
                 {
-                    "args": "conjD1, {}, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD1, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.6",
                     "prevs": [
                         "1.2.1.5"
@@ -13896,7 +17641,7 @@
                     "th": "odd p ∧ odd q ∧ of_nat n = of_nat p / of_nat q ⊢ odd q"
                 },
                 {
-                    "args": "conjD2, {}, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
+                    "args": "conjD2, {A: odd q, B: of_nat n = of_nat p / of_nat q}",
                     "id": "1.2.1.7",
                     "prevs": [
                         "1.2.1.5"
@@ -14163,7 +17908,7 @@
                     "th": "¬(0 < x), ¬(x = 0), odd n ⊢ odd n ∧ odd 1 ∧ of_nat n = of_nat n / of_nat 1"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λn1. odd n ∧ odd n1 ∧ of_nat n = of_nat n / of_nat n1, a: (1::nat)}",
+                    "args": "exI, {P: λn1. odd n ∧ odd n1 ∧ of_nat n = of_nat n / of_nat n1, a: (1::nat)}",
                     "id": "1.2.2.9",
                     "prevs": [
                         "1.2.2.8"
@@ -14172,13 +17917,13 @@
                     "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃a1. odd n ∧ odd a1 ∧ of_nat n = of_nat n / of_nat a1"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λm. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, a: n}",
+                    "args": "exI, {P: λm. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1, a: n}",
                     "id": "1.2.2.10",
                     "prevs": [
                         "1.2.2.9"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃m. ∃n1. odd m ∧ odd n1 ∧ of_nat n = of_nat m / of_nat n1"
+                    "th": "¬(0 < x), ¬(x = 0), odd n ⊢ ∃a1. ∃n1. odd a1 ∧ odd n1 ∧ of_nat n = of_nat a1 / of_nat n1"
                 },
                 {
                     "args": "",
@@ -14211,7 +17956,7 @@
                     "th": "¬(0 < x), ¬(x = 0) ⊢ 0 < -x"
                 },
                 {
-                    "args": "exp_log, {}, {x: -x}",
+                    "args": "exp_log, {x: -x}",
                     "id": "1.2.5",
                     "prevs": [
                         "1.2.4"
@@ -15181,7 +18926,7 @@
                     "th": "y = 0 ⊢ y = 0"
                 },
                 {
-                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "args": "eq_refl, {x: (0::real)}",
                     "id": "1.1.1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -15891,7 +19636,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "args": "eq_refl, {x: (0::real)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -15914,14 +19659,14 @@
                     "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if y = 0 then 1 else 0) = (if y = 0 then 1 else 0)"
                 },
                 {
-                    "args": "if_P, (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-0))) else exp (y * log (-0))) = (if y = 0 then 1 else 0)",
+                    "args": "if_P, (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log -0)) else exp (y * log -0)) = (if y = 0 then 1 else 0)",
                     "id": "3",
                     "prevs": [
                         "2",
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log (-0))) else exp (y * log (-0))) = (if y = 0 then 1 else 0)"
+                    "th": "⊢ (if (0::real) < 0 then exp (y * log 0) else if (0::real) = 0 then if y = 0 then 1 else 0 else if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then -(exp (y * log -0)) else exp (y * log -0)) = (if y = 0 then 1 else 0)"
                 },
                 {
                     "args": "real_real_power_def, (0::real) ^ y = (if y = 0 then 1 else 0)",
@@ -16008,7 +19753,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_exp_pos_lt, {}, {x: y * log x}",
+                    "args": "real_exp_pos_lt, {x: y * log x}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -16111,7 +19856,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "rpow_pos_lt, {}, {x: x, y: y}",
+                    "args": "rpow_pos_lt, {x: x, y: y}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -16345,7 +20090,7 @@
                     "th": "0 < x ⊢ 0 < x"
                 },
                 {
-                    "args": "real_lt_trans, {}, {x: (0::real), y: x, z: y}",
+                    "args": "real_lt_trans, {x: (0::real), y: x, z: y}",
                     "id": "4.1",
                     "prevs": [
                         "4.0",

@@ -2,7 +2,9 @@
 
 import unittest
 
+from kernel import type as hol_type
 from kernel.type import TVar, TFun
+from kernel import term
 from kernel.term import Term, Var, Const, Eq
 from kernel.thm import Thm
 from kernel.report import ProofReport, ExtensionReport
@@ -10,7 +12,14 @@ from kernel.report import ProofReport, ExtensionReport
 Ta = TVar("a")
 x = Var("x", Ta)
 
-class ProofReportTest(unittest.TestCase):
+class ReportTest(unittest.TestCase):
+    def setUp(self):
+        self.type_printer, self.term_printer = hol_type.type_printer, term.term_printer
+        hol_type.type_printer, term.term_printer = None, None
+
+    def tearDown(self):
+        hol_type.type_printer, term.term_printer = self.type_printer, self.term_printer
+
     def testStepCount(self):
         rpt = ProofReport()
         self.assertEqual(rpt.steps, 0)
@@ -26,7 +35,6 @@ class ProofReportTest(unittest.TestCase):
         self.assertEqual(rpt.macros_expand, {"macro1"})
         self.assertEqual(rpt.macros_eval, {"macro2"})
 
-class ExtensionReportTest(unittest.TestCase):
     def testPrintExtensionReport(self):
         ext_report = ExtensionReport()
 

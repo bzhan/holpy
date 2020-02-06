@@ -1,26 +1,27 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType
-from kernel.term import Term, Var, Const, Lambda, true
+from kernel.type import TConst, TFun, BoolType
+from kernel.term import Term, Var, Const, Lambda, Inst, true
 from kernel.thm import Thm
-from kernel.macro import global_macros
-from kernel.theory import Method, global_methods
+from kernel.macro import Macro
+from kernel.theory import register_macro
 from data import nat
 from data import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, beta_norm_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from logic.logic import apply_theorem
+from logic.tactic import Tactic, MacroTactic
 from syntax import pprint, settings
-from server.tactic import Tactic, MacroTactic
+from server.method import Method, register_method
 from prover import z3wrapper
 
 
 """Automation for Hoare logic."""
 
 def comT(T):
-    return Type("com", T)
+    return TConst("com", T)
 
 def Skip(T):
     return Const("Skip", comT(T))
@@ -60,12 +61,12 @@ def eval_Sem(c, st):
     """Evaluates the effect of program c on state st."""
     T = st.get_type()
     if c.is_const("Skip"):
-        return apply_theorem("Sem_Skip", tyinst={"a": T}, inst={"s": st})
+        return apply_theorem("Sem_Skip", inst=Inst(s=st))
     elif c.is_comb("Assign", 2):
         a, b = c.args
         Ta = a.get_type()
         Tb = b.get_type().range_type()
-        pt = apply_theorem("Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
+        pt = apply_theorem("Sem_Assign", inst=Inst(a=a, b=b, s=st))
         return pt.on_arg(arg_conv(norm_cv))
     elif c.is_comb("Seq", 2):
         c1, c2 = c.args
@@ -94,7 +95,7 @@ def eval_Sem(c, st):
             pt1 = eval_Sem(body, st)
             pt2 = eval_Sem(c, pt1.prop.arg)
             pt = apply_theorem("Sem_while_loop", b_res, pt1, pt2,
-                               concl=Sem(T)(c, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
+                               concl=Sem(T)(c, st, pt2.prop.arg), inst=Inst(s3=pt1.prop.arg))
             return pt.on_arg(function.fun_upd_norm_one_conv())
         else:
             b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
@@ -102,7 +103,9 @@ def eval_Sem(c, st):
     else:
         raise NotImplementedError
 
-class eval_Sem_macro(ProofTermMacro):
+
+@register_macro('eval_Sem')
+class eval_Sem_macro(Macro):
     """Prove a theorem of the form Sem com st st2."""
     def __init__(self):
         self.level = 10
@@ -125,6 +128,8 @@ class eval_Sem_macro(ProofTermMacro):
         assert st2 == pt.prop.arg, "eval_Sem_macro: wrong result."
         return pt
 
+
+@register_method('eval_Sem')
 class eval_Sem_method(Method):
     """Apply eval_Sem macro."""
     def __init__(self):
@@ -144,7 +149,6 @@ class eval_Sem_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("eval_Sem: (solves)")
 
@@ -167,7 +171,7 @@ def compute_wp(T, c, Q):
         a, b = c.args
         s = Var("s", T)
         P2 = Lambda(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
-        return apply_theorem("assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
+        return apply_theorem("assign_rule", inst=Inst(b=b), concl=Valid(T)(P2, c, Q))
     elif c.is_comb("Seq", 2):  # Seq c1 c2
         c1, c2 = c.args
         wp1 = compute_wp(T, c2, Q)  # Valid Q' c2 Q
@@ -177,7 +181,7 @@ def compute_wp(T, c, Q):
         b, c1, c2 = c.args
         wp1 = compute_wp(T, c1, Q)
         wp2 = compute_wp(T, c2, Q)
-        res = apply_theorem("if_rule", wp1, wp2, inst={"b": b})
+        res = apply_theorem("if_rule", wp1, wp2, inst=Inst(b=b))
         return res
     elif c.is_comb("While", 3):  # While b I c
         _, I, _ = c.args
@@ -215,7 +219,9 @@ def vcg_norm(T, goal):
     return pt.on_assums(rewr_conv("Entail_def"), beta_norm_conv(),
                         top_conv(function.fun_upd_eval_conv()))
 
-class vcg_macro(ProofTermMacro):
+
+@register_macro('vcg')
+class vcg_macro(Macro):
     """Macro wrapper for verification condition generation.
     
     Compute the verification conditions for a hoare triple, then
@@ -251,7 +257,7 @@ class vcg_tactic(Tactic):
         pt = vcg_norm(T, goal.prop)
 
         ptAs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
-        return ProofTermDeriv("vcg", goal.prop, ptAs)
+        return ProofTerm("vcg", goal.prop, ptAs)
 
 
 def vcg_solve(goal):
@@ -264,9 +270,11 @@ def vcg_solve(goal):
 
     T = Q.get_type().domain_type()
     pt = vcg_norm(T, goal)
-    vc_pt = [ProofTermDeriv("z3", vc, []) for vc in pt.assums]
-    return ProofTermDeriv("vcg", goal, vc_pt)
+    vc_pt = [ProofTerm("z3", vc, []) for vc in pt.assums]
+    return ProofTerm("vcg", goal, vc_pt)
 
+
+@register_method('vcg')
 class vcg_method(Method):
     """Method corresponding to VCG."""
     def __init__(self):
@@ -283,20 +291,8 @@ class vcg_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply VCG")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, vcg_tactic(), prevs=prevs)
-
-
-global_macros.update({
-    "eval_Sem": eval_Sem_macro(),
-    "vcg": vcg_macro(),
-})
-
-global_methods.update({
-    "eval_Sem": eval_Sem_method(),
-    "vcg": vcg_method(),
-})

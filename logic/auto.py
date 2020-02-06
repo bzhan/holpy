@@ -2,14 +2,14 @@
 
 from kernel import term
 from kernel.term import Term, Var
-from kernel import macro
+from kernel.macro import Macro
 from kernel import theory
+from kernel.theory import register_macro
 from logic import logic
 from logic.logic import apply_theorem, TacticException
 from logic import matcher
 from logic.conv import Conv, ConvException, refl, eta_conv, top_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
-from syntax import printer
+from kernel.proofterm import ProofTerm
 from util import name
 
 
@@ -55,6 +55,8 @@ def add_global_autos_norm(head, f):
         global_autos_norm[head].append(f)
 
 
+solve_record = dict()
+
 def solve(goal, pts=None):
     """The main automation function.
     
@@ -63,8 +65,7 @@ def solve(goal, pts=None):
 
     """
     if debug_auto:
-        print("Solve:", printer.print_term(goal),
-              [printer.print_term(pt.prop) for pt in pts])
+        print("Solve:", goal, [str(pt.prop) for pt in pts])
 
     if pts is None:
         pts = []
@@ -130,27 +131,34 @@ def solve(goal, pts=None):
         pt = solve(goal, pts)
         return eq_pt.symmetric().equal_elim(pt)
 
+    res_pt = None
+
+    if not pts and goal in solve_record:
+        res_pt = solve_record[goal]
+
     # Call registered functions
-    if goal.is_not() and goal.arg.head in global_autos_neg:
+    elif goal.is_not() and goal.arg.head in global_autos_neg:
         for f in global_autos_neg[goal.arg.head]:
             try:
-                pt = f(goal, pts)
-                return eq_pt.symmetric().equal_elim(pt)
+                res_pt = f(goal, pts)
+                break
             except TacticException:
                 pass
 
-    if goal.head in global_autos:
+    elif goal.head in global_autos:
         for f in global_autos[goal.head]:
             try:
-                pt = f(goal, pts)
-                if eq_pt.rhs != pt.prop:
-                    raise AssertionError("auto solve: %s != %s" % (
-                        printer.print_term(eq_pt.prop), printer.print_term(pt.prop)))
-                return eq_pt.symmetric().equal_elim(pt)
+                res_pt = f(goal, pts)
+                break
             except TacticException:
                 pass
 
-    raise TacticException
+    if res_pt is not None:
+        if not pts:
+            solve_record[goal] = res_pt
+        return eq_pt.symmetric().equal_elim(res_pt)
+    else:
+        raise TacticException
 
 
 def solve_rules(th_names):
@@ -161,13 +169,13 @@ def solve_rules(th_names):
     def solve_fun(goal, pts):
         for th_name in th_names:
             if theory.thy.has_theorem(th_name):
-                th = theory.thy.get_theorem(th_name, svar=True)
+                th = theory.get_theorem(th_name)
             try:
-                instsp = matcher.first_order_match(th.concl, goal)
+                inst = matcher.first_order_match(th.concl, goal)
             except matcher.MatchException:
                 continue
 
-            As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+            As, _ = th.prop.subst_norm(inst).strip_implies()
             try:
                 pts = [solve(A, pts) for A in As]
             except TacticException:
@@ -181,6 +189,8 @@ def solve_rules(th_names):
     return solve_fun
 
 
+norm_record = dict()
+
 def norm(t, pts=None):
     """The main normalization function.
     
@@ -189,16 +199,19 @@ def norm(t, pts=None):
 
     """
     if debug_auto:
-        print("Norm:", printer.print_term(t),
-              [printer.print_term(pt.prop) for pt in pts])
+        print("Norm:", t, [str(pt.prop) for pt in pts])
 
     # Do not normalize variables and abstractions
     if t.is_var() or t.is_abs():
         return refl(t)
 
-    # No further work for binary numbers
-    if t.is_binary():
+    # No further work for numbers
+    if t.is_number():
         return refl(t)
+
+    # Record
+    if not pts and t in norm_record:
+        return norm_record[t]
 
     eq_pt = refl(t.head)
 
@@ -224,17 +237,21 @@ def norm(t, pts=None):
 
         if eq_pt.rhs == ori_rhs:
             # Unchanged, normalization stops here
-            return eq_pt
+            res_pt = eq_pt
         else:
             # Head changed, continue apply norm
             eq_pt2 = norm(eq_pt.rhs, pts)
             if eq_pt2.lhs != eq_pt.rhs:
                 eq_pt2 = eq_pt2.on_lhs(top_conv(eta_conv()))
-            return eq_pt.transitive(eq_pt2)
+            res_pt = eq_pt.transitive(eq_pt2)
     else:
         # No normalization rule available for this head
-        return eq_pt
-    
+        res_pt = eq_pt
+
+    if not pts:
+        norm_record[t] = res_pt
+    return res_pt
+
 def norm_rules(th_names):
     """Return a normalization function that tries to apply each of the
     rewriting rules.
@@ -243,16 +260,16 @@ def norm_rules(th_names):
     def norm_fun(t, pts):
         for th_name in th_names:
             if theory.thy.has_theorem(th_name):
-                th = theory.thy.get_theorem(th_name, svar=True)
+                th = theory.get_theorem(th_name)
             else:
                 continue
 
             try:
-                instsp = matcher.first_order_match(th.concl.lhs, t)
+                inst = matcher.first_order_match(th.concl.lhs, t)
             except matcher.MatchException:
                 continue
 
-            As, C = logic.subst_norm(th.prop, instsp).strip_implies()
+            As, C = th.prop.subst_norm(inst).strip_implies()
             try:
                 pts = [solve(A, pts) for A in As]
             except TacticException:
@@ -265,7 +282,9 @@ def norm_rules(th_names):
 
     return norm_fun
 
-class auto_macro(ProofTermMacro):
+
+@register_macro('auto')
+class auto_macro(Macro):
     """Macro applying auto.solve."""
     def __init__(self):
         self.level = 1
@@ -286,7 +305,7 @@ class auto_macro(ProofTermMacro):
 
 
 def auto_solve(t, pts=None):
-    return ProofTermDeriv('auto', args=t, prevs=pts)
+    return ProofTerm('auto', args=t, prevs=pts)
 
 class auto_conv(Conv):
     """Applies auto macro in conversion."""
@@ -300,9 +319,14 @@ class auto_conv(Conv):
         if t == eq_t.rhs:
             return refl(t)
         else:
-            return ProofTermDeriv('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
+            return ProofTerm('auto', args=eq_t.prop, prevs=self.conds, th=eq_t.th)
 
 
-macro.global_macros.update({
-    "auto": auto_macro()
-})
+"""Managing cache records."""
+def cache_stats():
+    return "Norm: %d\nSolve: %d" % (len(norm_record), len(solve_record))
+
+def clear_cache():
+    global norm_record, solve_record
+    norm_record = dict()
+    solve_record = dict()

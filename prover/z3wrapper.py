@@ -12,15 +12,16 @@ from kernel.type import TFun, BoolType, NatType, IntType, RealType
 from kernel import term
 from kernel.term import Term, Var, BoolType, Implies, true, false
 from kernel.thm import Thm
-from kernel.macro import ProofMacro, global_macros
-from kernel.theory import Method, global_methods
+from kernel.macro import Macro
+from kernel.theory import register_macro
+from kernel.proofterm import ProofTerm
 from kernel import theory
 from logic import logic
 from logic import conv
-from logic.proofterm import ProofTermDeriv
 from data import nat
 from data import set as hol_set
 from syntax import pprint, settings
+from server.method import Method, register_method
 from prover import fologic
 from util import name
 
@@ -51,7 +52,7 @@ def convert_type(T):
             return tuple([domainT] + rangeT)
         else:
             return (domainT, rangeT)
-    elif T.is_type() and T.name == 'set':
+    elif T.is_tconst() and T.name == 'set':
         domainT = convert_type(T.args[0])
         if isinstance(domainT, tuple):
             raise Z3Exception("convert: unsupported type " + repr(T))
@@ -238,7 +239,9 @@ def solve(t, debug=False):
         s.add(A)
     return str(s.check()) == 'unsat'
 
-class Z3Macro(ProofMacro):
+
+@register_macro('z3')
+class Z3Macro(Macro):
     """Macro invoking SMT solver Z3."""
     def __init__(self):
         self.level = 0  # No expand implemented for Z3.
@@ -258,9 +261,10 @@ class Z3Macro(ProofMacro):
         raise NotImplementedError
 
 def apply_z3(t):
-    return ProofTermDeriv('z3', args=t)
+    return ProofTerm('z3', args=t)
 
 
+@register_method('z3')
 class Z3Method(Method):
     """Method invoking SMT solver Z3."""
     def __init__(self):
@@ -274,7 +278,6 @@ class Z3Method(Method):
 
         return [{}]
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply Z3")
 
@@ -289,12 +292,3 @@ class Z3Method(Method):
 
         assert solve(Implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)
-
-
-global_macros.update({
-    "z3": Z3Macro(),
-})
-
-global_methods.update({
-    "z3": Z3Method(),
-})

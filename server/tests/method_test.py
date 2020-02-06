@@ -7,6 +7,7 @@ from kernel.thm import Thm
 from kernel import theory
 from logic import context
 from server import method
+from server.method import global_methods
 from server import server
 from syntax import parser
 
@@ -78,7 +79,7 @@ class MethodTest(unittest.TestCase):
         state = server.parse_init_state(Implies(*(assms + [concl])))
 
         # Obtain method and run its search function
-        method = theory.global_methods[method_name]
+        method = global_methods[method_name]
         search_res = state.apply_search(len(assms), method, prevs=prevs)
         self.assertEqual([res['theorem'] for res in search_res], res)
 
@@ -404,6 +405,16 @@ class MethodTest(unittest.TestCase):
             method_name='rewrite_goal',
             args={'theorem': 'image_combine', 'sym': 'true'},
             gaps=["image (f O g) s = t"]
+        )
+
+    def testRewriteGoal4(self):
+        test_method(self,
+            'set',
+            vars={'f': "'a => 'b", 's': "'a set", 't': "'a set"},
+            concl='(∃x1. x1 ∈ s) ⟷ x ∈ image f s',
+            method_name='rewrite_goal',
+            args={'theorem': 'in_image'},
+            gaps=["(∃x1. x1 ∈ s) ⟷ (∃x1. x = f x1 & x1 ∈ s)"]
         )
 
     def testRewriteGoalWithPrev(self):

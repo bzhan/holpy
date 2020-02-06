@@ -66,7 +66,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "eq_refl, {a: nat}, {x: (1::nat)}",
+                    "args": "eq_refl, {x: (1::nat)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -108,22 +108,31 @@
                     "th": "⊢ aval (V 1) ((λx. 0)(1 := 7)) + 5 = 12"
                 },
                 {
-                    "args": "aval_def_1, aval (V 1) ((λx. 0)(1 := 7)) + aval (N (5)) ((λx. 0)(1 := 7)) = 12",
+                    "args": "aval_def_1, aval (V 1) ((λx. 0)(1 := 7)) + aval (N 5) ((λx. 0)(1 := 7)) = 12",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ aval (V 1) ((λx. 0)(1 := 7)) + aval (N (5)) ((λx. 0)(1 := 7)) = 12"
+                    "th": "⊢ aval (V 1) ((λx. 0)(1 := 7)) + aval (N 5) ((λx. 0)(1 := 7)) = 12"
                 },
                 {
-                    "args": "aval_def_3, aval (Plus (V 1) (N (5))) ((λx. 0)(1 := 7)) = 12",
+                    "args": "aval_def_3, aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12",
                     "id": "6",
                     "prevs": [
                         "5"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ aval (Plus (V 1) (N (5))) ((λx. 0)(1 := 7)) = 12"
+                    "th": "⊢ aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12"
                 }
             ],
             "prop": "aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12",
@@ -179,11 +188,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬(0::nat) = 1",
+                    "args": "¬((0::nat) = 1)",
                     "id": "0",
                     "prevs": [],
                     "rule": "nat_const_ineq",
-                    "th": "⊢ ¬(0::nat) = 1"
+                    "th": "⊢ ¬((0::nat) = 1)"
                 },
                 {
                     "args": "nat_plus_def_1, (0::nat) + 5 = 5",
@@ -221,22 +230,31 @@
                     "th": "⊢ aval (V 0) ((λx. 0)(1 := 7)) + 5 = 5"
                 },
                 {
-                    "args": "aval_def_1, aval (V 0) ((λx. 0)(1 := 7)) + aval (N (5)) ((λx. 0)(1 := 7)) = 5",
+                    "args": "aval_def_1, aval (V 0) ((λx. 0)(1 := 7)) + aval (N 5) ((λx. 0)(1 := 7)) = 5",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ aval (V 0) ((λx. 0)(1 := 7)) + aval (N (5)) ((λx. 0)(1 := 7)) = 5"
+                    "th": "⊢ aval (V 0) ((λx. 0)(1 := 7)) + aval (N 5) ((λx. 0)(1 := 7)) = 5"
                 },
                 {
-                    "args": "aval_def_3, aval (Plus (V 0) (N (5))) ((λx. 0)(1 := 7)) = 5",
+                    "args": "aval_def_3, aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5",
                     "id": "6",
                     "prevs": [
                         "5"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ aval (Plus (V 0) (N (5))) ((λx. 0)(1 := 7)) = 5"
+                    "th": "⊢ aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5"
                 }
             ],
             "prop": "aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5",

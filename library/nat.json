@@ -172,7 +172,6 @@
                     "args": "Suc (n + 0) = Suc n",
                     "id": "1.2",
                     "prevs": [
-                        "1.1",
                         "1.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
@@ -199,13 +198,22 @@
                     "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx::nat. x + 0 = x, x: x}",
+                    "args": "nat_induct, {P: λx::nat. x + 0 = x, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x + 0 = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x + 0 = x"
                 }
             ],
@@ -275,6 +283,15 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ 1 + x = Suc x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ 1 + x = Suc x"
                 }
             ],
@@ -350,7 +367,6 @@
                     "args": "Suc (n + 1) = Suc (Suc n)",
                     "id": "2.2",
                     "prevs": [
-                        "2.1",
                         "2.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
@@ -377,13 +393,22 @@
                     "th": "⊢ ∀n. n + 1 = Suc n ⟶ Suc n + 1 = Suc (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + 1 = Suc x, x: x}",
+                    "args": "nat_induct, {P: λx. x + 1 = Suc x, x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x + 1 = Suc x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x + 1 = Suc x"
                 }
             ],
@@ -493,7 +518,7 @@
                     "th": "⊢ ∀n. n + Suc y = Suc (n + y) ⟶ Suc n + Suc y = Suc (Suc n + y)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + Suc y = Suc (x + y), x: x}",
+                    "args": "nat_induct, {P: λx. x + Suc y = Suc (x + y), x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -593,13 +618,22 @@
                     "th": "⊢ ∀x. x + y = y + x ⟶ Suc x + y = y + Suc x"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + y = y + x, x: x}",
+                    "args": "nat_induct, {P: λx. x + y = y + x, x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x + y = y + x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x + y = y + x"
                 }
             ],
@@ -721,13 +755,22 @@
                     "th": "⊢ ∀x. x + y + z = x + (y + z) ⟶ Suc x + y + z = Suc x + (y + z)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + y + z = x + (y + z), x: x}",
+                    "args": "nat_induct, {P: λx. x + y + z = x + (y + z), x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x + y + z = x + (y + z)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x + y + z = x + (y + z)"
                 }
             ],
@@ -839,13 +882,22 @@
                     "th": "⊢ ∀n. n * 0 = 0 ⟶ Suc n * 0 = 0"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx::nat. x * 0 = 0, x: x}",
+                    "args": "nat_induct, {P: λx::nat. x * 0 = 0, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x * 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * 0 = 0"
                 }
             ],
@@ -923,6 +975,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ 1 * x = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 * x = x"
                 }
             ],
             "prop": "1 * x = x",
@@ -999,8 +1060,7 @@
                     "id": "1.3",
                     "prevs": [
                         "1.1",
-                        "1.2",
-                        "1.1"
+                        "1.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "n * 1 = n ⊢ 1 + n * 1 = Suc n"
@@ -1026,13 +1086,22 @@
                     "th": "⊢ ∀n. n * 1 = n ⟶ Suc n * 1 = Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx::nat. x * 1 = x, x: x}",
+                    "args": "nat_induct, {P: λx::nat. x * 1 = x, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x * 1 = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * 1 = x"
                 }
             ],
@@ -1167,7 +1236,7 @@
                     "th": "⊢ ∀n. n * Suc y = n + n * y ⟶ Suc n * Suc y = Suc n + Suc n * y"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x * Suc y = x + x * y, x: x}",
+                    "args": "nat_induct, {P: λx. x * Suc y = x + x * y, x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
@@ -1193,11 +1262,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "add_0_right, 0 = 0 + 0",
+                    "args": "add_0_right, (0::nat) = 0 + 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ 0 = 0 + 0"
+                    "th": "⊢ (0::nat) = 0 + 0"
                 },
                 {
                     "args": "nat_times_def_1, 0 * (y + z) = 0 * y + 0 * z",
@@ -1267,13 +1336,22 @@
                     "th": "⊢ ∀x. x * (y + z) = x * y + x * z ⟶ Suc x * (y + z) = Suc x * y + Suc x * z"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x * (y + z) = x * y + x * z, x: x}",
+                    "args": "nat_induct, {P: λx. x * (y + z) = x * y + x * z, x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x * (y + z) = x * y + x * z"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * (y + z) = x * y + x * z"
                 }
             ],
@@ -1406,7 +1484,7 @@
                     "th": "⊢ ∀n. (x + y) * n = x * n + y * n ⟶ (x + y) * Suc n = x * Suc n + y * Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λz. (x + y) * z = x * z + y * z, x: z}",
+                    "args": "nat_induct, {P: λz. (x + y) * z = x * z + y * z, x: z}",
                     "id": "3",
                     "prevs": [
                         "1",
@@ -1559,13 +1637,22 @@
                     "th": "⊢ ∀x. x * y * z = x * (y * z) ⟶ Suc x * y * z = Suc x * (y * z)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x * y * z = x * (y * z), x: x}",
+                    "args": "nat_induct, {P: λx. x * y * z = x * (y * z), x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x * y * z = x * (y * z)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * y * z = x * (y * z)"
                 }
             ],
@@ -1699,13 +1786,22 @@
                     "th": "⊢ ∀x. x * y = y * x ⟶ Suc x * y = y * Suc x"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x * y = y * x, x: x}",
+                    "args": "nat_induct, {P: λx. x * y = y * x, x: x}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x * y = y * x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x * y = y * x"
                 }
             ],
@@ -1866,7 +1962,7 @@
                     "th": "⊢ ∀n. (n + y = n + z ⟶ y = z) ⟶ Suc n + y = Suc n + z ⟶ y = z"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + y = x + z ⟶ y = z, x: x}",
+                    "args": "nat_induct, {P: λx. x + y = x + z ⟶ y = z, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -2928,7 +3024,7 @@
                     "th": "⊢ ∀n. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⟶ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n, x: n}",
+                    "args": "nat_induct, {P: λn. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n, x: n}",
                     "id": "3",
                     "prevs": [
                         "1",
@@ -3093,13 +3189,22 @@
                     "th": "⊢ ∀n. Suc m ≤ n ⟷ m < n ⟶ Suc m ≤ Suc n ⟷ m < Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. Suc m ≤ n ⟷ m < n, x: n}",
+                    "args": "nat_induct, {P: λn. Suc m ≤ n ⟷ m < n, x: n}",
                     "id": "4",
                     "prevs": [
                         "2",
                         "3"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ Suc m ≤ n ⟷ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ Suc m ≤ n ⟷ m < n"
                 }
             ],
@@ -3177,13 +3282,22 @@
                     "th": "⊢ ∀n. m < Suc n ⟷ m ≤ n ⟶ m < Suc (Suc n) ⟷ m ≤ Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. m < Suc n ⟷ m ≤ n, x: n}",
+                    "args": "nat_induct, {P: λn. m < Suc n ⟷ m ≤ n, x: n}",
                     "id": "5",
                     "prevs": [
                         "3",
                         "4"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ m < Suc n ⟷ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ m < Suc n ⟷ m ≤ n"
                 }
             ],
@@ -3442,7 +3556,7 @@
                     "th": "0 ≤ n ⊢ 0 ≤ n"
                 },
                 {
-                    "args": "disjI2, {}, {A: 0 = Suc n, B: 0 ≤ n}",
+                    "args": "disjI2, {A: 0 = Suc n, B: 0 ≤ n}",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
@@ -3471,13 +3585,22 @@
                     "th": "⊢ ∀n. 0 ≤ n ⟶ 0 ≤ Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn::nat. 0 ≤ n, x: n}",
+                    "args": "nat_induct, {P: λn::nat. 0 ≤ n, x: n}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ 0 ≤ n"
                 }
             ],
@@ -3538,13 +3661,13 @@
                     "th": "⊢ n = n + 0"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λp. n = n + p, a: (0::nat)}",
+                    "args": "exI, {P: λp. n = n + p, a: (0::nat)}",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ ∃a. n = n + a"
+                    "th": "⊢ ∃a1. n = n + a1"
                 },
                 {
                     "args": "less_eq_exist, n ≤ n",
@@ -3553,6 +3676,15 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ n ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ n ≤ n"
                 }
             ],
@@ -3670,13 +3802,13 @@
                     "th": "n = m + q, k ≤ m, m ≤ n, m = k + p ⊢ n = k + (p + q)"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λp. n = k + p, a: p + q}",
+                    "args": "exI, {P: λp. n = k + p, a: p + q}",
                     "id": "11",
                     "prevs": [
                         "10"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ ∃a. n = k + a"
+                    "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ ∃a1. n = k + a1"
                 },
                 {
                     "args": "less_eq_exist, k ≤ n",
@@ -3797,7 +3929,7 @@
                     "th": "¬((0::nat) = 0) ⊢ ¬((0::nat) = 0)"
                 },
                 {
-                    "args": "eq_refl, {a: nat}, {x: (0::nat)}",
+                    "args": "eq_refl, {x: (0::nat)}",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -3920,7 +4052,7 @@
                     "th": "¬false ⊢ ¬false"
                 },
                 {
-                    "args": "le_0, {}, {n: n}",
+                    "args": "le_0, {n: n}",
                     "id": "5.2.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -4025,7 +4157,7 @@
                     "th": "⊢ ∀n. ¬(n ≤ 0) ⟷ 0 < n ⟶ ¬(Suc n ≤ 0) ⟷ 0 < Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λm::nat. ¬(m ≤ 0) ⟷ 0 < m, x: m}",
+                    "args": "nat_induct, {P: λm::nat. ¬(m ≤ 0) ⟷ 0 < m, x: m}",
                     "id": "6",
                     "prevs": [
                         "4",
@@ -4070,7 +4202,7 @@
                     "th": "¬(0 ≤ Suc n) ⊢ ¬(0 ≤ Suc n)"
                 },
                 {
-                    "args": "le_0, {}, {n: Suc n}",
+                    "args": "le_0, {n: Suc n}",
                     "id": "7.2.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -4226,7 +4358,7 @@
                         "8.2.3"
                     ],
                     "rule": "intros",
-                    "th": "∀n1. ¬(n ≤ n1) ⟷ n1 < n ⟶ ¬(n ≤ Suc n1) ⟷ Suc n1 < n ⊢ ∀n1. ¬(Suc n ≤ n1) ⟷ n1 < Suc n ⟶ ¬(Suc n ≤ Suc n1) ⟷ Suc n1 < Suc n"
+                    "th": "∀n1. ¬(n ≤ n1) ⟷ n1 < n ⟶ ¬(n ≤ Suc n1) ⟷ Suc n1 < n ⊢ ∀m. ¬(Suc n ≤ m) ⟷ m < Suc n ⟶ ¬(Suc n ≤ Suc m) ⟷ Suc m < Suc n"
                 },
                 {
                     "args": "",
@@ -4240,7 +4372,7 @@
                     "th": "⊢ ∀n. (∀n1. ¬(n ≤ n1) ⟷ n1 < n ⟶ ¬(n ≤ Suc n1) ⟷ Suc n1 < n) ⟶ (∀n1. ¬(Suc n ≤ n1) ⟷ n1 < Suc n ⟶ ¬(Suc n ≤ Suc n1) ⟷ Suc n1 < Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λm. ∀n. ¬(m ≤ n) ⟷ n < m ⟶ ¬(m ≤ Suc n) ⟷ Suc n < m, x: m}",
+                    "args": "nat_induct, {P: λm. ∀n. ¬(m ≤ n) ⟷ n < m ⟶ ¬(m ≤ Suc n) ⟷ Suc n < m, x: m}",
                     "id": "9",
                     "prevs": [
                         "7",
@@ -4250,7 +4382,7 @@
                     "th": "⊢ ∀n. ¬(m ≤ n) ⟷ n < m ⟶ ¬(m ≤ Suc n) ⟷ Suc n < m"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. ¬(m ≤ n) ⟷ n < m, x: n}",
+                    "args": "nat_induct, {P: λn. ¬(m ≤ n) ⟷ n < m, x: n}",
                     "id": "10",
                     "prevs": [
                         "6",
@@ -4460,7 +4592,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "less_eq_refl, {}, {n: m}",
+                    "args": "less_eq_refl, {n: m}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -4506,7 +4638,7 @@
                     "th": "m ≤ m + n ⊢ m ≤ n + m"
                 },
                 {
-                    "args": "disjI2, {}, {A: m = Suc (n + m), B: m ≤ n + m}",
+                    "args": "disjI2, {A: m = Suc (n + m), B: m ≤ n + m}",
                     "id": "2.3",
                     "prevs": [
                         "2.2"
@@ -4553,7 +4685,7 @@
                     "th": "⊢ ∀n. m ≤ m + n ⟶ m ≤ m + Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. m ≤ m + n, x: n}",
+                    "args": "nat_induct, {P: λn. m ≤ m + n, x: n}",
                     "id": "3",
                     "prevs": [
                         "1",
@@ -4721,10 +4853,10 @@
                         "1.6"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n1. n1 < n1 + n ⟷ 0 < n ⟶ Suc n1 < Suc n1 + n ⟷ 0 < n"
+                    "th": "⊢ ∀m. m < m + n ⟷ 0 < n ⟶ Suc m < Suc m + n ⟷ 0 < n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λm. m < m + n ⟷ 0 < n, x: m}",
+                    "args": "nat_induct, {P: λm. m < m + n ⟷ 0 < n, x: m}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -4889,7 +5021,7 @@
                     "th": "⊢ ∀n. 0 - n = 0 ⟶ 0 - Suc n = 0"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx::nat. 0 - x = 0, x: x}",
+                    "args": "nat_induct, {P: λx::nat. 0 - x = 0, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
@@ -4961,20 +5093,20 @@
                     "th": "⊢ Pre (Suc x) = x"
                 },
                 {
-                    "args": "nat_minus_def_1, Pre (minus (Suc x) 0) = minus x 0",
+                    "args": "nat_minus_def_1, Pre (Suc x - 0) = x - 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ Pre (minus (Suc x) 0) = minus x 0"
+                    "th": "⊢ Pre (Suc x - 0) = x - 0"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. Pre (minus (Suc x) n) = minus x n ⟶ Pre (minus (Suc x) (Suc n)) = minus x (Suc n)"
+                    "th": "⊢ ∀n. Pre (Suc x - n) = x - n ⟶ Pre (Suc x - Suc n) = x - Suc n"
                 },
                 {
                     "args": "n, nat",
@@ -4984,29 +5116,29 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "Pre (minus (Suc x) n) = minus x n",
+                    "args": "Pre (Suc x - n) = x - n",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "Pre (minus (Suc x) n) = minus x n ⊢ Pre (minus (Suc x) n) = minus x n"
+                    "th": "Pre (Suc x - n) = x - n ⊢ Pre (Suc x - n) = x - n"
                 },
                 {
-                    "args": "Pre (Pre (minus (Suc x) n)) = Pre (minus x n)",
+                    "args": "Pre (Pre (Suc x - n)) = Pre (x - n)",
                     "id": "2.2",
                     "prevs": [
                         "2.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "Pre (minus (Suc x) n) = minus x n ⊢ Pre (Pre (minus (Suc x) n)) = Pre (minus x n)"
+                    "th": "Pre (Suc x - n) = x - n ⊢ Pre (Pre (Suc x - n)) = Pre (x - n)"
                 },
                 {
-                    "args": "nat_minus_def_2, Pre (minus (Suc x) (Suc n)) = minus x (Suc n)",
+                    "args": "nat_minus_def_2, Pre (Suc x - Suc n) = x - Suc n",
                     "id": "2.3",
                     "prevs": [
                         "2.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "Pre (minus (Suc x) n) = minus x n ⊢ Pre (minus (Suc x) (Suc n)) = minus x (Suc n)"
+                    "th": "Pre (Suc x - n) = x - n ⊢ Pre (Suc x - Suc n) = x - Suc n"
                 },
                 {
                     "args": "",
@@ -5017,17 +5149,26 @@
                         "2.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. Pre (minus (Suc x) n) = minus x n ⟶ Pre (minus (Suc x) (Suc n)) = minus x (Suc n)"
+                    "th": "⊢ ∀n. Pre (Suc x - n) = x - n ⟶ Pre (Suc x - Suc n) = x - Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λy. Pre (minus (Suc x) y) = minus x y, x: y}",
+                    "args": "nat_induct, {P: λy. Pre (Suc x - y) = x - y, x: y}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ Pre (minus (Suc x) y) = minus x y"
+                    "th": "⊢ Pre (Suc x - y) = x - y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Pre (Suc x - y) = x - y"
                 }
             ],
             "prop": "Pre (Suc x - y) = x - y",
@@ -5087,29 +5228,29 @@
                     "th": "⊢ Pre (Suc x) = x"
                 },
                 {
-                    "args": "nat_minus_def_1, Pre (minus (Suc x) 0) = minus x 0",
+                    "args": "nat_minus_def_1, Pre (Suc x - 0) = x - 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ Pre (minus (Suc x) 0) = minus x 0"
+                    "th": "⊢ Pre (Suc x - 0) = x - 0"
                 },
                 {
-                    "args": "nat_minus_def_2, minus (Suc x) 1 = minus x 0",
+                    "args": "nat_minus_def_2, Suc x - Suc 0 = x - 0",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ minus (Suc x) 1 = minus x 0"
+                    "th": "⊢ Suc x - Suc 0 = x - 0"
                 },
                 {
                     "args": "",
                     "id": "3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. minus (Suc x) (Suc n) = minus x n ⟶ minus (Suc x) (Suc (Suc n)) = minus x (Suc n)"
+                    "th": "⊢ ∀n. Suc x - Suc n = x - n ⟶ Suc x - Suc (Suc n) = x - Suc n"
                 },
                 {
                     "args": "n, nat",
@@ -5119,48 +5260,66 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "minus (Suc x) (Suc n) = minus x n",
+                    "args": "Suc x - Suc n = x - n",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "minus (Suc x) (Suc n) = minus x n ⊢ minus (Suc x) (Suc n) = minus x n"
+                    "th": "Suc x - Suc n = x - n ⊢ Suc x - Suc n = x - n"
                 },
                 {
-                    "args": "nat_minus_presuc, Pre (Pre (minus (Suc x) n)) = Pre (minus x n)",
+                    "args": "",
                     "id": "3.2",
                     "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Pre (Pre (minus (Suc x) n)) = Pre (minus x n)"
+                    "rule": "sorry",
+                    "th": "Suc x - Suc n = x - n ⊢ x - Suc n = Pre (x - n)"
                 },
                 {
-                    "args": "nat_minus_def_2, minus (Suc x) (Suc (Suc n)) = minus x (Suc n)",
+                    "args": "nat_minus_presuc, Pre (Suc x - Suc n) = Pre (x - n)",
                     "id": "3.3",
                     "prevs": [
                         "3.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "minus (Suc x) (Suc n) = minus x n ⊢ minus (Suc x) (Suc (Suc n)) = minus x (Suc n)"
+                    "th": "Suc x - Suc n = x - n ⊢ Pre (Suc x - Suc n) = Pre (x - n)"
+                },
+                {
+                    "args": "nat_minus_def_2, Suc x - Suc (Suc n) = x - Suc n",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Suc x - Suc n = x - n ⊢ Suc x - Suc (Suc n) = x - Suc n"
                 },
                 {
                     "args": "",
-                    "id": "3.4",
+                    "id": "3.5",
                     "prevs": [
                         "3.0",
                         "3.1",
-                        "3.3"
+                        "3.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. minus (Suc x) (Suc n) = minus x n ⟶ minus (Suc x) (Suc (Suc n)) = minus x (Suc n)"
+                    "th": "⊢ ∀n. Suc x - Suc n = x - n ⟶ Suc x - Suc (Suc n) = x - Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λy. minus (Suc x) (Suc y) = minus x y, x: y}",
+                    "args": "nat_induct, {P: λy. Suc x - Suc y = x - y, x: y}",
                     "id": "4",
                     "prevs": [
                         "2",
                         "3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ minus (Suc x) (Suc y) = minus x y"
+                    "th": "⊢ Suc x - Suc y = x - y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Suc x - Suc y = x - y"
                 }
             ],
             "prop": "Suc x - Suc y = x - y",
@@ -5213,18 +5372,18 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_minus_def_1, minus 0 0 = 0",
+                    "args": "nat_minus_def_1, (0::nat) - 0 = 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ minus 0 0 = 0"
+                    "th": "⊢ (0::nat) - 0 = 0"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. minus n n = 0 ⟶ minus (Suc n) (Suc n) = 0"
+                    "th": "⊢ ∀n. n - n = 0 ⟶ Suc n - Suc n = 0"
                 },
                 {
                     "args": "n, nat",
@@ -5234,20 +5393,20 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "minus n n = 0",
+                    "args": "n - n = 0",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "minus n n = 0 ⊢ minus n n = 0"
+                    "th": "n - n = 0 ⊢ n - n = 0"
                 },
                 {
-                    "args": "nat_minus_suc, minus (Suc n) (Suc n) = 0",
+                    "args": "nat_minus_suc, Suc n - Suc n = 0",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "minus n n = 0 ⊢ minus (Suc n) (Suc n) = 0"
+                    "th": "n - n = 0 ⊢ Suc n - Suc n = 0"
                 },
                 {
                     "args": "",
@@ -5258,17 +5417,26 @@
                         "1.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. minus n n = 0 ⟶ minus (Suc n) (Suc n) = 0"
+                    "th": "⊢ ∀n. n - n = 0 ⟶ Suc n - Suc n = 0"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. minus x x = 0, x: x}",
+                    "args": "nat_induct, {P: λx::nat. x - x = 0, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ minus x x = 0"
+                    "th": "⊢ x - x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x - x = 0"
                 }
             ],
             "prop": "x - x = 0",
@@ -5371,13 +5539,22 @@
                     "th": "⊢ ∀n. x + n - n = x ⟶ x + Suc n - Suc n = x"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λy. x + y - y = x, x: y}",
+                    "args": "nat_induct, {P: λy. x + y - y = x, x: y}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
+                    "th": "⊢ x + y - y = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ x + y - y = x"
                 }
             ],
@@ -5432,20 +5609,29 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_plus_minus, minus (y + x) x = y",
+                    "args": "nat_plus_minus, y + x - x = y",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ minus (y + x) x = y"
+                    "th": "⊢ y + x - x = y"
                 },
                 {
-                    "args": "add_comm, minus (x + y) x = y",
+                    "args": "add_comm, x + y - x = y",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ minus (x + y) x = y"
+                    "th": "⊢ x + y - x = y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y - x = y"
                 }
             ],
             "prop": "x + y - x = y",
@@ -5739,7 +5925,7 @@
                     "th": "0 = n + p ⊢ n + p = 0"
                 },
                 {
-                    "args": "add_is_zero, {}, {x: n, y: p}",
+                    "args": "add_is_zero, {x: n, y: p}",
                     "id": "5",
                     "prevs": [
                         "4"
@@ -6020,7 +6206,7 @@
                     "th": "⊢ ∀n. ¬(even n) ⟷ odd n ⟶ ¬(even (Suc n)) ⟷ odd (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. ¬(even n) ⟷ odd n, x: n}",
+                    "args": "nat_induct, {P: λn. ¬(even n) ⟷ odd n, x: n}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -6186,7 +6372,7 @@
                     "th": "⊢ ∀n. ¬(odd n) ⟷ even n ⟶ ¬(odd (Suc n)) ⟷ even (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. ¬(odd n) ⟷ even n, x: n}",
+                    "args": "nat_induct, {P: λn. ¬(odd n) ⟷ even n, x: n}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -6283,7 +6469,7 @@
                     "th": "⊢ even 0"
                 },
                 {
-                    "args": "disjI1, {}, {A: even 0, B: odd 0}",
+                    "args": "disjI1, {A: even 0, B: odd 0}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -6345,7 +6531,7 @@
                     "th": "even n ∨ odd n, even n ⊢ odd (Suc n)"
                 },
                 {
-                    "args": "disjI2, {}, {A: even (Suc n), B: odd (Suc n)}",
+                    "args": "disjI2, {A: even (Suc n), B: odd (Suc n)}",
                     "id": "3.2.3",
                     "prevs": [
                         "3.2.2"
@@ -6396,7 +6582,7 @@
                     "th": "even n ∨ odd n, odd n ⊢ even (Suc n)"
                 },
                 {
-                    "args": "disjI1, {}, {A: even (Suc n), B: odd (Suc n)}",
+                    "args": "disjI1, {A: even (Suc n), B: odd (Suc n)}",
                     "id": "3.3.3",
                     "prevs": [
                         "3.3.2"
@@ -6437,7 +6623,7 @@
                     "th": "⊢ ∀n. even n ∨ odd n ⟶ even (Suc n) ∨ odd (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. even n ∨ odd n, x: n}",
+                    "args": "nat_induct, {P: λn. even n ∨ odd n, x: n}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -6663,7 +6849,7 @@
                     "th": "⊢ ∀n. even (n + n) ⟶ even (Suc n + Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. even (n + n), x: n}",
+                    "args": "nat_induct, {P: λn. even (n + n), x: n}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -6771,7 +6957,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "even_double, {}, {n: n}",
+                    "args": "even_double, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -6874,7 +7060,7 @@
                     "th": "⊢ (0::nat) = 2 * 0"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λm::nat. 0 = 2 * m, a: (0::nat)}",
+                    "args": "exI, {P: λm::nat. 0 = 2 * m, a: (0::nat)}",
                     "id": "0.2",
                     "prevs": [
                         "0.1"
@@ -6966,7 +7152,7 @@
                     "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m)))"
                 },
                 {
-                    "args": "conjD1, {}, {A: even n ⟶ (∃m. n = 2 * m), B: ¬(even n) ⟶ (∃m. n = Suc (2 * m))}",
+                    "args": "conjD1, {A: even n ⟶ (∃m. n = 2 * m), B: ¬(even n) ⟶ (∃m. n = Suc (2 * m))}",
                     "id": "4.2",
                     "prevs": [
                         "4.1"
@@ -6975,7 +7161,7 @@
                     "th": "(even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⊢ even n ⟶ (∃m. n = 2 * m)"
                 },
                 {
-                    "args": "conjD2, {}, {A: even n ⟶ (∃m. n = 2 * m), B: ¬(even n) ⟶ (∃m. n = Suc (2 * m))}",
+                    "args": "conjD2, {A: even n ⟶ (∃m. n = 2 * m), B: ¬(even n) ⟶ (∃m. n = Suc (2 * m))}",
                     "id": "4.3",
                     "prevs": [
                         "4.1"
@@ -7039,7 +7225,7 @@
                     "th": "n = Suc (2 * m), (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), ¬(even n) ⊢ Suc n = 2 * Suc m"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λm. Suc n = 2 * m, a: Suc m}",
+                    "args": "exI, {P: λm. Suc n = 2 * m, a: Suc m}",
                     "id": "4.4.6",
                     "prevs": [
                         "4.4.5"
@@ -7117,7 +7303,7 @@
                     "th": "n = 2 * m ⊢ Suc n = Suc (2 * m)"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λm. Suc n = Suc (2 * m), a: m}",
+                    "args": "exI, {P: λm. Suc n = Suc (2 * m), a: m}",
                     "id": "4.5.6",
                     "prevs": [
                         "4.5.5"
@@ -7169,7 +7355,7 @@
                     "th": "⊢ ∀n. (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))) ⟶ (even (Suc n) ⟶ (∃m. Suc n = 2 * m)) ∧ (¬(even (Suc n)) ⟶ (∃m. Suc n = Suc (2 * m)))"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), x: n}",
+                    "args": "nat_induct, {P: λn. (even n ⟶ (∃m. n = 2 * m)) ∧ (¬(even n) ⟶ (∃m. n = Suc (2 * m))), x: n}",
                     "id": "5",
                     "prevs": [
                         "3",
@@ -7356,7 +7542,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "even_exists_lemma, {}, {n: n}",
+                    "args": "even_exists_lemma, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7400,7 +7586,7 @@
                     "th": "n = 2 * m ⊢ n = 2 * m"
                 },
                 {
-                    "args": "even_double, {}, {n: m}",
+                    "args": "even_double, {n: m}",
                     "id": "2.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7508,7 +7694,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "even_exists_lemma, {}, {n: n}",
+                    "args": "even_exists_lemma, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -7561,7 +7747,7 @@
                     "th": "n = Suc (2 * m) ⊢ n = Suc (2 * m)"
                 },
                 {
-                    "args": "odd_double, {}, {n: m}",
+                    "args": "odd_double, {n: m}",
                     "id": "3.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",

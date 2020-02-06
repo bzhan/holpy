@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import HOLType
+from kernel.type import Type
 from kernel.thm import Thm
 
 class ProofReport():
@@ -107,7 +107,7 @@ class ExtensionReport():
             (name, info) = axiom
             if isinstance(info, int):
                 return "Type " + name + " with arity " + str(info)
-            elif isinstance(info, HOLType):
+            elif isinstance(info, Type):
                 return name + " :: " + str(info)
             elif isinstance(info, Thm):
                 return name + ": " + str(info)

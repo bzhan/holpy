@@ -1,27 +1,27 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, Type, TFun, NatType
+from kernel.type import TVar, TConst, TFun, NatType
 from kernel.term import Term, Const
 
 """Utility functions for lists."""
 
-def listT(T):
-    return Type("list", T)
+def ListType(T):
+    return TConst("list", T)
 
 def nil(T):
     if T is None:
         return Const("nil", None)
-    return Const("nil", listT(T))
+    return Const("nil", ListType(T))
 
 def cons(T):
     if T is None:
         return Const("cons", None)
-    return Const("cons", TFun(T, listT(T), listT(T)))
+    return Const("cons", TFun(T, ListType(T), ListType(T)))
 
 def append(T):
     if T is None:
         return Const("append", None)
-    return Const("append", TFun(listT(T), listT(T), listT(T)))
+    return Const("append", TFun(ListType(T), ListType(T), ListType(T)))
 
 def is_nil(t):
     return t.is_const("nil")
@@ -73,7 +73,7 @@ def mk_literal_list(ts, T):
 def length(xs):
     """Returns the term length xs."""
     T = xs.get_type().args[0]
-    return Const("length", TFun(listT(T), NatType))(xs)
+    return Const("length", TFun(ListType(T), NatType))(xs)
 
 def nth(xs, n):
     """Returns the term nth xs n."""

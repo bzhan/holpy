@@ -103,13 +103,13 @@
                     "th": "0 < e ⊢ 0 < e"
                 },
                 {
-                    "args": "has_limit_D1",
+                    "args": "has_limit_D1, {e: e, f: f, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "has_limit f x, 0 < e ⊢ ∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e"
                 },
                 {
@@ -120,37 +120,37 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "∀n. n ≤ n ⟶ abs (f n - x) < e",
+                    "args": "∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e",
                     "id": "4",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∀n. n ≤ n ⟶ abs (f n - x) < e ⊢ ∀n. n ≤ n ⟶ abs (f n - x) < e"
+                    "th": "∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e ⊢ ∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e"
                 },
                 {
                     "args": "",
                     "id": "5",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "has_limit f x, 0 < e, ∀n. n ≤ n ⟶ abs (f n - x) < e ⊢ n ≤ n"
+                    "th": "has_limit f x, 0 < e, ∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e ⊢ n ≤ n"
                 },
                 {
-                    "args": "n",
+                    "args": "",
                     "id": "6",
                     "prevs": [
                         "4",
                         "5"
                     ],
-                    "rule": "apply_fact_for",
-                    "th": "∀n. n ≤ n ⟶ abs (f n - x) < e, has_limit f x, 0 < e ⊢ abs (f n - x) < e"
+                    "rule": "apply_fact",
+                    "th": "∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e, has_limit f x, 0 < e ⊢ abs (f n - x) < e"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λn. abs (f n - x) < e, a: n}",
+                    "args": "exI, {P: λn. abs (f n - x) < e, a: n}",
                     "id": "7",
                     "prevs": [
                         "6"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "has_limit f x, 0 < e, ∀n. n ≤ n ⟶ abs (f n - x) < e ⊢ ∃a. abs (f a - x) < e"
+                    "th": "has_limit f x, 0 < e, ∀n1. n ≤ n1 ⟶ abs (f n1 - x) < e ⊢ ∃a1. abs (f a1 - x) < e"
                 },
                 {
                     "args": "∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e",
@@ -239,18 +239,27 @@
                     "th": "x < y ⊢ x < y"
                 },
                 {
-                    "args": "",
+                    "args": "has_limit_D2, {e: y - x, f: f, x: x}",
                     "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limit f x ⊢ 0 < y - x ⟶ (∃n. abs (f n - x) < y - x)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
                     "prevs": [],
                     "rule": "sorry",
                     "th": "has_limit f x, has_limit f y, x < y ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "2.2",
+                    "id": "2.3",
                     "prevs": [
                         "2.0",
-                        "2.1"
+                        "2.2"
                     ],
                     "rule": "intros",
                     "th": "has_limit f x, has_limit f y ⊢ x < y ⟶ false"

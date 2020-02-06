@@ -4,21 +4,20 @@ from fractions import Fraction
 
 from kernel import term
 from kernel.type import TFun, BoolType, RealType
-from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real
+from kernel.term import Term, Var, Const, Not, Eq, Lambda, Nat, Real, Inst
 from kernel.thm import Thm
 from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_conv, \
     rewr_conv, abs_conv, binop_conv, every_conv, try_conv
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from logic.proofterm import ProofTerm, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, refl
 from logic.context import Context
 from data import set
 from data import nat
 from data import real
 from data.real import pi
 from data.integral import netT
-from syntax import printer
 from integral.expr import Expr, Location
 from integral.parser import parse_expr
 
@@ -400,8 +399,7 @@ class simplify_rewr_conv(Conv):
         target_eq = refl(self.target).on_rhs(auto.auto_conv(conds=conds))
 
         if target_eq.rhs != t_eq.rhs:
-            raise ConvException("simplify_rewr_conv: %s != %s" % (
-                printer.print_term(target_eq.rhs), printer.print_term(t_eq.rhs)))
+            raise ConvException("simplify_rewr_conv: %s != %s" % (target_eq.rhs, t_eq.rhs))
 
         return t_eq.transitive(target_eq.symmetric())
 
@@ -522,7 +520,7 @@ def fraction_rewr_integral(expr, target):
 
     # The domains of integration should now be equal
     target_S, target_f = target_pt.rhs.args
-    assert S == target_S, 'fraction_rewr_integral'
+    assert S == target_S, 'fraction_rewr_integral: %s != %s' % (S, target_S)
 
     # Take variable x and assumption x in the domain of integration
     interval = real.open_interval(a, b)
@@ -558,14 +556,12 @@ def apply_subst_thm(f, g, a, b):
         is_le = False
 
     if is_le:
-        eq_pt = apply_theorem('real_integral_substitution_simple_incr',
-            inst={'a': a, 'b': b, 'f': f, 'g': g})
+        eq_pt = apply_theorem('real_integral_substitution_simple_incr', inst=Inst(a=a, b=b, f=f, g=g))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
     else:
-        eq_pt = apply_theorem('real_integral_substitution_simple_decr',
-            inst={'a': a, 'b': b, 'f': f, 'g': g})
+        eq_pt = apply_theorem('real_integral_substitution_simple_decr', inst=Inst(a=a, b=b, f=f, g=g))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
@@ -679,7 +675,7 @@ class integrate_by_parts(Conv):
             raise NotImplementedError
 
         eq_pt = apply_theorem('real_integration_by_parts_simple_evalat',
-            inst={'a': a, 'b': b, 'u': self.u, 'v': self.v})
+                              inst=Inst(a=a, b=b, u=self.u, v=self.v))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
@@ -803,7 +799,7 @@ class split_region_conv(Conv):
             raise ConvException('split_region')
         a, b = S.args
 
-        eq_pt = apply_theorem('real_integral_combine', inst={'a': a, 'b': b, 'c': self.c, 'f': f})
+        eq_pt = apply_theorem('real_integral_combine', inst=Inst(a=a, b=b, c=self.c, f=f))
 
         for A in eq_pt.assums:
             eq_pt = eq_pt.implies_elim(auto.auto_solve(A))
@@ -966,7 +962,7 @@ def translate_item(item, target=None, *, debug=False):
     prev_pts = [pt]
 
     if debug:
-        print("\n%s: %s" % (item['name'], printer.print_term(pt.rhs)))
+        print("\n%s: %s" % (item['name'], pt.rhs))
 
     for step in item['calc']:
         if 'location' in step:
@@ -1070,25 +1066,22 @@ def translate_item(item, target=None, *, debug=False):
             eq_pt1 = refl(expected).on_rhs(auto.auto_conv())
             eq_pt2 = refl(pt.rhs).on_rhs(auto.auto_conv())
             if eq_pt1.rhs != eq_pt2.rhs:
-                print("Unequal right side.\nExpected: %s\nGot:      %s" % (
-                    printer.print_term(eq_pt1.rhs), printer.print_term(eq_pt2.rhs)
-                ))
+                print("Unequal right side.\nExpected: %s\nGot:      %s" % (eq_pt1.rhs, eq_pt2.rhs))
                 raise AssertionError
             else:
                 pt = pt.transitive(eq_pt2, eq_pt1.symmetric())
 
-        pt = ProofTermDeriv("transitive", None, [pt, ProofTerm.reflexive(expected)])
+        pt = ProofTerm("transitive", None, [pt, ProofTerm.reflexive(expected)])
 
         if debug:
-            print("= %s" % printer.print_term(pt.rhs))
+            print("= %s" % pt.rhs)
         prev_pts.append(pt)
 
     assert pt.lhs == init, "translate_item: wrong left side."
     if target is not None:
         target = expr_to_holpy(parse_expr(target))
-        assert pt.rhs == target, "translate_item. Expected %s, got %s" % (
-            printer.print_term(target), printer.print_term(pt.rhs))
+        assert pt.rhs == target, "translate_item. Expected %s, got %s" % (target, pt.rhs)
     elif not debug:
-        print(printer.print_term(pt.rhs))
+        print(pt.rhs)
 
     return pt

@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, BoolType, NatType, IntType, RealType
+from kernel.type import TVar, TConst, TFun, BoolType, NatType, IntType, RealType
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, And, Or, Implies, \
     Not, Eq, Forall, Lambda, Exists, true, false, Nat, Int, Real
 from kernel.thm import Thm
@@ -16,6 +16,7 @@ from data import string
 from data import function
 from data import interval
 from syntax import printer
+from syntax.settings import settings, global_setting
 
 basic.load_theory('list')
 
@@ -32,9 +33,9 @@ nn = Var("n", TFun(BoolType, BoolType))
 m = Var("m", NatType)
 n = Var("n", NatType)
 p = Var("p", NatType)
-xs = Var("xs", Type("list", Ta))
-ys = Var("ys", Type("list", Ta))
-zs = Var("zs", Type("list", Ta))
+xs = Var("xs", TConst("list", Ta))
+ys = Var("ys", TConst("list", Ta))
+zs = Var("zs", TConst("list", Ta))
 mk_if = logic.mk_if
 
 class PrinterTest(unittest.TestCase):
@@ -170,16 +171,17 @@ class PrinterTest(unittest.TestCase):
         y = Var('y', RealType)
         n = Var('n', NatType)
         test_data = [
-            (real.plus(x, y), "x + y"),
-            (real.times(x, y), "x * y"),
-            (real.minus(x, y), "x - y"),
-            (real.uminus(x), "-x"),
-            (real.minus(x, real.uminus(y)), "x - -y"),
-            (real.uminus(real.uminus(x)), "--x"),
-            (real.uminus(real.minus(x, y)), "-(x - y)"),
-            (real.uminus(real.nat_power(x, n)), "-(x ^ n)"),
-            (real.nat_power(real.uminus(x), n), "-x ^ n"),
-            (real.plus(x, real.of_nat(Nat(2))), "x + of_nat 2"),
+            (x + y, "x + y"),
+            (x * y, "x * y"),
+            (x - y, "x - y"),
+            (-x, "-x"),
+            (x - (-y), "x - -y"),
+            (-(-x), "--x"),
+            (-(x - y), "-(x - y)"),
+            (-(x ** n), "-(x ^ n)"),
+            ((-x) ** n, "-x ^ n"),
+            (x + real.of_nat(Nat(2)), "x + of_nat 2"),
+            (x + Real(1) / 0, "x + 1 / 0"),
         ]
 
         for t, s in test_data:
@@ -273,7 +275,8 @@ class PrinterTest(unittest.TestCase):
 
         for t, s1, s2 in test_data:
             self.assertEqual(printer.print_term(t), s1)
-            self.assertEqual(printer.print_term(t, unicode=True), s2)
+            with global_setting(unicode=True):
+                self.assertEqual(printer.print_term(t), s2)
 
     def testPrintInterval(self):
         m = Var("m", NatType)
@@ -334,17 +337,20 @@ class PrinterTest(unittest.TestCase):
             (Forall(a, P(a)), "∀a. P a"),
             (Exists(a, P(a)), "∃a. P a"),
             (Not(A), "¬A"),
-            (nat.plus(m, n), "m + n"),
-            (nat.times(m, n), "m * n"),
+            (Lambda(m, m + 2), "λm::nat. m + 2"),
+            (Lambda(m, m + n), "λm. m + n"),
         ]
 
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(t, unicode=True), s)
+        with global_setting(unicode=True):
+            for t, s in test_data:
+                self.assertEqual(printer.print_term(t), s)
 
     def testPrintHighlight(self):
         """Test highlight"""
         t = Exists(a,Forall(b,R(a,b)))
-        self.assertEqual(printer.print_term(t, highlight=True), [
+        with global_setting(highlight=True):
+            res = printer.print_term(t)
+        self.assertEqual(res, [
             {'color': 0, 'text': '?'},
             {'color': 1, 'text': 'a'},
             {'color': 0, 'text': '. '},
@@ -364,7 +370,8 @@ class PrinterTest(unittest.TestCase):
         B = Var('B', BoolType)
         A_to_B = Implies(A, B)
         th = Thm([A, A_to_B], B)
-        res = printer.print_thm(th, highlight=True)
+        with global_setting(highlight=True):
+            res = printer.print_thm(th)
         self.assertEqual(res, [
             {'color': 2, 'text': 'A'},
             {'color': 0, 'text': ', '},
@@ -378,6 +385,7 @@ class PrinterTest(unittest.TestCase):
             {'color': 0, 'text': ' '},
             {'color': 2, 'text': 'B'}
         ])
+
 
 if __name__ == "__main__":
     unittest.main()

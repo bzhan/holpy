@@ -2,8 +2,9 @@
 
 import unittest
 
-from kernel.type import STVar, TVar, TFun, BoolType
-from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Forall, TypeCheckException
+from kernel.type import STVar, TVar, TFun, BoolType, TyInst
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, Implies, Eq, Forall, \
+    Inst, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
@@ -166,18 +167,18 @@ class ThmTest(unittest.TestCase):
         x_eq_y = Eq(Var("x", STa), Var("y", STa))
         th = Thm([x_eq_y], x_eq_y)
         xb_eq_yb = Eq(Var("x", Tb), Var("y", Tb))
-        self.assertEqual(Thm.subst_type({"a" : Tb}, th), Thm([xb_eq_yb], xb_eq_yb))
+        self.assertEqual(Thm.subst_type(TyInst(a=Tb), th), Thm([xb_eq_yb], xb_eq_yb))
 
     def testSubstitution(self):
         x_eq_y = Eq(SVar('x', Ta), SVar('y', Ta))
         th = Thm([x_eq_y], x_eq_y)
         y_eq_x = Eq(y,x)
-        self.assertEqual(Thm.substitution({"x" : y, "y" : x}, th), Thm([y_eq_x], y_eq_x))
+        self.assertEqual(Thm.substitution(Inst(x=y, y=x), th), Thm([y_eq_x], y_eq_x))
 
     def testSubstitutionFail(self):
         x_eq_y = Eq(SVar('x', Ta), SVar('y', Ta))
         th = Thm([x_eq_y], x_eq_y)
-        self.assertRaises(InvalidDerivationException, Thm.substitution, {"x" : Var("a", Tb)}, th)
+        self.assertRaises(InvalidDerivationException, Thm.substitution, Inst(x=Var("a", Tb)), th)
 
     def testBetaConv(self):
         t = Comb(Abs("x", Ta, Bound(0)), x)

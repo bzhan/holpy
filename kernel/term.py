@@ -1,10 +1,11 @@
 # Author: Bohua Zhan
 
-from collections import OrderedDict
+from collections import OrderedDict, UserDict
 from copy import copy
+import math
 from fractions import Fraction
 
-from kernel.type import HOLType, TFun, BoolType, NatType, IntType, RealType
+from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
 from util import typecheck
 
 
@@ -17,7 +18,40 @@ class TermException(Exception):
         return self.msg
 
 class TypeCheckException(Exception):
-    pass
+    """Indicates error in type checking of terms."""
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+class Inst(UserDict):
+    """Instantiation of schematic variables."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tyinst = TyInst()
+
+    def __str__(self):
+        res = ''
+        if self.tyinst:
+            res = str(self.tyinst) + ', '
+        res += ', '.join('%s := %s' % (nm, t) for nm, t in self.items())
+        return res
+
+    def __copy__(self):
+        res = Inst(self)
+        res.tyinst = copy(self.tyinst)
+        return res
+
+    def __bool__(self):
+        return bool(self.tyinst) or bool(self.keys())
+
+
+"""Default parser for terms. If None, Term() is unable to parse string."""
+term_parser = None
+
+"""Default printer for terms. If None, Term.print_basic is used."""
+term_printer = None
 
 
 class Term():
@@ -66,6 +100,18 @@ class Term():
     # ty values for distinguishing between Term objects.
     SVAR, VAR, CONST, COMB, ABS, BOUND = range(6)
 
+    def __init__(self, arg):
+        if not isinstance(arg, Term):
+            if term_parser is not None:
+                t = term_parser(arg)
+            else:
+                raise TermException('Term: parser not found.')
+        else:
+            t = arg
+        
+        # Now copy the content of t onto self
+        self.__dict__.update(t.__dict__)
+
     def is_svar(self):
         return self.ty == Term.SVAR
 
@@ -111,8 +157,8 @@ class Term():
         """Return whether the term is a bound variable."""
         return self.ty == Term.BOUND
 
-    def __str__(self):
-        """Printing function for terms. Note we do not yet handle collision
+    def print_basic(self):
+        """Basic printing function for terms. Note we do not yet handle collision
         in lambda terms.
 
         """
@@ -147,17 +193,23 @@ class Term():
 
         return helper(self, [])
 
+    def __str__(self):
+        if term_printer is None:
+            return self.print_basic()
+        else:
+            return term_printer(self)
+
     def __repr__(self):
         if self.is_svar():
-            return "SVar(%s,%s)" % (self.name, self.T)
+            return "SVar(%s, %s)" % (self.name, self.T)
         elif self.is_var():
-            return "Var(%s,%s)" % (self.name, self.T)
+            return "Var(%s, %s)" % (self.name, self.T)
         elif self.is_const():
-            return "Const(%s,%s)" % (self.name, self.T)
+            return "Const(%s, %s)" % (self.name, self.T)
         elif self.is_comb():
-            return "Comb(%s,%s)" % (repr(self.fun), repr(self.arg))
+            return "Comb(%s, %s)" % (repr(self.fun), repr(self.arg))
         elif self.is_abs():
-            return "Abs(%s,%s,%s)" % (self.var_name, self.var_T, repr(self.body))
+            return "Abs(%s, %s, %s)" % (self.var_name, self.var_T, repr(self.body))
         elif self.is_bound():
             return "Bound(%s)" % self.n
         else:
@@ -187,6 +239,9 @@ class Term():
 
         """
         assert isinstance(other, Term), "cannot compare Term with %s" % str(type(other))
+
+        if id(self) == id(other):
+            return True
 
         if self.ty != other.ty:
             return False
@@ -229,32 +284,42 @@ class Term():
             res = Comb(res, arg)
         return res
 
-    def _get_type(self, bd_vars):
-        """Helper function for get_type. bd_vars is the list of types of
-        the bound variables.
-
-        """
+    def size(self):
+        """Return the size of the term."""
         if self.is_svar() or self.is_var() or self.is_const():
-            return self.T
+            return 1
         elif self.is_comb():
-            type_fun = self.fun._get_type(bd_vars)
-            if type_fun.is_fun():
-                return type_fun.range_type()
-            else:
-                raise TypeCheckException
+            return 1 + self.fun.size() + self.arg.size()
         elif self.is_abs():
-            return TFun(self.var_T, self.body._get_type([self.var_T] + bd_vars))
+            return 1 + self.body.size()
         elif self.is_bound():
-            if self.n >= len(bd_vars):
-                raise TermException("get_type: open term.")
-            else:
-                return bd_vars[self.n]
+            return 1
         else:
             raise TypeError
     
     def get_type(self):
-        """Returns type of the term with minimal type-checking."""
-        return self._get_type([])
+        """Returns type of the term with minimal type checking."""
+        def rec(t, bd_vars):
+            """Helper function. bd_vars is the list of types of the bound variables."""
+            if t.is_svar() or t.is_var() or t.is_const():
+                return t.T
+            elif t.is_comb():
+                type_fun = rec(t.fun, bd_vars)
+                if type_fun.is_fun():
+                    return type_fun.range_type()
+                else:
+                    raise TypeCheckException('function type expected in application')
+            elif t.is_abs():
+                return TFun(t.var_T, rec(t.body, [t.var_T] + bd_vars))
+            elif t.is_bound():
+                if t.n >= len(bd_vars):
+                    raise TypeCheckException("open term")
+                else:
+                    return bd_vars[t.n]
+            else:
+                raise TypeError
+
+        return rec(self, [])
 
     def is_open(self):
         """Whether t is an open term."""
@@ -271,8 +336,17 @@ class Term():
                 raise TypeError
         return rec(self, 0)
 
-    def subst_type(self, tyinst):
-        """Perform substitution on type variables."""
+    def subst_type(self, tyinst=None, **kwargs):
+        """Perform substitution on type variables.
+        
+        Parameters
+        ==========
+        tyinst : TyInst
+            Type instantiation to be substituted.
+
+        """
+        if tyinst is None:
+            tyinst = TyInst(**kwargs)
         if self.is_svar():
             return SVar(self.name, self.T.subst(tyinst))
         elif self.is_var():
@@ -290,6 +364,7 @@ class Term():
 
     def subst_type_inplace(self, tyinst):
         """Perform substitution on type variables."""
+        typecheck.checkinstance('subst_type_inplace', tyinst, TyInst)
         if hasattr(self, "_hash_val"):
             del self._hash_val
         if self.is_svar() or self.is_var() or self.is_const():
@@ -305,35 +380,47 @@ class Term():
         else:
             raise TypeError
 
-    def subst(self, inst):
+    def subst(self, inst=None, **kwargs):
         """Perform substitution on term variables.
 
-        Here inst must be a dictionary mapping from variable names to the
-        substituted term. The type of the substituted term must match *exactly*
-        the type of the variable. If substitution on types is needed, it should
-        be performed before calling subst.
+        Parameters
+        ==========
+        inst : Inst
+            Instantiation to be substituted.
 
         """
-        assert isinstance(inst, dict), "inst must be a dictionary"
-        if self.is_svar():
-            if self.name in inst:
-                t = inst[self.name]
-                if t.get_type() == self.T:
-                    return inst[self.name]
+        if inst is None:
+            inst = Inst(**kwargs)
+
+        # First match type variables.
+        svars = get_svars(self)
+        for v in svars:
+            if v.name in inst:
+                try:
+                    inst_T = inst[v.name].get_type()
+                    v.T.match_incr(inst_T, inst.tyinst)
+                except TypeMatchException:
+                    raise TermException("subst: type " + str(v.T) + " cannot match " + str(inst_T))
+
+        # Now apply substitution recursively.
+        def rec(t):
+            if t.is_svar():
+                if t.name in inst:
+                    return inst[t.name]
                 else:
-                    raise TermException("Type " + str(t.get_type()) + " != " + str(self.T))
+                    return t
+            elif t.is_var() or t.is_const():
+                return t
+            elif t.is_comb():
+                return Comb(rec(t.fun), rec(t.arg))
+            elif t.is_abs():
+                return Abs(t.var_name, t.var_T, rec(t.body))
+            elif t.is_bound():
+                return t
             else:
-                return self
-        elif self.is_var() or self.is_const():
-            return self
-        elif self.is_comb():
-            return Comb(self.fun.subst(inst), self.arg.subst(inst))
-        elif self.is_abs():
-            return Abs(self.var_name, self.var_T, self.body.subst(inst))
-        elif self.is_bound():
-            return self
-        else:
-            raise TypeError
+                raise TypeError
+
+        return rec(self.subst_type(inst.tyinst))
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
@@ -487,10 +574,10 @@ class Term():
         term t1[t2/x] which is beta-equivalent.
 
         """
-        if self.is_comb():
+        if self.is_comb() and self.fun.is_abs():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermException("beta_conv: input is not a combination.")
+            raise TermException("beta_conv: input is not in the form (%x. t1) t2.")
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
@@ -507,6 +594,15 @@ class Term():
             return Abs(self.var_name, self.var_T, self.body.beta_norm())
         else:
             raise TypeError
+
+    def subst_norm(self, inst=None, **kwargs):
+        """Substitute using the given instantiation, then normalize with
+        respect to beta-conversion.
+
+        """
+        if inst is None:
+            inst = Inst(**kwargs)
+        return self.subst(inst).beta_norm()
 
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""
@@ -571,16 +667,19 @@ class Term():
             elif t.is_comb():
                 funT = rec(t.fun, bd_vars)
                 argT = rec(t.arg, bd_vars)
-                if funT.is_fun() and funT.domain_type() == argT:
-                    return funT.range_type()
+                if not funT.is_fun():
+                    raise TypeCheckException('function type expected in application')
+                elif funT.domain_type() != argT:
+                    raise TypeCheckException(
+                        'type mismatch in application. Expected %s. Got %s' % (funT.domain_type(), argT))
                 else:
-                    raise TypeCheckException
+                    return funT.range_type()
             elif t.is_abs():
                 bodyT = rec(t.body, [t.var_T] + bd_vars)
                 return TFun(t.var_T, bodyT)
             elif t.is_bound():
                 if t.n >= len(bd_vars):
-                    raise TermException("Check type: open term")
+                    raise TypeCheckException("open term")
                 else:
                     return bd_vars[t.n]
             else:
@@ -669,19 +768,43 @@ class Term():
     def is_real_power(self):
         return self.is_comb('power', 2) and self.arg.get_type() == RealType
 
+    def is_nat_number(self):
+        """Whether self represents a nonnegative integer (of any type)."""
+        return self.is_zero() or self.is_one() or (self.is_comb('of_nat', 1) and self.arg.is_binary())
+
+    def is_frac_number(self):
+        """Whether self represents a nonnegative fraction (of any type).
+
+        Note we check that the fraction in normal form: the denominator
+        is not 1, and the numerator and denominator have gcd 1.
+
+        """
+        if self.is_divides():
+            if not (self.arg1.is_nat_number() and self.arg.is_nat_number()):
+                return False
+
+            m, n = self.arg1.dest_number(), self.arg.dest_number()
+            return n != 1 and math.gcd(m, n) == 1
+        else:
+            return self.is_nat_number()
+
     def is_number(self):
-        """Whether self represents a number."""
+        """Whether self represents a number.
+        
+        Note we check that the number is in normal form. If the number
+        is nonnegative, it is a natural number or fraction in normal form.
+        Otherwise, it is in the form -x where x > 0.
+
+        """
         if self.is_zero():
             return True
         if self.is_one():
             return True
 
         if self.is_uminus():
-            return self.arg.is_number()
-        if self.is_divides():
-            return self.arg1.is_number() and self.arg.is_number() and not self.arg.is_zero()
-
-        return self.is_comb('of_nat', 1) and self.arg.is_binary()
+            return self.arg.is_frac_number() and not self.arg.is_zero()
+        else:
+            return self.is_frac_number()
 
     def dest_number(self):
         """Convert a term to a Python number."""
@@ -694,7 +817,9 @@ class Term():
             return -self.arg.dest_number()
         if self.is_divides():
             num, denom = self.arg1.dest_number(), self.arg.dest_number()
-            if denom == 1:
+            if denom == 0:
+                return 0  # n / 0 = 0 in the HOL library
+            elif denom == 1:
                 return num
             else:
                 return Fraction(num) / denom
@@ -1022,46 +1147,65 @@ def Implies(*args):
         res = implies(s, res)
     return res
 
-def Lambda(x, body):
-    """Construct the term lambda x. body.
+def Lambda(*args):
+    """Construct the term %x_1 ... x_n. body.
     
-    Here x must be a variable (or schematic variable) and body is a term
-    possibly depending on x.
+    The arguments are x_1, ..., x_n, body.
+
+    Here x_1, ..., x_n must be variables (or schematic variable) and
+    body is a term possibly depending on x_1, ..., x_n.
     
     """
-    typecheck.checkinstance('Lambda', x, Term, body, Term)
-    if not (x.is_var() or x.is_svar()):
-        raise TermException("Lambda: x must be a variable. Got %s" % str(x))
-    return Abs(x.name, x.T, body.abstract_over(x))
+    typecheck.checkinstance('Lambda', args, [Term])
+    if len(args) < 2:
+        raise TermException("Lambda: must provide two terms.")
+    body = args[-1]
+    for x in reversed(args[:-1]):
+        if not (x.is_var() or x.is_svar()):
+            raise TermException("Lambda: x must be a variable. Got %s" % str(x))
+        body = Abs(x.name, x.T, body.abstract_over(x))
+    return body
 
 def forall(T):
     return Const("all", TFun(TFun(T, BoolType), BoolType))
  
-def Forall(x, body):
-    """Construct the term !x. body.
+def Forall(*args):
+    """Construct the term !x_1 ... x_n. body.
     
-    Here x must be a variable (or schematic variable) and body is a term
-    possibly depending on x.
+    The arguments are x_1, ..., x_n, body.
+
+    Here x_1, ..., x_n must be variables (or schematic variable) and
+    body is a term possibly depending on x_1, ..., x_n.
 
     """
-    typecheck.checkinstance('Forall', x, Term, body, Term)
-    if not (x.is_var() or x.is_svar()):
-        raise TermException("Forall: x must be a variable. Got %s" % str(x))
-    return forall(x.T)(Lambda(x, body))
+    typecheck.checkinstance('Forall', args, [Term])
+    if len(args) < 2:
+        raise TermException("Forall: must provide two terms.")
+    body = args[-1]
+    for x in reversed(args[:-1]):
+        if not (x.is_var() or x.is_svar()):
+            raise TermException("Forall: x must be a variable. Got %s" % str(x))
+        body = forall(x.T)(Lambda(x, body))
+    return body
 
 def exists(T):
     return Const("exists", TFun(TFun(T, BoolType), BoolType))
 
-def Exists(x, body):
+def Exists(*args):
     """Construct the term EX x. body.
     
     Here x must be a variable and body is a term possibly depending on x.
     
     """
-    typecheck.checkinstance('Exists', x, Term, body, Term)
-    if not x.is_var():
-        raise TermException("Exists: x must be a variable. Got %s" % str(x))
-    return exists(x.T)(Lambda(x, body))
+    typecheck.checkinstance('Forall', args, [Term])
+    if len(args) < 2:
+        raise TermException("Forall: must provide two terms.")
+    body = args[-1]
+    for x in reversed(args[:-1]):
+        if not (x.is_var() or x.is_svar()):
+            raise TermException("Forall: x must be a variable. Got %s" % str(x))
+        body = exists(x.T)(Lambda(x, body))
+    return body
 
 
 def plus(T):
@@ -1156,7 +1300,7 @@ def Real(r):
 def Sum(T, ts):
     """Compute the sum of a list of terms with type T."""
     ts = list(ts)  # Coerce generators to list
-    typecheck.checkinstance('Sum', T, HOLType, ts, [Term])
+    typecheck.checkinstance('Sum', T, Type, ts, [Term])
     if len(ts) == 0:
         return Const('zero', T)
     res = ts[0]
@@ -1167,7 +1311,7 @@ def Sum(T, ts):
 def Prod(T, ts):
     """Compute the product of a list of terms with type T."""
     ts = list(ts)  # Coerce generators to list
-    typecheck.checkinstance('Prod', T, HOLType, ts, [Term])
+    typecheck.checkinstance('Prod', T, Type, ts, [Term])
     if len(ts) == 0:
         return Const('one', T)
     res = ts[0]

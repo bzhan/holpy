@@ -2,7 +2,7 @@
 
 import copy
 
-from kernel.term import Term
+from kernel.term import Term, Inst
 from kernel.thm import Thm
 
 class ItemID():
@@ -98,7 +98,7 @@ class ProofItem():
 
     def print_str_args(self):
         def str_val(val):
-            if isinstance(val, dict):
+            if isinstance(val, Inst):
                 items = sorted(val.items(), key = lambda pair: pair[0])
                 return "{" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
             else:

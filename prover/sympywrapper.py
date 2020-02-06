@@ -12,14 +12,15 @@ from kernel.type import RealType
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
-from kernel.macro import global_macros
+from kernel.macro import Macro
+from kernel.theory import register_macro
+from kernel.proofterm import ProofTerm
 from data import nat
 from data import real
 from data import set as hol_set
 from logic import auto
 from logic import logic
 from logic.logic import TacticException
-from logic.proofterm import ProofMacro, ProofTermDeriv
 import integral
 
 
@@ -166,7 +167,9 @@ def solve_with_interval(goal, cond):
     # print("Result: ", res)
     return res == interval
 
-class SymPyMacro(ProofMacro):
+
+@register_macro('sympy')
+class SymPyMacro(Macro):
     """Macro invoking sympy."""
     def __init__(self):
         self.level = 0  # No expand implemented for sympy.
@@ -186,9 +189,6 @@ class SymPyMacro(ProofMacro):
 
         return Thm(sum([th.hyps for th in prevs], ()), goal)
 
-    def expand(self, prefix, args, prevs):
-        raise NotImplementedError
-
 
 def sympy_solve(goal, pts):
     if pts is None:
@@ -197,7 +197,7 @@ def sympy_solve(goal, pts):
     macro = SymPyMacro()
     if macro.can_eval(goal, pts):
         th = Thm(sum([th.hyps for th in pts], ()), goal)
-        return ProofTermDeriv('sympy', args=goal, prevs=pts, th=th)
+        return ProofTerm('sympy', args=goal, prevs=pts, th=th)
     else:
         raise TacticException
 
@@ -214,7 +214,3 @@ auto.add_global_autos(nat.less_eq, sympy_solve)
 auto.add_global_autos(nat.less, sympy_solve)
 
 auto.add_global_autos_neg(nat.equals, sympy_solve)
-
-global_macros.update({
-    "sympy": SymPyMacro(),
-})

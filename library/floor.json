@@ -274,7 +274,7 @@
                     "th": "floor x ≤ x ∧ ¬(floor x = x) ⊢ floor x ≤ x ∧ ¬(floor x = x)"
                 },
                 {
-                    "args": "conjD2, {}, {A: floor x ≤ x, B: ¬(floor x = x)}",
+                    "args": "conjD2, {A: floor x ≤ x, B: ¬(floor x = x)}",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
@@ -316,14 +316,14 @@
                     "th": "¬(integer x) ⊢ ¬(integer x)"
                 },
                 {
-                    "args": "floor, {}, {x: x}",
+                    "args": "floor, {x: x}",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ integer (floor x) ∧ floor x ≤ x ∧ x < floor x + 1"
                 },
                 {
-                    "args": "conjD2, {}, {A: integer (floor x), B: floor x ≤ x ∧ x < floor x + 1}",
+                    "args": "conjD2, {A: integer (floor x), B: floor x ≤ x ∧ x < floor x + 1}",
                     "id": "1.2",
                     "prevs": [
                         "1.1"

@@ -1,20 +1,21 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType, NatType
+from kernel.type import TFun, BoolType, NatType
 from kernel import term
-from kernel.term import Term, Const, Not, Eq, Binary, Nat
+from kernel.term import Term, Const, Not, Eq, Binary, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
-from kernel.theory import Method, global_methods
-from kernel import macro
+from kernel.theory import register_macro
+from kernel.macro import Macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofMacro, ProofTermMacro, ProofTermDeriv, refl
+from kernel.proofterm import ProofTerm, refl
 from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
-from server.tactic import MacroTactic
+from logic.tactic import MacroTactic
+from server.method import Method, register_method
 from syntax import pprint, settings
 from util import poly
 
@@ -204,7 +205,8 @@ class nat_conv(Conv):
             raise ConvException("nat_conv")
 
 # Conversion using a macro
-class nat_eval_macro(ProofMacro):
+@register_macro('nat_eval')
+class nat_eval_macro(Macro):
     """Simplify all arithmetic operations."""
     def __init__(self):
         self.level = 0  # No expand implemented
@@ -224,7 +226,7 @@ class nat_eval_conv(Conv):
         simp_t = Nat(nat_eval(t))
         if simp_t == t:
             return refl(t)
-        return ProofTermDeriv('nat_eval', Eq(t, simp_t))
+        return ProofTerm('nat_eval', Eq(t, simp_t))
 
 auto.add_global_autos_norm(plus, nat_eval_conv())
 auto.add_global_autos_norm(minus, nat_eval_conv())
@@ -491,7 +493,8 @@ class norm_full(Conv):
             return pt
 
 
-class nat_norm_macro(ProofTermMacro):
+@register_macro('nat_norm')
+class nat_norm_macro(Macro):
     """Attempt to prove goal by normalization."""
 
     def __init__(self):
@@ -524,6 +527,8 @@ class nat_norm_macro(ProofTermMacro):
         assert pt1.prop.rhs == pt2.prop.rhs, "nat_norm_macro: normalization is not equal."
         return pt1.transitive(pt2.symmetric())
 
+
+@register_method('nat_norm')
 class nat_norm_method(Method):
     """Apply nat_norm macro."""
     def __init__(self):
@@ -543,7 +548,6 @@ class nat_norm_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("nat_norm: (solves)")
 
@@ -560,7 +564,7 @@ def ineq_zero_proof_term(n):
     elif n % 2 == 0:
         return apply_theorem("bit0_nonzero", ineq_zero_proof_term(n // 2))
     else:
-        return apply_theorem("bit1_nonzero", inst={"m": Binary(n // 2)})
+        return apply_theorem("bit1_nonzero", inst=Inst(m=Binary(n // 2)))
 
 def ineq_one_proof_term(n):
     """Returns the inequality n ~= 1."""
@@ -568,7 +572,7 @@ def ineq_one_proof_term(n):
     if n == 0:
         return apply_theorem("ineq_sym", ProofTerm.theorem("one_nonzero"))
     elif n % 2 == 0:
-        return apply_theorem("bit0_neq_one", inst={"m": Binary(n // 2)})
+        return apply_theorem("bit0_neq_one", inst=Inst(m=Binary(n // 2)))
     else:
         return apply_theorem("bit1_neq_one", ineq_zero_proof_term(n // 2))
 
@@ -588,11 +592,13 @@ def ineq_proof_term(m, n):
     elif m % 2 == 1 and n % 2 == 1:
         return apply_theorem("bit1_neq", ineq_proof_term(m // 2, n // 2))
     elif m % 2 == 0 and n % 2 == 1:
-        return apply_theorem("bit0_bit1_neq", inst={"m": Binary(m // 2), "n": Binary(n // 2)})
+        return apply_theorem("bit0_bit1_neq", inst=Inst(m=Binary(m // 2), n=Binary(n // 2)))
     else:
         return apply_theorem("ineq_sym", ineq_proof_term(n, m))
 
-class nat_const_ineq_macro(ProofTermMacro):
+
+@register_macro('nat_const_ineq')
+class nat_const_ineq_macro(Macro):
     """Given m and n, with m ~= n, return the inequality theorem."""
     def __init__(self):
         self.level = 10
@@ -621,9 +627,10 @@ class nat_const_ineq_macro(ProofTermMacro):
         return pt.on_prop(arg_conv(binop_conv(rewr_of_nat_conv(sym=True))))
 
 def nat_const_ineq(a, b):
-    return ProofTermDeriv("nat_const_ineq", Not(Eq(a, b)), [])
+    return ProofTerm("nat_const_ineq", Not(Eq(a, b)), [])
 
 
+@register_method('nat_const_ineq')
 class nat_const_ineq_method(Method):
     """Apply nat_const_ineq macro."""
     def __init__(self):
@@ -643,7 +650,6 @@ class nat_const_ineq_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("nat_const_ineq: (solves)")
 
@@ -651,7 +657,9 @@ class nat_const_ineq_method(Method):
         assert len(prevs) == 0, "nat_const_ineq_method"
         state.apply_tactic(id, MacroTactic('nat_const_ineq'))
 
-class nat_const_less_eq_macro(ProofTermMacro):
+
+@register_macro('nat_const_less_eq')
+class nat_const_less_eq_macro(Macro):
     """Given m and n, with m <= n, return the less-equal theorem."""
     def __init__(self):
         self.level = 10
@@ -684,9 +692,10 @@ class nat_const_less_eq_macro(ProofTermMacro):
         return ex_eq.on_prop(rewr_conv('less_eq_exist', sym=True))
 
 def nat_less_eq(t1, t2):
-    return ProofTermDeriv("nat_const_less_eq", t1 <= t2)
+    return ProofTerm("nat_const_less_eq", t1 <= t2)
 
-class nat_const_less_macro(ProofTermMacro):
+@register_macro('nat_const_less')
+class nat_const_less_macro(Macro):
     """Given m and n, with m < n, return the less-than theorem."""
     def __init__(self):
         self.level = 10
@@ -703,7 +712,7 @@ class nat_const_less_macro(ProofTermMacro):
         return apply_theorem("less_lesseqI", less_eq_pt, ineq_pt)
 
 def nat_less(t1, t2):
-    return ProofTermDeriv("nat_const_less", t1 < t2)
+    return ProofTerm("nat_const_less", t1 < t2)
 
 class nat_eq_conv(Conv):
     """Simplify equality a = b to either True or False."""
@@ -719,17 +728,3 @@ class nat_eq_conv(Conv):
             return refl(a).on_prop(rewr_conv("eq_true"))
         else:
             return nat_const_ineq(a, b).on_prop(rewr_conv("eq_false"))
-
-
-macro.global_macros.update({
-    "nat_eval": nat_eval_macro(),
-    "nat_norm": nat_norm_macro(),
-    "nat_const_ineq": nat_const_ineq_macro(),
-    "nat_const_less_eq": nat_const_less_eq_macro(),
-    "nat_const_less": nat_const_less_macro(),
-})
-
-global_methods.update({
-    "nat_norm": nat_norm_method(),
-    "nat_const_ineq": nat_const_ineq_method(),
-})

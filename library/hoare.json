@@ -103,7 +103,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem_basic, {a: 'a}, {f: λf::'a. f, s: s}",
+                    "args": "Sem_basic, {f: λf::'a. f, s: s}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -136,7 +136,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem_basic, {a: 'a ⇒ 'b}, {f: λf. (f)(a := b f), s: s}",
+                    "args": "Sem_basic, {f: λf. (f)(a := b f), s: s}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -185,14 +185,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem_Assign, {a: nat, b: nat}, {a: (0::nat), b: λs::nat ⇒ nat. (1::nat), s: λx::nat. (0::nat)}",
+                    "args": "Sem_Assign, {a: (0::nat), b: λs::nat ⇒ nat. (1::nat), s: λx::nat. (0::nat)}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ Sem (Assign (0::nat) (λs. (1::nat))) (λx. 0) ((λx. 0)(0 := 1))"
                 },
                 {
-                    "args": "Sem_Assign, {a: nat, b: nat}, {a: (1::nat), b: λs::nat ⇒ nat. (2::nat), s: (λx::nat. (0::nat))(0 := 1)}",
+                    "args": "Sem_Assign, {a: (1::nat), b: λs::nat ⇒ nat. (2::nat), s: (λx::nat. (0::nat))(0 := 1)}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -459,14 +459,14 @@
                     "th": "Entail P Q, P s ⊢ Q s"
                 },
                 {
-                    "args": "",
+                    "args": "s, s2",
                     "id": "2.7",
                     "prevs": [
                         "2.5",
                         "2.6",
                         "2.3"
                     ],
-                    "rule": "apply_fact",
+                    "rule": "apply_fact_for",
                     "th": "Valid Q c R, Entail P Q, P s, Sem c s s2 ⊢ R s2"
                 },
                 {
@@ -604,12 +604,12 @@
                     "th": "Sem (Assign a b) s s2 ⊢ Sem (Assign a b) s s2"
                 },
                 {
-                    "args": "Sem_Assign_elim",
+                    "args": "Sem_Assign_elim, {a: a, b: b, s: s, s2: s2}",
                     "id": "0.4",
                     "prevs": [
                         "0.3"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "Sem (Assign a b) s s2 ⊢ s2 = (s)(a := b s)"
                 },
                 {
@@ -642,6 +642,15 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ Valid (λs. P ((s)(a := b s))) (Assign a b) P"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ Valid (λs. P ((s)(a := b s))) (Assign a b) P"
                 }
             ],
@@ -734,12 +743,12 @@
                     "th": "Sem (Seq c1 c2) s s2 ⊢ Sem (Seq c1 c2) s s2"
                 },
                 {
-                    "args": "Sem_Seq_elim",
+                    "args": "Sem_Seq_elim, {c1: c1, c2: c2, s: s, s2: s2}",
                     "id": "2.4",
                     "prevs": [
                         "2.3"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "Sem (Seq c1 c2) s s2 ⊢ ∃s3. Sem c1 s s3 ∧ Sem c2 s3 s2"
                 },
                 {
@@ -764,21 +773,21 @@
                     "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c1 s s3 ∧ Sem c2 s3 s2"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "conjD1, {A: Sem c1 s s3, B: Sem c2 s3 s2}",
                     "id": "2.5.2",
                     "prevs": [
                         "2.5.1"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c1 s s3"
                 },
                 {
-                    "args": "conjD2",
+                    "args": "conjD2, {A: Sem c1 s s3, B: Sem c2 s3 s2}",
                     "id": "2.5.3",
                     "prevs": [
                         "2.5.1"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "apply_theorem_for",
                     "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c2 s3 s2"
                 },
                 {
@@ -811,14 +820,14 @@
                     "th": "Valid P c1 Q, P s, Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Q s3"
                 },
                 {
-                    "args": "",
+                    "args": "s3, s2",
                     "id": "2.5.7",
                     "prevs": [
                         "2.5.5",
                         "2.5.6",
                         "2.5.3"
                     ],
-                    "rule": "apply_fact",
+                    "rule": "apply_fact_for",
                     "th": "Valid Q c2 R, Valid P c1 Q, P s, Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ R s2"
                 },
                 {

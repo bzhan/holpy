@@ -3,7 +3,7 @@
 from kernel.type import TFun, IntType
 from kernel import term
 from kernel.term import Var, Eq, Not, true, false, Int
-from data.list import listT, nth, length
+from data.list import ListType, nth, length
 from logic import logic
 from util import typecheck
 
@@ -45,7 +45,7 @@ class Var(Expr):
         if ctxt[self.name] == "int":
             return term.Var(self.name, IntType)
         elif ctxt[self.name] == "int array":
-            return term.Var(self.name, listT(IntType))
+            return term.Var(self.name, ListType(IntType))
         else:
             raise NotImplementedError
 

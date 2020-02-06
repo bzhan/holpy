@@ -2,11 +2,11 @@
 
 from collections import OrderedDict
 
-from kernel.type import Type, TFun, BoolType
+from kernel.type import TFun, BoolType, TyInst
 from kernel import term
-from kernel.term import Term, Const, Implies, Eq, Forall, Lambda
-from kernel import macro
+from kernel.term import Term, Const, Implies, Eq, Forall, Lambda, Inst
 from util import typecheck
+from syntax.settings import settings
 
 
 class InvalidDerivationException(Exception):
@@ -54,19 +54,20 @@ class Thm():
 
     @property
     def lhs(self):
-        return self.prop.lhs
+        return self.concl.lhs
 
     @property
     def rhs(self):
-        return self.prop.rhs
+        return self.concl.rhs
 
     def __str__(self):
         """Print the given theorem."""
+        turnstile = "⊢" if settings.unicode else "|-"
         if self.hyps:
             str_hyps = ", ".join(str(hyp) for hyp in self.hyps)
-            return str_hyps + " |- " + str(self.prop)
+            return str_hyps + ' ' + turnstile + ' ' + str(self.prop)
         else:
-            return "|- " + str(self.prop)
+            return turnstile + ' ' + str(self.prop)
 
     def __repr__(self):
         return str(self)
@@ -89,7 +90,7 @@ class Thm():
         """
         for t in list(self.hyps) + [self.prop]:
             if t.checked_get_type() != BoolType:
-                raise term.TypeCheckException
+                raise term.TypeCheckException('expect boolean type for propositions')
 
     def is_equals(self):
         """Check whether the proposition of the theorem is of the form x = y."""
@@ -360,8 +361,8 @@ primitive_deriv = {
     "combination" : (Thm.combination, None),
     "equal_intr" : (Thm.equal_intr, None),
     "equal_elim" : (Thm.equal_elim, None),
-    "subst_type" : (Thm.subst_type, macro.TyInst),
-    "substitution" : (Thm.substitution, macro.Inst),
+    "subst_type" : (Thm.subst_type, TyInst),
+    "substitution" : (Thm.substitution, Inst),
     "beta_conv" : (Thm.beta_conv, Term),
     "abstraction" : (Thm.abstraction, Term),
     "forall_intr" : (Thm.forall_intr, Term),

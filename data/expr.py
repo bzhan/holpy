@@ -1,22 +1,23 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType, NatType
+from kernel.type import TConst, TFun, BoolType, NatType
 from kernel.term import Term, Const, Nat
 from kernel.thm import Thm
-from kernel.macro import global_macros
-from kernel.theory import Method, global_methods
+from kernel.macro import Macro
+from kernel.theory import register_macro
 from logic import logic
 from logic.logic import apply_theorem
+from logic.tactic import MacroTactic
 from data import nat
 from data import function
 from logic.conv import arg_conv
-from logic.proofterm import ProofTermMacro, ProofTerm
-from server.tactic import MacroTactic
+from kernel.proofterm import ProofTerm
+from server.method import Method, register_method
 from syntax import pprint, settings
 
 """Automation for arithmetic expressions."""
 
-aexpT = Type("aexp")
+aexpT = TConst("aexp")
 
 N = Const("N", TFun(NatType, aexpT))
 V = Const("V", TFun(NatType, aexpT))
@@ -25,7 +26,9 @@ Times = Const("Times", TFun(aexpT, aexpT, aexpT))
 
 avalI = Const("avalI", TFun(TFun(NatType, NatType), aexpT, NatType, BoolType))
 
-class prove_avalI_macro(ProofTermMacro):
+
+@register_macro('prove_avalI')
+class prove_avalI_macro(Macro):
     """Prove a theorem of the form avalI s t n."""
     def __init__(self):
         self.level = 10
@@ -105,6 +108,8 @@ class prove_avalI_macro(ProofTermMacro):
         assert n == pt.prop.arg, "prove_avalI_macro: wrong result."
         return pt
 
+
+@register_method('prove_avalI')
 class prove_avalI_method(Method):
     """Apply prove_avalI macro."""
     def __init__(self):
@@ -124,19 +129,9 @@ class prove_avalI_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("prove_avalI: (solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "prove_avalI_method"
         state.apply_tactic(id, MacroTactic('prove_avalI'))
-
-
-global_macros.update({
-    "prove_avalI": prove_avalI_macro(),
-})
-
-global_methods.update({
-    "prove_avalI": prove_avalI_method(),
-})

@@ -4,7 +4,7 @@ import os
 import json
 
 from kernel.type import TFun, BoolType, NatType
-from kernel.term import Term, Var, Const, And, Implies, Eq, Nat
+from kernel.term import Term, Var, Const, And, Implies, Eq, Nat, Inst
 from kernel.thm import Thm
 from kernel import theory
 from kernel import extension
@@ -12,7 +12,7 @@ from logic import basic
 from logic import logic
 from logic.logic import apply_theorem
 from logic.conv import rewr_conv
-from logic.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
@@ -69,12 +69,12 @@ class ParaSystem():
         for i, rule in enumerate(self.rules):
             _, guard, assigns = rule
             assigns_str = ", ".join("%s := %s" % (str(k), str(v)) for k, v in assigns.items())
-            res += "%d: [%s] %s" % (i, printer.print_term(guard), assigns_str) + "\n"
+            res += "%d: [%s] %s" % (i, guard, assigns_str) + "\n"
 
         res += "Number of invariants: %d\n" % len(self.invs)
         for i, inv in enumerate(self.invs):
             _, inv_term = inv
-            res += "%d: %s" % (i, printer.print_term(inv_term)) + "\n"
+            res += "%d: %s" % (i, inv_term) + "\n"
 
         return res
 
@@ -145,7 +145,7 @@ class ParaSystem():
             if hint_ty == INV:
                 inv_vars, inv = self.invs[hint_inv_id]
                 inv_var_nms = [v.name for v in inv_vars]
-                subst = dict((nm, Var(subst_var, NatType)) for nm, subst_var in zip(inv_var_nms, subst_vars))
+                subst = Inst((nm, Var(subst_var, NatType)) for nm, subst_var in zip(inv_var_nms, subst_vars))
                 inv_subst = inv.subst(subst)
                 return Implies(inv_subst, guard, inv_after)
 
@@ -208,25 +208,25 @@ class ParaSystem():
         trans_pt = ProofTerm.assume(transC(s1,s2))
         # print(printer.print_thm(trans_pt.th))
         P = Implies(invC(s1), invC(s2))
-        ind_pt = apply_theorem("trans_cases", inst={"a1": s1, "a2": s2, "P": P})
+        ind_pt = apply_theorem("trans_cases", inst=Inst(a1=s1, a2=s2, P=P))
         # print(printer.print_thm(ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
         for ind_A in ind_As[1:-1]:
-            # print("ind_A: ", printer.print_term(ind_A))
+            # print("ind_A: ", ind_A)
             vars, As, C = logic.strip_all_implies(ind_A, ["s", "k"])
             # for A in As:
-            #     print("A: ", printer.print_term(A))
-            # print("C: ", printer.print_term(C))
+            #     print("A: ", A)
+            # print("C: ", C)
             eq1 = ProofTerm.assume(As[0])
             eq2 = ProofTerm.assume(As[1])
             guard = ProofTerm.assume(As[2])
             inv_pre = ProofTerm.assume(As[3]).on_arg(rewr_conv(eq1)).on_prop(rewr_conv("inv_def"))
             C_goal = ProofTerm.assume(C).on_arg(rewr_conv(eq2)).on_prop(rewr_conv("inv_def"))
             # for t in inv_pre.prop.strip_conj():
-            #     print("inv_pre: ", printer.print_term(t))
+            #     print("inv_pre: ", t)
             # for t in C_goal.prop.strip_conj():
-            #     print("C_goal: ", printer.print_term(t))
+            #     print("C_goal: ", t)
 
 
 def load_system(filename):

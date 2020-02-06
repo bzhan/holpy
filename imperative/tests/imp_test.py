@@ -14,7 +14,6 @@ from logic import context
 from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
-from syntax import printer
 
 natFunT = TFun(NatType, NatType)
 Sem = imp.Sem(natFunT)
@@ -45,7 +44,7 @@ class HoareTest(unittest.TestCase):
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
     def testEvalSem2(self):
         com = Seq(incr_one, incr_one)
@@ -53,7 +52,7 @@ class HoareTest(unittest.TestCase):
         st2 = fun_upd_of_seq(0, 2)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
     def testEvalSem3(self):
         com = Cond(Lambda(s, Eq(s(zero), zero)), incr_one, Skip)
@@ -61,11 +60,11 @@ class HoareTest(unittest.TestCase):
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
     def testEvalSem4(self):
         com = Cond(Lambda(s, Not(Eq(s(zero), one))), incr_one, Skip)
@@ -73,11 +72,11 @@ class HoareTest(unittest.TestCase):
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
         com = While(Lambda(s, Not(Eq(s(zero), Nat(3)))), assn_true, incr_one)
@@ -86,7 +85,7 @@ class HoareTest(unittest.TestCase):
         goal = Sem(com, st, st2)
         prf = imp.eval_Sem_macro().get_proof_term(goal, []).export()
         rpt = ProofReport()
-        self.assertEqual(theory.thy.check_proof(prf, rpt), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf, rpt), Thm([], goal))
 
     def testComputeWP(self):
         Q = Var("Q", TFun(natFunT, BoolType))
@@ -100,7 +99,7 @@ class HoareTest(unittest.TestCase):
 
         for c, P in test_data:
             prf = imp.compute_wp(natFunT, c, Q).export()
-            self.assertEqual(theory.thy.check_proof(prf), Thm([], Valid(P, c, Q)))
+            self.assertEqual(theory.check_proof(prf), Thm([], Valid(P, c, Q)))
 
     def testVCG(self):
         P = Var("P", TFun(natFunT, BoolType))
@@ -114,10 +113,10 @@ class HoareTest(unittest.TestCase):
         for c in test_data:
             goal = Valid(P, c, Q)
             prf = imp.vcg(natFunT, goal).export()
-            self.assertEqual(theory.thy.check_proof(prf).concl, goal)
+            self.assertEqual(theory.check_proof(prf).concl, goal)
 
             prf = imp.vcg_tactic().get_proof_term(Thm([], goal), None, []).export()
-            self.assertEqual(theory.thy.check_proof(prf).prop, goal)
+            self.assertEqual(theory.check_proof(prf).prop, goal)
 
     def testVCGWhile(self):
         context.set_context(None, vars={"A": 'nat', "B": 'nat'})
@@ -127,7 +126,7 @@ class HoareTest(unittest.TestCase):
         Q = parser.parse_term("%s. s (1::nat) = A * B")
         goal = Valid(P, c, Q)
         prf = imp.vcg_solve(goal).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
     def testVCGIf(self):
         context.set_context(None, vars={'A': 'nat'})
@@ -136,7 +135,7 @@ class HoareTest(unittest.TestCase):
         Q = parser.parse_term("%s. s (0::nat) = A")
         goal = Valid(P, c, Q)
         prf = imp.vcg_solve(goal).export()
-        self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+        self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
 
 if __name__ == "__main__":
