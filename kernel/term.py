@@ -2,6 +2,7 @@
 
 from collections import OrderedDict, UserDict
 from copy import copy
+import math
 from fractions import Fraction
 
 from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
@@ -767,19 +768,43 @@ class Term():
     def is_real_power(self):
         return self.is_comb('power', 2) and self.arg.get_type() == RealType
 
+    def is_nat_number(self):
+        """Whether self represents a nonnegative integer (of any type)."""
+        return self.is_zero() or self.is_one() or (self.is_comb('of_nat', 1) and self.arg.is_binary())
+
+    def is_frac_number(self):
+        """Whether self represents a nonnegative fraction (of any type).
+
+        Note we check that the fraction in normal form: the denominator
+        is not 1, and the numerator and denominator have gcd 1.
+
+        """
+        if self.is_divides():
+            if not (self.arg1.is_nat_number() and self.arg.is_nat_number()):
+                return False
+
+            m, n = self.arg1.dest_number(), self.arg.dest_number()
+            return n != 1 and math.gcd(m, n) == 1
+        else:
+            return self.is_nat_number()
+
     def is_number(self):
-        """Whether self represents a number."""
+        """Whether self represents a number.
+        
+        Note we check that the number is in normal form. If the number
+        is nonnegative, it is a natural number or fraction in normal form.
+        Otherwise, it is in the form -x where x > 0.
+
+        """
         if self.is_zero():
             return True
         if self.is_one():
             return True
 
         if self.is_uminus():
-            return self.arg.is_number()
-        if self.is_divides():
-            return self.arg1.is_number() and self.arg.is_number() and not self.arg.is_zero()
-
-        return self.is_comb('of_nat', 1) and self.arg.is_binary()
+            return self.arg.is_frac_number() and not self.arg.is_zero()
+        else:
+            return self.is_frac_number()
 
     def dest_number(self):
         """Convert a term to a Python number."""

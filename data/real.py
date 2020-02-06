@@ -507,6 +507,8 @@ auto.add_global_autos_norm(
         'real_of_nat_mul'
     ]))
 
+auto.add_global_autos_norm(nat_power, real_eval_conv())
+
 auto.add_global_autos_norm(
     nat_power,
     auto.norm_rules([
@@ -532,8 +534,9 @@ class real_nat_power_conv(Conv):
 
         return refl(t)
 
-auto.add_global_autos_norm(nat_power, real_eval_conv())
 auto.add_global_autos_norm(nat_power, real_nat_power_conv())
+
+auto.add_global_autos_norm(real_power, real_eval_conv())
 
 auto.add_global_autos_norm(
     real_power,
@@ -592,7 +595,6 @@ class real_power_conv(Conv):
         return refl(t)
 
 auto.add_global_autos_norm(real_power, real_power_conv())
-auto.add_global_autos_norm(real_power, real_eval_conv())
 
 auto.add_global_autos_norm(
     sqrt,

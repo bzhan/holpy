@@ -193,8 +193,8 @@ def norm(t, pts=None):
     if t.is_var() or t.is_abs():
         return refl(t)
 
-    # No further work for binary numbers
-    if t.is_binary():
+    # No further work for numbers
+    if t.is_number():
         return refl(t)
 
     eq_pt = refl(t.head)
