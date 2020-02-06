@@ -26,7 +26,7 @@ and go to page ```localhost:8080```.
 
 To see statistics for the search functionality on a collection of lemmas, use:
 
-```python -m unittest server.tests.collect_stat```
+```python -m server.collect_stat```
 
 Unit tests for the backend are located in files of the form ```*/tests/*_test.py```.
 
