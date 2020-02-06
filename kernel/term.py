@@ -817,7 +817,9 @@ class Term():
             return -self.arg.dest_number()
         if self.is_divides():
             num, denom = self.arg1.dest_number(), self.arg.dest_number()
-            if denom == 1:
+            if denom == 0:
+                return 0  # n / 0 = 0 in the HOL library
+            elif denom == 1:
                 return num
             else:
                 return Fraction(num) / denom

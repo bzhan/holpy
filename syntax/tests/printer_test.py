@@ -171,16 +171,17 @@ class PrinterTest(unittest.TestCase):
         y = Var('y', RealType)
         n = Var('n', NatType)
         test_data = [
-            (real.plus(x, y), "x + y"),
-            (real.times(x, y), "x * y"),
-            (real.minus(x, y), "x - y"),
-            (real.uminus(x), "-x"),
-            (real.minus(x, real.uminus(y)), "x - -y"),
-            (real.uminus(real.uminus(x)), "--x"),
-            (real.uminus(real.minus(x, y)), "-(x - y)"),
-            (real.uminus(real.nat_power(x, n)), "-(x ^ n)"),
-            (real.nat_power(real.uminus(x), n), "-x ^ n"),
-            (real.plus(x, real.of_nat(Nat(2))), "x + of_nat 2"),
+            (x + y, "x + y"),
+            (x * y, "x * y"),
+            (x - y, "x - y"),
+            (-x, "-x"),
+            (x - (-y), "x - -y"),
+            (-(-x), "--x"),
+            (-(x - y), "-(x - y)"),
+            (-(x ** n), "-(x ^ n)"),
+            ((-x) ** n, "-x ^ n"),
+            (x + real.of_nat(Nat(2)), "x + of_nat 2"),
+            (x + Real(1) / 0, "x + 1 / 0"),
         ]
 
         for t, s in test_data:
