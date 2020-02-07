@@ -3287,6 +3287,128 @@
             "prop": "polynomial_function p ⟷ (∃m. ∃c. ∀x. p x = sum ({0..m}) (λi. c i * x ^ i))",
             "ty": "def",
             "type": "(real ⇒ real) ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "product_empty",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ iterate times ∅ f = neutral times"
+                },
+                {
+                    "args": "neutral_real_mul, iterate times ∅ f = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ iterate times ∅ f = 1"
+                },
+                {
+                    "args": "product_def, product ∅ f = 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ product ∅ f = 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ product ∅ f = 1"
+                }
+            ],
+            "prop": "product ∅ f = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "product_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "neutral_real_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "product_insert",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ⊢ iterate times (insert x s) f = (if x ∈ s then iterate times s f else f x * iterate times s f)"
+                },
+                {
+                    "args": "product_def, product (insert x s) f = (if x ∈ s then product s f else f x * product s f)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ product (insert x s) f = (if x ∈ s then product s f else f x * product s f)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ product (insert x s) f = (if x ∈ s then product s f else f x * product s f)"
+                }
+            ],
+            "prop": [
+                "finite s ",
+                "⟶ product (insert x s) f = (if x ∈ s then product s f else f x * product s f)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "product_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real",
+                "s": "'a set",
+                "x": "'a"
+            }
         }
     ],
     "description": "Basic results about iterate.",
