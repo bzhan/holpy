@@ -545,9 +545,7 @@ auto.add_global_autos_norm(
         'rpow_1',
         'rpow_mult',
         'rpow_mult_nat1',
-        'rpow_base_mult_neg1',
-        'rpow_base_mult',
-        'rpow_base_mult2',
+        'rpow_mul',
         'rpow_base_divide',
         'rpow_exp',
         'rpow_abs',
@@ -578,9 +576,7 @@ class real_power_conv(Conv):
             b2 = a // b1
             eq_th = refl(Real(b1) * b2).on_rhs(real_eval_conv())
             pt = refl(t).on_rhs(arg1_conv(rewr_conv(eq_th, sym=True)))
-            b1_gt_0 = auto.auto_solve(Real(b1) > 0)
-            b2_gt_0 = auto.auto_solve(Real(b2) > 0)
-            pt = pt.on_rhs(rewr_conv('rpow_base_mult', conds=[b1_gt_0, b2_gt_0]))
+            pt = pt.on_rhs(rewr_conv('rpow_mul'))
             return pt
 
         # Case 2: exponent is not between 0 and 1
