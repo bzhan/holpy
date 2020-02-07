@@ -359,6 +359,13 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
                        "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
                        ], [], [], "midp(E, B, C)"),
+
+            # Following tests proves some theorems in "Machine Proofs in Geometry".
+            # Example 6.4 The isotomic points of three collinear points are collinear.
+            # (ruleset, [""])
+            
+
+
         ]
         # pr = cProfile.Profile()
         # pr.enable()

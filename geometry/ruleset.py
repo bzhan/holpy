@@ -21,6 +21,7 @@ ruleset_raw = {
     # "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",
+    "D29": "eqratio(k, m ,l, n) :- eqratio(k, l, m, n)",
     "D40": "eqangle(a, c, b, c) :- para(a, b)",
     "D41": "eqangle(P, A, P, B, Q, A, Q, B) :- cyclic(A, B, P, Q)",
     "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B), ¬coll(P, Q, A, B)",
@@ -33,13 +34,13 @@ ruleset_raw = {
     "D53": "perp(A, B, B, C) :- circle(O, A, B, C), coll(O, A, C)",
     "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
     "D58": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(A, C, B, C, P, R, Q, R), ¬coll(A, B, C)",
+    "D59": "eqratio(A, B, A, C, P, Q, P, R) :- simtri(A, B, C, P, Q, R)",
     "D61": "contri(A, B, C, P, Q, R) :- simtri(A, B, C, P, Q, R), cong(A, B, P, Q)",
     "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
-    # TODO: Handle eqratio.
-    # "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
+    "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
     "D66": "coll(A, B, C) :- para(A, B, A, C)",
     "D68": "cong(A, B, A, C) :- midp(A, B, C)",
-    # "D70": "eqratio(M, A, A, B, N, C, C, D) :- midp(M, A, B), midp(N, C, D)",
+    "D70": "eqratio(M, A, A, B, N, C, C, D) :- midp(M, A, B), midp(N, C, D)",
 
     # ⬇ Additional rules ⬇ #
     # Use this rule to generate eqangle from two perp facts. (Written by myself)

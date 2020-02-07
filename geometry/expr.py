@@ -89,7 +89,7 @@ class Fact:
         """
         pred_name = self.pred_name
 
-        if pred_name in ("para", "perp", "eqangle"):
+        if pred_name in ("para", "perp", "eqangle", "eqratio"):
             if self.args[0].isupper():
                 return PonL
             else:
@@ -325,7 +325,7 @@ class Prover:
                 t_insts = ts
             return t_insts
 
-        def match_c(pat_args, f_args, c_args, flag):
+        def match_circle_post(pat_args, f_args, c_args, flag):
             """Identical part of the processing for circ and cycl cases.
             
             flag -- whether the matching has already failed.
@@ -520,7 +520,7 @@ class Prover:
         elif arg_ty == CYCL:
             circle = self.get_circle(list(f.args))
             flag = False
-            match_c(pat.args, f.args, circle.args, flag)
+            match_circle_post(pat.args, f.args, circle.args, flag)
 
         elif arg_ty == CIRC:
             circle = self.get_circle(f.args[1:], f.args[0])
@@ -529,9 +529,7 @@ class Prover:
                 flag = True
             else:
                 inst[pat.args[0]] = f.args[0]
-            match_c(pat.args[1:], f.args[1:], circle.args, flag)
-
-        # TODO: Support more types.
+            match_circle_post(pat.args[1:], f.args[1:], circle.args, flag)
         else:
             raise NotImplementedError
 
@@ -819,7 +817,7 @@ class Prover:
             else:
                 return None
 
-        elif fact.pred_name == 'eqangle':
+        elif fact.pred_name in ('eqangle', 'eqratio'):
             # Check if any 4-tuple of points in fact and goal denote the same angle
             can_combine = False
             f_angles = make_pairs(fact.args, pair_len=4)
@@ -861,7 +859,7 @@ class Prover:
                     return True
             return False
 
-        elif fact.pred_name == 'eqangle':
+        elif fact.pred_name in ('eqangle', 'eqratio'):
             angles = make_pairs(fact.args, pair_len=4)
             for a1, a2 in itertools.permutations(angles, 2):
                 if self.equal_angle(a1, a2):
@@ -906,7 +904,7 @@ class Prover:
             g_pairs = make_pairs(goal.args)
             return all(any(self.equal_line(f, g) for f in f_pairs) for g in g_pairs)
 
-        elif fact.pred_name == "eqangle":
+        elif fact.pred_name in ("eqangle", "eqratio"):
             # Check whether both angles in goal are in fact.
             f_angles = make_pairs(fact.args, pair_len=4)
             g_angles = make_pairs(goal.args, pair_len=4)
