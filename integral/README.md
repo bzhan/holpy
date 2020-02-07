@@ -2,7 +2,7 @@
 
 Use
 
-```python -m unittest integral.tests.run_integral```
+```python -m integral.run_integral```
 
 to run all tests.
 

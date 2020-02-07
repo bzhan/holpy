@@ -234,8 +234,6 @@ class RunIntegral(unittest.TestCase):
             "UCDAVIS/LogAndArctangent",
             "UCDAVIS/PartialFraction",
         ]
-        test_only = None
-        profile = False
 
         if profile:
             pr = cProfile.Profile()
@@ -247,10 +245,11 @@ class RunIntegral(unittest.TestCase):
                 f_data = json.load(f)
 
             for item in f_data['content']:
-                if (test_only and test_only[0] == filename and test_only[1] == item['name']) or \
-                   (not test_only and item['name'] in test_cases[filename]):
-                    target = test_cases[filename][item['name']]
-                    proof.translate_item(item, target, debug=True)
+                if test_file is None or test_file == filename:
+                    if (test_case is None and item['name'] in test_cases[filename]) or \
+                       test_case == item['name']:
+                        target = test_cases[filename][item['name']]
+                        proof.translate_item(item, target, debug=True)
 
         if profile:
             p = Stats(pr)
@@ -260,4 +259,19 @@ class RunIntegral(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    import sys, getopt
+    opts, args = getopt.getopt(sys.argv[1:], 'pf:c:')
+
+    profile = False
+    test_file = None
+    test_case = None
+    for opt, arg in opts:
+        if opt == '-p':
+            profile = True
+        if opt == '-f':
+            test_file = arg
+        if opt == '-c':
+            test_case = arg
+
+    sys.argv = sys.argv[:1]  # remove own arguments for unittest
     unittest.main()
