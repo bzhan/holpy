@@ -19559,8 +19559,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "rpow_mult",
-            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (m * n)",
+            "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (m * n)",
             "ty": "thm",
             "vars": {
                 "m": "real",
@@ -19570,7 +19573,7 @@
         },
         {
             "name": "rpow_mult_nat1",
-            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (of_nat m * n)",
+            "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (of_nat m * n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -19580,7 +19583,7 @@
         },
         {
             "name": "rpow_mult_nat2",
-            "prop": "x > 0 ⟶ x ^ m ^ n = x ^ (m * of_nat n)",
+            "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (m * of_nat n)",
             "ty": "thm",
             "vars": {
                 "m": "real",
