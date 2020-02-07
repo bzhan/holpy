@@ -361,11 +361,16 @@ class ExprTest(unittest.TestCase):
                        ], [], [], "midp(E, B, C)"),
 
             # Following tests proves some theorems in "Machine Proofs in Geometry".
-            # Example 6.4 The isotomic points of three collinear points are collinear.
-            # (ruleset, [""])
-            
 
+            # Example 6.45 If L is the harmonic conjugate of the centroid G of a triangle ABC
+            # with respect to the ends A, D of the median AD, show that LD = AD.
+            # (ruleset, ["midp(D, B, C)", "midp(E, A, C)", "midp(F, A, B)", "coll(B, G, E)", "coll(A, G, D, L)",
+            #            "coll(F, G, C)", "eqratio(L, D, D, G, A, L, A, G)", "coll(B, D, C)"], [], [], "cong(L, D, A, D)"),
 
+            # Example 6.46 Show that the distances of a point on a median of triangle from
+            # the sides including the median are inversely proportional to these sides.
+            # (ruleset, ["coll(A, K, C)", "coll(C, J, B)", "coll(A, F, B)", "coll(C, N, F)",
+            #            "midp(F, A, B)", "perp(K, N, A, C)", "perp(N, J, C, B)"], [], [], "eqratio(N, K, N, J, B, C, A, C)")
         ]
         # pr = cProfile.Profile()
         # pr.enable()

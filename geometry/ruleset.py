@@ -11,6 +11,8 @@ ruleset_raw = {
     "D6": "para(l, n) :- para(l, m), para(m, n)",
     "D8": "perp(m, l) :- perp(l, m)",
     "D9": "para(l, n) :- perp(l, m), perp(m, n)",
+    "D10": "perp(l, n) :- para(l, m), perp(m, n)",
+    "D12": "circle(O, A, B, C) :- cong(O, A, O, B), cong(O, A, O, C)",
     "D13": "cyclic(A, B, C, D) :- cong(O, A, O, B), cong(O, A, O, C), cong(O, A, O, D)",
     # "D17": "cyclic(B, C, D, E) :- cyclic(A, B, C, D), cyclic(A, B, C, E)",
     # Currently no need
@@ -22,6 +24,7 @@ ruleset_raw = {
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",
     "D29": "eqratio(k, m ,l, n) :- eqratio(k, l, m, n)",
+    # "D39": "para(A, B, C, D) :- eqangle(A, B, P, Q, C, D, P, Q)",
     "D40": "eqangle(a, c, b, c) :- para(a, b)",
     "D41": "eqangle(P, A, P, B, Q, A, Q, B) :- cyclic(A, B, P, Q)",
     "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B), ¬coll(P, Q, A, B)",
@@ -31,22 +34,41 @@ ruleset_raw = {
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
     "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C)",
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
+    "D47": "cong(O, A, O, B) :- eqangle(O, A, A, B, A, B, O, B), ¬coll(O, A, B)",
+    "D48": "eqangle(A, X, A, B, C, A, C, B) :- perp(O, A, A, X), circle(O, A, B, C)",
+    "D49": "perp(O, A, A, X) :- eqangle(A, X, A, B, C, A, C, B), circle(O, A, B, C)",
+    "D50": "eqangle(A, B, A, C, O, B, O, M) :- midp(M, B, C), circle(O, A, B, C)",
+    "D51": "midp(M, B, C) :- coll(M, B, C), eqangle(A, B, A, C, O, B, O, M), circle(O, A, B, C)",
+    "D52": "cong(A, M, B, M) :- perp(A, B, B, C), midp(M, A, C)",
     "D53": "perp(A, B, B, C) :- circle(O, A, B, C), coll(O, A, C)",
+    "D54": "eqangle(A, D, C, D, C, D, C, B) :- para(A, B, C, D), cyclic(A, B, C, D)",
+    "D55": "cong(O, A, O, B) :- midp(M, A, B), perp(O, M, A, B)",
     "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
+    "D57": "perp(P, A, A, Q) :- cong(A, P, B, P), cong(A, Q, B, Q), cyclic(A, B, P, Q)",
     "D58": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(A, C, B, C, P, R, Q, R), ¬coll(A, B, C)",
     "D59": "eqratio(A, B, A, C, P, Q, P, R) :- simtri(A, B, C, P, Q, R)",
+    "D60": "eqangle(A, B, B, C, P,Q, Q, R) :- simtri(A, B, C, P, Q, R)",
     "D61": "contri(A, B, C, P, Q, R) :- simtri(A, B, C, P, Q, R), cong(A, B, P, Q)",
     "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
-    "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
+    # "D63": "para(A, C, B, D) :- midp(M, A, B), midp(M, C, D)",
+    "D64": "midp(M, C, D) :- midp(M, A, B), para(A, C, B, D), para(A, D, B, C)",
+    # "D65": "eqratio(O, A, A, C, O, B, B, D) :- para(A, B, C, D), coll(O, A, C), coll(O, B, D)",
     "D66": "coll(A, B, C) :- para(A, B, A, C)",
+    "D67": "midp(A, B, C) :- cong(A, B, A, C), coll(A, B, C)",
     "D68": "cong(A, B, A, C) :- midp(A, B, C)",
+    "D69": "coll(A, B, C) :- midp(A, B, C)",
     "D70": "eqratio(M, A, A, B, N, C, C, D) :- midp(M, A, B), midp(N, C, D)",
+    "D71": "perp(A, B, C, D) :- eqangle(A, B, C, D, C, D, A, B), ¬para(A, B, C, D)",
+    "D72": "para(A, B, C, D) :- eqangle(A, B, C, D, C, D, A, B), ¬perp(A, B, C, D)",
+    # "D73": "para(A, B, C, D) :- eqangle(A, B, C, D, P, Q, U, V), para(P, Q, U, V)",
+    # "D74": "perp(A, B, C, D) :- eqangle(A, B, C, D, P, Q, U, V), perp(P, Q, U, V)",
+    # "D75": "cong(A, B, C, D) :- eqratio(A, B, C, D, P, Q, U, V), cong(P, Q, U, V)",
 
     # ⬇ Additional rules ⬇ #
     # Use this rule to generate eqangle from two perp facts. (Written by myself)
     "D76": "eqangle(k, l, m, n) :- perp(k, l), perp(m ,n)",
-    "D77": "perp(m, n) :-  eqangle(k, l, m, n), perp(k, l)",
-    "D78": "eqangle(l, k, m, n) :- perp(k, l), perp(m, n)",
+    "D77": "perp(m, n) :- eqangle(k, l, m, n), perp(k, l)",
+    # "D78": "eqangle(l, k, m, n) :- perp(k, l), perp(m, n)",
     # TODO: Check if D79 to D89 is necessary.
     # The original version of ruleset does not use any rule to directly obtain contri, instead,
     # it uses D61 to obtain contri from a simtri and a cong fact.
@@ -69,8 +91,8 @@ ruleset_raw = {
     # "D86":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(A, C, C, B, D, C, C, B)",  # ASA
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS
     # D88 and D89 are using different sides of a triangle compares to D58.
-    "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R)",
-    "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q)",
+    "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R), ¬coll(A, B, C)",
+    "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q), ¬coll(A, B, C)",
 }
 
 ruleset = dict()

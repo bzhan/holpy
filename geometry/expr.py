@@ -633,7 +633,7 @@ class Prover:
                     for hyp in self.hyps:
                         if self.check_imply(tmp_fact, hyp):
                             fact_valid = False
-                            print("✘ New fact", fact, "has been removed for not satisfying", tmp_fact, ".")
+                            # print("✘ New fact", fact, "has been removed for not satisfying", tmp_fact, ".")
 
             if fact_valid:
                 new_facts = [fact]
