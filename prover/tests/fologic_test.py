@@ -52,7 +52,7 @@ class FOLogicTest(unittest.TestCase):
         test_data = [
             # Test case from Section 3.6 of HPLAR.
             ("?y::nat. x < y --> !u. ?v. x * u < y * v",
-             "~x < f_y x | (!u::nat. x * u < f_y x * f_v x u)"),
+             "~x < f_y x | (!u::nat. x * u < f_y x * f_v u x)"),
             ("!x. P x --> (?y. ?z::'a. Q y | ~(?z. P z & Q z))",
              "!x. ~P x | Q c_y | (!z. ~P z | ~Q z)")
         ]

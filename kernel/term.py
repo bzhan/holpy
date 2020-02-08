@@ -1,12 +1,13 @@
 # Author: Bohua Zhan
 
-from collections import OrderedDict, UserDict
+from collections import UserDict
 from copy import copy
 import math
 from fractions import Fraction
 
 from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
 from util import typecheck
+from logic import term_ord
 
 
 class TermException(Exception):
@@ -1011,9 +1012,9 @@ def get_svars(t):
             return []
 
     if isinstance(t, Term):
-        return list(OrderedDict.fromkeys(helper(t)))
+        return term_ord.sorted_terms(helper(t))
     elif isinstance(t, list):
-        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+        return term_ord.sorted_terms(sum([helper(s) for s in t], []))
     else:
         raise TypeError
 
@@ -1030,9 +1031,9 @@ def get_vars(t):
             return []
 
     if isinstance(t, Term):
-        return list(OrderedDict.fromkeys(helper(t)))
+        return term_ord.sorted_terms(helper(t))
     elif isinstance(t, list):
-        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+        return term_ord.sorted_terms(sum([helper(s) for s in t], []))
     else:
         raise TypeError
 
@@ -1064,9 +1065,9 @@ def get_stvars(t):
             return []
 
     if isinstance(t, Term):
-        return list(OrderedDict.fromkeys(helper(t)))
+        return term_ord.sorted_typs(helper(t))
     elif isinstance(t, list):
-        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+        return term_ord.sorted_typs(sum([helper(s) for s in t], []))
     else:
         raise TypeError
 
@@ -1083,9 +1084,9 @@ def get_consts(t):
             return []
 
     if isinstance(t, Term):
-        return list(OrderedDict.fromkeys(helper(t)))
+        return term_ord.sorted_terms(helper(t))
     elif isinstance(t, list):
-        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+        return term_ord.sorted_terms(sum([helper(s) for s in t], []))
     else:
         raise TypeError
 

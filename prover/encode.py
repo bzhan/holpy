@@ -2,13 +2,12 @@
 Tseitin encoding from formulae in holpy to CNF.
 """
 
-from collections import OrderedDict
-
 from kernel.type import BoolType
 from kernel.term import Term, Var, And, Or, Not, Implies, Eq
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
+from logic import term_ord
 from kernel.proofterm import ProofTerm
 from logic.conv import rewr_conv, every_conv, top_conv
 
@@ -48,7 +47,7 @@ def encode_eq_not(l, r):
     """Encoding for the term l = ~r."""
     return [Or(l, r), Or(Not(l), Not(r))]
 
-def get_encode_proof(th):
+def get_encode_proof(hyps, th):
     """Given resulting theorem for an encoding, obtain the proof
     of the theorem.
 
@@ -65,7 +64,7 @@ def get_encode_proof(th):
     substitutions of As on F.
 
     """
-    As, F = th.hyps[:-1], th.hyps[-1]
+    As, F = hyps[:-1], hyps[-1]
 
     # Obtain the assumptions
     ptAs = [ProofTerm.assume(A) for A in As]
@@ -106,8 +105,7 @@ def encode(t):
 
     """
     # Find the list of logical subterms, remove duplicates.
-    subterms = logic_subterms(t)
-    subterms = list(OrderedDict.fromkeys(subterms))
+    subterms = term_ord.sorted_terms(logic_subterms(t))
     subterms_dict = dict()
     for i, st in enumerate(subterms):
         subterms_dict[st] = i
@@ -160,4 +158,4 @@ def encode(t):
     for clause in clauses:
         cnf.append(list(literal(t) for t in clause.strip_disj()))
 
-    return cnf, th
+    return cnf, eqs + [t], th

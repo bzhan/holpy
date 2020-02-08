@@ -6,7 +6,6 @@ By default, all variables in the pattern can be instantiated.
 
 """
 from copy import copy
-from collections import OrderedDict
 
 from kernel.type import TVar, TFun, TypeMatchException
 from kernel.term import Term, Var, Const, Comb, Abs, Bound, Inst, Lambda

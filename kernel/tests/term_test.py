@@ -241,7 +241,7 @@ class TermTest(unittest.TestCase):
     def testGetVars(self):
         test_data = [
             (a, [a]),
-            (f(a), [f, a]),
+            (f(a), [a, f]),
             (f(c), [f]),
             ([a, f(c)], [a, f]),
         ]

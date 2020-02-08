@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.term import Term
+from functools import cmp_to_key
 
 """Ordering on terms."""
 
@@ -38,6 +38,8 @@ def compare_list(l1, l2, cp):
     return compare_atom(len(l1), len(l2))
 
 def fast_compare_typ(T1, T2):
+    if T1.size() != T2.size():
+        return compare_atom(T1.size(), T2.size())
     if T1.ty != T2.ty:
         return compare_atom(T1.ty, T2.ty)
     elif T1.is_stvar() or T1.is_tvar():
@@ -50,6 +52,8 @@ def fast_compare_typ(T1, T2):
 
 def fast_compare(t1, t2):
     """Fast ordering between t1 and t2."""
+    if t1.size() != t2.size():
+        return compare_atom(t1.size(), t2.size())
     if t1.ty != t2.ty:
         return compare_atom(t1.ty, t2.ty)
     elif t1.is_svar() or t1.is_var() or t1.is_const():
@@ -71,3 +75,9 @@ def fast_compare_list(t1, t2):
         if t1[i] != t2[i]:
             return fast_compare(t1[i], t2[i])
     return 0
+
+def sorted_typs(ts):
+    return sorted(set(ts), key=cmp_to_key(fast_compare_typ))
+
+def sorted_terms(ts):
+    return sorted(set(ts), key=cmp_to_key(fast_compare))

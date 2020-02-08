@@ -101,8 +101,8 @@ class TypeTest(unittest.TestCase):
     def testGetTSubs(self):
         test_data = [
             (BoolType, [BoolType]),
-            (TFun(Ta,Ta), [TFun(Ta,Ta), Ta]),
-            (TFun(Ta,Tb), [TFun(Ta,Tb), Ta, Tb]),
+            (TFun(Ta,Ta), [Ta, TFun(Ta,Ta)]),
+            (TFun(Ta,Tb), [Ta, Tb, TFun(Ta,Tb)]),
         ]
 
         for T, res in test_data:
