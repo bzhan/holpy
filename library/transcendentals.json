@@ -23080,7 +23080,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": "rpow_mult",
+            "name": "rpow_rpow",
             "num_gaps": 0,
             "proof": [
                 {
@@ -28671,7 +28671,7 @@
             }
         },
         {
-            "name": "rpow_mult_nat1",
+            "name": "rpow_rpow_nat1",
             "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (of_nat m * n)",
             "ty": "thm",
             "vars": {
@@ -28681,43 +28681,13 @@
             }
         },
         {
-            "name": "rpow_mult_nat2",
+            "name": "rpow_rpow_nat2",
             "prop": "x ≥ 0 ⟶ x ^ m ^ n = x ^ (m * of_nat n)",
             "ty": "thm",
             "vars": {
                 "m": "real",
                 "n": "nat",
                 "x": "real"
-            }
-        },
-        {
-            "name": "rpow_base_mult_neg1",
-            "prop": "¬(x = 0) ⟶ ¬(y = 0) ⟶ (x * y) ^ -(1::real) = x ^ -(1::real) * y ^ -(1::real)",
-            "ty": "thm",
-            "vars": {
-                "p": "real",
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
-            "name": "rpow_base_mult",
-            "prop": "x > 0 ⟶ y > 0 ⟶ (x * y) ^ p = x ^ p * y ^ p",
-            "ty": "thm",
-            "vars": {
-                "p": "real",
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
-            "name": "rpow_base_mult2",
-            "prop": "x ≥ 0 ⟶ y ≥ 0 ⟶ p > 0 ⟶ (x * y) ^ p = x ^ p * y ^ p",
-            "ty": "thm",
-            "vars": {
-                "p": "real",
-                "x": "real",
-                "y": "real"
             }
         },
         {
