@@ -124,12 +124,28 @@ class beta_conv(Conv):
 
 class beta_norm_conv(Conv):
     def get_proof_term(self, t):
-        pt1 = top_conv(beta_conv()).get_proof_term(t)
-        if pt1.prop.rhs != t:
-            pt2 = self.get_proof_term(pt1.prop.rhs)
-            return pt1.transitive(pt2)
-        else:
-            return refl(t)
+        def rec(t):
+            if t.is_abs():
+                v, body = t.dest_abs()
+                body_pt = rec(body)
+                if body_pt.is_reflexive():
+                    return refl(t)
+                else:
+                    return body_pt.abstraction(v)
+            elif t.is_comb():
+                fun_pt = rec(t.fun)
+                arg_pt = rec(t.arg)
+                pt = fun_pt.combination(arg_pt)
+                if fun_pt.rhs.is_abs():
+                    pt2 = ProofTerm.beta_conv(pt.rhs)
+                    pt3 = rec(pt2.rhs)
+                    return pt.transitive(pt2, pt3)
+                else:
+                    return pt
+            else:
+                return refl(t)
+
+        return rec(t)
 
 def beta_norm(t):
     return beta_norm_conv().eval(t).prop.arg
@@ -240,7 +256,13 @@ class bottom_conv(Conv):
         self.cv = cv
 
     def get_proof_term(self, t):
-        return then_conv(sub_conv(self), try_conv(self.cv)).get_proof_term(t)
+        pt = refl(t)
+        if t.is_comb():
+            return pt.on_rhs(fun_conv(self), arg_conv(self), try_conv(self.cv))
+        elif t.is_abs():
+            return pt.on_rhs(abs_conv(self), try_conv(self.cv))
+        else:
+            return pt.on_rhs(try_conv(self.cv))
 
 class top_conv(Conv):
     """Applies cv repeatedly in the top-down manner."""
@@ -252,7 +274,23 @@ class top_conv(Conv):
         return "top_conv(%s)" % str(self.cv)
 
     def get_proof_term(self, t):
-        return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
+        def rec(t):
+            pt = refl(t).on_rhs(try_conv(self.cv))
+            if pt.rhs.is_comb():
+                fun_pt = rec(pt.rhs.fun)
+                arg_pt = rec(pt.rhs.arg)
+                return pt.transitive(fun_pt.combination(arg_pt))
+            elif pt.rhs.is_abs():
+                v, body = t.dest_abs()
+                body_pt = rec(body)
+                if body_pt.is_reflexive():
+                    return pt
+                else:
+                    return pt.transitive(body_pt.abstraction(v))
+            else:
+                return pt
+
+        return rec(t)
 
 class top_sweep_conv(Conv):
     """Applies cv in the top-down manner, but only at the first level."""
@@ -264,7 +302,26 @@ class top_sweep_conv(Conv):
         return "top_sweep_conv(%s)" % str(self.cv)
 
     def get_proof_term(self, t):
-        return else_conv(self.cv, else_conv(sub_conv(self), all_conv())).get_proof_term(t)
+        def rec(t):
+            pt = refl(t).on_rhs(try_conv(self.cv))
+            if not pt.is_reflexive():
+                return pt
+
+            if t.is_comb():
+                fun_pt = rec(t.fun)
+                arg_pt = rec(t.arg)
+                return fun_pt.combination(arg_pt)
+            elif t.is_abs():
+                v, body = t.dest_abs()
+                body_pt = rec(body)
+                if body_pt.is_reflexive():
+                    return pt
+                else:
+                    return body_pt.abstraction(v)
+            else:
+                return pt
+
+        return rec(t)
 
 class rewr_conv(Conv):
     """Rewrite using the given equality theorem."""
