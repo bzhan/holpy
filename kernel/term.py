@@ -947,6 +947,55 @@ class Term():
             other = Number(T, other)
         return greater(T)(self, other)
 
+    def get_svars(self):
+        def rec(t):
+            if t.is_svar():
+                return [t]
+            elif t.is_comb():
+                return rec(t.fun) + rec(t.arg)
+            elif t.is_abs():
+                return rec(t.body)
+            else:
+                return []
+
+        return term_ord.sorted_terms(rec(self))
+
+    def get_vars(self):
+        def rec(t):
+            if t.is_var():
+                return [t]
+            elif t.is_comb():
+                return rec(t.fun) + rec(t.arg)
+            elif t.is_abs():
+                return rec(t.body)
+            else:
+                return []
+
+        return term_ord.sorted_terms(rec(self))
+
+    def has_var(self):
+        if self.is_var():
+            return True
+        elif self.is_comb():
+            return self.fun.has_var() or self.arg.has_var()
+        elif self.is_abs():
+            return self.body.has_var()
+        else:
+            return False
+
+    def get_stvars(self):
+        def rec(t):
+            if t.is_var() or t.is_const():
+                return t.T.get_stvars()
+            elif t.is_comb():
+                return rec(t.fun) + rec(t.arg)
+            elif t.is_abs():
+                return t.var_T.get_stvars() + rec(t.body)
+            else:
+                return []
+
+        return term_ord.sorted_typs(rec(self))
+
 
 class SVar(Term):
     """Schematic variable, specified by name and type."""
@@ -1000,93 +1049,29 @@ class Bound(Term):
         self.n = n
 
 def get_svars(t):
-    """Returns list of vschematic ariables in a term or a list of terms."""
-    def helper(t):
-        if t.is_svar():
-            return [t]
-        elif t.is_comb():
-            return helper(t.fun) + helper(t.arg)
-        elif t.is_abs():
-            return helper(t.body)
-        else:
-            return []
-
+    """Returns list of schematic variables in a term or a list of terms."""
     if isinstance(t, Term):
-        return term_ord.sorted_terms(helper(t))
+        return t.get_svars()
     elif isinstance(t, list):
-        return term_ord.sorted_terms(sum([helper(s) for s in t], []))
+        return term_ord.sorted_terms(sum([s.get_svars() for s in t], []))
     else:
         raise TypeError
 
 def get_vars(t):
     """Returns list of variables in a term or a list of terms."""
-    def helper(t):
-        if t.is_var():
-            return [t]
-        elif t.is_comb():
-            return helper(t.fun) + helper(t.arg)
-        elif t.is_abs():
-            return helper(t.body)
-        else:
-            return []
-
     if isinstance(t, Term):
-        return term_ord.sorted_terms(helper(t))
+        return t.get_vars()
     elif isinstance(t, list):
-        return term_ord.sorted_terms(sum([helper(s) for s in t], []))
+        return term_ord.sorted_terms(sum([s.get_vars() for s in t], []))
     else:
         raise TypeError
-
-def has_var(t):
-    """Whether the term contains variables."""
-    assert isinstance(t, Term), "has_var: input must be a Term."
-    def helper(t):
-        if t.is_var():
-            return True
-        elif t.is_comb():
-            return has_var(t.fun) or has_var(t.arg)
-        elif t.is_abs():
-            return has_var(t.body)
-        else:
-            return False
-
-    return helper(t)
 
 def get_stvars(t):
     """Get the list of type variables for a term."""
-    def helper(t):
-        if t.is_var() or t.is_const():
-            return t.T.get_stvars()
-        elif t.is_comb():
-            return helper(t.fun) + helper(t.arg)
-        elif t.is_abs():
-            return t.var_T.get_stvars() + helper(t.body)
-        else:
-            return []
-
     if isinstance(t, Term):
-        return term_ord.sorted_typs(helper(t))
+        return t.get_stvars()
     elif isinstance(t, list):
-        return term_ord.sorted_typs(sum([helper(s) for s in t], []))
-    else:
-        raise TypeError
-
-def get_consts(t):
-    """Returns list of constants in a term or a list of terms."""
-    def helper(t):
-        if t.is_const():
-            return [t]
-        elif t.is_comb():
-            return helper(t.fun) + helper(t.arg)
-        elif t.is_abs():
-            return helper(t.body)
-        else:
-            return []
-
-    if isinstance(t, Term):
-        return term_ord.sorted_terms(helper(t))
-    elif isinstance(t, list):
-        return term_ord.sorted_terms(sum([helper(s) for s in t], []))
+        return term_ord.sorted_typs(sum([s.get_stvars() for s in t], []))
     else:
         raise TypeError
 

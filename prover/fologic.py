@@ -141,13 +141,13 @@ def nnf(fm):
 
 def skolem(fm):
     """Skolemize the formula. Assume the formula is already in nnf."""
-    var_names = [v.name for v in term.get_vars(fm)]
+    var_names = [v.name for v in fm.get_vars()]
 
     def rec(t):
         if t.is_exists():
             # Obtain the list of variables that t depends on, not
             # counting functions (including skolem functions).
-            xs = [v for v in term.get_vars(t.arg.body) if not v.T.is_fun()]
+            xs = [v for v in t.arg.body.get_vars() if not v.T.is_fun()]
 
             # Obtain the new skolem variable.
             nm = "c_" + t.arg.var_name if len(xs) == 0 else "f_" + t.arg.var_name

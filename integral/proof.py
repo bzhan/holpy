@@ -987,7 +987,7 @@ def translate_item(item, target=None, *, debug=False):
             assert rewr_loc.is_comb("real_integral", 2), "translate_item: Substitution"
             f = expr_to_holpy(parse_expr(step['params']['f']))
             g = expr_to_holpy(parse_expr(step['params']['g']))
-            ori_var = term.get_vars(g)[0]
+            ori_var = g.get_vars()[0]
             new_name = step['params']['var_name']
             new_var = Var(new_name, RealType)
             f = Lambda(new_var, f)

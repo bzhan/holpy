@@ -249,16 +249,6 @@ class TermTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(term.get_vars(t), res)
 
-    def testGetConsts(self):
-        test_data = [
-            (a, []),
-            (f(c), [c]),
-            ([a, f(c)], [c]),
-        ]
-
-        for t, res in test_data:
-            self.assertEqual(term.get_consts(t), res)
-
     def testConj(self):
         test_data = [
             ([], term.true),

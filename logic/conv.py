@@ -141,7 +141,7 @@ class eta_conv(Conv):
         if not t.is_abs():
             raise ConvException("eta_conv")
 
-        var_names = [v.name for v in term.get_vars(t.body)]
+        var_names = [v.name for v in t.body.get_vars()]
         nm = name.get_variant_name(t.var_name, var_names)
         v = Var(nm, t.var_T)
         t2 = t.subst_bound(v)
@@ -162,7 +162,7 @@ class abs_conv(Conv):
             raise ConvException("abs_conv: not an abstraction")
 
         # Find a new variable x and substitute for body
-        var_names = [v.name for v in term.get_vars(t.body)]
+        var_names = [v.name for v in t.body.get_vars()]
         nm = name.get_variant_name(t.var_name, var_names)
         v = Var(nm, t.var_T)
         t2 = t.subst_bound(v)
@@ -386,7 +386,7 @@ def has_rewrite(th, t, *, sym=False, conds=None):
         if t.is_comb():
             return rec(t.fun) or rec(t.arg)
         elif t.is_abs():
-            var_names = [v.name for v in term.get_vars(t.body)]
+            var_names = [v.name for v in t.body.get_vars()]
             nm = name.get_variant_name(t.var_name, var_names)
             v = Var(nm, t.var_T)
             t2 = t.subst_bound(v)

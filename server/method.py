@@ -84,7 +84,7 @@ class cut_method(Method):
 
         with context.fresh_context(vars=state.get_vars(id)):
             C = parser.parse_term(data['goal'])
-            for v in term.get_vars(C):
+            for v in C.get_vars():
                 if v.name not in context.ctxt.vars:
                     raise AssertionError('Insert goal: extra variable %s' % v.name)
 
@@ -114,7 +114,7 @@ class cases_method(Method):
     def apply(self, state, id, data, prevs):
         with context.fresh_context(vars=state.get_vars(id)):
             A = parser.parse_term(data['case'])
-            for v in term.get_vars(A):
+            for v in A.get_vars():
                 if v.name not in context.ctxt.vars:
                     raise AssertionError('Apply case: extra variable %s' % v.name)
 
@@ -361,7 +361,7 @@ class apply_forward_step(Method):
         # Check whether to ask for parameters
         As, C = th.prop.strip_implies()
         match_svars = term.get_svars(As[:len(prevs)])
-        all_svars = term.get_svars(th.prop)
+        all_svars = th.prop.get_svars()
         param_svars = [v for v in all_svars if v not in match_svars and 'param_' + v.name not in data]
         if param_svars:
             raise theory.ParameterQueryException(list("param_" + v.name for v in param_svars))
@@ -650,7 +650,7 @@ class forall_elim(Method):
         with context.fresh_context(vars=state.get_vars(id)):
             t = parser.parse_term(data['s'])
 
-            for v in term.get_vars(t):
+            for v in t.get_vars():
                 if v.name not in context.ctxt.vars:
                     raise AssertionError('Forall elimination: extra variable %s' % v.name)
 
@@ -685,7 +685,7 @@ class inst_exists_goal(Method):
         with context.fresh_context(vars=state.get_vars(id)):
             t = parser.parse_term(data['s'])
 
-            for v in term.get_vars(t):
+            for v in t.get_vars():
                 if v.name not in context.ctxt.vars:
                     raise AssertionError('Instantiate exists: extra variable %s' % v.name)
 
@@ -714,7 +714,7 @@ class induction(Method):
                 continue
 
             var_T = th.concl.arg.T
-            vars = [v for v in term.get_vars(cur_th.prop) if v.T == var_T]
+            vars = [v for v in cur_th.prop.get_vars() if v.T == var_T]
             if len(vars) == 1:
                 results.append({'theorem': name, 'var': vars[0].name})
             elif len(vars) > 1:
