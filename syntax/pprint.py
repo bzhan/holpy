@@ -263,7 +263,7 @@ def get_ast_term(t):
         return term_ast[(t, settings.unicode)]
 
     typecheck.checkinstance('get_ast_term', t, term.Term)
-    var_names = [v.name for v in term.get_vars(t)]
+    var_names = [v.name for v in t.get_vars()]
 
     # Import modules for custom parsed data
     from logic import logic

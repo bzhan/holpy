@@ -3,7 +3,7 @@
 from kernel.type import TFun, BoolType, TyInst
 from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda, Inst
-from logic import term_ord
+from kernel import term_ord
 from util import typecheck
 from syntax.settings import settings
 

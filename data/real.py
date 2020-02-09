@@ -11,9 +11,9 @@ from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
 from kernel.theory import register_macro
 from kernel.macro import Macro
+from kernel import term_ord
 from data import nat
 from data.set import setT
-from logic import term_ord
 from logic import logic
 from logic import auto
 from logic.logic import TacticException
@@ -210,9 +210,9 @@ class swap_add_r(Conv):
 
 def atom_less(t1, t2):
     """Compare two atoms, put constants in front."""
-    if not term.has_var(t1) and term.has_var(t2):
+    if not t1.has_var() and t2.has_var():
         return True
-    elif not term.has_var(t2) and term.has_var(t1):
+    elif not t2.has_var() and t1.has_var():
         return False
     else:
         return term_ord.fast_compare(t1, t2) < 0

@@ -48,7 +48,7 @@ def is_pattern_list(ts, matched_vars, bd_vars=None):
         return is_pattern(ts[0], matched_vars, bd_vars)
     else:
         if is_pattern(ts[0], matched_vars):
-            all_vars = list(set(matched_vars + [v.name for v in term.get_svars(ts[0])]))
+            all_vars = list(set(matched_vars + [v.name for v in ts[0].get_svars()]))
             return is_pattern_list(ts[1:], all_vars, bd_vars)
         else:
             if not is_pattern_list(ts[1:], matched_vars, bd_vars):
@@ -72,7 +72,7 @@ def first_order_match_incr(pat, t, inst):
     
     """
     typecheck.checkinstance('first_order_match_incr', pat, Term, t, Term, inst, Inst)
-    assert len(term.get_svars(t)) == 0, "first_order_match_incr: t should not contain patterns."
+    assert len(t.get_svars()) == 0, "first_order_match_incr: t should not contain patterns."
 
     # Trace of pattern and term, for debugging
     trace = []
@@ -100,7 +100,7 @@ def first_order_match_incr(pat, t, inst):
                     heuristic_match = True
 
                 # Check t does not contain any extra bound variables.
-                t_vars = term.get_vars(t)
+                t_vars = t.get_vars()
                 if any(v in t_vars and v not in pat.args for v in bd_vars):
                     heuristic_match = True
 
@@ -137,7 +137,7 @@ def first_order_match_incr(pat, t, inst):
                     inst_t = t
                     for v in reversed(pat.args):
                         if v in bd_vars:
-                            if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
+                            if inst_t.is_comb() and inst_t.arg == v and v not in inst_t.fun.get_vars():
                                 op_data = operator.get_info_for_fun(inst_t.head)
                                 if inst_t.is_comb("IF", 3):
                                     inst_t = Lambda(v, inst_t) 
@@ -199,7 +199,7 @@ def first_order_match_incr(pat, t, inst):
                     raise MatchException(trace)
                 T = pat.var_T.subst(inst.tyinst)
 
-                var_names = [v.name for v in term.get_vars(pat.body) + term.get_vars(t.body)]
+                var_names = [v.name for v in pat.body.get_vars() + t.body.get_vars()]
                 nm = name.get_variant_name(pat.var_name, var_names)
                 v = Var(nm, T)
                 pat_body = pat.subst_type(inst.tyinst).subst_bound(v)

@@ -482,7 +482,7 @@ class CongClosureHOL:
         (raises ConvertPatternException).
 
         """
-        if not term.has_var(pat):
+        if not pat.has_var():
             if pat in self.rev_index:
                 return self.rev_index[pat]
             else:

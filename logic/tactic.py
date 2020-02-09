@@ -103,8 +103,8 @@ class rule(Tactic):
 
         # Determine whether it is necessary to provide instantiation
         # to apply_theorem.
-        if set(term.get_svars(th.assums)) != set(term.get_svars(th.prop)) or \
-           set(term.get_stvars(th.assums)) != set(term.get_stvars(th.prop)) or \
+        if set(term.get_svars(th.assums)) != set(th.prop.get_svars()) or \
+           set(term.get_stvars(th.assums)) != set(th.prop.get_stvars()) or \
            not matcher.is_pattern_list(th.assums, []):
             return apply_theorem(th_name, *pts, inst=inst)
         else:

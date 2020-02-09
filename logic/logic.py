@@ -79,7 +79,7 @@ def get_forall_names(t, svar=True):
             return []
     old_names = []
     if not svar:
-        old_names = [v.name for v in term.get_vars(t)]
+        old_names = [v.name for v in t.get_vars()]
     return name.get_variant_names(helper(t), old_names)
 
 def strip_all_implies(t, names, svar=True):
@@ -237,7 +237,7 @@ class apply_theorem_macro(Macro):
         assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
         # First attempt to match type variables
-        svars = term.get_svars(th.prop)
+        svars = th.prop.get_svars()
         for v in svars:
             if v.name in inst:
                 v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
@@ -252,8 +252,8 @@ class apply_theorem_macro(Macro):
         prev_hyps = sum([prev.hyps for prev in prevs], ())
         th = Thm(th.hyps + prev_hyps, new_prop)
 
-        assert len(term.get_stvars(new_prop)) == 0, "apply_theorem: unmatched type variables."
-        vars = term.get_svars(new_prop)
+        assert len(new_prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
+        vars = new_prop.get_svars()
         for v in reversed(vars):
             th = Thm.forall_intr(v, th)
         return th
@@ -270,7 +270,7 @@ class apply_theorem_macro(Macro):
         assert len(pts) <= len(As), "apply_theorem: too many prevs."
 
         # First attempt to match type variables
-        svars = term.get_svars(th.prop)
+        svars = th.prop.get_svars()
         for v in svars:
             if v.name in inst:
                 v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
@@ -285,8 +285,8 @@ class apply_theorem_macro(Macro):
             pt = beta_norm_conv().apply_to_pt(pt)
         pt = pt.implies_elim(*pts)
 
-        assert len(term.get_stvars(pt.prop)) == 0, "apply_theorem: unmatched type variables."
-        vars = term.get_svars(pt.prop)
+        assert len(pt.prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
+        vars = pt.prop.get_svars()
         for v in reversed(vars):
             pt = pt.forall_intr(v)
 

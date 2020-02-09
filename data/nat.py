@@ -7,13 +7,13 @@ from kernel.thm import Thm
 from kernel import theory
 from kernel.theory import register_macro
 from kernel.macro import Macro
+from kernel import term_ord
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from kernel.proofterm import ProofTerm, refl
 from logic import auto
 from logic.logic import apply_theorem
 from logic import logic
-from logic import term_ord
 from logic.tactic import MacroTactic
 from server.method import Method, register_method
 from syntax import pprint, settings

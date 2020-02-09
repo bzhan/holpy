@@ -5,10 +5,10 @@ Tseitin encoding from formulae in holpy to CNF.
 from kernel.type import BoolType
 from kernel.term import Term, Var, And, Or, Not, Implies, Eq
 from kernel.thm import Thm
+from kernel import term_ord
+from kernel.proofterm import ProofTerm
 from logic import basic
 from logic import logic
-from logic import term_ord
-from kernel.proofterm import ProofTerm
 from logic.conv import rewr_conv, every_conv, top_conv
 
 basic.load_theory('sat')
