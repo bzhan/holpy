@@ -8,6 +8,7 @@ from fractions import Fraction
 from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
 from kernel import term_ord
 from util import typecheck
+from util import name
 
 
 class TermException(Exception):
@@ -702,6 +703,21 @@ class Term():
             return self
         else:
             raise TypeError
+
+    def dest_abs(self):
+        """Given self of form %x. body, return pair (x, body).
+
+        It is guaranteed that x does not repeat names with any variables
+        in the body, as well as any variables in the context.
+
+        """
+        assert self.is_abs(), 'dest_abs'
+        var_names = [v.name for v in self.body.get_vars()]
+        nm = name.get_variant_name(self.var_name, var_names)
+        v = Var(nm, self.var_T)
+        body = self.subst_bound(v)
+
+        return v, body
 
     def is_binary(self):
         """Whether self is in standard binary form.

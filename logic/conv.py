@@ -7,7 +7,6 @@ from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel.proofterm import ProofTerm, refl
 from logic import matcher
-from util import name
 from util import typecheck
 
 
@@ -141,15 +140,12 @@ class eta_conv(Conv):
         if not t.is_abs():
             raise ConvException("eta_conv")
 
-        var_names = [v.name for v in t.body.get_vars()]
-        nm = name.get_variant_name(t.var_name, var_names)
-        v = Var(nm, t.var_T)
-        t2 = t.subst_bound(v)
+        v, body = t.dest_abs()
 
-        if not (t2.is_comb() and t2.arg == v and not t2.fun.occurs_var(v)):
+        if not (body.is_comb() and body.arg == v and not body.fun.occurs_var(v)):
             raise ConvException("eta_conv")
 
-        return ProofTerm.theorem('eta_conversion').substitution(f=t2.fun)
+        return ProofTerm.theorem('eta_conversion').substitution(f=body.fun)
 
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
@@ -161,16 +157,12 @@ class abs_conv(Conv):
         if not t.is_abs():
             raise ConvException("abs_conv: not an abstraction")
 
-        # Find a new variable x and substitute for body
-        var_names = [v.name for v in t.body.get_vars()]
-        nm = name.get_variant_name(t.var_name, var_names)
-        v = Var(nm, t.var_T)
-        t2 = t.subst_bound(v)
+        v, body = t.dest_abs()
 
         # It is possible that cv produces additional assumptions
         # containing v. In this case the conversion should fail.
         try:
-            return self.cv.get_proof_term(t2).abstraction(v)
+            return self.cv.get_proof_term(body).abstraction(v)
         except InvalidDerivationException:
             raise ConvException("abs_conv")
 
@@ -386,11 +378,8 @@ def has_rewrite(th, t, *, sym=False, conds=None):
         if t.is_comb():
             return rec(t.fun) or rec(t.arg)
         elif t.is_abs():
-            var_names = [v.name for v in t.body.get_vars()]
-            nm = name.get_variant_name(t.var_name, var_names)
-            v = Var(nm, t.var_T)
-            t2 = t.subst_bound(v)
-            return rec(t2)
+            _, body = t.dest_abs()
+            return rec(body)
         else:
             return False
 
