@@ -7939,6 +7939,18 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_eq_inv2",
+            "prop": "real_inverse x = real_inverse y ⟷ x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_inv_eq_0",
             "num_gaps": 0,
             "proof": [
