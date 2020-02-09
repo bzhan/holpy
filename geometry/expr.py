@@ -55,9 +55,10 @@ class Fact:
         else:
             pre = ""
         if self.pred_name == 'eqangle' and self.args[0].isupper():
-            return pre + " = ".join("∠[%s%s,%s%s]" % tuple(self.args[4*i:4*i+4]) for i in range(len(self.args) // 4))
+            return pre + " = ".join(
+                "∠[%s%s,%s%s]" % tuple(self.args[4 * i:4 * i + 4]) for i in range(len(self.args) // 4))
         elif self.pred_name == 'contri':
-            return pre + " ≌ ".join("△%s%s%s" % tuple(self.args[3*i:3*i+3]) for i in range(len(self.args) // 3))
+            return pre + " ≌ ".join("△%s%s%s" % tuple(self.args[3 * i:3 * i + 3]) for i in range(len(self.args) // 3))
         else:
             return pre + "%s(%s)" % (self.pred_name, ",".join(self.args))
 
@@ -96,7 +97,7 @@ class Fact:
                 return LINE
         elif pred_name == "coll":
             return POINT
-        elif pred_name in ("eqratio", "cong"):
+        elif pred_name == "cong":
             return SEG
         elif pred_name == "cyclic":
             return CYCL
@@ -112,6 +113,7 @@ class Fact:
 
 class Line:
     """Represent a line contains more than one point."""
+
     def __init__(self, args: Sequence[str]):
         assert len(args) > 1
         self.args = set(args)
@@ -142,6 +144,7 @@ class Line:
 
 class Circle:
     """Represent a circle."""
+
     def __init__(self, args: Sequence[str], center=None):
         self.args = set(args)
         self.center = center
@@ -190,6 +193,7 @@ class Rule:
     Rule([coll(A, B, C)], coll(A, C, B))
 
     """
+
     def __init__(self, assums: Sequence[Fact], concl: Fact):
         self.assums = assums
         self.assums_pos = [a for a in self.assums if not a.negation]
@@ -206,15 +210,19 @@ class Rule:
 def make_pairs(args, pair_len=2):
     """Divide input list args into groups of length pair_len (default 2)."""
     assert len(args) % pair_len == 0
-    return [tuple(args[pair_len*i : pair_len*(i+1)]) for i in range(len(args) // pair_len)]
+    return [tuple(args[pair_len * i: pair_len * (i + 1)]) for i in range(len(args) // pair_len)]
 
 
 class Prover:
-    def __init__(self, ruleset:Dict, hyps:Optional[List[Fact]]=None, concl:Fact=None, lines=None, circles=None):
+    def __init__(self, ruleset: Dict, hyps: Optional[List[Fact]] = None, concl: Fact = None, lines=None, circles=None):
         self.ruleset = ruleset
         if hyps is None:
             hyps = []
         self.hyps = hyps
+        self.classfied_hyps = {"para": [], "coll": [], "cong": [], "midp": [], "perp": [],
+                               "eqangle": [], "eqratio": [], "cyclic": [], "circle": [], "simtri": [], "contri": []}
+        for hyp in hyps:
+            self.classfied_hyps[hyp.pred_name].append(hyp)
         self.concl = concl
         if lines is None:
             lines = []
@@ -237,7 +245,6 @@ class Prover:
     def equal_triangle(self, t1, t2) -> bool:
         return set(t1) == set(t2)
 
-
     def get_line(self, pair: Tuple[str]) -> Line:
         """Return a line from lines containing the given pair of points, if
         it exists. Otherwise return a line containing the pair.
@@ -257,7 +264,7 @@ class Prover:
 
         return new_line
 
-    def get_circle(self, points: Sequence[str], center:Optional[str]=None) -> Circle:
+    def get_circle(self, points: Sequence[str], center: Optional[str] = None) -> Circle:
         """Return a circle from circles containing the given points and center (optional),
         if it exists. Otherwise return a circle containing the points and center (optional).
 
@@ -407,8 +414,8 @@ class Prover:
                     new_insts.append((t, f.get_subfact([0])))
 
         elif arg_ty == LINE:
-            # para, perp, or eqangle case, matching lines
-            if f.pred_name == "eqangle":
+            # para, perp, eqangle or eqratio case, matching lines
+            if f.pred_name in ("eqangle", "eqratio"):
                 groups = make_pairs(f.args, pair_len=4)
                 comb = itertools.combinations(range(len(groups)), len(pat.args) // 2)  # all possibilities
             else:
@@ -416,8 +423,9 @@ class Prover:
                 comb = itertools.permutations(range(len(groups)), len(pat.args))
 
             for c_nums in comb:
-                if f.pred_name == "eqangle":
-                    cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
+                if f.pred_name in ("eqangle", "eqratio"):
+                    cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2],
+                          groups[c_nums[1]][2:4]]
                 else:
                     cs = [groups[num] for num in c_nums]
                 t_inst = copy.copy(inst)
@@ -431,7 +439,7 @@ class Prover:
                     else:
                         t_inst[p_arg] = t_args
                 if not flag:
-                        new_insts.append((t_inst, f.get_subfact(c_nums)))
+                    new_insts.append((t_inst, f.get_subfact(c_nums)))
 
         elif arg_ty == SEG:
             # eqratio or cong case
@@ -446,7 +454,7 @@ class Prover:
                 for i in range(len(pat.args) // 2):
                     ts = []
                     for t_inst in t_insts:
-                        pat_a, pat_b = pat.args[2*i: 2*i+2]
+                        pat_a, pat_b = pat.args[2 * i: 2 * i + 2]
                         if can_assign(pat_a, c[i][0]) and can_assign(pat_b, c[i][1]):
                             t = copy.copy(t_inst)
                             t[pat_a] = c[i][0]
@@ -506,7 +514,8 @@ class Prover:
 
             for c_nums in comb:
                 if f.pred_name == "eqangle":
-                    cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2], groups[c_nums[1]][2:4]]
+                    cs = [groups[c_nums[0]][0:2], groups[c_nums[0]][2:4], groups[c_nums[1]][0:2],
+                          groups[c_nums[1]][2:4]]
                 else:
                     cs = [groups[num] for num in c_nums]
 
@@ -535,7 +544,56 @@ class Prover:
 
         return new_insts
 
-    def apply_rule(self, rule_name:str, facts:Sequence[Fact]) -> None:
+    def get_appliable_facts(self, rule: Rule) -> List[Fact]:
+        def pick_appliable_facts_step(rule: Rule, facts: List[Fact]) -> None:
+            if len(facts) < len(rule.assums_pos):
+                for fact in self.classfied_hyps[rule.assums[len(facts)].pred_name]:
+                    if fact in facts or fact.shadowed:
+                        continue
+                    new_facts = copy.copy(facts)
+                    new_facts.append(fact)
+                    pick_appliable_facts_step(rule, new_facts)
+            else:
+                picked.append(facts)
+
+        picked = []
+        pick_appliable_facts_step(rule, [])
+        return picked
+
+    def set_classfied_hyps_foreach(self, fun, *args):
+        for item in self.classfied_hyps.values():
+            for i in item:
+                fun(i, *args)
+
+    def check_classfied_hyps_foreach(self, fun, *args) -> bool:
+        ''' Return false if exists one or more hyp in all hyps
+        that is not satisfied the given function.
+        '''
+        for item in self.classfied_hyps.values():
+            for i in item:
+                if not fun(i, *args):
+                    return False
+        return True
+
+    def check_redundant(self, hyp, fact) -> bool:
+        return not(not hyp.shadowed and self.check_imply(hyp, fact))
+
+    def check_imply_reverse(self, goal, fact) -> bool:
+        return not self.check_imply(fact, goal)
+
+    def set_shadow_fact(self, target, fact, new_facts):
+        if not target.shadowed and self.check_imply(fact, target):
+            target.shadowed = True
+
+        if not target.shadowed:
+            new_fact = self.combine_facts(fact, target)
+            if new_fact:
+                fact.shadowed = True
+                target.shadowed = True
+                fact = new_fact
+                new_facts.append(new_fact)
+
+    def apply_rule(self, rule_name: str, facts: Sequence[Fact]) -> None:
         """Apply given rule to the list of facts.
 
         If param facts is a list of integers: these integers represents the positions in hyps. In this case,
@@ -557,8 +615,8 @@ class Prover:
         """
         rule = self.ruleset[rule_name]
         assert len(facts) == len(rule.assums_pos)
+        # print("try", rule, facts)
 
-        # TODO: flip
         # When trying to obtain contri or simtri from eqangles,
         # There exists the scenario that we need to "flip" one triangle to make its shape as same as
         # another triangle. But the full-angle of the triangle will be changed when "flipping".
@@ -579,7 +637,7 @@ class Prover:
             insts = new_insts
 
         # Rule D40 requires more points in conclusion than in assumption. Add points from lines as supplement.
-        if rule_name in ("D40") and insts:
+        if rule_name in ("D40", "D90") and insts:
             prev_insts = copy.copy(insts)
             insts = []
             if any(i not in prev_insts[0][0].keys() for i in rule.concl.args):
@@ -588,12 +646,11 @@ class Prover:
                     for line in self.lines:
                         extended_t_inst = copy.copy(inst)
                         for i, ch in enumerate(not_match):
-                            extended_t_inst[ch] = (list(line.args)[i], list(line.args)[i+1])
+                            extended_t_inst[ch] = (list(line.args)[i], list(line.args)[i + 1])
                         insts.append((extended_t_inst, subfacts))
 
         # Get new facts, according to insts
         for inst, subfacts in insts:
-
             # Get correct form of arguments in a fact
             if rule.concl.args[0].islower():
                 concl_args = []  # type: List[str]
@@ -604,17 +661,23 @@ class Prover:
 
             # Generate new fact
             fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
+
             # Check if fact is trivial
             if self.check_trivial(fact):
                 continue
 
-            # Check if fact is redundant
-            exists = False
-            for hyp in self.hyps:
-                if not hyp.shadowed and self.check_imply(hyp, fact):
-                    exists = True
-            if exists:
+            if self.check_irrational(fact):
                 continue
+
+            # Check if fact is redundant
+            if not self.check_classfied_hyps_foreach(self.check_redundant, fact):
+                continue
+            # exists = False
+            # for hyp in self.hyps:
+            #     if not hyp.shadowed and self.check_imply(hyp, fact):
+            #         exists = True
+            # if exists:
+            #     continue
 
             # Check if those assums with negation are satisfied.
             # If not satisfied, all of the post processes will not be conducted.
@@ -630,14 +693,14 @@ class Prover:
                         tmp_args = [inst[i][0] for i in assum.args]
                     tmp_fact = Fact(assum.pred_name, tmp_args, negation=True)
                     # Check if exist a fact that can imply the negation assum.
-                    for hyp in self.hyps:
-                        if self.check_imply(tmp_fact, hyp):
-                            fact_valid = False
-                            # print("✘ New fact", fact, "has been removed for not satisfying", tmp_fact, ".")
+                    fact_valid = self.check_classfied_hyps_foreach(self.check_imply_reverse, tmp_fact)
 
-            if fact_valid:
-                new_facts = [fact]
-                for target in self.hyps:
+            if not fact_valid:
+                continue
+
+            new_facts = [fact]
+            # self.set_classfied_hyps_foreach(self.set_shadow_fact, fact, new_facts)
+            for target in self.classfied_hyps[fact.pred_name]:
                     if not target.shadowed and self.check_imply(fact, target):
                         target.shadowed = True
 
@@ -648,7 +711,11 @@ class Prover:
                             target.shadowed = True
                             fact = new_fact
                             new_facts.append(new_fact)
-                self.hyps.extend(new_facts)
+
+
+            for new_fact in new_facts:
+                # print("new: ", new_fact)
+                self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
             # for new_fact in new_facts:
             #     print(new_fact.lemma, new_fact)
@@ -683,14 +750,22 @@ class Prover:
         self.compute_lines()
         self.compute_circles()
 
-        avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
+        # avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
         for rule_name, rule in self.ruleset.items():
-            for facts in itertools.permutations(avail_hyps, len(rule.assums_pos)):
+            appliable_facts_list = self.get_appliable_facts(rule)
+            # print(rule, appliable_facts_list)
+            for facts in appliable_facts_list:
                 if any(fact.shadowed for fact in facts):
                     continue
                 if only_updated and all(not fact.updated for fact in facts):
                     continue
                 self.apply_rule(rule_name, facts)
+            # for facts in itertools.permutations(avail_hyps, len(rule.assums_pos)):
+            #     if any(fact.shadowed for fact in facts):
+            #         continue
+            #     if only_updated and all(not fact.updated for fact in facts):
+            #         continue
+            #     self.apply_rule(rule_name, facts)
 
     def search_fixpoint(self) -> Optional[Fact]:
         """Recursively apply given ruleset to a list of hypotheses to
@@ -701,19 +776,29 @@ class Prover:
         prev_len = len(self.hyps)
         self.search_step()
         steps = 0
-        while prev_len != len(self.hyps) and steps < 5:
+        self.print_hyps(only_not_shadowed=True)
+        while steps < 5:
             steps += 1
             print("Step", steps)
             # print(list(hyp for hyp in hyps if not hyp.shadowed))
             prev_len = len(self.hyps)
             self.search_step(only_updated=True)
-            for fact in self.hyps:
-                if self.check_imply(fact, self.concl):
-                    # print("Last updated lines:", self.lines)
-                    # print("Last updated hyps: ", self.hyps)
-                    return fact
-        print("Last updated lines:", self.lines)
-        print("Last updated hyps: ", self.hyps)
+
+            for item in self.classfied_hyps.values():
+                for i in item:
+                    if self.check_imply(i, self.concl):
+                        self.print_hyps(only_not_shadowed=True)
+                        return i
+            self.print_hyps()
+
+            # for fact in self.hyps:
+            #     if self.check_imply(fact, self.concl):
+            #         print("Last updated lines:", self.lines)
+            #         print("Last updated hyps: ", self.hyps)
+            # return fact
+        # print("Last updated lines:", self.lines)
+        # print("Last updated hyps: ", self.hyps)
+
         return False
 
     def combine_facts(self, fact, goal) -> Optional[Fact]:
@@ -829,14 +914,17 @@ class Prover:
                 for a2 in g_angles:
                     if not any(self.equal_angle(a1, a2) for a1 in f_angles):
                         new_args.extend(a2)
-                f = Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
+                if fact.pred_name == 'eqangle':
+                    f = Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
+                else:
+                    f = Fact('eqratio', new_args, updated=True, lemma="combine", cond=[fact, goal])
                 p_comb = make_pairs(new_args, pair_len=4)
                 f.left_map = get_indices(f_angles, p_comb, self.equal_angle)
                 f.right_map = get_indices(g_angles, p_comb, self.equal_angle)
                 return f
             else:
                 return None
-            
+
         elif fact.pred_name in ('simtri', 'contri', 'midp'):
             return None
 
@@ -866,6 +954,24 @@ class Prover:
                     return True
             return False
 
+        return False
+
+    def check_irrational(self, fact) -> bool:
+        if fact.pred_name in ("circle", "cyclic"):
+            return len(set(fact.args)) < 4
+        if fact.pred_name in ("para", "cong", "perp"):
+            args = fact.args
+            return args[0] == args[1] or args[2] == args[3] or (args[0] + args[1] == args[2] + args[3])
+        if fact.pred_name in ("eqangle", "eqratio"):
+            args = fact.args
+            groups = make_pairs(args)
+            for g in groups:
+                if g[0] == g[1]:
+                    return False
+            return args[0] + args[1] == args[2] + args[3] or args[4] + args[5] == args[6] + args[7] \
+                or (args[0] + args[1] == args[6] + args[7] and args[2] + args[3] == args[4] + args[5])
+        if fact.pred_name in ("simtri", "contri"):
+            return len(set(fact.args[0:3])) < 3 or len(set(fact.args[3:6])) < 3
         return False
 
     def check_imply(self, fact, goal) -> bool:
@@ -923,6 +1029,27 @@ class Prover:
             print(fact.pred_name)
             raise NotImplementedError
 
+    def print_hyps(self, only_not_shadowed=False) -> None:
+        if only_not_shadowed:
+            print("Current not shadowed hyps: ")
+        else:
+            print("Current all hyps: ")
+        s = ""
+        for category in self.classfied_hyps.values():
+            if len(category) == 0:
+                continue
+            for fact in category:
+                if only_not_shadowed and fact.shadowed:
+                    continue
+                s = s + str(fact) + " ||| "
+        lines = len(s) // 200
+        if lines > 0:
+            for line in range(0, lines):
+                print(s[line * 200: line * 200 + 200])
+            print(s[lines * 200:-5])
+        else:
+            print(s[:-5])
+
     def print_search(self, res) -> None:
         """Print the process of searching fixpoint.
         The given list of facts must contains all the deduce procedures
@@ -931,6 +1058,7 @@ class Prover:
 
         """
         print_list = []  # type: List[Fact]
+
         def rec(fact):
             if fact in print_list:
                 return
