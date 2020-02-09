@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from functools import cmp_to_key
 
 from kernel.term import Term
-from logic import term_ord
+from kernel import term_ord
 
 
 def compare_fst(p1, p2):

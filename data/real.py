@@ -11,9 +11,9 @@ from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
 from kernel.theory import register_macro
 from kernel.macro import Macro
+from kernel import term_ord
 from data import nat
 from data.set import setT
-from logic import term_ord
 from logic import logic
 from logic import auto
 from logic.logic import TacticException

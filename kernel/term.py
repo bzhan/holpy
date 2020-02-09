@@ -6,8 +6,8 @@ import math
 from fractions import Fraction
 
 from kernel.type import Type, TFun, BoolType, NatType, IntType, RealType, TyInst, TypeMatchException
+from kernel import term_ord
 from util import typecheck
-from logic import term_ord
 
 
 class TermException(Exception):
