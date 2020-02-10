@@ -2,7 +2,6 @@
 
 import copy
 import unittest
-from geometry import exprt
 
 from geometry import expr
 from geometry.expr import Fact, Rule, Line
