@@ -95,7 +95,7 @@ ruleset_raw = {
     "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R), ¬coll(A, B, C)",
     "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q), ¬coll(A, B, C)",
 
-    "D90": "eqangle(c, a, b, c) :- para(a, b)",
+    "D90": "eqangle(c, a, c, b) :- para(a, b)",
 }
 
 ruleset = dict()
@@ -195,7 +195,7 @@ ruleset_raw_reduced = {
     "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R), ¬coll(A, B, C)",
     "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q), ¬coll(A, B, C)",
 
-    "D90": "eqangle(c, a, b, c) :- para(a, b)",
+    "D90": "eqangle(c, a, c, b) :- para(a, b)",
 }
 ruleset_reduced = dict()
 for name, s in ruleset_raw_reduced.items():

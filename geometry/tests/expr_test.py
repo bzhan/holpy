@@ -2,6 +2,7 @@
 
 import copy
 import unittest
+from geometry import exprt
 
 from geometry import expr
 from geometry.expr import Fact, Rule, Line
@@ -319,51 +320,51 @@ class ExprTest(unittest.TestCase):
 
     def testPrintSearch(self):
         test_data = [
-            # (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
-            #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
-            #
-            # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-            #
-            # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
-            #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
-            #
-            # # (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
-            # #            "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
-            #
-            # # Following 2 tests: testing if contri works.
-            # (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
-            #             [], [], "cong(B, M, C, M)"),
-            #
-            # (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
-            #  [], [], "cong(B, F, C, F)"),
-            #
-            # # Following 4 tests: testing if simtri works.
-            # (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
-            #  "simtri(A, D, E, E, F, C)"),
-            #
-            # (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
-            #
-            # (ruleset_reduced, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
-            #            "perp(A, B, B, C)", "perp(D, C, C, B)"],
-            #  [], [], "simtri(A, B, F, E, A, D)"),
+            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
+                       "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
 
-            # (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
-            #   "perp(A, B, B, C)", "perp(D, C, C, B)"],
-            #  [], [], "simtri(A, B, F, E, A, D)"),
+            (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
+
+            (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
+             ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+
+            (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
+                       "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+
+            # Following 2 tests: testing if contri works.
+            (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
+                        [], [], "cong(B, M, C, M)"),
+
+            (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
+             [], [], "cong(B, F, C, F)"),
+
+            # Following 4 tests: testing if simtri works.
+            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
+             "simtri(A, D, E, E, F, C)"),
+
+            (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
+
+            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
+                       "perp(A, B, B, C)", "perp(D, C, C, B)"],
+             [], [], "simtri(A, B, F, E, A, D)"),
+
+            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
+              "perp(A, B, B, C)", "perp(D, C, C, B)"],
+             [], [], "simtri(A, B, F, E, A, D)"),
             #
             # # This example shows that the mechanism can be improved:
             # # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
             # # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
             # # circle required.
-            # (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
-            #            ], [], [], "simtri(A, C, B, A, D, E)"),
+            (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
+                       ], [], [], "simtri(A, C, B, A, D, E)"),
 
             # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
             # in the hypothesis :midp(F, A, D) and coll(F, A, D).
             # A0 -> F
-            (ruleset_reduced, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
-                       "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
-                       ], [], [], "midp(E, B, C)"),
+            # (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
+            #            "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
+            #            ], [], [], "midp(E, B, C)"),
 
             # Following tests proves some theorems in "Machine Proofs in Geometry".
 
@@ -385,27 +386,27 @@ class ExprTest(unittest.TestCase):
 
             # Example 6.60
             # H1 -> P, H2 -> Q, A1 -> R
-            # (ruleset, ["midp(R, B, C)", "coll(H, B, C)", "para(A, R, H, N)", "coll(D, N, H)", "coll(B, A, D)", "coll(Q, A, P)",
+            # (ruleset_reduced, ["midp(R, B, C)", "coll(H, B, C)", "para(A, R, H, N)", "coll(D, N, H)", "coll(B, A, D)", "coll(Q, A, P)",
             #            "midp(K, N, C)", "midp(L, B, D)", "midp(K, H, P)", "midp(L, H, Q)"], [], [], "midp(A, P, Q)"),
         ]
-        pr = cProfile.Profile()
+        # pr = cProfile.Profile()
 
 
-        for rules, hyps, lines, circles, concl in test_data:
-            pr.enable()
+        for ruleset_type, hyps, lines, circles, concl in test_data:
+            # pr.enable()
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            prover = expr.Prover(rules, hyps, concl, lines, circles)
+            prover = expr.Prover(ruleset_type, hyps, concl, lines, circles)
             print("--- Proof for", concl, "---")
             res = prover.search_fixpoint()
             assert res, "✘ Fixpoint reached without proving goal."
             prover.print_search(res)
-            p = Stats(pr)
-            p.strip_dirs()
-            p.sort_stats('cumtime')
-            p.print_stats()
+            # p = Stats(pr)
+            # p.strip_dirs()
+            # p.sort_stats('cumtime')
+            # p.print_stats()
 
 
 
