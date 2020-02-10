@@ -662,22 +662,14 @@ class Prover:
             # Generate new fact
             fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=subfacts)
 
-            # Check if fact is trivial
             if self.check_trivial(fact):
                 continue
 
             if self.check_irrational(fact):
                 continue
 
-            # Check if fact is redundant
             if not self.check_classfied_hyps_foreach(self.check_redundant, fact):
                 continue
-            # exists = False
-            # for hyp in self.hyps:
-            #     if not hyp.shadowed and self.check_imply(hyp, fact):
-            #         exists = True
-            # if exists:
-            #     continue
 
             # Check if those assums with negation are satisfied.
             # If not satisfied, all of the post processes will not be conducted.
@@ -699,8 +691,8 @@ class Prover:
                 continue
 
             new_facts = [fact]
-            # self.set_classfied_hyps_foreach(self.set_shadow_fact, fact, new_facts)
             for target in self.classfied_hyps[fact.pred_name]:
+
                     if not target.shadowed and self.check_imply(fact, target):
                         target.shadowed = True
 
@@ -712,9 +704,7 @@ class Prover:
                             fact = new_fact
                             new_facts.append(new_fact)
 
-
             for new_fact in new_facts:
-                # print("new: ", new_fact)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
             # for new_fact in new_facts:
@@ -722,18 +712,18 @@ class Prover:
 
     def compute_lines(self):
         self.lines = []
-        for hyp in self.hyps:
-            if not hyp.shadowed and hyp.pred_name == 'coll':
+        for hyp in self.classfied_hyps['coll']:
+            if not hyp.shadowed:
                 self.lines.append(Line(hyp.args))
 
     def compute_circles(self):
         self.circles = []
-        for hyp in self.hyps:
+        for hyp in self.classfied_hyps['cyclic']:
             if not hyp.shadowed:
-                if hyp.pred_name == 'cyclic':
-                    self.circles.append(Circle(hyp.args))
-                elif hyp.pred_name == 'circle':
-                    self.circles.append(Circle(hyp.args[1:], center=hyp.args[0]))
+                self.circles.append(Circle(hyp.args))
+        for hyp in self.classfied_hyps['circle']:
+            if not hyp.shadowed:
+                self.circles.append(Circle(hyp.args[1:], center=hyp.args[0]))
 
     def compute_angles(self):
         pass
@@ -789,15 +779,7 @@ class Prover:
                     if self.check_imply(i, self.concl):
                         self.print_hyps(only_not_shadowed=True)
                         return i
-            self.print_hyps()
-
-            # for fact in self.hyps:
-            #     if self.check_imply(fact, self.concl):
-            #         print("Last updated lines:", self.lines)
-            #         print("Last updated hyps: ", self.hyps)
-            # return fact
-        # print("Last updated lines:", self.lines)
-        # print("Last updated hyps: ", self.hyps)
+            self.print_hyps(only_not_shadowed=True)
 
         return False
 
