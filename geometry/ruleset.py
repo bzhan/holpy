@@ -29,8 +29,6 @@ ruleset_raw = {
     "D40": "eqangle(a, c, b, c) :- para(a, b)",
     "D41": "eqangle(P, A, P, B, Q, A, Q, B) :- cyclic(A, B, P, Q)",
     "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B), ¬coll(P, Q, A, B)",
-    # Match facts that are not "cyclic" or "circle" first. The order of arguments in D43 differ from the
-    # original version.
     "D43": "cong(A, B, P, Q) :- eqangle(C, A, C, B, R, P, R, Q), cyclic(A, B, C, P, Q, R)",
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
     "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
@@ -133,8 +131,8 @@ ruleset_raw_reduced = {
     # original version.
     "D43": "cong(A, B, P, Q) :- eqangle(C, A, C, B, R, P, R, Q), cyclic(A, B, C, P, Q, R)",
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
-    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C)",
-    # "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
+    # "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C)",
+    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
     # "D47": "cong(O, A, O, B) :- eqangle(O, A, A, B, A, B, O, B), ¬coll(O, A, B)",
     # "D48": "eqangle(A, X, A, B, C, A, C, B) :- perp(O, A, A, X), circle(O, A, B, C)",

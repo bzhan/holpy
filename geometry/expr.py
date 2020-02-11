@@ -21,14 +21,18 @@ class Fact:
             number -1 represents no requirement.
     """
 
-    def __init__(self, pred_name: str, args: Sequence[str], *, updated=False, lemma=None, cond=None, negation=False):
+    def __init__(self, pred_name: str, args: Sequence[str], *, updated=False, lemma=None, cond=None, negation=False,
+                 tail=False):
         self.pred_name = pred_name
         self.args = args
+
         self.updated = updated
         self.lemma = lemma
         if cond is None:
             cond = []
         self.cond = cond
+
+        # Whether this is a negation fact. e.g.: ¬coll(O, A, B)
         self.negation = negation
 
         # Whether a fact is shadowed by another
@@ -38,6 +42,17 @@ class Fact:
         # to indices to the left / right condition.
         self.left_map = None
         self.right_map = None
+
+        # Whether the fact in the tail of a rule,
+        # and its pred_name is "coll", "cyclic" or "circle".
+        # In this case, this fact will be matched passively,
+        # which match_expr() will only check the inst and to
+        # see if exists an order of arguments conforms to inst.
+        # e.g.:
+        # inst = {A: E, B: F, C: G}, pat = [A, B, C], f = [G, F, E]
+        # tail = True  -> Successfully matched with new_inst = {A: E, B: F, C: G}.
+        # tail = False -> Match failed.
+        self.tail = False
 
     def __hash__(self):
         return hash(("Fact", self.pred_name, tuple(self.args)))
@@ -61,6 +76,8 @@ class Fact:
                 "∠[%s%s,%s%s]" % tuple(self.args[4 * i:4 * i + 4]) for i in range(len(self.args) // 4))
         elif self.pred_name == 'contri':
             return pre + " ≌ ".join("△%s%s%s" % tuple(self.args[3 * i:3 * i + 3]) for i in range(len(self.args) // 3))
+        elif self.pred_name == 'simtri':
+            return pre + " ∽ ".join("△%s%s%s" % tuple(self.args[3 * i:3 * i + 3]) for i in range(len(self.args) // 3))
         else:
             return pre + "%s(%s)" % (self.pred_name, ",".join(self.args))
 
@@ -199,6 +216,10 @@ class Rule:
     def __init__(self, assums: Sequence[Fact], concl: Fact):
         self.assums = assums
         self.assums_pos = [a for a in self.assums if not a.negation]
+        for i in range(len(self.assums_pos) - 1):
+            self.assums_pos[i].tail = self.check_tail_condition(self.assums_pos[i])\
+                                      and self.check_tail_condition(self.assums_pos[i + 1])
+        self.assums_pos[-1].tail = self.check_tail_condition(self.assums_pos[-1])
         self.assums_neg = [a for a in self.assums if a.negation]
         self.concl = concl
 
@@ -207,6 +228,9 @@ class Rule:
 
     def __str__(self):
         return "%s :- %s" % (str(self.concl), ", ".join(str(assum) for assum in self.assums))
+
+    def check_tail_condition(self, fact):
+        return fact.pred_name in ('coll')
 
 
 def make_pairs(args, pair_len=2):
@@ -370,6 +394,13 @@ class Prover:
 
         if pat.pred_name != f.pred_name:
             return []
+
+        if pat.tail:
+            # Get matching result from inst directly.
+            if not all(p in inst.keys() for p in pat.args):
+                return []
+            else:
+                return [(inst, f.get_subfact([0]))]
 
         arg_ty = pat.get_arg_type()
         new_insts = []
@@ -631,7 +662,7 @@ class Prover:
 
         # Match positive facts. Save matching result in insts.
         insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
-        for assum, fact in zip(rule.assums_pos, facts):  # match the arguments recursively
+        for i, (assum, fact) in enumerate(zip(rule.assums_pos, facts)):  # match the arguments recursively
             new_insts = []
             # flip = fact.pred_name == 'eqangle' and rule.concl.pred_name in ('simtri', 'contri')
             for inst, subfacts in insts:
@@ -696,10 +727,8 @@ class Prover:
 
             new_facts = [fact]
             for target in self.classfied_hyps[fact.pred_name]:
-
                     if not target.shadowed and self.check_imply(fact, target):
                         target.shadowed = True
-
                     if not target.shadowed:
                         new_fact = self.combine_facts(fact, target)
                         if new_fact:
@@ -709,12 +738,9 @@ class Prover:
                             new_facts.append(new_fact)
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
-                if new_fact.pred_name in ('simtri', 'contri', 'eqangle'):
-                    print("new fact:", new_fact, rule, facts)
+                # if new_fact.pred_name in ('simtri', 'contri', 'eqangle'):
+                #     print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
-
-            # for new_fact in new_facts:
-            #     print(new_fact.lemma, new_fact)
         # p = Stats(pr)
         # p.strip_dirs()
         # p.sort_stats('cumtime')
@@ -943,7 +969,7 @@ class Prover:
                         p_comb = make_pairs(new_args, pair_len=3)
                         f.left_map = get_indices(f_tris, p_comb, self.equal_triangle)
                         f.right_map = get_indices(g_tris, p_comb, self.equal_triangle)
-                        print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
+                        # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                         return f
             return None
 

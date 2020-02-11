@@ -97,6 +97,20 @@ class ExprTest(unittest.TestCase):
             insts = [p[0] for p in insts]
             self.assertEqual(insts, res)
 
+    def testMatchFactTail(self):
+        test_data = [
+            ("coll(A,B,C)", "coll(P,Q,R)", {"A": "Q", "B": "P", "C": "R"}, [{"A": "Q", "B": "P", "C": "R"}]),
+            ("coll(A,B,C)", "coll(P,Q,R)", {"A": "Q", "B": "P"}, []),
+        ]
+
+        for pat, f, inst, res in test_data:
+            pat = parser.parse_fact(pat)
+            pat.tail = True
+            f = parser.parse_fact(f)
+            insts = expr.Prover(ruleset).match_expr(pat, f, inst)
+            insts = [p[0] for p in insts]
+            self.assertEqual(insts, res)
+
     def testMatchFactLines(self):
         test_data = [
             ("perp(l, m)", "perp(P, Q, R, S)", {}, ["line(O, P, Q)"],
@@ -319,44 +333,44 @@ class ExprTest(unittest.TestCase):
 
     def testPrintSearch(self):
         test_data = [
-            # (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
-            #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
-            #
-            # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-            #
-            # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
-            #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
-            #
-            # (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
-            #            "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
-            #
-            # # Following 2 tests: testing if contri works.
-            # (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
-            #             [], [], "cong(B, M, C, M)"),
-            #
+            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
+                       "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
+
+            (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
+
+            (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
+             ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+
+            (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
+                       "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+
+            # Following 2 tests: testing if contri works.
+            (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
+                        [], [], "cong(B, M, C, M)"),
+
             # (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
             #  [], [], "cong(B, F, C, F)"),
-            #
-            # # Following 4 tests: testing if simtri works.
-            # (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
-            #  "simtri(A, D, E, E, F, C)"),
-            #
-            # (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
-            #
-            # (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
-            #            "perp(A, B, B, C)", "perp(D, C, C, B)"],
-            #  [], [], "simtri(A, B, F, E, A, D)"),
-            #
-            # (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
-            #   "perp(A, B, B, C)", "perp(D, C, C, B)"],
-            #  [], [], "simtri(A, B, F, E, A, D)"),
-            #
-            # # This example shows that the mechanism can be improved:
-            # # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
-            # # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
-            # # circle required.
-            # (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
-            #            ], [], [], "simtri(A, C, B, A, D, E)"),
+
+            # Following 4 tests: testing if simtri works.
+            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
+             "simtri(A, D, E, E, F, C)"),
+
+            (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
+
+            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
+                       "perp(A, B, B, C)", "perp(D, C, C, B)"],
+             [], [], "simtri(A, B, F, E, A, D)"),
+
+            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
+              "perp(A, B, B, C)", "perp(D, C, C, B)"],
+             [], [], "simtri(A, B, F, E, A, D)"),
+
+            # This example shows that the mechanism can be improved:
+            # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
+            # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
+            # circle required.
+            (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
+                       ], [], [], "simtri(A, C, B, A, D, E)"),
 
             # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
             # in the hypothesis :midp(F, A, D) and coll(F, A, D).
@@ -364,11 +378,11 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
                        "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
                        ], [], [], "midp(E, B, C)"),
-
-            # Following tests proves some theorems in "Machine Proofs in Geometry".
-
-            # Example 6.45 If L is the harmonic conjugate of the centroid G of a triangle ABC
-            # with respect to the ends A, D of the median AD, show that LD = AD.
+            #
+            # # Following tests proves some theorems in "Machine Proofs in Geometry".
+            #
+            # # Example 6.45 If L is the harmonic conjugate of the centroid G of a triangle ABC
+            # # with respect to the ends A, D of the median AD, show that LD = AD.
             # (ruleset, ["midp(D, B, C)", "midp(E, A, C)", "midp(F, A, B)", "coll(B, G, E)", "coll(A, G, D, L)",
             #            "coll(F, G, C)", "eqratio(L, D, D, G, A, L, A, G)", "coll(B, D, C)"], [], [], "cong(L, D, A, D)"),
 
