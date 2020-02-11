@@ -68,7 +68,7 @@ class SATTest(unittest.TestCase):
         for problem in f_data:
             context.set_context('logic', vars=problem['vars'])
             prop = parser.parse_term(problem['prop'])
-            cnf, _ = encode.encode(Not(prop))
+            cnf, _, _ = encode.encode(Not(prop))
             self.assertIsNone(sat.solve_cnf(cnf))
 
 

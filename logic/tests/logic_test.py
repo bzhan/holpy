@@ -247,6 +247,16 @@ class LogicTest(unittest.TestCase):
             else:
                 test_macro(self, 'logic_base', 'imp_conj', vars=vars, args=t, failed=AssertionError)
 
+    def testConjNorm(self):
+        test_data = [
+            ('A & (D & B) & C', 'A & B & C & D'),
+            ('A & A & B & B & C & C', 'A & B & C'),
+        ]
+
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
+        for t, t_res in test_data:
+            test_conv(self, 'logic', logic.conj_norm(), vars=vars, t=t, t_res=t_res)
+
 
 if __name__ == "__main__":
     unittest.main()

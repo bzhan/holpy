@@ -25,3 +25,9 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 9. [Macros](https://nbviewer.jupyter.org/urls/gitee.com/bhzhan/holpy/raw/master/tutorial/macros.ipynb)
 
 10. [Conversions I](https://nbviewer.jupyter.org/urls/gitee.com/bhzhan/holpy/raw/master/tutorial/conversions.ipynb)
+
+11. [Predicate](predicate.ipynb)
+
+12. [Conversions II](conversions2.ipynb)
+
+13. [Polynomials](polynomial.ipynb)

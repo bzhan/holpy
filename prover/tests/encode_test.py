@@ -29,12 +29,12 @@ class EncodeTest(unittest.TestCase):
 
     def testEncode(self):
         t = Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
-        cnf, th = encode.encode(t)
+        cnf, hyps, th = encode.encode(t)
         self.assertEqual(len(cnf), 16)
         self.assertEqual(len(th.hyps), 11)
         self.assertEqual(len(th.prop.strip_conj()), 16)
 
-        pt = encode.get_encode_proof(th)
+        pt = encode.get_encode_proof(hyps, th)
         self.assertEqual(pt.th, th)
         
         rpt = report.ProofReport()

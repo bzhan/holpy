@@ -1,6 +1,8 @@
 # Author: Bohua Zhan
 
-from collections import OrderedDict, UserDict
+from collections import UserDict
+
+from kernel import term_ord
 from util import typecheck
 
 
@@ -306,7 +308,7 @@ class Type():
             else:
                 return sum([collect(arg) for arg in T.args], [])
 
-        return list(OrderedDict.fromkeys(collect(self)))
+        return term_ord.sorted_typs(collect(self))
 
     def get_tvars(self):
         """Return the list of type variables."""
@@ -318,7 +320,7 @@ class Type():
             else:
                 return sum([collect(arg) for arg in T.args], [])
 
-        return list(OrderedDict.fromkeys(collect(self)))
+        return term_ord.sorted_typs(collect(self))
 
     def get_tsubs(self):
         """Return the list of types appearing in self."""
@@ -328,7 +330,7 @@ class Type():
             else:
                 return sum([collect(arg) for arg in T.args], [T])
 
-        return list(OrderedDict.fromkeys(collect(self)))
+        return term_ord.sorted_typs(collect(self))
 
     def convert_stvar(self):
         if self.is_stvar():

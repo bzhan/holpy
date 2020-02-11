@@ -4,9 +4,11 @@ from typing import List, Tuple
 
 from kernel.type import TVar, TFun, TyInst, BoolType
 from kernel import term
-from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, true, false
+from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, And, Eq, true, false
 from kernel.thm import Thm, InvalidDerivationException
+from kernel import term_ord
 from kernel import theory
+from kernel.theory import register_macro
 from kernel.macro import Macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
     top_conv, top_sweep_conv, beta_conv, beta_norm_conv, has_rewrite
@@ -79,7 +81,7 @@ def get_forall_names(t, svar=True):
             return []
     old_names = []
     if not svar:
-        old_names = [v.name for v in term.get_vars(t)]
+        old_names = [v.name for v in t.get_vars()]
     return name.get_variant_names(helper(t), old_names)
 
 def strip_all_implies(t, names, svar=True):
@@ -237,7 +239,7 @@ class apply_theorem_macro(Macro):
         assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
         # First attempt to match type variables
-        svars = term.get_svars(th.prop)
+        svars = th.prop.get_svars()
         for v in svars:
             if v.name in inst:
                 v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
@@ -252,8 +254,8 @@ class apply_theorem_macro(Macro):
         prev_hyps = sum([prev.hyps for prev in prevs], ())
         th = Thm(th.hyps + prev_hyps, new_prop)
 
-        assert len(term.get_stvars(new_prop)) == 0, "apply_theorem: unmatched type variables."
-        vars = term.get_svars(new_prop)
+        assert len(new_prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
+        vars = new_prop.get_svars()
         for v in reversed(vars):
             th = Thm.forall_intr(v, th)
         return th
@@ -270,7 +272,7 @@ class apply_theorem_macro(Macro):
         assert len(pts) <= len(As), "apply_theorem: too many prevs."
 
         # First attempt to match type variables
-        svars = term.get_svars(th.prop)
+        svars = th.prop.get_svars()
         for v in svars:
             if v.name in inst:
                 v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
@@ -285,8 +287,8 @@ class apply_theorem_macro(Macro):
             pt = beta_norm_conv().apply_to_pt(pt)
         pt = pt.implies_elim(*pts)
 
-        assert len(term.get_stvars(pt.prop)) == 0, "apply_theorem: unmatched type variables."
-        vars = term.get_svars(pt.prop)
+        assert len(pt.prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
+        vars = pt.prop.get_svars()
         for v in reversed(vars):
             pt = pt.forall_intr(v)
 
@@ -590,6 +592,7 @@ def conj_thms(*pts):
         return apply_theorem('conjI', pts[0], conj_thms(*pts[1:]))
 
 
+@register_macro('imp_conj')
 class imp_conj_macro(Macro):
     def __init__(self):
         self.level = 1
@@ -608,7 +611,7 @@ class imp_conj_macro(Macro):
         assert strip(C).issubset(strip(As[0])), 'imp_conj_macro'
         return Thm([], args)
 
-    def get_proof_term(self, args, pts):
+    def get_proof_term(self, goal, pts):
         dct = dict()
 
         def traverse_A(pt):
@@ -630,13 +633,30 @@ class imp_conj_macro(Macro):
                 assert t in dct.keys(), 'imp_conj_macro'
                 return dct[t]
 
-        As, C = args.strip_implies()
-        assert len(As) == 1, 'imp_conj_macro'
-        A = As[0]
-
+        A = goal.arg1
         traverse_A(ProofTerm.assume(A))
-        concl = traverse_C(C)
-        return concl.implies_intr(A)
+        return traverse_C(goal.arg).implies_intr(A)
+
+def imp_conj_iff(goal):
+    """Goal is of the form A_1 & ... & A_m <--> B_1 & ... & B_n, where
+    the sets {A_1, ..., A_m} and {B_1, ..., B_n} are equal."""
+    pt1 = ProofTerm('imp_conj', Implies(goal.lhs, goal.rhs))
+    pt2 = ProofTerm('imp_conj', Implies(goal.rhs, goal.lhs))
+    return ProofTerm.equal_intr(pt1, pt2)
+
+def strip_conj(t):
+    def rec(t):
+        if t.is_conj():
+            return rec(t.arg1) + rec(t.arg)
+        else:
+            return [t]
+    return term_ord.sorted_terms(rec(t))
+
+class conj_norm(Conv):
+    """Normalize an conjunction."""
+    def get_proof_term(self, t):
+        goal = Eq(t, And(*strip_conj(t)))
+        return imp_conj_iff(goal)
 
 
 theory.global_macros.update({

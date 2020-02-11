@@ -241,23 +241,13 @@ class TermTest(unittest.TestCase):
     def testGetVars(self):
         test_data = [
             (a, [a]),
-            (f(a), [f, a]),
+            (f(a), [a, f]),
             (f(c), [f]),
             ([a, f(c)], [a, f]),
         ]
 
         for t, res in test_data:
             self.assertEqual(term.get_vars(t), res)
-
-    def testGetConsts(self):
-        test_data = [
-            (a, []),
-            (f(c), [c]),
-            ([a, f(c)], [c]),
-        ]
-
-        for t, res in test_data:
-            self.assertEqual(term.get_consts(t), res)
 
     def testConj(self):
         test_data = [

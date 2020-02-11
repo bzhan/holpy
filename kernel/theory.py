@@ -554,6 +554,10 @@ def fresh_theory():
 def get_theorem(name, *, svar=True):
     return thy.get_theorem(name, svar=svar)
 
+def print_theorem(*args):
+    for name in args:
+        print('%s: %s' % (name, get_theorem(name, svar=False)))
+
 def check_proof(prf, rpt=None, *, no_gaps=False, compute_only=False, check_level=0):
     return thy.check_proof(prf, rpt, no_gaps=no_gaps, compute_only=compute_only, check_level=check_level)
 

@@ -1,10 +1,9 @@
 # Author: Bohua Zhan
 
-from collections import OrderedDict
-
 from kernel.type import TFun, BoolType, TyInst
 from kernel import term
 from kernel.term import Term, Const, Implies, Eq, Forall, Lambda, Inst
+from kernel import term_ord
 from util import typecheck
 from syntax.settings import settings
 
@@ -41,7 +40,7 @@ class Thm():
 
         """
         typecheck.checkinstance('Thm', hyps, [Term], prop, Term)
-        self.hyps = tuple(hyps)
+        self.hyps = tuple(term_ord.sorted_terms(hyps))
         self.prop = prop
 
     @property
@@ -73,7 +72,7 @@ class Thm():
         return str(self)
 
     def __hash__(self):
-        return hash(("HYPS", tuple(self.hyps), "PROP", self.prop))
+        return hash(("HYPS", self.hyps, "PROP", self.prop))
 
     def __eq__(self, other):
         """Note order of hypotheses does not matter when comparing for
@@ -135,7 +134,7 @@ class Thm():
         if th1.prop.is_implies():
             A, B = th1.prop.args
             if A == th2.prop:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), B)
+                return Thm(th1.hyps + th2.hyps, B)
             else:
                 raise InvalidDerivationException("implies_elim: " + str(A) + " != " + str(th2.prop))
         else:
@@ -176,7 +175,7 @@ class Thm():
             x, y1 = th1.prop.args
             y2, z = th2.prop.args
             if y1 == y2:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Eq(x, z))
+                return Thm(th1.hyps + th2.hyps, Eq(x, z))
             else:
                 raise InvalidDerivationException("transitive: %s != %s" % (str(y1), str(y2)))
         else:
@@ -196,7 +195,7 @@ class Thm():
             x, y = th2.prop.args
             Tf = f.get_type()
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Eq(f(x), g(y)))
+                return Thm(th1.hyps + th2.hyps, Eq(f(x), g(y)))
             else:
                 raise InvalidDerivationException("combination")
         else:
@@ -215,7 +214,7 @@ class Thm():
             A1, B1 = th1.prop.args
             B2, A2 = th2.prop.args
             if A1 == A2 and B1 == B2:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Eq(A1, B1))
+                return Thm(th1.hyps + th2.hyps, Eq(A1, B1))
             else:
                 raise InvalidDerivationException("equal_intr")
         else:
@@ -233,7 +232,7 @@ class Thm():
         if th1.is_equals():
             A, B = th1.prop.args
             if A == th2.prop:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), B)
+                return Thm(th1.hyps + th2.hyps, B)
             else:
                 raise InvalidDerivationException("equal_elim")
         else:

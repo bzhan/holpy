@@ -75,6 +75,12 @@ class ProofTerm():
         """Right side of the equality of a proof term."""
         return self.th.concl.rhs
 
+    def is_equals(self):
+        return self.prop.is_equals()
+
+    def is_reflexive(self):
+        return self.prop.is_reflexive()
+
     @staticmethod
     def atom(id, th):
         return ProofTerm('atom', id, [], th)
@@ -107,6 +113,9 @@ class ProofTerm():
 
     def combination(self, pt2):
         return ProofTerm("combination", None, [self, pt2])
+
+    def equal_intr(pt1, pt2):
+        return ProofTerm("equal_intr", None, [pt1, pt2])
 
     def equal_elim(self, pt2):
         return ProofTerm("equal_elim", None, [self, pt2])

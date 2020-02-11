@@ -189,7 +189,7 @@ class Axiom(Item):
 
             # prop should not contain extra variables
             self_vars = set(self.vars.keys())
-            prop_vars = set(v.name for v in term.get_vars(self.prop))
+            prop_vars = set(v.name for v in self.prop.get_vars())
             if not prop_vars.issubset(self_vars):
                 raise ItemException(
                     "Theorem %s: extra variables in prop: %s" % (
@@ -340,7 +340,7 @@ class Definition(Item):
             if f != Const(self.name, self.type):
                 raise ItemException("Definition %s: wrong head of lhs" % self.name)
             lhs_vars = set(v.name for v in args)
-            rhs_vars = set(v.name for v in term.get_vars(self.prop.rhs))
+            rhs_vars = set(v.name for v in self.prop.rhs.get_vars())
             if len(lhs_vars) != len(args):
                 raise ItemException("Definition %s: variables on lhs must be distinct" % self.name)
             if not rhs_vars.issubset(lhs_vars):
@@ -446,8 +446,8 @@ class Fun(Item):
                 f, args = prop.lhs.strip_comb()
                 if f != Const(self.name, self.type):
                     raise ItemException("Fun %s: wrong head of lhs" % self.name)
-                lhs_vars = set(v.name for v in term.get_vars(prop.lhs))
-                rhs_vars = set(v.name for v in term.get_vars(prop.rhs))
+                lhs_vars = set(v.name for v in prop.lhs.get_vars())
+                rhs_vars = set(v.name for v in prop.rhs.get_vars())
                 if not rhs_vars.issubset(lhs_vars):
                     raise ItemException(
                         "Fun %s: extra variables in rhs: %s" % (
@@ -574,8 +574,7 @@ class Inductive(Item):
             As, C = prop.strip_implies()
             eq_assums = [Eq(var, arg) for var, arg in zip(vars, C.args)]
             assum = Implies(*(eq_assums + As), P)
-            prop_vars = term.get_vars(prop)
-            for var in reversed(term.get_vars(prop)):
+            for var in reversed(prop.get_vars()):
                 assum = Forall(var, assum)
             assums.append(assum)
 

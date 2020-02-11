@@ -7878,6 +7878,24 @@
             ],
             "ty": "def.ind",
             "type": "nat ⇒ nat"
+        },
+        {
+            "name": "nat_power_1",
+            "ty": "thm",
+            "vars": {
+                "m": "nat"
+            },
+            "prop": "m ^ (1::nat) = m"
+        },
+        {
+            "name": "nat_power_add",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "p": "nat",
+                "q": "nat"
+            },
+            "prop": "m ^ (p + q) = m ^ p * m ^ q"
         }
     ],
     "description": "Natural numbers",

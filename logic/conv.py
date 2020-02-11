@@ -7,7 +7,6 @@ from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
 from kernel.proofterm import ProofTerm, refl
 from logic import matcher
-from util import name
 from util import typecheck
 
 
@@ -125,12 +124,28 @@ class beta_conv(Conv):
 
 class beta_norm_conv(Conv):
     def get_proof_term(self, t):
-        pt1 = top_conv(beta_conv()).get_proof_term(t)
-        if pt1.prop.rhs != t:
-            pt2 = self.get_proof_term(pt1.prop.rhs)
-            return pt1.transitive(pt2)
-        else:
-            return refl(t)
+        def rec(t):
+            if t.is_abs():
+                v, body = t.dest_abs()
+                body_pt = rec(body)
+                if body_pt.is_reflexive():
+                    return refl(t)
+                else:
+                    return body_pt.abstraction(v)
+            elif t.is_comb():
+                fun_pt = rec(t.fun)
+                arg_pt = rec(t.arg)
+                pt = fun_pt.combination(arg_pt)
+                if fun_pt.rhs.is_abs():
+                    pt2 = ProofTerm.beta_conv(pt.rhs)
+                    pt3 = rec(pt2.rhs)
+                    return pt.transitive(pt2, pt3)
+                else:
+                    return pt
+            else:
+                return refl(t)
+
+        return rec(t)
 
 def beta_norm(t):
     return beta_norm_conv().eval(t).prop.arg
@@ -141,15 +156,12 @@ class eta_conv(Conv):
         if not t.is_abs():
             raise ConvException("eta_conv")
 
-        var_names = [v.name for v in term.get_vars(t.body)]
-        nm = name.get_variant_name(t.var_name, var_names)
-        v = Var(nm, t.var_T)
-        t2 = t.subst_bound(v)
+        v, body = t.dest_abs()
 
-        if not (t2.is_comb() and t2.arg == v and not t2.fun.occurs_var(v)):
+        if not (body.is_comb() and body.arg == v and not body.fun.occurs_var(v)):
             raise ConvException("eta_conv")
 
-        return ProofTerm.theorem('eta_conversion').substitution(f=t2.fun)
+        return ProofTerm.theorem('eta_conversion').substitution(f=body.fun)
 
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
@@ -161,16 +173,12 @@ class abs_conv(Conv):
         if not t.is_abs():
             raise ConvException("abs_conv: not an abstraction")
 
-        # Find a new variable x and substitute for body
-        var_names = [v.name for v in term.get_vars(t.body)]
-        nm = name.get_variant_name(t.var_name, var_names)
-        v = Var(nm, t.var_T)
-        t2 = t.subst_bound(v)
+        v, body = t.dest_abs()
 
         # It is possible that cv produces additional assumptions
         # containing v. In this case the conversion should fail.
         try:
-            return self.cv.get_proof_term(t2).abstraction(v)
+            return self.cv.get_proof_term(body).abstraction(v)
         except InvalidDerivationException:
             raise ConvException("abs_conv")
 
@@ -248,7 +256,13 @@ class bottom_conv(Conv):
         self.cv = cv
 
     def get_proof_term(self, t):
-        return then_conv(sub_conv(self), try_conv(self.cv)).get_proof_term(t)
+        pt = refl(t)
+        if t.is_comb():
+            return pt.on_rhs(fun_conv(self), arg_conv(self), try_conv(self.cv))
+        elif t.is_abs():
+            return pt.on_rhs(abs_conv(self), try_conv(self.cv))
+        else:
+            return pt.on_rhs(try_conv(self.cv))
 
 class top_conv(Conv):
     """Applies cv repeatedly in the top-down manner."""
@@ -260,7 +274,23 @@ class top_conv(Conv):
         return "top_conv(%s)" % str(self.cv)
 
     def get_proof_term(self, t):
-        return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
+        def rec(t):
+            pt = refl(t).on_rhs(try_conv(self.cv))
+            if pt.rhs.is_comb():
+                fun_pt = rec(pt.rhs.fun)
+                arg_pt = rec(pt.rhs.arg)
+                return pt.transitive(fun_pt.combination(arg_pt))
+            elif pt.rhs.is_abs():
+                v, body = t.dest_abs()
+                body_pt = rec(body)
+                if body_pt.is_reflexive():
+                    return pt
+                else:
+                    return pt.transitive(body_pt.abstraction(v))
+            else:
+                return pt
+
+        return rec(t)
 
 class top_sweep_conv(Conv):
     """Applies cv in the top-down manner, but only at the first level."""
@@ -272,7 +302,26 @@ class top_sweep_conv(Conv):
         return "top_sweep_conv(%s)" % str(self.cv)
 
     def get_proof_term(self, t):
-        return else_conv(self.cv, else_conv(sub_conv(self), all_conv())).get_proof_term(t)
+        def rec(t):
+            pt = refl(t).on_rhs(try_conv(self.cv))
+            if not pt.is_reflexive():
+                return pt
+
+            if t.is_comb():
+                fun_pt = rec(t.fun)
+                arg_pt = rec(t.arg)
+                return fun_pt.combination(arg_pt)
+            elif t.is_abs():
+                v, body = t.dest_abs()
+                body_pt = rec(body)
+                if body_pt.is_reflexive():
+                    return pt
+                else:
+                    return body_pt.abstraction(v)
+            else:
+                return pt
+
+        return rec(t)
 
 class rewr_conv(Conv):
     """Rewrite using the given equality theorem."""
@@ -386,11 +435,8 @@ def has_rewrite(th, t, *, sym=False, conds=None):
         if t.is_comb():
             return rec(t.fun) or rec(t.arg)
         elif t.is_abs():
-            var_names = [v.name for v in term.get_vars(t.body)]
-            nm = name.get_variant_name(t.var_name, var_names)
-            v = Var(nm, t.var_T)
-            t2 = t.subst_bound(v)
-            return rec(t2)
+            _, body = t.dest_abs()
+            return rec(body)
         else:
             return False
 
