@@ -1320,3 +1320,12 @@ def Prod(T, ts):
     for t in ts[1:]:
         res = res * t
     return res
+
+def BoolVars(s):
+    """Create a list of variables of boolean type.
+
+    s is a string containing space-separated names of variables.
+
+    """
+    nms = s.split(' ')
+    return [Var(nm, BoolType) for nm in nms]
