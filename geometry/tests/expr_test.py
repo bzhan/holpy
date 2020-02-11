@@ -361,10 +361,6 @@ class ExprTest(unittest.TestCase):
                        "perp(A, B, B, C)", "perp(D, C, C, B)"],
              [], [], "simtri(A, B, F, E, A, D)"),
 
-            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
-              "perp(A, B, B, C)", "perp(D, C, C, B)"],
-             [], [], "simtri(A, B, F, E, A, D)"),
-
             # This example shows that the mechanism can be improved:
             # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
             # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
@@ -378,7 +374,7 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
                        "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
                        ], [], [], "midp(E, B, C)"),
-            #
+
             # # Following tests proves some theorems in "Machine Proofs in Geometry".
             #
             # # Example 6.45 If L is the harmonic conjugate of the centroid G of a triangle ABC
@@ -399,7 +395,7 @@ class ExprTest(unittest.TestCase):
 
             # Example 6.60
             # H1 -> P, H2 -> Q, A1 -> R
-            # (ruleset_reduced, ["midp(R, B, C)", "coll(H, B, C)", "para(A, R, H, N)", "coll(D, N, H)", "coll(B, A, D)", "coll(Q, A, P)",
+            # (ruleset, ["midp(R, B, C)", "coll(H, B, C)", "para(A, R, H, N)", "coll(D, N, H)", "coll(B, A, D)", "coll(Q, A, P)",
             #            "midp(K, N, C)", "midp(L, B, D)", "midp(K, H, P)", "midp(L, H, Q)"], [], [], "midp(A, P, Q)"),
         ]
         # pr = cProfile.Profile()
@@ -411,7 +407,7 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            prover = expr.Prover(ruleset_reduced, hyps, concl, lines, circles)
+            prover = expr.Prover(ruleset, hyps, concl, lines, circles)
             print("--- Proof for", concl, "---")
             res = prover.search_fixpoint()
             assert res, "✘ Fixpoint reached without proving goal."

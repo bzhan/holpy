@@ -216,10 +216,11 @@ class Rule:
     def __init__(self, assums: Sequence[Fact], concl: Fact):
         self.assums = assums
         self.assums_pos = [a for a in self.assums if not a.negation]
-        for i in range(len(self.assums_pos) - 1):
-            self.assums_pos[i].tail = self.check_tail_condition(self.assums_pos[i])\
-                                      and self.check_tail_condition(self.assums_pos[i + 1])
-        self.assums_pos[-1].tail = self.check_tail_condition(self.assums_pos[-1])
+        if len(self.assums_pos) > 1:
+            for i in range(len(self.assums_pos) - 1):
+                self.assums_pos[i].tail = self.check_tail_condition(self.assums_pos[i])\
+                                          and self.check_tail_condition(self.assums_pos[i + 1])
+            self.assums_pos[-1].tail = self.check_tail_condition(self.assums_pos[-1])
         self.assums_neg = [a for a in self.assums if a.negation]
         self.concl = concl
 
@@ -230,7 +231,7 @@ class Rule:
         return "%s :- %s" % (str(self.concl), ", ".join(str(assum) for assum in self.assums))
 
     def check_tail_condition(self, fact):
-        return fact.pred_name in ('coll')
+        return fact.pred_name in ('coll', 'cyclic', 'circle')
 
 
 def make_pairs(args, pair_len=2):
@@ -397,10 +398,12 @@ class Prover:
 
         if pat.tail:
             # Get matching result from inst directly.
-            if not all(p in inst.keys() for p in pat.args):
-                return []
-            else:
-                return [(inst, f.get_subfact([0]))]
+            for p in pat.args:
+                if p not in inst.keys():
+                    return []
+                if inst[p] not in f.args:
+                    return []
+            return [(inst, f.get_subfact([0]))]
 
         arg_ty = pat.get_arg_type()
         new_insts = []
@@ -627,8 +630,6 @@ class Prover:
                 new_facts.append(new_fact)
 
     def apply_rule(self, rule_name: str, facts: Sequence[Fact]) -> None:
-        # pr = cProfile.Profile()
-        # pr.enable()
         """Apply given rule to the list of facts.
 
         If param facts is a list of integers: these integers represents the positions in hyps. In this case,
@@ -715,10 +716,11 @@ class Prover:
                     if assum.args[0].islower():
                         tmp_args = []  # type: List[str]
                         for i in assum.args:
-                            tmp_args.append(inst[i][0])
+                            tmp_args.extend(inst[i])
                     else:
                         tmp_args = [inst[i][0] for i in assum.args]
                     tmp_fact = Fact(assum.pred_name, tmp_args, negation=True)
+                    # print("tmp:   ", tmp_fact)
                     # Check if exist a fact that can imply the negation assum.
                     fact_valid = self.check_classfied_hyps_foreach(self.check_imply_reverse, tmp_fact)
 
@@ -738,13 +740,10 @@ class Prover:
                             new_facts.append(new_fact)
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
-                # if new_fact.pred_name in ('simtri', 'contri', 'eqangle'):
+                # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
+                # if new_fact.pred_name == 'perp':
                 #     print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
-        # p = Stats(pr)
-        # p.strip_dirs()
-        # p.sort_stats('cumtime')
-        # p.print_stats()
 
     def compute_lines(self):
         self.lines = []
@@ -807,7 +806,7 @@ class Prover:
         steps = 0
         self.print_hyps(only_not_shadowed=True)
         print(self.lines)
-        while steps < 5:
+        while steps < 8:
             steps += 1
             print("Step", steps)
             # print(list(hyp for hyp in hyps if not hyp.shadowed))
@@ -1074,7 +1073,7 @@ class Prover:
             return fact.args[0] == goal.args[0] and set(fact.args[1:]) == set(goal.args[1:])
 
         else:
-            print(fact.pred_name)
+            # print(fact.pred_name)
             raise NotImplementedError
 
     def print_hyps(self, only_not_shadowed=False) -> None:
