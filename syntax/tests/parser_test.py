@@ -2,8 +2,8 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, HOLType, BoolType
-from kernel.term import Var, Term, And, Eq
+from kernel.type import TVar, TConst, TFun, Type, BoolType
+from kernel.term import Var, Term, And, Eq, Inst
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
@@ -13,6 +13,7 @@ from logic import basic
 from data import set
 from syntax.printer import print_term, print_type
 from syntax import parser
+from syntax.settings import settings, global_setting
 from logic import context
 
 
@@ -20,7 +21,7 @@ class ParserTest(unittest.TestCase):
     def testParseType(self):
         test_data = [
             "'b",
-            "'?b",
+            "?'b",
             "nat",
             "'a list",
             "nat list",
@@ -30,7 +31,7 @@ class ParserTest(unittest.TestCase):
             "('a => 'b) => 'c",
             "('a => 'b) => 'c => 'd",
             "(('a => 'b) => 'c) => 'd",
-            "'?a => '?b",
+            "?'a => ?'b",
             "'a => 'b list",
             "('a => 'b) list",
             "'a list list",
@@ -41,7 +42,7 @@ class ParserTest(unittest.TestCase):
         basic.load_theory('list')
         for s in test_data:
             T = parser.parse_type(s)
-            self.assertIsInstance(T, HOLType)
+            self.assertIsInstance(T, Type)
             self.assertEqual(str(T), s)
 
     def testParseUnicodeType(self):
@@ -52,22 +53,30 @@ class ParserTest(unittest.TestCase):
         basic.load_theory('list')
         for s in test_data:
             T = parser.parse_type(s)
-            self.assertIsInstance(T, HOLType)
-            self.assertEqual(print_type(T, unicode=True), s)
+            self.assertIsInstance(T, Type)
+            with global_setting(unicode=True):
+                self.assertEqual(print_type(T), s)
 
     def testParseTypeIsString(self):
         basic.load_theory('logic_base')
         a = parser.parse_type('bool')
         self.assertEqual(type(a.name), str)
 
-    def run_test(self, thy_name, *, vars=None, svars=None, s, Ts, unicode=False):
+    def testParseConstructor(self):
+        T = Type("'a => 'b")
+        self.assertEqual(T, TFun(TVar('a'), TVar('b')))
+
+        t = Term("(A::bool)")
+        self.assertEqual(t, Var('A', BoolType))
+
+    def run_test(self, thy_name, *, vars=None, svars=None, s, Ts):
         context.set_context(thy_name, vars=vars, svars=svars)
 
         t = parser.parse_term(s)
         T = parser.parse_type(Ts)
         self.assertIsInstance(t, Term)
         self.assertEqual(t.checked_get_type(), T)
-        self.assertEqual(print_term(t, unicode=unicode), s)
+        self.assertEqual(print_term(t), s)
 
     def testParseTerm(self):
         test_data = [
@@ -289,7 +298,8 @@ class ParserTest(unittest.TestCase):
                 "P": "'a => bool", "S": "'a set set", "f": "'a set => 'a set"}
         for s1, s2, Ts in test_data:
             self.run_test('set', vars=vars, s=s1, Ts=Ts)
-            self.run_test('set', vars=vars, s=s2, Ts=Ts, unicode=True)
+            with global_setting(unicode=True):
+                self.run_test('set', vars=vars, s=s2, Ts=Ts)
 
     def testParseString(self):
         test_data = [
@@ -399,15 +409,15 @@ class ParserTest(unittest.TestCase):
             ({'id': "2", 'rule': "implies_elim", 'args': "", 'prevs': ["1", "0"], 'th': ""},
              ProofItem(2, "implies_elim", prevs=[1, 0])),
             ({'id': "5", 'rule': "substitution", 'args': "{A: B, B: A}", 'prevs': ["4"], 'th': ""},
-             ProofItem(5, "substitution", args={'A': B, 'B': A}, prevs=[4])),
+             ProofItem(5, "substitution", args=Inst(A=B, B=A), prevs=[4])),
             ({'id': "8", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["7"], 'th': ""},
              ProofItem(8, "implies_intr", args=And(A, B), prevs=[7])),
             ({'id': "0", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"},
              ProofItem(0, "sorry", th=Thm([And(A, B)], And(B, A)))),
             ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
-            ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {}, {A: B, B: A}", 'prevs': [4], 'th': ""},
-             ProofItem(5, "apply_theorem_for", args=("disjI1", {}, {'A': B, 'B': A}), prevs=[4])),
+            ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {A: B, B: A}", 'prevs': [4], 'th': ""},
+             ProofItem(5, "apply_theorem_for", args=("disjI1", Inst(A=B, B=A)), prevs=[4])),
         ]
 
         context.set_context('logic_base', vars={'A': 'bool', 'B': 'bool'})
@@ -417,7 +427,7 @@ class ParserTest(unittest.TestCase):
     def testParseTypeInd(self):
         test_data = [
             ("cons (x ::'a) (xs ::'a list)",
-             {'name': 'cons', 'type': [TVar('a'), Type('list', TVar('a'))], 'args': ['x', 'xs']}),
+             {'name': 'cons', 'type': [TVar('a'), TConst('list', TVar('a'))], 'args': ['x', 'xs']}),
         ]
 
         basic.load_theory('list')

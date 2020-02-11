@@ -71,13 +71,13 @@
                     "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ 0 < 1 + abs y ∧ (∀x. x ∈ s ⟶ abs x < 1 + abs y)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λb. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b), a: 1 + abs y}",
+                    "args": "exI, {P: λb. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b), a: 1 + abs y}",
                     "id": "0.6",
                     "prevs": [
                         "0.5"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)"
+                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∃a1. 0 < a1 ∧ (∀x. x ∈ s ⟶ abs x < a1)"
                 },
                 {
                     "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
@@ -130,13 +130,13 @@
                     "th": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∀x. x ∈ s ⟶ abs x ≤ y"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λB. ∀x. x ∈ s ⟶ abs x ≤ B, a: y}",
+                    "args": "exI, {P: λB. ∀x. x ∈ s ⟶ abs x ≤ B, a: y}",
                     "id": "1.4",
                     "prevs": [
                         "1.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b), 0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                    "th": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b), 0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∃a1. ∀x. x ∈ s ⟶ abs x ≤ a1"
                 },
                 {
                     "args": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)",
@@ -391,7 +391,7 @@
                     "id": "0.3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x1. x1 ∈ s ⟶ abs x1 ≤ B"
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x. x ∈ s ⟶ abs x ≤ B"
                 },
                 {
                     "args": "x, real",
@@ -435,16 +435,16 @@
                         "0.3.3"
                     ],
                     "rule": "intros",
-                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x1. x1 ∈ s ⟶ abs x1 ≤ B"
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x. x ∈ s ⟶ abs x ≤ B"
                 },
                 {
-                    "args": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B",
+                    "args": "∀x. x ∈ t ⟶ abs x ≤ B",
                     "id": "0.4",
                     "prevs": [
                         "0.2"
                     ],
                     "rule": "z3",
-                    "th": "∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x1. x1 ∈ t ⟶ abs x1 ≤ B"
+                    "th": "∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x. x ∈ t ⟶ abs x ≤ B"
                 },
                 {
                     "args": "conjI",
@@ -454,16 +454,16 @@
                         "0.4"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ (∀x1. x1 ∈ s ⟶ abs x1 ≤ B) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ B)"
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ (∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∀x. x ∈ t ⟶ abs x ≤ B)"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λx. (∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ x), a: B}",
+                    "args": "exI, {P: λx. (∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ x), a: B}",
                     "id": "0.6",
                     "prevs": [
                         "0.5"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∃a. (∀x1. x1 ∈ s ⟶ abs x1 ≤ a) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ a)"
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∃a1. (∀x. x ∈ s ⟶ abs x ≤ a1) ∧ (∀x. x ∈ t ⟶ abs x ≤ a1)"
                 },
                 {
                     "args": "ex_conj_distrib",
@@ -495,29 +495,29 @@
                     "th": "⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B) ⟶ (∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B)"
                 },
                 {
-                    "args": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x)",
+                    "args": "(∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B)",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x) ⊢ (∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x)"
+                    "th": "(∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B) ⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x, B: ∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x}",
+                    "args": "conjD1, {A: ∃B. ∀x. x ∈ s ⟶ abs x ≤ B, B: ∃B. ∀x. x ∈ t ⟶ abs x ≤ B}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x) ⊢ ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x"
+                    "th": "(∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B) ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x, B: ∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x}",
+                    "args": "conjD2, {A: ∃B. ∀x. x ∈ s ⟶ abs x ≤ B, B: ∃B. ∀x. x ∈ t ⟶ abs x ≤ B}",
                     "id": "1.2",
                     "prevs": [
                         "1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x) ⊢ ∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x"
+                    "th": "(∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B) ⊢ ∃B. ∀x. x ∈ t ⟶ abs x ≤ B"
                 },
                 {
                     "args": "B1, real",
@@ -527,11 +527,11 @@
                     "th": "⊢ _VAR B1"
                 },
                 {
-                    "args": "∀x1. x1 ∈ s ⟶ abs x1 ≤ B1",
+                    "args": "∀x. x ∈ s ⟶ abs x ≤ B1",
                     "id": "1.4",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∀x1. x1 ∈ s ⟶ abs x1 ≤ B1 ⊢ ∀x1. x1 ∈ s ⟶ abs x1 ≤ B1"
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ B1 ⊢ ∀x. x ∈ s ⟶ abs x ≤ B1"
                 },
                 {
                     "args": "B2, real",
@@ -541,11 +541,11 @@
                     "th": "⊢ _VAR B2"
                 },
                 {
-                    "args": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B2",
+                    "args": "∀x. x ∈ t ⟶ abs x ≤ B2",
                     "id": "1.6",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B2 ⊢ ∀x1. x1 ∈ t ⟶ abs x1 ≤ B2"
+                    "th": "∀x. x ∈ t ⟶ abs x ≤ B2 ⊢ ∀x. x ∈ t ⟶ abs x ≤ B2"
                 },
                 {
                     "args": "∀x. x ∈ s ∪ t ⟶ abs x ≤ max B1 B2",
@@ -555,19 +555,19 @@
                         "1.4"
                     ],
                     "rule": "z3",
-                    "th": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B2, ∀x1. x1 ∈ s ⟶ abs x1 ≤ B1 ⊢ ∀x. x ∈ s ∪ t ⟶ abs x ≤ max B1 B2"
+                    "th": "∀x. x ∈ t ⟶ abs x ≤ B2, ∀x. x ∈ s ⟶ abs x ≤ B1 ⊢ ∀x. x ∈ s ∪ t ⟶ abs x ≤ max B1 B2"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λB. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, a: max B1 B2}",
+                    "args": "exI, {P: λB. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, a: max B1 B2}",
                     "id": "1.8",
                     "prevs": [
                         "1.7"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x), ∀x1. x1 ∈ s ⟶ abs x1 ≤ B1, ∀x1. x1 ∈ t ⟶ abs x1 ≤ B2 ⊢ ∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B"
+                    "th": "(∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B), ∀x. x ∈ s ⟶ abs x ≤ B1, ∀x. x ∈ t ⟶ abs x ≤ B2 ⊢ ∃a1. ∀x. x ∈ s ∪ t ⟶ abs x ≤ a1"
                 },
                 {
-                    "args": "∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x, ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x",
+                    "args": "∃B. ∀x. x ∈ t ⟶ abs x ≤ B, ∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
                     "id": "1.9",
                     "prevs": [
                         "1.0",
@@ -951,7 +951,7 @@
                     "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
-                    "args": "reallim_lmul, {a: 'a}, {c: c, f: f, l: l, net: net}",
+                    "args": "reallim_lmul, {c: c, f: f, l: l, net: net}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1031,7 +1031,7 @@
                     "th": "tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. c * f x) (c * l) net"
                 },
                 {
-                    "args": "reallim_lmul, {a: 'a}, {c: real_inverse c, f: λx. c * f x, l: c * l, net: net}",
+                    "args": "reallim_lmul, {c: real_inverse c, f: λx. c * f x, l: c * l, net: net}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -1049,7 +1049,7 @@
                     "th": "tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. real_inverse c * c * f x) (real_inverse c * c * l) net"
                 },
                 {
-                    "args": "real_mul_linv, {}, {x: c}",
+                    "args": "real_mul_linv, {x: c}",
                     "id": "1.3",
                     "prevs": [
                         "0"
@@ -1110,7 +1110,7 @@
                     "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
-                    "args": "reallim_lmul, {a: 'a}, {c: c, f: f, l: l, net: net}",
+                    "args": "reallim_lmul, {c: c, f: f, l: l, net: net}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -1242,7 +1242,7 @@
                     "th": "¬(c = 0) ⊢ ¬(c = 0)"
                 },
                 {
-                    "args": "reallim_lmul_eq, {a: 'a}, {c: c, f: f, l: l, net: net}",
+                    "args": "reallim_lmul_eq, {c: c, f: f, l: l, net: net}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1310,7 +1310,7 @@
                     "th": "⊢ ¬(-(1::real) = 0)"
                 },
                 {
-                    "args": "reallim_lmul_eq, {a: 'a}, {c: -(1::real), f: f, l: l, net: net}",
+                    "args": "reallim_lmul_eq, {c: -(1::real), f: f, l: l, net: net}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1657,7 +1657,7 @@
                     "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
-                    "args": "reallim_const, {a: 'a}, {a: (1::real), net: net}",
+                    "args": "reallim_const, {a: (1::real), net: net}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1724,7 +1724,7 @@
                     "th": "tendsto_real f l net ⊢ ∀n. tendsto_real (λx. f x ^ n) (l ^ n) net ⟶ tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn::nat. tendsto_real (λx. f x ^ n) (l ^ n) net, x: n}",
+                    "args": "nat_induct, {P: λn::nat. tendsto_real (λx. f x ^ n) (l ^ n) net, x: n}",
                     "id": "4",
                     "prevs": [
                         "2",
@@ -1858,7 +1858,7 @@
                     "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. f x + g x + abs (f x - g x)) (l + m + abs (l - m)) net"
                 },
                 {
-                    "args": "reallim_lmul, {a: 'a}, {c: 1 / 2, f: λx. f x + g x + abs (f x - g x), l: l + m + abs (l - m), net: net}",
+                    "args": "reallim_lmul, {c: 1 / 2, f: λx. f x + g x + abs (f x - g x), l: l + m + abs (l - m), net: net}",
                     "id": "7",
                     "prevs": [
                         "6"
@@ -2240,7 +2240,7 @@
                     "th": "tendsto_real g 0 net ⊢ tendsto_real g 0 net"
                 },
                 {
-                    "args": "reallim_add, {a: 'a}, {f: g, g: f, l: (0::real), m: (0::real), net: net}",
+                    "args": "reallim_add, {f: g, g: f, l: (0::real), m: (0::real), net: net}",
                     "id": "2",
                     "prevs": [
                         "1",
@@ -2250,7 +2250,7 @@
                     "th": "tendsto_real g 0 net, tendsto_real f 0 net ⊢ tendsto_real (λx. g x + f x) (0 + 0) net"
                 },
                 {
-                    "args": "reallim_add, {a: 'a}, {f: f, g: g, l: (0::real), m: (0::real), net: net}",
+                    "args": "reallim_add, {f: f, g: g, l: (0::real), m: (0::real), net: net}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -2333,7 +2333,7 @@
                     "th": "tendsto_real f 0 net ⊢ tendsto_real f 0 net"
                 },
                 {
-                    "args": "reallim_lmul, {a: 'a}, {c: c, f: f, l: (0::real), net: net}",
+                    "args": "reallim_lmul, {c: c, f: f, l: (0::real), net: net}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -2401,7 +2401,7 @@
                     "th": "tendsto_real f 0 net ⊢ tendsto_real f 0 net"
                 },
                 {
-                    "args": "reallim_null_lmul, {a: 'a}, {c: c, f: f, net: net}",
+                    "args": "reallim_null_lmul, {c: c, f: f, net: net}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -2474,7 +2474,7 @@
                     "th": "¬(n = 0) ⊢ ¬(n = 0)"
                 },
                 {
-                    "args": "reallim_pow, {a: 'a}, {f: f, l: (0::real), n: n, net: net}",
+                    "args": "reallim_pow, {f: f, l: (0::real), n: n, net: net}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -2590,13 +2590,13 @@
                     "th": "tendsto_real (λx. -(f x)) 0 net ⊢ tendsto_real (λx. -(f x)) 0 net"
                 },
                 {
-                    "args": "real_neg_0, tendsto_real (λx. -(f x)) (-0) net",
+                    "args": "real_neg_0, tendsto_real (λx. -(f x)) -0 net",
                     "id": "0.1",
                     "prevs": [
                         "0.0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "tendsto_real (λx. -(f x)) 0 net ⊢ tendsto_real (λx. -(f x)) (-0) net"
+                    "th": "tendsto_real (λx. -(f x)) 0 net ⊢ tendsto_real (λx. -(f x)) -0 net"
                 },
                 {
                     "args": "reallim_neg_eq, tendsto_real f 0 net",
@@ -2638,7 +2638,7 @@
                         "1.0"
                     ],
                     "rule": "rewrite_fact_sym",
-                    "th": "tendsto_real f 0 net ⊢ tendsto_real (λx. -(f x)) (-0) net"
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real (λx. -(f x)) -0 net"
                 },
                 {
                     "args": "real_neg_0",
@@ -2755,7 +2755,7 @@
                     "th": "tendsto_real g 0 net ⊢ tendsto_real g 0 net"
                 },
                 {
-                    "args": "reallim_sub, {a: 'a}, {f: f, g: g, l: (0::real), m: (0::real), net: net}",
+                    "args": "reallim_sub, {f: f, g: g, l: (0::real), m: (0::real), net: net}",
                     "id": "2",
                     "prevs": [
                         "0",

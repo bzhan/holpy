@@ -4,8 +4,9 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import HOLType, STVar, TVar, Type, TFun, BoolType, NatType
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary
+from kernel import type as hol_type
+from kernel.type import Type, STVar, TVar, TConst, TFun, BoolType, NatType, TyInst
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term, Not, And, Or, Implies, Binary, Inst
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
@@ -24,7 +25,7 @@ class ParserException(Exception):
 
 grammar = r"""
     ?type: "'" CNAME  -> tvar              // Type variable
-        | "'?" CNAME  -> stvar             // Schematic type variable
+        | "?'" CNAME  -> stvar             // Schematic type variable
         | type ("=>"|"⇒") type -> funtype       // Function types
         | CNAME -> type                   // Type constants
         | type CNAME                      // Type constructor with one argument
@@ -127,8 +128,6 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
-    instsp: tyinst "," inst
-    
     var_decl: CNAME "::" type  // variable declaration
 
     ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
@@ -159,7 +158,7 @@ class HOLTransformer(Transformer):
         return STVar(str(s))
 
     def type(self, *args):
-        return Type(str(args[-1]), *args[:-1])
+        return TConst(str(args[-1]), *args[:-1])
 
     def funtype(self, t1, t2):
         return TFun(t1, t2)
@@ -371,9 +370,6 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
-    def instsp(self, *args):
-        return tuple(args)
-
     def ind_constr(self, *args):
         constrs = {}
         constrs['name'] = str(args[0])
@@ -403,7 +399,6 @@ thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
 named_thm_parser = get_parser_for("named_thm")
-instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
 term_list_parser = get_parser_for("term_list")
@@ -443,11 +438,12 @@ def parse_inst(s):
     inst = inst_parser.parse(s)
     for k in inst:
         inst[k] = infertype.type_infer(inst[k])
-    return inst
+    return Inst(inst)
 
 def parse_tyinst(s):
     """Parse a type instantiation."""
-    return tyinst_parser.parse(s)
+    tyinst = tyinst_parser.parse(s)
+    return TyInst(tyinst)
 
 def parse_named_thm(s):
     """Parse a named theorem."""
@@ -456,13 +452,6 @@ def parse_named_thm(s):
         return (None, infertype.type_infer(res[0]))
     else:
         return (str(res[0]), infertype.type_infer(res[1]))
-
-def parse_instsp(s):
-    """Parse type and term instantiations."""
-    tyinst, inst = instsp_parser.parse(s)
-    for k in inst:
-        inst[k] = infertype.type_infer(inst[k])
-    return tyinst, inst
 
 def parse_ind_constr(s):
     """Parse a constructor for an inductive type definition."""
@@ -492,20 +481,20 @@ def parse_args(sig, args):
             return args
         elif sig == Term:
             return parse_term(args)
-        elif sig == macro.Inst:
+        elif sig == Inst:
             return parse_inst(args)
-        elif sig == macro.TyInst:
+        elif sig == TyInst:
             return parse_tyinst(args)
-        elif sig == Tuple[str, HOLType]:
+        elif sig == Tuple[str, Type]:
             s1, s2 = args.split(",", 1)
             return s1, parse_type(s2)
         elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
             return s1, parse_term(s2)
-        elif sig == Tuple[str, macro.TyInst, macro.Inst]:
+        elif sig == Tuple[str, Inst]:
             s1, s2 = args.split(",", 1)
-            tyinst, inst = parse_instsp(s2)
-            return s1, tyinst, inst
+            inst = parse_inst(s2)
+            return s1, inst
         elif sig == List[Term]:
             return parse_term_list(args)
         else:
@@ -537,3 +526,7 @@ def parse_proof_rule(data):
     sig = theory.thy.get_proof_rule_sig(rule)
     args = parse_args(sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
+
+
+hol_type.type_parser = parse_type
+term.term_parser = parse_term

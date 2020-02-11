@@ -2,8 +2,8 @@
 
 import unittest
 
-from kernel.type import TVar, NatType
-from kernel.term import Var, Const, Abs
+from kernel.type import TVar, Type, NatType, TyInst
+from kernel.term import Var, Const, Abs, Term, Inst
 from logic import basic
 from logic import matcher
 from logic.matcher import first_order_match, MatchException
@@ -35,18 +35,17 @@ class MatcherTest(unittest.TestCase):
 
     def run_test(self, thy_name, pat, t, *, vars=None, svars=None, tyinst=None, inst=None, failed=None):
         context.set_context(thy_name, vars=vars, svars=svars)
-        pat = parser.parse_term(pat)
-        t = parser.parse_term(t)
-        tyinst = dict((nm, parser.parse_type(s))
-                      for nm, s in tyinst.items()) if tyinst is not None else dict()
-        inst = dict((nm, parser.parse_term(s))
-                    for nm, s in inst.items()) if inst is not None else dict()
+
+        pat, t = Term(pat), Term(t)
+        inst = Inst((nm, Term(s)) for nm, s in inst.items()) if inst is not None else Inst()
+        if tyinst is not None:
+            inst.tyinst = TyInst((nm, Type(s)) for nm, s in tyinst.items())
 
         if failed is not None:
             self.assertRaises(failed, first_order_match, pat, t)
             return
 
-        self.assertEqual(first_order_match(pat, t), (tyinst, inst))
+        self.assertEqual(first_order_match(pat, t), inst)
 
     def testFirstOrderMatchBasic(self):
         """Basic tests."""
@@ -137,7 +136,7 @@ class MatcherTest(unittest.TestCase):
             ("%x. ?f (?g x)", "%y. g (f y)", {'a': 'nat', 'b': 'nat', 'c': 'nat'}, {"f": "g", "g": "f"}),
         ]
 
-        svars = {'f': "'?b => '?c", 'g': "'?a => '?b"}
+        svars = {'f': "?'b => ?'c", 'g': "?'a => ?'b"}
         vars = {'g': 'nat => nat', 'f': 'nat => nat'}
         for pat, t, tyinst, inst in test_data:
             self.run_test('nat', pat, t, vars=vars, svars=svars, tyinst=tyinst, inst=inst)
@@ -161,7 +160,7 @@ class MatcherTest(unittest.TestCase):
             ("?x", "m", {"a": "nat"}, {"x": "m"}),
         ]
 
-        svars = {"x": "'?a"}
+        svars = {"x": "?'a"}
         vars = {"m": "nat"}
         for pat, t, tyinst, inst in test_data:
             self.run_test('nat', pat, t, vars=vars, svars=svars, tyinst=tyinst, inst=inst)

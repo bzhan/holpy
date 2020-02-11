@@ -2,7 +2,7 @@
 
 """Utility functions for GCL (Guarded Command Language)."""
 
-from kernel.type import TFun, Type, BoolType, NatType
+from kernel.type import TFun, TConst, BoolType, NatType
 from kernel import term
 from kernel.term import Term, Const, Eq, Binary
 from logic import basic
@@ -11,11 +11,11 @@ from data import function
 
 thy = basic.load_theory("gcl")
 
-varType = Type("varType")
+varType = TConst("varType")
 Ident = Const("Ident", TFun(NatType, varType))
 Para = Const("Para", TFun(varType, NatType, varType))
 
-scalarValue = Type("scalarValue")
+scalarValue = TConst("scalarValue")
 NatV = Const("NatV", TFun(NatType, scalarValue))
 BoolV = Const("BoolV", TFun(BoolType, scalarValue))
 

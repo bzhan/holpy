@@ -5,13 +5,13 @@ import unittest
 from kernel.type import TVar, TFun
 from kernel.term import Term, Var, Const, Abs, Bound
 from kernel.thm import Thm
-from kernel.extension import Type, Constant, Theorem
+from kernel.extension import TConst, Constant, Theorem
 
 
 class ExtensionTest(unittest.TestCase):
     def testPrintExtension(self):
         exts = [
-            Type("nat", 0),
+            TConst("nat", 0),
             Constant("id", TFun(TVar("a"),TVar("a")))
         ]
 

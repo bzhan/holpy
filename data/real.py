@@ -5,22 +5,23 @@ import math
 import sympy
 from sympy.ntheory.factor_ import factorint
 
-from kernel.type import Type, TFun, BoolType, RealType
+from kernel.type import TFun, BoolType, RealType
 from kernel import term
 from kernel.term import Term, Const, Eq, Nat, Real, Sum, Prod
 from kernel.thm import Thm
-from kernel.theory import Method, global_methods
-from kernel import macro
+from kernel.theory import register_macro
+from kernel.macro import Macro
 from data import nat
 from data.set import setT
 from logic import term_ord
 from logic import logic
 from logic import auto
 from logic.logic import TacticException
-from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, Conv, ConvException
-from logic.proofterm import refl, ProofMacro, ProofTermMacro, ProofTermDeriv
+from logic.conv import rewr_conv, binop_conv, arg1_conv, arg_conv, try_conv, Conv, ConvException
+from logic.tactic import MacroTactic
+from kernel.proofterm import refl, ProofTerm
 from syntax import pprint, settings
-from server.tactic import MacroTactic
+from server.method import Method, register_method
 from util import poly
 
 
@@ -119,7 +120,8 @@ def real_eval(t):
     else:
         return res
 
-class real_eval_macro(ProofMacro):
+@register_macro('real_eval')
+class real_eval_macro(Macro):
     """Simplify all arithmetic operations."""
     def __init__(self):
         self.level = 0  # No expand implemented
@@ -139,7 +141,7 @@ class real_eval_conv(Conv):
         simp_t = Real(real_eval(t))
         if simp_t == t:
             return refl(t)
-        return ProofTermDeriv('real_eval', Eq(t, simp_t))
+        return ProofTerm('real_eval', Eq(t, simp_t))
 
 
 """Normalization of polynomials.
@@ -422,14 +424,40 @@ class norm_mult_monomials(Conv):
 
     def get_proof_term(self, t):
         pt = refl(t)
-        return pt.on_rhs(
-            binop_conv(to_coeff_form()),
-            rewr_conv('real_mult_assoc'),  # (c_1 * m_1 * c_2) * m_2
-            arg1_conv(swap_mult_r()),  # (c_1 * c_2 * m_1) * m_2
-            arg1_conv(arg1_conv(real_eval_conv())),  # (c_1c_2 * m_1) * m_2
-            rewr_conv('real_mult_assoc', sym=True),  # c_1c_2 * (m_1 * m_2)
-            arg_conv(norm_mult_monomial(self.conds)),
-            from_coeff_form())
+        is_l_atom = (dest_monomial(t.arg1) == t.arg1)
+        is_r_atom = (dest_monomial(t.arg) == t.arg)
+        if is_l_atom and is_r_atom:
+            return pt.on_rhs(norm_mult_monomial(self.conds))
+        elif is_l_atom and not is_r_atom:
+            if t.arg.is_number():
+                return pt.on_rhs(
+                    rewr_conv('real_mult_comm'),
+                    try_conv(rewr_conv('real_mul_rid')),
+                    try_conv(rewr_conv('real_mul_lzero')))
+            else:
+                return pt.on_rhs(
+                    arg_conv(rewr_conv('real_mult_comm')),
+                    rewr_conv('real_mult_assoc'),
+                    rewr_conv('real_mult_comm'),
+                    arg_conv(norm_mult_monomial(self.conds)))
+        elif not is_l_atom and is_r_atom:
+            if t.arg1.is_number():
+                return pt.on_rhs(
+                    try_conv(rewr_conv('real_mul_rid')),
+                    try_conv(rewr_conv('real_mul_lzero')))
+            else:
+                return pt.on_rhs(
+                    rewr_conv('real_mult_assoc', sym=True),
+                    arg_conv(norm_mult_monomial(self.conds)))
+        else:
+            return pt.on_rhs(
+                binop_conv(to_coeff_form()),  # (c_1 * m_1) * (c_2 * m_2)
+                rewr_conv('real_mult_assoc'),  # (c_1 * m_1 * c_2) * m_2
+                arg1_conv(swap_mult_r()),  # (c_1 * c_2 * m_1) * m_2
+                arg1_conv(arg1_conv(real_eval_conv())),  # (c_1c_2 * m_1) * m_2
+                rewr_conv('real_mult_assoc', sym=True),  # c_1c_2 * (m_1 * m_2)
+                arg_conv(norm_mult_monomial(self.conds)),
+                from_coeff_form())
 
 def norm_mult(t, pts):
     """Normalization of mult. Assume two sides are in normal form."""
@@ -479,6 +507,8 @@ auto.add_global_autos_norm(
         'real_of_nat_mul'
     ]))
 
+auto.add_global_autos_norm(nat_power, real_eval_conv())
+
 auto.add_global_autos_norm(
     nat_power,
     auto.norm_rules([
@@ -504,8 +534,9 @@ class real_nat_power_conv(Conv):
 
         return refl(t)
 
-auto.add_global_autos_norm(nat_power, real_eval_conv())
 auto.add_global_autos_norm(nat_power, real_nat_power_conv())
+
+auto.add_global_autos_norm(real_power, real_eval_conv())
 
 auto.add_global_autos_norm(
     real_power,
@@ -564,7 +595,6 @@ class real_power_conv(Conv):
         return refl(t)
 
 auto.add_global_autos_norm(real_power, real_power_conv())
-auto.add_global_autos_norm(real_power, real_eval_conv())
 
 auto.add_global_autos_norm(
     sqrt,
@@ -688,7 +718,8 @@ def from_poly(p):
     return Sum(RealType, list(from_mono(m) for m in p.monomials))
 
 
-class real_norm_macro(ProofTermMacro):
+@register_macro('real_norm')
+class real_norm_macro(Macro):
     """Attempt to prove goal by normalization."""
 
     def __init__(self):
@@ -721,9 +752,10 @@ class real_norm_conv(Conv):
         if t2 == t:
             return refl(t)
         else:
-            return ProofTermDeriv('real_norm', Eq(t, t2))
+            return ProofTerm('real_norm', Eq(t, t2))
 
 
+@register_method('real_norm')
 class real_norm_method(Method):
     """Apply real_norm macro."""
     def __init__(self):
@@ -743,20 +775,9 @@ class real_norm_method(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("real_norm: (solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "real_norm_method"
         state.apply_tactic(id, MacroTactic('real_norm'))
-
-
-macro.global_macros.update({
-    "real_eval": real_eval_macro(),
-    "real_norm": real_norm_macro()
-})
-
-global_methods.update({
-    "real_norm": real_norm_method()
-})

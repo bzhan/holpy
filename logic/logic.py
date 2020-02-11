@@ -2,15 +2,15 @@
 
 from typing import List, Tuple
 
-from kernel.type import TVar, TFun, BoolType
+from kernel.type import TVar, TFun, TyInst, BoolType
 from kernel import term
-from kernel.term import Term, SVar, Var, Const, Abs, Implies, Lambda, true, false
+from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, true, false
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import theory
-from kernel import macro
+from kernel.macro import Macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
     top_conv, top_sweep_conv, beta_conv, beta_norm_conv, has_rewrite
-from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
+from kernel.proofterm import ProofTerm, refl
 from logic import matcher
 from util import name
 from util import typecheck
@@ -52,14 +52,6 @@ def mk_the(x, body):
     assert x.is_var(), "mk_the"
     the_t = Const("The", TFun(TFun(x.T, BoolType), x.T))
     return the_t(Lambda(x, body))
-
-def subst_norm(t, instsp):
-    """Substitute using the given instantiation, then normalize with
-    respect to beta-conversion.
-
-    """
-    tyinst, inst = instsp
-    return t.subst_type(tyinst).subst(inst).beta_norm()
 
 def if_t(T):
     return Const("IF", TFun(BoolType, T, T, T))
@@ -171,7 +163,7 @@ class norm_conj_assoc(Conv):
 
 """Standard macros in logic."""
 
-class beta_norm_macro(ProofTermMacro):
+class beta_norm_macro(Macro):
     """Given theorem th, return the normalization of th."""
     def __init__(self):
         self.level = 1
@@ -187,7 +179,7 @@ class beta_norm_macro(ProofTermMacro):
         assert args is None, "beta_norm_macro"
         return beta_norm_conv().apply_to_pt(pts[0])
 
-class intros_macro(ProofTermMacro):
+class intros_macro(Macro):
     """Introduce assumptions and variables."""
     def __init__(self):
         self.level = 1
@@ -215,12 +207,12 @@ class intros_macro(ProofTermMacro):
                 pt = pt.implies_intr(intro.prop)
         return pt
 
-class apply_theorem_macro(ProofTermMacro):
+class apply_theorem_macro(Macro):
     """Apply existing theorem in the theory to a list of current
     results in the proof.
 
-    If with_inst is set, the signature is (th_name, tyinst, inst),
-    where th_name is the name of the theorem, and tyinst, inst are
+    If with_inst is set, the signature is (th_name, inst),
+    where th_name is the name of the theorem, and inst are
     the instantiations of type and term variables.
 
     If with_inst is not set, the signature is th_name, where th_name
@@ -230,16 +222,16 @@ class apply_theorem_macro(ProofTermMacro):
     def __init__(self, *, with_inst=False):
         self.level = 1
         self.with_inst = with_inst
-        self.sig = Tuple[str, macro.TyInst, macro.Inst] if with_inst else str
+        self.sig = Tuple[str, Inst] if with_inst else str
         self.limit = None
 
     def eval(self, args, prevs):
-        tyinst, inst = dict(), dict()
         if self.with_inst:
-            name, tyinst, inst = args
+            name, inst = args
         else:
             name = args
-        th = theory.thy.get_theorem(name, svar=True)
+            inst = Inst()
+        th = theory.get_theorem(name)
         As, C = th.prop.strip_implies()
 
         assert len(prevs) <= len(As), "apply_theorem: too many prevs."
@@ -248,13 +240,13 @@ class apply_theorem_macro(ProofTermMacro):
         svars = term.get_svars(th.prop)
         for v in svars:
             if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), tyinst)
+                v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
 
         pats = As[:len(prevs)]
         ts = [prev_th.prop for prev_th in prevs]
-        matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
+        matcher.first_order_match_list_incr(pats, ts, inst)
 
-        As, C = subst_norm(th.prop, (tyinst, inst)).strip_implies()
+        As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
@@ -267,12 +259,12 @@ class apply_theorem_macro(ProofTermMacro):
         return th
 
     def get_proof_term(self, args, pts):
-        tyinst, inst = dict(), dict()
         if self.with_inst:
-            name, tyinst, inst = args
+            name, inst = args
         else:
             name = args
-        th = theory.thy.get_theorem(name, svar=True)
+            inst = Inst()
+        th = theory.get_theorem(name)
         As, C = th.prop.strip_implies()
 
         assert len(pts) <= len(As), "apply_theorem: too many prevs."
@@ -281,14 +273,14 @@ class apply_theorem_macro(ProofTermMacro):
         svars = term.get_svars(th.prop)
         for v in svars:
             if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), tyinst)
+                v.T.match_incr(inst[v.name].get_type(), inst.tyinst)
 
         pats = As[:len(pts)]
         ts = [pt.prop for pt in pts]
-        matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
+        matcher.first_order_match_list_incr(pats, ts, inst)
 
         pt = ProofTerm.theorem(name)
-        pt = pt.subst_type(tyinst).substitution(inst)
+        pt = pt.subst_type(inst.tyinst).substitution(inst)
         if pt.prop.beta_norm() != pt.prop:
             pt = beta_norm_conv().apply_to_pt(pt)
         pt = pt.implies_elim(*pts)
@@ -300,7 +292,7 @@ class apply_theorem_macro(ProofTermMacro):
 
         return pt
 
-class apply_fact_macro(ProofTermMacro):
+class apply_fact_macro(Macro):
     """Apply a given fact to a list of facts. The first input fact is
     in the forall-implies form. Apply this fact to the remaining
     input facts. If with_inst is set, use the given sequence of terms
@@ -327,14 +319,13 @@ class apply_fact_macro(ProofTermMacro):
 
         if self.with_inst:
             assert len(args) == len(new_names), "apply_fact_macro: wrong number of args."
-            tyinst, inst = {}, {nm: v for nm, v in zip(new_names, args)}
+            inst = Inst({nm: v for nm, v in zip(new_names, args)})
         else:
-            tyinst, inst = dict(), dict()
+            inst = Inst()
             for idx, pt_prev in enumerate(pt_prevs):
-                matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
+                matcher.first_order_match_incr(As[idx], pt_prev.prop, inst)
 
-        if tyinst:
-            pt = ProofTerm.subst_type(tyinst, pt)
+        pt = pt.subst_type(inst.tyinst)
         for new_var in new_vars:
             if new_var.name in inst:
                 pt = pt.forall_elim(inst[new_var.name])
@@ -352,7 +343,7 @@ class apply_fact_macro(ProofTermMacro):
 
         return pt
 
-class rewrite_goal_macro(ProofTermMacro):
+class rewrite_goal_macro(Macro):
     """Apply an existing equality theorem to rewrite a goal.
 
     The signature is (name, goal), where name is the name of the
@@ -404,7 +395,7 @@ class rewrite_goal_macro(ProofTermMacro):
 
         return pt
 
-class rewrite_fact_macro(ProofTermMacro):
+class rewrite_fact_macro(Macro):
     """Rewrite a fact in the proof using a theorem."""
     def __init__(self, *, sym=False):
         self.level = 1
@@ -431,7 +422,7 @@ class rewrite_fact_macro(ProofTermMacro):
             raise InvalidDerivationException("rewrite_fact using %s" % th_name)
         return res
 
-class rewrite_goal_with_prev_macro(ProofTermMacro):
+class rewrite_goal_with_prev_macro(Macro):
     """Given an input equality theorem and a goal, the macro rewrites
     the goal to a new form. The new goal, if it is not a reflexivity, is
     resolved using the second input theorem. The remaining input theorems
@@ -472,7 +463,7 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
             pt = pt.implies_intr(A.prop).implies_elim(A)
         return pt
 
-class rewrite_fact_with_prev_macro(ProofTermMacro):
+class rewrite_fact_with_prev_macro(Macro):
     """This macro is provided with two input theorems. The first input
     theorem is an equality, which is used to rewrite the second input
     theorem.
@@ -506,7 +497,7 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         cv = then_conv(cv1, beta_norm_conv())
         return pt.on_prop(cv)
 
-class forall_elim_gen_macro(ProofTermMacro):
+class forall_elim_gen_macro(Macro):
     """Apply forall elimination."""
     def __init__(self):
         self.level = 1
@@ -523,7 +514,7 @@ class forall_elim_gen_macro(ProofTermMacro):
             pt = beta_norm_conv().apply_to_pt(pt)
         return pt
 
-class trivial_macro(ProofTermMacro):
+class trivial_macro(Macro):
     """Prove a proposition of the form A_1 --> ... --> A_n --> B, where
     B agrees with one of A_i.
 
@@ -550,7 +541,7 @@ class trivial_macro(ProofTermMacro):
             pt = pt.forall_intr(v)
         return pt
 
-class resolve_theorem_macro(ProofTermMacro):
+class resolve_theorem_macro(Macro):
     """Given a theorem of the form ~A, and a fact A, prove any goal."""
     def __init__(self):
         self.level = 1
@@ -563,35 +554,33 @@ class resolve_theorem_macro(ProofTermMacro):
         assert pt.prop.is_not(), "resolve_theorem_macro"
 
         # Match for variables in pt.
-        tyinst, inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
-        pt = pt.subst_type(tyinst).substitution(inst)
+        inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
+        pt = pt.subst_type(inst.tyinst).substitution(inst)
         pt = apply_theorem('negE', pt, pts[0])  # false
         return apply_theorem('falseE', pt, concl=goal)
 
 
-def apply_theorem(th_name, *pts, concl=None, tyinst=None, inst=None):
+def apply_theorem(th_name, *pts, concl=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
 
-    The function takes optional arguments concl, tyinst, and inst. Matching
-    always starts with tyinst and inst. If conclusion is specified, it is
+    The function takes optional arguments concl, inst. Matching
+    always starts with inst. If conclusion is specified, it is
     matched next. Finally, the assumptions are matched.
 
     """
     typecheck.checkinstance('apply_theorem', pts, [ProofTerm])
-    if concl is None and tyinst is None and inst is None:
+    if concl is None and inst is None:
         # Normal case, can use apply_theorem
-        return ProofTermDeriv("apply_theorem", th_name, pts)
+        return ProofTerm("apply_theorem", th_name, pts)
     else:
         pt = ProofTerm.theorem(th_name)
-        if tyinst is None:
-            tyinst = dict()
         if inst is None:
-            inst = dict()
+            inst = Inst()
         if concl is not None:
-            matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+            matcher.first_order_match_incr(pt.concl, concl, inst)
         for i, prev in enumerate(pts):
-            matcher.first_order_match_incr(pt.assums[i], prev.prop, (tyinst, inst))
-        return ProofTermDeriv("apply_theorem_for", (th_name, tyinst, inst), pts)
+            matcher.first_order_match_incr(pt.assums[i], prev.prop, inst)
+        return ProofTerm("apply_theorem_for", (th_name, inst), pts)
 
 def conj_thms(*pts):
     assert len(pts) > 0, 'conj_thms: input list is empty.'
@@ -601,7 +590,7 @@ def conj_thms(*pts):
         return apply_theorem('conjI', pts[0], conj_thms(*pts[1:]))
 
 
-class imp_conj_macro(ProofTermMacro):
+class imp_conj_macro(Macro):
     def __init__(self):
         self.level = 1
         self.sig = Term
@@ -650,7 +639,7 @@ class imp_conj_macro(ProofTermMacro):
         return concl.implies_intr(A)
 
 
-macro.global_macros.update({
+theory.global_macros.update({
     "beta_norm": beta_norm_macro(),
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),

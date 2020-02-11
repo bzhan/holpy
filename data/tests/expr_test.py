@@ -11,7 +11,6 @@ from data import nat
 from data import expr
 from data import function
 from data.expr import N, V, Plus, Times
-from syntax import printer
 
 
 zero = nat.zero
@@ -48,7 +47,7 @@ class ExprTest(unittest.TestCase):
 
             # Test get_proof_term
             prf = macro.get_proof_term(goal, []).export()
-            self.assertEqual(theory.thy.check_proof(prf), Thm([], goal))
+            self.assertEqual(theory.check_proof(prf), Thm([], goal))
 
     def testProveAvalIFail(self):
         s = fun_upd_of_seq(1, 7)

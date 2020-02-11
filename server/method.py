@@ -1,19 +1,65 @@
 # Author: Bohua Zhan
 
+from kernel.type import TyInst
 from kernel import term
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Inst
 from kernel.thm import Thm, InvalidDerivationException
 from kernel.proof import ItemID, Proof, ProofStateException
-from kernel.theory import Method, get_method
 from kernel import theory
-from logic.proofterm import ProofTermAtom
+from kernel.proofterm import ProofTerm
 from logic import matcher
 from logic import logic
 from logic import context
-from syntax import parser, printer, pprint, settings
-from server import tactic
+from logic import tactic
+from syntax import parser, printer, pprint
 
 
+"""Global store for methods."""
+global_methods = dict()
+
+def has_method(name):
+    if name in global_methods:
+        method = global_methods[name]
+        return method.limit is None or theory.thy.has_theorem(method.limit)
+    else:
+        return False
+
+def get_method(name):
+    assert has_method(name), "get_method: %s is not available" % name
+    return global_methods[name]
+
+def get_all_methods():
+    res = dict()
+    for name in global_methods:
+        if has_method(name):
+            res[name] = global_methods[name]
+    return res
+
+def get_method_sig():
+    sig = dict()
+    for name in global_methods:
+        if has_method(name):
+            sig[name] = global_methods[name].sig
+    return sig
+
+def register_method(name):
+    def decorator(method_cls):
+        assert name not in global_methods, 'register_method: %s already exists' % name
+        global_methods[name] = method_cls()
+        return method_cls
+    return decorator
+
+
+class Method:
+    """Methods represent potential actions on the state."""
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, args, prevs):
+        pass
+
+
+@register_method('cut')
 class cut_method(Method):
     """Insert intermediate goal."""
     def __init__(self):
@@ -26,7 +72,6 @@ class cut_method(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         id = data['goal_id']
         with context.fresh_context(vars=state.get_vars(id)):
@@ -46,6 +91,8 @@ class cut_method(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'sorry', th=Thm(hyps, C))
 
+
+@register_method('cases')
 class cases_method(Method):
     """Case analysis."""
     def __init__(self):
@@ -58,7 +105,6 @@ class cases_method(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         id = data['goal_id']
         with context.fresh_context(vars=state.get_vars(id)):
@@ -74,7 +120,9 @@ class cases_method(Method):
 
         state.apply_tactic(id, tactic.cases(), args=A)
 
-class apply_prev_method(Method):
+
+@register_method('apply_prev')
+class apply_prev(Method):
     """Apply previous fact."""
     def __init__(self):
         self.sig = []
@@ -82,21 +130,22 @@ class apply_prev_method(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             pt = tactic.apply_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
         except (AssertionError, matcher.MatchException):
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply fact (b)")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
 
-class rewrite_goal_with_prev_method(Method):
+
+@register_method('rewrite_goal_with_prev')
+class rewrite_goal_with_prev(Method):
     """Rewrite using previous fact."""
     def __init__(self):
         self.sig = []
@@ -105,20 +154,21 @@ class rewrite_goal_with_prev_method(Method):
     def search(self, state, id, prevs, data=None):
         try:
             cur_item = state.get_proof_item(id)
-            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = tactic.rewrite_goal_with_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
         except (AssertionError, matcher.MatchException):
             return []
         else:
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]        
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("rewrite with fact")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
 
+
+@register_method('rewrite_goal')
 class rewrite_goal(Method):
     """Rewrite using a theorem."""
     def __init__(self):
@@ -127,7 +177,7 @@ class rewrite_goal(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -153,7 +203,6 @@ class rewrite_goal(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         if 'sym' in data and data['sym'] == 'true':
             return pprint.N(data['theorem'] + " (sym, r)")
@@ -167,6 +216,8 @@ class rewrite_goal(Method):
             sym_b = False
         state.apply_tactic(id, tactic.rewrite_goal(sym=sym_b), args=data['theorem'], prevs=prevs)
 
+
+@register_method('rewrite_fact')
 class rewrite_fact(Method):
     """Rewrite fact using a theorem."""
     def __init__(self):
@@ -175,7 +226,7 @@ class rewrite_fact(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -199,7 +250,6 @@ class rewrite_fact(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         if 'sym' in data and data['sym'] == 'true':
             return pprint.N(data['theorem'] + " (sym, r)")
@@ -208,7 +258,7 @@ class rewrite_fact(Method):
 
     def apply(self, state, id, data, prevs):
         try:
-            prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            prev_pts = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             sym_b = 'sym' in data and data['sym'] == 'true'
             pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(data['theorem'], prev_pts)
         except InvalidDerivationException as e:
@@ -225,6 +275,8 @@ class rewrite_fact(Method):
         if new_id is not None:
             state.replace_id(id2, new_id)
 
+
+@register_method('rewrite_fact_with_prev')
 class rewrite_fact_with_prev(Method):
     """Rewrite fact using a previous equality."""
     def __init__(self):
@@ -232,7 +284,7 @@ class rewrite_fact_with_prev(Method):
         self.limit = None
 
     def search(self, state, id, prevs, data=None):
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             macro = logic.rewrite_fact_with_prev_macro()
             pt = macro.get_proof_term(args=None, pts=prevs)
@@ -240,13 +292,12 @@ class rewrite_fact_with_prev(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("rewrite fact with fact")
 
     def apply(self, state, id, data, prevs):
         try:
-            prev_pts = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            prev_pts = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = logic.rewrite_fact_with_prev_macro().get_proof_term(None, prev_pts)
         except AssertionError as e:
             raise e
@@ -259,6 +310,8 @@ class rewrite_fact_with_prev(Method):
         if new_id is not None:
             state.replace_id(id2, new_id)
 
+
+@register_method('apply_forward_step')
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
@@ -292,19 +345,18 @@ class apply_forward_step(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (f)")
 
     def apply(self, state, id, data, prevs):
-        inst = dict()
+        inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
                 if key.startswith("param_"):
                     if val != '':
                         inst[key[6:]] = parser.parse_term(val)
 
-        th = theory.thy.get_theorem(data['theorem'], svar=True)
+        th = theory.get_theorem(data['theorem'])
 
         # Check whether to ask for parameters
         As, C = th.prop.strip_implies()
@@ -317,11 +369,11 @@ class apply_forward_step(Method):
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         macro = logic.apply_theorem_macro(with_inst=True)
-        res_th = macro.eval((data['theorem'], dict(), inst), prev_ths)
+        res_th = macro.eval((data['theorem'], inst), prev_ths)
 
         state.add_line_before(id, 1)
         if inst:
-            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], dict(), inst), prevs=prevs)
+            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], inst), prevs=prevs)
         else:
             state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
@@ -330,6 +382,8 @@ class apply_forward_step(Method):
         if new_id is not None:
             state.replace_id(id2, new_id)
 
+
+@register_method('apply_backward_step')
 class apply_backward_step(Method):
     """Apply theorem in the backward direction."""
     def __init__(self):
@@ -338,7 +392,7 @@ class apply_backward_step(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -362,21 +416,22 @@ class apply_backward_step(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (b)")
 
     def apply(self, state, id, data, prevs):
-        inst = dict()
+        inst = Inst()
         with context.fresh_context(vars=state.get_vars(id)):
             for key, val in data.items():
                 if key.startswith("param_"):
                     inst[key[6:]] = parser.parse_term(val)
         if inst:
-            state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
+            state.apply_tactic(id, tactic.rule(), args=(data['theorem'], inst), prevs=prevs)
         else:
             state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 
+
+@register_method('apply_resolve_step')
 class apply_resolve_step(Method):
     """Resolve using a theorem ~A and a fact A."""
     def __init__(self):
@@ -385,7 +440,7 @@ class apply_resolve_step(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
-        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         results = []
 
@@ -405,13 +460,14 @@ class apply_resolve_step(Method):
 
         return sorted(results, key=lambda d: d['theorem'])
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Resolve using " + data['theorem'])
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.resolve(), args=data['theorem'], prevs=prevs)
 
+
+@register_method('introduction')
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
@@ -434,7 +490,6 @@ class introduction(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         res = "introduction"
         if 'names' in data and data['names'] != "":
@@ -473,6 +528,7 @@ class introduction(Method):
                 state.replace_id(item.id, new_id)
 
 
+@register_method('revert_intro')
 class revert_intro(Method):
     """Reverse an introduction."""
     def __init__(self):
@@ -485,7 +541,6 @@ class revert_intro(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("revert intro")
 
@@ -504,6 +559,7 @@ class revert_intro(Method):
         state.remove_line(prevs[0])
 
 
+@register_method('exists_elim')
 class exists_elim(Method):
     """Make use of an exists fact."""
     def __init__(self):
@@ -521,7 +577,6 @@ class exists_elim(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Instantiate exists fact")
 
@@ -570,6 +625,7 @@ class exists_elim(Method):
             i += 1
 
 
+@register_method('forall_elim')
 class forall_elim(Method):
     """Elimination of forall statement."""
     def __init__(self):
@@ -587,7 +643,6 @@ class forall_elim(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Forall elimination")
 
@@ -602,6 +657,8 @@ class forall_elim(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim_gen', args=t, prevs=prevs)
 
+
+@register_method('inst_exists_goal')
 class inst_exists_goal(Method):
     """Instantiate an exists goal."""
     def __init__(self):
@@ -621,7 +678,6 @@ class inst_exists_goal(Method):
         else:
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Instantiate exists goal")
 
@@ -635,12 +691,15 @@ class inst_exists_goal(Method):
 
         state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
+
+@register_method('induction')
 class induction(Method):
     """Apply induction."""
     def __init__(self):
         self.sig = ['theorem', 'var']
         self.limit = None
         self.no_order = True
+
     def search(self, state, id, prevs, data=None):
         if data:
             return [data]
@@ -662,7 +721,6 @@ class induction(Method):
                 results.append({'theorem': name})
         return results
 
-    @settings.with_settings
     def display_step(self, state, data):
         if 'var' in data:
             return pprint.N("Induction " + data['theorem'] + " var: " + data['var'])
@@ -677,6 +735,8 @@ class induction(Method):
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
 
+
+@register_method('new_var')
 class new_var(Method):
     """Create new variable."""
     def __init__(self):
@@ -689,7 +749,6 @@ class new_var(Method):
 
         return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         T = parser.parse_type(data['type'])
         return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(T)
@@ -699,6 +758,8 @@ class new_var(Method):
         T = parser.parse_type(data['type'])
         state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
 
+
+@register_method('apply_fact')
 class apply_fact(Method):
     """When one of the prevs is an forall/implies fact, apply that fact
     to the remaining prevs.
@@ -718,7 +779,6 @@ class apply_fact(Method):
         except (AssertionError, matcher.MatchException):
             return []
 
-    @settings.with_settings
     def display_step(self, state, data):
         return pprint.N("Apply fact (f) %s onto %s" % (data['fact_ids'][0], ", ".join(data['fact_ids'][1:])))
 
@@ -740,11 +800,10 @@ def apply_method(state, step):
         "apply_method: illegal dependence."
     return method.apply(state, goal_id, step, fact_ids)
 
-@settings.with_settings
 def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
     try:
-        method = theory.global_methods[step['method_name']]
+        method = global_methods[step['method_name']]
         res = method.display_step(state, step)
     except Exception as e:
         res = pprint.N(step['method_name'])
@@ -753,9 +812,8 @@ def output_step(state, step):
         res += pprint.N(' using ' + ','.join(step['fact_ids']))
     return res
 
-@settings.with_settings
 def output_hint(state, step):
-    method = theory.global_methods[step['method_name']]
+    method = global_methods[step['method_name']]
     res = method.display_step(state, step)
     if '_goal' in step:
         if step['_goal']:
@@ -769,25 +827,3 @@ def output_hint(state, step):
         res += pprint.KWGreen(" fact ") + printer.commas_join(facts)
 
     return res
-
-
-theory.global_methods.update({
-    "cut": cut_method(),
-    "cases": cases_method(),
-    "apply_prev": apply_prev_method(),
-    "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),
-    "rewrite_goal": rewrite_goal(),
-    "rewrite_fact": rewrite_fact(),
-    "rewrite_fact_with_prev": rewrite_fact_with_prev(),
-    "apply_forward_step": apply_forward_step(),
-    "apply_backward_step": apply_backward_step(),
-    "apply_resolve_step": apply_resolve_step(),
-    "apply_fact": apply_fact(),
-    "introduction": introduction(),
-    "revert_intro": revert_intro(),
-    "forall_elim": forall_elim(),
-    "exists_elim": exists_elim(),
-    "inst_exists_goal": inst_exists_goal(),
-    "induction": induction(),
-    "new_var": new_var(),
-})

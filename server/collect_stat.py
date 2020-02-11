@@ -50,8 +50,6 @@ test_theorems = [
     ('list', 'rev_length'),
 ]
 
-profile = True
-
 class CollectStat(unittest.TestCase):
     def testCollectStat(self):
         if profile:
@@ -63,7 +61,7 @@ class CollectStat(unittest.TestCase):
                 testSteps(self, thy_name, thm_name, no_gaps=True, print_stat=True)
             except Exception as e:
                 print(thy_name, thm_name, "failed:", e.__class__)
-                # raise e
+                raise e
 
         if profile:
             p = Stats(pr)
@@ -71,5 +69,15 @@ class CollectStat(unittest.TestCase):
             p.sort_stats('cumtime')
             p.print_stats(100)
 
+
 if __name__ == "__main__":
+    import sys, getopt
+    opts, args = getopt.getopt(sys.argv[1:], 'p')
+
+    profile = False
+    for opt, arg in opts:
+        if opt == '-p':
+            profile = True
+
+    sys.argv = sys.argv[:1]  # remove own arguments for unittest
     unittest.main()

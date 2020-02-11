@@ -8,7 +8,7 @@ from logic.tests.conv_test import test_conv
 from logic.tests.logic_test import test_macro
 from logic import context
 from logic import auto
-from logic.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm
 from data import real
 from syntax import parser
 from prover import sympywrapper
@@ -92,7 +92,7 @@ class RealTest(unittest.TestCase):
             ("x ^ (1 / 2) * x ^ (1 / 2)", ["x > 0"], "x"),
             ("x ^ (1 / 2) * x ^ (3 / 2)", ["x > 0"], "x ^ (2::nat)"),
             ("x * x ^ (-(1::real))", ["x > 0"], "(1::real)"),
-            ("x ^ (1 / 2) * x ^ (-1 / 2)", ["x > 0"], "(1::real)"),
+            ("x ^ (1 / 2) * x ^ -(1 / 2)", ["x > 0"], "(1::real)"),
         ]
 
         vars = {'x': 'real'}

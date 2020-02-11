@@ -1,12 +1,12 @@
 """Utility for limits, differentiation, and integration."""
 
-from kernel.type import Type, TFun, RealType
+from kernel.type import TConst, TFun, RealType
 from kernel.term import Const
 from data import set
 
 
 def netT(T):
-    return Type("net", T)
+    return TConst("net", T)
 
 def atreal(x):
     """Given a term x of type real, return at_real x."""

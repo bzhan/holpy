@@ -194,6 +194,28 @@ test_cases = {
         "Exercise 20": "1/2 * log(2) - 1/2 * log(1 + exp(-2))",
         "Exercise 21": "(-1 + 1/4 * pi + exp(1)) - atan(exp(1))",
         # "Exercise 22": "(7 - 2 * log(5)) + 2 * log(6)",  # order of boundary
+    },
+    "UCDAVIS/PartialFraction": {
+        "Exercise 1": "(1/4 * log(2) + 1/4 * log(5)) - 1/4 * log(6)",
+        "Exercise 2": "(-3/2 * log(2) - 1/2 * log(4)) + 1/2 * log(5)",
+        "Exercise 3": "(2/5 * log(2) + 7/5 * log(6)) - 7/5 * log(7)",
+        "Exercise 4": "(((1 + 15/8 * log(2)) - 15/8 * log(3)) + 15/8 * log(5)) - 15/8 * log(6)",
+        "Exercise 5": "((46/3 - 4/3 * log(2)) + 4/3 * log(3) + 13/3 * log(5)) - 13/3 * log(6)",
+        "Exercise 6": "(-log(2) + log(3) + log(4)) - 1/2 * log(5)",
+        "Exercise 7": "((7/8 + 5/4 * log(2)) - 5/2 * log(4)) + 5/4 * log(6)",
+        "Exercise 8": "(127/64 - 1/8 * log(2) - 15/4 * log(4)) + 31/8 * log(6)",
+        # "Exercise 9": "-3/8 + log(2)",
+        # "Exercise 10": "(((-1/8) + 5/12 * log(2) + 3/4 * log(3)) - 25/12 * log(4)) + 4/3 * log(5)",
+        # "Exercise 11": "((53/90 + 20/27 * log(2)) - 7/27 * log(4)) + 7/27 * log(5)",
+        # "Exercise 12": "(((3 ^ (1/2) - (2 - 3 ^ (1/2)) ^ -1) + log(2 - 3 ^ (1/2))) - log(3 ^ (1/2) * (1/3)) - log(-1 + 3 ^ (1/2))) + log(1 - 3 ^ (1/2) * (1/3))",
+        "Exercise 13": "((1 + 59/6 * log(2)) - 9/2 * log(3) - 7/6 * log(4)) + 7/6 * log(5)",
+        "Exercise 14": "((-1/4) * log(-1 + exp(1)) + 1/4 * log(3 + exp(1)) + 1/4 * log(-1 + exp(2))) - 1/4 * log(3 + exp(2))",
+        "Exercise 15": "(1 + log(2)) - log(1 + exp(1))",
+        "Exercise 16": "(1/4 * pi + 9/2 * log(2)) - atan(2) - 3/2 * log(5)",
+        "Exercise 17": "(((1/50 + 1/125 * atan(1/5)) - 1/125 * atan(2/5)) + 3/25 * log(2) + 3/50 * log(26)) - 3/50 * log(29)",
+        "Exercise 18": "(-1/16) * atan(1/2) - 1/32 * log(3)",
+        "Exercise 19": "(1/2 * log(5/4) - 1/2 * log(7/4)) + log(2) + log(3 ^ (1/2) * (1/2))",
+        "Exercise 20": "1/8 * atan(2) + 1/16 * log(5)",
     }
 }
 
@@ -209,7 +231,8 @@ class RunIntegral(unittest.TestCase):
             "UCDAVIS/Exponentials",
             "UCDAVIS/Trigonometric",
             "UCDAVIS/Byparts",
-            "UCDAVIS/LogAndArctangent"
+            "UCDAVIS/LogAndArctangent",
+            "UCDAVIS/PartialFraction",
         ]
         test_only = None
         profile = False
@@ -229,14 +252,11 @@ class RunIntegral(unittest.TestCase):
                     target = test_cases[filename][item['name']]
                     proof.translate_item(item, target, debug=True)
 
-        # for k, v in sympywrapper.solveset_cache.items():
-        #     print(k, ': ', v)
-
         if profile:
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(100)
 
 
 if __name__ == "__main__":

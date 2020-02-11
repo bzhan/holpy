@@ -4,11 +4,10 @@ from copy import copy
 from typing import Tuple
 import contextlib
 
-from kernel.type import HOLType, TVar, TFun, BoolType, TypeMatchException
+from kernel.type import Type, TVar, TFun, BoolType, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofStateException
-from kernel.macro import ProofMacro, has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
@@ -150,7 +149,7 @@ class Theory():
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
 
             for _, v in sorted(inst.items()):
-                if not v.is_type():
+                if not v.is_tconst():
                     raise TheoryException("When overloading %s with %s: cannot instantiate to type variables" % (aT, T))
         else:
             # Make sure this name does not already occur in the theory
@@ -185,8 +184,19 @@ class Theory():
         data = self.get_data("theorems")
         return name in data
     
-    def get_theorem(self, name, svar=False):
-        """Returns the theorem under that name."""
+    def get_theorem(self, name, *, svar=True):
+        """Obtain the theorem with the given name.
+        
+        Parameters:
+        ===========
+        name : str
+            Name of the theorem to lookup.
+        
+        svar : Optional bool (default True)
+            Whether to use schematic variables (instead of variables) in the
+            returned result.
+
+        """
         data = self.get_data("theorems")
         if name not in data:
             raise TheoryException("Theorem " + name + " not found")
@@ -244,7 +254,7 @@ class Theory():
 
             baseT = []
             for _, v in sorted(inst.items()):
-                if v.is_type():
+                if v.is_tconst():
                     baseT.append(v)
 
             T_name = "_".join(T.name for T in baseT)
@@ -260,7 +270,7 @@ class Theory():
         """
         if T.is_stvar() or T.is_tvar():
             return None
-        elif T.is_type():
+        elif T.is_tconst():
             if not self.has_type_sig(T.name):
                 raise TheoryException("Unknown type %s" % T.name)        
             if self.get_type_sig(T.name) != len(T.args):
@@ -329,7 +339,7 @@ class Theory():
         if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
-                res_th = self.get_theorem(seq.args, svar=True)
+                res_th = self.get_theorem(seq.args)
                 if rpt is not None:
                     rpt.apply_theorem(seq.args)
             except TheoryException:
@@ -430,7 +440,7 @@ class Theory():
         if name == "theorem":
             return str
         elif name == "variable":
-            return Tuple[str, HOLType]
+            return Tuple[str, Type]
         elif name == "sorry" or name == "subproof":
             return None
         elif name in primitive_deriv:
@@ -442,34 +452,34 @@ class Theory():
 
     def extend_type(self, ext):
         """Extend the theory by adding a type."""
-        assert ext.ty == extension.TYPE, "extend_type"
+        assert ext.is_tconst(), "extend_type"
 
         self.add_type_sig(ext.name, ext.arity)
 
     def extend_constant(self, ext):
         """Extend the theory by adding a constant."""
-        assert ext.ty == extension.CONSTANT, "extend_constant"
+        assert ext.is_constant(), "extend_constant"
 
         self.add_term_sig(ext.name, ext.T)
 
     def extend_attribute(self, ext):
         """Extend the theory by adding an attribute."""
-        assert ext.ty == extension.ATTRIBUTE, "extend_attribute"
+        assert ext.is_attribute(), "extend_attribute"
 
         self.add_attribute(ext.name, ext.attribute)
 
     def unchecked_extend(self, exts):
         """Perform the given theory extension without proof checking."""
         for ext in exts:
-            if ext.ty == extension.TYPE:
+            if ext.is_tconst():
                 self.extend_type(ext)
-            elif ext.ty == extension.CONSTANT:
+            elif ext.is_constant():
                 self.extend_constant(ext)
-            elif ext.ty == extension.THEOREM:
+            elif ext.is_theorem():
                 self.add_theorem(ext.name, ext.th)
-            elif ext.ty == extension.ATTRIBUTE:
+            elif ext.is_attribute():
                 self.extend_attribute(ext)
-            elif ext.ty == extension.OVERLOAD:
+            elif ext.is_overload():
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError
@@ -479,20 +489,20 @@ class Theory():
         ext_report = ExtensionReport()
 
         for ext in exts:
-            if ext.ty == extension.TYPE:
+            if ext.is_tconst():
                 self.extend_type(ext)
-            elif ext.ty == extension.CONSTANT:
+            elif ext.is_constant():
                 self.extend_constant(ext)
-            elif ext.ty == extension.THEOREM:
+            elif ext.is_theorem():
                 if ext.prf:
                     self.check_proof(ext.prf)
                 else:  # No proof - add as axiom
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
-            elif ext.ty == extension.ATTRIBUTE:
+            elif ext.is_attribute():
                 self.extend_attribute(ext)
-            elif ext.ty == extension.OVERLOAD:
+            elif ext.is_overload():
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError
@@ -541,38 +551,37 @@ def fresh_theory():
         thy = prev_thy
 
 
-global_methods = dict()
+def get_theorem(name, *, svar=True):
+    return thy.get_theorem(name, svar=svar)
 
-def has_method(name):
-    if name in global_methods:
-        method = global_methods[name]
-        return method.limit is None or thy.has_theorem(method.limit)
+def check_proof(prf, rpt=None, *, no_gaps=False, compute_only=False, check_level=0):
+    return thy.check_proof(prf, rpt, no_gaps=no_gaps, compute_only=compute_only, check_level=check_level)
+
+
+"""Global store of macros. Keys are names of the macros,
+values are the corresponding macro objects.
+
+When each macro is defined, it is first put into this dictionary.
+It is added to the theory only when a theory file contains an
+extension adding it by name.
+
+"""
+global_macros = dict()
+
+def has_macro(name):
+    if name in global_macros:
+        macro = global_macros[name]
+        return macro.limit is None or thy.has_theorem(macro.limit)
     else:
         return False
 
-def get_method(name):
-    assert has_method(name), "get_method: %s is not available" % name
-    return global_methods[name]
+def get_macro(name):
+    assert has_macro(name), "get_macro: %s is not available." % name
+    return global_macros[name]
 
-def get_all_methods():
-    res = dict()
-    for name in global_methods:
-        if has_method(name):
-            res[name] = global_methods[name]
-    return res
-
-def get_method_sig():
-    sig = dict()
-    for name in global_methods:
-        if has_method(name):
-            sig[name] = global_methods[name].sig
-    return sig
-
-
-class Method:
-    """Methods represent potential actions on the state."""
-    def search(self, state, id, prevs):
-        pass
-
-    def apply(self, state, id, args, prevs):
-        pass
+def register_macro(name):
+    def decorator(macro_cls):
+        assert name not in global_macros, 'register_macro: %s already exists' % name
+        global_macros[name] = macro_cls()
+        return macro_cls
+    return decorator

@@ -10,7 +10,6 @@ from data import nat
 from data import interval
 from data import set
 from logic import basic
-from syntax import printer
 
 
 class IntervalTest(unittest.TestCase):
@@ -29,7 +28,7 @@ class IntervalTest(unittest.TestCase):
             pt = interval.numseg_conv().get_proof_term(t)
             rhs = set.mk_literal_set([Nat(i) for i in range(m, n+1)], NatType)
             prf = pt.export()
-            self.assertEqual(theory.thy.check_proof(prf), Thm([], Eq(t, rhs)))
+            self.assertEqual(theory.check_proof(prf), Thm([], Eq(t, rhs)))
 
 
 if __name__ == "__main__":

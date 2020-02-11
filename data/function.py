@@ -3,11 +3,12 @@
 from kernel.type import TFun
 from kernel import term
 from kernel.term import Term, Const, Abs
-from kernel.macro import global_macros
+from kernel.macro import Macro
+from kernel.theory import register_macro
 from data import nat
 from logic import logic
 from logic.conv import Conv, rewr_conv, then_conv, arg_conv, argn_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, refl
+from kernel.proofterm import ProofTerm, refl
 
 """Utility functions for the function library."""
 
@@ -69,7 +70,8 @@ class fun_upd_eval_conv(Conv):
         else:
             return refl(t)
 
-class fun_upd_eval_macro(ProofTermMacro):
+@register_macro('fun_upd_eval')
+class fun_upd_eval_macro(Macro):
     """Macro using fun_upd_eval_conv."""
 
     def __init__(self):
@@ -125,7 +127,3 @@ def mk_comp(f, g):
     T2, T3 = f.get_type().args
     _, T1 = g.get_type().args
     return Const("comp_fun", TFun(TFun(T2, T3), TFun(T1, T2), T1, T3))(f, g)
-
-global_macros.update({
-    "fun_upd_eval": fun_upd_eval_macro(),
-})

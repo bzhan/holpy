@@ -1,16 +1,16 @@
 # Author: Bohua Zhan
 
+from kernel.type import TyInst
 from kernel import term
-from kernel.term import Term, Implies, Not, Lambda
+from kernel.term import Term, Implies, Not, Lambda, Inst
 from kernel.thm import Thm
 from kernel import theory
 from logic import logic
 from logic import matcher
 from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, beta_norm_conv, \
     top_sweep_conv, has_rewrite
-from logic.proofterm import ProofTerm, ProofTermDeriv
+from kernel.proofterm import ProofTerm
 from logic.logic import apply_theorem
-from syntax import printer
 
 
 class Tactic:
@@ -50,7 +50,7 @@ class MacroTactic(Tactic):
         else:
             args = (goal.prop,) + args
 
-        return ProofTermDeriv(self.macro, args, prevs)
+        return ProofTerm(self.macro, args, prevs)
 
 class rule(Tactic):
     """Apply a theorem in the backward direction.
@@ -61,47 +61,40 @@ class rule(Tactic):
     """
     def get_proof_term(self, goal, *, args=None, prevs=None):
         if isinstance(args, tuple):
-            th_name, instsp = args
+            th_name, inst = args
         else:
-            th_name, instsp = args, None
+            th_name, inst = args, None
         assert isinstance(th_name, str), "rule: theorem name must be a string"
 
         if prevs is None:
             prevs = []
         
-        th = theory.thy.get_theorem(th_name, svar=True)
+        th = theory.get_theorem(th_name)
         As, C = th.assums, th.concl
 
         # Length of prevs is at most length of As
         assert len(prevs) <= len(As), "rule: too many previous facts"
-        if instsp is None:
-            instsp = (dict(), dict())
-
-        tyinst, inst = instsp
-        svars = term.get_svars(th.prop)
-        for v in svars:
-            if v.name in inst:
-                v.T.match_incr(inst[v.name].get_type(), tyinst)
+        if inst is None:
+            inst = Inst()
 
         # Match the conclusion and assumptions. Either the conclusion
         # or the list of assumptions must be a first-order pattern.
         if matcher.is_pattern(C, []):
-            matcher.first_order_match_incr(C, goal.prop, instsp)
+            matcher.first_order_match_incr(C, goal.prop, inst)
             for pat, prev in zip(As, prevs):
-                matcher.first_order_match_incr(pat, prev.prop, instsp)
+                matcher.first_order_match_incr(pat, prev.prop, inst)
         else:
             for pat, prev in zip(As, prevs):
-                matcher.first_order_match_incr(pat, prev.prop, instsp)
-            matcher.first_order_match_incr(C, goal.prop, instsp)
+                matcher.first_order_match_incr(pat, prev.prop, inst)
+            matcher.first_order_match_incr(C, goal.prop, inst)
 
         # Check that every variable in the theorem has an instantiation.
-        tyinst, inst = instsp
         unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         # Substitute and normalize
-        As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+        As, _ = th.prop.subst_norm(inst).strip_implies()
         goal_Alen = len(goal.assums)
         if goal_Alen > 0:
             As = As[:-goal_Alen]
@@ -113,7 +106,7 @@ class rule(Tactic):
         if set(term.get_svars(th.assums)) != set(term.get_svars(th.prop)) or \
            set(term.get_stvars(th.assums)) != set(term.get_stvars(th.prop)) or \
            not matcher.is_pattern_list(th.assums, []):
-            return apply_theorem(th_name, *pts, tyinst=tyinst, inst=inst)
+            return apply_theorem(th_name, *pts, inst=inst)
         else:
             return apply_theorem(th_name, *pts)
 
@@ -125,12 +118,12 @@ class resolve(Tactic):
     def get_proof_term(self, goal, args, prevs):
         assert isinstance(args, str) and len(prevs) == 1, "resolve: type"
         th_name = args
-        th = theory.thy.get_theorem(th_name, svar=True)
+        th = theory.get_theorem(th_name)
 
         assert th.prop.is_not(), "resolve: prop is not a negation"
 
         # Checking that the theorem matches the fact is done here.
-        return ProofTermDeriv('resolve_theorem', (args, goal.prop), prevs)
+        return ProofTerm('resolve_theorem', (args, goal.prop), prevs)
 
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
@@ -148,20 +141,20 @@ class intros(Tactic):
         pt = ProofTerm.sorry(Thm(list(goal.hyps) + As, C))
         ptAs = [ProofTerm.assume(A) for A in As]
         ptVars = [ProofTerm.variable(var.name, var.T) for var in vars]
-        return ProofTermDeriv('intros', None, ptVars + ptAs + [pt])
+        return ProofTerm('intros', None, ptVars + ptAs + [pt])
 
 class var_induct(Tactic):
     """Apply induction rule on a variable."""
     def get_proof_term(self, goal, *, args=None, prevs=None):
         th_name, var = args
         P = Lambda(var, goal.prop)
-        th = theory.thy.get_theorem(th_name, svar=True)
+        th = theory.get_theorem(th_name)
         f, args = th.concl.strip_comb()
         if len(args) != 1:
             raise NotImplementedError
-        instsp = matcher.first_order_match(args[0], var)
-        instsp[1][f.name] = P
-        return rule().get_proof_term(goal, args=(th_name, instsp))
+        inst = matcher.first_order_match(args[0], var)
+        inst[f.name] = P
+        return rule().get_proof_term(goal, args=(th_name, inst))
 
 class rewrite_goal(Tactic):
     """Rewrite the goal using a theorem."""
@@ -186,11 +179,11 @@ class rewrite_goal(Tactic):
         else:
             macro_name = 'rewrite_goal'
         if new_goal.is_equals() and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv(macro_name, args=(th_name, C), prevs=prevs)
+            return ProofTerm(macro_name, args=(th_name, C), prevs=prevs)
         else:
             new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))
             assert new_goal.prop != goal.prop, "rewrite: unable to apply theorem"
-            return ProofTermDeriv(macro_name, args=(th_name, C), prevs=[new_goal] + prevs)
+            return ProofTerm(macro_name, args=(th_name, C), prevs=[new_goal] + prevs)
 
 class rewrite_goal_with_prev(Tactic):
     def get_proof_term(self, goal, *, args=None, prevs=None):
@@ -220,7 +213,7 @@ class rewrite_goal_with_prev(Tactic):
         prevs = list(prevs)
         if not new_goal.is_reflexive():
             prevs.append(ProofTerm.sorry(Thm(goal.hyps, new_goal)))
-        return ProofTermDeriv('rewrite_goal_with_prev', args=C, prevs=prevs)
+        return ProofTerm('rewrite_goal_with_prev', args=C, prevs=prevs)
 
 class apply_prev(Tactic):
     """Applies an existing fact in the backward direction."""
@@ -233,17 +226,16 @@ class apply_prev(Tactic):
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
-        instsp = dict(), dict()
-        matcher.first_order_match_incr(C, goal.prop, instsp)
+        inst = Inst()
+        matcher.first_order_match_incr(C, goal.prop, inst)
         for idx, prev_pt in enumerate(prev_pts):
-            matcher.first_order_match_incr(As[idx], prev_pt.prop, instsp)
+            matcher.first_order_match_incr(As[idx], prev_pt.prop, inst)
 
-        tyinst, inst = instsp
         unmatched_vars = [v for v in new_names if v not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
-        pt = pt.subst_type(tyinst)
+        pt = pt.subst_type(inst.tyinst)
         for new_name in new_names:
             pt = pt.forall_elim(inst[new_name])
         if pt.prop.beta_norm() != pt.prop:
@@ -254,9 +246,9 @@ class apply_prev(Tactic):
         new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in inst_As[len(prev_pts):]]
         if set(new_names).issubset({v.name for v in term.get_vars(As)}) and \
            matcher.is_pattern_list(As, []):
-            return ProofTermDeriv('apply_fact', args=None, prevs=prevs + new_goals)
+            return ProofTerm('apply_fact', args=None, prevs=prevs + new_goals)
         else:
-            return ProofTermDeriv('apply_fact_for', args=inst_arg, prevs=prevs + new_goals)
+            return ProofTerm('apply_fact_for', args=inst_arg, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""
@@ -281,4 +273,4 @@ class inst_exists_goal(Tactic):
             str(C.arg.var_T), str(argT)
         )
 
-        return rule().get_proof_term(goal, args=('exI', ({'a': argT}, {'P': C.arg, 'a': args})))
+        return rule().get_proof_term(goal, args=('exI', Inst(P=C.arg, a=args)))

@@ -24,7 +24,7 @@
                     "th": "⊢ n = n * 1"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λk. n = n * k, a: (1::nat)}",
+                    "args": "exI, {P: λk. n = n * k, a: (1::nat)}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -171,7 +171,7 @@
                     "th": "n = m * q, divides k m, divides m n, m = k * p ⊢ n = k * (p * q)"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λk1. n = k * k1, a: p * q}",
+                    "args": "exI, {P: λk1. n = k * k1, a: p * q}",
                     "id": "11",
                     "prevs": [
                         "10"
@@ -446,7 +446,7 @@
                     "th": "⊢ 0 = n * 0"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λk. 0 = n * k, a: (0::nat)}",
+                    "args": "exI, {P: λk. 0 = n * k, a: (0::nat)}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -593,7 +593,7 @@
                     "th": "n = k * q, divides k m, divides k n, m = k * p ⊢ m + n = k * (p + q)"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λk1. m + n = k * k1, a: p + q}",
+                    "args": "exI, {P: λk1. m + n = k * k1, a: p + q}",
                     "id": "11",
                     "prevs": [
                         "10"
@@ -771,7 +771,7 @@
                     "th": "n = m * p, divides m n ⊢ k * n = k * m * p"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λk1. k * n = k * m * k1, a: p}",
+                    "args": "exI, {P: λk1. k * n = k * m * k1, a: p}",
                     "id": "6",
                     "prevs": [
                         "5"
@@ -908,7 +908,7 @@
                     "th": "n = m * p, divides m n ⊢ n * k = m * k * p"
                 },
                 {
-                    "args": "exI, {a: nat}, {P: λk1. n * k = m * k * k1, a: p}",
+                    "args": "exI, {P: λk1. n * k = m * k * k1, a: p}",
                     "id": "6",
                     "prevs": [
                         "5"
@@ -1055,14 +1055,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "gcd_divides2, {}, {m: n, n: m}",
+                    "args": "gcd_divides2, {m: n, n: m}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides (gcd n m) m"
                 },
                 {
-                    "args": "gcd_divide1, {}, {m: n, n: m}",
+                    "args": "gcd_divide1, {m: n, n: m}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1181,14 +1181,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "divides_zero, {}, {n: n}",
+                    "args": "divides_zero, {n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides n 0"
                 },
                 {
-                    "args": "divides_self, {}, {n: n}",
+                    "args": "divides_self, {n: n}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1303,21 +1303,21 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "gcd_divide1, {}, {m: k, n: gcd m n}",
+                    "args": "gcd_divide1, {m: k, n: gcd m n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides (gcd k (gcd m n)) k"
                 },
                 {
-                    "args": "gcd_divides2, {}, {m: k, n: gcd m n}",
+                    "args": "gcd_divides2, {m: k, n: gcd m n}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides (gcd k (gcd m n)) (gcd m n)"
                 },
                 {
-                    "args": "gcd_divide1, {}, {m: m, n: n}",
+                    "args": "gcd_divide1, {m: m, n: n}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1344,7 +1344,7 @@
                     "th": "⊢ divides (gcd k (gcd m n)) (gcd k m)"
                 },
                 {
-                    "args": "gcd_divides2, {}, {m: m, n: n}",
+                    "args": "gcd_divides2, {m: m, n: n}",
                     "id": "5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1389,7 +1389,7 @@
                     "th": "divides b n ⊢ divides b n"
                 },
                 {
-                    "args": "gcd_divide1, {}, {m: k, n: m}",
+                    "args": "gcd_divide1, {m: k, n: m}",
                     "id": "7.3",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1406,7 +1406,7 @@
                     "th": "divides b (gcd k m), divides b n ⊢ divides b k"
                 },
                 {
-                    "args": "gcd_divides2, {}, {m: k, n: m}",
+                    "args": "gcd_divides2, {m: k, n: m}",
                     "id": "7.5",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1580,7 +1580,7 @@
                     "th": "divides m n ⊢ divides m n"
                 },
                 {
-                    "args": "divides_self, {}, {n: m}",
+                    "args": "divides_self, {n: m}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1646,7 +1646,7 @@
                     "th": "divides n m ⊢ divides n m"
                 },
                 {
-                    "args": "divides_self, {}, {n: n}",
+                    "args": "divides_self, {n: n}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1705,14 +1705,14 @@
             "num_gaps": 1,
             "proof": [
                 {
-                    "args": "gcd_divide1, {}, {m: m, n: n}",
+                    "args": "gcd_divide1, {m: m, n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides (gcd m n) m"
                 },
                 {
-                    "args": "divides_mult_left, {}, {k: k, m: gcd m n, n: m}",
+                    "args": "divides_mult_left, {k: k, m: gcd m n, n: m}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1721,14 +1721,14 @@
                     "th": "⊢ divides (k * gcd m n) (k * m)"
                 },
                 {
-                    "args": "gcd_divides2, {}, {m: m, n: n}",
+                    "args": "gcd_divides2, {m: m, n: n}",
                     "id": "2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides (gcd m n) n"
                 },
                 {
-                    "args": "divides_mult_left, {}, {k: k, m: gcd m n, n: n}",
+                    "args": "divides_mult_left, {k: k, m: gcd m n, n: n}",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -1849,14 +1849,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "gcd_divide1, {}, {m: m, n: n}",
+                    "args": "gcd_divide1, {m: m, n: n}",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ divides (gcd m n) m"
                 },
                 {
-                    "args": "gcd_divides2, {}, {m: m, n: n}",
+                    "args": "gcd_divides2, {m: m, n: n}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
@@ -1901,7 +1901,7 @@
                     "th": "divides b (m + n) ⊢ divides b (m + n)"
                 },
                 {
-                    "args": "divides_sum2, {}, {k: b, m: m, n: n}",
+                    "args": "divides_sum2, {k: b, m: m, n: n}",
                     "id": "3.3",
                     "prevs": [
                         "3.2",

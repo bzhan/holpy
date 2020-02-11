@@ -6,7 +6,6 @@ from logic import basic
 from imperative import imp
 from imperative.parser import parse_com, process_file
 from syntax import parser
-from syntax import printer
 
 basic.load_theory('hoare')
 

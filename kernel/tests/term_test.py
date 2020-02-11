@@ -2,9 +2,10 @@
 
 import unittest
 
-from kernel.type import STVar, TVar, Type, TFun
+from kernel import type as hol_type
+from kernel.type import STVar, TVar, TFun, TyInst
 from kernel import term
-from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, And, Or, Lambda, Binary, Inst
 from kernel.term import TermException, TypeCheckException
 
 Ta = TVar("a")
@@ -24,18 +25,25 @@ B0 = Bound(0)
 B1 = Bound(1)
 
 class TermTest(unittest.TestCase):
+    def setUp(self):
+        self.type_printer, self.term_printer = hol_type.type_printer, term.term_printer
+        hol_type.type_printer, term.term_printer = None, None
+
+    def tearDown(self):
+        hol_type.type_printer, term.term_printer = self.type_printer, self.term_printer
+
     def testReprTerm(self):
         test_data = [
-            (a, "Var(a,'a)"),
-            (f, "Var(f,'a => 'b)"),
-            (c, "Const(c,'a)"),
-            (f(a), "Comb(Var(f,'a => 'b),Var(a,'a))"),
-            (f2(a,a), "Comb(Comb(Var(f2,'a => 'a => 'b),Var(a,'a)),Var(a,'a))"),
-            (f(g(a)), "Comb(Var(f,'a => 'b),Comb(Var(g,'a => 'a),Var(a,'a)))"),
-            (Abs("x", Ta, b), "Abs(x,'a,Var(b,'b))"),
-            (Abs("x", Ta, B0), "Abs(x,'a,Bound(0))"),
-            (Abs("x", Ta, "y", Ta, B0), "Abs(x,'a,Abs(y,'a,Bound(0)))"),
-            (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound(1)))"),
+            (a, "Var(a, 'a)"),
+            (f, "Var(f, 'a => 'b)"),
+            (c, "Const(c, 'a)"),
+            (f(a), "Comb(Var(f, 'a => 'b), Var(a, 'a))"),
+            (f2(a,a), "Comb(Comb(Var(f2, 'a => 'a => 'b), Var(a, 'a)), Var(a, 'a))"),
+            (f(g(a)), "Comb(Var(f, 'a => 'b), Comb(Var(g, 'a => 'a), Var(a, 'a)))"),
+            (Abs("x", Ta, b), "Abs(x, 'a, Var(b, 'b))"),
+            (Abs("x", Ta, B0), "Abs(x, 'a, Bound(0))"),
+            (Abs("x", Ta, "y", Ta, B0), "Abs(x, 'a, Abs(y, 'a, Bound(0)))"),
+            (Abs("x", Ta, "y", Ta, B1), "Abs(x, 'a, Abs(y, 'a, Bound(1)))"),
         ]
 
         for t, repr_t in test_data:
@@ -106,30 +114,30 @@ class TermTest(unittest.TestCase):
 
     def testSubstType(self):
         test_data = [
-            (Var('a', STa), {"a" : Tb}, Var("a", Tb)),
-            (Const("c", STa), {"a" : Tb}, Const("c", Tb)),
-            (Var("f", TFun(STa,Tb))(Var("a", STa)), {"a" : Tb}, Var("f", TFun(Tb,Tb))(Var("a", Tb))),
-            (Abs("x", STa, B0), {"a" : Tb}, Abs("x", Tb, B0)),
-            (Abs("x", STa, Var('a', STa)), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
+            (Var('a', STa), Var("a", Tb)),
+            (Const("c", STa), Const("c", Tb)),
+            (Var("f", TFun(STa,Tb))(Var("a", STa)), Var("f", TFun(Tb,Tb))(Var("a", Tb))),
+            (Abs("x", STa, B0), Abs("x", Tb, B0)),
+            (Abs("x", STa, Var('a', STa)), Abs("x", Tb, Var("a", Tb))),
         ]
 
-        for t, tyinst, res in test_data:
-            self.assertEqual(t.subst_type(tyinst), res)
+        for t, res in test_data:
+            self.assertEqual(t.subst_type(TyInst(a=Tb)), res)
 
     def testSubst(self):
         test_data = [
-            (SVar('a', Ta), {"a" : c}, c),
-            (c, {"a" : c}, c),
-            (f(SVar('a', Ta)), {"a" : c}, f(c)),
-            (Abs("x", Ta, B0), {"a" : c}, Abs("x", Ta, B0)),
-            (Abs("x", Ta, SVar('a', Ta)), {"a" : c}, Abs("x", Ta, c)),
+            (SVar('a', Ta), c),
+            (c, c),
+            (f(SVar('a', Ta)), f(c)),
+            (Abs("x", Ta, B0), Abs("x", Ta, B0)),
+            (Abs("x", Ta, SVar('a', Ta)), Abs("x", Ta, c)),
         ]
 
-        for t, inst, res in test_data:
-            self.assertEqual(t.subst(inst), res)
+        for t, res in test_data:
+            self.assertEqual(t.subst(Inst(a=c)), res)
 
     def testSubstFail(self):
-        self.assertRaises(TermException, SVar('a', TVar('a')).subst, {"a" : b})
+        self.assertRaises(TermException, SVar('a', TVar('a')).subst, Inst(a=b))
 
     def testSubstBound(self):
         test_data = [

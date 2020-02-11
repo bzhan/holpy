@@ -1,13 +1,13 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, BoolType
+from kernel.type import TConst, TFun, BoolType
 from kernel.term import Term, Const, Lambda
 
 
 """Utility functions for sets."""
 
 def setT(T):
-    return Type("set", T)
+    return TConst("set", T)
 
 def empty_set(T):
     if T is None:

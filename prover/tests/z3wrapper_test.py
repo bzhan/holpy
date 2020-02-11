@@ -8,7 +8,6 @@ from data import nat
 from logic import basic
 from logic.tests.logic_test import test_macro
 from syntax import parser
-from syntax import printer
 from logic import context
 from prover import z3wrapper
 from server.tests.method_test import test_method
