@@ -87,7 +87,7 @@ ruleset_raw = {
     # Get eqangle from contri.
     "D83": "eqangle(A, B, B, C, D, E, E, F) :- contri(A, B, C, D, E, F)",
     # Obtaining contri from two triangles that have an identical side.
-    "D84":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, D, E, E, F)",  # SAS
+    "D84": "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, B, C, D, B)",  # SAS
     "D85":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), cong(C, A, C, D)",  # SSS
     # "D86":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(A, C, C, B, D, C, C, B)",  # ASA
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS
@@ -133,7 +133,8 @@ ruleset_raw_reduced = {
     # original version.
     "D43": "cong(A, B, P, Q) :- eqangle(C, A, C, B, R, P, R, Q), cyclic(A, B, C, P, Q, R)",
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
-    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
+    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C)",
+    # "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
     "D46": "eqangle(O, A, A, B, A, B, O, B) :- cong(O, A, O, B)",
     # "D47": "cong(O, A, O, B) :- eqangle(O, A, A, B, A, B, O, B), ¬coll(O, A, B)",
     # "D48": "eqangle(A, X, A, B, C, A, C, B) :- perp(O, A, A, X), circle(O, A, B, C)",
@@ -148,7 +149,7 @@ ruleset_raw_reduced = {
     "D57": "perp(P, A, A, Q) :- cong(A, P, B, P), cong(A, Q, B, Q), cyclic(A, B, P, Q)",
     "D58": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(A, C, B, C, P, R, Q, R), ¬coll(A, B, C)",
     "D59": "eqratio(A, B, A, C, P, Q, P, R) :- simtri(A, B, C, P, Q, R)",
-    # "D60": "eqangle(A, B, B, C, P,Q, Q, R) :- simtri(A, B, C, P, Q, R)",
+    # "D60": "eqangle(A, B, B, C, P, Q, Q, R) :- simtri(A, B, C, P, Q, R)",
     "D61": "contri(A, B, C, P, Q, R) :- simtri(A, B, C, P, Q, R), cong(A, B, P, Q)",
     "D62": "cong(A, B, P, Q) :- contri(A, B, C, P, Q, R)",
     # "D63": "para(A, C, B, D) :- midp(M, A, B), midp(M, C, D)",
@@ -187,7 +188,7 @@ ruleset_raw_reduced = {
     # Get eqangle from contri.
     "D83": "eqangle(A, B, B, C, D, E, E, F) :- contri(A, B, C, D, E, F)",
     # Obtaining contri from two triangles that have an identical side.
-    "D84":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, D, E, E, F)",  # SAS
+    "D84":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, B, C, D, B)",  # SAS
     "D85":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), cong(C, A, C, D)",  # SSS
     # "D86":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(A, C, C, B, D, C, C, B)",  # ASA
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS

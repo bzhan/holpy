@@ -474,8 +474,7 @@ class Prover:
                     new_insts.append((t_inst, subfact))
 
         elif arg_ty == TRI:
-            # contri case
-            #
+            # contri and simtri case
             groups = make_pairs(f.args, pair_len=3)
             comb = itertools.combinations(range(len(groups)), len(pat.args) // 3)
             # indices: assign which char in the group to assign to pattern.
@@ -490,6 +489,7 @@ class Prover:
             new_insts = []
             for c_nums in comb:
                 cs = [groups[num] for num in c_nums]
+
                 for indices in indices_list:
                     flag = False
                     t_inst = copy.copy(inst)
@@ -709,6 +709,8 @@ class Prover:
                             new_facts.append(new_fact)
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
+                if new_fact.pred_name in ('simtri', 'contri', 'eqangle'):
+                    print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
             # for new_fact in new_facts:
@@ -778,6 +780,7 @@ class Prover:
         self.search_step()
         steps = 0
         self.print_hyps(only_not_shadowed=True)
+        print(self.lines)
         while steps < 5:
             steps += 1
             print("Step", steps)
@@ -791,6 +794,7 @@ class Prover:
                         self.print_hyps(only_not_shadowed=True)
                         return i
             self.print_hyps(only_not_shadowed=True)
+            print(self.lines)
 
         return False
 
@@ -907,10 +911,7 @@ class Prover:
                 for a2 in g_angles:
                     if not any(self.equal_angle(a1, a2) for a1 in f_angles):
                         new_args.extend(a2)
-                if fact.pred_name == 'eqangle':
-                    f = Fact('eqangle', new_args, updated=True, lemma="combine", cond=[fact, goal])
-                else:
-                    f = Fact('eqratio', new_args, updated=True, lemma="combine", cond=[fact, goal])
+                f = Fact(fact.pred_name, new_args, updated=True, lemma="combine", cond=[fact, goal])
                 p_comb = make_pairs(new_args, pair_len=4)
                 f.left_map = get_indices(f_angles, p_comb, self.equal_angle)
                 f.right_map = get_indices(g_angles, p_comb, self.equal_angle)
@@ -918,7 +919,35 @@ class Prover:
             else:
                 return None
 
-        elif fact.pred_name in ('simtri', 'contri', 'midp'):
+        elif fact.pred_name in ('simtri', 'contri'):
+            f_tris = make_pairs(fact.args, pair_len=3)
+            g_tris = make_pairs(goal.args, pair_len=3)
+            for t1 in f_tris:
+                for t2 in g_tris:
+                    if set(t1) == set(t2):
+                        order = []
+                        for i in range(0, 3):
+                            for j in range(0, 3):
+                                if t1[i] == t2[j]:
+                                    order.append(j)
+                                    break
+                        new_args = []
+                        for t1 in f_tris:
+                            new_args.extend(t1)
+                        for t2 in g_tris:
+                            if not any(set(t1) == set(t2) for t1 in f_tris):
+                                for i in range(0, 3):
+                                    # print(order)
+                                    new_args.append(t2[order[i]])
+                        f = Fact(fact.pred_name, new_args, updated=True, lemma="combine", cond=[fact, goal])
+                        p_comb = make_pairs(new_args, pair_len=3)
+                        f.left_map = get_indices(f_tris, p_comb, self.equal_triangle)
+                        f.right_map = get_indices(g_tris, p_comb, self.equal_triangle)
+                        print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
+                        return f
+            return None
+
+        elif fact.pred_name == 'midp':
             return None
 
         else:
