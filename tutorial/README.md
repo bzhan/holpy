@@ -31,3 +31,7 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 12. [Conversions II](conversions2.ipynb)
 
 13. [Polynomials](polynomial.ipynb)
+
+14. [Tseitin encoding](tseitin.ipynb)
+
+15. [Satisfiability](satisfiability.ipynb)
