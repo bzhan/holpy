@@ -12,54 +12,46 @@ from prover import encode, sat
 class SATTest(unittest.TestCase):
     def testDisplayCNF(self):
         cnf1 = [[('x', False), ('y', True)], [('y', False), ('z', True)]]
-        res1 = "(~x | y) & (~y | z)"
-        self.assertEqual(sat.display_cnf(cnf1), res1)
+        res1 = "(¬x ∨ y) ∧ (¬y ∨ z)"
+        self.assertEqual(sat.str_of_cnf(cnf1), res1)
 
         cnf2 = [[('x', False)], [('y', True)]]
-        res2 = "~x & y"
-        self.assertEqual(sat.display_cnf(cnf2), res2)
+        res2 = "(¬x) ∧ (y)"
+        self.assertEqual(sat.str_of_cnf(cnf2), res2)
 
         cnf3 = [[('x', False), ('y', True)]]
-        res3 = "~x | y"
-        self.assertEqual(sat.display_cnf(cnf3), res3)
-
-    def testIsSolution(self):
-        cnf = [[('x', False), ('y', True)], [('y', False), ('z', True)]]
-
-        inst1 = {'x': True, 'y': True, 'z': True}
-        self.assertTrue(sat.is_solution(cnf, inst1))
-
-        inst2 = {'x': False, 'y': True, 'z': True}
-        self.assertTrue(sat.is_solution(cnf, inst2))
-
-        inst3 = {'x': True, 'y': False, 'z': True}
-        self.assertFalse(sat.is_solution(cnf, inst3))
-
-        inst4 = dict()
-        self.assertRaises(sat.SATSolverException, sat.is_solution, cnf, inst4)
+        res3 = "(¬x ∨ y)"
+        self.assertEqual(sat.str_of_cnf(cnf3), res3)
 
     def testSolveCNF1(self):
         cnf = [[('x', False), ('y', True)], [('y', False), ('z', True)]]
-        res = sat.solve_cnf(cnf)
-        self.assertTrue(sat.is_solution(cnf, res))
+        res, cert = sat.solve_cnf(cnf)
+        self.assertEqual(res, 'satisfiable')
+        self.assertTrue(sat.is_solution(cnf, cert))
 
     def testSolveCNF2(self):
         cnf = [[('x', True)], [('x', False)]]
-        self.assertIsNone(sat.solve_cnf(cnf))
+        res, cert = sat.solve_cnf(cnf)
+        self.assertEqual(res, 'unsatisfiable')
+        self.assertEqual(cert, {2: [1, 0]})
 
     def testSolveCNF3(self):
         cnf = [[('x', True), ('y', True)], [('x', True), ('y', False)],
                [('x', False), ('y', True)], [('x', False), ('y', False)]]
-        self.assertIsNone(sat.solve_cnf(cnf))
+        res, cert = sat.solve_cnf(cnf)
+        self.assertEqual(res, 'unsatisfiable')
 
     def testSolveCNF4(self):
         cnf = [[]]
-        self.assertIsNone(sat.solve_cnf(cnf))
-        
+        res, cert = sat.solve_cnf(cnf)
+        self.assertEqual(res, 'unsatisfiable')
+        self.assertEqual(cert, {1: [0]})
+
     def testSolveCNF5(self):
         cnf = []
-        res = sat.solve_cnf(cnf)
-        self.assertTrue(sat.is_solution(cnf, res))
+        res, cert = sat.solve_cnf(cnf)
+        self.assertEqual(res, 'satisfiable')
+        self.assertTrue(sat.is_solution(cnf, cert))
     
     def testPelletier(self):
         with open('prover/tests/pelletier.json', 'r', encoding='utf-8') as f:
@@ -69,7 +61,8 @@ class SATTest(unittest.TestCase):
             context.set_context('logic', vars=problem['vars'])
             prop = parser.parse_term(problem['prop'])
             cnf, _, _ = encode.encode(Not(prop))
-            self.assertIsNone(sat.solve_cnf(cnf))
+            res, cert = sat.solve_cnf(cnf)
+            self.assertEqual(res, 'unsatisfiable')
 
 
 if __name__ == "__main__":
