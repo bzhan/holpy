@@ -21,25 +21,24 @@ class EncodeTest(unittest.TestCase):
     def testLogicSubterms(self):
         t = Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
         res = [
-            a, c, d, And(c,d), Implies(a,And(c,d)),
-            b, c, e, And(c,e), Implies(b,And(c,e)),
+            a, b, c, d, e, And(c,d), And(c,e),
+            Implies(a,And(c,d)), Implies(b,And(c,e)),
             Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
         ]
         self.assertEqual(encode.logic_subterms(t), res)
 
     def testEncode(self):
         t = Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
-        cnf, hyps, th = encode.encode(t)
-        self.assertEqual(len(cnf), 16)
-        self.assertEqual(len(th.hyps), 11)
-        self.assertEqual(len(th.prop.strip_conj()), 16)
-
-        pt = encode.get_encode_proof(hyps, th)
-        self.assertEqual(pt.th, th)
+        pt = encode.tseitin_encode(t)
+        self.assertEqual(len(pt.hyps), 11)
+        self.assertEqual(len(pt.prop.strip_conj()), 16)
         
         rpt = report.ProofReport()
         self.assertEqual(theory.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
+
+        cnf = encode.convert_cnf(pt.prop)
+        self.assertEqual(len(cnf), 16)
 
 
 if __name__ == "__main__":

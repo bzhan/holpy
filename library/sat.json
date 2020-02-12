@@ -51,34 +51,6 @@
                 "l": "bool",
                 "r": "bool"
             }
-        },
-        {
-            "name": "resolution",
-            "prop": "x ∨ y ⟶ ¬x ∨ z ⟶ y ∨ z",
-            "ty": "thm",
-            "vars": {
-                "x": "bool",
-                "y": "bool",
-                "z": "bool"
-            }
-        },
-        {
-            "name": "resolution2",
-            "prop": "x ⟶ ¬x ∨ z ⟶ z",
-            "ty": "thm",
-            "vars": {
-                "x": "bool",
-                "z": "bool"
-            }
-        },
-        {
-            "name": "resolution3",
-            "prop": "x ∨ y ⟶ ¬x ⟶ y",
-            "ty": "thm",
-            "vars": {
-                "x": "bool",
-                "y": "bool"
-            }
         }
     ],
     "description": "SAT solver",

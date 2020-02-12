@@ -58,9 +58,9 @@ class SATTest(unittest.TestCase):
             f_data = json.load(f)
 
         for problem in f_data:
-            context.set_context('logic', vars=problem['vars'])
+            context.set_context('sat', vars=problem['vars'])
             prop = parser.parse_term(problem['prop'])
-            cnf, _, _ = encode.encode(Not(prop))
+            cnf = encode.convert_cnf(encode.tseitin_encode(Not(prop)).prop)
             res, cert = sat.solve_cnf(cnf)
             self.assertEqual(res, 'unsatisfiable')
 
