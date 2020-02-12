@@ -4,7 +4,8 @@ from typing import List, Tuple
 
 from kernel.type import TVar, TFun, TyInst, BoolType
 from kernel import term
-from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, And, Eq, true, false
+from kernel.term import Term, SVar, Var, Const, Abs, Inst, Implies, Lambda, \
+    Not, And, Or, Eq, true, false
 from kernel.thm import Thm, InvalidDerivationException
 from kernel import term_ord
 from kernel import theory
@@ -659,6 +660,124 @@ class conj_norm(Conv):
         return imp_conj_iff(goal)
 
 
+@register_macro('imp_disj')
+class imp_disj_macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+        self.limit = None
+
+    def get_proof_term(thy, goal, pts):
+        """Goal is of the form A_1 | ... | A_m --> B_1 | ...| B_n, where
+        {A_1, ..., A_m} is a subset of {B_1, ..., B_n}."""
+
+        # Dictionary from B_i to B_i --> B_1 | ... | B_n
+        pts_B = dict()
+        
+        # Fills up pts_B.
+        def traverse_C(pt):
+            if pt.prop.arg1.is_disj():
+                pt1 = apply_theorem('disjI1', concl=pt.prop.arg1)
+                pt2 = apply_theorem('disjI2', concl=pt.prop.arg1)
+                traverse_C(apply_theorem('syllogism', pt1, pt))
+                traverse_C(apply_theorem('syllogism', pt2, pt))
+            else:
+                pts_B[pt.prop.arg1] = pt
+        
+        # Use pts_B to prove the implication
+        def traverse_A(t):
+            if t.is_disj():
+                pt1 = traverse_A(t.arg1)
+                pt2 = traverse_A(t.arg)
+                return apply_theorem('disjE2', pt1, pt2)
+            else:
+                assert t in pts_B, "imp_disj: %s not found in conclusion" % t
+                return pts_B[t]
+            
+        triv = apply_theorem('trivial', inst=Inst(A=goal.arg))
+        traverse_C(triv)
+        return traverse_A(goal.arg1)
+
+def imp_disj_iff(goal):
+    """Goal is of the form A_1 | ... | A_m <--> B_1 | ... | B_n, where
+    the sets {A_1, ..., A_m} and {B_1, ..., B_n} are equal."""
+    pt1 = ProofTerm('imp_disj', Implies(goal.lhs, goal.rhs))
+    pt2 = ProofTerm('imp_disj', Implies(goal.rhs, goal.lhs))
+    return ProofTerm.equal_intr(pt1, pt2)
+
+def strip_disj(t):
+    def rec(t):
+        if t.is_disj():
+            return rec(t.arg1) + rec(t.arg)
+        else:
+            return [t]
+    return term_ord.sorted_terms(rec(t))
+
+class disj_norm(Conv):
+    """Normalize an disjunction."""
+    def get_proof_term(self, t):
+        goal = Eq(t, Or(*strip_disj(t)))
+        return imp_disj_iff(goal)
+
+
+@register_macro('resolution')
+class resolution_macro(Macro):
+    def __init__(self):
+        self.level = 1
+        self.sig = None
+        self.limit = 'resolution_right'
+
+    def get_proof_term(self, arg, pts):
+        """Input proof terms are A_1 | ... | A_m and B_1 | ... | B_n, where
+        there is some i, j such that B_j = ~A_i or A_i = ~B_j."""
+        
+        # First, find the pair i, j such that B_j = ~A_i or A_i = ~B_j, the
+        # variable side records the side of the positive literal.
+        pt1, pt2 = pts
+        disj1 = strip_disj(pt1.prop)
+        disj2 = strip_disj(pt2.prop)
+        
+        side = None
+        for i, t1 in enumerate(disj1):
+            for j, t2 in enumerate(disj2):
+                if t2 == Not(t1):
+                    side = 'left'
+                    break
+                elif t1 == Not(t2):
+                    side = 'right'
+                    break
+            if side is not None:
+                break
+                
+        assert side is not None, "resolution: literal not found"
+        
+        # If side is wrong, just swap:
+        if side == 'right':
+            return self.get_proof_term(arg, [pt2, pt1])
+        
+        # Move items i and j to the front
+        disj1 = [disj1[i]] + disj1[:i] + disj1[i+1:]
+        disj2 = [disj2[j]] + disj2[:j] + disj2[j+1:]
+        eq_pt1 = imp_disj_iff(Eq(pt1.prop, Or(*disj1)))
+        eq_pt2 = imp_disj_iff(Eq(pt2.prop, Or(*disj2)))
+        pt1 = eq_pt1.equal_elim(pt1)
+        pt2 = eq_pt2.equal_elim(pt2)
+        
+        if len(disj1) > 1 and len(disj2) > 1:
+            pt = apply_theorem('resolution', pt1, pt2)
+        elif len(disj1) > 1 and len(disj2) == 1:
+            pt = apply_theorem('resolution_left', pt1, pt2)
+        elif len(disj1) == 1 and len(disj2) > 1:
+            pt = apply_theorem('resolution_right', pt1, pt2)
+        else:
+            pt = apply_theorem('negE', pt2, pt1)
+
+        return pt.on_prop(disj_norm())
+
+def resolution(pt1, pt2):
+    return ProofTerm('resolution', None, [pt1, pt2])
+
+
 theory.global_macros.update({
     "beta_norm": beta_norm_macro(),
     "intros": intros_macro(),
@@ -676,5 +795,4 @@ theory.global_macros.update({
     "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
     "forall_elim_gen": forall_elim_gen_macro(),
     "trivial": trivial_macro(),
-    "imp_conj": imp_conj_macro(),
 })

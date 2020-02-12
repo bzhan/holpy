@@ -32,6 +32,10 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 
 13. [Polynomials](polynomial.ipynb)
 
-14. [Tseitin encoding](tseitin.ipynb)
+14. [Resolution](resolution.iypnb)
 
-15. [Satisfiability](satisfiability.ipynb)
+15. [Tseitin encoding](tseitin.ipynb)
+
+16. [Satisfiability](satisfiability.ipynb)
+
+17. [Satisfiability II](satisfiability2.ipynb)

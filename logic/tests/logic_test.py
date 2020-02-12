@@ -257,6 +257,45 @@ class LogicTest(unittest.TestCase):
         for t, t_res in test_data:
             test_conv(self, 'logic', logic.conj_norm(), vars=vars, t=t, t_res=t_res)
 
+    def testImpDisjMacro(self):
+        test_data = [
+            ('A | (D | B) | C --> (A | D | C) | (A | B)', True),
+            ('C | D --> A', False),
+            ('A | B --> A | B | C', True),
+            ('A | B | C --> A | B', False)
+        ]
+
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
+        for t, success in test_data:
+            if success:
+                test_macro(self, 'logic_base', 'imp_disj', vars=vars, args=t, res=t)
+            else:
+                test_macro(self, 'logic_base', 'imp_disj', vars=vars, args=t, failed=AssertionError)
+
+    def testDisjNorm(self):
+        test_data = [
+            ('A | (D | B) | C', 'A | B | C | D'),
+            ('A | A | B | B | C | C', 'A | B | C'),
+        ]
+
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
+        for t, t_res in test_data:
+            test_conv(self, 'logic', logic.disj_norm(), vars=vars, t=t, t_res=t_res)
+
+    def testResolution(self):
+        test_data = [
+            ('P | Q', '~P | Q', 'Q'),
+            ('P | Q | R', 'P | ~Q | R', 'P | R'),
+            ('~P', 'P | Q', 'Q'),
+            ('~Q', 'P | Q', 'P'),
+            ('P', '~P', 'false'),
+            ('~P', 'P', 'false'),
+        ]
+
+        vars = {'P': 'bool', 'Q': 'bool', 'R': 'bool'}
+        for t1, t2, t_res in test_data:
+            test_macro(self, 'logic_base', 'resolution', vars=vars, assms=[t1, t2], res=t_res)
+
 
 if __name__ == "__main__":
     unittest.main()
