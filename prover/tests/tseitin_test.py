@@ -5,7 +5,7 @@ from kernel.term import Term, Var, Implies, And, Or
 from kernel import report
 from kernel import theory
 from logic import basic
-from prover import encode
+from prover import tseitin
 
 a = Var('a', BoolType)
 b = Var('b', BoolType)
@@ -14,7 +14,7 @@ d = Var('d', BoolType)
 e = Var('e', BoolType)
 
 
-class EncodeTest(unittest.TestCase):
+class TseitinTest(unittest.TestCase):
     def setUp(self):
         basic.load_theory('sat')
 
@@ -25,11 +25,11 @@ class EncodeTest(unittest.TestCase):
             Implies(a,And(c,d)), Implies(b,And(c,e)),
             Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
         ]
-        self.assertEqual(encode.logic_subterms(t), res)
+        self.assertEqual(tseitin.logic_subterms(t), res)
 
-    def testEncode(self):
+    def testTseitin(self):
         t = Or(Implies(a,And(c,d)),Implies(b,And(c,e)))
-        pt = encode.tseitin_encode(t)
+        pt = tseitin.encode(t)
         self.assertEqual(len(pt.hyps), 11)
         self.assertEqual(len(pt.prop.strip_conj()), 16)
         
@@ -37,7 +37,7 @@ class EncodeTest(unittest.TestCase):
         self.assertEqual(theory.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
 
-        cnf = encode.convert_cnf(pt.prop)
+        cnf = tseitin.convert_cnf(pt.prop)
         self.assertEqual(len(cnf), 16)
 
 

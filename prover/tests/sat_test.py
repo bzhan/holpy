@@ -6,7 +6,8 @@ from logic import logic
 from logic import basic
 from syntax import parser
 from logic import context
-from prover import encode, sat
+from prover import tseitin
+from prover import sat
 
 
 class SATTest(unittest.TestCase):
@@ -60,7 +61,7 @@ class SATTest(unittest.TestCase):
         for problem in f_data:
             context.set_context('sat', vars=problem['vars'])
             prop = parser.parse_term(problem['prop'])
-            cnf = encode.convert_cnf(encode.tseitin_encode(Not(prop)).prop)
+            cnf = tseitin.convert_cnf(tseitin.encode(Not(prop)).prop)
             res, cert = sat.solve_cnf(cnf)
             self.assertEqual(res, 'unsatisfiable')
 

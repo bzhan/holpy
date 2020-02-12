@@ -27,7 +27,7 @@ def logic_subterms(t):
 
     return term_ord.sorted_terms(rec(t))
 
-def tseitin_encode(t):
+def encode(t):
     """Given a propositional formula t, compute its Tseitin encoding.
 
     The theorem is structured as follows:
