@@ -11,7 +11,7 @@ from logic.conv import Conv, ConvException, argn_conv, arg_conv, arg1_conv, top_
 from logic.logic import apply_theorem
 from logic import auto
 from logic import logic
-from kernel.proofterm import ProofTerm, refl
+from kernel.proofterm import ProofTerm, refl, TacticException
 from logic.context import Context
 from data import set
 from data import nat
@@ -552,7 +552,7 @@ def apply_subst_thm(f, g, a, b):
     try:
         auto.auto_solve(real.less_eq(g(a).beta_conv(), g(b).beta_conv()))
         is_le = True
-    except logic.TacticException:
+    except TacticException:
         is_le = False
 
     if is_le:

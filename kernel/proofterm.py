@@ -7,8 +7,27 @@ from kernel import theory
 from util import typecheck
 
 
+class TacticException(Exception):
+    """Signals that a tactic is not applicable to the goal."""
+    def __init__(self, err=""):
+        self.err = err
+
+    def __str__(self):
+        return self.err
+
+
 class ProofTerm():
-    """A proof term contains the derivation tree of a theorem."""
+    """A proof term contains the derivation tree of a theorem.
+    
+    Each proof term contains the following fields:
+    
+    - rule: name of the primitive derivation rule or macro.
+    - args: arguments to the rule.
+    - prevs: previous proof terms.
+    - th: sequent proved by the proof term.
+    - gaps: list of gaps (of type Thm) in the proof term.
+
+    """
     def __init__(self, rule, args, prevs=None, th=None):
         typecheck.checkinstance('ProofTerm', rule, str)
 
@@ -38,15 +57,18 @@ class ProofTerm():
                 self.th = th
         self.args = args
         self.prevs = prevs
+        if self.rule == 'sorry':
+            self.gaps = [self.th]
+        else:
+            self.gaps = sum([prev.gaps for prev in self.prevs], [])
 
     def __repr__(self):
         return str(self)
 
     def __str__(self):
         res = "ProofTerm(%s)" % self.th
-        gaps = self.get_gaps()
-        if gaps:
-            res += '\nGaps: ' + '\n      '.join(str(gap) for gap in gaps)
+        if self.gaps:
+            res += '\nGaps: ' + '\n      '.join(str(gap) for gap in self.gaps)
         return res
 
     @property
@@ -173,22 +195,6 @@ class ProofTerm():
         typecheck.checkinstance('sorry', th, Thm)
         return ProofTerm("sorry", None, [], th)
 
-    def get_gaps(self):
-        """Return list of gaps of the proof term. Return value is
-        a list of Thm objects.
-
-        """
-        res = set()
-        def search(pt):
-            if pt.rule == 'sorry':
-                res.add(pt.th)
-            else:
-                for prev in pt.prevs:
-                    search(prev)
-
-        search(self)
-        return list(res)
-
     def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""
 
@@ -263,6 +269,31 @@ class ProofTerm():
         for cv in cvs:
             eq_pt = cv.get_proof_term(pt.prop.rhs)
             pt = pt.transitive(eq_pt)
+        return pt
+
+    def tac(self, tac):
+        """Apply the given tactic to the proof term. Return the new
+        proof term.
+        
+        Each tactic is applied only to the subgoal. Use tac_all to apply a
+        tactic to all subgoals.
+        
+        """
+        if self.rule == 'sorry':
+            return tac.get_proof_term(self.th)
+
+        for i, prev in enumerate(self.prevs):
+            if prev.gaps:
+                new_prevs = self.prevs[:i] + [prev.tac(tac)] + self.prevs[i+1:]
+                return ProofTerm(self.rule, self.args, prevs=new_prevs, th=self.th)
+
+        raise TacticException('tac: no remaining subgoals')
+
+    def tacs(self, *tacs):
+        """Apply the given tactics in sequence."""
+        pt = self
+        for tac in tacs:
+            pt = pt.tac(tac)
         return pt
 
 

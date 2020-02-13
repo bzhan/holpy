@@ -14,13 +14,12 @@ from kernel.term import Term
 from kernel.thm import Thm
 from kernel.macro import Macro
 from kernel.theory import register_macro
-from kernel.proofterm import ProofTerm
+from kernel.proofterm import ProofTerm, TacticException
 from data import nat
 from data import real
 from data import set as hol_set
 from logic import auto
 from logic import logic
-from logic.logic import TacticException
 import integral
 
 

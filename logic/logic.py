@@ -19,15 +19,6 @@ from util import name
 from util import typecheck
 
 
-class TacticException(Exception):
-    """Signals that a tactic is not applicable to the goal."""
-    def __init__(self, err=""):
-        self.err = err
-
-    def __str__(self):
-        return self.err
-
-
 """Utility functions for logic."""
 
 def is_exists1(t):

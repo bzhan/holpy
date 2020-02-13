@@ -133,7 +133,7 @@ class apply_prev(Method):
         prevs = [ProofTerm.atom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             pt = tactic.apply_prev().get_proof_term(cur_item.th, args=None, prevs=prevs)
-            return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
+            return [{"_goal": [gap.prop for gap in pt.gaps]}]
         except (AssertionError, matcher.MatchException):
             return []
 
@@ -159,7 +159,7 @@ class rewrite_goal_with_prev(Method):
         except (AssertionError, matcher.MatchException):
             return []
         else:
-            return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]        
+            return [{"_goal": [gap.prop for gap in pt.gaps]}]        
 
     def display_step(self, state, data):
         return pprint.N("rewrite with fact")
@@ -185,7 +185,7 @@ class rewrite_goal(Method):
             try:
                 sym_b = True if sym == 'true' else False
                 pt = tactic.rewrite_goal(sym=sym_b).get_proof_term(cur_item.th, args=th_name, prevs=prevs)
-                results.append({"theorem": th_name, "sym": sym, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                results.append({"theorem": th_name, "sym": sym, "_goal": [gap.prop for gap in pt.gaps]})
             except (AssertionError, matcher.MatchException) as e:
                 pass
 
@@ -399,7 +399,7 @@ class apply_backward_step(Method):
         def search_thm(th_name):
             try:
                 pt = tactic.rule().get_proof_term(cur_item.th, args=th_name, prevs=prevs)
-                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.gaps]})
             except theory.ParameterQueryException:
                 # In this case, still suggest the result
                 results.append({"theorem": th_name})
@@ -447,7 +447,7 @@ class apply_resolve_step(Method):
         def search_thm(th_name):
             try:
                 pt = tactic.resolve().get_proof_term(cur_item.th, args=th_name, prevs=prevs)
-                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.gaps]})
             except (AssertionError, matcher.MatchException):
                 pass
 
