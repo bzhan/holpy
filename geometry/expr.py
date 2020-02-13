@@ -398,6 +398,9 @@ class Prover:
 
         if pat.tail:
             # Get matching result from inst directly.
+
+            if len(f.args) < len(pat.args):
+                return []
             for p in pat.args:
                 if p not in inst.keys():
                     return []
