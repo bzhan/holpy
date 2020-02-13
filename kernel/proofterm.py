@@ -43,7 +43,11 @@ class ProofTerm():
         return str(self)
 
     def __str__(self):
-        return "ProofTerm(%s)" % self.th
+        res = "ProofTerm(%s)" % self.th
+        gaps = self.get_gaps()
+        if gaps:
+            res += '\nGaps: ' + '\n      '.join(str(gap) for gap in gaps)
+        return res
 
     @property
     def hyps(self):
@@ -118,6 +122,8 @@ class ProofTerm():
         return ProofTerm("equal_intr", None, [pt1, pt2])
 
     def equal_elim(self, pt2):
+        if self.is_reflexive():
+            return pt2
         return ProofTerm("equal_elim", None, [self, pt2])
 
     def implies_intr(self, A):
@@ -228,14 +234,17 @@ class ProofTerm():
         """Apply the given conversion to the proposition."""
         pt = self
         for cv in cvs:
-            pt = cv.apply_to_pt(pt)
+            eq_pt = cv.get_proof_term(pt.prop)
+            pt = eq_pt.equal_elim(pt)
         return pt
 
     def on_arg(self, *cvs):
         """Apply the given conversion to the argument of the proposition."""
         pt = self
         for cv in cvs:
-            pt = cv.apply_to_pt(pt, pos="arg")
+            eq_pt = cv.get_proof_term(pt.prop.arg)
+            eq_pt = ProofTerm.reflexive(pt.prop.fun).combination(eq_pt)
+            pt = eq_pt.equal_elim(pt)
         return pt
 
     def on_lhs(self, *cvs):
@@ -243,7 +252,8 @@ class ProofTerm():
         assert self.prop.is_equals(), "on_lhs: theorem is not an equality."
         pt = self
         for cv in cvs:
-            pt = cv.apply_to_pt(pt, pos="lhs")
+            eq_pt = cv.get_proof_term(pt.prop.lhs)
+            pt = eq_pt.symmetric().transitive(pt)
         return pt
 
     def on_rhs(self, *cvs):
@@ -251,15 +261,10 @@ class ProofTerm():
         assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
         pt = self
         for cv in cvs:
-            pt = cv.apply_to_pt(pt, pos="rhs")
+            eq_pt = cv.get_proof_term(pt.prop.rhs)
+            pt = pt.transitive(eq_pt)
         return pt
 
-    def on_assums(self, *cvs):
-        """Apply the given conversion to the assumptions."""
-        pt = self
-        for cv in cvs:
-            pt = cv.apply_to_pt(pt, pos="assums")
-        return pt
 
 def refl(t):
     return ProofTerm.reflexive(t)

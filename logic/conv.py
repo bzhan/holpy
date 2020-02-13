@@ -28,28 +28,6 @@ class Conv():
     def get_proof_term(self, t):
         raise NotImplementedError
 
-    def apply_to_pt(self, pt, pos=None):
-        """Apply to the given proof term."""
-
-        # Rewriting the right side of an equality is handled
-        # in a special way.
-        if pos == "rhs":
-            eq_pt = self.get_proof_term(pt.prop.rhs)
-            return pt.transitive(eq_pt)
-
-        elif pos == "lhs":
-            eq_pt = self.get_proof_term(pt.prop.lhs)
-            return eq_pt.symmetric().transitive(pt)
-        elif pos == "arg":
-            return arg_conv(self).apply_to_pt(pt)
-        elif pos == "assums":
-            return assums_conv(self).apply_to_pt(pt)
-
-        eq_pt = self.get_proof_term(pt.prop)
-        if eq_pt.prop.is_reflexive():
-            return pt
-        else:
-            return eq_pt.equal_elim(pt)
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
@@ -386,10 +364,10 @@ class rewr_conv(Conv):
         assert pt.th.is_equals(), "rewr_conv: wrong result."
 
         if pt.th.prop.lhs != t:
-            pt = beta_norm_conv().apply_to_pt(pt)
+            pt = pt.on_prop(beta_norm_conv())
 
         if pt.th.prop.lhs != t:
-            pt = eta_conv().apply_to_pt(pt)
+            pt = pt.on_prop(eta_conv())
 
         assert pt.th.prop.lhs == t, "rewr_conv: wrong result. Expected %s, got %s" % (str(t), str(pt.th.prop.lhs))
         return pt

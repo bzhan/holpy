@@ -239,7 +239,7 @@ class apply_prev(Tactic):
         for new_name in new_names:
             pt = pt.forall_elim(inst[new_name])
         if pt.prop.beta_norm() != pt.prop:
-            pt = beta_norm_conv().apply_to_pt(pt)
+            pt = pt.on_prop(beta_norm_conv())
         inst_As, inst_C = pt.prop.strip_implies()
 
         inst_arg = [inst[new_name] for new_name in new_names]

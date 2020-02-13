@@ -704,11 +704,14 @@ class Term():
         else:
             raise TypeError
 
-    def dest_abs(self):
+    def dest_abs(self, var_name=None):
         """Given self of form %x. body, return pair (x, body).
 
-        It is guaranteed that x does not repeat names with any variables
-        in the body, as well as any variables in the context.
+        If var_name is None, the name recorded in the abstraction is used
+        as the suggested name. Otherwise var_name is used as suggested name.
+
+        It is guaranteed that v does not repeat names with any variables
+        in the body.
 
         """
         assert self.is_abs(), 'dest_abs'

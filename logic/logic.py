@@ -180,7 +180,7 @@ class beta_norm_macro(Macro):
 
     def get_proof_term(self, args, pts):
         assert args is None, "beta_norm_macro"
-        return beta_norm_conv().apply_to_pt(pts[0])
+        return pts[0].on_prop(beta_norm_conv())
 
 class intros_macro(Macro):
     """Introduce assumptions and variables."""
@@ -285,7 +285,7 @@ class apply_theorem_macro(Macro):
         pt = ProofTerm.theorem(name)
         pt = pt.subst_type(inst.tyinst).substitution(inst)
         if pt.prop.beta_norm() != pt.prop:
-            pt = beta_norm_conv().apply_to_pt(pt)
+            pt = pt.on_prop(beta_norm_conv())
         pt = pt.implies_elim(*pts)
 
         assert len(pt.prop.get_stvars()) == 0, "apply_theorem: unmatched type variables."
@@ -335,10 +335,10 @@ class apply_fact_macro(Macro):
             else:
                 pt = pt.forall_elim(new_var)
         if pt.prop.beta_norm() != pt.prop:
-            pt = beta_norm_conv().apply_to_pt(pt)
+            pt = pt.on_prop(beta_norm_conv())
         for prev_pt in pt_prevs:
             if prev_pt.prop != pt.assums[0]:
-                prev_pt = beta_norm_conv().apply_to_pt(prev_pt)
+                prev_pt = prev_pt.on_prop(beta_norm_conv())
             pt = pt.implies_elim(prev_pt)
         for new_var in new_vars:
             if new_var.name not in inst:
@@ -514,7 +514,7 @@ class forall_elim_gen_macro(Macro):
 
         pt = pts[0].forall_elim(s)
         if pt.prop.beta_norm() != pt.prop:
-            pt = beta_norm_conv().apply_to_pt(pt)
+            pt = pt.on_prop(beta_norm_conv())
         return pt
 
 class trivial_macro(Macro):

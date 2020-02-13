@@ -79,11 +79,11 @@ def eval_Sem(c, st):
         b_st = beta_norm(b(st))
         b_eval = norm_cond_cv.get_proof_term(b_st)
         if b_eval.prop.arg == true:
-            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
+            b_res = b_eval.on_prop(rewr_conv("eq_true", sym=True))
             pt1 = eval_Sem(c1, st)
             return apply_theorem("Sem_if1", b_res, pt1, concl=Sem(T)(c, st, pt1.prop.arg))
         else:
-            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
+            b_res = b_eval.on_prop(rewr_conv("eq_false", sym=True))
             pt2 = eval_Sem(c2, st)
             return apply_theorem("Sem_if2", b_res, pt2, concl=Sem(T)(c, st, pt2.prop.arg))
     elif c.is_comb("While", 3):
@@ -91,14 +91,14 @@ def eval_Sem(c, st):
         b_st = beta_norm(b(st))
         b_eval = norm_cond_cv.get_proof_term(b_st)
         if b_eval.prop.arg == true:
-            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(b_eval)
+            b_res = b_eval.on_prop(rewr_conv("eq_true", sym=True))
             pt1 = eval_Sem(body, st)
             pt2 = eval_Sem(c, pt1.prop.arg)
             pt = apply_theorem("Sem_while_loop", b_res, pt1, pt2,
                                concl=Sem(T)(c, st, pt2.prop.arg), inst=Inst(s3=pt1.prop.arg))
             return pt.on_arg(function.fun_upd_norm_one_conv())
         else:
-            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(b_eval)
+            b_res = b_eval.on_prop(rewr_conv("eq_false", sym=True))
             return apply_theorem("Sem_while_skip", b_res, concl=Sem(T)(c, st, st))
     else:
         raise NotImplementedError
@@ -216,8 +216,10 @@ def vcg_norm(T, goal):
         pt = pt.implies_intr(A)
 
     # Normalize each of the assumptions
-    return pt.on_assums(rewr_conv("Entail_def"), beta_norm_conv(),
-                        top_conv(function.fun_upd_eval_conv()))
+    return pt.on_prop(
+        assums_conv(rewr_conv("Entail_def")),
+        assums_conv(beta_norm_conv()),
+        assums_conv(top_conv(function.fun_upd_eval_conv())))
 
 
 @register_macro('vcg')
