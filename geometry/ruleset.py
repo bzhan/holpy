@@ -22,7 +22,7 @@ ruleset_raw = {
     # "D19": "eqangle(l, k, n, m) :- eqangle(k, l, m, n)",#
     # "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",#
     "D21": "eqangle(k, m ,l, n) :- eqangle(k, l, m, n)",
-    # "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",#
+    "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",#
     # "D23": "cong(A, B, D, C) :- cong(A, B, C, D)",#
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",#
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",#
@@ -89,8 +89,8 @@ ruleset_raw = {
     # but there exists methods to obtain contri by more than one cong and less than two eqangle facts (SAS and SSS).
     # They have been added to the ruleset additionally.
     # 4 rules for obtaining contri.
-    "D79": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F), cong(B, C, E, F)",  # SAS
-    "D80": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), cong(B, C, E, F), cong(A, C, D, F)",  # SSS
+    # "D79": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F), cong(B, C, E, F)",  # SAS
+    # "D80": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), cong(B, C, E, F), cong(A, C, D, F)",  # SSS
     # "D81": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F),"
     #        "eqangle(B, A, A, C, E, D, D, F)",  # ASA
     # "D82": "contri(A, B, C, D, E, F) :- cong(A, B, D, E), eqangle(A, B, B, C, D, E, E, F),"
@@ -98,7 +98,7 @@ ruleset_raw = {
     # Get eqangle from contri.
     "D83": "eqangle(A, B, B, C, D, E, E, F) :- contri(A, B, C, D, E, F)",
     # Obtaining contri from two triangles that have an identical side.
-    "D84": "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, B, C, D, B)",  # SAS
+    # "D84": "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, B, C, D, B)",  # SAS
     # "D85":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), cong(C, A, C, D)",  # SSS
     # "D86":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(A, C, C, B, D, C, C, B)",  # ASA
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS

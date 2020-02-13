@@ -744,8 +744,8 @@ class Prover:
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
-                # if new_fact.pred_name == 'perp':
-                #     print("new fact:", new_fact, rule, facts)
+                if new_fact.pred_name == 'contri':
+                    print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
     def compute_lines(self):
