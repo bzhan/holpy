@@ -555,6 +555,7 @@ def get_theorem(name, *, svar=True):
     return thy.get_theorem(name, svar=svar)
 
 def print_theorem(*args):
+    """Print the theorems with the given names."""
     for name in args:
         print('%s: %s' % (name, get_theorem(name, svar=False)))
 

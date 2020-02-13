@@ -26,16 +26,20 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 
 10. [Conversions I](https://nbviewer.jupyter.org/urls/gitee.com/bhzhan/holpy/raw/master/tutorial/conversions.ipynb)
 
-11. [Predicate](predicate.ipynb)
+11. [Predicate logic](predicate.ipynb)
 
 12. [Conversions II](conversions2.ipynb)
 
-13. [Polynomials](polynomial.ipynb)
+13. [Peano arithmetic](peano.ipynb)
 
-14. [Resolution](resolution.iypnb)
+14. [Normalization of polynomials](polynomial.ipynb)
 
-15. [Tseitin encoding](tseitin.ipynb)
+15. [Resolution](resolution.iypnb)
 
-16. [Satisfiability](satisfiability.ipynb)
+16. [Tseitin encoding](tseitin.ipynb)
 
-17. [Satisfiability II](satisfiability2.ipynb)
+17. [Satisfiability](satisfiability.ipynb)
+
+18. [Satisfiability II](satisfiability2.ipynb)
+
+19. [Tactics I](tactics.ipynb)
