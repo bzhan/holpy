@@ -748,8 +748,8 @@ class Prover:
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
-                # if new_fact.pred_name in ('contri', 'cong', 'cyclic', 'eqangle', 'perp'):
-                    # print("new fact:", new_fact, rule, facts)
+                # if new_fact.pred_name in ('simtri', 'eqangle', 'perp'):
+                #     print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
     def compute_lines(self):
@@ -1026,7 +1026,7 @@ class Prover:
             groups = make_pairs(args)
             for g in groups:
                 if g[0] == g[1]:
-                    return False
+                    return True
             return args[0] + args[1] == args[2] + args[3] or args[4] + args[5] == args[6] + args[7] \
                 or (args[0] + args[1] == args[6] + args[7] and args[2] + args[3] == args[4] + args[5])
         if fact.pred_name in ("simtri", "contri"):

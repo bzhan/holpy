@@ -464,18 +464,39 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["circle(O, A, B, C, D, E)"], [], [], "cong(O, C, O, E)"),
 
             # Following tests proves some examples that are also in "Geometry Expert".
-            # Examples -> 6_GDD_FULL -> 01-20 -> 01
+            # Examples -> 6_GDD_FULL -> 01-20
+            # ... -> 01
             (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "midp(F, C, B)", "midp(G, D, E)", "coll(A, D, B)",
                        "coll(A, E, C)", "coll(D, G, E)", "coll(B, F, C)"], [], [], "perp(F, G, D, E)"),
-            #
-            # Examples -> 6_GDD_FULL -> 01-20 -> 02
+            # ... -> 02
             (ruleset, ["midp(A1, C, B)", "midp(B1, C, A)", "midp(C1, B, A)", "circle(O, A, B, C)", "coll(A, B1, C)",
                        "coll(C, A1, B)", "coll(A, C1, B)"], [], [], "perp(O, A1, B1, C1)"),
-
-            # Examples -> 6_GDD_FULL -> 01-20 -> 03
+            # ... -> 03
             (ruleset, ["perp(D, A, B, C)", "perp(E, B, E, C)", "perp(F, C, A, B)", "midp(a1, C, B)", "midp(P, E, B)",
                        "midp(Q, F, C)", "coll(A, F, B)", "coll(A, E, C)", "coll(A, H, D)",
                        "coll(B, P, H, E)", "coll(F, Q, H, C)", "coll(B, a1, D, C)"], [], [], "cyclic(P, Q, H, D)"),
+            # ... -> 04
+            (ruleset, ["circle(O, A, B, C, D)", "midp(Q, C, B)", "midp(J, S, Q)", "cong(J, O, J, M)",
+                       "coll(A, S, D, I)", "coll(B, Q, C, I)", "coll(O, J, M)", "coll(S, J, Q)"], [], [],
+                        "perp(S, M, B, C)"),
+            # ... -> 06
+            (ruleset, ["perp(E, C, A, B)", "perp(F, A, B, C)", "coll(A, E, B)", "coll(B, F, C)", "coll(E, H, C)",
+                       "coll(A, H, F)"], [], [], "perp(B, H, A, C)"),
+            # ... -> 07
+            # TODO: Make use of "circle" facts when matching "cyclic" facts.
+            # Adding "cyclic" fact with the same arguments as a "circie" fact (but without center) works smoothly.
+            (ruleset, ["circle(O, A, B, C, D)", "perp(E, D, B, C)", "perp(F, D, A, C)", "perp(G, D, A, B)",
+                       "coll(A, G, B)", "coll(A, F, C)", "coll(E, C, B)", "cyclic(A, B, C, D)"], [], [],
+                        "coll(E, F, G)"),
+            # ... -> 10
+            (ruleset, ["circle(O1, C, D, E, Q)", "cyclic(C, D, E, Q)", "circle(O, B, E, A, Q)", "cyclic(B, E, A, Q)",
+                       "coll(C, D, P)", "coll(C, E, B)", "coll(D, E, A)", "coll(P, B, A)"], [], [],
+                        "cyclic(P, D, Q, A)"),
+            # ... -> 11
+            (ruleset, ["perp(D, A, B, C)", "midp(L, A, B)", "midp(M, C, B)", "midp(N, A, C)", "coll(A, L, B)",
+                       "coll(A, N, C)", "coll(B, D, M, C)"], [], [], "cyclic(L, D, M, N)"),
+
+
 
         ]
         # pr = cProfile.Profile()
