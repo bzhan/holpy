@@ -723,9 +723,13 @@ class Prover:
                     else:
                         tmp_args = [inst[i][0] for i in assum.args]
                     tmp_fact = Fact(assum.pred_name, tmp_args, negation=True)
-                    # print("tmp:   ", tmp_fact)
-                    # Check if exist a fact that can imply the negation assum.
+                    # print("tmp_fact: ", tmp_fact)
+                    fact_valid = not self.check_trivial(tmp_fact)
+                    if not fact_valid:
+                        continue
                     fact_valid = self.check_classfied_hyps_foreach(self.check_imply_reverse, tmp_fact)
+                    if not fact_valid:
+                        continue
 
             if not fact_valid:
                 continue
@@ -744,8 +748,8 @@ class Prover:
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
-                if new_fact.pred_name == 'contri':
-                    print("new fact:", new_fact, rule, facts)
+                # if new_fact.pred_name in ('contri', 'cong', 'cyclic', 'eqangle', 'perp'):
+                    # print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
     def compute_lines(self):
@@ -870,6 +874,7 @@ class Prover:
                 f = Fact('circle', [c1.center] + list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
                 f.left_map = get_indices(c1.args, f.args)
                 f.right_map = get_indices(c2.args, f.args)
+                # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                 return f
             else:
                 return None
@@ -882,6 +887,7 @@ class Prover:
                 f = Fact('cyclic', list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
                 f.left_map = get_indices(c1.args, f.args)
                 f.right_map = get_indices(c2.args, f.args)
+                # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                 return f
             else:
                 return None
@@ -943,6 +949,7 @@ class Prover:
                 p_comb = make_pairs(new_args, pair_len=4)
                 f.left_map = get_indices(f_angles, p_comb, self.equal_angle)
                 f.right_map = get_indices(g_angles, p_comb, self.equal_angle)
+                # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                 return f
             else:
                 return None
@@ -971,7 +978,7 @@ class Prover:
                         p_comb = make_pairs(new_args, pair_len=3)
                         f.left_map = get_indices(f_tris, p_comb, self.equal_triangle)
                         f.right_map = get_indices(g_tris, p_comb, self.equal_triangle)
-                        # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
+
                         return f
             return None
 
@@ -993,6 +1000,8 @@ class Prover:
         elif fact.pred_name == 'para':
             pairs = make_pairs(fact.args)
             for p1, p2 in itertools.permutations(pairs, 2):
+                # print(p1, p2)
+                # print(self.get_line(p1), self.get_line(p2))
                 if self.equal_line(p1, p2):
                     return True
             return False

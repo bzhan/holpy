@@ -333,55 +333,52 @@ class ExprTest(unittest.TestCase):
 
     def testPrintSearch(self):
         test_data = [
-            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
-                       "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
-
-            (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-
-            (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
-             ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
-
-            (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
-                       "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
-
-            # Following 2 tests: testing if contri works.
-            (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
-                        [], [], "cong(B, M, C, M)"),
-
-            # (ruleset, ["cong(A, B, A, C)", "cong(D, B, D, C)", "coll(A, D, F)"],
-            #  [], [], "cong(B, F, C, F)"),
-
-            # Following 4 tests: testing if simtri works.
-            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
-             "simtri(A, D, E, E, F, C)"),
-
-            (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
-
-            (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
-                       "perp(A, B, B, C)", "perp(D, C, C, B)"],
-             [], [], "simtri(A, B, F, E, A, D)"),
-
-            # This example shows that the mechanism can be improved:
-            # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
-            # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
-            # circle required.
-            (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
-                       ], [], [], "simtri(A, C, B, A, D, E)"),
-
-            # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
-            # in the hypothesis :midp(F, A, D) and coll(F, A, D).
-            # A0 -> F
-            (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
-                       "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
-                       ], [], [], "midp(E, B, C)"),
+            # (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
+            #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
+            #
+            # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
+            #
+            # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
+            #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+            #
+            # (ruleset_reduced, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
+            #            "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+            #
+            # # Following 2 tests: testing if contri works.
+            # (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
+            #             [], [], "cong(B, M, C, M)"),
+            #
+            # # Following 4 tests: testing if simtri works.
+            # (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
+            #  "simtri(A, D, E, E, F, C)"),
+            #
+            # (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
+            #
+            # (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
+            #            "perp(A, B, B, C)", "perp(D, C, C, B)"],
+            #  [], [], "simtri(A, B, F, E, A, D)"),
+            #
+            # # This example shows that the mechanism can be improved:
+            # # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
+            # # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
+            # # circle required.
+            # (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
+            #            ], [], [], "simtri(A, C, B, A, D, E)"),
+            #
+            # # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
+            # # in the hypothesis :midp(F, A, D) and coll(F, A, D).
+            # # A0 -> F
+            # (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
+            #            "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
+            #            ], [], [], "midp(E, B, C)"),
 
             # Following tests proves some theorems in "Machine Proofs in Geometry".
             #
-            # 6.45 (Can be proved, but too slow)
+            # 6.45 (Failed)
             # If L is the harmonic conjugate of the centroid G of a triangle ABC
             # with respect to the ends A, D of the median AD, show that LD = AD.
-            # (ruleset, ["midp(D, B, C)", "midp(E, A, C)", "midp(F, A, B)", "coll(B, G, E)", "coll(A, G, D, L)",
-            #            "coll(F, G, C)", "eqratio(L, D, D, G, A, L, A, G)", "coll(B, D, C)"], [], [], "cong(L, D, A, D)"),
+            # (ruleset, ["midp(D, B, C)", "midp(E, A, C)", "midp(F, A, B)", "coll(B, G, E)",
+            #            "coll(F, G, C)", "eqratio(L, D, D, G, A, L, A, G)", "coll(B, D, C)"], [], [], "midp(D, L, A)"),
 
             # 6.46 (Failed)
             # Show that the distances of a point on a median of triangle from
@@ -408,16 +405,16 @@ class ExprTest(unittest.TestCase):
             # 6.63
             # In a given triangle the three products of the segments into which
             # the orthocenter divides the altitudes are equal.
-            (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "coll(E, H, B)", "coll(C, H, D)", "coll(A, E, C)",
-                       "coll(A, D, B)"], [], [], "eqratio(C, H, B, H, H, E, H, D)"),
+            # (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "coll(E, H, B)", "coll(C, H, D)", "coll(A, E, C)",
+            #            "coll(A, D, B)"], [], [], "eqratio(C, H, B, H, H, E, H, D)"),
 
             # 6.64
-            (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "coll(A, E, C)", "coll(C, H, F)", "coll(E, H, B)",
-                       "coll(A, F, B)"], [], [], "eqratio(A, F, C, F, H, F, F, B)"),
+            # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "coll(A, E, C)", "coll(C, H, F)", "coll(E, H, B)",
+            #            "coll(A, F, B)"], [], [], "eqratio(A, F, C, F, H, F, F, B)"),
 
             # 6.69
-            (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
-                       "coll(B, D, C)"], [], [], "eqangle(E, D, D, C, B, D, D, F)"),
+            # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
+            #            "coll(B, D, C)"], [], [], "eqangle(E, D, D, C, B, D, D, F)"),
 
             # 6.70 (Failed)
             # (ruleset, ["perp(A, H, B, C)", "perp(B, H, A, C)", "perp(C, H, A, B)", "circle(OA, B, H, C)",
@@ -433,8 +430,8 @@ class ExprTest(unittest.TestCase):
             #            "coll(J, P, D)", "coll(B, P, F, A)", "coll(A, E, C)", "coll(B, D, C)"], [], [], "midp(P, D, J)"),
 
             # 6.74
-            (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
-                       "coll(B, D, C)"], [], [], "eqratio(B, D, E, D, F, D, D, C)"),
+            # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
+            #            "coll(B, D, C)"], [], [], "eqratio(B, D, E, D, F, D, D, C)"),
 
             # 6.75 (Failed)
             # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
@@ -448,8 +445,8 @@ class ExprTest(unittest.TestCase):
             #  "coll(P, Q, T)"),
 
             # 6.77
-            (ruleset, ["perp(D, A, B, C)", "perp(Q, D, A, B)", "perp(P, D, A, C)", "coll(A, Q, B)", "coll(A, P, C)",
-                       "coll(B, D, C)"], [], [], "cyclic(B, C, P, Q)"),
+            # (ruleset, ["perp(D, A, B, C)", "perp(Q, D, A, B)", "perp(P, D, A, C)", "coll(A, Q, B)", "coll(A, P, C)",
+            #            "coll(B, D, C)"], [], [], "cyclic(B, C, P, Q)"),
 
             # 6.86 (Failed)
             # (ruleset, ["circle(O, A, B, C)", "perp(D, A, B, C)", "coll(B, D, C)"], [], [],
@@ -463,6 +460,23 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["circle(O, A, B, C)", "perp(F, C, A, B)", "perp(E, B, A, C)", "coll(A, E, C)", "coll(A, F, B)",
             #            ], [], [], "perp(E, F, A, O)"),
 
+            # This cannot be proved without additional D91 (the length of two radius are equal).
+            # (ruleset, ["circle(O, A, B, C, D, E)"], [], [], "cong(O, C, O, E)"),
+
+            # Following tests proves some examples that are also in "Geometry Expert".
+            # Examples -> 6_GDD_FULL -> 01-20 -> 01
+            (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "midp(F, C, B)", "midp(G, D, E)", "coll(A, D, B)",
+                       "coll(A, E, C)", "coll(D, G, E)", "coll(B, F, C)"], [], [], "perp(F, G, D, E)"),
+            #
+            # Examples -> 6_GDD_FULL -> 01-20 -> 02
+            (ruleset, ["midp(A1, C, B)", "midp(B1, C, A)", "midp(C1, B, A)", "circle(O, A, B, C)", "coll(A, B1, C)",
+                       "coll(C, A1, B)", "coll(A, C1, B)"], [], [], "perp(O, A1, B1, C1)"),
+
+            # Examples -> 6_GDD_FULL -> 01-20 -> 03
+            (ruleset, ["perp(D, A, B, C)", "perp(E, B, E, C)", "perp(F, C, A, B)", "midp(a1, C, B)", "midp(P, E, B)",
+                       "midp(Q, F, C)", "coll(A, F, B)", "coll(A, E, C)", "coll(A, H, D)",
+                       "coll(B, P, H, E)", "coll(F, Q, H, C)", "coll(B, a1, D, C)"], [], [], "cyclic(P, Q, H, D)"),
+
         ]
         # pr = cProfile.Profile()
         # pr.enable()
@@ -472,7 +486,7 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            prover = expr.Prover(ruleset, hyps, concl, lines, circles)
+            prover = expr.Prover(ruleset_type, hyps, concl, lines, circles)
             print("--- Proof for", concl, "---")
             res = prover.search_fixpoint()
             assert res, "✘ Fixpoint reached without proving goal."
