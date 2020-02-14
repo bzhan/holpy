@@ -82,13 +82,13 @@ class rule(Tactic):
         # Match the conclusion and assumptions. Either the conclusion
         # or the list of assumptions must be a first-order pattern.
         if matcher.is_pattern(C, []):
-            matcher.first_order_match_incr(C, goal.prop, inst)
+            inst = matcher.first_order_match(C, goal.prop, inst)
             for pat, prev in zip(As, prevs):
-                matcher.first_order_match_incr(pat, prev.prop, inst)
+                inst = matcher.first_order_match(pat, prev.prop, inst)
         else:
             for pat, prev in zip(As, prevs):
-                matcher.first_order_match_incr(pat, prev.prop, inst)
-            matcher.first_order_match_incr(C, goal.prop, inst)
+                inst = matcher.first_order_match(pat, prev.prop, inst)
+            inst = matcher.first_order_match(C, goal.prop, inst)
 
         # Check that every variable in the theorem has an instantiation.
         unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
@@ -228,10 +228,9 @@ class apply_prev(Tactic):
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
-        inst = Inst()
-        matcher.first_order_match_incr(C, goal.prop, inst)
+        inst = matcher.first_order_match(C, goal.prop)
         for idx, prev_pt in enumerate(prev_pts):
-            matcher.first_order_match_incr(As[idx], prev_pt.prop, inst)
+            inst = matcher.first_order_match(As[idx], prev_pt.prop, inst)
 
         unmatched_vars = [v for v in new_names if v not in inst]
         if unmatched_vars:
@@ -349,10 +348,8 @@ class rule_tac(Tactic):
         
     def get_proof_term(self, goal):
         th = theory.get_theorem(self.th_name)
-        inst = copy(self.inst)
-        
         try:
-            matcher.first_order_match_incr(th.concl, goal.prop, inst)
+            inst = matcher.first_order_match(th.concl, goal.prop, self.inst)
         except matcher.MatchException:
             raise TacticException('rule: matching failed')
             
@@ -381,9 +378,8 @@ class elim_tac(Tactic):
         if cond is None:
             # Find cond by matching with goal.hyps one by one
             for hyp in goal.hyps:
-                inst = copy(self.inst)
                 try:
-                    matcher.first_order_match_incr(th.assums[0], hyp, inst)
+                    inst = matcher.first_order_match(th.assums[0], hyp, self.inst)
                     cond = hyp
                     break
                 except matcher.MatchException:
@@ -393,7 +389,7 @@ class elim_tac(Tactic):
             raise TacticException('elim: cannot match assumption')
 
         try:
-            matcher.first_order_match_incr(th.concl, goal.prop, inst)
+            inst = matcher.first_order_match(th.concl, goal.prop, inst)
         except matcher.MatchException:
             raise TacticException('elim: matching failed')
 

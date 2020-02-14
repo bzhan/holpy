@@ -238,7 +238,7 @@ class apply_theorem_macro(Macro):
 
         pats = As[:len(prevs)]
         ts = [prev_th.prop for prev_th in prevs]
-        matcher.first_order_match_list_incr(pats, ts, inst)
+        inst = matcher.first_order_match_list(pats, ts, inst)
 
         As, C = th.prop.subst_norm(inst).strip_implies()
         new_prop = Implies(*(As[len(prevs):] + [C]))
@@ -271,7 +271,7 @@ class apply_theorem_macro(Macro):
 
         pats = As[:len(pts)]
         ts = [pt.prop for pt in pts]
-        matcher.first_order_match_list_incr(pats, ts, inst)
+        inst = matcher.first_order_match_list(pats, ts, inst)
 
         pt = ProofTerm.theorem(name)
         pt = pt.subst_type(inst.tyinst).substitution(inst)
@@ -317,7 +317,7 @@ class apply_fact_macro(Macro):
         else:
             inst = Inst()
             for idx, pt_prev in enumerate(pt_prevs):
-                matcher.first_order_match_incr(As[idx], pt_prev.prop, inst)
+                inst = matcher.first_order_match(As[idx], pt_prev.prop, inst)
 
         pt = pt.subst_type(inst.tyinst)
         for new_var in new_vars:
@@ -571,9 +571,9 @@ def apply_theorem(th_name, *pts, concl=None, inst=None):
         if inst is None:
             inst = Inst()
         if concl is not None:
-            matcher.first_order_match_incr(pt.concl, concl, inst)
+            inst = matcher.first_order_match(pt.concl, concl, inst)
         for i, prev in enumerate(pts):
-            matcher.first_order_match_incr(pt.assums[i], prev.prop, inst)
+            inst = matcher.first_order_match(pt.assums[i], prev.prop, inst)
         return ProofTerm("apply_theorem_for", (th_name, inst), pts)
 
 def conj_thms(*pts):

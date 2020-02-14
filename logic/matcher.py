@@ -65,19 +65,31 @@ def find_term(t, sub_t):
         return find_term(t.body, sub_t)
     return False
 
-def first_order_match_incr(pat, t, inst):
-    """First-order matching of pat with t, where inst is the
-    current partial instantiation for type and term variables. The
-    instantiations are updated by the function.
-    
+def first_order_match(pat, t, inst=None):
+    """First-order matching of pat with t.
+
+    inst : optional Inst
+        Existing instantiation. Default to empty instantiation.
+        
+    Return the new instantiation or throws MatchException. The input
+    instantiation is guaranteed to be not modified.
+
     """
-    typecheck.checkinstance('first_order_match_incr', pat, Term, t, Term, inst, Inst)
-    assert len(t.get_svars()) == 0, "first_order_match_incr: t should not contain patterns."
+    if inst is None:
+        inst = Inst()
+    else:
+        inst = copy(inst)  # do not modify input
+
+    typecheck.checkinstance('first_order_match', pat, Term, t, Term, inst, Inst)
+    assert len(t.get_svars()) == 0, "first_order_match: t should not contain patterns."
 
     # Trace of pattern and term, for debugging
     trace = []
 
-    def match(pat, t, inst, bd_vars):
+    # List of replacements for bound variables
+    bd_vars = []
+
+    def match(pat, t):
         trace.append((pat, t))
         if pat.head.is_svar():
             # Case where the head of the function is a variable.
@@ -115,7 +127,7 @@ def first_order_match_incr(pat, t, inst):
                         except TypeMatchException:
                             raise MatchException(trace)
                         inst[pat.head.name] = t.fun
-                        match(pat.arg, t.arg, inst, bd_vars)
+                        match(pat.arg, t.arg)
                     else:
                         raise MatchException(trace)
                 else:
@@ -167,7 +179,7 @@ def first_order_match_incr(pat, t, inst):
                 # instantiation onto the arguments, simplify using beta-conversion,
                 # and match again.
                 pat2 = inst[pat.head.name](*pat.args).beta_norm()
-                match(pat2, t.beta_norm(), inst, bd_vars)
+                match(pat2, t.beta_norm())
         elif pat.is_var() or pat.is_const():
             # The case where pat is a free variable, constant, or comes
             # from a bound variable.
@@ -184,11 +196,11 @@ def first_order_match_incr(pat, t, inst):
             if pat.ty != t.ty:
                 raise MatchException(trace)
             if is_pattern(pat.fun, list(inst.keys()), bd_vars=[v.name for v in bd_vars]):
-                match(pat.fun, t.fun, inst, bd_vars)
-                match(pat.arg, t.arg, inst, bd_vars)
+                match(pat.fun, t.fun)
+                match(pat.arg, t.arg)
             else:
-                match(pat.arg, t.arg, inst, bd_vars)
-                match(pat.fun, t.fun, inst, bd_vars)
+                match(pat.arg, t.arg)
+                match(pat.fun, t.fun)
         elif pat.is_abs():
             # When pat is a lambda term, t must also be a lambda term.
             # Replace bound variable by a variable, then match the body.
@@ -204,7 +216,9 @@ def first_order_match_incr(pat, t, inst):
                 v = Var(nm, T)
                 pat_body = pat.subst_type(inst.tyinst).subst_bound(v)
                 t_body = t.subst_bound(v)
-                match(pat_body, t_body, inst, bd_vars + [v])
+                bd_vars.append(v)
+                match(pat_body, t_body)
+                bd_vars.pop()
             else:
                 tT = t.get_type()
                 if not tT.is_fun():
@@ -214,7 +228,7 @@ def first_order_match_incr(pat, t, inst):
                 except TypeMatchException:
                     raise MatchException(trace)
                 T = pat.var_T.subst(inst.tyinst)
-                match(pat, Abs(pat.var_name, T, t(Bound(0))), inst, bd_vars)
+                match(pat, Abs(pat.var_name, T, t(Bound(0))))
         elif pat.is_bound():
             raise MatchException(trace)
         else:
@@ -222,39 +236,45 @@ def first_order_match_incr(pat, t, inst):
 
         trace.pop()
 
-    match(pat, t, inst, [])
-
-def first_order_match(pat, t):
-    """First-order matching of pat with t. Return the instantiation
-    or throws MatchException.
-
-    """
-    inst = Inst()
-    first_order_match_incr(pat, t, inst)
+    match(pat, t)
     return inst
 
-def can_first_order_match_incr(pat, t, inst):
-    inst = copy(inst)
+def can_first_order_match(pat, t, inst=None):
+    """Return whether pat can be matched to t.
+
+    inst : optional Inst
+        Existing instantiation. Default to empty instantiation.
+
+    """
     try:
-        first_order_match_incr(pat, t, inst)
+        first_order_match(pat, t, inst)
         return True
     except MatchException:
         return False
 
-def first_order_match_list_incr(pats, ts, inst):
-    """First-order matching of a list of pattern-term pairs."""
+def first_order_match_list(pats, ts, inst=None):
+    """First-order matching of a list of pattern-term pairs.
+    
+    inst : optinal Inst
+        Existing instantiation. Default to empty instantiation.
+    
+    """
+    if inst is None:
+        inst = Inst()
+    else:
+        inst = copy(inst)
+
     if len(pats) == 0:
-        return
+        return inst
     
     if len(pats) == 1:
-        first_order_match_incr(pats[0], ts[0], inst)
-        return
+        return first_order_match(pats[0], ts[0], inst)
 
     if is_pattern(pats[0], list(inst.keys())):
-        first_order_match_incr(pats[0], ts[0], inst)
-        first_order_match_list_incr(pats[1:], ts[1:], inst)
-        return
+        inst = first_order_match(pats[0], ts[0], inst)
+        inst = first_order_match_list(pats[1:], ts[1:], inst)
+        return inst
     else:
-        first_order_match_list_incr(pats[1:], ts[1:], inst)
-        first_order_match_incr(pats[0], ts[0], inst)
-        return
+        inst = first_order_match_list(pats[1:], ts[1:], inst)
+        inst = first_order_match(pats[0], ts[0], inst)
+        return inst

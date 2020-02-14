@@ -1334,3 +1334,12 @@ def BoolVars(s):
     """
     nms = s.split(' ')
     return [Var(nm, BoolType) for nm in nms]
+
+def NatVars(s):
+    """Create a list of variables of nat type.
+
+    s is a string containing space-separated names of variables.
+
+    """
+    nms = s.split(' ')
+    return [Var(nm, NatType) for nm in nms]

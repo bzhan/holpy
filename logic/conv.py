@@ -346,8 +346,8 @@ class rewr_conv(Conv):
         else:
             lhs = self.C.rhs
         try:
-            matcher.first_order_match_list_incr(self.As, ts, inst)
-            matcher.first_order_match_incr(lhs, t, inst)
+            inst = matcher.first_order_match_list(self.As, ts, inst)
+            inst = matcher.first_order_match(lhs, t, inst)
         except matcher.MatchException:
             raise ConvException("rewr_conv: cannot match left side")
 
@@ -402,12 +402,12 @@ def has_rewrite(th, t, *, sym=False, conds=None):
     ts = [cond.prop for cond in conds]
     inst = Inst()
     try:
-        matcher.first_order_match_list_incr(As, ts, inst)
+        inst = matcher.first_order_match_list(As, ts, inst)
     except matcher.MatchException:
         return False
 
     def rec(t):
-        if not t.is_open() and matcher.can_first_order_match_incr(C.lhs, t, inst):
+        if not t.is_open() and matcher.can_first_order_match(C.lhs, t, inst):
             return True
 
         if t.is_comb():
