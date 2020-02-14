@@ -2,6 +2,7 @@
 
 import copy
 import unittest
+import time
 
 from geometry import expr
 from geometry.expr import Fact, Rule, Line
@@ -10,6 +11,7 @@ from geometry.ruleset import ruleset, ruleset_reduced
 
 from pstats import Stats
 import cProfile
+
 
 class ExprTest(unittest.TestCase):
     def testPrintExpr(self):
@@ -85,8 +87,8 @@ class ExprTest(unittest.TestCase):
              [{"A": "P", "B": "Q", "C": "R"}, {"A": "P", "B": "Q", "C": "T"}]),
             ("contri(A, B, C, D, E, F)", "contri(P, Q, R, X, Y, Z)", {},
              [{"A": "P", "B": "Q", "C": "R", "D": "X", "E": "Y", "F": "Z"},
-             {"A": "P", "B": "R", "C": "Q", "D": "X", "E": "Z", "F": "Y"},
-             {"A": "Q", "B": "R", "C": "P", "D": "Y", "E": "Z", "F": "X"}]
+              {"A": "P", "B": "R", "C": "Q", "D": "X", "E": "Z", "F": "Y"},
+              {"A": "Q", "B": "R", "C": "P", "D": "Y", "E": "Z", "F": "X"}]
              ),
         ]
 
@@ -127,7 +129,7 @@ class ExprTest(unittest.TestCase):
             ("cong(A, B, C, D)", "cong(P, Q, R, S)", {}, [], [{"A": "P", "B": "Q", "C": "R", "D": "S"},
                                                               {"A": "P", "B": "Q", "C": "S", "D": "R"},
                                                               {"A": "Q", "B": "P", "C": "R", "D": "S"},
-                                                              {"A": "Q", "B": "P", "C": "S", "D": "R"},]),
+                                                              {"A": "Q", "B": "P", "C": "S", "D": "R"}, ]),
 
             ("perp(B, A, C, A)", "perp(P, Q, P, R)", {}, [], [{"A": "P", "B": "Q", "C": "R"}]),
             #
@@ -341,15 +343,17 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
              ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
 
-            (ruleset_reduced, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
-                       "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+            (
+            ruleset_reduced, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
+                              "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
 
             # Following 2 tests: testing if contri works.
             (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
-                        [], [], "cong(B, M, C, M)"),
+             [], [], "cong(B, M, C, M)"),
 
             # Following 4 tests: testing if simtri works.
-            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
+            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [],
+             [],
              "simtri(A, D, E, E, F, C)"),
 
             (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
@@ -357,7 +361,6 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
             #            "perp(A, B, B, C)", "perp(D, C, C, B)"],
             #  [], [], "simtri(A, B, F, E, A, D)"),
-
 
             # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
             # in the hypothesis :midp(F, A, D) and coll(F, A, D).
@@ -396,19 +399,19 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["coll(D, B, C)", "perp(D, O, O, A)", "coll(A, B, F)", "perp(F, O, O, C)", "coll(C, A, E)",
             #            "perp(E, O, O, B)", "coll(E, D, Z)", "coll(A, B, Z)", "coll(E, F, D)"], [], [], "midp(Z, A, B)"),
 
-            # 6.63
+            # 6.63 (failed)
             # In a given triangle the three products of the segments into which
             # the orthocenter divides the altitudes are equal.
             # (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "coll(E, H, B)", "coll(C, H, D)", "coll(A, E, C)",
             #            "coll(A, D, B)"], [], [], "eqratio(C, H, B, H, H, E, H, D)"),
 
             # 6.64
-            # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "coll(A, E, C)", "coll(C, H, F)", "coll(E, H, B)",
-            #            "coll(A, F, B)"], [], [], "eqratio(A, F, C, F, H, F, F, B)"),
+            (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "coll(A, E, C)", "coll(C, H, F)", "coll(E, H, B)",
+                       "coll(A, F, B)"], [], [], "eqratio(A, F, C, F, H, F, F, B)"),
 
             # 6.69
-            # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
-            #            "coll(B, D, C)"], [], [], "eqangle(E, D, D, C, B, D, D, F)"),
+            (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
+                       "coll(B, D, C)"], [], [], "eqangle(E, D, D, C, B, D, D, F)"),
 
             # 6.70 (Failed)
             # (ruleset, ["perp(A, H, B, C)", "perp(B, H, A, C)", "perp(C, H, A, B)", "circle(OA, B, H, C)",
@@ -424,8 +427,8 @@ class ExprTest(unittest.TestCase):
             #            "coll(J, P, D)", "coll(B, P, F, A)", "coll(A, E, C)", "coll(B, D, C)"], [], [], "midp(P, D, J)"),
 
             # 6.74
-            # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
-            #            "coll(B, D, C)"], [], [], "eqratio(B, D, E, D, F, D, D, C)"),
+            (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
+                       "coll(B, D, C)"], [], [], "eqratio(B, D, E, D, F, D, D, C)"),
 
             # 6.75 (Failed)
             # (ruleset, ["perp(F, C, A, B)", "perp(E, B, A, C)", "perp(D, A, B, C)", "coll(A, F, B)", "coll(A, E, C)",
@@ -439,14 +442,14 @@ class ExprTest(unittest.TestCase):
             #  "coll(P, Q, T)"),
 
             # 6.77
-            # (ruleset, ["perp(D, A, B, C)", "perp(Q, D, A, B)", "perp(P, D, A, C)", "coll(A, Q, B)", "coll(A, P, C)",
-            #            "coll(B, D, C)"], [], [], "cyclic(B, C, P, Q)"),
+            (ruleset, ["perp(D, A, B, C)", "perp(Q, D, A, B)", "perp(P, D, A, C)", "coll(A, Q, B)", "coll(A, P, C)",
+                       "coll(B, D, C)"], [], [], "cyclic(B, C, P, Q)"),
 
             # 6.86 (Failed)
             # (ruleset, ["circle(O, A, B, C)", "perp(D, A, B, C)", "coll(B, D, C)"], [], [],
             #  "eqangle(B, A, A, D, O, A, A, C)"),
 
-            # 6.88 (Can be proved, but too slow)
+            # 6.88 (Failed)
             # (ruleset, ["cyclic(O, A, B, C)", "midp(A1, B, C)", "midp(B1, A, C)", "midp(C1, A, B)", "coll(A, B1, C)",
             #            "coll(B, A1, C)", "coll(A, C1, B)"], [], [], "perp(O, A1, B1, C1)"),
 
@@ -472,7 +475,7 @@ class ExprTest(unittest.TestCase):
             # ... -> 04
             (ruleset, ["circle(O, A, B, C, D)", "midp(Q, C, B)", "midp(J, S, Q)", "cong(J, O, J, M)",
                        "coll(A, S, D, I)", "coll(B, Q, C, I)", "coll(O, J, M)", "coll(S, J, Q)"], [], [],
-                        "perp(S, M, B, C)"),
+             "perp(S, M, B, C)"),
             # ... -> 06
             (ruleset, ["perp(E, C, A, B)", "perp(F, A, B, C)", "coll(A, E, B)", "coll(B, F, C)", "coll(E, H, C)",
                        "coll(A, H, F)"], [], [], "perp(B, H, A, C)"),
@@ -481,11 +484,11 @@ class ExprTest(unittest.TestCase):
             # Adding "cyclic" fact with the same arguments as a "circle" fact (but without center) works smoothly.
             (ruleset, ["circle(O, A, B, C, D)", "perp(E, D, B, C)", "perp(F, D, A, C)", "perp(G, D, A, B)",
                        "coll(A, G, B)", "coll(A, F, C)", "coll(E, C, B)", "cyclic(A, B, C, D)"], [], [],
-                        "coll(E, F, G)"),
+             "coll(E, F, G)"),
             # ... -> 10
             (ruleset, ["circle(O1, C, D, E, Q)", "cyclic(C, D, E, Q)", "circle(O, B, E, A, Q)", "cyclic(B, E, A, Q)",
                        "coll(C, D, P)", "coll(C, E, B)", "coll(D, E, A)", "coll(P, B, A)"], [], [],
-                        "cyclic(P, D, Q, A)"),
+             "cyclic(P, D, Q, A)"),
             # ... -> 11
             (ruleset, ["perp(D, A, B, C)", "midp(L, A, B)", "midp(M, C, B)", "midp(N, A, C)", "coll(A, L, B)",
                        "coll(A, N, C)", "coll(B, D, M, C)"], [], [], "cyclic(L, D, M, N)"),
@@ -495,11 +498,12 @@ class ExprTest(unittest.TestCase):
             # ... -> 13
             (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
                        "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
-                        [], [], "para(E, F, G, H)"),
+             [], [], "para(E, F, G, H)"),
 
         ]
         # pr = cProfile.Profile()
         # pr.enable()
+        start = time.time()
         for ruleset_type, hyps, lines, circles, concl in test_data:
             # pr.enable()
             hyps = [parser.parse_fact(fact) for fact in hyps]
@@ -507,17 +511,18 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             prover = expr.Prover(ruleset_type, hyps, concl, lines, circles)
-            print('')
             print("--- Proof for", concl, "---")
             res = prover.search_fixpoint()
             assert res, "✘ Fixpoint reached without proving goal."
+            print("Procedure: ")
             prover.print_search(res)
+            print('')
+        end = time.time()
+        print("Finished", len(test_data), "proofs in", "%.2f sec. " % (end - start))
         # p = Stats(pr)
         # p.strip_dirs()
         # p.sort_stats('cumtime')
         # p.print_stats()
-
-
 
     def testPrintSearchFailed(self):
         test_data = [
@@ -565,7 +570,6 @@ class ExprTest(unittest.TestCase):
             fact = parser.parse_fact(fact)
             goal = parser.parse_fact(goal)
             self.assertEqual(expr.Prover(ruleset).check_reflected(fact, goal), res)
-
 
 
 if __name__ == "__main__":
