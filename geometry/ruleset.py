@@ -12,7 +12,7 @@ ruleset_raw = {
     "D6": "para(l, n) :- para(l, m), para(m, n)",
     "D8": "perp(m, l) :- perp(l, m)",
     "D9": "para(l, n) :- perp(l, m), perp(m, n)",
-    # "D10": "perp(l, n) :- para(l, m), perp(m, n)",#
+    "D10": "perp(l, n) :- para(l, m), perp(m, n)",#
     # "D11": "midp(M, A, B) :- midp(M, B, A)", #
     # "D12": "circle(O, A, B, C) :- cong(O, A, O, B), cong(O, A, O, C)",#
     "D13": "cyclic(A, B, C, D) :- cong(O, A, O, B), cong(O, A, O, C), cong(O, A, O, D)",
@@ -20,7 +20,7 @@ ruleset_raw = {
     # Currently no need
     # "D18": "eqangle(B, A, l, m ,n) :- eqangle(A, B, l, m, n)",#
     # "D19": "eqangle(l, k, n, m) :- eqangle(k, l, m, n)",#
-    # "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",#
+    "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",#
     "D21": "eqangle(k, m ,l, n) :- eqangle(k, l, m, n)",
     "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",#
     # "D23": "cong(A, B, D, C) :- cong(A, B, C, D)",#
@@ -103,8 +103,8 @@ ruleset_raw = {
     # "D86":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(A, C, C, B, D, C, C, B)",  # ASA
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS
     # D88 and D89 are using different sides of a triangle compares to D58.
-    "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R), ¬coll(A, B, C)",
-    "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q), ¬coll(A, B, C)",
+    # "D88": "simtri(A, B, C, P, Q, R) :- eqangle(A, B, B, C, P, Q, Q, R), eqangle(B, A, A, C, Q, P, P, R), ¬coll(A, B, C)",
+    # "D89": "simtri(A, B, C, P, Q, R) :- eqangle(A, C, C, B, Q, R, P, R), eqangle(B, A, A, C, R, P, P, Q), ¬coll(A, B, C)",
 
     "D90": "eqangle(c, a, c, b) :- para(a, b)",
     "D91": "cong(O, A, O, B) :- circle(O, A, B, C)",

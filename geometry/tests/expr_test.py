@@ -333,44 +333,38 @@ class ExprTest(unittest.TestCase):
 
     def testPrintSearch(self):
         test_data = [
-            # (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
-            #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
-            #
-            # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-            #
-            # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
-            #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
-            #
-            # (ruleset_reduced, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
-            #            "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
-            #
-            # # Following 2 tests: testing if contri works.
-            # (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
-            #             [], [], "cong(B, M, C, M)"),
-            #
-            # # Following 4 tests: testing if simtri works.
-            # (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
-            #  "simtri(A, D, E, E, F, C)"),
-            #
-            # (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
-            #
+            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
+                       "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
+
+            (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
+
+            (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
+             ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+
+            (ruleset_reduced, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
+                       "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+
+            # Following 2 tests: testing if contri works.
+            (ruleset, ["para(B, E, C, F)", "cong(B, E, C, F)", "coll(B, M, C)", "coll(F, M, E)"],
+                        [], [], "cong(B, M, C, M)"),
+
+            # Following 4 tests: testing if simtri works.
+            (ruleset, ["para(D, E, B, F)", "para(E, F, A, B)", "coll(A, D, B)", "coll(B, F, C)", "coll(A, E, C)"], [], [],
+             "simtri(A, D, E, E, F, C)"),
+
+            (ruleset, ["para(F, D, A, B)", "para(F, E, A, C)", "coll(B, D, E, C)"], [], [], "simtri(A, B, C, F, D, E)"),
+
             # (ruleset, ["perp(B, F, A, E)", "coll(A, F, E)", "coll(D, E, C)", "perp(A, B, A, D)", "perp(A, D, D, C)",
             #            "perp(A, B, B, C)", "perp(D, C, C, B)"],
             #  [], [], "simtri(A, B, F, E, A, D)"),
-            #
-            # # This example shows that the mechanism can be improved:
-            # # Machine proof firstly obtain a circle from the eqangle hypothesis, then obtain another eqangle
-            # # condition by the circle. But for human we can make use of eqangle(B, A, A, C, B, A, A, C) so that no
-            # # circle required.
-            # (ruleset, ["coll(A, B, D)", "coll(A, C, E)", "eqangle(C, B, A, C, A, D, D, E)",
-            #            ], [], [], "simtri(A, C, B, A, D, E)"),
-            #
-            # # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
-            # # in the hypothesis :midp(F, A, D) and coll(F, A, D).
-            # # A0 -> F
-            # (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
-            #            "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
-            #            ], [], [], "midp(E, B, C)"),
+
+
+            # This is the Example 6.4. We are not able to add auxiliary point so far. So I add additional facts
+            # in the hypothesis :midp(F, A, D) and coll(F, A, D).
+            # A0 -> F
+            (ruleset, ["para(A, B, C, D)", "midp(M, A, C)", "midp(F, A, D)", "midp(N, B, D)", "coll(M, N, E)",
+                       "coll(A, M, C)", "coll(D, N, B)", "coll(C, E, B)", "coll(F, A, D)"
+                       ], [], [], "midp(E, B, C)"),
 
             # Following tests proves some theorems in "Machine Proofs in Geometry".
             #
@@ -463,7 +457,7 @@ class ExprTest(unittest.TestCase):
             # This cannot be proved without additional D91 (the length of two radius are equal).
             # (ruleset, ["circle(O, A, B, C, D, E)"], [], [], "cong(O, C, O, E)"),
 
-            # Following tests proves some examples that are also in "Geometry Expert".
+            # Following tests proves some examples in "Geometry Expert".
             # Examples -> 6_GDD_FULL -> 01-20
             # ... -> 01
             (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "midp(F, C, B)", "midp(G, D, E)", "coll(A, D, B)",
@@ -484,7 +478,7 @@ class ExprTest(unittest.TestCase):
                        "coll(A, H, F)"], [], [], "perp(B, H, A, C)"),
             # ... -> 07
             # TODO: Make use of "circle" facts when matching "cyclic" facts.
-            # Adding "cyclic" fact with the same arguments as a "circie" fact (but without center) works smoothly.
+            # Adding "cyclic" fact with the same arguments as a "circle" fact (but without center) works smoothly.
             (ruleset, ["circle(O, A, B, C, D)", "perp(E, D, B, C)", "perp(F, D, A, C)", "perp(G, D, A, B)",
                        "coll(A, G, B)", "coll(A, F, C)", "coll(E, C, B)", "cyclic(A, B, C, D)"], [], [],
                         "coll(E, F, G)"),
@@ -495,8 +489,13 @@ class ExprTest(unittest.TestCase):
             # ... -> 11
             (ruleset, ["perp(D, A, B, C)", "midp(L, A, B)", "midp(M, C, B)", "midp(N, A, C)", "coll(A, L, B)",
                        "coll(A, N, C)", "coll(B, D, M, C)"], [], [], "cyclic(L, D, M, N)"),
-
-
+            # ... -> 12
+            (ruleset, ["perp(B, D, A, C)", "circle(O, A, B, C, D)", "cyclic(A, B, C, D)", "coll(E, A, C)",
+                       "coll(E, B, D)", "coll(A, F, B)", "midp(F, B, A)"], [], [], "perp(F, E, C, D)"),
+            # ... -> 13
+            (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
+                       "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
+                        [], [], "para(E, F, G, H)"),
 
         ]
         # pr = cProfile.Profile()
@@ -508,6 +507,7 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             prover = expr.Prover(ruleset_type, hyps, concl, lines, circles)
+            print('')
             print("--- Proof for", concl, "---")
             res = prover.search_fixpoint()
             assert res, "✘ Fixpoint reached without proving goal."
@@ -546,6 +546,25 @@ class ExprTest(unittest.TestCase):
             prover = expr.Prover(ruleset, hyps)
             print(prover.get_appliable_facts(ruleset["D10"], hyps))
 
+    def testCheckImply(self):
+        test_data = [
+            ("eqangle(A, B, C, D, E, F, G, H)", "eqangle(E, F, G, H, A, B, C, D)", True),
+            ("eqangle(A, B, C, D, E, F, G, H)", "eqangle(C, D, A, B, G, H, E, F)", True),
+        ]
+        for fact, goal, res in test_data:
+            fact = parser.parse_fact(fact)
+            goal = parser.parse_fact(goal)
+            self.assertEqual(expr.Prover(ruleset).check_imply(fact, goal), res)
+
+    def testCheckReflected(self):
+        test_data = [
+            ("eqangle(A, B, C, D, E, F, G, H)", "eqangle(E, F, G, H, A, B, C, D)", False),
+            ("eqangle(A, B, C, D, E, F, G, H)", "eqangle(C, D, A, B, G, H, E, F)", True),
+        ]
+        for fact, goal, res in test_data:
+            fact = parser.parse_fact(fact)
+            goal = parser.parse_fact(goal)
+            self.assertEqual(expr.Prover(ruleset).check_reflected(fact, goal), res)
 
 
 
