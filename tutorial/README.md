@@ -43,3 +43,5 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 18. [Satisfiability II](satisfiability2.ipynb)
 
 19. [Tactics I](tactics.ipynb)
+
+20. [Tactics II](tactics2.ipynb)

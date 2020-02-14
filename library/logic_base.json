@@ -1864,6 +1864,189 @@
                 "B": "bool",
                 "C": "bool"
             }
+        },
+        {
+            "name": "conjE",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "A ∧ B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ∧ B ⊢ A ∧ B"
+                },
+                {
+                    "args": "A ⟶ B ⟶ C",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⟶ B ⟶ C ⊢ A ⟶ B ⟶ C"
+                },
+                {
+                    "args": "conjD1, {A: A, B: B}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∧ B ⊢ A"
+                },
+                {
+                    "args": "conjD2, {A: A, B: B}",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∧ B ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "A ∧ B, A ⟶ B ⟶ C ⊢ B ⟶ C"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "A ∧ B, A ⟶ B ⟶ C ⊢ C"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ∧ B ⟶ (A ⟶ B ⟶ C) ⟶ C"
+                }
+            ],
+            "prop": "A ∧ B ⟶ (A ⟶ B ⟶ C) ⟶ C",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool",
+                "C": "bool"
+            }
+        },
+        {
+            "name": "allE",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x1. P x1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x1. P x1 ⊢ ∀x1. P x1"
+                },
+                {
+                    "args": "P x ⟶ R",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P x ⟶ R ⊢ P x ⟶ R"
+                },
+                {
+                    "args": "x",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x1. P x1 ⊢ P x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x1. P x1, P x ⟶ R ⊢ R"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x1. P x1) ⟶ (P x ⟶ R) ⟶ R"
+                }
+            ],
+            "prop": "(∀x1. P x1) ⟶ (P x ⟶ R) ⟶ R",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "R": "bool",
+                "x": "'a"
+            }
         }
     ],
     "description": "Foundation of higher-order logic",

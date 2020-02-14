@@ -716,7 +716,9 @@ class Term():
         """
         assert self.is_abs(), 'dest_abs'
         var_names = [v.name for v in self.body.get_vars()]
-        nm = name.get_variant_name(self.var_name, var_names)
+        if var_name is None:
+            var_name = self.var_name
+        nm = name.get_variant_name(var_name, var_names)
         v = Var(nm, self.var_T)
         body = self.subst_bound(v)
 

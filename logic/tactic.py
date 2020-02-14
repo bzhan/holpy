@@ -1,15 +1,17 @@
 # Author: Bohua Zhan
 
+from copy import copy
+
 from kernel.type import TyInst
 from kernel import term
 from kernel.term import Term, Implies, Not, Lambda, Inst
 from kernel.thm import Thm
 from kernel import theory
+from kernel.proofterm import ProofTerm, TacticException
 from logic import logic
 from logic import matcher
 from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, beta_norm_conv, \
     top_sweep_conv, has_rewrite
-from kernel.proofterm import ProofTerm
 from logic.logic import apply_theorem
 
 
@@ -274,3 +276,138 @@ class inst_exists_goal(Tactic):
         )
 
         return rule().get_proof_term(goal, args=('exI', Inst(P=C.arg, a=args)))
+
+
+class intro_imp_tac(Tactic):
+    def get_proof_term(self, goal):
+        if not goal.prop.is_implies():
+            raise TacticException('intro_imp: goal is not implies.')
+
+        A, C = goal.prop.args
+        new_goal = ProofTerm.sorry(Thm(list(goal.hyps) + [A], C))
+        return new_goal.implies_intr(A)
+
+class intro_forall_tac(Tactic):
+    def __init__(self, var_name=None):
+        self.var_name = var_name
+        
+    def get_proof_term(self, goal):
+        if not goal.prop.is_forall():
+            raise TacticException('intro_forall: goal is not forall')
+
+        v, body = goal.prop.arg.dest_abs(self.var_name)
+        new_goal = ProofTerm.sorry(Thm(goal.hyps, body))
+        return new_goal.forall_intr(v)
+
+class assumption(Tactic):
+    def get_proof_term(self, goal):
+        if not goal.prop in goal.hyps:
+            raise TacticException('assumption: prop does not appear in hyps')
+        
+        return ProofTerm.assume(goal.prop)
+
+class then_tac(Tactic):
+    def __init__(self, tac1, tac2):
+        self.tac1 = tac1
+        self.tac2 = tac2
+        
+    def get_proof_term(self, goal):
+        return ProofTerm.sorry(goal).tacs(self.tac1, self.tac2)
+
+class else_tac(Tactic):
+    def __init__(self, tac1, tac2):
+        self.tac1 = tac1
+        self.tac2 = tac2
+        
+    def get_proof_term(self, goal):
+        try:
+            return self.tac1.get_proof_term(goal)
+        except TacticException:
+            return self.tac2.get_proof_term(goal)
+
+class repeat_tac(Tactic):
+    def __init__(self, tac):
+        self.tac = tac
+        
+    def get_proof_term(self, goal):
+        pt = ProofTerm.sorry(goal)
+        while True:
+            try:
+                pt = pt.tac(self.tac)
+            except TacticException:
+                break
+        return pt
+
+intros_tac = repeat_tac(else_tac(intro_imp_tac(), intro_forall_tac()))
+
+class rule_tac(Tactic):
+    def __init__(self, th_name, *, inst=None):
+        self.th_name = th_name
+        if inst is None:
+            inst = Inst()
+        self.inst = inst
+        
+    def get_proof_term(self, goal):
+        th = theory.get_theorem(self.th_name)
+        inst = copy(self.inst)
+        
+        try:
+            matcher.first_order_match_incr(th.concl, goal.prop, inst)
+        except matcher.MatchException:
+            raise TacticException('rule: matching failed')
+            
+        if any(v.name not in inst for v in th.prop.get_svars()):
+            raise TacticException('rule: not all variables are matched')
+            
+        pt = ProofTerm.theorem(self.th_name).substitution(inst).on_prop(beta_norm_conv())
+        for assum in pt.assums:
+            pt = pt.implies_elim(ProofTerm.sorry(Thm(goal.hyps, assum)))
+        return pt
+
+
+class elim_tac(Tactic):
+    def __init__(self, th_name, *, cond=None, inst=None):
+        self.th_name = th_name
+        if inst is None:
+            inst = Inst()
+        self.inst = inst
+        self.cond = cond
+        
+    def get_proof_term(self, goal):
+        th = theory.get_theorem(self.th_name)
+
+        assum = th.assums[0]
+        cond = self.cond
+        if cond is None:
+            # Find cond by matching with goal.hyps one by one
+            for hyp in goal.hyps:
+                inst = copy(self.inst)
+                try:
+                    matcher.first_order_match_incr(th.assums[0], hyp, inst)
+                    cond = hyp
+                    break
+                except matcher.MatchException:
+                    pass
+        
+        if cond is None:
+            raise TacticException('elim: cannot match assumption')
+
+        try:
+            matcher.first_order_match_incr(th.concl, goal.prop, inst)
+        except matcher.MatchException:
+            raise TacticException('elim: matching failed')
+
+        if any(v.name not in inst for v in th.prop.get_svars()):
+            raise TacticException('elim: not all variables are matched')
+            
+        pt = ProofTerm.theorem(self.th_name).substitution(inst).on_prop(beta_norm_conv())
+        pt = pt.implies_elim(ProofTerm.assume(cond))
+        for assum in pt.assums:
+            pt = pt.implies_elim(ProofTerm.sorry(Thm(goal.hyps, assum)))
+        return pt
+
+
+class conj_elim_tac(Tactic):
+    def get_proof_term(self, goal):
+        return ProofTerm.sorry(goal).tacs(
+            elim_tac('conjE'), intro_imp_tac(), intro_imp_tac())

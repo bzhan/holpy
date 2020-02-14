@@ -60,9 +60,9 @@ def find_term(t, sub_t):
     if t == sub_t:
         return True
     if t.is_comb():
-        return find_term(t.fun) or find_term(t.arg)
+        return find_term(t.fun, sub_t) or find_term(t.arg, sub_t)
     if t.is_abs():
-        return find_term(t.body)
+        return find_term(t.body, sub_t)
     return False
 
 def first_order_match_incr(pat, t, inst):
