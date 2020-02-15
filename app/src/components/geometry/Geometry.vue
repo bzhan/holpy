@@ -26,43 +26,70 @@
         </b-nav-item-dropdown>        
       </b-navbar-nav>
     </b-navbar>
-    <div id="theory-list" v-show="ref_proof === undefined">
-      <Content v-if="filelist !== undefined"
-               v-bind:filelist="filelist"
-               v-on:select-theory="onSelectTheory"
-               ref="content"/>
-    </div>
-    <div id="proof-context" v-show="ref_proof !== undefined">
-      <ProofContext v-bind:ref_proof="ref_proof" ref="context"/>
-    </div>
-    <div id="theory-content">
-      <Theory v-bind:theory="theory"
-              v-bind:ref_status="ref_status"
-              v-bind:ref_context="ref_context"
-              :editor="editor"
-              v-on:set-message="onSetMessage"
-              v-on:set-proof="handle_set_proof"
-              v-on:query="handle_query"
-              v-on:goto-link="handleGoToLink"
-              ref="theory"/>
-    </div>
-    <div id="message" v-show="ref_proof === undefined">
-      <Message v-bind:message="message" ref="message"/>
-    </div>
-    <div id="status" v-show="ref_proof !== undefined && query === undefined">
-      <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
-    </div>
-    <div id="query" v-show="ref_proof !== undefined && query !== undefined">
-      <ProofQuery v-bind:query="query"
-                  v-on:query-ok="handle_query_ok"
-                  v-on:query-cancel="handle_query_cancel"/>
+
+<!--    <div id="theory-list" v-show="ref_proof === undefined">-->
+<!--      <Content v-if="filelist !== undefined"-->
+<!--               v-bind:filelist="filelist"-->
+<!--               v-on:select-theory="onSelectTheory"-->
+<!--               ref="content"/>-->
+<!--    </div>-->
+<!--    <div id="proof-context" v-show="ref_proof !== undefined">-->
+<!--      <ProofContext v-bind:ref_proof="ref_proof" ref="context"/>-->
+<!--    </div>-->
+<!--    <div id="theory-content">-->
+<!--      <Theory v-bind:theory="theory"-->
+<!--              v-bind:ref_status="ref_status"-->
+<!--              v-bind:ref_context="ref_context"-->
+<!--              :editor="editor"-->
+<!--              v-on:set-message="onSetMessage"-->
+<!--              v-on:set-proof="handle_set_proof"-->
+<!--              v-on:query="handle_query"-->
+<!--              v-on:goto-link="handleGoToLink"-->
+<!--              ref="theory"/>-->
+<!--    </div>-->
+<!--    <div id="message" v-show="ref_proof === undefined">-->
+<!--      <Message v-bind:message="message" ref="message"/>-->
+<!--    </div>-->
+<!--    <div id="status" v-show="ref_proof !== undefined && query === undefined">-->
+<!--      <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>-->
+<!--    </div>-->
+<!--    <div id="query" v-show="ref_proof !== undefined && query !== undefined">-->
+<!--      <ProofQuery v-bind:query="query"-->
+<!--                  v-on:query-ok="handle_query_ok"-->
+<!--                  v-on:query-cancel="handle_query_cancel"/>-->
+<!--    </div>-->
+    <div id="paint">
+      <Stage></Stage>
     </div>
   </div>
 </template>
 
-
+<script>
+  import Vue from 'vue'
+  import VueKonva from 'vue-konva'
+  Vue.use(VueKonva)
+  import Stage from "./Stage";
+  export default {
+    name: 'Geometry',
+    components: {
+      Stage,
+    }
+  }
+</script>
 
 <style scoped>
+
+#paint {
+  display: inline-block;
+  width: 75%;
+  position: fixed;
+  top: 48px;
+  bottom: 30%;
+  left: 25%;
+  overflow-y: scroll;
+  padding-left: 10px;
+  padding-top: 10px;
+}
 
 #theory-list, #proof-context {
   display: inline-block;

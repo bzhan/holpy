@@ -798,16 +798,12 @@ class Prover:
 
         avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
         for rule_name, rule in self.ruleset.items():
-            # print("getting...")
             appliable_facts_list = self.get_appliable_facts(rule)
-            # print(rule, appliable_facts_list)
-            # print("applying...")
             for facts in appliable_facts_list:
                 if any(fact.shadowed for fact in facts):
                     continue
                 if only_updated and all(not fact.updated for fact in facts):
                     continue
-                # print("applying...")
                 self.apply_rule(rule_name, facts)
 
     def search_fixpoint(self) -> Optional[Fact]:
@@ -832,9 +828,8 @@ class Prover:
                     if self.check_imply(i, self.concl):
                         self.print_hyps(only_not_shadowed=True)
                         return i
-            # self.print_hyps(only_not_shadowed=True)
-            # print(self.lines)
-
+        self.print_hyps(only_not_shadowed=True)
+        print(self.lines)
         return False
 
     def combine_facts(self, fact, goal) -> Optional[Fact]:
