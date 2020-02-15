@@ -34,7 +34,7 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 
 14. [Normalization of polynomials](polynomial.ipynb)
 
-15. [Resolution](resolution.iypnb)
+15. [Resolution](resolution.ipynb)
 
 16. [Tseitin encoding](tseitin.ipynb)
 
