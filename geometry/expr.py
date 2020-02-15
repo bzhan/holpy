@@ -269,6 +269,11 @@ class Prover:
         q1, q2 = a2[0:2], a2[2:4]
         return self.get_line(p1) == self.get_line(q1) and self.get_line(p2) == self.get_line(q2)
 
+    def equal_angle_reflected(self, a1, a2) -> bool:
+        p1, p2 = a1[0:2], a1[2:4]
+        q1, q2 = a2[0:2], a2[2:4]
+        return self.get_line(p1) == self.get_line(q2) and self.get_line(p2) == self.get_line(q1)
+
     def equal_triangle(self, t1, t2) -> bool:
         return set(t1) == set(t2)
 
@@ -398,6 +403,9 @@ class Prover:
 
         if pat.tail:
             # Get matching result from inst directly.
+
+            if len(f.args) < len(pat.args):
+                return []
             for p in pat.args:
                 if p not in inst.keys():
                     return []
@@ -601,12 +609,16 @@ class Prover:
             for i in item:
                 fun(i, *args)
 
-    def check_classfied_hyps_foreach(self, fun, *args) -> bool:
+    def check_classfied_hyps_foreach(self, fun, *args, types=None) -> bool:
         ''' Return false if exists one or more hyp in all hyps
         that is not satisfied the given function.
         '''
-        for item in self.classfied_hyps.values():
-            for i in item:
+        if types is None:
+            vals = self.classfied_hyps.values()
+        else:
+            vals = [value for key, value in self.classfied_hyps.items() if key in types]
+        for val in vals:
+            for i in val:
                 if not fun(i, *args):
                     return False
         return True
@@ -616,6 +628,19 @@ class Prover:
 
     def check_imply_reverse(self, goal, fact) -> bool:
         return not self.check_imply(fact, goal)
+
+    def check_reflected(self, hyp, fact) -> bool:
+        if fact.pred_name in ('eqangle'):
+            # print(hyp, fact)
+            f_angles = make_pairs(hyp.args, pair_len=4)
+            g_angles = make_pairs(fact.args, pair_len=4)
+            if all(any(self.equal_angle_reflected(f, g) for f in f_angles) for g in g_angles):
+                # print(hyp, fact)
+                return True
+        return False
+
+    def check_reflected_reverse(self, hyp, fact) -> bool:
+        return not self.check_reflected(hyp, fact)
 
     def set_shadow_fact(self, target, fact, new_facts):
         if not target.shadowed and self.check_imply(fact, target):
@@ -652,14 +677,6 @@ class Prover:
         rule = self.ruleset[rule_name]
         assert len(facts) == len(rule.assums_pos)
         # print("try", rule, facts)
-
-        # When trying to obtain contri or simtri from eqangles,
-        # There exists the scenario that we need to "flip" one triangle to make its shape as same as
-        # another triangle. But the full-angle of the triangle will be changed when "flipping".
-        # (The general type angle will not be changed after "flipping")
-        # E.g.
-        # Original: eqangle(A, B, C, D, E, F, G, H)
-        # Flipped:  eqangle(C, D, A, B, E, F, G, H)
 
         # Match positive facts. Save matching result in insts.
         insts = [(dict(), [])]  # type: List[Tuple[Dict, List[Fact]]]
@@ -700,12 +717,12 @@ class Prover:
 
             if self.check_trivial(fact):
                 continue
-
-            if self.check_irrational(fact):
+            if self.check_repetitive_char(fact):
                 continue
-
             if not self.check_classfied_hyps_foreach(self.check_redundant, fact):
                 continue
+            # if not self.check_classfied_hyps_foreach(self.check_reflected_reverse, fact, types=['eqangle']):
+            #     continue
 
             # Check if those assums with negation are satisfied.
             # If not satisfied, all of the post processes will not be conducted.
@@ -720,9 +737,13 @@ class Prover:
                     else:
                         tmp_args = [inst[i][0] for i in assum.args]
                     tmp_fact = Fact(assum.pred_name, tmp_args, negation=True)
-                    # print("tmp:   ", tmp_fact)
-                    # Check if exist a fact that can imply the negation assum.
+                    # print("tmp_fact: ", tmp_fact)
+                    fact_valid = not self.check_trivial(tmp_fact)
+                    if not fact_valid:
+                        continue
                     fact_valid = self.check_classfied_hyps_foreach(self.check_imply_reverse, tmp_fact)
+                    if not fact_valid:
+                        continue
 
             if not fact_valid:
                 continue
@@ -741,7 +762,7 @@ class Prover:
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
-                # if new_fact.pred_name == 'perp':
+                # if new_fact.pred_name in ('eqangle'):
                 #     print("new fact:", new_fact, rule, facts)
                 self.classfied_hyps[new_fact.pred_name].append(new_fact)
 
@@ -788,12 +809,6 @@ class Prover:
                     continue
                 # print("applying...")
                 self.apply_rule(rule_name, facts)
-            # for facts in itertools.permutations(avail_hyps, len(rule.assums_pos)):
-            #     if any(fact.shadowed for fact in facts):
-            #         continue
-            #     if only_updated and all(not fact.updated for fact in facts):
-            #         continue
-            #     self.apply_rule(rule_name, facts)
 
     def search_fixpoint(self) -> Optional[Fact]:
         """Recursively apply given ruleset to a list of hypotheses to
@@ -804,12 +819,11 @@ class Prover:
         prev_len = len(self.hyps)
         self.search_step()
         steps = 0
-        self.print_hyps(only_not_shadowed=True)
-        print(self.lines)
+        # self.print_hyps(only_not_shadowed=True)
+        # print(self.lines)
         while steps < 8:
             steps += 1
             print("Step", steps)
-            # print(list(hyp for hyp in hyps if not hyp.shadowed))
             prev_len = len(self.hyps)
             self.search_step(only_updated=True)
 
@@ -818,8 +832,8 @@ class Prover:
                     if self.check_imply(i, self.concl):
                         self.print_hyps(only_not_shadowed=True)
                         return i
-            self.print_hyps(only_not_shadowed=True)
-            print(self.lines)
+            # self.print_hyps(only_not_shadowed=True)
+            # print(self.lines)
 
         return False
 
@@ -867,6 +881,7 @@ class Prover:
                 f = Fact('circle', [c1.center] + list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
                 f.left_map = get_indices(c1.args, f.args)
                 f.right_map = get_indices(c2.args, f.args)
+                # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                 return f
             else:
                 return None
@@ -879,6 +894,7 @@ class Prover:
                 f = Fact('cyclic', list(c1.args), updated=True, lemma='combine', cond=[fact, goal])
                 f.left_map = get_indices(c1.args, f.args)
                 f.right_map = get_indices(c2.args, f.args)
+                # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                 return f
             else:
                 return None
@@ -940,6 +956,7 @@ class Prover:
                 p_comb = make_pairs(new_args, pair_len=4)
                 f.left_map = get_indices(f_angles, p_comb, self.equal_angle)
                 f.right_map = get_indices(g_angles, p_comb, self.equal_angle)
+                # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
                 return f
             else:
                 return None
@@ -968,7 +985,7 @@ class Prover:
                         p_comb = make_pairs(new_args, pair_len=3)
                         f.left_map = get_indices(f_tris, p_comb, self.equal_triangle)
                         f.right_map = get_indices(g_tris, p_comb, self.equal_triangle)
-                        # print("-----".join(["combined: ", str(fact), str(goal), str(f)]))
+
                         return f
             return None
 
@@ -990,6 +1007,8 @@ class Prover:
         elif fact.pred_name == 'para':
             pairs = make_pairs(fact.args)
             for p1, p2 in itertools.permutations(pairs, 2):
+                # print(p1, p2)
+                # print(self.get_line(p1), self.get_line(p2))
                 if self.equal_line(p1, p2):
                     return True
             return False
@@ -1003,7 +1022,7 @@ class Prover:
 
         return False
 
-    def check_irrational(self, fact) -> bool:
+    def check_repetitive_char(self, fact) -> bool:
         if fact.pred_name in ("circle", "cyclic"):
             return len(set(fact.args)) < 4
         if fact.pred_name in ("para", "cong", "perp"):
@@ -1014,7 +1033,7 @@ class Prover:
             groups = make_pairs(args)
             for g in groups:
                 if g[0] == g[1]:
-                    return False
+                    return True
             return args[0] + args[1] == args[2] + args[3] or args[4] + args[5] == args[6] + args[7] \
                 or (args[0] + args[1] == args[6] + args[7] and args[2] + args[3] == args[4] + args[5])
         if fact.pred_name in ("simtri", "contri"):
