@@ -186,6 +186,19 @@ def every_conv(*args):
     else:
         return then_conv(args[0], every_conv(*args[1:]))
 
+class repeat_conv(Conv):
+    def __init__(self, cv):
+        self.cv = cv
+        
+    def get_proof_term(self, t):
+        pt = refl(t)
+        while True:
+            pt2 = pt.on_rhs(self.cv)
+            if pt2.rhs == pt.rhs:
+                return pt
+            else:
+                pt = pt2
+
 class argn_conv(Conv):
     """Apply cv to the nth argument of t, counting from the left and
     starting at 0.
@@ -243,17 +256,27 @@ class bottom_conv(Conv):
             return pt.on_rhs(try_conv(self.cv))
 
 class top_conv(Conv):
-    """Applies cv repeatedly in the top-down manner."""
-    def __init__(self, cv):
-        typecheck.checkinstance('top_conv', cv, Conv)
-        self.cv = cv
+    """Applies cvs repeatedly in the top-down manner."""
+    def __init__(self, *cvs):
+        self.cvs = []
+        for cv in cvs:
+            if isinstance(cv, tuple):
+                assert len(cv) == 2 and isinstance(cv[0], str) and isinstance(cv[1], str)
+                if cv[1] == 'sym':
+                    cv = rewr_conv(cv[0], sym=True)
+                else:
+                    raise NotImplementedError
+            elif isinstance(cv, str):
+                cv = rewr_conv(cv)
+            self.cvs.append(try_conv(cv))
+        self.cv = every_conv(*self.cvs)
 
     def __str__(self):
-        return "top_conv(%s)" % str(self.cv)
+        return "top_conv(%s)" % str(self.cvs)
 
     def get_proof_term(self, t):
         def rec(t):
-            pt = refl(t).on_rhs(try_conv(self.cv))
+            pt = refl(t).on_rhs(self.cv)
             if pt.rhs.is_comb():
                 fun_pt = rec(pt.rhs.fun)
                 arg_pt = rec(pt.rhs.arg)
