@@ -58,10 +58,10 @@
 <!--                  v-on:query-ok="handle_query_ok"-->
 <!--                  v-on:query-cancel="handle_query_cancel"/>-->
 <!--    </div>-->
-    <div id="paint" ref="st">
-      <v-stage :config="stageSize">
-        <v-layer>
-          <Point :x=100 :y=100 :id="pointText"></Point>
+    <div id="paint" ref="p">
+      <v-stage :config="stageSize" ref="stage" @click="handleClickOnLayer">
+        <v-layer id="defaultLayer" ref="layer">
+          <Point :x=100 :y=100 :id="'A'"></Point>
         </v-layer>
       </v-stage>
     </div>
@@ -71,7 +71,9 @@
 <script>
   import Vue from 'vue'
   import VueKonva from 'vue-konva'
+  import Konva from 'konva'
   Vue.use(VueKonva)
+  Vue.use(Konva)
   import Point from "./Point"
   export default {
     name: 'Geometry',
@@ -84,7 +86,6 @@
           width: null,
           height: null,
         },
-        pointText: "A",
       }
     },
     mounted() {
@@ -96,15 +97,29 @@
     },
     methods: {
       matchSize() {
-        this.stageSize.height = this.$refs.st.clientHeight - 10
-        this.stageSize.width = this.$refs.st.clientWidth - 10
+        this.stageSize.height = this.$refs.p.clientHeight - 10
+        this.stageSize.width = this.$refs.p.clientWidth - 10
       },
+      handleClickOnLayer() {
+        const newShape = new Konva.Circle({
+          x: this.$refs.stage.getNode().getPointerPosition().x,
+          y: this.$refs.stage.getNode().getPointerPosition().y,
+          radius: 5,
+          stroke: "black",
+          strokeWidth: 2,
+          fill: Konva.Util.getRandomColor(),
+        });
+        this.$refs.layer.getNode().add(newShape);
+        this.$refs.layer.getNode().draw();
+      }
+
     }
   }
 </script>
 
 <style scoped>
 
+/*Disable blank scrollbar in Chrome. */
 /*::-webkit-scrollbar {*/
 /*  width: 0 !important;height: 0;}*/
 
@@ -125,8 +140,8 @@
   width: 25%;
   position: fixed;
   top: 48px;
-  bottom: 0px;
-  left: 0px;
+  bottom: 0;
+  left: 0;
   overflow-y: scroll;
   padding-left: 10px;
   padding-top: 5px;
@@ -151,7 +166,7 @@
   left: 25%;
   position: fixed;
   top: 70%;
-  bottom: 0px;
+  bottom: 0;
   padding-left: 10px;
   padding-top: 10px;
   border-top-style: solid;
