@@ -6696,6 +6696,43 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_abs_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < k ⟷ -k < x ∧ x < k",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ abs x < k ⟷ -k < x ∧ x < k"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < k ⟷ -k < x ∧ x < k"
+                }
+            ],
+            "prop": "abs x < k ⟷ -k < x ∧ x < k",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite",
                 "hint_rewrite_sym"
             ],
