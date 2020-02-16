@@ -20,15 +20,15 @@ ruleset_raw = {
     # Currently no need
     # "D18": "eqangle(B, A, l, m ,n) :- eqangle(A, B, l, m, n)",#
     # "D19": "eqangle(l, k, n, m) :- eqangle(k, l, m, n)",#
-    "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",#
+    # "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",#
     "D21": "eqangle(k, m ,l, n) :- eqangle(k, l, m, n)",
-    "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",#
+    # "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",#
     # "D23": "cong(A, B, D, C) :- cong(A, B, C, D)",#
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",#
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",#
-    "D28": "eqratio(m, n, k, l) :- eqratio(k, l, m, n)",
+    # "D28": "eqratio(m, n, k, l) :- eqratio(k, l, m, n)",
     "D29": "eqratio(k, m ,l, n) :- eqratio(k, l, m, n)",
-    "D30": "eqratio(k, l, p, q) :- eqratio(k, l, m, n), eqratio(m, n, p, q)",
+    # "D30": "eqratio(k, l, p, q) :- eqratio(k, l, m, n), eqratio(m, n, p, q)",
     "D33": "simtri(A, B, C, P, Q, R) :- simtri(P, Q, R, A, B, C)",
     "D34": "simtri(A, B, C, P, Q, R) :- simtri(A, B, C, E, F, G), simtri(E, F, G, P, Q, R)",
     "D37": "contri(A, B, C, P, Q, R) :- contri(P, Q, R, A, B, C)",
