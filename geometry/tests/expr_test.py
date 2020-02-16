@@ -496,17 +496,17 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["perp(B, D, A, C)", "circle(O, A, B, C, D)", "cyclic(A, B, C, D)", "coll(E, A, C)",
             #            "coll(E, B, D)", "coll(A, F, B)", "midp(F, B, A)"], [], [], "perp(F, E, C, D)"),
             # # ... -> 13
-            (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
-                       "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
-             [], [], "para(E, F, G, H)"),
+            # (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
+            #            "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
+            #  [], [], "para(E, F, G, H)"),
             # ... -> 14 (Failed)
             # Can be resolved by adding a new rule.
             # # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
             # #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
             # ... -> 15 (Too slow)
-            # # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
-            # #           "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
-            # #           "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "cyclic(H, K, I, G)"),
+            (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
+                      "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
+                      "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "eqangle(C, I, I, K, H, I, I, K)"),
             # ... -> 16 (Too slow)
             # (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
             #            "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",
