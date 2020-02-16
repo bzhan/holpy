@@ -68,7 +68,7 @@
   import Vue from 'vue'
   import VueKonva from 'vue-konva'
   Vue.use(VueKonva)
-  import Stage from "./Stage";
+  import Stage from "./Stage"
   export default {
     name: 'Geometry',
     components: {
