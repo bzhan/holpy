@@ -263,6 +263,9 @@ class Prover:
             circles = []
         self.circles = circles
 
+        # Mapping from pairs of points on a line to that line
+        self.line_map = dict()
+
     def equal_pair(self, p1, p2) -> bool:
         return p1 == p2 or p1 == (p2[1], p2[0])
 
@@ -293,13 +296,12 @@ class Prover:
 
         """
         assert len(pair) == 2
-
-        new_line = Line(list(pair))
-        for line in self.lines:
-            if line.is_same_line(new_line):
-                return line
-
-        return new_line
+        if pair not in self.line_map:
+            new_line = Line(pair)
+            self.line_map[pair] = new_line
+            return new_line
+        else:
+            return self.line_map[pair]
 
     def get_circle(self, points: Sequence[str], center: Optional[str] = None) -> Circle:
         """Return a circle from circles containing the given points and center (optional),
@@ -773,9 +775,13 @@ class Prover:
     def compute_lines(self):
         """Refresh self.lines from the coll facts."""
         self.lines = []
+        self.line_map = dict()
         for hyp in self.classified_hyps['coll']:
             if not hyp.shadowed:
-                self.lines.append(Line(hyp.args))
+                line = Line(hyp.args)
+                self.lines.append(line)
+                for p1, p2 in itertools.permutations(hyp.args, 2):
+                    self.line_map[(p1, p2)] = line
 
     def compute_circles(self):
         """Refresh self.circles from the cyclic and circle facts.""" 
