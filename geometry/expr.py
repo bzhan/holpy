@@ -231,6 +231,11 @@ class Rule:
         return "%s :- %s" % (str(self.concl), ", ".join(str(assum) for assum in self.assums))
 
     def check_tail_condition(self, fact):
+        """Check whether the assumptions is to be matched passively.
+
+        An assumption is matched passively when it is coll, cyclic, or circle.
+
+        """
         return fact.pred_name in ('coll', 'cyclic', 'circle')
 
 
@@ -246,10 +251,10 @@ class Prover:
         if hyps is None:
             hyps = []
         self.hyps = hyps
-        self.classfied_hyps = {"para": [], "coll": [], "cong": [], "midp": [], "perp": [],
-                               "eqangle": [], "eqratio": [], "cyclic": [], "circle": [], "simtri": [], "contri": []}
+        self.classified_hyps = {"para": [], "coll": [], "cong": [], "midp": [], "perp": [],
+                                "eqangle": [], "eqratio": [], "cyclic": [], "circle": [], "simtri": [], "contri": []}
         for hyp in hyps:
-            self.classfied_hyps[hyp.pred_name].append(hyp)
+            self.classified_hyps[hyp.pred_name].append(hyp)
         self.concl = concl
         if lines is None:
             lines = []
@@ -588,35 +593,34 @@ class Prover:
 
         return new_insts
 
-    def get_appliable_facts(self, rule: Rule) -> List[Fact]:
-        def pick_appliable_facts_step(rule: Rule, facts: List[Fact]) -> None:
+    def get_applicable_facts(self, rule: Rule) -> List[Fact]:
+        """Obtain the list of tuples of facts that may match the assumptions
+        of the rule, according to their pred_name.
+
+        """
+        def pick_applicable_facts_step(rule: Rule, facts: List[Fact]) -> None:
             if len(facts) < len(rule.assums_pos):
-                for fact in self.classfied_hyps[rule.assums[len(facts)].pred_name]:
+                for fact in self.classified_hyps[rule.assums[len(facts)].pred_name]:
                     if fact in facts or fact.shadowed:
                         continue
                     new_facts = copy.copy(facts)
                     new_facts.append(fact)
-                    pick_appliable_facts_step(rule, new_facts)
+                    pick_applicable_facts_step(rule, new_facts)
             else:
                 picked.append(facts)
 
         picked = []
-        pick_appliable_facts_step(rule, [])
+        pick_applicable_facts_step(rule, [])
         return picked
 
-    def set_classfied_hyps_foreach(self, fun, *args):
-        for item in self.classfied_hyps.values():
-            for i in item:
-                fun(i, *args)
-
-    def check_classfied_hyps_foreach(self, fun, *args, types=None) -> bool:
+    def check_classified_hyps_foreach(self, fun, *args, types=None) -> bool:
         ''' Return false if exists one or more hyp in all hyps
         that is not satisfied the given function.
         '''
         if types is None:
-            vals = self.classfied_hyps.values()
+            vals = self.classified_hyps.values()
         else:
-            vals = [value for key, value in self.classfied_hyps.items() if key in types]
+            vals = [value for key, value in self.classified_hyps.items() if key in types]
         for val in vals:
             for i in val:
                 if not fun(i, *args):
@@ -719,9 +723,9 @@ class Prover:
                 continue
             if self.check_repetitive_char(fact):
                 continue
-            if not self.check_classfied_hyps_foreach(self.check_redundant, fact):
+            if not self.check_classified_hyps_foreach(self.check_redundant, fact):
                 continue
-            # if not self.check_classfied_hyps_foreach(self.check_reflected_reverse, fact, types=['eqangle']):
+            # if not self.check_classified_hyps_foreach(self.check_reflected_reverse, fact, types=['eqangle']):
             #     continue
 
             # Check if those assums with negation are satisfied.
@@ -741,7 +745,7 @@ class Prover:
                     fact_valid = not self.check_trivial(tmp_fact)
                     if not fact_valid:
                         continue
-                    fact_valid = self.check_classfied_hyps_foreach(self.check_imply_reverse, tmp_fact)
+                    fact_valid = self.check_classified_hyps_foreach(self.check_imply_reverse, tmp_fact)
                     if not fact_valid:
                         continue
 
@@ -749,7 +753,7 @@ class Prover:
                 continue
 
             new_facts = [fact]
-            for target in self.classfied_hyps[fact.pred_name]:
+            for target in self.classified_hyps[fact.pred_name]:
                     if not target.shadowed and self.check_imply(fact, target):
                         target.shadowed = True
                     if not target.shadowed:
@@ -764,25 +768,24 @@ class Prover:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
                 # if new_fact.pred_name in ('eqangle'):
                 #     print("new fact:", new_fact, rule, facts)
-                self.classfied_hyps[new_fact.pred_name].append(new_fact)
+                self.classified_hyps[new_fact.pred_name].append(new_fact)
 
     def compute_lines(self):
+        """Refresh self.lines from the coll facts."""
         self.lines = []
-        for hyp in self.classfied_hyps['coll']:
+        for hyp in self.classified_hyps['coll']:
             if not hyp.shadowed:
                 self.lines.append(Line(hyp.args))
 
     def compute_circles(self):
+        """Refresh self.circles from the cyclic and circle facts.""" 
         self.circles = []
-        for hyp in self.classfied_hyps['cyclic']:
+        for hyp in self.classified_hyps['cyclic']:
             if not hyp.shadowed:
                 self.circles.append(Circle(hyp.args))
-        for hyp in self.classfied_hyps['circle']:
+        for hyp in self.classified_hyps['circle']:
             if not hyp.shadowed:
                 self.circles.append(Circle(hyp.args[1:], center=hyp.args[0]))
-
-    def compute_angles(self):
-        pass
 
     def search_step(self, only_updated=False) -> None:
         """One step of searching fixpoint.
@@ -796,10 +799,9 @@ class Prover:
         self.compute_lines()
         self.compute_circles()
 
-        avail_hyps = [hyp for hyp in self.hyps if not hyp.shadowed]
         for rule_name, rule in self.ruleset.items():
-            appliable_facts_list = self.get_appliable_facts(rule)
-            for facts in appliable_facts_list:
+            applicable_facts_list = self.get_applicable_facts(rule)
+            for facts in applicable_facts_list:
                 if any(fact.shadowed for fact in facts):
                     continue
                 if only_updated and all(not fact.updated for fact in facts):
@@ -812,7 +814,6 @@ class Prover:
         to be generated, or conclusion is in the list of facts.
         Return the list of facts.
         """
-        prev_len = len(self.hyps)
         self.search_step()
         steps = 0
         # self.print_hyps(only_not_shadowed=True)
@@ -820,10 +821,9 @@ class Prover:
         while steps < 8:
             steps += 1
             print("Step", steps)
-            prev_len = len(self.hyps)
             self.search_step(only_updated=True)
 
-            for item in self.classfied_hyps.values():
+            for item in self.classified_hyps.values():
                 for i in item:
                     if self.check_imply(i, self.concl):
                         self.print_hyps(only_not_shadowed=True)
@@ -1093,7 +1093,7 @@ class Prover:
     def print_hyps(self, only_not_shadowed=False) -> None:
         s = ""
         count = 0
-        for category in self.classfied_hyps.values():
+        for category in self.classified_hyps.values():
             if len(category) == 0:
                 continue
             for fact in category:

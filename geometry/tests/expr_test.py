@@ -496,9 +496,9 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["perp(B, D, A, C)", "circle(O, A, B, C, D)", "cyclic(A, B, C, D)", "coll(E, A, C)",
             #            "coll(E, B, D)", "coll(A, F, B)", "midp(F, B, A)"], [], [], "perp(F, E, C, D)"),
             # # ... -> 13
-            # (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
-            #            "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
-            #  [], [], "para(E, F, G, H)"),
+            (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
+                       "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
+             [], [], "para(E, F, G, H)"),
             # ... -> 14 (Failed)
             # Can be resolved by adding a new rule.
             # # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
@@ -508,9 +508,9 @@ class ExprTest(unittest.TestCase):
             # #           "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
             # #           "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "cyclic(H, K, I, G)"),
             # ... -> 16 (Too slow)
-            (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
-                       "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",
-                       "coll(O, T, D, P, A)", "coll(O, K, C, Q, B)", "coll(A, M, B)"], [], [], "perp(O, S, P, Q)"),
+            # (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
+            #            "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",
+            #            "coll(O, T, D, P, A)", "coll(O, K, C, Q, B)", "coll(A, M, B)"], [], [], "perp(O, S, P, Q)"),
 
         ]
         # pr = cProfile.Profile()
@@ -561,7 +561,7 @@ class ExprTest(unittest.TestCase):
         for hyps in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
             prover = expr.Prover(ruleset, hyps)
-            print(prover.get_appliable_facts(ruleset["D10"], hyps))
+            print(prover.get_applicable_facts(ruleset["D10"], hyps))
 
     def testCheckImply(self):
         test_data = [
