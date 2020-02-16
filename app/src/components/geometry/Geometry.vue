@@ -27,26 +27,26 @@
       </b-navbar-nav>
     </b-navbar>
 
-<!--    <div id="theory-list" v-show="ref_proof === undefined">-->
-<!--      <Content v-if="filelist !== undefined"-->
-<!--               v-bind:filelist="filelist"-->
-<!--               v-on:select-theory="onSelectTheory"-->
-<!--               ref="content"/>-->
-<!--    </div>-->
-<!--    <div id="proof-context" v-show="ref_proof !== undefined">-->
-<!--      <ProofContext v-bind:ref_proof="ref_proof" ref="context"/>-->
-<!--    </div>-->
-<!--    <div id="theory-content">-->
-<!--      <Theory v-bind:theory="theory"-->
-<!--              v-bind:ref_status="ref_status"-->
-<!--              v-bind:ref_context="ref_context"-->
-<!--              :editor="editor"-->
-<!--              v-on:set-message="onSetMessage"-->
-<!--              v-on:set-proof="handle_set_proof"-->
-<!--              v-on:query="handle_query"-->
-<!--              v-on:goto-link="handleGoToLink"-->
-<!--              ref="theory"/>-->
-<!--    </div>-->
+    <div id="theory-list" v-show="ref_proof === undefined">
+      <Content v-if="filelist !== undefined"
+               v-bind:filelist="filelist"
+               v-on:select-theory="onSelectTheory"
+               ref="content"/>
+    </div>
+    <div id="proof-context" v-show="ref_proof !== undefined">
+      <ProofContext v-bind:ref_proof="ref_proof" ref="context"/>
+    </div>
+    <div id="theory-content">
+      <Theory v-bind:theory="theory"
+              v-bind:ref_status="ref_status"
+              v-bind:ref_context="ref_context"
+              :editor="editor"
+              v-on:set-message="onSetMessage"
+              v-on:set-proof="handle_set_proof"
+              v-on:query="handle_query"
+              v-on:goto-link="handleGoToLink"
+              ref="theory"/>
+    </div>
 <!--    <div id="message" v-show="ref_proof === undefined">-->
 <!--      <Message v-bind:message="message" ref="message"/>-->
 <!--    </div>-->
@@ -58,8 +58,12 @@
 <!--                  v-on:query-ok="handle_query_ok"-->
 <!--                  v-on:query-cancel="handle_query_cancel"/>-->
 <!--    </div>-->
-    <div id="paint">
-      <Stage></Stage>
+    <div id="paint" ref="st">
+      <v-stage :config="stageSize">
+        <v-layer>
+          <Point :x=100 :y=100 :id="pointText"></Point>
+        </v-layer>
+      </v-stage>
     </div>
   </div>
 </template>
@@ -68,16 +72,41 @@
   import Vue from 'vue'
   import VueKonva from 'vue-konva'
   Vue.use(VueKonva)
-  import Stage from "./Stage"
+  import Point from "./Point"
   export default {
     name: 'Geometry',
     components: {
-      Stage,
+      Point
+    },
+    data() {
+      return {
+        stageSize: {
+          width: null,
+          height: null,
+        },
+        pointText: "A",
+      }
+    },
+    mounted() {
+      this.matchSize()
+    },
+    created: function() {
+      window.addEventListener("resize", this.matchSize)
+      this.matchSize()
+    },
+    methods: {
+      matchSize() {
+        this.stageSize.height = this.$refs.st.clientHeight - 10
+        this.stageSize.width = this.$refs.st.clientWidth - 10
+      },
     }
   }
 </script>
 
 <style scoped>
+
+/*::-webkit-scrollbar {*/
+/*  width: 0 !important;height: 0;}*/
 
 #paint {
   display: inline-block;

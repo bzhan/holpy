@@ -1,7 +1,7 @@
 <template>
     <v-group>
         <v-circle :config="configCircle"></v-circle>
-        <v-text :config="configTextComputed"></v-text>
+        <v-text :config="configText"></v-text>
     </v-group>
 </template>
 
@@ -43,7 +43,7 @@
             }
         },
         computed: {
-            configTextComputed: function () {
+            configText: function () {
                 return {
                     x: this.x,
                     y: this.y,
