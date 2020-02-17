@@ -174,8 +174,7 @@
         }
         this.$refs.anchorLayer.getNode().draw()
       },
-      handleDragStartAnchor(e) {
-        window.console.log(e)
+      handleDragStartAnchor() {
       },
       handleDragMoveAnchor() {
         // this.updateLine()
@@ -195,9 +194,23 @@
         this.status = "circle"
       },
       updateLine() {
+      },
+      clearPointsActivation() {
+        let children = this.$refs.anchorLayer.getNode().getChildren()
+        for (let i = 0; i < children.length; i ++) {
+          children[i].getChildren()[0].strokeWidth(2)
+        }
+        this.$refs.anchorLayer.getNode().draw()
+        for (let id in this.points) {
+          this.points[id]['activation'] = false
+        }
       }
 
-
+    },
+    watch: {
+      status() {
+        this.clearPointsActivation()
+      }
     }
   }
 </script>
