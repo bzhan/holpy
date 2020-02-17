@@ -81,7 +81,6 @@
   export default {
     name: 'Geometry',
     components: {
-
     },
     data() {
       return {
@@ -120,7 +119,7 @@
           }
           if (!inserted) {
             id = this.points.length
-            this.points.push({"x": x, "y": y, "id": id})
+            this.points.push({"id": id})
           }
           const group = new Konva.Group({
             draggable: true,
@@ -152,6 +151,9 @@
           group.add(newText)
           group.on("mouseover", this.handleMouseOver)
           group.on("mouseout", this.handleMouseOut)
+          // group.on("mouse", this.handleMouseOut)
+          group.on("dragstart", this.handleDragStartAnchor)
+          group.on("dragend", this.handleDragEndAnchor)
           this.$refs.anchorLayer.getNode().add(group)
           this.$refs.anchorLayer.getNode().draw()
         }
@@ -166,11 +168,16 @@
         e.target.strokeWidth(2)
         this.$refs.anchorLayer.getNode().draw()
       },
-      handleDragStart() {
-        this.isDragging = true
+      handleMouseClick() {
+
       },
-      handleDragEnd() {
-        this.isDragging = false
+      handleDragStartAnchor(e) {
+        window.console.log(e)
+      },
+      handleDragMoveAnchor() {
+        // this.updateLine()
+      },
+      handleDragEndAnchor() {
       },
       handleClickSelect() {
         this.status = "select"
@@ -183,6 +190,8 @@
       },
       handleClickConstructCircle() {
         this.status = "circle"
+      },
+      updateLine() {
       }
 
 
