@@ -34,7 +34,7 @@
       </v-stage>
     </div>
     <div id="tool">
-      <h6>Current tool: {{status}}</h6>
+      <h6>{{status}}</h6>
     </div>
 
 <!--    <div id="theory-list" v-show="ref_proof === undefined">-->
@@ -90,21 +90,11 @@
           height: null,
         },
         status: "select",
-        // stage: null,
-        // anchorLayer: new Konva.Layer(),
-        // lineLayer: new Konva.Layer()
+        points: [],
       }
     },
     mounted() {
       this.matchSize()
-      // this.stage = new Konva.Stage({
-      //   container: "canvas",
-      //   width: this.stageSize.width,
-      //   height: this.stageSize.height
-      // })
-      // this.stage.on("click", this.handleClickLayer)
-      // this.stage.add(this.anchorLayer)
-      // this.stage.add(this.lineLayer)
     },
     created: function() {
       window.addEventListener("resize", this.matchSize)
@@ -115,43 +105,72 @@
         this.stageSize.width = this.$refs.p.clientWidth - 10
       },
       handleClickLayer() {
+        const x = this.$refs.stage.getNode().getPointerPosition().x
+        const y = this.$refs.stage.getNode().getPointerPosition().y
+        let id = 0
         if (this.status === "point") {
+          let inserted = false
+          for (let i = 0; i < this.points.length; i ++) {
+            if (this.points[i]["id"] !== i) {
+              id = i
+              this.points.splice(i, 0, {"x": x, "y": y, "id": id})
+              inserted = true
+              break
+            }
+          }
+          if (!inserted) {
+            id = this.points.length
+            this.points.push({"x": x, "y": y, "id": id})
+          }
+          const group = new Konva.Group({
+            draggable: true,
+            isDragging: false,
+            id: id
+          });
           const newShape = new Konva.Circle({
-            x: this.$refs.stage.getNode().getPointerPosition().x,
-            y: this.$refs.stage.getNode().getPointerPosition().y,
+            x: x,
+            y: y,
             radius: 5,
             stroke: "black",
             strokeWidth: 2,
             fill: "red",
-            isDragging: false,
-            draggable: true
-          });
-          newShape.on("mouseover", this.handleMouseOver);
-          newShape.on("mouseout", this.handleMouseOut);
-          // newShape.on("mouseout", function () {
-          //   document.body.style.cursor = 'default';
-          //   this.strokeWidth(2);
-          //   this.$refs.anchorLayer.getNode().draw();
-          // });
-          this.$refs.anchorLayer.getNode().add(newShape);
-          this.$refs.anchorLayer.getNode().draw();
+          })
+          let text = ""
+          if (parseInt(id / 26) === 0) {
+            text = String.fromCharCode(65 + id % 26)
+          }
+          else {
+            text = String.fromCharCode(65 + id % 26) + String(parseInt(id / 26))
+          }
+          const newText = new Konva.Text({
+            x: x + 5,
+            y: y - 20,
+            text: text,
+            fontSize: 16
+          })
+          group.add(newShape)
+          group.add(newText)
+          group.on("mouseover", this.handleMouseOver)
+          group.on("mouseout", this.handleMouseOut)
+          this.$refs.anchorLayer.getNode().add(group)
+          this.$refs.anchorLayer.getNode().draw()
         }
       },
       handleMouseOver(e) {
-        document.body.style.cursor = 'pointer';
-        e.target.strokeWidth(4);
-        this.$refs.anchorLayer.getNode().draw();
+        document.body.style.cursor = 'pointer'
+        e.target.strokeWidth(4)
+        this.$refs.anchorLayer.getNode().draw()
       },
       handleMouseOut(e) {
-        document.body.style.cursor = 'default';
-        e.target.strokeWidth(2);
-        this.$refs.anchorLayer.getNode().draw();
+        document.body.style.cursor = 'default'
+        e.target.strokeWidth(2)
+        this.$refs.anchorLayer.getNode().draw()
       },
       handleDragStart() {
-        this.isDragging = true;
+        this.isDragging = true
       },
       handleDragEnd() {
-        this.isDragging = false;
+        this.isDragging = false
       },
       handleClickSelect() {
         this.status = "select"
