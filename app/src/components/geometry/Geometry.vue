@@ -29,8 +29,9 @@
     </b-navbar>
     <div id="canvas" ref="p">
       <v-stage :config="stageSize" ref="stage" @click="handleClickLayer">
-        <v-layer id="anchorLayer" ref="anchorLayer"></v-layer>
         <v-layer id="lineLayer" ref="lineLayer"></v-layer>
+        <v-layer id="anchorLayer" ref="anchorLayer"></v-layer>
+
       </v-stage>
     </div>
     <div id="tool">
@@ -90,6 +91,8 @@
         },
         status: "select",
         points: [],
+        lines: [],
+        selected: []
       }
     },
     mounted() {
@@ -106,49 +109,64 @@
       handleClickLayer() {
         const x = this.$refs.stage.getNode().getPointerPosition().x
         const y = this.$refs.stage.getNode().getPointerPosition().y
-        let id = 0
         if (this.status === "point") {
-          while (this.points.hasOwnProperty(id)) {
-            id += 1
-          }
-          this.points[id] = {"activated": false}
-          const group = new Konva.Group({
-            draggable: true,
-            isDragging: false,
-            id: id
-          });
-          const newShape = new Konva.Circle({
-            x: x,
-            y: y,
-            radius: 5,
-            stroke: "black",
-            strokeWidth: 2,
-            fill: "red",
-          })
-          let text = ""
-          if (parseInt(id / 26) === 0) {
-            text = String.fromCharCode(65 + id % 26)
-          }
-          else {
-            text = String.fromCharCode(65 + id % 26) + String(parseInt(id / 26))
-          }
-          const newText = new Konva.Text({
-            x: x + 5,
-            y: y - 20,
-            text: text,
-            fontSize: 16
-          })
-          group.add(newShape)
-          group.add(newText)
-          group.on("mouseover", this.handleMouseOver)
-          group.on("mouseout", this.handleMouseOut)
-          group.on("click", this.handleClick)
-          // group.on("mouse", this.handleMouseOut)
-          group.on("dragstart", this.handleDragStartAnchor)
-          group.on("dragend", this.handleDragEndAnchor)
-          this.$refs.anchorLayer.getNode().add(group)
-          this.$refs.anchorLayer.getNode().draw()
+          this.addAnchor(x, y)
         }
+      },
+      addLine(id1, id2) {
+        const anchor1 = this.$refs.stage.getNode().find('#' + id1)[0].getChildren()[0]
+        const anchor2 = this.$refs.stage.getNode().find('#' + id2)[0].getChildren()[0]
+        const pos1 = anchor1.getAbsolutePosition()
+        const pos2 = anchor2.getAbsolutePosition()
+        const newLine = new Konva.Line({
+          points: [pos1['x'], pos1['y'], pos2['x'], pos2['y']],
+          stroke: "black",
+          strokeWidth: 2
+        })
+        this.$refs.lineLayer.getNode().add(newLine)
+        this.$refs.lineLayer.getNode().draw()
+      },
+      addAnchor(x, y) {
+        let id = 0
+        while (this.points.hasOwnProperty(id)) {
+          id += 1
+        }
+        this.points[id] = {"activated": false}
+        const group = new Konva.Group({
+          draggable: true,
+          isDragging: false,
+          id: id.toString()
+        });
+        const newShape = new Konva.Circle({
+          x: x,
+          y: y,
+          radius: 5,
+          stroke: "black",
+          strokeWidth: 2,
+          fill: "red",
+        })
+        let text = ""
+        if (parseInt(id / 26) === 0) {
+          text = String.fromCharCode(65 + id % 26)
+        }
+        else {
+          text = String.fromCharCode(65 + id % 26) + String(parseInt(id / 26))
+        }
+        const newText = new Konva.Text({
+          x: x + 5,
+          y: y - 20,
+          text: text,
+          fontSize: 16
+        })
+        group.add(newShape)
+        group.add(newText)
+        group.on("mouseover", this.handleMouseOver)
+        group.on("mouseout", this.handleMouseOut)
+        group.on("click", this.handleClick)
+        group.on("dragstart", this.handleDragStartAnchor)
+        group.on("dragend", this.handleDragEndAnchor)
+        this.$refs.anchorLayer.getNode().add(group)
+        this.$refs.anchorLayer.getNode().draw()
       },
       handleMouseOver(e) {
         document.body.style.cursor = 'pointer'
@@ -164,15 +182,23 @@
         }
       },
       handleClick(e) {
-        const id = e.target.getParent().index
-        if (this.points[id]["activated"] === true) {
-          this.points[id]["activated"] = false
-          e.target.strokeWidth(2)
-        } else {
-          this.points[id]["activated"] = true
-          e.target.strokeWidth(4)
+        if (this.status === "select") {
+          this.toggleActivationAnchor(e)
         }
-        this.$refs.anchorLayer.getNode().draw()
+        else if (this.status === "line") {
+          this.toggleActivationAnchorOn(e)
+          if (this.selected.length < 1) {
+            this.addAnchorToSelected(e.target.getParent().index)
+          } else {
+            this.addAnchorToSelected(e.target.getParent().index)
+            this.addLine(this.selected[0], this.selected[1])
+            this.selected = []
+            this.clearPointsActivation()
+          }
+        }
+      },
+      addAnchorToSelected(id) {
+        this.selected.push(id)
       },
       handleDragStartAnchor() {
       },
@@ -195,6 +221,21 @@
       },
       updateLine() {
       },
+      toggleActivationAnchorOn(e) {
+        const id = e.target.getParent().index
+        this.points[id]["activated"] = true
+        e.target.strokeWidth(4)
+      },
+      toggleActivationAnchor(e) {
+        const id = e.target.getParent().index
+        if (this.points[id]["activated"] === true) {
+          this.points[id]["activated"] = false
+          e.target.strokeWidth(2)
+        } else {
+          this.toggleActivationAnchorOn(e)
+        }
+        this.$refs.anchorLayer.getNode().draw()
+      },
       clearPointsActivation() {
         let children = this.$refs.anchorLayer.getNode().getChildren()
         for (let i = 0; i < children.length; i ++) {
@@ -202,7 +243,7 @@
         }
         this.$refs.anchorLayer.getNode().draw()
         for (let id in this.points) {
-          this.points[id]['activation'] = false
+          this.points[id]['activated'] = false
         }
       }
 
