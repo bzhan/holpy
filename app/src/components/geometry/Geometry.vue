@@ -11,9 +11,9 @@
         </b-nav-item-dropdown>
         <b-nav-item href="#" @click="handleClickSelect">Select</b-nav-item>
         <b-nav-item-dropdown text="Construct" left>
-          <b-dropdown-item href="#" @click="handleClickPoint">Point</b-dropdown-item>
-          <b-dropdown-item href="#">Line</b-dropdown-item>
-          <b-dropdown-item href="#">Circle</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructPoint">Point</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructLine">Line</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructCircle">Circle</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Constraint" left>
           <b-dropdown-item href="#">Equal Angle</b-dropdown-item>
@@ -28,14 +28,13 @@
       </b-navbar-nav>
     </b-navbar>
     <div id="canvas" ref="p">
-      <v-stage :config="stageSize" ref="stage" @click="handleClickOnLayer">
-        <v-layer id="defaultLayer" ref="layer">
-          <Point :x=100 :y=100 :id="'A'"></Point>
-        </v-layer>
+      <v-stage :config="stageSize" ref="stage" @click="handleClickLayer">
+        <v-layer id="anchorLayer" ref="anchorLayer"></v-layer>
+        <v-layer id="lineLayer" ref="lineLayer"></v-layer>
       </v-stage>
     </div>
     <div id="tool">
-      <h6>{{status}}</h6>
+      <h6>Current tool: {{status}}</h6>
     </div>
 
 <!--    <div id="theory-list" v-show="ref_proof === undefined">-->
@@ -79,11 +78,10 @@
   import Konva from 'konva'
   Vue.use(VueKonva)
   Vue.use(Konva)
-  import Point from "./Point"
   export default {
     name: 'Geometry',
     components: {
-      Point
+
     },
     data() {
       return {
@@ -92,21 +90,31 @@
           height: null,
         },
         status: "select",
+        // stage: null,
+        // anchorLayer: new Konva.Layer(),
+        // lineLayer: new Konva.Layer()
       }
     },
     mounted() {
       this.matchSize()
+      // this.stage = new Konva.Stage({
+      //   container: "canvas",
+      //   width: this.stageSize.width,
+      //   height: this.stageSize.height
+      // })
+      // this.stage.on("click", this.handleClickLayer)
+      // this.stage.add(this.anchorLayer)
+      // this.stage.add(this.lineLayer)
     },
     created: function() {
       window.addEventListener("resize", this.matchSize)
-      this.matchSize()
     },
     methods: {
       matchSize() {
         this.stageSize.height = this.$refs.p.clientHeight - 10
         this.stageSize.width = this.$refs.p.clientWidth - 10
       },
-      handleClickOnLayer() {
+      handleClickLayer() {
         if (this.status === "point") {
           const newShape = new Konva.Circle({
             x: this.$refs.stage.getNode().getPointerPosition().x,
@@ -115,16 +123,47 @@
             stroke: "black",
             strokeWidth: 2,
             fill: "red",
+            isDragging: false,
+            draggable: true
           });
-          this.$refs.layer.getNode().add(newShape);
-          this.$refs.layer.getNode().draw();
+          newShape.on("mouseover", this.handleMouseOver);
+          newShape.on("mouseout", this.handleMouseOut);
+          // newShape.on("mouseout", function () {
+          //   document.body.style.cursor = 'default';
+          //   this.strokeWidth(2);
+          //   this.$refs.anchorLayer.getNode().draw();
+          // });
+          this.$refs.anchorLayer.getNode().add(newShape);
+          this.$refs.anchorLayer.getNode().draw();
         }
+      },
+      handleMouseOver(e) {
+        document.body.style.cursor = 'pointer';
+        e.target.strokeWidth(4);
+        this.$refs.anchorLayer.getNode().draw();
+      },
+      handleMouseOut(e) {
+        document.body.style.cursor = 'default';
+        e.target.strokeWidth(2);
+        this.$refs.anchorLayer.getNode().draw();
+      },
+      handleDragStart() {
+        this.isDragging = true;
+      },
+      handleDragEnd() {
+        this.isDragging = false;
       },
       handleClickSelect() {
         this.status = "select"
       },
-      handleClickPoint() {
+      handleClickConstructPoint() {
         this.status = "point"
+      },
+      handleClickConstructLine() {
+        this.status = "line"
+      },
+      handleClickConstructCircle() {
+        this.status = "circle"
       }
 
 
