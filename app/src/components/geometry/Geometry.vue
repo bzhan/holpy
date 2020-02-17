@@ -108,19 +108,10 @@
         const y = this.$refs.stage.getNode().getPointerPosition().y
         let id = 0
         if (this.status === "point") {
-          let inserted = false
-          for (let i = 0; i < this.points.length; i ++) {
-            if (this.points[i]["id"] !== i) {
-              id = i
-              this.points.splice(i, 0, {"x": x, "y": y, "id": id})
-              inserted = true
-              break
-            }
+          while (this.points.hasOwnProperty(id)) {
+            id += 1
           }
-          if (!inserted) {
-            id = this.points.length
-            this.points.push({"id": id})
-          }
+          this.points[id] = {"activated": false}
           const group = new Konva.Group({
             draggable: true,
             isDragging: false,
@@ -151,6 +142,7 @@
           group.add(newText)
           group.on("mouseover", this.handleMouseOver)
           group.on("mouseout", this.handleMouseOut)
+          group.on("click", this.handleClick)
           // group.on("mouse", this.handleMouseOut)
           group.on("dragstart", this.handleDragStartAnchor)
           group.on("dragend", this.handleDragEndAnchor)
@@ -165,11 +157,22 @@
       },
       handleMouseOut(e) {
         document.body.style.cursor = 'default'
-        e.target.strokeWidth(2)
-        this.$refs.anchorLayer.getNode().draw()
+        const id = e.target.getParent().index
+        if (this.points[id]["activated"] === false) {
+          e.target.strokeWidth(2)
+          this.$refs.anchorLayer.getNode().draw()
+        }
       },
-      handleMouseClick() {
-
+      handleClick(e) {
+        const id = e.target.getParent().index
+        if (this.points[id]["activated"] === true) {
+          this.points[id]["activated"] = false
+          e.target.strokeWidth(2)
+        } else {
+          this.points[id]["activated"] = true
+          e.target.strokeWidth(4)
+        }
+        this.$refs.anchorLayer.getNode().draw()
       },
       handleDragStartAnchor(e) {
         window.console.log(e)
