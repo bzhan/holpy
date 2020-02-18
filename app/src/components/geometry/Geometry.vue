@@ -113,6 +113,22 @@
           this.addAnchor(x, y)
         }
       },
+      checkHaveName(name) {
+        for (let id in this.points) {
+          if (name === this.points[id]['name']) {
+            return true
+          }
+        }
+        return false
+      },
+      parseIdToName(id) {
+        if (parseInt(id / 26) === 0) {
+          return String.fromCharCode(65 + id % 26)
+        }
+        else {
+          return String.fromCharCode(65 + id % 26) + String(parseInt(id / 26))
+        }
+      },
       addLine(id1, id2) {
         const anchor1 = this.$refs.stage.getNode().find('#' + id1)[0].getChildren()[0]
         const anchor2 = this.$refs.stage.getNode().find('#' + id2)[0].getChildren()[0]
@@ -123,6 +139,8 @@
           stroke: "black",
           strokeWidth: 2
         })
+        newLine.on("mouseover", this.handleMouseOver)
+        newLine.on("mouseout", this.handleMouseOut)
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
       },
@@ -131,7 +149,13 @@
         while (this.points.hasOwnProperty(id)) {
           id += 1
         }
-        this.points[id] = {"activated": false}
+        let name = this.parseIdToName(id)
+        let t_id = id
+        while (this.checkHaveName(name)) {
+          t_id += 1
+          name = this.parseIdToName(t_id)
+        }
+        this.points[id] = {"name": name, "activated": false}
         const group = new Konva.Group({
           draggable: true,
           isDragging: false,
@@ -145,24 +169,17 @@
           strokeWidth: 2,
           fill: "red",
         })
-        let text = ""
-        if (parseInt(id / 26) === 0) {
-          text = String.fromCharCode(65 + id % 26)
-        }
-        else {
-          text = String.fromCharCode(65 + id % 26) + String(parseInt(id / 26))
-        }
         const newText = new Konva.Text({
           x: x + 5,
           y: y - 20,
-          text: text,
+          text: name,
           fontSize: 16
         })
         group.add(newShape)
         group.add(newText)
         group.on("mouseover", this.handleMouseOver)
         group.on("mouseout", this.handleMouseOut)
-        group.on("click", this.handleClick)
+        group.on("click", this.handleClickAnchor)
         group.on("dragstart", this.handleDragStartAnchor)
         group.on("dragend", this.handleDragEndAnchor)
         this.$refs.anchorLayer.getNode().add(group)
@@ -170,6 +187,7 @@
       },
       handleMouseOver(e) {
         document.body.style.cursor = 'pointer'
+        window.console.log(e)
         e.target.strokeWidth(4)
         this.$refs.anchorLayer.getNode().draw()
       },
@@ -181,7 +199,7 @@
           this.$refs.anchorLayer.getNode().draw()
         }
       },
-      handleClick(e) {
+      handleClickAnchor(e) {
         if (this.status === "select") {
           this.toggleActivationAnchor(e)
         }
