@@ -134,13 +134,20 @@
         const anchor2 = this.$refs.stage.getNode().find('#' + id2)[0].getChildren()[0]
         const pos1 = anchor1.getAbsolutePosition()
         const pos2 = anchor2.getAbsolutePosition()
+        let id = 100
+        while (this.lines.hasOwnProperty(id)) {
+          id += 1
+        }
+        this.lines[id] = {"children": [id1, id2], "activated": false}
         const newLine = new Konva.Line({
           points: [pos1['x'], pos1['y'], pos2['x'], pos2['y']],
           stroke: "black",
-          strokeWidth: 2
+          strokeWidth: 2,
+          id: id
         })
         newLine.on("mouseover", this.handleMouseOver)
         newLine.on("mouseout", this.handleMouseOut)
+        newLine.on("click", this.handleClickLine)
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
       },
@@ -187,16 +194,30 @@
       },
       handleMouseOver(e) {
         document.body.style.cursor = 'pointer'
-        window.console.log(e)
         e.target.strokeWidth(4)
         this.$refs.anchorLayer.getNode().draw()
+        this.$refs.lineLayer.getNode().draw()
       },
       handleMouseOut(e) {
         document.body.style.cursor = 'default'
-        const id = e.target.getParent().index
-        if (this.points[id]["activated"] === false) {
-          e.target.strokeWidth(2)
-          this.$refs.anchorLayer.getNode().draw()
+        if (e.target.constructor.name === 'Circle') {
+          const id = e.target.getParent().getAttr('id')
+          if (this.points[id]["activated"] === false) {
+            e.target.strokeWidth(2)
+            this.$refs.anchorLayer.getNode().draw()
+          }
+        }
+        else if (e.target.constructor.name === 'Line') {
+          const id = e.target.getAttr('id')
+          if (this.lines[id]["activated"] === false) {
+            e.target.strokeWidth(2)
+            this.$refs.lineLayer.getNode().draw()
+          }
+        }
+      },
+      handleClickLine(e) {
+        if (this.status === "select") {
+          this.toggleActivationLine(e)
         }
       },
       handleClickAnchor(e) {
@@ -204,7 +225,7 @@
           this.toggleActivationAnchor(e)
         }
         else if (this.status === "line") {
-          this.toggleActivationAnchorOn(e)
+          this.toggleActivationOn(e, e.target.getParent().index, this.points)
           if (this.selected.length < 1) {
             this.addAnchorToSelected(e.target.getParent().index)
           } else {
@@ -239,22 +260,31 @@
       },
       updateLine() {
       },
-      toggleActivationOn(e, id) {
-        this.points[id]["activated"] = true
+      toggleActivationOn(e, id, entry) {
+        entry[id]["activated"] = true
         e.target.strokeWidth(4)
       },
-      toogleActivationOff(e, id) {
-        this.points[id]["activated"] = false
+      toggleActivationOff(e, id, entry) {
+        entry[id]["activated"] = false
         e.target.strokeWidth(2)
       },
-      toggleActivationAnchor(e) {
-        const id = e.target.getParent().index
-        if (this.points[id]["activated"] === true) {
-          this.toogleActivationOff(e, id)
+      toggleActivation(e, id, entry) {
+        if (entry[id]["activated"] === true) {
+          this.toggleActivationOff(e, id, entry)
         } else {
-          this.toggleActivationOn(e, id)
+          this.toggleActivationOn(e, id, entry)
         }
+      },
+      toggleActivationAnchor(e) {
+        const id = e.target.getParent().getAttr('id')
+        this.toggleActivation(e, id, this.points)
         this.$refs.anchorLayer.getNode().draw()
+      },
+      toggleActivationLine(e) {
+        const id = e.target.getAttr('id')
+        window.console.log(id)
+        this.toggleActivation(e, id, this.lines)
+        this.$refs.lineLayer.getNode().draw()
       },
       clearAnchorsActivation() {
         let children = this.$refs.anchorLayer.getNode().getChildren()
