@@ -113,24 +113,23 @@
         let y = this.$refs.stage.getNode().getPointerPosition().y
 
         let canAdd = true
-        if (this.status === "point") {
-          for (let id in this.lines) {
-            let p1 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[0])
-            let p2 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[1])
-            let x1 = p1.x()
-            let y1 = p1.y()
-            let x2 = p2.x()
-            let y2 = p2.y()
-            // window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
-            if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
-                    Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
-              canAdd = false
-            }
+        for (let id in this.lines) {
+          let p1 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[0])
+          let p2 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[1])
+          let x1 = p1.x()
+          let y1 = p1.y()
+          let x2 = p2.x()
+          let y2 = p2.y()
+          // window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
+          if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
+                  Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
+            canAdd = false
           }
-          if (canAdd) {
+        }
+        if (canAdd) {
+          if (this.status === "point") {
             this.addAnchor(x, y)
           }
-
         }
       },
       checkHaveName(name) {
@@ -167,7 +166,7 @@
         this.lines[id] = info
         const newLine = new Konva.Line({
           points: [x1, y1, x2, y2],
-          stroke: "black",
+          stroke: "grey",
           strokeWidth: 2,
           id: id.toString(),
           // draggable: true
