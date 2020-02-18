@@ -111,19 +111,22 @@
       handleClickLayer() {
         let x = this.$refs.stage.getNode().getPointerPosition().x
         let y = this.$refs.stage.getNode().getPointerPosition().y
+
         let canAdd = true
         if (this.status === "point") {
-          this.lines.forEach(line => {
-            let x1 = this.points[line.points[0]].x
-            let y1 = this.points[line.points[0]].y
-            let x2 = this.points[line.points[1]].x
-            let y2 = this.points[line.points[1]].y
+          for (let id in this.lines) {
+            let p1 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[0])
+            let p2 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[1])
+            let x1 = p1.x()
+            let y1 = p1.y()
+            let x2 = p2.x()
+            let y2 = p2.y()
             // window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
             if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
                     Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
               canAdd = false
             }
-          })
+          }
           if (canAdd) {
             this.addAnchor(x, y)
           }
@@ -147,8 +150,8 @@
         }
       },
       addLine(id1, id2) {
-        const anchor1 = this.$refs.stage.getNode().find('#' + id1)[0].getChildren()[0]
-        const anchor2 = this.$refs.stage.getNode().find('#' + id2)[0].getChildren()[0]
+        const anchor1 = this.$refs.stage.getNode().findOne('#' + id1)
+        const anchor2 = this.$refs.stage.getNode().findOne('#' + id2)
         const x1 = anchor1.x()
         const y1 = anchor1.y()
         const x2 = anchor2.x()
@@ -167,7 +170,7 @@
           stroke: "black",
           strokeWidth: 2,
           id: id.toString(),
-          draggable: true
+          // draggable: true
         })
         newLine.on("mouseover", () => {
           document.body.style.cursor = 'pointer'
@@ -249,21 +252,21 @@
         let info = {"name": name, "activated": false, "x": x, "y": y}
         this.points[id] = info
         const group = new Konva.Group({
+          x: x,
+          y: y,
           draggable: true,
           isDragging: false,
           id: id.toString()
         });
         const newCircle = new Konva.Circle({
-          x: x,
-          y: y,
           radius: 5,
           stroke: "black",
           strokeWidth: 2,
           fill: "red",
         })
         const newText = new Konva.Text({
-          x: x + 5,
-          y: y - 20,
+          x: 5,
+          y: -20,
           text: name,
           fontSize: 16
         })
@@ -312,13 +315,15 @@
               const lineId = this.getLineIdByAnchor(this.selected[0], this.selected[1])
               if (lineId) {
                 const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
-                const p1 = this.lines[lineId].points[0]
-                const p2 = this.lines[lineId].points[this.lines[lineId].points.length - 1]
-                const x1 = this.points[p1].x
-                const y1 = this.points[p1].y
-                const x2 = this.points[p2].x
-                const y2 = this.points[p2].y
-                let calX = (this.points[this.selected[0]].x + this.points[this.selected[1]].x) / 2
+                const p1 = this.$refs.anchorLayer.getNode().findOne(
+                        '#' + this.selected[0])
+                const p2 = this.$refs.anchorLayer.getNode().findOne(
+                        '#' + this.selected[1])
+                const x1 = p1.x()
+                const y1 = p1.y()
+                const x2 = p2.x()
+                const y2 = p2.y()
+                let calX = (x1 + x2) / 2
                 let calY = this.getYbyLine(x1, y1, x2, y2, calX)
                 const newPtId = this.addAnchor(calX, calY)
                 line.getAttr('points').push(calX, calY)
@@ -335,6 +340,7 @@
         group.on("dragmove", () => {
           info.x = group.x()
           info.y = group.y()
+          this.updateObjects()
         })
         // group.on("dragend", this.handleDragEndAnchor)
         this.$refs.anchorLayer.getNode().add(group)
@@ -362,11 +368,11 @@
       updateObjects() {
         const anchorLayer = this.$refs.anchorLayer.getNode()
         // const lineLayer = this.$refs.lineLayer.getNode()
-        this.points.forEach(point => {
-          let node = anchorLayer.findOne('#' + point.id);
-          node.x(point.x);
-          node.y(point.y);
-        })
+        for (let id in this.points) {
+          let node = anchorLayer.findOne('#' + id)
+          node.x(this.points[id].x)
+          node.y(this.points[id].y)
+        }
       },
       clearAnchorsActivation() {
         let children = this.$refs.anchorLayer.getNode().getChildren()
