@@ -93,6 +93,7 @@
         status: "select",
         points: [],
         lines: [],
+        midpoints: [],
         selected: []
       }
     },
@@ -117,7 +118,7 @@
             let y1 = this.points[line.points[0]].y
             let x2 = this.points[line.points[1]].x
             let y2 = this.points[line.points[1]].y
-            window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
+            // window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
             if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
                     Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
               canAdd = false
@@ -309,23 +310,25 @@
             } else {
               this.addAnchorToSelected(id)
               const lineId = this.getLineIdByAnchor(this.selected[0], this.selected[1])
-              const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
-              const p1 = this.lines[lineId].points[0]
-              const p2 = this.lines[lineId].points[this.lines[lineId].points.length - 1]
-              const x1 = this.points[p1].x
-              const y1 = this.points[p1].y
-              const x2 = this.points[p2].x
-              const y2 = this.points[p2].y
-              let calX = (this.points[this.selected[0]].x + this.points[this.selected[1]].x) / 2
-              let calY = this.getYbyLine(x1, y1, x2, y2, calX)
-              const newPtId = this.addAnchor(calX, calY)
-              line.getAttr('points').push(calX, calY)
-              this.addPointToLine(this.lines[lineId], newPtId, calX)
-              this.$refs.lineLayer.getNode().draw()
+              if (lineId) {
+                const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
+                const p1 = this.lines[lineId].points[0]
+                const p2 = this.lines[lineId].points[this.lines[lineId].points.length - 1]
+                const x1 = this.points[p1].x
+                const y1 = this.points[p1].y
+                const x2 = this.points[p2].x
+                const y2 = this.points[p2].y
+                let calX = (this.points[this.selected[0]].x + this.points[this.selected[1]].x) / 2
+                let calY = this.getYbyLine(x1, y1, x2, y2, calX)
+                const newPtId = this.addAnchor(calX, calY)
+                line.getAttr('points').push(calX, calY)
+                this.addPointToLine(this.lines[lineId], newPtId, calX)
+                this.midpoints.push([newPtId, p1, p2])
+                this.$refs.lineLayer.getNode().draw()
+              }
               this.selected = []
               this.clearAnchorsActivation()
             }
-
           }
         })
 
