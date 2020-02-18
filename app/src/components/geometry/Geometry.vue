@@ -13,6 +13,7 @@
         <b-nav-item-dropdown text="Construct" left>
           <b-dropdown-item href="#" @click="handleClickConstructPoint">Point</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructLine">Line</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructMidpoint">MidPoint</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructCircle">Circle</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Constraint" left>
@@ -112,11 +113,13 @@
         let canAdd = true
         if (this.status === "point") {
           this.lines.forEach(line => {
-            let x1 = this.points[line.endpoints[0]].x
-            let y1 = this.points[line.endpoints[0]].y
-            let x2 = this.points[line.endpoints[1]].x
-            let y2 = this.points[line.endpoints[1]].y
-            if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5) {
+            let x1 = this.points[line.points[0]].x
+            let y1 = this.points[line.points[0]].y
+            let x2 = this.points[line.points[1]].x
+            let y2 = this.points[line.points[1]].y
+            window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
+            if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
+                    Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
               canAdd = false
             }
           })
@@ -153,13 +156,16 @@
         while (this.lines.hasOwnProperty(id)) {
           id += 1
         }
-        let info = {"endpoints": [id1, id2], "others":[], "activated": false}
+        let info = undefined
+        if (x1 < x2) {
+          info = {"points": [id1, id2], "activated": false}
+        } else {info = {"points": [id2, id1], "activated": false}}
         this.lines[id] = info
         const newLine = new Konva.Line({
           points: [x1, y1, x2, y2],
           stroke: "black",
           strokeWidth: 2,
-          id: id,
+          id: id.toString(),
           draggable: true
         })
         newLine.on("mouseover", () => {
@@ -186,9 +192,18 @@
                   }
                   else if (this.status === "point") {
                     let newX = this.$refs.stage.getNode().getPointerPosition().x
-                    let newY = this.getYbyLine(x1, y1, x2, y2, newX)
-                    this.addAnchor(newX, newY)
-                    newLine.getAttr('points').push(newX, newY)
+                    let newY = this.$refs.stage.getNode().getPointerPosition().y
+                    let calX = this.getXbyLine(x1, y1, x2, y2, newY)
+                    let calY = this.getYbyLine(x1, y1, x2, y2, newX)
+                    if ((calX - newX) / newX < (calY - newY) / newY) {
+                      const newPtId = this.addAnchor(calX, newY)
+                      newLine.getAttr('points').push(calX, newY)
+                      this.addPointToLine(info, newPtId, calX)
+                    } else {
+                      const newPtId = this.addAnchor(newX, calY)
+                      newLine.getAttr('points').push(newX, calY)
+                      this.addPointToLine(info, newPtId, newX)
+                    }
                     this.$refs.lineLayer.getNode().draw()
                   }
                 }
@@ -196,8 +211,28 @@
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
       },
+      addPointToLine(info, id, x) {
+        for (let i = 0; i < info.points.length; i ++) {
+          if (x > info.points[i].x) {
+            info.points.splice(i, 0, id)
+            return 0
+          }
+        }
+        info.points.push(id)
+      },
       getYbyLine(x1, y1, x2, y2, newX) {
         return y1 + (y2 - y1) / (x2 - x1) * (newX - x1)
+      },
+      getXbyLine(x1, y1, x2, y2, newY) {
+        return (newY - y1) / ((y2 - y1) / (x2 - x1)) + x1
+      },
+      getLineIdByAnchor(p1, p2) {
+        for (let id in this.lines) {
+          if (this.lines[id].points.indexOf(p1) !== -1 && this.lines[id].points.indexOf(p2) !== -1) {
+            return id
+          }
+        }
+        return null
       },
       addAnchor(x, y) {
         let id = 0
@@ -267,6 +302,31 @@
               this.clearAnchorsActivation()
             }
           }
+          else if (this.status === "midpoint") {
+            info.activated = true
+            if (this.selected.length < 1) {
+              this.addAnchorToSelected(id)
+            } else {
+              this.addAnchorToSelected(id)
+              const lineId = this.getLineIdByAnchor(this.selected[0], this.selected[1])
+              const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
+              const p1 = this.lines[lineId].points[0]
+              const p2 = this.lines[lineId].points[this.lines[lineId].points.length - 1]
+              const x1 = this.points[p1].x
+              const y1 = this.points[p1].y
+              const x2 = this.points[p2].x
+              const y2 = this.points[p2].y
+              let calX = (this.points[this.selected[0]].x + this.points[this.selected[1]].x) / 2
+              let calY = this.getYbyLine(x1, y1, x2, y2, calX)
+              const newPtId = this.addAnchor(calX, calY)
+              line.getAttr('points').push(calX, calY)
+              this.addPointToLine(this.lines[lineId], newPtId, calX)
+              this.$refs.lineLayer.getNode().draw()
+              this.selected = []
+              this.clearAnchorsActivation()
+            }
+
+          }
         })
 
         group.on("dragmove", () => {
@@ -276,6 +336,7 @@
         // group.on("dragend", this.handleDragEndAnchor)
         this.$refs.anchorLayer.getNode().add(group)
         this.$refs.anchorLayer.getNode().draw()
+        return id
       },
       addAnchorToSelected(id) {
         this.selected.push(id)
@@ -285,6 +346,9 @@
       },
       handleClickConstructPoint() {
         this.status = "point"
+      },
+      handleClickConstructMidpoint() {
+        this.status = "midpoint"
       },
       handleClickConstructLine() {
         this.status = "line"
@@ -310,6 +374,7 @@
         for (let id in this.points) {
           this.points[id]['activated'] = false
         }
+        this.$refs.anchorLayer.getNode().draw()
       }
     },
     watch: {
