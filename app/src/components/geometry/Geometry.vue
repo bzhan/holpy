@@ -211,7 +211,7 @@
             this.addAnchorToSelected(e.target.getParent().index)
             this.addLine(this.selected[0], this.selected[1])
             this.selected = []
-            this.clearPointsActivation()
+            this.clearAnchorsActivation()
           }
         }
       },
@@ -239,22 +239,24 @@
       },
       updateLine() {
       },
-      toggleActivationAnchorOn(e) {
-        const id = e.target.getParent().index
+      toggleActivationOn(e, id) {
         this.points[id]["activated"] = true
         e.target.strokeWidth(4)
+      },
+      toogleActivationOff(e, id) {
+        this.points[id]["activated"] = false
+        e.target.strokeWidth(2)
       },
       toggleActivationAnchor(e) {
         const id = e.target.getParent().index
         if (this.points[id]["activated"] === true) {
-          this.points[id]["activated"] = false
-          e.target.strokeWidth(2)
+          this.toogleActivationOff(e, id)
         } else {
-          this.toggleActivationAnchorOn(e)
+          this.toggleActivationOn(e, id)
         }
         this.$refs.anchorLayer.getNode().draw()
       },
-      clearPointsActivation() {
+      clearAnchorsActivation() {
         let children = this.$refs.anchorLayer.getNode().getChildren()
         for (let i = 0; i < children.length; i ++) {
           children[i].getChildren()[0].strokeWidth(2)
@@ -264,11 +266,10 @@
           this.points[id]['activated'] = false
         }
       }
-
     },
     watch: {
       status() {
-        this.clearPointsActivation()
+        this.clearAnchorsActivation()
       }
     }
   }
