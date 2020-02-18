@@ -107,10 +107,23 @@
         this.stageSize.width = this.$refs.p.clientWidth - 10
       },
       handleClickLayer() {
-        const x = this.$refs.stage.getNode().getPointerPosition().x
-        const y = this.$refs.stage.getNode().getPointerPosition().y
+        let x = this.$refs.stage.getNode().getPointerPosition().x
+        let y = this.$refs.stage.getNode().getPointerPosition().y
+        let canAdd = true
         if (this.status === "point") {
-          this.addAnchor(x, y)
+          this.lines.forEach(line => {
+            let x1 = this.points[line.endpoints[0]].x
+            let y1 = this.points[line.endpoints[0]].y
+            let x2 = this.points[line.endpoints[1]].x
+            let y2 = this.points[line.endpoints[1]].y
+            if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5) {
+              canAdd = false
+            }
+          })
+          if (canAdd) {
+            this.addAnchor(x, y)
+          }
+
         }
       },
       checkHaveName(name) {
@@ -132,19 +145,22 @@
       addLine(id1, id2) {
         const anchor1 = this.$refs.stage.getNode().find('#' + id1)[0].getChildren()[0]
         const anchor2 = this.$refs.stage.getNode().find('#' + id2)[0].getChildren()[0]
-        const pos1 = anchor1.getAbsolutePosition()
-        const pos2 = anchor2.getAbsolutePosition()
+        const x1 = anchor1.x()
+        const y1 = anchor1.y()
+        const x2 = anchor2.x()
+        const y2 = anchor2.y()
         let id = 100
         while (this.lines.hasOwnProperty(id)) {
           id += 1
         }
-        let info = {"children": [id1, id2], "activated": false}
+        let info = {"endpoints": [id1, id2], "others":[], "activated": false}
         this.lines[id] = info
         const newLine = new Konva.Line({
-          points: [pos1['x'], pos1['y'], pos2['x'], pos2['y']],
+          points: [x1, y1, x2, y2],
           stroke: "black",
           strokeWidth: 2,
-          id: id
+          id: id,
+          draggable: true
         })
         newLine.on("mouseover", () => {
           document.body.style.cursor = 'pointer'
@@ -168,10 +184,20 @@
                       newLine.strokeWidth(4)
                     }
                   }
+                  else if (this.status === "point") {
+                    let newX = this.$refs.stage.getNode().getPointerPosition().x
+                    let newY = this.getYbyLine(x1, y1, x2, y2, newX)
+                    this.addAnchor(newX, newY)
+                    newLine.getAttr('points').push(newX, newY)
+                    this.$refs.lineLayer.getNode().draw()
+                  }
                 }
           )
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
+      },
+      getYbyLine(x1, y1, x2, y2, newX) {
+        return y1 + (y2 - y1) / (x2 - x1) * (newX - x1)
       },
       addAnchor(x, y) {
         let id = 0
@@ -266,7 +292,14 @@
       handleClickConstructCircle() {
         this.status = "circle"
       },
-      updateLine() {
+      updateObjects() {
+        const anchorLayer = this.$refs.anchorLayer.getNode()
+        // const lineLayer = this.$refs.lineLayer.getNode()
+        this.points.forEach(point => {
+          let node = anchorLayer.findOne('#' + point.id);
+          node.x(point.x);
+          node.y(point.y);
+        })
       },
       clearAnchorsActivation() {
         let children = this.$refs.anchorLayer.getNode().getChildren()
