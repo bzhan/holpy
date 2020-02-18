@@ -130,6 +130,18 @@
           if (this.status === "point") {
             this.addAnchor(x, y)
           }
+          else if (this.status === "line") {
+            if (this.selected.length < 1) {
+              let newId = this.addAnchor(x, y, true)
+              this.addAnchorToSelected(newId)
+            } else {
+              let newId = this.addAnchor(x, y, true)
+              this.addAnchorToSelected(newId)
+              this.addLine(this.selected[0], this.selected[1])
+              this.selected = []
+              this.clearAnchorsActivation()
+            }
+          }
         }
       },
       checkHaveName(name) {
@@ -237,7 +249,7 @@
         }
         return null
       },
-      addAnchor(x, y) {
+      addAnchor(x, y, activated) {
         let id = 0
         while (this.points.hasOwnProperty(id)) {
           id += 1
@@ -248,7 +260,12 @@
           t_id += 1
           name = this.parseIdToName(t_id)
         }
-        let info = {"name": name, "activated": false, "x": x, "y": y}
+        let info = undefined
+        if (activated) {
+          info = {"name": name, "activated": true, "x": x, "y": y}
+        } else {
+          info = {"name": name, "activated": false, "x": x, "y": y}
+        }
         this.points[id] = info
         const group = new Konva.Group({
           x: x,
@@ -257,10 +274,14 @@
           isDragging: false,
           id: id.toString()
         });
+        let strokeWidth = 2
+        if (activated) {
+          strokeWidth = 4
+        }
         const newCircle = new Konva.Circle({
           radius: 5,
           stroke: "black",
-          strokeWidth: 2,
+          strokeWidth: strokeWidth,
           fill: "red",
         })
         const newText = new Konva.Text({
