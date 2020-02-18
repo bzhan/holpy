@@ -138,16 +138,38 @@
         while (this.lines.hasOwnProperty(id)) {
           id += 1
         }
-        this.lines[id] = {"children": [id1, id2], "activated": false}
+        let info = {"children": [id1, id2], "activated": false}
+        this.lines[id] = info
         const newLine = new Konva.Line({
           points: [pos1['x'], pos1['y'], pos2['x'], pos2['y']],
           stroke: "black",
           strokeWidth: 2,
           id: id
         })
-        newLine.on("mouseover", this.handleMouseOver)
-        newLine.on("mouseout", this.handleMouseOut)
-        newLine.on("click", this.handleClickLine)
+        newLine.on("mouseover", () => {
+          document.body.style.cursor = 'pointer'
+          newLine.strokeWidth(4)
+          this.$refs.lineLayer.getNode().draw()
+        })
+        newLine.on("mouseout", () => {
+          if (info.activated === false) {
+            document.body.style.cursor = 'default'
+            newLine.strokeWidth(2)
+            this.$refs.lineLayer.getNode().draw()
+          }
+        })
+        newLine.on("click", () => {
+                  if (this.status === "select") {
+                    if (info.activated === true) {
+                      info.activated = false
+                      newLine.strokeWidth(2)
+                    } else {
+                      info.activated = true
+                      newLine.strokeWidth(4)
+                    }
+                  }
+                }
+          )
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
       },
@@ -162,13 +184,14 @@
           t_id += 1
           name = this.parseIdToName(t_id)
         }
-        this.points[id] = {"name": name, "activated": false}
+        let info = {"name": name, "activated": false, "x": x, "y": y}
+        this.points[id] = info
         const group = new Konva.Group({
           draggable: true,
           isDragging: false,
           id: id.toString()
         });
-        const newShape = new Konva.Circle({
+        const newCircle = new Konva.Circle({
           x: x,
           y: y,
           radius: 5,
@@ -182,69 +205,54 @@
           text: name,
           fontSize: 16
         })
-        group.add(newShape)
+        group.add(newCircle)
         group.add(newText)
-        group.on("mouseover", this.handleMouseOver)
-        group.on("mouseout", this.handleMouseOut)
-        group.on("click", this.handleClickAnchor)
-        group.on("dragstart", this.handleDragStartAnchor)
-        group.on("dragend", this.handleDragEndAnchor)
+        group.on("mouseover", () => {
+          document.body.style.cursor = 'pointer'
+          newCircle.strokeWidth(4)
+          this.$refs.anchorLayer.getNode().draw()
+        })
+        group.on("mouseout", () => {
+          document.body.style.cursor = 'default'
+          if (info.activated === false) {
+            newCircle.strokeWidth(2)
+            this.$refs.anchorLayer.getNode().draw()
+          }
+        })
+        group.on("click", () => {
+          if (this.status === "select") {
+            if (info.activated === true) {
+              info.activated = false
+              newCircle.strokeWidth(2)
+            } else {
+              info.activated = true
+              newCircle.strokeWidth(4)
+            }
+            this.$refs.anchorLayer.getNode().draw()
+          }
+          else if (this.status === "line") {
+            info.activated = true
+            if (this.selected.length < 1) {
+              this.addAnchorToSelected(id)
+            } else {
+              this.addAnchorToSelected(id)
+              this.addLine(this.selected[0], this.selected[1])
+              this.selected = []
+              this.clearAnchorsActivation()
+            }
+          }
+        })
+
+        group.on("dragmove", () => {
+          info.x = group.x()
+          info.y = group.y()
+        })
+        // group.on("dragend", this.handleDragEndAnchor)
         this.$refs.anchorLayer.getNode().add(group)
         this.$refs.anchorLayer.getNode().draw()
       },
-      handleMouseOver(e) {
-        document.body.style.cursor = 'pointer'
-        e.target.strokeWidth(4)
-        this.$refs.anchorLayer.getNode().draw()
-        this.$refs.lineLayer.getNode().draw()
-      },
-      handleMouseOut(e) {
-        document.body.style.cursor = 'default'
-        if (e.target.constructor.name === 'Circle') {
-          const id = e.target.getParent().getAttr('id')
-          if (this.points[id]["activated"] === false) {
-            e.target.strokeWidth(2)
-            this.$refs.anchorLayer.getNode().draw()
-          }
-        }
-        else if (e.target.constructor.name === 'Line') {
-          const id = e.target.getAttr('id')
-          if (this.lines[id]["activated"] === false) {
-            e.target.strokeWidth(2)
-            this.$refs.lineLayer.getNode().draw()
-          }
-        }
-      },
-      handleClickLine(e) {
-        if (this.status === "select") {
-          this.toggleActivationLine(e)
-        }
-      },
-      handleClickAnchor(e) {
-        if (this.status === "select") {
-          this.toggleActivationAnchor(e)
-        }
-        else if (this.status === "line") {
-          this.toggleActivationOn(e, e.target.getParent().index, this.points)
-          if (this.selected.length < 1) {
-            this.addAnchorToSelected(e.target.getParent().index)
-          } else {
-            this.addAnchorToSelected(e.target.getParent().index)
-            this.addLine(this.selected[0], this.selected[1])
-            this.selected = []
-            this.clearAnchorsActivation()
-          }
-        }
-      },
       addAnchorToSelected(id) {
         this.selected.push(id)
-      },
-      handleDragStartAnchor() {
-      },
-      handleDragMoveAnchor() {
-        // this.updateLine()
-      },
-      handleDragEndAnchor() {
       },
       handleClickSelect() {
         this.status = "select"
@@ -259,32 +267,6 @@
         this.status = "circle"
       },
       updateLine() {
-      },
-      toggleActivationOn(e, id, entry) {
-        entry[id]["activated"] = true
-        e.target.strokeWidth(4)
-      },
-      toggleActivationOff(e, id, entry) {
-        entry[id]["activated"] = false
-        e.target.strokeWidth(2)
-      },
-      toggleActivation(e, id, entry) {
-        if (entry[id]["activated"] === true) {
-          this.toggleActivationOff(e, id, entry)
-        } else {
-          this.toggleActivationOn(e, id, entry)
-        }
-      },
-      toggleActivationAnchor(e) {
-        const id = e.target.getParent().getAttr('id')
-        this.toggleActivation(e, id, this.points)
-        this.$refs.anchorLayer.getNode().draw()
-      },
-      toggleActivationLine(e) {
-        const id = e.target.getAttr('id')
-        window.console.log(id)
-        this.toggleActivation(e, id, this.lines)
-        this.$refs.lineLayer.getNode().draw()
       },
       clearAnchorsActivation() {
         let children = this.$refs.anchorLayer.getNode().getChildren()
