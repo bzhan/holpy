@@ -137,6 +137,9 @@
           }
         }
         if (canAdd) {
+          if (this.status === "select") {
+            this.clearActivationAll()
+          }
           if (this.status === "point") {
             this.addAnchor(x, y)
           }
@@ -203,8 +206,8 @@
           this.$refs.lineLayer.getNode().draw()
         })
         newLine.on("mouseout", () => {
+          document.body.style.cursor = 'default'
           if (info.activated === false) {
-            document.body.style.cursor = 'default'
             newLine.strokeWidth(2)
             this.$refs.lineLayer.getNode().draw()
           }
@@ -218,6 +221,7 @@
                       info.activated = true
                       newLine.strokeWidth(4)
                     }
+                    this.$refs.lineLayer.getNode().draw()
                   }
                   else if (this.status === "point") {
                     const newX = this.$refs.stage.getNode().getPointerPosition().x
