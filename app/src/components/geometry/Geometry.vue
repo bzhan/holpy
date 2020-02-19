@@ -142,10 +142,10 @@
           else if (this.status === "line") {
             if (this.selected.length < 1) {
               let newId = this.addAnchor(x, y, true)
-              this.addAnchorToSelected(newId)
+              this.addPointToSelected(newId)
             } else {
               let newId = this.addAnchor(x, y, true)
-              this.addAnchorToSelected(newId)
+              this.addPointToSelected(newId)
               this.addLine(this.selected[0], this.selected[1])
               this.selected = []
               this.clearAnchorsActivation()
@@ -215,18 +215,15 @@
                     }
                   }
                   else if (this.status === "point") {
-                    let newX = this.$refs.stage.getNode().getPointerPosition().x
-                    let newY = this.$refs.stage.getNode().getPointerPosition().y
-                    let calX = this.getXbyLine(x1, y1, x2, y2, newY)
-                    let calY = this.getYbyLine(x1, y1, x2, y2, newX)
-                    if ((calX - newX) / newX < (calY - newY) / newY) {
-                      const newPtId = this.addAnchor(calX, newY)
-                      newLine.getAttr('points').push(calX, newY)
-                      this.addPointToLineList(info, newPtId, calX)
-                    } else {
-                      const newPtId = this.addAnchor(newX, calY)
-                      newLine.getAttr('points').push(newX, calY)
-                      this.addPointToLineList(info, newPtId, newX)
+                    const newX = this.$refs.stage.getNode().getPointerPosition().x
+                    const newY = this.$refs.stage.getNode().getPointerPosition().y
+                    const r = this.getPointToSegMinDist([newX, newY], [x1, y1], [x2, y2])
+                    const minDist = r[0]
+                    const foot = r[1]
+                    if (minDist < 5) {
+                      const newPtId = this.addAnchor(foot[0], foot[1])
+                      newLine.getAttr('points').push(foot[0], foot[1])
+                      this.addPointToLineList(info, newPtId, foot[0])
                     }
                     this.$refs.lineLayer.getNode().draw()
                   }
@@ -245,14 +242,14 @@
         info.points.push(id)
       },
       getYbyLine(x1, y1, x2, y2, newX) {
-        return y1 + (y2 - y1) / (x2 - x1) * (newX - x1)
+        return y1 + ((y2 - y1) / (x2 - x1)) * (newX - x1)
       },
       getXbyLine(x1, y1, x2, y2, newY) {
         return (newY - y1) / ((y2 - y1) / (x2 - x1)) + x1
       },
-      getLineIdByAnchor(p1, p2) {
+      getLineIdByPointId(id1, id2) {
         for (let id in this.lines) {
-          if (this.lines[id].points.indexOf(p1) !== -1 && this.lines[id].points.indexOf(p2) !== -1) {
+          if (this.lines[id].points.indexOf(id1) !== -1 && this.lines[id].points.indexOf(id2) !== -1) {
             return id
           }
         }
@@ -375,9 +372,9 @@
           else if (this.status === "line") {
             info.activated = true
             if (this.selected.length < 1) {
-              this.addAnchorToSelected(id)
+              this.addPointToSelected(id)
             } else {
-              this.addAnchorToSelected(id)
+              this.addPointToSelected(id)
               this.addLine(this.selected[0], this.selected[1])
               this.selected = []
               this.clearAnchorsActivation()
@@ -386,10 +383,10 @@
           else if (this.status === "midpoint") {
             info.activated = true
             if (this.selected.length < 1) {
-              this.addAnchorToSelected(id)
+              this.addPointToSelected(id)
             } else {
-              this.addAnchorToSelected(id)
-              const lineId = this.getLineIdByAnchor(this.selected[0], this.selected[1])
+              this.addPointToSelected(id)
+              const lineId = this.getLineIdByPointId(this.selected[0], this.selected[1])
               if (lineId) {
                 const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
                 const p1 = this.$refs.anchorLayer.getNode().findOne(
@@ -397,7 +394,7 @@
                 const p2 = this.$refs.anchorLayer.getNode().findOne(
                         '#' + this.selected[1])
                 let calX = (p1.x() + p2.x()) / 2
-                let calY = this.getYbyLine(p1.x(), p1.y(), p1.x(), p2.y(), calX)
+                let calY = this.getYbyLine(p1.x(), p1.y(), p2.x(), p2.y(), calX)
                 const newPtId = this.addAnchor(calX, calY)
                 line.getAttr('points').push(calX, calY)
                 this.addPointToLineList(this.lines[lineId], newPtId, calX)
@@ -420,7 +417,7 @@
         this.$refs.anchorLayer.getNode().draw()
         return id
       },
-      addAnchorToSelected(id) {
+      addPointToSelected(id) {
         this.selected.push(id)
       },
       handleClickSelect() {
