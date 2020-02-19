@@ -119,7 +119,7 @@
           const ps = this.getEndpointsByLineId(id)
           const pos1 = this.getCoordinateByPoint(ps[0])
           const pos2 = this.getCoordinateByPoint(ps[1])
-          const minDist = this.getPointToSegMinDist([x, y], pos1, pos2)[0]
+          const minDist = this.getMinDistPointToSeg([x, y], pos1, pos2)[0]
           if (minDist < 5) {
             canAdd = false
             break
@@ -140,15 +140,19 @@
             this.addAnchor(x, y)
           }
           else if (this.status === "line") {
-            if (this.selected.length < 1) {
-              let newId = this.addAnchor(x, y, true)
-              this.addToSelected(newId)
-            } else {
-              let newId = this.addAnchor(x, y, true)
+            let newId = this.addAnchor(x, y, true)
+            this.addToSelected(newId)
+            if (this.selected.length === 2) {
               this.addToSelected(newId)
               this.addLine(this.selected[0], this.selected[1])
               this.selected = []
               this.clearActivationAll()
+            }
+          }
+          else if (this.status === "perpendicular") {
+            if (this.selected.length === 0) {
+              let newId = this.addAnchor(x, y, true)
+              this.addToSelected(newId)
             }
           }
         }
@@ -217,7 +221,7 @@
                   else if (this.status === "point") {
                     const newX = this.$refs.stage.getNode().getPointerPosition().x
                     const newY = this.$refs.stage.getNode().getPointerPosition().y
-                    const r = this.getPointToSegMinDist([newX, newY], [x1, y1], [x2, y2])
+                    const r = this.getMinDistPointToSeg([newX, newY], [x1, y1], [x2, y2])
                     const minDist = r[0]
                     const foot = r[1]
                     if (minDist < 5) {
@@ -229,9 +233,8 @@
                   }
                   else if (this.status === "intersection") {
                     info.activated = true
-                    if (this.selected.length < 1) {
-                      this.addToSelected(id)
-                    } else {
+                    this.addToSelected(id)
+                    if (this.selected.length === 2) {
                       this.addToSelected(id)
                       this.addLine(this.selected[0], this.selected[1])
                       this.selected = []
@@ -266,17 +269,25 @@
         }
         return null
       },
+      getEndPointsIdByLineId(id) {
+        return [this.lines[id].points[0], this.lines[id].points[this.lines[id].points.length - 1]]
+      },
       getEndpointsByLineId(id) {
-        const p1Id = this.lines[id].points[0]
-        const p2Id = this.lines[id].points[this.lines[id].points.length - 1]
-        const p1 = this.$refs.anchorLayer.getNode().findOne('#' + p1Id)
-        const p2 = this.$refs.anchorLayer.getNode().findOne('#' + p2Id)
+        const ids = this.getEndPointsIdByLineId(id)
+        const p1 = this.$refs.anchorLayer.getNode().findOne('#' + ids[0])
+        const p2 = this.$refs.anchorLayer.getNode().findOne('#' + ids[1])
         return [p1, p2]
       },
       getCoordinateByPoint(p) {
         return [p.x(), p.y()]
       },
-      getPointToSegPedalCoordinate(pair, pair1, pair2) {
+      getPointById(id) {
+        return this.$refs.anchorLayer.getNode().findOne('#' + id)
+      },
+      getCoordinateById(id) {
+        return this.getCoordinateByPoint(this.getPointById(id))
+      },
+      getPedalCoordinatePointToSeg(pair, pair1, pair2) {
         const x = pair[0]
         const y = pair[1]
         const x1 = pair1[0]
@@ -294,22 +305,19 @@
           param = dot / len_sq
         }
         let xx, yy
-        if (param < 0) {
-          xx = x1
-          yy = y1
-        } else if (param > 1) {
-          xx = x2
-          yy = y2
+        if (param < 0 || param > 1) {
+          xx = Infinity
+          yy = Infinity
         } else {
           xx = x1 + param * C
           yy = y1 + param * D
         }
         return [xx, yy]
       },
-      getPointToSegMinDist(pair, pair1, pair2) {
+      getMinDistPointToSeg(pair, pair1, pair2) {
         const x = pair[0]
         const y = pair[1]
-        const pedalPos = this.getPointToSegPedalCoordinate(pair, pair1, pair2)
+        const pedalPos = this.getPedalCoordinatePointToSeg(pair, pair1, pair2)
         const dx = x - pedalPos[0]
         const dy = y - pedalPos[1]
         return [Math.sqrt(dx * dx + dy * dy), pedalPos];
@@ -415,9 +423,23 @@
           else if (this.status === "perpendicular") {
             info.activated = true
             this.addToSelected(id)
-            // if (this.selected.length === 3) {
-            //  
-            // }
+            if (this.selected.length === 3) {
+              const perpTo = this.getLineIdByPointId(this.selected[1], this.selected[2])
+              if (!perpTo) {
+                this.clearActivationAll()
+                return
+              }
+              const endPointIds = this.getEndPointsIdByLineId(perpTo)
+              const r = this.getPedalCoordinatePointToSeg(this.getCoordinateById(this.selected[0]),
+                      this.getCoordinateById(endPointIds[0]), this.getCoordinateById(endPointIds[1]))
+              if (r[0] === Infinity) {
+                this.clearActivationAll()
+                return
+              }
+              const footId = this.addAnchor(r[0], r[1])
+              this.addLine(this.selected[0], footId)
+              this.clearActivationAll()
+            }
           }
         })
 
