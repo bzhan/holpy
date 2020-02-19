@@ -15,7 +15,8 @@
           <b-dropdown-item href="#" @click="handleClickConstructLine">Line</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructCircle">Circle</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructMidpoint">Midpoint</b-dropdown-item>
-          <b-dropdown-item href="#">Intersection</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructPerp">Perpendicular</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructIntersection">Intersection</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Constraint" left>
           <b-dropdown-item href="#">Equal Angle</b-dropdown-item>
@@ -37,7 +38,7 @@
       </v-stage>
     </div>
     <div id="tool">
-      <h6>{{status}}</h6>
+      <h6>Tool: {{status}}</h6>
     </div>
 
 <!--    <div id="theory-list" v-show="ref_proof === undefined">-->
@@ -436,6 +437,12 @@
       },
       handleClickConstructCircle() {
         this.status = "circle"
+      },
+      handleClickConstructPerp() {
+        this.status = "perp"
+      },
+      handleClickConstructIntersection() {
+        this.status = "intersection"
       },
       updateObjects() {
         const anchorLayer = this.$refs.anchorLayer.getNode()
