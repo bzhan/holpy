@@ -13,8 +13,9 @@
         <b-nav-item-dropdown text="Construct" left>
           <b-dropdown-item href="#" @click="handleClickConstructPoint">Point</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructLine">Line</b-dropdown-item>
-          <b-dropdown-item href="#" @click="handleClickConstructMidpoint">MidPoint</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructCircle">Circle</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructMidpoint">Midpoint</b-dropdown-item>
+          <b-dropdown-item href="#">Intersection</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Constraint" left>
           <b-dropdown-item href="#">Equal Angle</b-dropdown-item>
@@ -78,6 +79,7 @@
   import Vue from 'vue'
   import VueKonva from 'vue-konva'
   import Konva from 'konva'
+
   Vue.use(VueKonva)
   Vue.use(Konva)
   export default {
@@ -124,10 +126,19 @@
           if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
                   Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
             canAdd = false
+            break
+          }
+        }
+        for (let id in this.points) {
+          let p = this.$refs.anchorLayer.getNode().findOne('#' + id)
+          if (Math.sqrt((x - p.x()) ^ 2 + (y - p.y()) ^ 2) < 2) {
+            canAdd = false
+            break
           }
         }
         if (canAdd) {
           if (this.status === "point") {
+            window.console.log('created by click on canvas')
             this.addAnchor(x, y)
           }
           else if (this.status === "line") {
@@ -213,11 +224,11 @@
                     if ((calX - newX) / newX < (calY - newY) / newY) {
                       const newPtId = this.addAnchor(calX, newY)
                       newLine.getAttr('points').push(calX, newY)
-                      this.addPointToLine(info, newPtId, calX)
+                      this.addPointToLineList(info, newPtId, calX)
                     } else {
                       const newPtId = this.addAnchor(newX, calY)
                       newLine.getAttr('points').push(newX, calY)
-                      this.addPointToLine(info, newPtId, newX)
+                      this.addPointToLineList(info, newPtId, newX)
                     }
                     this.$refs.lineLayer.getNode().draw()
                   }
@@ -226,7 +237,7 @@
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
       },
-      addPointToLine(info, id, x) {
+      addPointToLineList(info, id, x) {
         for (let i = 0; i < info.points.length; i ++) {
           if (x > info.points[i].x) {
             info.points.splice(i, 0, id)
@@ -339,15 +350,11 @@
                         '#' + this.selected[0])
                 const p2 = this.$refs.anchorLayer.getNode().findOne(
                         '#' + this.selected[1])
-                const x1 = p1.x()
-                const y1 = p1.y()
-                const x2 = p2.x()
-                const y2 = p2.y()
-                let calX = (x1 + x2) / 2
-                let calY = this.getYbyLine(x1, y1, x2, y2, calX)
+                let calX = (p1.x() + p2.x()) / 2
+                let calY = this.getYbyLine(p1.x(), p1.y(), p1.x(), p2.y(), calX)
                 const newPtId = this.addAnchor(calX, calY)
                 line.getAttr('points').push(calX, calY)
-                this.addPointToLine(this.lines[lineId], newPtId, calX)
+                this.addPointToLineList(this.lines[lineId], newPtId, calX)
                 this.midpoints.push([newPtId, p1, p2])
                 this.$refs.lineLayer.getNode().draw()
               }
@@ -395,6 +402,7 @@
         }
       },
       clearAnchorsActivation() {
+        this.selected = []
         let children = this.$refs.anchorLayer.getNode().getChildren()
         for (let i = 0; i < children.length; i ++) {
           children[i].getChildren()[0].strokeWidth(2)
