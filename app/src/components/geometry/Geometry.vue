@@ -142,13 +142,13 @@
           else if (this.status === "line") {
             if (this.selected.length < 1) {
               let newId = this.addAnchor(x, y, true)
-              this.addPointToSelected(newId)
+              this.addToSelected(newId)
             } else {
               let newId = this.addAnchor(x, y, true)
-              this.addPointToSelected(newId)
+              this.addToSelected(newId)
               this.addLine(this.selected[0], this.selected[1])
               this.selected = []
-              this.clearAnchorsActivation()
+              this.clearActivationAll()
             }
           }
         }
@@ -226,6 +226,17 @@
                       this.addPointToLineList(info, newPtId, foot[0])
                     }
                     this.$refs.lineLayer.getNode().draw()
+                  }
+                  else if (this.status === "intersection") {
+                    info.activated = true
+                    if (this.selected.length < 1) {
+                      this.addToSelected(id)
+                    } else {
+                      this.addToSelected(id)
+                      this.addLine(this.selected[0], this.selected[1])
+                      this.selected = []
+                      this.clearActivationAll()
+                    }
                   }
                 }
           )
@@ -371,21 +382,17 @@
           }
           else if (this.status === "line") {
             info.activated = true
-            if (this.selected.length < 1) {
-              this.addPointToSelected(id)
-            } else {
-              this.addPointToSelected(id)
+            this.addToSelected(id)
+            if (this.selected.length === 2) {
               this.addLine(this.selected[0], this.selected[1])
               this.selected = []
-              this.clearAnchorsActivation()
+              this.clearActivationAll()
             }
           }
           else if (this.status === "midpoint") {
             info.activated = true
-            if (this.selected.length < 1) {
-              this.addPointToSelected(id)
-            } else {
-              this.addPointToSelected(id)
+            this.addToSelected(id)
+            if (this.selected.length === 2) {
               const lineId = this.getLineIdByPointId(this.selected[0], this.selected[1])
               if (lineId) {
                 const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
@@ -400,10 +407,17 @@
                 this.addPointToLineList(this.lines[lineId], newPtId, calX)
                 this.midpoints.push([newPtId, p1, p2])
                 this.$refs.lineLayer.getNode().draw()
-              }
-              this.selected = []
-              this.clearAnchorsActivation()
             }
+              this.selected = []
+              this.clearActivationAll()
+            }
+          }
+          else if (this.status === "perpendicular") {
+            info.activated = true
+            this.addToSelected(id)
+            // if (this.selected.length === 3) {
+            //  
+            // }
           }
         })
 
@@ -417,7 +431,7 @@
         this.$refs.anchorLayer.getNode().draw()
         return id
       },
-      addPointToSelected(id) {
+      addToSelected(id) {
         this.selected.push(id)
       },
       handleClickSelect() {
@@ -450,22 +464,29 @@
           node.y(this.points[id].y)
         }
       },
-      clearAnchorsActivation() {
+      clearActivationAll() {
         this.selected = []
-        let children = this.$refs.anchorLayer.getNode().getChildren()
-        for (let i = 0; i < children.length; i ++) {
-          children[i].getChildren()[0].strokeWidth(2)
+        let allPoints = this.$refs.anchorLayer.getNode().getChildren()
+        let allLines = this.$refs.lineLayer.getNode().getChildren()
+        for (let i = 0; i < allPoints.length; i ++) {
+          allPoints[i].getChildren()[0].strokeWidth(2)
         }
-        this.$refs.anchorLayer.getNode().draw()
+        for (let i = 0; i < allLines.length; i ++) {
+          allLines[i].strokeWidth(2)
+        }
         for (let id in this.points) {
           this.points[id]['activated'] = false
         }
+        for (let id in this.lines) {
+          this.lines[id]['activated'] = false
+        }
         this.$refs.anchorLayer.getNode().draw()
+        this.$refs.lineLayer.getNode().draw()
       }
     },
     watch: {
       status() {
-        this.clearAnchorsActivation()
+        this.clearActivationAll()
       }
     }
   }
