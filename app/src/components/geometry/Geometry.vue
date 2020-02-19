@@ -113,32 +113,29 @@
       handleClickLayer() {
         let x = this.$refs.stage.getNode().getPointerPosition().x
         let y = this.$refs.stage.getNode().getPointerPosition().y
-
         let canAdd = true
         for (let id in this.lines) {
-          let p1 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[0])
-          let p2 = this.$refs.anchorLayer.getNode().findOne('#' + this.lines[id].points[1])
-          let x1 = p1.x()
-          let y1 = p1.y()
-          let x2 = p2.x()
-          let y2 = p2.y()
-          // window.console.log(this.getYbyLine(x1, y1, x2, y2, x), y)
-          if (Math.abs(this.getYbyLine(x1, y1, x2, y2, x) - y) < 5 ||
-                  Math.abs(this.getXbyLine(x1, y1, x2, y2, y) - x) < 5) {
-            canAdd = false
-            break
-          }
-        }
-        for (let id in this.points) {
-          let p = this.$refs.anchorLayer.getNode().findOne('#' + id)
-          if (Math.sqrt((x - p.x()) ^ 2 + (y - p.y()) ^ 2) < 2) {
+          const ps = this.getEndpointsByLineId(id)
+          const pos1 = this.getCoordinateByPoint(ps[0])
+          const pos2 = this.getCoordinateByPoint(ps[1])
+          const minDist = this.getPointToSegMinDist([x, y], pos1, pos2)[0]
+          if (minDist < 5) {
             canAdd = false
             break
           }
         }
         if (canAdd) {
+          for (let id in this.points) {
+            const p = this.$refs.anchorLayer.getNode().findOne('#' + id)
+            const dist = Math.sqrt(Math.pow(x - p.x(), 2) + Math.pow(y - p.y(), 2))
+            if (dist < 10) {
+              canAdd = false
+              break
+            }
+          }
+        }
+        if (canAdd) {
           if (this.status === "point") {
-            window.console.log('created by click on canvas')
             this.addAnchor(x, y)
           }
           else if (this.status === "line") {
@@ -259,6 +256,54 @@
           }
         }
         return null
+      },
+      getEndpointsByLineId(id) {
+        const p1Id = this.lines[id].points[0]
+        const p2Id = this.lines[id].points[this.lines[id].points.length - 1]
+        const p1 = this.$refs.anchorLayer.getNode().findOne('#' + p1Id)
+        const p2 = this.$refs.anchorLayer.getNode().findOne('#' + p2Id)
+        return [p1, p2]
+      },
+      getCoordinateByPoint(p) {
+        return [p.x(), p.y()]
+      },
+      getPointToSegPedalCoordinate(pair, pair1, pair2) {
+        const x = pair[0]
+        const y = pair[1]
+        const x1 = pair1[0]
+        const y1 = pair1[1]
+        const x2 = pair2[0]
+        const y2 = pair2[1]
+        const A = x - x1
+        const B = y - y1
+        const C = x2 - x1
+        const D = y2 - y1
+        const dot = A * C + B * D
+        const len_sq = C * C + D * D
+        let param = -1
+        if (len_sq !== 0) {
+          param = dot / len_sq
+        }
+        let xx, yy
+        if (param < 0) {
+          xx = x1
+          yy = y1
+        } else if (param > 1) {
+          xx = x2
+          yy = y2
+        } else {
+          xx = x1 + param * C
+          yy = y1 + param * D
+        }
+        return [xx, yy]
+      },
+      getPointToSegMinDist(pair, pair1, pair2) {
+        const x = pair[0]
+        const y = pair[1]
+        const pedalPos = this.getPointToSegPedalCoordinate(pair, pair1, pair2)
+        const dx = x - pedalPos[0]
+        const dy = y - pedalPos[1]
+        return [Math.sqrt(dx * dx + dy * dy), pedalPos];
       },
       addAnchor(x, y, activated) {
         let id = 0
