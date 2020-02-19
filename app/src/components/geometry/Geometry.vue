@@ -17,6 +17,7 @@
           <b-dropdown-item href="#" @click="handleClickConstructIntersection">Intersection</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructMidpoint">Midpoint</b-dropdown-item>
           <b-dropdown-item href="#" @click="handleClickConstructPerpendicular">Perpendicular</b-dropdown-item>
+          <b-dropdown-item href="#" @click="handleClickConstructParallel">Parallel</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Constraint" left>
           <b-dropdown-item href="#">Equal Angle</b-dropdown-item>
@@ -261,6 +262,9 @@
       getXbyLine(x1, y1, x2, y2, newY) {
         return (newY - y1) / ((y2 - y1) / (x2 - x1)) + x1
       },
+      getLineById(id) {
+        return this.$refs.lineLayer.getNode().findOne('#' + id)
+      },
       getLineIdByPointId(id1, id2) {
         for (let id in this.lines) {
           if (this.lines[id].points.indexOf(id1) !== -1 && this.lines[id].points.indexOf(id2) !== -1) {
@@ -305,13 +309,15 @@
           param = dot / len_sq
         }
         let xx, yy
-        if (param < 0 || param > 1) {
-          xx = Infinity
-          yy = Infinity
-        } else {
-          xx = x1 + param * C
-          yy = y1 + param * D
-        }
+        xx = x1 + param * C
+        yy = y1 + param * D
+        // if (param < 0 || param > 1) {
+        //   xx = Infinity
+        //   yy = Infinity
+        // } else {
+        //   xx = x1 + param * C
+        //   yy = y1 + param * D
+        // }
         return [xx, yy]
       },
       getMinDistPointToSeg(pair, pair1, pair2) {
@@ -424,19 +430,22 @@
             info.activated = true
             this.addToSelected(id)
             if (this.selected.length === 3) {
-              const perpTo = this.getLineIdByPointId(this.selected[1], this.selected[2])
-              if (!perpTo) {
+              const perpToId = this.getLineIdByPointId(this.selected[1], this.selected[2])
+              if (!perpToId) {
                 this.clearActivationAll()
                 return
               }
-              const endPointIds = this.getEndPointsIdByLineId(perpTo)
-              const r = this.getPedalCoordinatePointToSeg(this.getCoordinateById(this.selected[0]),
+              const endPointIds = this.getEndPointsIdByLineId(perpToId)
+              const footPos = this.getPedalCoordinatePointToSeg(this.getCoordinateById(this.selected[0]),
                       this.getCoordinateById(endPointIds[0]), this.getCoordinateById(endPointIds[1]))
-              if (r[0] === Infinity) {
+              if (footPos[0] === Infinity) {
                 this.clearActivationAll()
                 return
               }
-              const footId = this.addAnchor(r[0], r[1])
+              const footId = this.addAnchor(footPos[0], footPos[1])
+              const perpToLine = this.getLineById(perpToId)
+              perpToLine.getAttr('points').push(footPos[0], footPos[1])
+              this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
               this.addLine(this.selected[0], footId)
               this.clearActivationAll()
             }
@@ -476,6 +485,9 @@
       },
       handleClickConstructIntersection() {
         this.status = "intersection"
+      },
+      handleClickConstructParallel() {
+        this.status = "parallel"
       },
       updateObjects() {
         const anchorLayer = this.$refs.anchorLayer.getNode()
