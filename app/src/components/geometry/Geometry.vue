@@ -202,8 +202,8 @@
           this.$refs.lineLayer.getNode().draw()
         })
         newLine.on("mouseout", () => {
+          document.body.style.cursor = 'default'
           if (info.activated === false) {
-            document.body.style.cursor = 'default'
             newLine.strokeWidth(2)
             this.$refs.lineLayer.getNode().draw()
           }
@@ -226,8 +226,7 @@
                     const foot = r[1]
                     if (minDist < 5) {
                       const newPtId = this.addAnchor(foot[0], foot[1])
-                      newLine.getAttr('points').push(foot[0], foot[1])
-                      this.addPointToLineList(info, newPtId, foot[0])
+                      this.addPointToLine(newPtId, newLine)
                     }
                     this.$refs.lineLayer.getNode().draw()
                   }
@@ -235,8 +234,15 @@
                     info.activated = true
                     this.addToSelected(id)
                     if (this.selected.length === 2) {
-                      this.addToSelected(id)
-                      this.addLine(this.selected[0], this.selected[1])
+                      const l1ps = this.getEndpointsByLineId(this.selected[0])
+                      const l2ps = this.getEndpointsByLineId(this.selected[1])
+                      const intersectionPos = this.getIntersectionByLines(this.getCoordinateByPoint(l1ps[0]), this.getCoordinateByPoint(l1ps[1]),
+                              this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
+                      if (intersectionPos) {
+                        const newPtId = this.addAnchor(intersectionPos[0], intersectionPos[1])
+                        this.addPointToLine(newPtId, this.selected[0])
+                        this.addPointToLine(newPtId, this.selected[1])
+                      }
                       this.selected = []
                       this.clearActivationAll()
                     }
@@ -245,6 +251,12 @@
           )
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
+      },
+      addPointToLine(pointId, lineId) {
+        const line = this.getLineByLineId(lineId)
+        const pos = this.getCoordinateByPointId(pointId)
+        line.getAttr('points').push(pos[0], pos[1])
+        this.addPointToLineList(this.lines[lineId], pointId, pos[0])
       },
       addPointToLineList(info, id, x) {
         for (let i = 0; i < info.points.length; i ++) {
@@ -260,6 +272,9 @@
       },
       getXbyLine(x1, y1, x2, y2, newY) {
         return (newY - y1) / ((y2 - y1) / (x2 - x1)) + x1
+      },
+      getLineByLineId(id) {
+        return this.$refs.lineLayer.getNode().findOne('#' + id)
       },
       getLineIdByPointId(id1, id2) {
         for (let id in this.lines) {
@@ -284,8 +299,29 @@
       getPointById(id) {
         return this.$refs.anchorLayer.getNode().findOne('#' + id)
       },
-      getCoordinateById(id) {
+      getCoordinateByPointId(id) {
         return this.getCoordinateByPoint(this.getPointById(id))
+      },
+      getIntersectionByLines(pair1, pair2, pair3, pair4) {
+        const xa = pair1[0]
+        const ya = pair1[1]
+        const xb = pair2[0]
+        const yb = pair2[1]
+        const xc = pair3[0]
+        const yc = pair3[1]
+        const xd = pair4[0]
+        const yd = pair4[1]
+        let denominator = (yb - ya) * (xd - xc) - (xa - xb) * (yc - yd)
+        if (denominator === 0) {
+          return false
+        }
+        let x = ( (xb - xa) * (xd - xc) * (yc - ya)
+                + (yb - ya) * (xd - xc) * xa
+                - (yd - yc) * (xb - xa) * xc) / denominator
+        let y = -( (yb - ya) * (yd - yc) * (xc - xa)
+                + (xb - xa) * (yd - yc) * ya
+                - (xd - xc) * (yb - ya) * yc) / denominator
+        return [x, y]
       },
       getPedalCoordinatePointToSeg(pair, pair1, pair2) {
         const x = pair[0]
@@ -403,7 +439,6 @@
             if (this.selected.length === 2) {
               const lineId = this.getLineIdByPointId(this.selected[0], this.selected[1])
               if (lineId) {
-                const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
                 const p1 = this.$refs.anchorLayer.getNode().findOne(
                         '#' + this.selected[0])
                 const p2 = this.$refs.anchorLayer.getNode().findOne(
@@ -411,10 +446,7 @@
                 let calX = (p1.x() + p2.x()) / 2
                 let calY = this.getYbyLine(p1.x(), p1.y(), p2.x(), p2.y(), calX)
                 const newPtId = this.addAnchor(calX, calY)
-                line.getAttr('points').push(calX, calY)
-                this.addPointToLineList(this.lines[lineId], newPtId, calX)
-                this.midpoints.push([newPtId, p1, p2])
-                this.$refs.lineLayer.getNode().draw()
+                this.addPointToLine(newPtId, lineId)
             }
               this.selected = []
               this.clearActivationAll()
@@ -430,8 +462,8 @@
                 return
               }
               const endPointIds = this.getEndPointsIdByLineId(perpTo)
-              const r = this.getPedalCoordinatePointToSeg(this.getCoordinateById(this.selected[0]),
-                      this.getCoordinateById(endPointIds[0]), this.getCoordinateById(endPointIds[1]))
+              const r = this.getPedalCoordinatePointToSeg(this.getCoordinateByPointId(this.selected[0]),
+                      this.getCoordinateByPointId(endPointIds[0]), this.getCoordinateByPointId(endPointIds[1]))
               if (r[0] === Infinity) {
                 this.clearActivationAll()
                 return
