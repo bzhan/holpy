@@ -31,7 +31,7 @@
       </b-navbar-nav>
     </b-navbar>
     <div id="canvas" ref="p">
-      <v-stage :config="stageSize" ref="stage" @click="handleClickLayer">
+      <v-stage :config="stageSize" ref="stage" @click="handleClickLayer" @mousemove="handleMouseMove">
         <v-layer id="lineLayer" ref="lineLayer"></v-layer>
         <v-layer id="anchorLayer" ref="anchorLayer"></v-layer>
 
@@ -97,7 +97,8 @@
         points: [],
         lines: [],
         midpoints: [],
-        selected: []
+        selected: [],
+        watchingMouse: false
       }
     },
     mounted() {
@@ -536,11 +537,38 @@
         }
         this.$refs.anchorLayer.getNode().draw()
         this.$refs.lineLayer.getNode().draw()
+      },
+      handleMouseMove() {
+        if (this.watchingMouse) {
+          const line = this.getLineByLineId("mouse")
+          line.points([line.points()[0], line.points()[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y])
+          this.$refs.lineLayer.getNode().draw()
+        }
       }
     },
     watch: {
       status() {
         this.clearActivationAll()
+      },
+      selected() {
+        if (this.selected.length === 1 && ["line"].indexOf(this.status) !== -1) {
+          this.watchingMouse = true
+          const p = this.getCoordinateByPointId(this.selected[0])
+          const newLine = new Konva.Line({
+            points: [p[0], p[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y],
+            stroke: "grey",
+            strokeWidth: 2,
+            id: "mouse"
+          })
+          this.$refs.lineLayer.getNode().add(newLine)
+        } else {
+          this.watchingMouse = false
+          const line = this.getLineByLineId("mouse")
+          if (line) {
+            line.remove()
+          }
+        }
+        this.$refs.lineLayer.getNode().draw()
       }
     }
   }
