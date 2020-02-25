@@ -227,7 +227,8 @@
                     const foot = r[1]
                     if (minDist < 5) {
                       const newPtId = this.addAnchor(foot[0], foot[1])
-                      this.addPointToLine(newPtId, newLine)
+                      newLine.getAttr('points').push(foot[0], foot[1])
+                      this.addPointToLineList(info, newPtId, foot[0])
                     }
                     this.$refs.lineLayer.getNode().draw()
                   }
@@ -341,15 +342,7 @@
         if (len_sq !== 0) {
           param = dot / len_sq
         }
-        let xx, yy
-        if (param < 0 || param > 1) {
-          xx = Infinity
-          yy = Infinity
-        } else {
-          xx = x1 + param * C
-          yy = y1 + param * D
-        }
-        return [xx, yy]
+        return [x1 + param * C, y1 + param * D]
       },
       getMinDistPointToSeg(pair, pair1, pair2) {
         const x = pair[0]
@@ -471,14 +464,17 @@
               }
               const footId = this.addAnchor(r[0], r[1])
               this.addLine(this.selected[0], footId)
+              this.addPointToLine(footId, perpTo)
               this.clearActivationAll()
             }
           }
         })
 
         group.on("dragmove", () => {
-          info.x = group.x()
-          info.y = group.y()
+          // info.x = group.x()
+          // info.y = group.y()
+          // window.console.log(id, info.x, info.y, this.points[id].x, this.points[id].y)
+          this.updateFollow(id)
           this.updateObjects()
         })
         // group.on("dragend", this.handleDragEndAnchor)
@@ -510,14 +506,59 @@
       handleClickConstructIntersection() {
         this.status = "intersection"
       },
-      updateObjects() {
-        const anchorLayer = this.$refs.anchorLayer.getNode()
-        // const lineLayer = this.$refs.lineLayer.getNode()
-        for (let id in this.points) {
-          let node = anchorLayer.findOne('#' + id)
-          node.x(this.points[id].x)
-          node.y(this.points[id].y)
+      updateFollow(ptId) {
+        let beforeX = this.points[ptId].x
+        // let beforeX = this.getPointById(ptId).x()
+        let endpoint = this.getPointById(ptId)
+        // window.console.log(beforeX)
+        // this.points[ptId].x = endpoint.x()
+        // this.points[ptId].y = endpoint.y()
+        // window.console.log(beforeX, this.points[ptId].x, this.points[ptId].y)
+        let k = 0
+        for (let otherLineId in this.lines) {
+          k += 1
+          let points = this.lines[otherLineId].points
+          if (points.indexOf(parseInt(ptId)) === 0 || points.indexOf(parseInt(ptId)) === points.length - 1) {
+            window.console.log()
+            let anotherEndpointX = points.indexOf(parseInt(ptId)) === 0 ? this.getPointById(points[points.length - 1]).x() : this.getPointById(points[0]).x()
+            let anotherEndpointY = points.indexOf(parseInt(ptId)) === 0 ? this.getPointById(points[points.length - 1]).y() : this.getPointById(points[0]).y()
+            if (points.length > 2) {
+              for (let i = 1; i < points.length - 1; i ++) {
+                let betweenX = this.getPointById(points[i]).x()
+                let ratio = (betweenX - beforeX) / (anotherEndpointX - beforeX)
+                let otherNewX = (anotherEndpointX - endpoint.x()) * ratio
+                let otherNewY = this.getYbyLine(endpoint.x(), endpoint.y(), anotherEndpointX, anotherEndpointY, otherNewX)
+                window.console.log(k, points[i], "betweenX:", betweenX, "endpoint before X:", beforeX, "endpoint now X: ", endpoint.x(), "another endpoint X: ", anotherEndpointX,
+                        "ratio: ", ratio, "final new X: ", otherNewX, "final new Y: ", otherNewY)
+                this.points[ptId].x = endpoint.x()
+                this.points[ptId].y = endpoint.y()
+                this.getPointById(points[i]).x(otherNewX)
+                this.getPointById(points[i]).y(otherNewY)
+                this.$refs.anchorLayer.getNode().draw()
+                this.updateFollow(points[i])
+              }
+            }
+          }
         }
+      },
+      updateObjects() {
+        // for (let id in this.points) {
+        //   // let node = this.getPointById(id)
+        //   this.updateFollow(id)
+        //   // if (node.x() !== this.points[id].x || node.y() !== this.points[id].y) {
+        //   //   window.console.log("ok")
+        //   //   this.updateFollow(id)
+        // }
+        for (let id in this.lines) {
+          let new_points = []
+          for (let i = 0; i < this.lines[id].points.length; i ++) {
+            new_points = new_points.concat(this.getCoordinateByPointId(this.lines[id].points[i]))
+          }
+          this.getLineByLineId(id).points(new_points)
+          this.$refs.anchorLayer.getNode().draw()
+          this.$refs.lineLayer.getNode().draw()
+        }
+
       },
       clearActivationAll() {
         this.selected = []
