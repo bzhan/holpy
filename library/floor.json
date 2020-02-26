@@ -765,6 +765,59 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "integer_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_abs_neg, (∃n. abs (-x) = of_nat n) ⟷ (∃n. abs x = of_nat n)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃n. abs (-x) = of_nat n) ⟷ (∃n. abs x = of_nat n)"
+                },
+                {
+                    "args": "integer_def, integer (-x) ⟷ integer x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ integer (-x) ⟷ integer x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ integer (-x) ⟷ integer x"
+                }
+            ],
+            "prop": "integer (-x) ⟷ integer x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "rational",
             "prop": "rational x ⟷ (∃m. ∃n. integer m ∧ integer n ∧ ¬(n = 0) ∧ x = m / n)",
             "ty": "def",

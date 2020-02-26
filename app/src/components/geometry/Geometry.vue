@@ -32,7 +32,7 @@
       </b-navbar-nav>
     </b-navbar>
     <div id="canvas" ref="p">
-      <v-stage :config="stageSize" ref="stage" @click="handleClickLayer">
+      <v-stage :config="stageSize" ref="stage" @click="handleClickLayer" @mousemove="handleMouseMove">
         <v-layer id="lineLayer" ref="lineLayer"></v-layer>
         <v-layer id="anchorLayer" ref="anchorLayer"></v-layer>
 
@@ -98,7 +98,8 @@
         points: [],
         lines: [],
         midpoints: [],
-        selected: []
+        selected: [],
+        watchingMouse: false
       }
     },
     mounted() {
@@ -240,8 +241,15 @@
                     info.activated = true
                     this.addToSelected(id)
                     if (this.selected.length === 2) {
-                      this.addToSelected(id)
-                      this.addLine(this.selected[0], this.selected[1])
+                      const l1ps = this.getEndpointsByLineId(this.selected[0])
+                      const l2ps = this.getEndpointsByLineId(this.selected[1])
+                      const intersectionPos = this.getIntersectionByLines(this.getCoordinateByPoint(l1ps[0]), this.getCoordinateByPoint(l1ps[1]),
+                              this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
+                      if (intersectionPos) {
+                        const newPtId = this.addAnchor(intersectionPos[0], intersectionPos[1])
+                        this.addPointToLine(newPtId, this.selected[0])
+                        this.addPointToLine(newPtId, this.selected[1])
+                      }
                       this.selected = []
                       this.clearActivationAll()
                     }
@@ -250,6 +258,12 @@
           )
         this.$refs.lineLayer.getNode().add(newLine)
         this.$refs.lineLayer.getNode().draw()
+      },
+      addPointToLine(pointId, lineId) {
+        const line = this.getLineByLineId(lineId)
+        const pos = this.getCoordinateByPointId(pointId)
+        line.getAttr('points').push(pos[0], pos[1])
+        this.addPointToLineList(this.lines[lineId], pointId, pos[0])
       },
       addPointToLineList(info, id, x) {
         for (let i = 0; i < info.points.length; i ++) {
@@ -266,7 +280,7 @@
       getXbyLine(x1, y1, x2, y2, newY) {
         return (newY - y1) / ((y2 - y1) / (x2 - x1)) + x1
       },
-      getLineById(id) {
+      getLineByLineId(id) {
         return this.$refs.lineLayer.getNode().findOne('#' + id)
       },
       getLineIdByPointId(id1, id2) {
@@ -292,8 +306,29 @@
       getPointById(id) {
         return this.$refs.anchorLayer.getNode().findOne('#' + id)
       },
-      getCoordinateById(id) {
+      getCoordinateByPointId(id) {
         return this.getCoordinateByPoint(this.getPointById(id))
+      },
+      getIntersectionByLines(pair1, pair2, pair3, pair4) {
+        const xa = pair1[0]
+        const ya = pair1[1]
+        const xb = pair2[0]
+        const yb = pair2[1]
+        const xc = pair3[0]
+        const yc = pair3[1]
+        const xd = pair4[0]
+        const yd = pair4[1]
+        let denominator = (yb - ya) * (xd - xc) - (xa - xb) * (yc - yd)
+        if (denominator === 0) {
+          return false
+        }
+        let x = ( (xb - xa) * (xd - xc) * (yc - ya)
+                + (yb - ya) * (xd - xc) * xa
+                - (yd - yc) * (xb - xa) * xc) / denominator
+        let y = -( (yb - ya) * (yd - yc) * (xc - xa)
+                + (xb - xa) * (yd - yc) * ya
+                - (xd - xc) * (yb - ya) * yc) / denominator
+        return [x, y]
       },
       getPedalCoordinatePointToSeg(pair, pair1, pair2) {
         const x = pair[0]
@@ -312,17 +347,7 @@
         if (len_sq !== 0) {
           param = dot / len_sq
         }
-        let xx, yy
-        xx = x1 + param * C
-        yy = y1 + param * D
-        // if (param < 0 || param > 1) {
-        //   xx = Infinity
-        //   yy = Infinity
-        // } else {
-        //   xx = x1 + param * C
-        //   yy = y1 + param * D
-        // }
-        return [xx, yy]
+        return [x1 + param * C, y1 + param * D]
       },
       getMinDistPointToSeg(pair, pair1, pair2) {
         const x = pair[0]
@@ -413,7 +438,6 @@
             if (this.selected.length === 2) {
               const lineId = this.getLineIdByPointId(this.selected[0], this.selected[1])
               if (lineId) {
-                const line = this.$refs.lineLayer.getNode().findOne('#' + lineId)
                 const p1 = this.$refs.anchorLayer.getNode().findOne(
                         '#' + this.selected[0])
                 const p2 = this.$refs.anchorLayer.getNode().findOne(
@@ -421,10 +445,7 @@
                 let calX = (p1.x() + p2.x()) / 2
                 let calY = this.getYbyLine(p1.x(), p1.y(), p2.x(), p2.y(), calX)
                 const newPtId = this.addAnchor(calX, calY)
-                line.getAttr('points').push(calX, calY)
-                this.addPointToLineList(this.lines[lineId], newPtId, calX)
-                this.midpoints.push([newPtId, p1, p2])
-                this.$refs.lineLayer.getNode().draw()
+                this.addPointToLine(newPtId, lineId)
             }
               this.selected = []
               this.clearActivationAll()
@@ -451,14 +472,17 @@
               perpToLine.getAttr('points').push(footPos[0], footPos[1])
               this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
               this.addLine(this.selected[0], footId)
+              this.addPointToLine(footId, perpTo)
               this.clearActivationAll()
             }
           }
         })
 
         group.on("dragmove", () => {
-          info.x = group.x()
-          info.y = group.y()
+          // info.x = group.x()
+          // info.y = group.y()
+          // window.console.log(id, info.x, info.y, this.points[id].x, this.points[id].y)
+          this.updateFollow(id)
           this.updateObjects()
         })
         // group.on("dragend", this.handleDragEndAnchor)
@@ -493,14 +517,59 @@
       handleClickConstructParallel() {
         this.status = "parallel"
       },
-      updateObjects() {
-        const anchorLayer = this.$refs.anchorLayer.getNode()
-        // const lineLayer = this.$refs.lineLayer.getNode()
-        for (let id in this.points) {
-          let node = anchorLayer.findOne('#' + id)
-          node.x(this.points[id].x)
-          node.y(this.points[id].y)
+      updateFollow(ptId) {
+        let beforeX = this.points[ptId].x
+        // let beforeX = this.getPointById(ptId).x()
+        let endpoint = this.getPointById(ptId)
+        // window.console.log(beforeX)
+        // this.points[ptId].x = endpoint.x()
+        // this.points[ptId].y = endpoint.y()
+        // window.console.log(beforeX, this.points[ptId].x, this.points[ptId].y)
+        let k = 0
+        for (let otherLineId in this.lines) {
+          k += 1
+          let points = this.lines[otherLineId].points
+          if (points.indexOf(parseInt(ptId)) === 0 || points.indexOf(parseInt(ptId)) === points.length - 1) {
+            window.console.log()
+            let anotherEndpointX = points.indexOf(parseInt(ptId)) === 0 ? this.getPointById(points[points.length - 1]).x() : this.getPointById(points[0]).x()
+            let anotherEndpointY = points.indexOf(parseInt(ptId)) === 0 ? this.getPointById(points[points.length - 1]).y() : this.getPointById(points[0]).y()
+            if (points.length > 2) {
+              for (let i = 1; i < points.length - 1; i ++) {
+                let betweenX = this.getPointById(points[i]).x()
+                let ratio = (betweenX - beforeX) / (anotherEndpointX - beforeX)
+                let otherNewX = (anotherEndpointX - endpoint.x()) * ratio
+                let otherNewY = this.getYbyLine(endpoint.x(), endpoint.y(), anotherEndpointX, anotherEndpointY, otherNewX)
+                window.console.log(k, points[i], "betweenX:", betweenX, "endpoint before X:", beforeX, "endpoint now X: ", endpoint.x(), "another endpoint X: ", anotherEndpointX,
+                        "ratio: ", ratio, "final new X: ", otherNewX, "final new Y: ", otherNewY)
+                this.points[ptId].x = endpoint.x()
+                this.points[ptId].y = endpoint.y()
+                this.getPointById(points[i]).x(otherNewX)
+                this.getPointById(points[i]).y(otherNewY)
+                this.$refs.anchorLayer.getNode().draw()
+                this.updateFollow(points[i])
+              }
+            }
+          }
         }
+      },
+      updateObjects() {
+        // for (let id in this.points) {
+        //   // let node = this.getPointById(id)
+        //   this.updateFollow(id)
+        //   // if (node.x() !== this.points[id].x || node.y() !== this.points[id].y) {
+        //   //   window.console.log("ok")
+        //   //   this.updateFollow(id)
+        // }
+        for (let id in this.lines) {
+          let new_points = []
+          for (let i = 0; i < this.lines[id].points.length; i ++) {
+            new_points = new_points.concat(this.getCoordinateByPointId(this.lines[id].points[i]))
+          }
+          this.getLineByLineId(id).points(new_points)
+          this.$refs.anchorLayer.getNode().draw()
+          this.$refs.lineLayer.getNode().draw()
+        }
+
       },
       clearActivationAll() {
         this.selected = []
@@ -520,11 +589,38 @@
         }
         this.$refs.anchorLayer.getNode().draw()
         this.$refs.lineLayer.getNode().draw()
+      },
+      handleMouseMove() {
+        if (this.watchingMouse) {
+          const line = this.getLineByLineId("mouse")
+          line.points([line.points()[0], line.points()[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y])
+          this.$refs.lineLayer.getNode().draw()
+        }
       }
     },
     watch: {
       status() {
         this.clearActivationAll()
+      },
+      selected() {
+        if (this.selected.length === 1 && ["line"].indexOf(this.status) !== -1) {
+          this.watchingMouse = true
+          const p = this.getCoordinateByPointId(this.selected[0])
+          const newLine = new Konva.Line({
+            points: [p[0], p[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y],
+            stroke: "grey",
+            strokeWidth: 2,
+            id: "mouse"
+          })
+          this.$refs.lineLayer.getNode().add(newLine)
+        } else {
+          this.watchingMouse = false
+          const line = this.getLineByLineId("mouse")
+          if (line) {
+            line.remove()
+          }
+        }
+        this.$refs.lineLayer.getNode().draw()
       }
     }
   }

@@ -15611,7 +15611,227 @@
                 "hint_rewrite"
             ],
             "name": "sin_eq_0",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "sin_pimul_eq_0, {n: x / pi}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sin (x / pi * pi) = 0 ⟷ integer (x / pi)"
+                },
+                {
+                    "args": "∀a::real. 0 < a ⟶ ¬(a = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. 0 < a ⟶ ¬(a = 0)"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "pi",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ ¬(pi = 0)"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_inverse pi * pi = 1"
+                },
+                {
+                    "args": "real_mul_rid, x * 1 = x",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x * 1 = x"
+                },
+                {
+                    "args": "x * (real_inverse pi * pi) = x",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ x * (real_inverse pi * pi) = x"
+                },
+                {
+                    "args": "real_mult_assoc, x * real_inverse pi * pi = x",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ x * real_inverse pi * pi = x"
+                },
+                {
+                    "args": "real_divide_def, x / pi * pi = x",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x / pi * pi = x"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ sin x = 0 ⟷ integer (x / pi)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ integer (x / pi) ⟶ (∃n. integer n ∧ x = n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (∃n. integer n ∧ x = n * pi) ⟶ integer (x / pi)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ integer (x / pi) ⟷ (∃n. integer n ∧ x = n * pi)"
+                },
+                {
+                    "args": "sin x = 0 ⟷ (∃n. integer n ∧ x = n * pi)",
+                    "id": "13",
+                    "prevs": [
+                        "9",
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sin x = 0 ⟷ (∃n. integer n ∧ x = n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin x = 0 ⟷ (∃n. integer n ∧ x = n * pi)"
+                }
+            ],
             "prop": "sin x = 0 ⟷ (∃n. integer n ∧ x = n * pi)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "x/pi",
+                    "theorem": "sin_pimul_eq_0"
+                },
+                {
+                    "goal": "x / pi * pi = x",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal": "real_inverse pi * pi = 1",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "goal": "!a::real. 0 < a --> ~(a = 0)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "0"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -15622,7 +15842,394 @@
                 "hint_rewrite"
             ],
             "name": "cos_eq_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀p. ∀n. p / 2 - x = n * p ⟷ x = (-n + 1 / 2) * p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ∀n. p / 2 - x = n * p ⟷ x = (-n + 1 / 2) * p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃n. integer n ∧ pi / 2 - x = n * pi) ⟶ (∃n. integer n ∧ x = (n + 1 / 2) * pi)"
+                },
+                {
+                    "args": "∃n. integer n ∧ pi / 2 - x = n * pi",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. integer n ∧ pi / 2 - x = n * pi ⊢ ∃n. integer n ∧ pi / 2 - x = n * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ pi / 2 - x = n * pi",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ pi / 2 - x = n * pi ⊢ integer n ∧ pi / 2 - x = n * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ pi / 2 - x = n * pi ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ pi / 2 - x = n * pi ⊢ pi / 2 - x = n * pi"
+                },
+                {
+                    "args": "integer_neg, integer (-n)",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "integer n ∧ pi / 2 - x = n * pi, ∃n. integer n ∧ pi / 2 - x = n * pi ⊢ integer (-n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "0",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "integer n ∧ pi / 2 - x = n * pi ⊢ x = (-n + 1 / 2) * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.5",
+                        "1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ pi / 2 - x = n * pi, ∃n. integer n ∧ pi / 2 - x = n * pi ⊢ integer (-n) ∧ x = (-n + 1 / 2) * pi"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ x = (n + 1 / 2) * pi, a: -n}",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "integer n ∧ pi / 2 - x = n * pi, ∃n. integer n ∧ pi / 2 - x = n * pi ⊢ ∃a1. integer a1 ∧ x = (a1 + 1 / 2) * pi"
+                },
+                {
+                    "args": "∃n. integer n ∧ pi / 2 - x = n * pi",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃n. integer n ∧ pi / 2 - x = n * pi) ⟶ (∃n. integer n ∧ x = (n + 1 / 2) * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃n. integer n ∧ x = (n + 1 / 2) * pi) ⟶ (∃n. integer n ∧ pi / 2 - x = n * pi)"
+                },
+                {
+                    "args": "∃n. integer n ∧ x = (n + 1 / 2) * pi",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. integer n ∧ x = (n + 1 / 2) * pi ⊢ ∃n. integer n ∧ x = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ x = (n + 1 / 2) * pi",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi ⊢ integer n ∧ x = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi ⊢ x = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "integer_neg, integer (-n)",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi, ∃n. integer n ∧ x = (n + 1 / 2) * pi ⊢ integer (-n)"
+                },
+                {
+                    "args": "real_neg_neg, x = (--n + 1 / 2) * pi",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi, ∃n. integer n ∧ x = (n + 1 / 2) * pi ⊢ x = (--n + 1 / 2) * pi"
+                },
+                {
+                    "args": "pi / 2 - x = -n * pi",
+                    "id": "2.7",
+                    "prevs": [
+                        "0",
+                        "2.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi, ∃n. integer n ∧ x = (n + 1 / 2) * pi ⊢ pi / 2 - x = -n * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.5",
+                        "2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi, ∃n. integer n ∧ x = (n + 1 / 2) * pi ⊢ integer (-n) ∧ pi / 2 - x = -n * pi"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ pi / 2 - x = n * pi, a: -n}",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "integer n ∧ x = (n + 1 / 2) * pi, ∃n. integer n ∧ x = (n + 1 / 2) * pi ⊢ ∃a1. integer a1 ∧ pi / 2 - x = a1 * pi"
+                },
+                {
+                    "args": "∃n. integer n ∧ x = (n + 1 / 2) * pi",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.0",
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃n. integer n ∧ x = (n + 1 / 2) * pi) ⟶ (∃n. integer n ∧ pi / 2 - x = n * pi)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃n. integer n ∧ pi / 2 - x = n * pi) ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)"
+                },
+                {
+                    "args": "sin_eq_0, sin (pi / 2 - x) = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (pi / 2 - x) = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)"
+                },
+                {
+                    "args": "cos_sin, cos x = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ cos x = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos x = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)"
+                }
+            ],
             "prop": "cos x = 0 ⟷ (∃n. integer n ∧ x = (n + 1 / 2) * pi)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "cos_sin"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_eq_0"
+                },
+                {
+                    "goal": "∀p. !n. p / 2 - x = n * p <--> x = (-n + 1 / 2) * p",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "-n"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_neg"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1.4"
+                    ],
+                    "goal_id": "1.6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "-n"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_neg"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_neg_neg"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -15633,7 +16240,691 @@
                 "hint_rewrite"
             ],
             "name": "sin_zero_pi",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi) ⟶ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ x = n * pi"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n1. n = of_nat n1) ⟶ (∃n1. x = of_nat n1 * pi) ∨ (∃n1. x = -(of_nat n1 * pi))"
+                },
+                {
+                    "args": "∃n1. n = of_nat n1",
+                    "id": "0.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n1. n = of_nat n1 ⊢ ∃n1. n = of_nat n1"
+                },
+                {
+                    "args": "n1, nat",
+                    "id": "0.5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n1"
+                },
+                {
+                    "args": "n = of_nat n1",
+                    "id": "0.5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = of_nat n1 ⊢ n = of_nat n1"
+                },
+                {
+                    "args": "",
+                    "id": "0.5.3",
+                    "prevs": [
+                        "0.5.2",
+                        "0.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = of_nat n1, ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ x = of_nat n1 * pi"
+                },
+                {
+                    "args": "exI, {P: λn. x = of_nat n * pi, a: n1}",
+                    "id": "0.5.4",
+                    "prevs": [
+                        "0.5.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = of_nat n1, ∃n1. n = of_nat n1, ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ ∃a1. x = of_nat a1 * pi"
+                },
+                {
+                    "args": "disjI1, {A: ∃n. x = of_nat n * pi, B: ∃n. x = -(of_nat n * pi)}",
+                    "id": "0.5.5",
+                    "prevs": [
+                        "0.5.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = of_nat n1, ∃n1. n = of_nat n1, ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "∃n1. n = of_nat n1",
+                    "id": "0.5.6",
+                    "prevs": [
+                        "0.5.0",
+                        "0.5.0",
+                        "0.5.1",
+                        "0.5.2",
+                        "0.5.5"
+                    ],
+                    "rule": "intros",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n1. n = of_nat n1) ⟶ (∃n1. x = of_nat n1 * pi) ∨ (∃n1. x = -(of_nat n1 * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n1. n = -(of_nat n1)) ⟶ (∃n1. x = of_nat n1 * pi) ∨ (∃n1. x = -(of_nat n1 * pi))"
+                },
+                {
+                    "args": "∃n1. n = -(of_nat n1)",
+                    "id": "0.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n1. n = -(of_nat n1) ⊢ ∃n1. n = -(of_nat n1)"
+                },
+                {
+                    "args": "n1, nat",
+                    "id": "0.6.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n1"
+                },
+                {
+                    "args": "n = -(of_nat n1)",
+                    "id": "0.6.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = -(of_nat n1) ⊢ n = -(of_nat n1)"
+                },
+                {
+                    "args": "",
+                    "id": "0.6.3",
+                    "prevs": [
+                        "0.6.2",
+                        "0.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = -(of_nat n1), ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ x = -(of_nat n1) * pi"
+                },
+                {
+                    "args": "real_mul_lneg, x = -(of_nat n1 * pi)",
+                    "id": "0.6.4",
+                    "prevs": [
+                        "0.6.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "n = -(of_nat n1), ∃n1. n = -(of_nat n1), ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ x = -(of_nat n1 * pi)"
+                },
+                {
+                    "args": "exI, {P: λn. x = -(of_nat n * pi), a: n1}",
+                    "id": "0.6.5",
+                    "prevs": [
+                        "0.6.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = -(of_nat n1), ∃n1. n = -(of_nat n1), ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ ∃a1. x = -(of_nat a1 * pi)"
+                },
+                {
+                    "args": "disjI2, {A: ∃n. x = of_nat n * pi, B: ∃n. x = -(of_nat n * pi)}",
+                    "id": "0.6.6",
+                    "prevs": [
+                        "0.6.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = -(of_nat n1), ∃n1. n = -(of_nat n1), ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "∃n1. n = -(of_nat n1)",
+                    "id": "0.6.7",
+                    "prevs": [
+                        "0.6.0",
+                        "0.6.0",
+                        "0.6.1",
+                        "0.6.2",
+                        "0.6.6"
+                    ],
+                    "rule": "intros",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n1. n = -(of_nat n1)) ⟶ (∃n1. x = of_nat n1 * pi) ∨ (∃n1. x = -(of_nat n1 * pi))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.3",
+                        "0.5",
+                        "0.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi ⊢ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi) ⟶ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⟶ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi)"
+                },
+                {
+                    "args": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. x = of_nat n * pi) ⟶ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi)"
+                },
+                {
+                    "args": "∃n. x = of_nat n * pi",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. x = of_nat n * pi ⊢ ∃n. x = of_nat n * pi"
+                },
+                {
+                    "args": "n1, nat",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n1"
+                },
+                {
+                    "args": "x = of_nat n1 * pi",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = of_nat n1 * pi ⊢ x = of_nat n1 * pi"
+                },
+                {
+                    "args": "eq_refl, {x: (of_nat::nat ⇒ real) n1}",
+                    "id": "1.1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (of_nat::nat ⇒ real) n1 = of_nat n1"
+                },
+                {
+                    "args": "exI, {P: λn. (of_nat::nat ⇒ real) n1 = of_nat n, a: n1}",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = of_nat n1 * pi, ∃n. x = of_nat n * pi, (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ∃a1. (of_nat::nat ⇒ real) n1 = of_nat a1"
+                },
+                {
+                    "args": "disjI1, {A: ∃n. (of_nat::nat ⇒ real) n1 = of_nat n, B: ∃n. (of_nat::nat ⇒ real) n1 = -(of_nat n)}",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = of_nat n1 * pi, ∃n. x = of_nat n * pi, (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. (of_nat::nat ⇒ real) n1 = of_nat n) ∨ (∃n. (of_nat::nat ⇒ real) n1 = -(of_nat n))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = of_nat n1 * pi, ∃n. x = of_nat n * pi, (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ((∃n. (of_nat::nat ⇒ real) n1 = of_nat n) ∨ (∃n. (of_nat::nat ⇒ real) n1 = -(of_nat n))) ∧ x = of_nat n1 * pi"
+                },
+                {
+                    "args": "exI, {P: λn. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, a: (of_nat::nat ⇒ real) n1}",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = of_nat n1 * pi, ∃n. x = of_nat n * pi, (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ∃a1. ((∃n. a1 = of_nat n) ∨ (∃n. a1 = -(of_nat n))) ∧ x = a1 * pi"
+                },
+                {
+                    "args": "∃n. x = of_nat n * pi",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2",
+                        "1.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. x = of_nat n * pi) ⟶ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. x = -(of_nat n * pi)) ⟶ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi)"
+                },
+                {
+                    "args": "∃n. x = -(of_nat n * pi)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. x = -(of_nat n * pi) ⊢ ∃n. x = -(of_nat n * pi)"
+                },
+                {
+                    "args": "n1, nat",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n1"
+                },
+                {
+                    "args": "x = -(of_nat n1 * pi)",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = -(of_nat n1 * pi) ⊢ x = -(of_nat n1 * pi)"
+                },
+                {
+                    "args": "eq_refl, {x: -(of_nat n1)}",
+                    "id": "1.2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ -(of_nat n1) = -(of_nat n1)"
+                },
+                {
+                    "args": "exI, {P: λn. -(of_nat n1) = -(of_nat n), a: n1}",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -(of_nat n1 * pi), ∃n. x = -(of_nat n * pi), (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ∃a1. -(of_nat n1) = -(of_nat a1)"
+                },
+                {
+                    "args": "disjI2, {A: ∃n. -(of_nat n1) = of_nat n, B: ∃n. -(of_nat n1) = -(of_nat n)}",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -(of_nat n1 * pi), ∃n. x = -(of_nat n * pi), (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. -(of_nat n1) = of_nat n) ∨ (∃n. -(of_nat n1) = -(of_nat n))"
+                },
+                {
+                    "args": "real_mul_lneg, x = -(of_nat n1) * pi",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = -(of_nat n1 * pi), ∃n. x = -(of_nat n * pi), (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ x = -(of_nat n1) * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.5",
+                        "1.2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = -(of_nat n1 * pi), ∃n. x = -(of_nat n * pi), (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ((∃n. -(of_nat n1) = of_nat n) ∨ (∃n. -(of_nat n1) = -(of_nat n))) ∧ x = -(of_nat n1) * pi"
+                },
+                {
+                    "args": "exI, {P: λn. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi, a: -(of_nat n1)}",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -(of_nat n1 * pi), ∃n. x = -(of_nat n * pi), (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ∃a1. ((∃n. a1 = of_nat n) ∨ (∃n. a1 = -(of_nat n))) ∧ x = a1 * pi"
+                },
+                {
+                    "args": "∃n. x = -(of_nat n * pi)",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.2",
+                        "1.2.8"
+                    ],
+                    "rule": "intros",
+                    "th": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ (∃n. x = -(of_nat n * pi)) ⟶ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⊢ ∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi)) ⟶ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃n. ((∃n1. n = of_nat n1) ∨ (∃n1. n = -(of_nat n1))) ∧ x = n * pi) ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "integer_cases, (∃n. integer n ∧ x = n * pi) ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃n. integer n ∧ x = n * pi) ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "sin_eq_0, sin x = 0 ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin x = 0 ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin x = 0 ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))"
+                }
+            ],
             "prop": "sin x = 0 ⟷ (∃n. x = of_nat n * pi) ∨ (∃n. x = -(of_nat n * pi))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_eq_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.0"
+                    ],
+                    "goal_id": "0.5.1",
+                    "method_name": "exists_elim",
+                    "names": "n1"
+                },
+                {
+                    "goal_id": "0.5.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "n1"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.2",
+                        "0.4"
+                    ],
+                    "goal_id": "0.5.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "0.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.0"
+                    ],
+                    "goal_id": "0.6.1",
+                    "method_name": "exists_elim",
+                    "names": "n1"
+                },
+                {
+                    "goal_id": "0.6.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "n1"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.2",
+                        "0.4"
+                    ],
+                    "goal_id": "0.6.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "0.6.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "exists_elim",
+                    "names": "n1"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "(of_nat::nat => real) n1"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "n1"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "exists_elim",
+                    "names": "n1"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "-(of_nat::nat ⇒ real) n1"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "n1"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
