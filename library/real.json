@@ -719,6 +719,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_of_nat_minus",
             "prop": "of_nat (m - n) = (if m ≥ n then of_nat m - of_nat n else (0::real))",
             "ty": "thm",
