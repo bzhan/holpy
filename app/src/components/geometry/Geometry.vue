@@ -227,7 +227,8 @@
                   else if (this.status === "point") {
                     const newX = this.$refs.stage.getNode().getPointerPosition().x
                     const newY = this.$refs.stage.getNode().getPointerPosition().y
-                    const r = this.getMinDistPointToSeg([newX, newY], [x1, y1], [x2, y2])
+                    const endpoints = this.getEndpointsByLineId(id)
+                    const r = this.getMinDistPointToSeg([newX, newY], this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]))
                     const minDist = r[0]
                     const foot = r[1]
                     if (minDist < 5) {
@@ -267,8 +268,8 @@
       },
       addPointToLineList(info, id, x) {
         for (let i = 0; i < info.points.length; i ++) {
-          if (x > info.points[i].x) {
-            info.points.splice(i, 0, id)
+          if (x > this.points[info.points[i]].x) {
+            info.points.splice(i + 1, 0, id)
             return 0
           }
         }
@@ -468,11 +469,11 @@
                 return
               }
               const footId = this.addAnchor(footPos[0], footPos[1])
-              const perpToLine = this.getLineById(perpToId)
+              const perpToLine = this.getLineByLineId(perpToId)
               perpToLine.getAttr('points').push(footPos[0], footPos[1])
               this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
               this.addLine(this.selected[0], footId)
-              this.addPointToLine(footId, perpTo)
+              this.addPointToLine(footId, perpToLine)
               this.clearActivationAll()
             }
           }
@@ -519,15 +520,14 @@
       },
       updateFollow(ptId) {
         let beforeX = this.points[ptId].x
+        let beforeY = this.points[ptId].y
         // let beforeX = this.getPointById(ptId).x()
         let endpoint = this.getPointById(ptId)
         // window.console.log(beforeX)
         // this.points[ptId].x = endpoint.x()
         // this.points[ptId].y = endpoint.y()
         // window.console.log(beforeX, this.points[ptId].x, this.points[ptId].y)
-        let k = 0
         for (let otherLineId in this.lines) {
-          k += 1
           let points = this.lines[otherLineId].points
           if (points.indexOf(parseInt(ptId)) === 0 || points.indexOf(parseInt(ptId)) === points.length - 1) {
             window.console.log()
@@ -536,11 +536,21 @@
             if (points.length > 2) {
               for (let i = 1; i < points.length - 1; i ++) {
                 let betweenX = this.getPointById(points[i]).x()
-                let ratio = (betweenX - beforeX) / (anotherEndpointX - beforeX)
-                let otherNewX = (anotherEndpointX - endpoint.x()) * ratio
-                let otherNewY = this.getYbyLine(endpoint.x(), endpoint.y(), anotherEndpointX, anotherEndpointY, otherNewX)
-                window.console.log(k, points[i], "betweenX:", betweenX, "endpoint before X:", beforeX, "endpoint now X: ", endpoint.x(), "another endpoint X: ", anotherEndpointX,
-                        "ratio: ", ratio, "final new X: ", otherNewX, "final new Y: ", otherNewY)
+                let betweenY = this.getPointById(points[i]).y()
+                let ratio
+                let otherNewX
+                let otherNewY
+                if (endpoint.x() === anotherEndpointX || beforeX === anotherEndpointX) {
+                  ratio = (betweenY - beforeY) / (anotherEndpointY - beforeY)
+                  otherNewY = (anotherEndpointY - endpoint.y()) * ratio + endpoint.y()
+                  otherNewX = this.getXbyLine(endpoint.x(), endpoint.y(), anotherEndpointX, anotherEndpointY, otherNewY)
+                }
+                else {
+                  ratio = (betweenX - beforeX) / (anotherEndpointX - beforeX)
+                  otherNewX = (anotherEndpointX - endpoint.x()) * ratio + endpoint.x()
+                  otherNewY = this.getYbyLine(endpoint.x(), endpoint.y(), anotherEndpointX, anotherEndpointY, otherNewX)
+                }
+
                 this.points[ptId].x = endpoint.x()
                 this.points[ptId].y = endpoint.y()
                 this.getPointById(points[i]).x(otherNewX)
