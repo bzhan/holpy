@@ -331,7 +331,10 @@
                 - (xd - xc) * (yb - ya) * yc) / denominator
         return [x, y]
       },
-      getPedalCoordinatePointToSeg(pair, pair1, pair2) {
+      getPedalCoordinatePointToSeg(pair, pair1, pair2, extend) {
+        if (extend === undefined) {
+          extend = true
+        }
         const x = pair[0]
         const y = pair[1]
         const x1 = pair1[0]
@@ -347,6 +350,9 @@
         let param = -1
         if (len_sq !== 0) {
           param = dot / len_sq
+        }
+        if (extend && (param < 0 || param > 1)) {
+          return [Infinity, Infinity]
         }
         return [x1 + param * C, y1 + param * D]
       },
@@ -480,9 +486,6 @@
         })
 
         group.on("dragmove", () => {
-          // info.x = group.x()
-          // info.y = group.y()
-          // window.console.log(id, info.x, info.y, this.points[id].x, this.points[id].y)
           this.updateFollow(id)
           this.updateObjects()
         })
@@ -518,18 +521,27 @@
       handleClickConstructParallel() {
         this.status = "parallel"
       },
+      // updateDraggable() {
+      //   for (let id in this.points) {
+      //     this.getPointById(id).draggable(true)
+      //   }
+      //   for (let id in this.lines) {
+      //     for (let i = 1; i < this.lines[id].points.length - 1; i ++) {
+      //       window.console.log(this.points[this.lines[id].points[i]].name)
+      //       this.getPointById(this.lines[id].points[i]).draggable(false)
+      //     }
+      //   }
+      // },
       updateFollow(ptId) {
         let beforeX = this.points[ptId].x
         let beforeY = this.points[ptId].y
-        // let beforeX = this.getPointById(ptId).x()
         let endpoint = this.getPointById(ptId)
-        // window.console.log(beforeX)
-        // this.points[ptId].x = endpoint.x()
-        // this.points[ptId].y = endpoint.y()
-        // window.console.log(beforeX, this.points[ptId].x, this.points[ptId].y)
-        for (let otherLineId in this.lines) {
-          let points = this.lines[otherLineId].points
+        let isEndpoint = false
+        let hasPointLinesId = []
+        for (let lineId in this.lines) {
+          let points = this.lines[lineId].points
           if (points.indexOf(parseInt(ptId)) === 0 || points.indexOf(parseInt(ptId)) === points.length - 1) {
+            isEndpoint = true
             window.console.log()
             let anotherEndpointX = points.indexOf(parseInt(ptId)) === 0 ? this.getPointById(points[points.length - 1]).x() : this.getPointById(points[0]).x()
             let anotherEndpointY = points.indexOf(parseInt(ptId)) === 0 ? this.getPointById(points[points.length - 1]).y() : this.getPointById(points[0]).y()
@@ -550,7 +562,6 @@
                   otherNewX = (anotherEndpointX - endpoint.x()) * ratio + endpoint.x()
                   otherNewY = this.getYbyLine(endpoint.x(), endpoint.y(), anotherEndpointX, anotherEndpointY, otherNewX)
                 }
-
                 this.points[ptId].x = endpoint.x()
                 this.points[ptId].y = endpoint.y()
                 this.getPointById(points[i]).x(otherNewX)
@@ -560,16 +571,25 @@
               }
             }
           }
+          else if (points.indexOf(parseInt(ptId)) !== -1) {
+            hasPointLinesId.push(lineId)
+          }
+        }
+        if (!isEndpoint) {
+          let minDist = Infinity
+          let minPos
+          hasPointLinesId.forEach(id => {
+            let endpoints = this.getEndpointsByLineId(id)
+            let r = this.getMinDistPointToSeg([endpoint.x(), endpoint.y()],
+                    this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]), true)
+            minDist = r[0] < minDist ? r[0] : minDist
+            minPos = r[0] === minDist ? r[1] : minPos
+          })
+          this.getPointById(ptId).x(minPos[0])
+          this.getPointById(ptId).y(minPos[1])
         }
       },
       updateObjects() {
-        // for (let id in this.points) {
-        //   // let node = this.getPointById(id)
-        //   this.updateFollow(id)
-        //   // if (node.x() !== this.points[id].x || node.y() !== this.points[id].y) {
-        //   //   window.console.log("ok")
-        //   //   this.updateFollow(id)
-        // }
         for (let id in this.lines) {
           let new_points = []
           for (let i = 0; i < this.lines[id].points.length; i ++) {
@@ -579,7 +599,6 @@
           this.$refs.anchorLayer.getNode().draw()
           this.$refs.lineLayer.getNode().draw()
         }
-
       },
       clearActivationAll() {
         this.selected = []
