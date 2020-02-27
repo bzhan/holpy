@@ -244,21 +244,9 @@
                       info.activated = true
                       newLine.strokeWidth(4)
                     }
-                    this.$refs.lineLayer.getNode().draw()
                   }
                   else if (this.status === "point") {
-                    const newX = this.$refs.stage.getNode().getPointerPosition().x
-                    const newY = this.$refs.stage.getNode().getPointerPosition().y
-                    const endpoints = this.getEndpointsByLineId(id)
-                    const r = this.getMinDistPointToSeg([newX, newY], this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]))
-                    const minDist = r[0]
-                    const foot = r[1]
-                    if (minDist < 5) {
-                      const newPtId = this.addAnchor(foot[0], foot[1])
-                      newLine.getAttr('points').push(foot[0], foot[1])
-                      this.addPointToLineList(info, newPtId, foot[0])
-                    }
-                    this.$refs.lineLayer.getNode().draw()
+                    this.addClickPosToLine(id, false)
                   }
                   else if (this.status === "intersection") {
                     info.activated = true
@@ -277,6 +265,18 @@
                       this.clearActivationAll()
                     }
                   }
+                  else if (this.status === "circle") {
+                    const newPtId = this.addClickPosToLine(id, true)
+                    if (newPtId) {
+                      this.addToSelected(newPtId)
+                    }
+                    if (this.selected.length === 2) {
+                      this.addCircle(this.selected[0], this.selected[1])
+                      this.selected = []
+                      this.clearActivationAll()
+                    }
+                  }
+                  this.draw()
                 }
           )
         this.$refs.lineLayer.getNode().add(newLine)
@@ -332,7 +332,6 @@
               info.activated = false
               newCircle.strokeWidth(2)
             } else {
-              window.console.log(info.activated)
               info.activated = true
               newCircle.strokeWidth(4)
             }
@@ -342,6 +341,19 @@
         this.$refs.circleLayer.getNode().add(newCircle)
         this.draw(["circle"])
         return id
+      },
+      addClickPosToLine(lineId, activated) {
+        const newX = this.$refs.stage.getNode().getPointerPosition().x
+        const newY = this.$refs.stage.getNode().getPointerPosition().y
+        const endpoints = this.getEndpointsByLineId(lineId)
+        const r = this.getMinDistPointToSeg([newX, newY], this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]))
+        const minDist = r[0]
+        const foot = r[1]
+        if (minDist < 5) {
+          const newPtId = this.addAnchor(foot[0], foot[1], activated)
+          this.addPointToLine(newPtId, lineId)
+          return newPtId
+        }
       },
       addPointToLine(pointId, lineId) {
         const line = this.getLineByLineId(lineId)
@@ -576,6 +588,15 @@
               perpToLine.getAttr('points').push(footPos[0], footPos[1])
               this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
               this.addLine(this.selected[0], footId)
+              this.clearActivationAll()
+            }
+          }
+          else if (this.status === "circle") {
+            info.activated = true
+            this.addToSelected(id)
+            if (this.selected.length === 2) {
+              this.addCircle(this.selected[0], this.selected[1])
+              this.selected = []
               this.clearActivationAll()
             }
           }
