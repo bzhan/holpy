@@ -247,6 +247,15 @@
                   else if (this.status === "point") {
                     this.addClickPosToLine(id, false)
                   }
+                  else if (this.status === "line") {
+                    const pointId = this.addClickPosToLine(id, true)
+                    this.addToSelected(pointId)
+                    if (this.selected.length === 2) {
+                      this.addLine(this.selected[0], this.selected[1])
+                      this.selected = []
+                      this.clearActivationAll()
+                    }
+                  }
                   else if (this.status === "intersection") {
                     info.activated = true
                     this.addToSelected(id)
@@ -336,8 +345,17 @@
             this.draw(["circle"])
           }
           if (this.status === "point") {
-            this.addPointToCircleWithCheck(this.getClickPos(), id)
+            this.addPointToCircleWithCheck(this.getClickPos(), id, false)
             this.draw(["circle"])
+          }
+          if (this.status === "line") {
+            const pointId = this.addPointToCircleWithCheck(this.getClickPos(), id, true)
+            this.addToSelected(pointId)
+            if (this.selected.length === 2) {
+              this.addLine(this.selected[0], this.selected[1])
+              this.selected = []
+              this.clearActivationAll()
+            }
           }
         })
         this.$refs.circleLayer.getNode().add(newCircle)
@@ -372,7 +390,7 @@
         }
         info.points.push(id)
       },
-      addPointToCircleWithCheck(pointPos, circleId) {
+      addPointToCircleWithCheck(pointPos, circleId, activated) {
         const circle = this.getCircleByCircleId(circleId)
         const x = circle.x()
         const y = circle.y()
@@ -381,6 +399,7 @@
         if (Math.abs(radius - dist) < 2) {
           const intersections = this.getIntersectionLineAndCircle(pointPos, [x, y],[x, y], radius)
           if (intersections) {
+            let newPtId
             if (intersections.length === 2) {
               let minDist
               let minPt
@@ -392,17 +411,19 @@
                 minPt = 1
               }
               if (minDist < 2) {
-                const newPtId = this.addPoint(intersections[minPt][0], intersections[minPt][1], false)
-                this.addPointToCircle(newPtId, circleId)
+                newPtId = this.addPoint(intersections[minPt][0], intersections[minPt][1], activated)
               }
             }
             else {
               if (this.getDistPoints(intersections[0], [x, y]) < 2) {
-                this.addPointToCircle(this.addPoint(intersections[0][0], intersections[0][1], false), circleId)
+                newPtId = this.addPoint(intersections[0][0], intersections[0][1], activated)
               }
             }
+            this.addPointToCircle(newPtId, circleId)
+            return newPtId
           }
         }
+        return null
       },
       addPointToCircle(pointId, circleId) {
         this.addPointToCircleList(this.circles[circleId], circleId)
