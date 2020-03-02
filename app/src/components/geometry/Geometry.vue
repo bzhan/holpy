@@ -493,6 +493,12 @@
       getCoordinateByPoint(p) {
         return [p.x(), p.y()]
       },
+      getCenterByCircle(c) {
+        return [c.x(), c.y()]
+      },
+      getRadiusByCircle(c) {
+        return c.radius()
+      },
       getPointById(id) {
         return this.$refs.anchorLayer.getNode().findOne('#' + id)
       },
@@ -513,7 +519,7 @@
             this.addPointToLine(newPtId, this.selected[1])
           }
         }
-        else if (type1 === "line" && type2 === "circle" || type1 === "circle" && type2 === "line") {
+        else if ((type1 === "line" && type2 === "circle") || (type1 === "circle" && type2 === "line")) {
           const lineId = type1 === "line" ? id1 : id2
           const circleId = type1 === "line" ? id2 : id1
           const endpoints = this.getEndpointsByLineId(lineId)
@@ -528,6 +534,22 @@
               const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
               this.addPointToCircle(newPtId2, circleId)
               this.addPointToLine(newPtId2, lineId)
+            }
+          }
+        }
+        else if (type1 === "circle" && type2 === "circle") {
+          const circle1 = this.getCircleByCircleId(id1)
+          const circle2 = this.getCircleByCircleId(id2)
+          const intersectionPos = this.getIntersectionCircles(this.getCenterByCircle(circle1), this.getRadiusByCircle(circle1),
+          this.getCenterByCircle(circle2), this.getRadiusByCircle(circle2))
+          if (intersectionPos) {
+            const newPtId1 = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+            this.addPointToCircle(newPtId1, id1)
+            this.addPointToCircle(newPtId1, id2)
+            if (intersectionPos.length === 2) {
+              const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
+              this.addPointToCircle(newPtId2, id1)
+              this.addPointToCircle(newPtId2, id2)
             }
           }
         }
@@ -552,6 +574,68 @@
                 + (xb - xa) * (yd - yc) * ya
                 - (xd - xc) * (yb - ya) * yc) / denominator
         return [x, y]
+      },
+      getIntersectionCircles(pair1, r0, pair2, r1) {
+        let x0 = pair1[0]
+        let y0 = pair1[1]
+        let x1 = pair2[0]
+        let y1 = pair2[1]
+        let a, dx, dy, d, h, rx, ry
+        let x2, y2
+
+        /* dx and dy are the vertical and horizontal distances between
+         * the circle centers.
+         */
+        dx = x1 - x0
+        dy = y1 - y0
+
+        /* Determine the straight-line distance between the centers. */
+        d = Math.sqrt((dy*dy) + (dx*dx))
+
+        /* Check for solvability. */
+        if (d > (r0 + r1)) {
+          /* no solution. circles do not intersect. */
+          return false
+        }
+        if (d < Math.abs(r0 - r1)) {
+          /* no solution. one circle is contained in the other */
+          return false
+        }
+
+        /* 'point 2' is the point where the line through the circle
+         * intersection points crosses the line between the circle
+         * centers.
+         */
+
+        /* Determine the distance from point 0 to point 2. */
+        a = ((r0*r0) - (r1*r1) + (d*d)) / (2.0 * d)
+
+        /* Determine the coordinates of point 2. */
+        x2 = x0 + (dx * a/d)
+        y2 = y0 + (dy * a/d)
+
+        /* Determine the distance from point 2 to either of the
+         * intersection points.
+         */
+        h = Math.sqrt((r0*r0) - (a*a))
+
+        /* Now determine the offsets of the intersection points from
+         * point 2.
+         */
+        rx = -dy * (h/d)
+        ry = dx * (h/d)
+
+        if (rx === 0) {
+          return [[x2, y2]]
+        }
+
+        /* Determine the absolute intersection points. */
+        let xi = x2 + rx
+        let xi_prime = x2 - rx
+        let yi = y2 + ry
+        let yi_prime = y2 - ry
+
+        return [[xi, yi], [xi_prime, yi_prime]]
       },
       getIntersectionLineAndCircle(lineEndpoint1, lineEndpoint2, centerPos, radius) {
         const r = radius
