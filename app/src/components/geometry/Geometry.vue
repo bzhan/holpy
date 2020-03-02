@@ -154,7 +154,7 @@
           if (this.status === "select") {
             this.clearActivationAll()
           }
-          if (this.status === "point") {
+          else if (this.status === "point") {
             this.addPoint(x, y)
           }
           else if (this.status === "line") {
@@ -207,7 +207,7 @@
         const y1 = anchor1.y()
         const x2 = anchor2.x()
         const y2 = anchor2.y()
-        let id = 100
+        let id = 500
         while (this.lines.hasOwnProperty(id)) {
           id += 1
         }
@@ -258,17 +258,10 @@
                   }
                   else if (this.status === "intersection") {
                     info.activated = true
+                    newLine.strokeWidth(4)
                     this.addToSelected(id)
                     if (this.selected.length === 2) {
-                      const l1ps = this.getEndpointsByLineId(this.selected[0])
-                      const l2ps = this.getEndpointsByLineId(this.selected[1])
-                      const intersectionPos = this.getIntersectionLines(this.getCoordinateByPoint(l1ps[0]), this.getCoordinateByPoint(l1ps[1]),
-                              this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
-                      if (intersectionPos) {
-                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
-                        this.addPointToLine(newPtId, this.selected[0])
-                        this.addPointToLine(newPtId, this.selected[1])
-                      }
+                      this.getIntersection(this.selected[0], this.selected[1])
                       this.selected = []
                       this.clearActivationAll()
                     }
@@ -303,7 +296,7 @@
         else {
           p3 = this.getPointById(id3)
         }
-        let id = 200
+        let id = 1000
         while (this.circles.hasOwnProperty(id)) {
           id += 1
         }
@@ -344,11 +337,11 @@
             }
             this.draw(["circle"])
           }
-          if (this.status === "point") {
+          else if (this.status === "point") {
             this.addPointToCircleWithCheck(this.getClickPos(), id, false)
             this.draw(["circle"])
           }
-          if (this.status === "line") {
+          else if (this.status === "line") {
             const pointId = this.addPointToCircleWithCheck(this.getClickPos(), id, true)
             this.addToSelected(pointId)
             if (this.selected.length === 2) {
@@ -357,6 +350,18 @@
               this.clearActivationAll()
             }
           }
+          else if (this.status === "intersection") {
+            info.activated = true
+            newCircle.strokeWidth(4)
+            this.addToSelected(id)
+            this.draw(["circle"])
+            if (this.selected.length === 2) {
+              this.getIntersection(this.selected[0], this.selected[1])
+              this.selected = []
+              this.clearActivationAll()
+            }
+          }
+          this.draw()
         })
         this.$refs.circleLayer.getNode().add(newCircle)
         this.draw(["circle"])
@@ -434,6 +439,28 @@
       getClickPos() {
         return [this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y]
       },
+      getTypeById(s) {
+        let id
+        if (typeof s === "string") {
+         id = parseInt(s)
+        }
+        else if (typeof s === "number") {
+          id = s
+        }
+        else {
+          return
+        }
+        if (id >= 0 && id < 500) {
+          return "point"
+        }
+        else if (id >= 500 && id < 1000) {
+          return "line"
+        }
+        else if (id >= 1000) {
+          return "circle"
+        }
+        return null
+      },
       getYbyLine(x1, y1, x2, y2, newX) {
         return y1 + ((y2 - y1) / (x2 - x1)) * (newX - x1)
       },
@@ -472,6 +499,39 @@
       getCoordinateByPointId(id) {
         return this.getCoordinateByPoint(this.getPointById(id))
       },
+      getIntersection(id1, id2) {
+        const type1 = this.getTypeById(id1)
+        const type2 = this.getTypeById(id2)
+        if (type1 === "line" && type2 === "line") {
+          const l1ps = this.getEndpointsByLineId(this.selected[0])
+          const l2ps = this.getEndpointsByLineId(this.selected[1])
+          const intersectionPos = this.getIntersectionLines(this.getCoordinateByPoint(l1ps[0]), this.getCoordinateByPoint(l1ps[1]),
+                  this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
+          if (intersectionPos) {
+            const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+            this.addPointToLine(newPtId, this.selected[0])
+            this.addPointToLine(newPtId, this.selected[1])
+          }
+        }
+        else if (type1 === "line" && type2 === "circle" || type1 === "circle" && type2 === "line") {
+          const lineId = type1 === "line" ? id1 : id2
+          const circleId = type1 === "line" ? id2 : id1
+          const endpoints = this.getEndpointsByLineId(lineId)
+          const circle = this.getCircleByCircleId(circleId)
+          const intersectionPos = this.getIntersectionLineAndCircle(this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]),
+          [circle.x(), circle.y()], circle.radius())
+          if (intersectionPos.length >= 1) {
+            const newPtId1 = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+            this.addPointToCircle(newPtId1, circleId)
+            this.addPointToLine(newPtId1, lineId)
+            if (intersectionPos.length === 2) {
+              const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
+              this.addPointToCircle(newPtId2, circleId)
+              this.addPointToLine(newPtId2, lineId)
+            }
+          }
+        }
+      },
       getIntersectionLines(pair1, pair2, pair3, pair4) {
         const xa = pair1[0]
         const ya = pair1[1]
@@ -493,12 +553,12 @@
                 - (xd - xc) * (yb - ya) * yc) / denominator
         return [x, y]
       },
-      getIntersectionLineAndCircle(linePos1, linePos2, centerPos, radius) {
+      getIntersectionLineAndCircle(lineEndpoint1, lineEndpoint2, centerPos, radius) {
         const r = radius
         const h = centerPos[0]
         const k = centerPos[1]
-        const m = (linePos2[1] - linePos1[1]) / (linePos2[0] - linePos1[0])
-        const n = linePos1[1] - m * linePos1[0]
+        const m = (lineEndpoint2[1] - lineEndpoint1[1]) / (lineEndpoint2[0] - lineEndpoint1[0])
+        const n = lineEndpoint1[1] - m * lineEndpoint1[0]
         let a = 1 + m * m
         let b = - h * 2 + (m * (n - k)) * 2
         let c = h * h + (n - k) * (n - k) - r * r
