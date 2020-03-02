@@ -156,6 +156,7 @@
           }
           else if (this.status === "point") {
             this.addPoint(x, y)
+            this.clearActivationAll()
           }
           else if (this.status === "line") {
             let newId = this.addPoint(x, y, true)
@@ -163,7 +164,6 @@
             if (this.selected.length === 2) {
               this.addToSelected(newId)
               this.addLine(this.selected[0], this.selected[1])
-              this.selected = []
               this.clearActivationAll()
             }
           }
@@ -178,7 +178,6 @@
             this.addToSelected(newId)
             if (this.selected.length === 2) {
               this.addCircle(this.selected[0], this.selected[1])
-              this.selected = []
               this.clearActivationAll()
             }
           }
@@ -252,7 +251,6 @@
                     this.addToSelected(pointId)
                     if (this.selected.length === 2) {
                       this.addLine(this.selected[0], this.selected[1])
-                      this.selected = []
                       this.clearActivationAll()
                     }
                   }
@@ -262,7 +260,6 @@
                     this.addToSelected(id)
                     if (this.selected.length === 2) {
                       this.getIntersection(this.selected[0], this.selected[1])
-                      this.selected = []
                       this.clearActivationAll()
                     }
                   }
@@ -273,7 +270,6 @@
                     }
                     if (this.selected.length === 2) {
                       this.addCircle(this.selected[0], this.selected[1])
-                      this.selected = []
                       this.clearActivationAll()
                     }
                   }
@@ -346,7 +342,6 @@
             this.addToSelected(pointId)
             if (this.selected.length === 2) {
               this.addLine(this.selected[0], this.selected[1])
-              this.selected = []
               this.clearActivationAll()
             }
           }
@@ -357,7 +352,6 @@
             this.draw(["circle"])
             if (this.selected.length === 2) {
               this.getIntersection(this.selected[0], this.selected[1])
-              this.selected = []
               this.clearActivationAll()
             }
           }
@@ -777,7 +771,6 @@
             this.addToSelected(id)
             if (this.selected.length === 2) {
               this.addLine(this.selected[0], this.selected[1])
-              this.selected = []
               this.clearActivationAll()
             }
           }
@@ -796,7 +789,6 @@
                 const newPtId = this.addPoint(calX, calY)
                 this.addPointToLine(newPtId, lineId)
             }
-              this.selected = []
               this.clearActivationAll()
             }
           }
@@ -829,7 +821,6 @@
             this.addToSelected(id)
             if (this.selected.length === 2) {
               this.addCircle(this.selected[0], this.selected[1])
-              this.selected = []
               this.clearActivationAll()
             }
           }
