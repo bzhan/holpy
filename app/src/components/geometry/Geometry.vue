@@ -102,7 +102,16 @@
         midpoints: [],
         paras: [],
         selected: [],
-        watchingMouse: false
+        watchingMouse: false,
+        requirement: {
+          "point": 1,
+          "line": 2,
+          "circle": 2,
+          "intersection": 2,
+          "midpoint": 2,
+          "perpendicular": 2,
+          "parallel": 2
+        }
       }
     },
     mounted() {
@@ -161,7 +170,7 @@
           else if (this.status === "line") {
             let newId = this.addPoint(x, y, true)
             this.addToSelected(newId)
-            if (this.selected.length === 2) {
+            if (this.checkReachLength(this.status)) {
               this.addToSelected(newId)
               this.addLine(this.selected[0], this.selected[1])
               this.clearActivationAll()
@@ -176,7 +185,7 @@
           else if (this.status === "circle") {
             let newId = this.addPoint(x, y, true)
             this.addToSelected(newId)
-            if (this.selected.length === 2) {
+            if (this.checkReachLength(this.status)) {
               this.addCircle(this.selected[0], this.selected[1])
               this.clearActivationAll()
             }
@@ -190,6 +199,9 @@
           }
         }
         return false
+      },
+      checkReachLength(type) {
+        return this.requirement[type] === this.selected.length
       },
       parseIdToName(id) {
         if (parseInt(id / 26) === 0) {
@@ -249,7 +261,7 @@
                   else if (this.status === "line") {
                     const pointId = this.addClickPosToLine(id, true)
                     this.addToSelected(pointId)
-                    if (this.selected.length === 2) {
+                    if (this.checkReachLength(this.status)) {
                       this.addLine(this.selected[0], this.selected[1])
                       this.clearActivationAll()
                     }
@@ -258,7 +270,7 @@
                     info.activated = true
                     newLine.strokeWidth(4)
                     this.addToSelected(id)
-                    if (this.selected.length === 2) {
+                    if (this.checkReachLength(this.status)) {
                       this.getIntersection(this.selected[0], this.selected[1])
                       this.clearActivationAll()
                     }
@@ -268,7 +280,7 @@
                     if (newPtId) {
                       this.addToSelected(newPtId)
                     }
-                    if (this.selected.length === 2) {
+                    if (this.checkReachLength(this.status)) {
                       this.addCircle(this.selected[0], this.selected[1])
                       this.clearActivationAll()
                     }
@@ -340,7 +352,7 @@
           else if (this.status === "line") {
             const pointId = this.addPointToCircleWithCheck(this.getClickPos(), id, true)
             this.addToSelected(pointId)
-            if (this.selected.length === 2) {
+            if (this.checkReachLength(this.status)) {
               this.addLine(this.selected[0], this.selected[1])
               this.clearActivationAll()
             }
@@ -350,7 +362,7 @@
             newCircle.strokeWidth(4)
             this.addToSelected(id)
             this.draw(["circle"])
-            if (this.selected.length === 2) {
+            if (this.checkReachLength(this.status)) {
               this.getIntersection(this.selected[0], this.selected[1])
               this.clearActivationAll()
             }
