@@ -110,6 +110,8 @@
           "intersection": 2,
           "midpoint": 2,
           "perpendicular": 2,
+          "perpendicularPointToLine": 2,
+          "perpendicularLineToLine": 3,
           "parallel": 2
         }
       }
@@ -177,7 +179,7 @@
             }
           }
           else if (this.status === "perpendicular") {
-            if (this.selected.length === 0) {
+            if (this.checkSelectedPlace(0)) {
               let newId = this.addPoint(x, y, true)
               this.addToSelected(newId)
             }
@@ -199,6 +201,9 @@
           }
         }
         return false
+      },
+      checkSelectedPlace(place) {
+        return place === this.selected.length
       },
       checkReachLength(type) {
         return this.requirement[type] === this.selected.length
@@ -285,7 +290,31 @@
                       this.clearActivationAll()
                     }
                   }
-                  this.draw()
+                  else if (this.status === "perpendicular") {
+                    if (this.checkSelectedPlace(1)) {
+                      if (this.getTypeById(this.selected[0]) === "point") {
+                        this.addToSelected(id)
+                        const perpToId = this.selected[1]
+                        if (!perpToId) {
+                          this.clearActivationAll()
+                          return
+                        }
+                        const endPointIds = this.getEndPointsIdByLineId(perpToId)
+                        const footPos = this.getPedalCoordinatePointToSeg(this.getCoordinateByPointId(this.selected[0]),
+                                this.getCoordinateByPointId(endPointIds[0]), this.getCoordinateByPointId(endPointIds[1]), true)
+                        if (footPos[0] === Infinity) {
+                          this.clearActivationAll()
+                          return
+                        }
+                        const footId = this.addPoint(footPos[0], footPos[1])
+                        const perpToLine = this.getLineByLineId(perpToId)
+                        perpToLine.getAttr('points').push(footPos[0], footPos[1])
+                        this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
+                        this.addLine(this.selected[0], footId)
+                        this.clearActivationAll()
+                      }
+                    }
+                  }
                 }
           )
         this.$refs.lineLayer.getNode().add(newLine)
@@ -781,7 +810,7 @@
           else if (this.status === "line") {
             info.activated = true
             this.addToSelected(id)
-            if (this.selected.length === 2) {
+            if (this.checkReachLength(this.status)) {
               this.addLine(this.selected[0], this.selected[1])
               this.clearActivationAll()
             }
@@ -789,7 +818,7 @@
           else if (this.status === "midpoint") {
             info.activated = true
             this.addToSelected(id)
-            if (this.selected.length === 2) {
+            if (this.checkReachLength(this.status)) {
               const lineId = this.getLineIdByPointId(this.selected[0], this.selected[1])
               if (lineId) {
                 const p1 = this.$refs.anchorLayer.getNode().findOne(
@@ -805,27 +834,9 @@
             }
           }
           else if (this.status === "perpendicular") {
-            info.activated = true
-            this.addToSelected(id)
-            if (this.selected.length === 3) {
-              const perpToId = this.getLineIdByPointId(this.selected[1], this.selected[2])
-              if (!perpToId) {
-                this.clearActivationAll()
-                return
-              }
-              const endPointIds = this.getEndPointsIdByLineId(perpToId)
-              const footPos = this.getPedalCoordinatePointToSeg(this.getCoordinateByPointId(this.selected[0]),
-                      this.getCoordinateByPointId(endPointIds[0]), this.getCoordinateByPointId(endPointIds[1]), true)
-              if (footPos[0] === Infinity) {
-                this.clearActivationAll()
-                return
-              }
-              const footId = this.addPoint(footPos[0], footPos[1])
-              const perpToLine = this.getLineByLineId(perpToId)
-              perpToLine.getAttr('points').push(footPos[0], footPos[1])
-              this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
-              this.addLine(this.selected[0], footId)
-              this.clearActivationAll()
+            if (this.checkSelectedPlace(0)) {
+              info.activated = true
+              this.addToSelected(id)
             }
           }
           else if (this.status === "circle") {
