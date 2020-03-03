@@ -29326,7 +29326,499 @@
                 "hint_rewrite"
             ],
             "name": "cos_eq_1",
+            "num_gaps": 4,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ cos x = 1 ⟶ (∃n. integer n ∧ x = 2 * n * pi)"
+                },
+                {
+                    "args": "cos x = 1",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "cos x = 1 ⊢ cos x = 1"
+                },
+                {
+                    "args": "sin_circle, {x: x}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sin x ^ (2::nat) + cos x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "cos x = 1 ⊢ sin x ^ (2::nat) + 1 ^ (2::nat) = 1"
+                },
+                {
+                    "args": "real_pow_one",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos x = 1 ⊢ sin x ^ (2::nat) + 1 = 1"
+                },
+                {
+                    "args": "real_pow_2",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos x = 1 ⊢ sin x * sin x + 1 = 1"
+                },
+                {
+                    "args": "∀a::real. a * a + 1 = 1 ⟶ a = 0",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. a * a + 1 = 1 ⟶ a = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5",
+                        "0.4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "cos x = 1 ⊢ sin x = 0"
+                },
+                {
+                    "args": "sin_eq_0",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos x = 1 ⊢ ∃n. integer n ∧ x = n * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "0.8",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ x = n * pi",
+                    "id": "0.9",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ x = n * pi ⊢ integer n ∧ x = n * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ x = n * pi ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.11",
+                    "prevs": [
+                        "0.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ x = n * pi ⊢ x = n * pi"
+                },
+                {
+                    "args": "integer_def",
+                    "id": "0.12",
+                    "prevs": [
+                        "0.10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "integer n ∧ x = n * pi ⊢ ∃n1. abs n = of_nat n1"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "0.13",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "abs n = of_nat m",
+                    "id": "0.14",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs n = of_nat m ⊢ abs n = of_nat m"
+                },
+                {
+                    "args": "even_or_odd, {n: m}",
+                    "id": "0.15",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even m ∨ odd m"
+                },
+                {
+                    "args": "",
+                    "id": "0.16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "cos x = 1, abs n = of_nat m, integer n ∧ x = n * pi ⊢ even m ⟶ (∃n. integer n ∧ x = 2 * n * pi)"
+                },
+                {
+                    "args": "even m",
+                    "id": "0.16.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⊢ even m"
+                },
+                {
+                    "args": "even_exists",
+                    "id": "0.16.1",
+                    "prevs": [
+                        "0.16.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "even m ⊢ ∃m1. m = 2 * m1"
+                },
+                {
+                    "args": "m1, nat",
+                    "id": "0.16.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m1"
+                },
+                {
+                    "args": "m = 2 * m1",
+                    "id": "0.16.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 2 * m1 ⊢ m = 2 * m1"
+                },
+                {
+                    "args": "",
+                    "id": "0.16.4",
+                    "prevs": [
+                        "0.16.3",
+                        "0.14"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "abs n = of_nat m, m = 2 * m1 ⊢ abs n = of_nat (2 * m1)"
+                },
+                {
+                    "args": "real_of_nat_mul",
+                    "id": "0.16.5",
+                    "prevs": [
+                        "0.16.4"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "abs n = of_nat m, m = 2 * m1 ⊢ abs n = of_nat 2 * of_nat m1"
+                },
+                {
+                    "args": "real_of_nat_id",
+                    "id": "0.16.6",
+                    "prevs": [
+                        "0.16.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs n = of_nat m, m = 2 * m1 ⊢ abs n = 2 * of_nat m1"
+                },
+                {
+                    "args": "",
+                    "id": "0.16.7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "even m, cos x = 1, abs n = of_nat m, m = 2 * m1, integer n ∧ x = n * pi ⊢ integer (of_nat m1)"
+                },
+                {
+                    "args": "",
+                    "id": "0.16.8",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "even m, cos x = 1, abs n = of_nat m, m = 2 * m1, integer n ∧ x = n * pi ⊢ x = 2 * of_nat m1 * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.16.9",
+                    "prevs": [
+                        "0.16.7",
+                        "0.16.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m, cos x = 1, abs n = of_nat m, m = 2 * m1, integer n ∧ x = n * pi ⊢ integer (of_nat m1) ∧ x = 2 * of_nat m1 * pi"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ x = 2 * n * pi, a: (of_nat::nat ⇒ real) m1}",
+                    "id": "0.16.10",
+                    "prevs": [
+                        "0.16.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even m, cos x = 1, abs n = of_nat m, m = 2 * m1, integer n ∧ x = n * pi ⊢ ∃a1. integer a1 ∧ x = 2 * a1 * pi"
+                },
+                {
+                    "args": "∃m1. m = 2 * m1",
+                    "id": "0.16.11",
+                    "prevs": [
+                        "0.16.0",
+                        "0.16.1",
+                        "0.16.2",
+                        "0.16.3",
+                        "0.16.10"
+                    ],
+                    "rule": "intros",
+                    "th": "cos x = 1, abs n = of_nat m, integer n ∧ x = n * pi ⊢ even m ⟶ (∃n. integer n ∧ x = 2 * n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "0.17",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "cos x = 1, abs n = of_nat m, integer n ∧ x = n * pi ⊢ odd m ⟶ (∃n. integer n ∧ x = 2 * n * pi)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.18",
+                    "prevs": [
+                        "0.15",
+                        "0.16",
+                        "0.17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "cos x = 1, abs n = of_nat m, integer n ∧ x = n * pi ⊢ ∃n. integer n ∧ x = 2 * n * pi"
+                },
+                {
+                    "args": "∃n1. abs n = of_nat n1, ∃n. integer n ∧ x = n * pi",
+                    "id": "0.19",
+                    "prevs": [
+                        "0.0",
+                        "0.7",
+                        "0.8",
+                        "0.9",
+                        "0.12",
+                        "0.13",
+                        "0.14",
+                        "0.18"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos x = 1 ⟶ (∃n. integer n ∧ x = 2 * n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (∃n. integer n ∧ x = 2 * n * pi) ⟶ cos x = 1"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ cos x = 1 ⟷ (∃n. integer n ∧ x = 2 * n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos x = 1 ⟷ (∃n. integer n ∧ x = 2 * n * pi)"
+                }
+            ],
             "prop": "cos x = 1 ⟷ (∃n. integer n ∧ x = 2 * n * pi)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "sin_circle"
+                },
+                {
+                    "fact_ids": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal": "!a::real. a * a +1 =1 --> a = 0",
+                    "goal_id": "0.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.5",
+                        "0.4"
+                    ],
+                    "goal_id": "0.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "0.6"
+                    ],
+                    "goal_id": "0.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sin_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.7"
+                    ],
+                    "goal_id": "0.8",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "0.9"
+                    ],
+                    "goal_id": "0.10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.9"
+                    ],
+                    "goal_id": "0.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.10"
+                    ],
+                    "goal_id": "0.12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "integer_def"
+                },
+                {
+                    "fact_ids": [
+                        "0.12"
+                    ],
+                    "goal_id": "0.13",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "0.15",
+                    "method_name": "apply_forward_step",
+                    "param_n": "m",
+                    "theorem": "even_or_odd"
+                },
+                {
+                    "fact_ids": [
+                        "0.15"
+                    ],
+                    "goal_id": "0.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.16",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.16.0"
+                    ],
+                    "goal_id": "0.16.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "even_exists"
+                },
+                {
+                    "fact_ids": [
+                        "0.16.1"
+                    ],
+                    "goal_id": "0.16.2",
+                    "method_name": "exists_elim",
+                    "names": "m1"
+                },
+                {
+                    "goal_id": "0.16.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "(of_nat::nat=>real) m1"
+                },
+                {
+                    "goal_id": "0.16.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.16.3",
+                        "0.14"
+                    ],
+                    "goal_id": "0.16.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.16.4"
+                    ],
+                    "goal_id": "0.16.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_of_nat_mul"
+                },
+                {
+                    "fact_ids": [
+                        "0.16.5"
+                    ],
+                    "goal_id": "0.16.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_of_nat_id"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
