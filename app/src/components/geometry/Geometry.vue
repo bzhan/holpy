@@ -291,6 +291,11 @@
                     }
                   }
                   else if (this.status === "perpendicular") {
+                    if (this.checkSelectedPlace(0)) {
+                      info.activated = true
+                      newLine.strokeWidth(4)
+                      this.addToSelected(id)
+                    }
                     if (this.checkSelectedPlace(1)) {
                       if (this.getTypeById(this.selected[0]) === "point") {
                         this.addToSelected(id)
@@ -309,7 +314,7 @@
                         const footId = this.addPoint(footPos[0], footPos[1])
                         const perpToLine = this.getLineByLineId(perpToId)
                         perpToLine.getAttr('points').push(footPos[0], footPos[1])
-                        this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
+                        this.addPointToLineList(this.lines[perpToId])
                         this.addLine(this.selected[0], footId)
                         this.clearActivationAll()
                       }
@@ -419,15 +424,15 @@
         const line = this.getLineByLineId(lineId)
         const pos = this.getCoordinateByPointId(pointId)
         line.getAttr('points').push(pos[0], pos[1])
-        this.addPointToLineList(this.lines[lineId], pointId, pos[0])
+        this.addPointToLineList(this.lines[lineId], pointId)
       },
-      addPointToLineList(info, id, x) {
-        for (let i = 0; i < info.points.length; i ++) {
-          if (x > this.points[info.points[i]].x) {
-            info.points.splice(i + 1, 0, id)
-            return 0
-          }
-        }
+      addPointToLineList(info, id) {
+        // for (let i = 0; i < info.points.length; i ++) {
+        //   if (x > this.points[info.points[i]].x) {
+        //     info.points.splice(i + 1, 0, id)
+        //     return 0
+        //   }
+        // }
         info.points.push(id)
       },
       addPointToCircleWithCheck(pointPos, circleId, activated) {
@@ -528,6 +533,9 @@
       getCoordinateByPoint(p) {
         return [p.x(), p.y()]
       },
+      getCoordinateByPointId(p) {
+        return [this.getPointById(p).x(), this.getPointById(p).y()]
+      },
       getCenterByCircle(c) {
         return [c.x(), c.y()]
       },
@@ -537,8 +545,26 @@
       getPointById(id) {
         return this.$refs.anchorLayer.getNode().findOne('#' + id)
       },
-      getCoordinateByPointId(id) {
+      getRotatedByPos(id) {
         return this.getCoordinateByPoint(this.getPointById(id))
+      },
+      getRotatedPointPos(group1, group2, angle) {
+        const cx = group1[0]
+        const cy = group1[1]
+        const x = group2[0]
+        const y = group2[1]
+        const radians = (Math.PI / 180) * angle
+        const cos = Math.cos(radians)
+        const sin = Math.sin(radians)
+        return [(cos * (x - cx)) + (sin * (y - cy)) + cx, (cos * (y - cy)) - (sin * (x - cx)) + cy]
+      },
+      getRotatedPointPosById(id1, id2, angle) {
+        const p1 = this.getPointById(id1)
+        const p2 = this.getPointById(id2)
+        return this.getRotatedPointPos(this.getCoordinateByPoint(p1), this.getCoordinateByPoint(p2), angle)
+      },
+      rotatePoint(id1, id2, angle) {
+        this.updatePointPos(id1, this.getRotatedPointPosById(id1, id2, angle))
       },
       getIntersection(id1, id2) {
         const type1 = this.getTypeById(id1)
@@ -955,6 +981,13 @@
           }
         }
       },
+      updatePointPos(id, newPos) {
+        const p = this.getPointById(id)
+        p.x(newPos[0])
+        p.y(newPos[1])
+        this.points[id].x = newPos[0]
+        this.points[id].y = newPos[1]
+      },
       updateObjects() {
         for (let id in this.lines) {
           let new_points = []
@@ -1010,15 +1043,25 @@
       },
       handleMouseMove() {
         if (this.watchingMouse) {
-          const line = this.getLineByLineId("mouseLine")
+          let line
+          line = this.getLineByLineId("mouseLine")
           if (line) {
             line.points([line.points()[0], line.points()[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y])
+            this.draw()
+            return
+          }
+          line = this.getLineByLineId("perpLine")
+          if (line) {
+            line.points([line.points()[0], line.points()[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y])
+            this.draw()
+            return
           }
           const circle = this.getCircleByCircleId("mouseCircle")
           if (circle) {
             circle.radius(this.getDistPoints([circle.x(), circle.y()], [this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y]))
+            this.draw()
+            return
           }
-          this.draw()
         }
       }
     },
@@ -1028,15 +1071,24 @@
       },
       selected() {
         let hasTmpItem = false
-        if (this.selected.length === 1 && ["line", "circle"].indexOf(this.status) !== -1) {
+        if (this.selected.length === 1 && ["line", "circle", "perpendicular"].indexOf(this.status) !== -1) {
           this.watchingMouse = true
           hasTmpItem = true
           const p = this.getCoordinateByPointId(this.selected[0])
+          const pos = this.getClickPos()
+          let points, id
+          if (this.status === "perpendicular") {
+
+          }
+          else {
+            points = [p[0], p[1], pos[0], pos[1]]
+            id = "mouseLine"
+          }
           const newLine = new Konva.Line({
-            points: [p[0], p[1], this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y],
+            points: points,
             stroke: "grey",
             strokeWidth: 2,
-            id: "mouseLine"
+            id: id
           })
           this.$refs.lineLayer.getNode().add(newLine)
         } else {
@@ -1045,12 +1097,14 @@
             line.remove()
           }
         }
+
         if (this.selected.length === 1 && ["circle"].indexOf(this.status) !== -1) {
           this.watchingMouse = true
           hasTmpItem = true
           const center = this.getPointById(this.selected[0])
+          const pos = this.getClickPos()
           const newCircle = new Konva.Circle({
-            radius: this.getDistPoints(this.getCoordinateByPoint(center), [this.$refs.stage.getNode().getPointerPosition().x, this.$refs.stage.getNode().getPointerPosition().y]),
+            radius: this.getDistPoints(this.getCoordinateByPoint(center), pos),
             x: center.x(),
             y: center.y(),
             stroke: "grey",
