@@ -179,7 +179,7 @@
             }
           }
           else if (this.status === "perpendicular") {
-            if (this.checkSelectedPlace(0)) {
+            if (this.checkSelectedPlace(0) || this.checkSelectedPlace(1)) {
               let newId = this.addPoint(x, y, true)
               this.addToSelected(newId)
             }
@@ -604,6 +604,9 @@
         return [[-10000, this.getYbyLinePos(group1[0], group1[1], group2[0], group2[1], -10000)],
           [10000, this.getYbyLinePos(group1[0], group1[1], group2[0], group2[1], 10000)]]
       },
+      checkIsLeft(group1, group2, group) {
+        return ((group2[0] - group1[0]) * (group[1] - group1[1]) - (group2[1] - group1[1]) * (group[0] - group1[0])) > 0
+      },
       getIntersection(id1, id2) {
         const type1 = this.getTypeById(id1)
         const type2 = this.getTypeById(id2)
@@ -898,7 +901,7 @@
             }
           }
           else if (this.status === "perpendicular") {
-            if (this.checkSelectedPlace(0)) {
+            if (this.checkSelectedPlace(0) || this.checkSelectedPlace(1)) {
               info.activated = true
               this.addToSelected(id)
             }
@@ -1105,6 +1108,19 @@
               line.points([extended[0][0], extended[0][1], extended[1][0], extended[1][1]])
             }
           }
+          if (this.watchingMouse.indexOf("perpLineNext") !== -1) {
+            const line = this.getLineByLineId("perpLineNext")
+            if (line) {
+              const endpoints = line.points()
+              const p = this.getPedalCoordinatePointToSeg(mousePos, [endpoints[0], endpoints[1]], [endpoints[2], endpoints[3]])
+              if (line.points().indexOf(-10000) !== -1) {
+                line.points([p[0], p[1], line.points()[2], line.points()[3]])
+              } else {
+                line.points([line.points()[0], line.points()[1], p[0], p[1]])
+              }
+            }
+          }
+
           if (this.watchingMouse.indexOf("mouseCircle") !== -1) {
             const circle = this.getCircleByCircleId("mouseCircle")
             if (circle) {
@@ -1157,9 +1173,39 @@
             line.remove()
           }
         }
-
-        if (this.selected.length === 2 && ["perpendicular"].indexOf(this.status) !== -1) {
+        if (this.selected.length === 2 && ["perpendicular"].indexOf(this.status) !== -1
+                && this.getTypeById(this.selected[1]) === "point") {
+          const mousePos = this.getClickPos()
+          window.console.log(mousePos)
+          const endpoints = this.getEndpointsByLineId(this.selected[0])
+          window.console.log(endpoints)
+          const p1 = this.getRotatedPointPos(this.getCoordinateByPoint(endpoints[0]), mousePos, 90)
+          const p2 = this.getRotatedPointPos(this.getCoordinateByPoint(endpoints[1]), mousePos, 90)
+          const extended = this.getExtendPos(p1, p2)
+          let points
+          if (this.checkIsLeft(this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]),
+          this.getCoordinateByPointId(this.selected[1]))) {
+            points = [this.getCoordinateByPointId(this.selected[1])[0], this.getCoordinateByPointId(this.selected[1])[1],
+              extended[1][0], extended[1][1]]
+          }
+          else {
+            const extended = this.getExtendPos(p1, p2)
+            points = [extended[0][0], extended[0][1], this.getCoordinateByPointId(this.selected[1])[0],
+              this.getCoordinateByPointId(this.selected[1])[1]]
+          }
+          const newLine = new Konva.Line({
+            points: points,
+            stroke: "grey",
+            strokeWidth: 2,
+            id: "perpLineNext"
+          })
           this.watchingMouse.push("perpLineNext")
+          // this.lines["perpLineNext"] = {"points": points, "activated": false}
+          this.$refs.lineLayer.getNode().add(newLine)
+          const line = this.getLineByLineId("perpLine")
+          if (line) {
+            line.remove()
+          }
         } else {
           const line = this.getLineByLineId("perpLineNext")
           if (line) {
