@@ -33975,9 +33975,1386 @@
                 "hint_rewrite"
             ],
             "name": "sin_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ sin x = sin y ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "sin x = sin y",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin x = sin y ⊢ sin x = sin y"
+                },
+                {
+                    "args": "real_sub_0",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "sin x = sin y ⊢ sin x - sin y = 0"
+                },
+                {
+                    "args": "real_sub_sin",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "sin x = sin y ⊢ 2 * sin ((x - y) / 2) * cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "real_entire",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "sin x = sin y ⊢ 2 * sin ((x - y) / 2) = 0 ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x = sin y ⊢ 2 * sin ((x - y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "2 * sin ((x - y) / 2) = 0",
+                    "id": "0.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "2 * sin ((x - y) / 2) = 0 ⊢ 2 * sin ((x - y) / 2) = 0"
+                },
+                {
+                    "args": "real_entire",
+                    "id": "0.4.1",
+                    "prevs": [
+                        "0.4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "2 * sin ((x - y) / 2) = 0 ⊢ (2::real) = 0 ∨ sin ((x - y) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x = sin y, 2 * sin ((x - y) / 2) = 0 ⊢ (2::real) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "(2::real) = 0",
+                    "id": "0.4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(2::real) = 0 ⊢ (2::real) = 0"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)",
+                    "id": "0.4.2.1",
+                    "prevs": [
+                        "0.4.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "(2::real) = 0 ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.2.2",
+                    "prevs": [
+                        "0.4.2.0",
+                        "0.4.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x = sin y, 2 * sin ((x - y) / 2) = 0 ⊢ (2::real) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x = sin y, 2 * sin ((x - y) / 2) = 0 ⊢ sin ((x - y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "sin ((x - y) / 2) = 0",
+                    "id": "0.4.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin ((x - y) / 2) = 0 ⊢ sin ((x - y) / 2) = 0"
+                },
+                {
+                    "args": "sin_zero_pi",
+                    "id": "0.4.3.1",
+                    "prevs": [
+                        "0.4.3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "sin ((x - y) / 2) = 0 ⊢ (∃n. (x - y) / 2 = of_nat n * pi) ∨ (∃n. (x - y) / 2 = -(of_nat n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, 2 * sin ((x - y) / 2) = 0 ⊢ (∃n. (x - y) / 2 = of_nat n * pi) ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "∃n. (x - y) / 2 = of_nat n * pi",
+                    "id": "0.4.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. (x - y) / 2 = of_nat n * pi ⊢ ∃n. (x - y) / 2 = of_nat n * pi"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.4.3.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "(x - y) / 2 = of_nat n * pi",
+                    "id": "0.4.3.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x - y) / 2 = of_nat n * pi ⊢ (x - y) / 2 = of_nat n * pi"
+                },
+                {
+                    "args": "eq_refl, {x: (of_nat::nat ⇒ real) n}",
+                    "id": "0.4.3.2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (of_nat::nat ⇒ real) n = of_nat n"
+                },
+                {
+                    "args": "exI, {P: λn1. (of_nat::nat ⇒ real) n = of_nat n1, a: n}",
+                    "id": "0.4.3.2.4",
+                    "prevs": [
+                        "0.4.3.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ ∃a1. (of_nat::nat ⇒ real) n = of_nat a1"
+                },
+                {
+                    "args": "real_abs_nat, ∃n1. (abs::real ⇒ real) (of_nat n) = of_nat n1",
+                    "id": "0.4.3.2.5",
+                    "prevs": [
+                        "0.4.3.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ ∃n1. (abs::real ⇒ real) (of_nat n) = of_nat n1"
+                },
+                {
+                    "args": "integer_def, integer (of_nat n)",
+                    "id": "0.4.3.2.6",
+                    "prevs": [
+                        "0.4.3.2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ integer (of_nat n)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.4.3.2.7",
+                    "prevs": [
+                        "0.4.3.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(x - y) / 2 = of_nat n * pi ⊢ of_nat n * pi = (x - y) / 2"
+                },
+                {
+                    "args": "x = y + 2 * ((x - y) / 2)",
+                    "id": "0.4.3.2.8",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x = y + 2 * ((x - y) / 2)"
+                },
+                {
+                    "args": "x = y + 2 * (of_nat n * pi)",
+                    "id": "0.4.3.2.9",
+                    "prevs": [
+                        "0.4.3.2.7",
+                        "0.4.3.2.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ x = y + 2 * (of_nat n * pi)"
+                },
+                {
+                    "args": "real_mult_assoc, x = y + 2 * of_nat n * pi",
+                    "id": "0.4.3.2.10",
+                    "prevs": [
+                        "0.4.3.2.9"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ x = y + 2 * of_nat n * pi"
+                },
+                {
+                    "args": "disjI1, {A: x = y + 2 * of_nat n * pi, B: x = -y + (2 * of_nat n + 1) * pi}",
+                    "id": "0.4.3.2.11",
+                    "prevs": [
+                        "0.4.3.2.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ x = y + 2 * of_nat n * pi ∨ x = -y + (2 * of_nat n + 1) * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.4.3.2.12",
+                    "prevs": [
+                        "0.4.3.2.6",
+                        "0.4.3.2.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ integer (of_nat n) ∧ (x = y + 2 * of_nat n * pi ∨ x = -y + (2 * of_nat n + 1) * pi)"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), a: (of_nat::nat ⇒ real) n}",
+                    "id": "0.4.3.2.13",
+                    "prevs": [
+                        "0.4.3.2.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = of_nat n * pi, ∃n. (x - y) / 2 = of_nat n * pi, 2 * sin ((x - y) / 2) = 0 ⊢ ∃a1. integer a1 ∧ (x = y + 2 * a1 * pi ∨ x = -y + (2 * a1 + 1) * pi)"
+                },
+                {
+                    "args": "∃n. (x - y) / 2 = of_nat n * pi",
+                    "id": "0.4.3.2.14",
+                    "prevs": [
+                        "0.4.3.2.0",
+                        "0.4.3.2.0",
+                        "0.4.3.2.1",
+                        "0.4.3.2.2",
+                        "0.4.3.2.13"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, 2 * sin ((x - y) / 2) = 0 ⊢ (∃n. (x - y) / 2 = of_nat n * pi) ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, 2 * sin ((x - y) / 2) = 0 ⊢ (∃n. (x - y) / 2 = -(of_nat n * pi)) ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "∃n. (x - y) / 2 = -(of_nat n * pi)",
+                    "id": "0.4.3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ ∃n. (x - y) / 2 = -(of_nat n * pi)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.4.3.3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "(x - y) / 2 = -(of_nat n * pi)",
+                    "id": "0.4.3.3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x - y) / 2 = -(of_nat n * pi) ⊢ (x - y) / 2 = -(of_nat n * pi)"
+                },
+                {
+                    "args": "eq_refl, {x: (of_nat::nat ⇒ real) n}",
+                    "id": "0.4.3.3.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (of_nat::nat ⇒ real) n = of_nat n"
+                },
+                {
+                    "args": "exI, {P: λa1. (of_nat::nat ⇒ real) n = of_nat a1, a: n}",
+                    "id": "0.4.3.3.4",
+                    "prevs": [
+                        "0.4.3.3.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ ∃a1. (of_nat::nat ⇒ real) n = of_nat a1"
+                },
+                {
+                    "args": "real_abs_nat, ∃n1. (abs::real ⇒ real) (of_nat n) = of_nat n1",
+                    "id": "0.4.3.3.5",
+                    "prevs": [
+                        "0.4.3.3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ ∃n1. (abs::real ⇒ real) (of_nat n) = of_nat n1"
+                },
+                {
+                    "args": "integer_def, integer (of_nat n)",
+                    "id": "0.4.3.3.6",
+                    "prevs": [
+                        "0.4.3.3.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ integer (of_nat n)"
+                },
+                {
+                    "args": "integer_neg, integer (-(of_nat n))",
+                    "id": "0.4.3.3.7",
+                    "prevs": [
+                        "0.4.3.3.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ integer (-(of_nat n))"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.4.3.3.8",
+                    "prevs": [
+                        "0.4.3.3.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(x - y) / 2 = -(of_nat n * pi) ⊢ -(of_nat n * pi) = (x - y) / 2"
+                },
+                {
+                    "args": "x = y + 2 * ((x - y) / 2)",
+                    "id": "0.4.3.3.9",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x = y + 2 * ((x - y) / 2)"
+                },
+                {
+                    "args": "x = y + 2 * -(of_nat n * pi)",
+                    "id": "0.4.3.3.10",
+                    "prevs": [
+                        "0.4.3.3.8",
+                        "0.4.3.3.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ x = y + 2 * -(of_nat n * pi)"
+                },
+                {
+                    "args": "real_mul_lneg, x = y + 2 * (-(of_nat n) * pi)",
+                    "id": "0.4.3.3.11",
+                    "prevs": [
+                        "0.4.3.3.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ x = y + 2 * (-(of_nat n) * pi)"
+                },
+                {
+                    "args": "real_mult_assoc, x = y + 2 * -(of_nat n) * pi",
+                    "id": "0.4.3.3.12",
+                    "prevs": [
+                        "0.4.3.3.11"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ x = y + 2 * -(of_nat n) * pi"
+                },
+                {
+                    "args": "disjI1, {A: x = y + 2 * -(of_nat n) * pi, B: x = -y + (2 * -(of_nat n) + 1) * pi}",
+                    "id": "0.4.3.3.13",
+                    "prevs": [
+                        "0.4.3.3.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ x = y + 2 * -(of_nat n) * pi ∨ x = -y + (2 * -(of_nat n) + 1) * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.4.3.3.14",
+                    "prevs": [
+                        "0.4.3.3.7",
+                        "0.4.3.3.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ integer (-(of_nat n)) ∧ (x = y + 2 * -(of_nat n) * pi ∨ x = -y + (2 * -(of_nat n) + 1) * pi)"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), a: -(of_nat n)}",
+                    "id": "0.4.3.3.15",
+                    "prevs": [
+                        "0.4.3.3.14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, (x - y) / 2 = -(of_nat n * pi), 2 * sin ((x - y) / 2) = 0, ∃n. (x - y) / 2 = -(of_nat n * pi) ⊢ ∃a1. integer a1 ∧ (x = y + 2 * a1 * pi ∨ x = -y + (2 * a1 + 1) * pi)"
+                },
+                {
+                    "args": "∃n. (x - y) / 2 = -(of_nat n * pi)",
+                    "id": "0.4.3.3.16",
+                    "prevs": [
+                        "0.4.3.3.0",
+                        "0.4.3.3.0",
+                        "0.4.3.3.1",
+                        "0.4.3.3.2",
+                        "0.4.3.3.15"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, 2 * sin ((x - y) / 2) = 0 ⊢ (∃n. (x - y) / 2 = -(of_nat n * pi)) ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.4.3.4",
+                    "prevs": [
+                        "0.4.3.1",
+                        "0.4.3.2",
+                        "0.4.3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y, sin ((x - y) / 2) = 0, 2 * sin ((x - y) / 2) = 0 ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.3.5",
+                    "prevs": [
+                        "0.4.3.0",
+                        "0.4.3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x = sin y, 2 * sin ((x - y) / 2) = 0 ⊢ sin ((x - y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.4.4",
+                    "prevs": [
+                        "0.4.1",
+                        "0.4.2",
+                        "0.4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y, 2 * sin ((x - y) / 2) = 0 ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4.5",
+                    "prevs": [
+                        "0.4.0",
+                        "0.4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x = sin y ⊢ 2 * sin ((x - y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x = sin y ⊢ cos ((x + y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "cos ((x + y) / 2) = 0",
+                    "id": "0.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "cos ((x + y) / 2) = 0 ⊢ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "cos_eq_0",
+                    "id": "0.5.1",
+                    "prevs": [
+                        "0.5.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "cos ((x + y) / 2) = 0 ⊢ ∃n. integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "0.5.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi",
+                    "id": "0.5.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.5.4",
+                    "prevs": [
+                        "0.5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.5.5",
+                    "prevs": [
+                        "0.5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ (x + y) / 2 = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "∀p. (x + y) / 2 = (n + 1 / 2) * p ⟶ x = -y + (2 * n + 1) * p",
+                    "id": "0.5.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. (x + y) / 2 = (n + 1 / 2) * p ⟶ x = -y + (2 * n + 1) * p"
+                },
+                {
+                    "args": "pi",
+                    "id": "0.5.7",
+                    "prevs": [
+                        "0.5.6",
+                        "0.5.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "sin x = sin y, cos ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ x = -y + (2 * n + 1) * pi"
+                },
+                {
+                    "args": "disjI2, {A: x = y + 2 * n * pi, B: x = -y + (2 * n + 1) * pi}",
+                    "id": "0.5.8",
+                    "prevs": [
+                        "0.5.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, cos ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.5.9",
+                    "prevs": [
+                        "0.5.4",
+                        "0.5.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y, cos ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), a: n}",
+                    "id": "0.5.10",
+                    "prevs": [
+                        "0.5.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin x = sin y, cos ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi ⊢ ∃a1. integer a1 ∧ (x = y + 2 * a1 * pi ∨ x = -y + (2 * a1 + 1) * pi)"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x + y) / 2 = (n + 1 / 2) * pi",
+                    "id": "0.5.11",
+                    "prevs": [
+                        "0.5.0",
+                        "0.5.1",
+                        "0.5.2",
+                        "0.5.3",
+                        "0.5.10"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x = sin y ⊢ cos ((x + y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.3",
+                        "0.4",
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin x = sin y ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)) ⟶ sin x = sin y"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "n, real",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ x = y + 2 * n * pi ⟶ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "x = y + 2 * n * pi",
+                    "id": "1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y + 2 * n * pi ⊢ x = y + 2 * n * pi"
+                },
+                {
+                    "args": "(y + 2 * n * pi - y) / 2 = n * pi",
+                    "id": "1.5.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ (y + 2 * n * pi - y) / 2 = n * pi"
+                },
+                {
+                    "args": "sin_pimul_eq_0, sin (n * pi) = 0",
+                    "id": "1.5.2",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ sin (n * pi) = 0"
+                },
+                {
+                    "args": "sin ((y + 2 * n * pi - y) / 2) = 0",
+                    "id": "1.5.3",
+                    "prevs": [
+                        "1.5.1",
+                        "1.5.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ sin ((y + 2 * n * pi - y) / 2) = 0"
+                },
+                {
+                    "args": "sin ((x - y) / 2) = 0",
+                    "id": "1.5.4",
+                    "prevs": [
+                        "1.5.0",
+                        "1.5.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ sin ((x - y) / 2) = 0"
+                },
+                {
+                    "args": "disjI2, {A: (2::real) = 0, B: sin ((x - y) / 2) = 0}",
+                    "id": "1.5.5",
+                    "prevs": [
+                        "1.5.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ (2::real) = 0 ∨ sin ((x - y) / 2) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (2::real) = 0 ∨ sin ((x - y) / 2) = 0, B: cos ((x + y) / 2) = 0}",
+                    "id": "1.5.6",
+                    "prevs": [
+                        "1.5.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.7",
+                    "prevs": [
+                        "1.5.0",
+                        "1.5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ x = y + 2 * n * pi ⟶ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ x = -y + (2 * n + 1) * pi ⟶ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "x = -y + (2 * n + 1) * pi",
+                    "id": "1.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = -y + (2 * n + 1) * pi ⊢ x = -y + (2 * n + 1) * pi"
+                },
+                {
+                    "args": "(-y + (2 * n + 1) * pi + y) / 2 = (n + 1 / 2) * pi",
+                    "id": "1.6.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ (-y + (2 * n + 1) * pi + y) / 2 = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "eq_refl, {x: (n + 1 / 2) * pi}",
+                    "id": "1.6.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (n + 1 / 2) * pi = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.6.3",
+                    "prevs": [
+                        "1.3",
+                        "1.6.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = -y + (2 * n + 1) * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ integer n ∧ (n + 1 / 2) * pi = (n + 1 / 2) * pi"
+                },
+                {
+                    "args": "exI, {P: λn1. integer n1 ∧ (n + 1 / 2) * pi = (n1 + 1 / 2) * pi, a: n}",
+                    "id": "1.6.4",
+                    "prevs": [
+                        "1.6.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -y + (2 * n + 1) * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ ∃a1. integer a1 ∧ (n + 1 / 2) * pi = (a1 + 1 / 2) * pi"
+                },
+                {
+                    "args": "cos_eq_0, cos ((n + 1 / 2) * pi) = 0",
+                    "id": "1.6.5",
+                    "prevs": [
+                        "1.6.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = -y + (2 * n + 1) * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ cos ((n + 1 / 2) * pi) = 0"
+                },
+                {
+                    "args": "cos ((-y + (2 * n + 1) * pi + y) / 2) = 0",
+                    "id": "1.6.6",
+                    "prevs": [
+                        "1.6.1",
+                        "1.6.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = -y + (2 * n + 1) * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ cos ((-y + (2 * n + 1) * pi + y) / 2) = 0"
+                },
+                {
+                    "args": "cos ((x + y) / 2) = 0",
+                    "id": "1.6.7",
+                    "prevs": [
+                        "1.6.0",
+                        "1.6.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = -y + (2 * n + 1) * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "disjI2, {A: (2::real) = 0 ∨ sin ((x - y) / 2) = 0, B: cos ((x + y) / 2) = 0}",
+                    "id": "1.6.8",
+                    "prevs": [
+                        "1.6.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -y + (2 * n + 1) * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.6.9",
+                    "prevs": [
+                        "1.6.0",
+                        "1.6.8"
+                    ],
+                    "rule": "intros",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ x = -y + (2 * n + 1) * pi ⟶ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.4",
+                        "1.5",
+                        "1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ ((2::real) = 0 ∨ sin ((x - y) / 2) = 0) ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "real_entire, 2 * sin ((x - y) / 2) = 0 ∨ cos ((x + y) / 2) = 0",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ 2 * sin ((x - y) / 2) = 0 ∨ cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "real_entire, 2 * sin ((x - y) / 2) * cos ((x + y) / 2) = 0",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ 2 * sin ((x - y) / 2) * cos ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "real_sub_sin, sin x - sin y = 0",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ sin x - sin y = 0"
+                },
+                {
+                    "args": "real_sub_0, sin x = sin y",
+                    "id": "1.11",
+                    "prevs": [
+                        "1.10"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi) ⊢ sin x = sin y"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)",
+                    "id": "1.12",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi)) ⟶ sin x = sin y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sin x = sin y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin x = sin y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+                }
+            ],
             "prop": [
                 "sin x = sin y ⟷ ",
                 "(∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + (2 * n + 1) * pi))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_sub_sin"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.0"
+                    ],
+                    "goal_id": "0.4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.1"
+                    ],
+                    "goal_id": "0.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.2.0"
+                    ],
+                    "goal_id": "0.4.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.4.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.0"
+                    ],
+                    "goal_id": "0.4.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sin_zero_pi"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.1"
+                    ],
+                    "goal_id": "0.4.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.4.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.2.0"
+                    ],
+                    "goal_id": "0.4.3.2.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "0.4.3.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "(of_nat::nat=>real) n"
+                },
+                {
+                    "goal_id": "0.4.3.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.4.3.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_def"
+                },
+                {
+                    "goal_id": "0.4.3.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal_id": "0.4.3.2.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "0.4.3.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "0.4.3.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.2.2"
+                    ],
+                    "goal_id": "0.4.3.2.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0.4.3.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.2.7"
+                    ],
+                    "goal_id": "0.4.3.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.4.3.2.8",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "0.4.3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.3.0"
+                    ],
+                    "goal_id": "0.4.3.3.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "-(of_nat::nat=>real) n"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_neg"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_def"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "apply_backward_step",
+                    "param_a": "n",
+                    "theorem": "exI"
+                },
+                {
+                    "goal_id": "0.4.3.3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "0.4.3.3.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.4.3.3.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal_id": "0.4.3.3.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.3.2"
+                    ],
+                    "goal_id": "0.4.3.3.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.3.3.8"
+                    ],
+                    "goal_id": "0.4.3.3.9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.4.3.3.9",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.0"
+                    ],
+                    "goal_id": "0.5.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "cos_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.1"
+                    ],
+                    "goal_id": "0.5.2",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "0.5.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.3"
+                    ],
+                    "goal_id": "0.5.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.3"
+                    ],
+                    "goal_id": "0.5.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.5.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.5.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal": "!p. (x + y) / 2 = (n + 1 / 2) * p --> x = -y + (2 * n + 1) * p",
+                    "goal_id": "0.5.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.5.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.5.6"
+                    ],
+                    "goal_id": "0.5.7",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_sin"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.0"
+                    ],
+                    "goal_id": "1.5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(y + 2 * n * pi - y) / 2 = n * pi",
+                    "goal_id": "1.5.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.1"
+                    ],
+                    "goal_id": "1.5.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_pimul_eq_0"
+                },
+                {
+                    "goal_id": "1.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "1.6.0"
+                    ],
+                    "goal_id": "1.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(-y + (2 * n + 1) * pi + y) / 2 = (n + 1/2) * pi",
+                    "goal_id": "1.6.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.6.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.6.1"
+                    ],
+                    "goal_id": "1.6.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_eq_0"
+                },
+                {
+                    "goal_id": "1.6.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "1.6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -33987,7 +35364,1051 @@
         },
         {
             "name": "cos_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_sub_0, cos x = cos y ⟷ cos x - cos y = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos x = cos y ⟷ cos x - cos y = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ (2::real) = 0 ∨ sin ((x + y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0 ⊢ (2::real) = 0 ∨ sin ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ (2::real) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "(2::real) = 0",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(2::real) = 0 ⊢ (2::real) = 0"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)",
+                    "id": "1.1.1.1",
+                    "prevs": [
+                        "1.1.1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "(2::real) = 0 ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.2",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ (2::real) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ sin ((x + y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "sin ((x + y) / 2) = 0",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin ((x + y) / 2) = 0 ⊢ sin ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "sin_eq_0",
+                    "id": "1.1.2.1",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "sin ((x + y) / 2) = 0 ⊢ ∃n. integer n ∧ (x + y) / 2 = n * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "1.1.2.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ (x + y) / 2 = n * pi",
+                    "id": "1.1.2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ (x + y) / 2 = n * pi ⊢ integer n ∧ (x + y) / 2 = n * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.2.4",
+                    "prevs": [
+                        "1.1.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x + y) / 2 = n * pi ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.2.5",
+                    "prevs": [
+                        "1.1.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x + y) / 2 = n * pi ⊢ (x + y) / 2 = n * pi"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.1.2.6",
+                    "prevs": [
+                        "1.1.2.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "integer n ∧ (x + y) / 2 = n * pi ⊢ n * pi = (x + y) / 2"
+                },
+                {
+                    "args": "x = -y + 2 * ((x + y) / 2)",
+                    "id": "1.1.2.7",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x = -y + 2 * ((x + y) / 2)"
+                },
+                {
+                    "args": "x = -y + 2 * (n * pi)",
+                    "id": "1.1.2.8",
+                    "prevs": [
+                        "1.1.2.6",
+                        "1.1.2.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "sin ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = n * pi, (2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = -y + 2 * (n * pi)"
+                },
+                {
+                    "args": "real_mult_assoc, x = -y + 2 * n * pi",
+                    "id": "1.1.2.9",
+                    "prevs": [
+                        "1.1.2.8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "sin ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = n * pi, (2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = -y + 2 * n * pi"
+                },
+                {
+                    "args": "disjI2, {A: x = y + 2 * n * pi, B: x = -y + 2 * n * pi}",
+                    "id": "1.1.2.10",
+                    "prevs": [
+                        "1.1.2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = n * pi, (2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = y + 2 * n * pi ∨ x = -y + 2 * n * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.2.11",
+                    "prevs": [
+                        "1.1.2.4",
+                        "1.1.2.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = n * pi, (2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), a: n}",
+                    "id": "1.1.2.12",
+                    "prevs": [
+                        "1.1.2.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin ((x + y) / 2) = 0, integer n ∧ (x + y) / 2 = n * pi, (2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ ∃a1. integer a1 ∧ (x = y + 2 * a1 * pi ∨ x = -y + 2 * a1 * pi)"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x + y) / 2 = n * pi",
+                    "id": "1.1.2.13",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.1",
+                        "1.1.2.2",
+                        "1.1.2.3",
+                        "1.1.2.12"
+                    ],
+                    "rule": "intros",
+                    "th": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ sin ((x + y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(2::real) = 0 ∨ sin ((x + y) / 2) = 0, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ (2::real) = 0 ∨ sin ((x + y) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ sin ((y - x) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "sin ((y - x) / 2) = 0",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin ((y - x) / 2) = 0 ⊢ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "sin_eq_0",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "sin ((y - x) / 2) = 0 ⊢ ∃n. integer n ∧ (y - x) / 2 = n * pi"
+                },
+                {
+                    "args": "n, real",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ (y - x) / 2 = n * pi",
+                    "id": "1.2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ (y - x) / 2 = n * pi ⊢ integer n ∧ (y - x) / 2 = n * pi"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (y - x) / 2 = n * pi ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (y - x) / 2 = n * pi ⊢ (y - x) / 2 = n * pi"
+                },
+                {
+                    "args": "integer_neg, integer (-n)",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ integer (-n)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "integer n ∧ (y - x) / 2 = n * pi ⊢ n * pi = (y - x) / 2"
+                },
+                {
+                    "args": "x = y + 2 * -((y - x) / 2)",
+                    "id": "1.2.8",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x = y + 2 * -((y - x) / 2)"
+                },
+                {
+                    "args": "x = y + 2 * -(n * pi)",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.7",
+                        "1.2.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = y + 2 * -(n * pi)"
+                },
+                {
+                    "args": "real_mul_lneg, x = y + 2 * (-n * pi)",
+                    "id": "1.2.10",
+                    "prevs": [
+                        "1.2.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = y + 2 * (-n * pi)"
+                },
+                {
+                    "args": "real_mult_assoc, x = y + 2 * -n * pi",
+                    "id": "1.2.11",
+                    "prevs": [
+                        "1.2.10"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = y + 2 * -n * pi"
+                },
+                {
+                    "args": "disjI1, {A: x = y + 2 * -n * pi, B: x = -y + 2 * -n * pi}",
+                    "id": "1.2.12",
+                    "prevs": [
+                        "1.2.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ x = y + 2 * -n * pi ∨ x = -y + 2 * -n * pi"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.13",
+                    "prevs": [
+                        "1.2.6",
+                        "1.2.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ integer (-n) ∧ (x = y + 2 * -n * pi ∨ x = -y + 2 * -n * pi)"
+                },
+                {
+                    "args": "exI, {P: λn. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), a: -n}",
+                    "id": "1.2.14",
+                    "prevs": [
+                        "1.2.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "sin ((y - x) / 2) = 0, integer n ∧ (y - x) / 2 = n * pi, ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ ∃a1. integer a1 ∧ (x = y + 2 * a1 * pi ∨ x = -y + 2 * a1 * pi)"
+                },
+                {
+                    "args": "∃n. integer n ∧ (y - x) / 2 = n * pi",
+                    "id": "1.2.15",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.2",
+                        "1.2.3",
+                        "1.2.14"
+                    ],
+                    "rule": "intros",
+                    "th": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ sin ((y - x) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⟶ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)) ⟶ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)"
+                },
+                {
+                    "args": "n, real",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ integer n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ x = y + 2 * n * pi ∨ x = -y + 2 * n * pi"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ x = y + 2 * n * pi ⟶ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "x = y + 2 * n * pi",
+                    "id": "2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y + 2 * n * pi ⊢ x = y + 2 * n * pi"
+                },
+                {
+                    "args": "(y - (y + 2 * n * pi)) / 2 = -n * pi",
+                    "id": "2.5.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ (y - (y + 2 * n * pi)) / 2 = -n * pi"
+                },
+                {
+                    "args": "integer_neg, integer (-n)",
+                    "id": "2.5.2",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ integer (-n)"
+                },
+                {
+                    "args": "sin_pimul_eq_0, sin (-n * pi) = 0",
+                    "id": "2.5.3",
+                    "prevs": [
+                        "2.5.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ sin (-n * pi) = 0"
+                },
+                {
+                    "args": "sin ((y - (y + 2 * n * pi)) / 2) = 0",
+                    "id": "2.5.4",
+                    "prevs": [
+                        "2.5.1",
+                        "2.5.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ sin ((y - (y + 2 * n * pi)) / 2) = 0"
+                },
+                {
+                    "args": "sin ((y - x) / 2) = 0",
+                    "id": "2.5.5",
+                    "prevs": [
+                        "2.5.0",
+                        "2.5.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "disjI2, {A: (2::real) = 0 ∨ sin ((x + y) / 2) = 0, B: sin ((y - x) / 2) = 0}",
+                    "id": "2.5.6",
+                    "prevs": [
+                        "2.5.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.7",
+                    "prevs": [
+                        "2.5.0",
+                        "2.5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ x = y + 2 * n * pi ⟶ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ x = -y + 2 * n * pi ⟶ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "x = -y + 2 * n * pi",
+                    "id": "2.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = -y + 2 * n * pi ⊢ x = -y + 2 * n * pi"
+                },
+                {
+                    "args": "(-y + 2 * n * pi + y) / 2 = n * pi",
+                    "id": "2.6.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ (-y + 2 * n * pi + y) / 2 = n * pi"
+                },
+                {
+                    "args": "sin_pimul_eq_0, sin (n * pi) = 0",
+                    "id": "2.6.2",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = -y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ sin (n * pi) = 0"
+                },
+                {
+                    "args": "sin ((-y + 2 * n * pi + y) / 2) = 0",
+                    "id": "2.6.3",
+                    "prevs": [
+                        "2.6.1",
+                        "2.6.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = -y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ sin ((-y + 2 * n * pi + y) / 2) = 0"
+                },
+                {
+                    "args": "sin ((x + y) / 2) = 0",
+                    "id": "2.6.4",
+                    "prevs": [
+                        "2.6.0",
+                        "2.6.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = -y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ sin ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "disjI2, {A: (2::real) = 0, B: sin ((x + y) / 2) = 0}",
+                    "id": "2.6.5",
+                    "prevs": [
+                        "2.6.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ (2::real) = 0 ∨ sin ((x + y) / 2) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (2::real) = 0 ∨ sin ((x + y) / 2) = 0, B: sin ((y - x) / 2) = 0}",
+                    "id": "2.6.6",
+                    "prevs": [
+                        "2.6.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = -y + 2 * n * pi, integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.6.7",
+                    "prevs": [
+                        "2.6.0",
+                        "2.6.6"
+                    ],
+                    "rule": "intros",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ x = -y + 2 * n * pi ⟶ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.4",
+                        "2.5",
+                        "2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi), ∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi) ⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.0",
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi)) ⟶ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ((2::real) = 0 ∨ sin ((x + y) / 2) = 0) ∨ sin ((y - x) / 2) = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "real_entire, 2 * sin ((x + y) / 2) = 0 ∨ sin ((y - x) / 2) = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 2 * sin ((x + y) / 2) = 0 ∨ sin ((y - x) / 2) = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "real_entire, 2 * sin ((x + y) / 2) * sin ((y - x) / 2) = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 2 * sin ((x + y) / 2) * sin ((y - x) / 2) = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "real_sub_cos, cos x - cos y = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos x - cos y = 0 ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "cos x = cos y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ cos x = cos y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cos x = cos y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))"
+                }
+            ],
             "prop": "cos x = cos y ⟷ (∃n. integer n ∧ (x = y + 2 * n * pi ∨ x = -y + 2 * n * pi))",
+            "steps": [
+                {
+                    "goal": "cos x = cos y <--> cos x - cos y = 0",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_cos"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sin_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.1"
+                    ],
+                    "goal_id": "1.1.2.2",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.3"
+                    ],
+                    "goal_id": "1.1.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.3"
+                    ],
+                    "goal_id": "1.1.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.1.2.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "goal_id": "1.1.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.5"
+                    ],
+                    "goal_id": "1.1.2.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "1.1.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.6"
+                    ],
+                    "goal_id": "1.1.2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.2.7",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sin_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.3"
+                    ],
+                    "goal_id": "1.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.3"
+                    ],
+                    "goal_id": "1.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "-n"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_neg"
+                },
+                {
+                    "goal_id": "1.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal_id": "1.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.5"
+                    ],
+                    "goal_id": "1.2.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.7"
+                    ],
+                    "goal_id": "1.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.8",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.0"
+                    ],
+                    "goal_id": "2.5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(y - (y + 2 * n * pi)) / 2 = (-n) * pi",
+                    "goal_id": "2.5.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.5.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.1"
+                    ],
+                    "goal_id": "2.5.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_pimul_eq_0"
+                },
+                {
+                    "goal_id": "2.5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "integer_neg"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.0"
+                    ],
+                    "goal_id": "2.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(-y + 2 * n * pi + y) / 2 = n * pi",
+                    "goal_id": "2.6.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.6.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2.6.1"
+                    ],
+                    "goal_id": "2.6.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_pimul_eq_0"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -35608,6 +38029,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "cot",
             "prop": "cot x = cos x / sin x",
             "ty": "def",
@@ -35618,7 +38042,523 @@
                 "hint_rewrite"
             ],
             "name": "cot_double",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ sin x = 0 ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "sin x = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin x = 0 ⊢ sin x = 0"
+                },
+                {
+                    "args": "cos x * cos x * 0 = 0 * real_inverse 2",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ cos x * cos x * 0 = 0 * real_inverse 2"
+                },
+                {
+                    "args": "real_inv_0, cos x * cos x * real_inverse 0 = 0 * real_inverse 2",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ cos x * cos x * real_inverse 0 = 0 * real_inverse 2"
+                },
+                {
+                    "args": "real_sub_rzero, (cos x * cos x - 0) * real_inverse 0 = (0 - 0) * real_inverse 2",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0) * real_inverse 0 = (0 - 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_mul_lzero, (cos x * cos x - 0) * real_inverse (0 * cos x) = (0 - 0) * real_inverse 2",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0) * real_inverse (0 * cos x) = (0 - 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_mul_rzero, (cos x * cos x - 0) * real_inverse (2 * 0 * cos x) = (cos x * 0 - 0) * real_inverse 2",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0) * real_inverse (2 * 0 * cos x) = (cos x * 0 - 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_mul_lzero, (cos x * cos x - 0 * 0) * real_inverse (2 * 0 * cos x) = (cos x * 0 - 0 * real_inverse (cos x)) * real_inverse 2",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0 * 0) * real_inverse (2 * 0 * cos x) = (cos x * 0 - 0 * real_inverse (cos x)) * real_inverse 2"
+                },
+                {
+                    "args": "real_inv_0, (cos x * cos x - 0 * 0) * real_inverse (2 * 0 * cos x) = (cos x * real_inverse 0 - 0 * real_inverse (cos x)) * real_inverse 2",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0 * 0) * real_inverse (2 * 0 * cos x) = (cos x * real_inverse 0 - 0 * real_inverse (cos x)) * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, (cos x * cos x - 0 * 0) * real_inverse (2 * 0 * cos x) = (cos x / 0 - 0 / cos x) * real_inverse 2",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0 * 0) * real_inverse (2 * 0 * cos x) = (cos x / 0 - 0 / cos x) * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, (cos x * cos x - 0 * 0) / (2 * 0 * cos x) = (cos x / 0 - 0 / cos x) / 2",
+                    "id": "0.9",
+                    "prevs": [
+                        "0.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - 0 * 0) / (2 * 0 * cos x) = (cos x / 0 - 0 / cos x) / 2"
+                },
+                {
+                    "args": "(cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.0",
+                        "0.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "sin x = 0 ⊢ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "0.11",
+                    "prevs": [
+                        "0.0",
+                        "0.10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sin x = 0 ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(sin x = 0) ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "¬(sin x = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(sin x = 0) ⊢ ¬(sin x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(sin x = 0) ⊢ cos x = 0 ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "cos x = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "cos x = 0 ⊢ cos x = 0"
+                },
+                {
+                    "args": "(0 - sin x * sin x) * 0 = (0 - sin x * 0) * real_inverse 2",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ (0 - sin x * sin x) * 0 = (0 - sin x * 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_inv_0, (0 - sin x * sin x) * real_inverse 0 = (0 - sin x * real_inverse 0) * real_inverse 2",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0, ¬(sin x = 0) ⊢ (0 - sin x * sin x) * real_inverse 0 = (0 - sin x * real_inverse 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_mul_rzero, (0 - sin x * sin x) * real_inverse (2 * sin x * 0) = (0 - sin x * real_inverse 0) * real_inverse 2",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0, ¬(sin x = 0) ⊢ (0 - sin x * sin x) * real_inverse (2 * sin x * 0) = (0 - sin x * real_inverse 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_mul_lzero, (0 * 0 - sin x * sin x) * real_inverse (2 * sin x * 0) = (0 * real_inverse (sin x) - sin x * real_inverse 0) * real_inverse 2",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0, ¬(sin x = 0) ⊢ (0 * 0 - sin x * sin x) * real_inverse (2 * sin x * 0) = (0 * real_inverse (sin x) - sin x * real_inverse 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, (0 * 0 - sin x * sin x) * real_inverse (2 * sin x * 0) = (0 / sin x - sin x / 0) * real_inverse 2",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0, ¬(sin x = 0) ⊢ (0 * 0 - sin x * sin x) * real_inverse (2 * sin x * 0) = (0 / sin x - sin x / 0) * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, (0 * 0 - sin x * sin x) / (2 * sin x * 0) = (0 / sin x - sin x / 0) / 2",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "cos x = 0, ¬(sin x = 0) ⊢ (0 * 0 - sin x * sin x) / (2 * sin x * 0) = (0 / sin x - sin x / 0) / 2"
+                },
+                {
+                    "args": "(cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "cos x = 0, ¬(sin x = 0) ⊢ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(sin x = 0) ⊢ cos x = 0 ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(sin x = 0) ⊢ ¬(cos x = 0) ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "∀sx. ∀cx. ¬(sx = 0) ⟶ ¬(cx = 0) ⟶ (cx * cx - sx * sx) / (2 * sx * cx) = (cx / sx - sx / cx) / 2",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀sx. ∀cx. ¬(sx = 0) ⟶ ¬(cx = 0) ⟶ (cx * cx - sx * sx) / (2 * sx * cx) = (cx / sx - sx / cx) / 2"
+                },
+                {
+                    "args": "sin x, cos x",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1",
+                        "1.0",
+                        "1.2.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(cos x = 0), ¬(sin x = 0) ⊢ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(sin x = 0) ⊢ ¬(cos x = 0) ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(sin x = 0) ⊢ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(sin x = 0) ⟶ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (cos x * cos x - sin x * sin x) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "real_pow_2, (cos x ^ (2::nat) - sin x ^ (2::nat)) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (cos x ^ (2::nat) - sin x ^ (2::nat)) / (2 * sin x * cos x) = (cos x / sin x - sin x / cos x) / 2"
+                },
+                {
+                    "args": "tan_def, (cos x ^ (2::nat) - sin x ^ (2::nat)) / (2 * sin x * cos x) = (cos x / sin x - tan x) / 2",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (cos x ^ (2::nat) - sin x ^ (2::nat)) / (2 * sin x * cos x) = (cos x / sin x - tan x) / 2"
+                },
+                {
+                    "args": "cos_double, cos (2 * x) / (2 * sin x * cos x) = (cos x / sin x - tan x) / 2",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (2 * x) / (2 * sin x * cos x) = (cos x / sin x - tan x) / 2"
+                },
+                {
+                    "args": "sin_double, cos (2 * x) / sin (2 * x) = (cos x / sin x - tan x) / 2",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos (2 * x) / sin (2 * x) = (cos x / sin x - tan x) / 2"
+                },
+                {
+                    "args": "cot_def, cot (2 * x) = (cot x - tan x) / 2",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cot (2 * x) = (cot x - tan x) / 2"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ cot (2 * x) = (cot x - tan x) / 2"
+                }
+            ],
             "prop": "cot (2 * x) = (cot x - tan x) / 2",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cot_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_double"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_double"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "case": "sin x = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_0"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_0"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "cos x = 0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_0"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "!sx. !cx. ~(sx=0)-->~(cx=0)-->(cx * cx - sx * sx) / (2 * sx * cx) = (cx / sx - sx / cx) / 2",
+                    "goal_id": "1.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -35629,7 +38569,47 @@
                 "hint_rewrite"
             ],
             "name": "tan_cot_double",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tan x = cot x - 2 * ((cot x - tan x) / 2)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ tan x = cot x - 2 * ((cot x - tan x) / 2)"
+                },
+                {
+                    "args": "cot_double, tan x = cot x - 2 * cot (2 * x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan x = cot x - 2 * cot (2 * x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan x = cot x - 2 * cot (2 * x)"
+                }
+            ],
             "prop": "tan x = cot x - 2 * cot (2 * x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cot_double"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -35641,7 +38621,101 @@
                 "hint_backward1"
             ],
             "name": "real_add_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "¬(cos y = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos y = 0) ⊢ ¬(cos y = 0)"
+                },
+                {
+                    "args": "∀sx. ∀cx. ∀sy. ∀cy. ¬(cx = 0) ⟶ ¬(cy = 0) ⟶ sx / cx + sy / cy = (sx * cy + cx * sy) / (cx * cy)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀sx. ∀cx. ∀sy. ∀cy. ¬(cx = 0) ⟶ ¬(cy = 0) ⟶ sx / cx + sy / cy = (sx * cy + cx * sy) / (cx * cy)"
+                },
+                {
+                    "args": "sin x, cos x, sin y, cos y",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ sin x / cos x + sin y / cos y = (sin x * cos y + cos x * sin y) / (cos x * cos y)"
+                },
+                {
+                    "args": "tan_def, tan x + tan y = (sin x * cos y + cos x * sin y) / (cos x * cos y)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ tan x + tan y = (sin x * cos y + cos x * sin y) / (cos x * cos y)"
+                },
+                {
+                    "args": "sin_add, tan x + tan y = sin (x + y) / (cos x * cos y)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ tan x + tan y = sin (x + y) / (cos x * cos y)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ tan x + tan y = sin (x + y) / (cos x * cos y)"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ tan x + tan y = sin (x + y) / (cos x * cos y)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_add"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal": "!sx. !cx. !sy. !cy. ~(cx=0) --> ~(cy = 0) --> sx / cx + sy / cy = (sx * cy + cx * sy) / (cx * cy)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -35654,7 +38728,132 @@
                 "hint_backward1"
             ],
             "name": "real_sub_tan",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "¬(cos y = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos y = 0) ⊢ ¬(cos y = 0)"
+                },
+                {
+                    "args": "cos_neg, cos y = cos (-y)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos y = cos (-y)"
+                },
+                {
+                    "args": "cos_neg, ¬(cos (-y) = 0)",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ ¬(cos (-y) = 0)"
+                },
+                {
+                    "args": "real_add_tan",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ tan x + tan (-y) = sin (x + -y) / (cos x * cos (-y))"
+                },
+                {
+                    "args": "tan x + tan (-y) = sin (x + -y) / (cos x * cos y)",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ tan x + tan (-y) = sin (x + -y) / (cos x * cos y)"
+                },
+                {
+                    "args": "tan_neg, tan x + -(tan y) = sin (x + -y) / (cos x * cos y)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ tan x + -(tan y) = sin (x + -y) / (cos x * cos y)"
+                },
+                {
+                    "args": "real_minus_def, tan x - tan y = sin (x - y) / (cos x * cos y)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0), ¬(cos y = 0) ⊢ tan x - tan y = sin (x - y) / (cos x * cos y)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ tan x - tan y = sin (x - y) / (cos x * cos y)"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ ¬(cos y = 0) ⟶ tan x - tan y = sin (x - y) / (cos x * cos y)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "tan_neg"
+                },
+                {
+                    "goal": "cos y = cos (-y)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_add_tan"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -35666,7 +38865,225 @@
                 "hint_rewrite"
             ],
             "name": "tan_pi4",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pi / 4 = 1 / 4 * pi",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ pi / 4 = 1 / 4 * pi"
+                },
+                {
+                    "args": "¬((2::real) = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::real) = 0)"
+                },
+                {
+                    "args": "sqrt_eq_0, ¬(sqrt 2 = 0)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(sqrt 2 = 0)"
+                },
+                {
+                    "args": "¬((2::real) = 0)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::real) = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(sqrt 2 = 0) ∧ ¬((2::real) = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(sqrt 2 = 0 ∨ (2::real) = 0)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(sqrt 2 = 0 ∨ (2::real) = 0)"
+                },
+                {
+                    "args": "real_div_eq_0, ¬(sqrt 2 / 2 = 0)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(sqrt 2 / 2 = 0)"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_inverse (sqrt 2 / 2) * (sqrt 2 / 2) = 1"
+                },
+                {
+                    "args": "real_mult_comm, sqrt 2 / 2 * real_inverse (sqrt 2 / 2) = 1",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sqrt 2 / 2 * real_inverse (sqrt 2 / 2) = 1"
+                },
+                {
+                    "args": "real_divide_def, sqrt 2 / 2 / (sqrt 2 / 2) = 1",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sqrt 2 / 2 / (sqrt 2 / 2) = 1"
+                },
+                {
+                    "args": "real_cos_pi4, sqrt 2 / 2 / cos (1 / 4 * pi) = 1",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sqrt 2 / 2 / cos (1 / 4 * pi) = 1"
+                },
+                {
+                    "args": "real_sin_pi4, sin (1 / 4 * pi) / cos (1 / 4 * pi) = 1",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (1 / 4 * pi) / cos (1 / 4 * pi) = 1"
+                },
+                {
+                    "args": "sin (pi / 4) / cos (pi / 4) = 1",
+                    "id": "12",
+                    "prevs": [
+                        "0",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sin (pi / 4) / cos (pi / 4) = 1"
+                },
+                {
+                    "args": "tan_def, tan (pi / 4) = 1",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (pi / 4) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (pi / 4) = 1"
+                }
+            ],
             "prop": "tan (pi / 4) = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal": "pi / 4 = 1 / 4 * pi",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_pi4"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_cos_pi4"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_div_eq_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sqrt_eq_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "nat_const_ineq"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -35676,7 +39093,126 @@
                 "hint_backward1"
             ],
             "name": "tan_pos_pi2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "x < pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "sin_pos_pi2",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 2 ⊢ 0 < sin x"
+                },
+                {
+                    "args": "cos_pos_pi2",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 2 ⊢ 0 < cos x"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 2 ⊢ 0 < real_inverse (cos x)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 2 ⊢ 0 < sin x * real_inverse (cos x)"
+                },
+                {
+                    "args": "real_divide_def, 0 < sin x / cos x",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < pi / 2 ⊢ 0 < sin x / cos x"
+                },
+                {
+                    "args": "tan_def, 0 < tan x",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < pi / 2 ⊢ 0 < tan x"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ x < pi / 2 ⟶ 0 < tan x"
+                }
+            ],
             "prop": "0 < x ⟶ x < pi / 2 ⟶ 0 < tan x",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_pos_pi2"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -35688,7 +39224,221 @@
                 "hint_backward1"
             ],
             "name": "tan_pos_pi2_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x < pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x ⊢ 0 < x ∨ 0 = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x, x < pi / 2 ⊢ 0 < x ⟶ 0 ≤ tan x"
+                },
+                {
+                    "args": "0 < x",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "tan_pos_pi2",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, 0 ≤ x, x < pi / 2 ⊢ 0 < tan x"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, 0 ≤ x, x < pi / 2 ⊢ 0 ≤ tan x"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x, x < pi / 2 ⊢ 0 < x ⟶ 0 ≤ tan x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ x, x < pi / 2 ⊢ 0 = x ⟶ 0 ≤ tan x"
+                },
+                {
+                    "args": "0 = x",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 = x ⊢ 0 = x"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 = x ⊢ x = 0"
+                },
+                {
+                    "args": "real_le_refl, {x: (0::real)}",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "tan_0, 0 ≤ tan 0",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 = x, 0 ≤ x, x < pi / 2 ⊢ 0 ≤ tan 0"
+                },
+                {
+                    "args": "0 ≤ tan x",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.1",
+                        "4.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 = x, 0 ≤ x, x < pi / 2 ⊢ 0 ≤ tan x"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.0",
+                        "4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ x, x < pi / 2 ⊢ 0 = x ⟶ 0 ≤ tan x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, x < pi / 2 ⊢ 0 ≤ tan x"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x < pi / 2 ⟶ 0 ≤ tan x"
+                }
+            ],
             "prop": "0 ≤ x ⟶ x < pi / 2 ⟶ 0 ≤ tan x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_pos_pi2"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_0"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -35699,7 +39449,52 @@
                 "hint_backward"
             ],
             "name": "cos_tan",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "abs x < pi / 2",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < pi / 2 ⊢ abs x < pi / 2"
+                },
+                {
+                    "args": "∀a. ∀c. ∀s. a * a = s ⟶ c * c * s = 1 ⟶ ¬(1 + c * a = 0) ⟶ c = 1 / a",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a. ∀c. ∀s. a * a = s ⟶ c * c * s = 1 ⟶ ¬(1 + c * a = 0) ⟶ c = 1 / a"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "abs x < pi / 2 ⊢ cos x = 1 / sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < pi / 2 ⟶ cos x = 1 / sqrt (1 + tan x ^ (2::nat))"
+                }
+            ],
             "prop": "abs x < pi / 2 ⟶ cos x = 1 / sqrt (1 + tan x ^ (2::nat))",
+            "steps": [
+                {
+                    "goal": "!a. !c. !s. a * a = s --> c * c * s = 1 --> ~(1 + c * a = 0)\n    --> c = 1 / a",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
