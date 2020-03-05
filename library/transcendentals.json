@@ -39505,7 +39505,362 @@
                 "hint_backward"
             ],
             "name": "sin_tan",
-            "prop": "abs x < pi / 2 ⟶ cos x = tan x / sqrt (1 + tan x ^ (2::nat))",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < pi / 2",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < pi / 2 ⊢ abs x < pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x < pi / 2 ⊢ ∀a. ∀b. a / b = a * (1 / b)"
+                },
+                {
+                    "args": "a, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "real_mul_lid, a * real_inverse b = a * (1 * real_inverse b)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ a * real_inverse b = a * (1 * real_inverse b)"
+                },
+                {
+                    "args": "real_divide_def, a / b = a * (1 / b)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ a / b = a * (1 / b)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x < pi / 2 ⊢ ∀a. ∀b. a / b = a * (1 / b)"
+                },
+                {
+                    "args": "cos_tan",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ cos x = 1 / sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < pi / 2 ⊢ 1 / sqrt (1 + tan x ^ (2::nat)) = cos x"
+                },
+                {
+                    "args": "real_abs_lt",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < pi / 2 ⊢ -(pi / 2) < x ∧ x < pi / 2"
+                },
+                {
+                    "args": "∀a::real. 0 < a ⟶ ¬(a = 0)",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. 0 < a ⟶ ¬(a = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ 0 < cos x"
+                },
+                {
+                    "args": "cos x",
+                    "id": "9",
+                    "prevs": [
+                        "5",
+                        "8"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "abs x < pi / 2 ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_mul_linv",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ real_inverse (cos x) * cos x = 1"
+                },
+                {
+                    "args": "real_mul_rid, sin x = sin x * 1",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin x = sin x * 1"
+                },
+                {
+                    "args": "sin x = sin x * (real_inverse (cos x) * cos x)",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < pi / 2 ⊢ sin x = sin x * (real_inverse (cos x) * cos x)"
+                },
+                {
+                    "args": "real_mult_assoc, sin x = sin x * real_inverse (cos x) * cos x",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < pi / 2 ⊢ sin x = sin x * real_inverse (cos x) * cos x"
+                },
+                {
+                    "args": "real_divide_def, sin x = sin x / cos x * cos x",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ sin x = sin x / cos x * cos x"
+                },
+                {
+                    "args": "tan_def, sin x = tan x * cos x",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ sin x = tan x * cos x"
+                },
+                {
+                    "args": "sin x = tan x * (1 / sqrt (1 + tan x ^ (2::nat)))",
+                    "id": "16",
+                    "prevs": [
+                        "3",
+                        "15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < pi / 2 ⊢ sin x = tan x * (1 / sqrt (1 + tan x ^ (2::nat)))"
+                },
+                {
+                    "args": "sin x = tan x / sqrt (1 + tan x ^ (2::nat))",
+                    "id": "17",
+                    "prevs": [
+                        "1",
+                        "16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < pi / 2 ⊢ sin x = tan x / sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "18",
+                    "prevs": [
+                        "0",
+                        "17"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < pi / 2 ⟶ sin x = tan x / sqrt (1 + tan x ^ (2::nat))"
+                }
+            ],
+            "prop": "abs x < pi / 2 ⟶ sin x = tan x / sqrt (1 + tan x ^ (2::nat))",
+            "steps": [
+                {
+                    "goal": "∀a. ∀b. a / b = a * (1 / b)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "a, b"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "cos_tan"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "goal": "real_inverse (cos x) * cos x = 1",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_lt"
+                },
+                {
+                    "goal": "!a::real. 0 < a --> ~(a = 0)",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -39517,7 +39872,322 @@
                 "hint_backward1"
             ],
             "name": "sin_mono_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ x ⊢ -(pi / 2) ≤ x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "y ≤ pi / 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi / 2 ⊢ y ≤ pi / 2"
+                },
+                {
+                    "args": "(0::real) < 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) < 2"
+                },
+                {
+                    "args": "real_sub_lt, 0 < y - x",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < y - x"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "5",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < real_inverse 2"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < (y - x) * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, 0 < (y - x) / 2",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < (y - x) / 2"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ -(p / 2) ≤ x ⟶ y ≤ p / 2 ⟶ (y - x) / 2 < p",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ -(p / 2) ≤ x ⟶ y ≤ p / 2 ⟶ (y - x) / 2 < p"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "pi",
+                    "id": "10",
+                    "prevs": [
+                        "8",
+                        "9",
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ (y - x) / 2 < pi"
+                },
+                {
+                    "args": "sin_pos_pi",
+                    "id": "11",
+                    "prevs": [
+                        "7",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < sin ((y - x) / 2)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "12",
+                    "prevs": [
+                        "3",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < 2 * sin ((y - x) / 2)"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ -(p / 2) ≤ x ⟶ x < y ⟶ -(p / 2) < (y + x) / 2",
+                    "id": "13",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ -(p / 2) ≤ x ⟶ x < y ⟶ -(p / 2) < (y + x) / 2"
+                },
+                {
+                    "args": "pi",
+                    "id": "14",
+                    "prevs": [
+                        "13",
+                        "9",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ -(pi / 2) < (y + x) / 2"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ x < y ⟶ y ≤ p / 2 ⟶ (y + x) / 2 < p / 2",
+                    "id": "15",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ x < y ⟶ y ≤ p / 2 ⟶ (y + x) / 2 < p / 2"
+                },
+                {
+                    "args": "pi",
+                    "id": "16",
+                    "prevs": [
+                        "15",
+                        "9",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ (y + x) / 2 < pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi",
+                    "id": "17",
+                    "prevs": [
+                        "14",
+                        "16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < cos ((y + x) / 2)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "18",
+                    "prevs": [
+                        "12",
+                        "17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < 2 * sin ((y - x) / 2) * cos ((y + x) / 2)"
+                },
+                {
+                    "args": "real_sub_sin, 0 < sin y - sin x",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ 0 < sin y - sin x"
+                },
+                {
+                    "args": "real_sub_lt, sin x < sin y",
+                    "id": "20",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x < y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ sin x < sin y"
+                },
+                {
+                    "args": "",
+                    "id": "21",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "20"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) ≤ x ⟶ x < y ⟶ y ≤ pi / 2 ⟶ sin x < sin y"
+                }
+            ],
             "prop": "-(pi / 2) ≤ x ⟶ x < y ⟶ y ≤ pi / 2 ⟶ sin x < sin y",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_sub_lt"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_sin"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_pos_pi"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_lt"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                },
+                {
+                    "goal": "∀p. 0 < p --> -(p / 2) ≤ x ⟶ y ≤ p / 2 ⟶ (y - x) / 2 < p",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi"
+                },
+                {
+                    "goal": "∀p. 0 < p ⟶ -(p / 2) ≤ x ⟶ x < y ⟶ -(p/2) < (y + x) / 2",
+                    "goal_id": "13",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "∀p. 0 < p ⟶ x < y ⟶ y ≤ p / 2 ⟶ (y + x) / 2 < p / 2",
+                    "goal_id": "15",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39530,7 +40200,197 @@
                 "hint_backward1"
             ],
             "name": "sin_mono_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ x ⊢ -(pi / 2) ≤ x"
+                },
+                {
+                    "args": "x ≤ y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "y ≤ pi / 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi / 2 ⊢ y ≤ pi / 2"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ≤ y ⊢ x < y ∨ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ x < y ⟶ sin x ≤ sin y"
+                },
+                {
+                    "args": "x < y",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "sin_mono_lt",
+                    "id": "4.1",
+                    "prevs": [
+                        "0",
+                        "4.0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ sin x < sin y"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ sin x ≤ sin y"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ x < y ⟶ sin x ≤ sin y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ x = y ⟶ sin x ≤ sin y"
+                },
+                {
+                    "args": "x = y",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y ⊢ x = y"
+                },
+                {
+                    "args": "real_le_refl, {x: sin y}",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ sin y ≤ sin y"
+                },
+                {
+                    "args": "sin x ≤ sin y",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0",
+                        "5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y, x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ sin x ≤ sin y"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.0",
+                        "5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ x = y ⟶ sin x ≤ sin y"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y, y ≤ pi / 2, -(pi / 2) ≤ x ⊢ sin x ≤ sin y"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) ≤ x ⟶ x ≤ y ⟶ y ≤ pi / 2 ⟶ sin x ≤ sin y"
+                }
+            ],
             "prop": "-(pi / 2) ≤ x ⟶ x ≤ y ⟶ y ≤ pi / 2 ⟶ sin x ≤ sin y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_mono_lt"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39543,7 +40403,250 @@
                 "hint_backward1"
             ],
             "name": "sin_mono_lt_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ x ⊢ -(pi / 2) ≤ x"
+                },
+                {
+                    "args": "x ≤ pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi / 2 ⊢ x ≤ pi / 2"
+                },
+                {
+                    "args": "-(pi / 2) ≤ y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ y ⊢ -(pi / 2) ≤ y"
+                },
+                {
+                    "args": "y ≤ pi / 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi / 2 ⊢ y ≤ pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x < sin y ⟶ x < y"
+                },
+                {
+                    "args": "sin x < sin y",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin x < sin y ⊢ sin x < sin y"
+                },
+                {
+                    "args": "real_less_def",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "sin x < sin y ⊢ ¬(sin y ≤ sin x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x < sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ y ≤ x ⟶ sin y ≤ sin x"
+                },
+                {
+                    "args": "y ≤ x",
+                    "id": "4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ x ⊢ y ≤ x"
+                },
+                {
+                    "args": "sin_mono_le",
+                    "id": "4.2.1",
+                    "prevs": [
+                        "2",
+                        "4.2.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ≤ x, sin x < sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin y ≤ sin x"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.2",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x < sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ y ≤ x ⟶ sin y ≤ sin x"
+                },
+                {
+                    "args": "double_neg, ¬¬(y ≤ x) ⟶ ¬¬(sin y ≤ sin x)",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x < sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ ¬¬(y ≤ x) ⟶ ¬¬(sin y ≤ sin x)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.1",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x < sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ ¬(y ≤ x)"
+                },
+                {
+                    "args": "real_less_def, x < y",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x < sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.0",
+                        "4.5"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x < sin y ⟶ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x < y ⟶ sin x < sin y"
+                },
+                {
+                    "args": "x < y",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "sin_mono_lt",
+                    "id": "5.1",
+                    "prevs": [
+                        "0",
+                        "5.0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x < sin y"
+                },
+                {
+                    "args": "",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0",
+                        "5.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x < y ⟶ sin x < sin y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x < sin y ⟷ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x < sin y ⟷ x < y"
+                }
+            ],
             "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x < sin y ⟷ x < y",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_mono_le"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_mono_lt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39556,7 +40659,250 @@
                 "hint_backward1"
             ],
             "name": "sin_mono_le_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ x ⊢ -(pi / 2) ≤ x"
+                },
+                {
+                    "args": "x ≤ pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi / 2 ⊢ x ≤ pi / 2"
+                },
+                {
+                    "args": "-(pi / 2) ≤ y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ y ⊢ -(pi / 2) ≤ y"
+                },
+                {
+                    "args": "y ≤ pi / 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi / 2 ⊢ y ≤ pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x ≤ sin y ⟶ x ≤ y"
+                },
+                {
+                    "args": "sin x ≤ sin y",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin x ≤ sin y ⊢ sin x ≤ sin y"
+                },
+                {
+                    "args": "real_not_lt",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "sin x ≤ sin y ⊢ ¬(sin y < sin x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "sin x ≤ sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ y < x ⟶ sin y < sin x"
+                },
+                {
+                    "args": "y < x",
+                    "id": "4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < x ⊢ y < x"
+                },
+                {
+                    "args": "sin_mono_lt",
+                    "id": "4.2.1",
+                    "prevs": [
+                        "2",
+                        "4.2.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y < x, sin x ≤ sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin y < sin x"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.2",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "sin x ≤ sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ y < x ⟶ sin y < sin x"
+                },
+                {
+                    "args": "double_neg, ¬¬(y < x) ⟶ ¬¬(sin y < sin x)",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "sin x ≤ sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ ¬¬(y < x) ⟶ ¬¬(sin y < sin x)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.1",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x ≤ sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ ¬(y < x)"
+                },
+                {
+                    "args": "real_not_lt, x ≤ y",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "sin x ≤ sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.0",
+                        "4.5"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x ≤ sin y ⟶ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x ≤ y ⟶ sin x ≤ sin y"
+                },
+                {
+                    "args": "x ≤ y",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "sin_mono_le",
+                    "id": "5.1",
+                    "prevs": [
+                        "0",
+                        "5.0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x ≤ sin y"
+                },
+                {
+                    "args": "",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0",
+                        "5.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x ≤ y ⟶ sin x ≤ sin y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x ≤ sin y ⟷ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x ≤ sin y ⟷ x ≤ y"
+                }
+            ],
             "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x ≤ sin y ⟷ x ≤ y",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_mono_lt"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_mono_le"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39569,7 +40915,225 @@
                 "hint_backward1"
             ],
             "name": "sin_inj_pi",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ x ⊢ -(pi / 2) ≤ x"
+                },
+                {
+                    "args": "x ≤ pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi / 2 ⊢ x ≤ pi / 2"
+                },
+                {
+                    "args": "-(pi / 2) ≤ y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) ≤ y ⊢ -(pi / 2) ≤ y"
+                },
+                {
+                    "args": "y ≤ pi / 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi / 2 ⊢ y ≤ pi / 2"
+                },
+                {
+                    "args": "sin x = sin y",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin x = sin y ⊢ sin x = sin y"
+                },
+                {
+                    "args": "real_le_antisym",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "sin x = sin y ⊢ sin x ≤ sin y ∧ sin y ≤ sin x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y ⊢ sin x ≤ sin y"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y ⊢ sin y ≤ sin x"
+                },
+                {
+                    "args": "sin_mono_le_eq",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin x ≤ sin y ⟷ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "sin x = sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "sin_mono_le_eq",
+                    "id": "10",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ sin y ≤ sin x ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "10",
+                        "7"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "sin x = sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ y ≤ x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "12",
+                    "prevs": [
+                        "9",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "sin x = sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "real_le_antisym, x = y",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "sin x = sin y, x ≤ pi / 2, y ≤ pi / 2, -(pi / 2) ≤ x, -(pi / 2) ≤ y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x = sin y ⟶ x = y"
+                }
+            ],
             "prop": "-(pi / 2) ≤ x ⟶ x ≤ pi / 2 ⟶ -(pi / 2) ≤ y ⟶ y ≤ pi / 2 ⟶ sin x = sin y ⟶ x = y",
+            "steps": [
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sin_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "6"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sin_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "10",
+                        "7"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39582,7 +41146,261 @@
                 "hint_backward1"
             ],
             "name": "cos_mono_lt",
-            "prop": "0 ≤ x ⟶ x < y ⟶ y ≤ pi ⟶ cos x < cos y",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "y ≤ pi",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi ⊢ y ≤ pi"
+                },
+                {
+                    "args": "(0::real) < 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) < 2"
+                },
+                {
+                    "args": "0 < (x + y) / 2",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "x < y, 0 ≤ x ⊢ 0 < (x + y) / 2"
+                },
+                {
+                    "args": "∀p. x < y ⟶ y ≤ p ⟶ (x + y) / 2 < p",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. x < y ⟶ y ≤ p ⟶ (x + y) / 2 < p"
+                },
+                {
+                    "args": "pi",
+                    "id": "6",
+                    "prevs": [
+                        "5",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ (x + y) / 2 < pi"
+                },
+                {
+                    "args": "sin_pos_pi",
+                    "id": "7",
+                    "prevs": [
+                        "4",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ 0 < sin ((x + y) / 2)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "8",
+                    "prevs": [
+                        "3",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ 0 < 2 * sin ((x + y) / 2)"
+                },
+                {
+                    "args": "0 < (y - x) / 2",
+                    "id": "9",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "x < y ⊢ 0 < (y - x) / 2"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ 0 ≤ x ⟶ y ≤ p ⟶ (y - x) / 2 < p",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ 0 ≤ x ⟶ y ≤ p ⟶ (y - x) / 2 < p"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "pi",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11",
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ (y - x) / 2 < pi"
+                },
+                {
+                    "args": "sin_pos_pi",
+                    "id": "13",
+                    "prevs": [
+                        "9",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ 0 < sin ((y - x) / 2)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "14",
+                    "prevs": [
+                        "8",
+                        "13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ 0 < 2 * sin ((x + y) / 2) * sin ((y - x) / 2)"
+                },
+                {
+                    "args": "real_sub_cos, 0 < cos x - cos y",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ 0 < cos x - cos y"
+                },
+                {
+                    "args": "real_sub_lt, cos y < cos x",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x < y, y ≤ pi, 0 ≤ x ⊢ cos y < cos x"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x < y ⟶ y ≤ pi ⟶ cos y < cos x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ x < y ⟶ y ≤ pi ⟶ cos y < cos x",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_sub_lt"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_cos"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_pos_pi"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "!p. x < y --> y ≤ p --> (x + y) / 2 < p",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_pos_pi"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "∀p. 0 < p --> 0 <= x ⟶ y ≤ p ⟶ (y - x) / 2 < p",
+                    "goal_id": "10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39595,7 +41413,197 @@
                 "hint_backward1"
             ],
             "name": "cos_mono_le",
-            "prop": "0 ≤ x ⟶ x ≤ y ⟶ y ≤ pi ⟶ cos x ≤ cos y",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x ≤ y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "y ≤ pi",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi ⊢ y ≤ pi"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ≤ y ⊢ x < y ∨ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y, y ≤ pi, 0 ≤ x ⊢ x < y ⟶ cos y ≤ cos x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "cos_mono_lt",
+                    "id": "4.1",
+                    "prevs": [
+                        "0",
+                        "4.0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ y, y ≤ pi, 0 ≤ x ⊢ cos y < cos x"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ y, y ≤ pi, 0 ≤ x ⊢ cos y ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y, y ≤ pi, 0 ≤ x ⊢ x < y ⟶ cos y ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y, y ≤ pi, 0 ≤ x ⊢ x = y ⟶ cos y ≤ cos x"
+                },
+                {
+                    "args": "x = y",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y ⊢ x = y"
+                },
+                {
+                    "args": "real_le_refl, {x: cos y}",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ cos y ≤ cos y"
+                },
+                {
+                    "args": "cos y ≤ cos x",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0",
+                        "5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y, x ≤ y, y ≤ pi, 0 ≤ x ⊢ cos y ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.0",
+                        "5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y, y ≤ pi, 0 ≤ x ⊢ x = y ⟶ cos y ≤ cos x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y, y ≤ pi, 0 ≤ x ⊢ cos y ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x ≤ y ⟶ y ≤ pi ⟶ cos y ≤ cos x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ x ≤ y ⟶ y ≤ pi ⟶ cos y ≤ cos x",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_lt"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39608,7 +41616,232 @@
                 "hint_backward1"
             ],
             "name": "cos_mono_lt_eq",
-            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x < cos y ⟷ x < y",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x ≤ pi",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi ⊢ x ≤ pi"
+                },
+                {
+                    "args": "0 ≤ y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "y ≤ pi",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi ⊢ y ≤ pi"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ ¬(cos y ≤ cos x) ⟶ ¬(x ≤ y)"
+                },
+                {
+                    "args": "¬(cos y ≤ cos x)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos y ≤ cos x) ⊢ ¬(cos y ≤ cos x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y ≤ cos x) ⊢ x ≤ y ⟶ cos y ≤ cos x"
+                },
+                {
+                    "args": "x ≤ y",
+                    "id": "4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "cos_mono_le",
+                    "id": "4.1.1",
+                    "prevs": [
+                        "0",
+                        "4.1.0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y, x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y ≤ cos x) ⊢ cos y ≤ cos x"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.2",
+                    "prevs": [
+                        "4.1.0",
+                        "4.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y ≤ cos x) ⊢ x ≤ y ⟶ cos y ≤ cos x"
+                },
+                {
+                    "args": "double_neg, ¬¬(x ≤ y) ⟶ ¬¬(cos y ≤ cos x)",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y ≤ cos x) ⊢ ¬¬(x ≤ y) ⟶ ¬¬(cos y ≤ cos x)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y ≤ cos x) ⊢ ¬(x ≤ y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ ¬(cos y ≤ cos x) ⟶ ¬(x ≤ y)"
+                },
+                {
+                    "args": "real_less_def, cos x < cos y ⟶ y < x",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x < cos y ⟶ y < x"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ y < x ⟶ cos x < cos y"
+                },
+                {
+                    "args": "y < x",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < x ⊢ y < x"
+                },
+                {
+                    "args": "cos_mono_lt",
+                    "id": "6.1",
+                    "prevs": [
+                        "2",
+                        "6.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y < x, x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x < cos y"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [
+                        "6.0",
+                        "6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ y < x ⟶ cos x < cos y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x < cos y ⟷ y < x"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x < cos y ⟷ y < x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x < cos y ⟷ y < x",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_le"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_lt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39621,7 +41854,232 @@
                 "hint_backward1"
             ],
             "name": "cos_mono_le_eq",
-            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x ≤ cos y ⟷ x ≤ y",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x ≤ pi",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi ⊢ x ≤ pi"
+                },
+                {
+                    "args": "0 ≤ y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "y ≤ pi",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi ⊢ y ≤ pi"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ ¬(cos y < cos x) ⟶ ¬(x < y)"
+                },
+                {
+                    "args": "¬(cos y < cos x)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos y < cos x) ⊢ ¬(cos y < cos x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y < cos x) ⊢ x < y ⟶ cos y < cos x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "cos_mono_lt",
+                    "id": "4.1.1",
+                    "prevs": [
+                        "0",
+                        "4.1.0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y < cos x) ⊢ cos y < cos x"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.2",
+                    "prevs": [
+                        "4.1.0",
+                        "4.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y < cos x) ⊢ x < y ⟶ cos y < cos x"
+                },
+                {
+                    "args": "double_neg, ¬¬(x < y) ⟶ ¬¬(cos y < cos x)",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y < cos x) ⊢ ¬¬(x < y) ⟶ ¬¬(cos y < cos x)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, ¬(cos y < cos x) ⊢ ¬(x < y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ ¬(cos y < cos x) ⟶ ¬(x < y)"
+                },
+                {
+                    "args": "real_not_lt, cos x ≤ cos y ⟶ y ≤ x",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x ≤ cos y ⟶ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ y ≤ x ⟶ cos x ≤ cos y"
+                },
+                {
+                    "args": "y ≤ x",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ x ⊢ y ≤ x"
+                },
+                {
+                    "args": "cos_mono_le",
+                    "id": "6.1",
+                    "prevs": [
+                        "2",
+                        "6.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ x, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x ≤ cos y"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [
+                        "6.0",
+                        "6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ y ≤ x ⟶ cos x ≤ cos y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x ≤ cos y ⟷ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x ≤ cos y ⟷ y ≤ x"
+                }
+            ],
+            "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x ≤ cos y ⟷ y ≤ x",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_lt"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_le"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39634,7 +42092,225 @@
                 "hint_backward1"
             ],
             "name": "cos_inj_pi",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x ≤ pi",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi ⊢ x ≤ pi"
+                },
+                {
+                    "args": "0 ≤ y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "y ≤ pi",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ pi ⊢ y ≤ pi"
+                },
+                {
+                    "args": "cos x = cos y",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "cos x = cos y ⊢ cos x = cos y"
+                },
+                {
+                    "args": "real_le_antisym",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "cos x = cos y ⊢ cos x ≤ cos y ∧ cos y ≤ cos x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "cos x = cos y ⊢ cos x ≤ cos y"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "cos x = cos y ⊢ cos y ≤ cos x"
+                },
+                {
+                    "args": "cos_mono_le_eq",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos x ≤ cos y ⟷ y ≤ x"
+                },
+                {
+                    "args": "cos_mono_le_eq",
+                    "id": "9",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y ⊢ cos y ≤ cos x ⟷ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "9",
+                        "7"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, cos x = cos y ⊢ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "8",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, cos x = cos y ⊢ y ≤ x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, cos x = cos y ⊢ x ≤ y ∧ y ≤ x"
+                },
+                {
+                    "args": "real_le_antisym, x = y",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x ≤ pi, y ≤ pi, 0 ≤ x, 0 ≤ y, cos x = cos y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x = cos y ⟶ x = y"
+                }
+            ],
             "prop": "0 ≤ x ⟶ x ≤ pi ⟶ 0 ≤ y ⟶ y ≤ pi ⟶ cos x = cos y ⟶ x = y",
+            "steps": [
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "cos_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "cos_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "7"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "6"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -39647,7 +42323,998 @@
                 "hint_backward1"
             ],
             "name": "real_abs_cos_mono_le_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x ≤ pi / 2",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x ≤ pi / 2 ⊢ abs x ≤ pi / 2"
+                },
+                {
+                    "args": "abs y ≤ pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs y ≤ pi / 2 ⊢ abs y ≤ pi / 2"
+                },
+                {
+                    "args": "∀a. ∀p. abs a ≤ p / 2 ⟶ 0 ≤ a ⟶ a ≤ p",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a. ∀p. abs a ≤ p / 2 ⟶ 0 ≤ a ⟶ a ≤ p"
+                },
+                {
+                    "args": "cos_neg, cos x = cos (-x)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos x = cos (-x)"
+                },
+                {
+                    "args": "cos_neg, cos y = cos (-y)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos y = cos (-y)"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x ≤ pi / 2 ⊢ -(pi / 2) ≤ x ∧ x ≤ pi / 2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ pi / 2 ⊢ -(pi / 2) ≤ x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ pi / 2 ⊢ x ≤ pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi_le",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ cos x"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "9",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs y ≤ pi / 2 ⊢ -(pi / 2) ≤ y ∧ y ≤ pi / 2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs y ≤ pi / 2 ⊢ -(pi / 2) ≤ y"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs y ≤ pi / 2 ⊢ y ≤ pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi_le",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ cos y"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ y ⟶ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "0 ≤ y",
+                    "id": "13.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ y ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "13.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ x ⟶ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "13.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x, pi",
+                    "id": "13.1.1",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "13.1.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 ≤ x, 0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ x ≤ pi"
+                },
+                {
+                    "args": "y, pi",
+                    "id": "13.1.2",
+                    "prevs": [
+                        "2",
+                        "1",
+                        "13.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 ≤ x, 0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ y ≤ pi"
+                },
+                {
+                    "args": "cos_mono_le_eq",
+                    "id": "13.1.3",
+                    "prevs": [
+                        "13.1.0",
+                        "13.1.1",
+                        "13.0",
+                        "13.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, 0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ y ≤ x"
+                },
+                {
+                    "args": "if_P, cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)",
+                    "id": "13.1.4",
+                    "prevs": [
+                        "13.1.3",
+                        "13.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, 0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "13.1.5",
+                    "prevs": [
+                        "13.1.0",
+                        "13.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ x ⟶ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "13.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ ¬(0 ≤ x) ⟶ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "¬(0 ≤ x)",
+                    "id": "13.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ x) ⊢ ¬(0 ≤ x)"
+                },
+                {
+                    "args": "0 ≤ -x",
+                    "id": "13.2.1",
+                    "prevs": [
+                        "13.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(0 ≤ x) ⊢ 0 ≤ -x"
+                },
+                {
+                    "args": "real_abs_neg, abs (-x) ≤ pi / 2",
+                    "id": "13.2.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ y, ¬(0 ≤ x), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ abs (-x) ≤ pi / 2"
+                },
+                {
+                    "args": "-x, pi",
+                    "id": "13.2.3",
+                    "prevs": [
+                        "2",
+                        "13.2.2",
+                        "13.2.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 ≤ y, ¬(0 ≤ x), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ -x ≤ pi"
+                },
+                {
+                    "args": "y, pi",
+                    "id": "13.2.4",
+                    "prevs": [
+                        "2",
+                        "1",
+                        "13.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 ≤ y, ¬(0 ≤ x), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ y ≤ pi"
+                },
+                {
+                    "args": "cos_mono_le_eq",
+                    "id": "13.2.5",
+                    "prevs": [
+                        "13.2.1",
+                        "13.2.3",
+                        "13.0",
+                        "13.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ y, ¬(0 ≤ x), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos (-x) ≤ cos y ⟷ y ≤ -x"
+                },
+                {
+                    "args": "cos x ≤ cos y ⟷ y ≤ -x",
+                    "id": "13.2.6",
+                    "prevs": [
+                        "3",
+                        "13.2.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 ≤ y, ¬(0 ≤ x), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ y ≤ -x"
+                },
+                {
+                    "args": "if_not_P, cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)",
+                    "id": "13.2.7",
+                    "prevs": [
+                        "13.2.6",
+                        "13.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ y, ¬(0 ≤ x), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "13.2.8",
+                    "prevs": [
+                        "13.2.0",
+                        "13.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ ¬(0 ≤ x) ⟶ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "13.3",
+                    "prevs": [
+                        "13.1",
+                        "13.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "if_P, cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)",
+                    "id": "13.4",
+                    "prevs": [
+                        "13.3",
+                        "13.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ y, abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "13.5",
+                    "prevs": [
+                        "13.0",
+                        "13.4"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ y ⟶ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ ¬(0 ≤ y) ⟶ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "¬(0 ≤ y)",
+                    "id": "14.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ y) ⊢ ¬(0 ≤ y)"
+                },
+                {
+                    "args": "",
+                    "id": "14.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ x ⟶ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "14.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x, pi",
+                    "id": "14.1.1",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "14.1.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 ≤ x, ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ x ≤ pi"
+                },
+                {
+                    "args": "0 ≤ -y",
+                    "id": "14.1.2",
+                    "prevs": [
+                        "14.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(0 ≤ y) ⊢ 0 ≤ -y"
+                },
+                {
+                    "args": "real_abs_neg, abs (-y) ≤ pi / 2",
+                    "id": "14.1.3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ abs (-y) ≤ pi / 2"
+                },
+                {
+                    "args": "-y, pi",
+                    "id": "14.1.4",
+                    "prevs": [
+                        "2",
+                        "14.1.3",
+                        "14.1.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 ≤ x, ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ -y ≤ pi"
+                },
+                {
+                    "args": "cos_mono_le_eq",
+                    "id": "14.1.5",
+                    "prevs": [
+                        "14.1.0",
+                        "14.1.1",
+                        "14.1.2",
+                        "14.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ x, ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos (-y) ⟷ -y ≤ x"
+                },
+                {
+                    "args": "cos x ≤ cos y ⟷ -y ≤ x",
+                    "id": "14.1.6",
+                    "prevs": [
+                        "4",
+                        "14.1.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 ≤ x, ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ -y ≤ x"
+                },
+                {
+                    "args": "if_P, cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)",
+                    "id": "14.1.7",
+                    "prevs": [
+                        "14.1.6",
+                        "14.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x, ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "14.1.8",
+                    "prevs": [
+                        "14.1.0",
+                        "14.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ 0 ≤ x ⟶ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "14.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ ¬(0 ≤ x) ⟶ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "¬(0 ≤ x)",
+                    "id": "14.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ x) ⊢ ¬(0 ≤ x)"
+                },
+                {
+                    "args": "0 ≤ -x",
+                    "id": "14.2.1",
+                    "prevs": [
+                        "14.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(0 ≤ x) ⊢ 0 ≤ -x"
+                },
+                {
+                    "args": "real_abs_neg, abs (-x) ≤ pi / 2",
+                    "id": "14.2.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ abs (-x) ≤ pi / 2"
+                },
+                {
+                    "args": "-x, pi",
+                    "id": "14.2.3",
+                    "prevs": [
+                        "2",
+                        "14.2.2",
+                        "14.2.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ -x ≤ pi"
+                },
+                {
+                    "args": "0 ≤ -y",
+                    "id": "14.2.4",
+                    "prevs": [
+                        "14.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(0 ≤ y) ⊢ 0 ≤ -y"
+                },
+                {
+                    "args": "real_abs_neg, abs (-y) ≤ pi / 2",
+                    "id": "14.2.5",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ abs (-y) ≤ pi / 2"
+                },
+                {
+                    "args": "-y, pi",
+                    "id": "14.2.6",
+                    "prevs": [
+                        "2",
+                        "14.2.5",
+                        "14.2.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ -y ≤ pi"
+                },
+                {
+                    "args": "cos_mono_le_eq",
+                    "id": "14.2.7",
+                    "prevs": [
+                        "14.2.1",
+                        "14.2.3",
+                        "14.2.4",
+                        "14.2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos (-x) ≤ cos (-y) ⟷ -y ≤ -x"
+                },
+                {
+                    "args": "cos_neg, cos x ≤ cos y ⟷ -y ≤ -x",
+                    "id": "14.2.8",
+                    "prevs": [
+                        "14.2.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ -y ≤ -x"
+                },
+                {
+                    "args": "if_not_P, cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)",
+                    "id": "14.2.9",
+                    "prevs": [
+                        "14.2.8",
+                        "14.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x), ¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "14.2.10",
+                    "prevs": [
+                        "14.2.0",
+                        "14.2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ ¬(0 ≤ x) ⟶ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "14.3",
+                    "prevs": [
+                        "14.1",
+                        "14.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ -y ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "if_not_P, cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)",
+                    "id": "14.4",
+                    "prevs": [
+                        "14.3",
+                        "14.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ y), abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "",
+                    "id": "14.5",
+                    "prevs": [
+                        "14.0",
+                        "14.4"
+                    ],
+                    "rule": "intros",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ ¬(0 ≤ y) ⟶ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "15",
+                    "prevs": [
+                        "13",
+                        "14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ cos y ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "if_P, cos x ≤ (if 0 ≤ cos y then cos y else -(cos y)) ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)",
+                    "id": "16",
+                    "prevs": [
+                        "15",
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ cos x ≤ (if 0 ≤ cos y then cos y else -(cos y)) ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "if_P, (if 0 ≤ cos x then cos x else -(cos x)) ≤ (if 0 ≤ cos y then cos y else -(cos y)) ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)",
+                    "id": "17",
+                    "prevs": [
+                        "16",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ (if 0 ≤ cos x then cos x else -(cos x)) ≤ (if 0 ≤ cos y then cos y else -(cos y)) ⟷ (if 0 ≤ y then y else -y) ≤ (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "abs_def, abs (cos x) ≤ abs (cos y) ⟷ abs y ≤ abs x",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x ≤ pi / 2, abs y ≤ pi / 2 ⊢ abs (cos x) ≤ abs (cos y) ⟷ abs y ≤ abs x"
+                },
+                {
+                    "args": "",
+                    "id": "19",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "18"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x ≤ pi / 2 ⟶ abs y ≤ pi / 2 ⟶ abs (cos x) ≤ abs (cos y) ⟷ abs y ≤ abs x"
+                }
+            ],
             "prop": "abs x ≤ pi / 2 ⟶ abs y ≤ pi / 2 ⟶ abs (cos x) ≤ abs (cos y) ⟷ abs y ≤ abs x",
+            "steps": [
+                {
+                    "goal": "∀a. ∀p. abs a ≤ p / 2 ⟶ 0 ≤ a ⟶ a ≤ p",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "cos x = cos (-x)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                },
+                {
+                    "goal": "cos y = cos (-y)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_neg"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "abs_def"
+                },
+                {
+                    "goal": "0 ≤ cos x",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "0 ≤ cos y",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi_le"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "case": "0 ≤ y",
+                    "goal_id": "13",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "13.0"
+                    ],
+                    "goal_id": "13.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "case": "0 ≤ x",
+                    "goal_id": "13.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "13.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "13.1.0"
+                    ],
+                    "goal_id": "13.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "13.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "13.1.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "13.1.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "13.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "13.2.0"
+                    ],
+                    "goal_id": "13.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "13.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "13.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "13.2.0"
+                    ],
+                    "goal_id": "13.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "13.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "13.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "13.2.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "14.0"
+                    ],
+                    "goal_id": "14.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "case": "0 ≤ x",
+                    "goal_id": "14.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "14.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "14.1.0"
+                    ],
+                    "goal_id": "14.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "14.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "14.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "14.1.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "14.0"
+                    ],
+                    "goal_id": "14.1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "14.1.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "14.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "goal_id": "14.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "14.2.0"
+                    ],
+                    "goal_id": "14.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "14.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "cos_neg"
+                },
+                {
+                    "goal_id": "14.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_mono_le_eq"
+                },
+                {
+                    "fact_ids": [
+                        "14.2.0"
+                    ],
+                    "goal_id": "14.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "14.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "14.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "fact_ids": [
+                        "14.0"
+                    ],
+                    "goal_id": "14.2.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "14.2.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "14.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_neg"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
