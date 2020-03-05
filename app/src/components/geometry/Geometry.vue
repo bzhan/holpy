@@ -183,6 +183,16 @@
               let newId = this.addPoint(x, y, true)
               this.addToSelected(newId)
             }
+            else if (this.checkSelectedPlace(2)) {
+              const line = this.getLineByLineId("perpLineNext")
+              const endpoints = line.points()
+              const p = this.getPedalCoordinatePointToSeg([x, y], [endpoints[0], endpoints[1]],
+                      [endpoints[2], endpoints[3]])
+              const newId = this.addPoint(p[0], p[1])
+              this.addLine(this.selected[1], newId)
+              this.clearActivationAll()
+            }
+
           }
           else if (this.status === "circle") {
             let newId = this.addPoint(x, y, true)
@@ -1176,9 +1186,7 @@
         if (this.selected.length === 2 && ["perpendicular"].indexOf(this.status) !== -1
                 && this.getTypeById(this.selected[1]) === "point") {
           const mousePos = this.getClickPos()
-          window.console.log(mousePos)
           const endpoints = this.getEndpointsByLineId(this.selected[0])
-          window.console.log(endpoints)
           const p1 = this.getRotatedPointPos(this.getCoordinateByPoint(endpoints[0]), mousePos, 90)
           const p2 = this.getRotatedPointPos(this.getCoordinateByPoint(endpoints[1]), mousePos, 90)
           const extended = this.getExtendPos(p1, p2)
