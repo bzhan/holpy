@@ -136,12 +136,24 @@ class apply_prev(Method):
             return [{"_goal": [gap.prop for gap in pt.gaps]}]
         except (AssertionError, matcher.MatchException):
             return []
+        except theory.ParameterQueryException:
+            # In this case, still suggest the result
+            return [{}]
 
     def display_step(self, state, data):
         return pprint.N("Apply fact (b)")
 
     def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
+        inst = Inst()
+        with context.fresh_context(vars=state.get_vars(id)):
+            for key, val in data.items():
+                if key.startswith("param_"):
+                    inst[key[6:]] = parser.parse_term(val)
+
+        if inst:
+            state.apply_tactic(id, tactic.apply_prev(), args=inst, prevs=prevs)
+        else:
+            state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
 
 
 @register_method('rewrite_goal_with_prev')
