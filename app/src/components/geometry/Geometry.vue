@@ -144,7 +144,7 @@
         if (canAdd) {
           for (let id in this.points) {
             const p = this.getPointById(id)
-            const dist = this.getDistPoints([x, y], [p.x(), p.y()])
+            const dist = this.getDistByPointPos([x, y], [p.x(), p.y()])
             if (dist < 10) {
               canAdd = false
               break
@@ -154,7 +154,7 @@
         if (canAdd) {
           for (let id in this.circles) {
             const circle = this.getCircleByCircleId(id)
-            const dist = this.getDistPoints([x, y], [circle.x(), circle.y()])
+            const dist = this.getDistByPointPos([x, y], [circle.x(), circle.y()])
             if (Math.abs(dist - circle.radius()) < 10) {
               canAdd = false
               break
@@ -179,7 +179,8 @@
             }
           }
           else if (this.status === "perpendicular") {
-            if (this.checkSelectedPlace(0) || this.checkSelectedPlace(1)) {
+            if (this.checkSelectedPlace(0) || (this.checkSelectedPlace(1) &&
+                    this.getTypeById(this.selected[0]) === "line")) {
               let newId = this.addPoint(x, y, true)
               this.addToSelected(newId)
             }
@@ -306,7 +307,7 @@
                       newLine.strokeWidth(4)
                       this.addToSelected(id)
                     }
-                    if (this.checkSelectedPlace(1)) {
+                    else if (this.checkSelectedPlace(1)) {
                       if (this.getTypeById(this.selected[0]) === "point") {
                         this.addToSelected(id)
                         const perpToId = this.selected[1]
@@ -328,6 +329,30 @@
                         this.addLine(this.selected[0], footId)
                         this.clearActivationAll()
                       }
+                      else {
+                        const perpLinePts = this.getLineByLineId("perpLine").points()
+                        const l2ps = this.getEndpointsByLineId(id)
+                        const intersectionPos = this.getIntersectionLines([perpLinePts[0], perpLinePts[1]], [perpLinePts[2], perpLinePts[3]],
+                                this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
+                        if (intersectionPos) {
+                          const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+                          this.addPointToLine(newPtId, id)
+                          this.addToSelected(newPtId)
+                        }
+                      }
+                    }
+                    else if (this.checkSelectedPlace(2)) {
+                      const perpLinePts = this.getLineByLineId("perpLineNext").points()
+                      const l2ps = this.getEndpointsByLineId(id)
+                      const intersectionPos = this.getIntersectionLines([perpLinePts[0], perpLinePts[1]], [perpLinePts[2], perpLinePts[3]],
+                              this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
+                      if (intersectionPos) {
+                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+                        this.addPointToLine(newPtId, id)
+                        this.addToSelected(newPtId)
+                        this.addLine(this.selected[1], this.selected[2])
+                        this.clearActivationAll()
+                      }
                     }
                   }
                 }
@@ -343,7 +368,7 @@
         let p3
         if (!id3) {
           center = p1
-          radius = this.getDistPoints(this.getCoordinateByPoint(p1), this.getCoordinateByPoint(p2))
+          radius = this.getDistByPointPos(this.getCoordinateByPoint(p1), this.getCoordinateByPoint(p2))
         }
         else {
           p3 = this.getPointById(id3)
@@ -411,6 +436,62 @@
               this.clearActivationAll()
             }
           }
+          else if (this.status === "perpendicular") {
+            if (this.checkSelectedPlace(0)) {
+              const newPtId = this.addPointToCircleWithCheck(this.getClickPos(), id, true)
+              this.addToSelected(newPtId)
+            }
+            else if (this.checkSelectedPlace(1)) {
+              const line = this.getLineByLineId("perpLine")
+              const circle = this.getCircleByCircleId(id)
+              const endpointsPos = line.points()
+              const intersectionPos = this.getIntersectionLineAndCircle([endpointsPos[0], endpointsPos[1]], [endpointsPos[2], endpointsPos[3]],
+                      [circle.x(), circle.y()], circle.radius())
+              if (intersectionPos.length === 1) {
+                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+                this.addPointToCircle(newId, id)
+                this.addToSelected(newId)
+              }
+              else if (intersectionPos.length === 2) {
+                const dist1 = this.getDistByPointPos(intersectionPos[0], this.getClickPos())
+                const dist2 = this.getDistByPointPos(intersectionPos[1], this.getClickPos())
+                let newPtId
+                if (dist1 < dist2) {
+                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true)
+                } else {
+                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true)
+                }
+                this.addPointToCircle(newPtId, id)
+                this.addToSelected(newPtId)
+              }
+            }
+            else if (this.checkSelectedPlace(2)) {
+              const line = this.getLineByLineId("perpLineNext")
+              const circle = this.getCircleByCircleId(id)
+              const endpointsPos = line.points()
+              const intersectionPos = this.getIntersectionLineAndCircle([endpointsPos[0], endpointsPos[1]], [endpointsPos[2], endpointsPos[3]],
+                      [circle.x(), circle.y()], circle.radius())
+              if (intersectionPos.length === 1) {
+                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+                this.addPointToCircle(newId, id)
+                this.addToSelected(newId)
+              }
+              else if (intersectionPos.length === 2) {
+                const dist1 = this.getDistByPointPos(intersectionPos[0], this.getClickPos())
+                const dist2 = this.getDistByPointPos(intersectionPos[1], this.getClickPos())
+                let newPtId
+                if (dist1 < dist2) {
+                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true)
+                } else {
+                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true)
+                }
+                this.addPointToCircle(newPtId, id)
+                this.addToSelected(newPtId)
+              }
+              this.addLine(this.selected[1], this.selected[2])
+              this.clearActivationAll()
+            }
+          }
           this.draw()
         })
         this.$refs.circleLayer.getNode().add(newCircle)
@@ -459,7 +540,7 @@
         const x = circle.x()
         const y = circle.y()
         const radius = circle.getAttr('radius')
-        const dist = this.getDistPoints([x, y], this.getClickPos())
+        const dist = this.getDistByPointPos([x, y], this.getClickPos())
         if (Math.abs(radius - dist) < 2) {
           const intersections = this.getIntersectionLineAndCircle(pointPos, [x, y],[x, y], radius)
           if (intersections) {
@@ -467,11 +548,11 @@
             if (intersections.length === 2) {
               let minDist
               let minPt
-              if (this.getDistPoints(intersections[0], this.getClickPos()) < this.getDistPoints(intersections[1], this.getClickPos())) {
-                minDist = this.getDistPoints(intersections[0], this.getClickPos())
+              if (this.getDistByPointPos(intersections[0], this.getClickPos()) < this.getDistByPointPos(intersections[1], this.getClickPos())) {
+                minDist = this.getDistByPointPos(intersections[0], this.getClickPos())
                 minPt = 0
               } else {
-                minDist = this.getDistPoints(intersections[1], this.getClickPos())
+                minDist = this.getDistByPointPos(intersections[1], this.getClickPos())
                 minPt = 1
               }
               if (minDist < 2) {
@@ -479,7 +560,7 @@
               }
             }
             else {
-              if (this.getDistPoints(intersections[0], [x, y]) < 2) {
+              if (this.getDistByPointPos(intersections[0], [x, y]) < 2) {
                 newPtId = this.addPoint(intersections[0][0], intersections[0][1], activated)
               }
             }
@@ -490,7 +571,7 @@
         return null
       },
       addPointToCircle(pointId, circleId) {
-        this.addPointToCircleList(this.circles[circleId], circleId)
+        this.addPointToCircleList(this.circles[circleId], pointId)
       },
       addPointToCircleList(info, id) {
         info.points.push(id)
@@ -501,7 +582,18 @@
       getTypeById(s) {
         let id
         if (typeof s === "string") {
-         id = parseInt(s)
+          if (s.indexOf("Line") !== -1) {
+            return "line"
+          }
+          else if (s.indexOf("Point") !== -1) {
+            return "point"
+          }
+          else if (s.indexOf("Circle") !== -1) {
+            return "circle"
+          }
+          else {
+            id = parseInt(s)
+          }
         }
         else if (typeof s === "number") {
           id = s
@@ -629,6 +721,7 @@
             const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
             this.addPointToLine(newPtId, this.selected[0])
             this.addPointToLine(newPtId, this.selected[1])
+            return [newPtId]
           }
         }
         else if ((type1 === "line" && type2 === "circle") || (type1 === "circle" && type2 === "line")) {
@@ -646,7 +739,9 @@
               const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
               this.addPointToCircle(newPtId2, circleId)
               this.addPointToLine(newPtId2, lineId)
+              return [newPtId1, newPtId2]
             }
+            return [newPtId1]
           }
         }
         else if (type1 === "circle" && type2 === "circle") {
@@ -662,7 +757,9 @@
               const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
               this.addPointToCircle(newPtId2, id1)
               this.addPointToCircle(newPtId2, id2)
+              return [newPtId1, newPtId2]
             }
+            return [newPtId1]
           }
         }
       },
@@ -775,7 +872,13 @@
         // no intersection
         return []
       },
-      getDistPoints(pair1, pair2) {
+      getDistByPointId(id1, id2) {
+        const e1 = this.getEndpointsByLineId(id1)
+        const e2 = this.getEndpointsByLineId(id2)
+        return this.getDistByPointPos(this.getCoordinateByPoint(e1[0]), this.getCoordinateByPoint(e1[1]),
+        this.getCoordinateByPoint(e2[0]), this.getCoordinateByPoint(e2[1]))
+      },
+      getDistByPointPos(pair1, pair2) {
         const x1 = pair1[0]
         const y1 = pair1[1]
         const x2 = pair2[0]
@@ -911,7 +1014,8 @@
             }
           }
           else if (this.status === "perpendicular") {
-            if (this.checkSelectedPlace(0) || this.checkSelectedPlace(1)) {
+            if (this.checkSelectedPlace(0) || (this.checkSelectedPlace(1) &&
+                    this.getTypeById(this.selected[0]) === "line")) {
               info.activated = true
               this.addToSelected(id)
             }
@@ -1104,7 +1208,7 @@
           if (this.watchingMouse.indexOf("mouseLine") !== -1) {
             const line = this.getLineByLineId("mouseLine")
             if (line) {
-              line.points([line.points()[0], line.points()[1], mousePos[0], mousePos[1]])
+              line.points([line.points()[0], line.points()[1], mousePos[0] - 1, mousePos[1] - 1])
             }
           }
           if (this.watchingMouse.indexOf("perpLine") !== -1) {
@@ -1134,7 +1238,7 @@
           if (this.watchingMouse.indexOf("mouseCircle") !== -1) {
             const circle = this.getCircleByCircleId("mouseCircle")
             if (circle) {
-              circle.radius(this.getDistPoints([circle.x(), circle.y()], mousePos))
+              circle.radius(this.getDistByPointPos([circle.x(), circle.y()], mousePos))
             }
           }
           this.draw()
@@ -1151,7 +1255,7 @@
         if (this.selected.length === 1 && ["line", "circle", "perpendicular"].indexOf(this.status) !== -1) {
           const mousePos = this.getClickPos()
           let points, id
-          if (this.status === "perpendicular") {
+          if (this.status === "perpendicular" && this.getTypeById(this.selected[0] === "line")) {
             id = "perpLine"
             const endpoints = this.getEndPointsIdByLineId(this.selected[0])
             const p1 = this.getRotatedPointPos(this.getCoordinateByPointId(endpoints[0]), mousePos, 90)
@@ -1225,7 +1329,7 @@
           const center = this.getPointById(this.selected[0])
           const pos = this.getClickPos()
           const newCircle = new Konva.Circle({
-            radius: this.getDistPoints(this.getCoordinateByPoint(center), pos),
+            radius: this.getDistByPointPos(this.getCoordinateByPoint(center), pos),
             x: center.x(),
             y: center.y(),
             stroke: "grey",
