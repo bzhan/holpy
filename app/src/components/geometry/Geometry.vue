@@ -101,6 +101,9 @@
         circles: [],
         midpoints: [],
         paras: [],
+        perps: [],
+        eqangles: [],
+        eqratios: [],
         selected: [],
         watchingMouse: [],
         requirement: {
@@ -327,6 +330,8 @@
                         perpToLine.getAttr('points').push(footPos[0], footPos[1])
                         this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
                         this.addLine(this.selected[0], footId)
+                        this.perps.push([this.selected[0], footId, this.getEndPointsIdByLineId(this.selected[1])[0],
+                          this.getEndPointsIdByLineId(this.selected[1])[1]])
                         this.clearActivationAll()
                       }
                       else {
@@ -351,6 +356,8 @@
                         this.addPointToLine(newPtId, id)
                         this.addToSelected(newPtId)
                         this.addLine(this.selected[1], this.selected[2])
+                        this.perps.push([this.getEndPointsIdByLineId(this.selected[0])[0], this.getEndPointsIdByLineId(this.selected[0])[1],
+                          this.selected[1], this.selected[2]])
                         this.clearActivationAll()
                       }
                     }
@@ -489,6 +496,9 @@
                 this.addToSelected(newPtId)
               }
               this.addLine(this.selected[1], this.selected[2])
+
+              this.perps.push([this.getEndPointsIdByLineId(this.selected[0])[0], this.getEndPointsIdByLineId(this.selected[0])[1],
+                this.selected[1], this.selected[2]])
               this.clearActivationAll()
             }
           }
@@ -1009,6 +1019,7 @@
                 let calY = this.getYbyLinePos(p1.x(), p1.y(), p2.x(), p2.y(), calX)
                 const newPtId = this.addPoint(calX, calY)
                 this.addPointToLine(newPtId, lineId)
+                this.midpoints.push(newPtId, this.selected[0], this.selected[1])
             }
               this.clearActivationAll()
             }
