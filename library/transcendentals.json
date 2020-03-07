@@ -24556,6 +24556,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_sin_pi3",
             "num_gaps": 0,
             "proof": [
@@ -24665,6 +24668,9 @@
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_cos_pi3",
             "num_gaps": 0,
             "proof": [
@@ -45113,7 +45119,246 @@
                 "hint_backward"
             ],
             "name": "real_abs_sin_bound_lt",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "¬(x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "0 < x ∨ 0 < -x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x = 0) ⊢ 0 < x ∨ 0 < -x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0) ⊢ 0 < x ⟶ abs (sin x) < abs x"
+                },
+                {
+                    "args": "0 < x",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "∀a. a < x ⟶ a < abs x",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a. a < x ⟶ a < abs x"
+                },
+                {
+                    "args": "∀s. abs s ≤ 1 ⟶ (x ≤ 1 ⟶ abs s < x) ⟶ abs s < x",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀s. abs s ≤ 1 ⟶ (x ≤ 1 ⟶ abs s < x) ⟶ abs s < x"
+                },
+                {
+                    "args": "sin_bound, {x: x}",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (sin x) ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < x, ¬(x = 0) ⊢ x ≤ 1 ⟶ abs (sin x) < x"
+                },
+                {
+                    "args": "x ≤ 1",
+                    "id": "2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ 1 ⊢ x ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 < x, x ≤ 1, ¬(x = 0) ⊢ abs (sin x) < x"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.2",
+                    "prevs": [
+                        "2.4.0",
+                        "2.4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < x, ¬(x = 0) ⊢ x ≤ 1 ⟶ abs (sin x) < x"
+                },
+                {
+                    "args": "sin x",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.2",
+                        "2.3",
+                        "2.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < x, ¬(x = 0) ⊢ abs (sin x) < x"
+                },
+                {
+                    "args": "abs (sin x)",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.1",
+                        "2.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < x, ¬(x = 0) ⊢ abs (sin x) < abs x"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0) ⊢ 0 < x ⟶ abs (sin x) < abs x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0) ⊢ 0 < -x ⟶ abs (sin x) < abs x"
+                },
+                {
+                    "args": "0 < -x",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < -x ⊢ 0 < -x"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(x = 0), 0 < -x ⊢ abs (sin x) < abs x"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0) ⊢ 0 < -x ⟶ abs (sin x) < abs x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x = 0) ⊢ abs (sin x) < abs x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = 0) ⟶ abs (sin x) < abs x"
+                }
+            ],
             "prop": "¬(x = 0) ⟶ abs (sin x) < abs x",
+            "steps": [
+                {
+                    "goal": "0 < x | 0 < -x",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "!a. a < x --> a < abs x",
+                    "goal_id": "2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "!s. abs s <= 1 --> (x <= 1 --> abs(s) < x) --> abs s < x",
+                    "goal_id": "2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_bound"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -45124,7 +45369,164 @@
                 "hint_backward"
             ],
             "name": "real_abs_sin_bound_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = 0 ⟶ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "real_le_refl, {x: abs (0::real)}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (0::real) ≤ abs 0"
+                },
+                {
+                    "args": "real_sin_0, abs (sin 0) ≤ abs 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0 ⊢ abs (sin 0) ≤ abs 0"
+                },
+                {
+                    "args": "abs (sin x) ≤ abs x",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0 ⊢ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = 0 ⟶ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(x = 0) ⟶ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "real_abs_sin_bound_lt",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x = 0) ⊢ abs (sin x) < abs x"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x = 0) ⊢ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = 0) ⟶ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ abs (sin x) ≤ abs x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (sin x) ≤ abs x"
+                }
+            ],
             "prop": "abs (sin x) ≤ abs x",
+            "steps": [
+                {
+                    "case": "x = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_0"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_abs_sin_bound_lt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -45136,9 +45538,978 @@
                 "hint_backward1"
             ],
             "name": "sin_pi6_straddle",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ a ⊢ 0 ≤ a"
+                },
+                {
+                    "args": "a ≤ b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "b ≤ 4",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ≤ 4 ⊢ b ≤ 4"
+                },
+                {
+                    "args": "sin (a / 6) ≤ 1 / 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sin (a / 6) ≤ 1 / 2 ⊢ sin (a / 6) ≤ 1 / 2"
+                },
+                {
+                    "args": "1 / 2 ≤ sin (b / 6)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 / 2 ≤ sin (b / 6) ⊢ 1 / 2 ≤ sin (b / 6)"
+                },
+                {
+                    "args": "sin_mono_le_eq, {x: a / 6, y: pi / 6}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ -(pi / 2) ≤ a / 6 ⟶ a / 6 ≤ pi / 2 ⟶ -(pi / 2) ≤ pi / 6 ⟶ pi / 6 ≤ pi / 2 ⟶ sin (a / 6) ≤ sin (pi / 6) ⟷ a / 6 ≤ pi / 6"
+                },
+                {
+                    "args": "∀p. ∀x. 0 < p ⟶ 0 ≤ x ⟶ -(p / 2) ≤ x / 6",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ∀x. 0 < p ⟶ 0 ≤ x ⟶ -(p / 2) ≤ x / 6"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "pi, a",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7",
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ -(pi / 2) ≤ a / 6"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "5",
+                        "8"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ a / 6 ≤ pi / 2 ⟶ -(pi / 2) ≤ pi / 6 ⟶ pi / 6 ≤ pi / 2 ⟶ sin (a / 6) ≤ sin (pi / 6) ⟷ a / 6 ≤ pi / 6"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ ∀x. 0 ≤ x ⟶ x ≤ 4 ⟶ x / 6 ≤ pi / 2"
+                },
+                {
+                    "args": "x, real",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "10.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "x ≤ 4",
+                    "id": "10.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ 4 ⊢ x ≤ 4"
+                },
+                {
+                    "args": "x / 6 ≤ 1",
+                    "id": "10.3",
+                    "prevs": [
+                        "10.1",
+                        "10.2"
+                    ],
+                    "rule": "z3",
+                    "th": "0 ≤ x, x ≤ 4 ⊢ x / 6 ≤ 1"
+                },
+                {
+                    "args": "real_sin_pi2, x / 6 ≤ sin (pi / 2)",
+                    "id": "10.4",
+                    "prevs": [
+                        "10.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ x / 6 ≤ sin (pi / 2)"
+                },
+                {
+                    "args": "0 < real_inverse 2",
+                    "id": "10.5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 0 < real_inverse 2"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "10.6",
+                    "prevs": [
+                        "7",
+                        "10.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ 0 < pi * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, 0 < pi / 2",
+                    "id": "10.7",
+                    "prevs": [
+                        "10.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ 0 < pi / 2"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "10.8",
+                    "prevs": [
+                        "10.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ 0 ≤ pi / 2"
+                },
+                {
+                    "args": "if_P, pi / 2 = (if 0 ≤ pi / 2 then pi / 2 else -(pi / 2))",
+                    "id": "10.9",
+                    "prevs": [
+                        "10.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi / 2 = (if 0 ≤ pi / 2 then pi / 2 else -(pi / 2))"
+                },
+                {
+                    "args": "abs_def, pi / 2 = abs (pi / 2)",
+                    "id": "10.10",
+                    "prevs": [
+                        "10.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi / 2 = abs (pi / 2)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "10.11",
+                    "prevs": [
+                        "10.10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ abs (pi / 2) = pi / 2"
+                },
+                {
+                    "args": "(1::real) = abs 1",
+                    "id": "10.12",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (1::real) = abs 1"
+                },
+                {
+                    "args": "real_sin_pi2, sin (pi / 2) = abs (sin (pi / 2))",
+                    "id": "10.13",
+                    "prevs": [
+                        "10.12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (pi / 2) = abs (sin (pi / 2))"
+                },
+                {
+                    "args": "sin (abs (pi / 2)) = abs (sin (pi / 2))",
+                    "id": "10.14",
+                    "prevs": [
+                        "10.11",
+                        "10.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (abs (pi / 2)) = abs (sin (pi / 2))"
+                },
+                {
+                    "args": "real_abs_sin_bound_le, {x: pi / 2}",
+                    "id": "10.15",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (sin (pi / 2)) ≤ abs (pi / 2)"
+                },
+                {
+                    "args": "sin (abs (pi / 2)) ≤ abs (pi / 2)",
+                    "id": "10.16",
+                    "prevs": [
+                        "10.14",
+                        "10.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (abs (pi / 2)) ≤ abs (pi / 2)"
+                },
+                {
+                    "args": "sin (pi / 2) ≤ pi / 2",
+                    "id": "10.17",
+                    "prevs": [
+                        "10.10",
+                        "10.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (pi / 2) ≤ pi / 2"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "10.18",
+                    "prevs": [
+                        "10.4",
+                        "10.17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a, 0 ≤ x, b ≤ 4, x ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ x / 6 ≤ pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "10.19",
+                    "prevs": [
+                        "10.0",
+                        "10.1",
+                        "10.2",
+                        "10.18"
+                    ],
+                    "rule": "intros",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ ∀x. 0 ≤ x ⟶ x ≤ 4 ⟶ x / 6 ≤ pi / 2"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "11",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, b ≤ 4 ⊢ a ≤ 4"
+                },
+                {
+                    "args": "a",
+                    "id": "12",
+                    "prevs": [
+                        "10",
+                        "0",
+                        "11"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ a / 6 ≤ pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "9",
+                        "12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ -(pi / 2) ≤ pi / 6 ⟶ pi / 6 ≤ pi / 2 ⟶ sin (a / 6) ≤ sin (pi / 6) ⟷ a / 6 ≤ pi / 6"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ -(p / 2) ≤ p / 6",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ -(p / 2) ≤ p / 6"
+                },
+                {
+                    "args": "pi",
+                    "id": "15",
+                    "prevs": [
+                        "14",
+                        "7"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ -(pi / 2) ≤ pi / 6"
+                },
+                {
+                    "args": "",
+                    "id": "16",
+                    "prevs": [
+                        "13",
+                        "15"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi / 6 ≤ pi / 2 ⟶ sin (a / 6) ≤ sin (pi / 6) ⟷ a / 6 ≤ pi / 6"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ p / 6 ≤ p / 2",
+                    "id": "17",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ p / 6 ≤ p / 2"
+                },
+                {
+                    "args": "pi",
+                    "id": "18",
+                    "prevs": [
+                        "17",
+                        "7"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi / 6 ≤ pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "19",
+                    "prevs": [
+                        "16",
+                        "18"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (a / 6) ≤ sin (pi / 6) ⟷ a / 6 ≤ pi / 6"
+                },
+                {
+                    "args": "pi / 6 = 1 / 6 * pi",
+                    "id": "20",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ pi / 6 = 1 / 6 * pi"
+                },
+                {
+                    "args": "∀x. x = 6 * (x / 6)",
+                    "id": "21",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. x = 6 * (x / 6)"
+                },
+                {
+                    "args": "real_pos, {n: bit0 (bit1 1)}",
+                    "id": "22",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 6"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "23",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ a / 6 ≤ pi / 6 ⟷ sin (a / 6) ≤ sin (pi / 6)"
+                },
+                {
+                    "args": "real_sin_pi6, sin (a / 6) ≤ sin (1 / 6 * pi)",
+                    "id": "24",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (a / 6) ≤ sin (1 / 6 * pi)"
+                },
+                {
+                    "args": "sin (a / 6) ≤ sin (pi / 6)",
+                    "id": "25",
+                    "prevs": [
+                        "20",
+                        "24"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (a / 6) ≤ sin (pi / 6)"
+                },
+                {
+                    "args": "a / 6 ≤ pi / 6",
+                    "id": "26",
+                    "prevs": [
+                        "23",
+                        "25"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ a / 6 ≤ pi / 6"
+                },
+                {
+                    "args": "real_le_lmul",
+                    "id": "27",
+                    "prevs": [
+                        "22",
+                        "26"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ 6 * (a / 6) ≤ 6 * (pi / 6)"
+                },
+                {
+                    "args": "a ≤ pi",
+                    "id": "28",
+                    "prevs": [
+                        "21",
+                        "27"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ a ≤ pi"
+                },
+                {
+                    "args": "sin_mono_le_eq, {x: pi / 6, y: b / 6}",
+                    "id": "29",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ -(pi / 2) ≤ pi / 6 ⟶ pi / 6 ≤ pi / 2 ⟶ -(pi / 2) ≤ b / 6 ⟶ b / 6 ≤ pi / 2 ⟶ sin (pi / 6) ≤ sin (b / 6) ⟷ pi / 6 ≤ b / 6"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "30",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a ⊢ 0 ≤ b"
+                },
+                {
+                    "args": "pi, b",
+                    "id": "31",
+                    "prevs": [
+                        "6",
+                        "7",
+                        "30"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ -(pi / 2) ≤ b / 6"
+                },
+                {
+                    "args": "b",
+                    "id": "32",
+                    "prevs": [
+                        "10",
+                        "30",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ b / 6 ≤ pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "33",
+                    "prevs": [
+                        "29",
+                        "15",
+                        "18",
+                        "31",
+                        "32"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (pi / 6) ≤ sin (b / 6) ⟷ pi / 6 ≤ b / 6"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "34",
+                    "prevs": [
+                        "33"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi / 6 ≤ b / 6 ⟷ sin (pi / 6) ≤ sin (b / 6)"
+                },
+                {
+                    "args": "real_sin_pi6, sin (1 / 6 * pi) ≤ sin (b / 6)",
+                    "id": "35",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (1 / 6 * pi) ≤ sin (b / 6)"
+                },
+                {
+                    "args": "sin (pi / 6) ≤ sin (b / 6)",
+                    "id": "36",
+                    "prevs": [
+                        "20",
+                        "35"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ sin (pi / 6) ≤ sin (b / 6)"
+                },
+                {
+                    "args": "pi / 6 ≤ b / 6",
+                    "id": "37",
+                    "prevs": [
+                        "34",
+                        "36"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi / 6 ≤ b / 6"
+                },
+                {
+                    "args": "real_le_lmul",
+                    "id": "38",
+                    "prevs": [
+                        "22",
+                        "37"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ 6 * (pi / 6) ≤ 6 * (b / 6)"
+                },
+                {
+                    "args": "pi ≤ b",
+                    "id": "39",
+                    "prevs": [
+                        "21",
+                        "38"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ pi ≤ b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "40",
+                    "prevs": [
+                        "28",
+                        "39"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b, 0 ≤ a, b ≤ 4, 1 / 2 ≤ sin (b / 6), sin (a / 6) ≤ 1 / 2 ⊢ a ≤ pi ∧ pi ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "41",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "40"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ a ⟶ a ≤ b ⟶ b ≤ 4 ⟶ sin (a / 6) ≤ 1 / 2 ⟶ 1 / 2 ≤ sin (b / 6) ⟶ a ≤ pi ∧ pi ≤ b"
+                }
+            ],
             "prop": [
                 "0 ≤ a ",
                 "⟶ a ≤ b ⟶ b ≤ 4 ⟶ sin (a / 6) ≤ 1 / 2 ⟶ 1 / 2 ≤ sin (b / 6) ⟶ a ≤ pi ∧ pi ≤ b"
+            ],
+            "steps": [
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "param_x": "a / 6",
+                    "param_y": "pi / 6",
+                    "theorem": "sin_mono_le_eq"
+                },
+                {
+                    "goal": "!p. !x. 0 < p --> 0 <= x --> -(p / 2) ≤ x / 6",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "-(pi / 2) ≤ a / 6",
+                    "goal_id": "7",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "a / 6 ≤ pi / 2",
+                    "goal_id": "10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "!x. 0 <= x --> x <= 4 --> x/6 <= pi/2",
+                    "goal_id": "10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "10.3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "sin (pi/2)",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "10.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_pi2"
+                },
+                {
+                    "fact_ids": [
+                        "10.1",
+                        "10.2"
+                    ],
+                    "goal_id": "10.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "pi/2=abs (pi/2)",
+                    "goal_id": "10.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "abs_def"
+                },
+                {
+                    "goal": "0 ≤ pi / 2",
+                    "goal_id": "10.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "10.8"
+                    ],
+                    "goal_id": "10.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "10.10"
+                    ],
+                    "goal_id": "10.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "sin (abs (pi / 2)) = abs (sin (pi / 2))",
+                    "goal_id": "10.11",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "10.10"
+                    ],
+                    "goal_id": "10.11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "10.11"
+                    ],
+                    "goal_id": "10.12",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_pi2"
+                },
+                {
+                    "goal_id": "10.12",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "10.14"
+                    ],
+                    "goal_id": "10.15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_abs_sin_bound_le"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "-(pi / 2) ≤ pi / 6",
+                    "goal_id": "14",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "!p. 0 < p --> -(p / 2) ≤ p / 6",
+                    "goal_id": "14",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "13",
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "∀p. 0 < p ⟶ p / 6 ≤ p / 2",
+                    "goal_id": "17",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "pi / 6 ≤ pi / 2",
+                    "goal_id": "18",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "17"
+                    ],
+                    "goal_id": "18",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "16",
+                        "18"
+                    ],
+                    "goal_id": "19",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "pi/6 = 1/6 * pi",
+                    "goal_id": "20",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "20",
+                    "method_name": "real_norm"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal": "!x. x = 6 * (x /6)",
+                    "goal_id": "21",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "21",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "21"
+                    ],
+                    "goal_id": "22",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "22",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_lmul"
+                },
+                {
+                    "goal_id": "22",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pos"
+                },
+                {
+                    "fact_ids": [
+                        "19"
+                    ],
+                    "goal_id": "23",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "23"
+                    ],
+                    "goal_id": "24",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "20"
+                    ],
+                    "goal_id": "24",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "24",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_pi6"
+                },
+                {
+                    "fact_ids": [
+                        "21"
+                    ],
+                    "goal_id": "29",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "29",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_lmul"
+                },
+                {
+                    "goal_id": "29",
+                    "method_name": "apply_forward_step",
+                    "param_x": "pi/6",
+                    "param_y": "b/6",
+                    "theorem": "sin_mono_le_eq"
+                },
+                {
+                    "goal": "sin (pi / 6) ≤ sin (b / 6) ⟷ pi / 6 ≤ b / 6",
+                    "goal_id": "30",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "29"
+                    ],
+                    "goal_id": "30",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "30",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "30",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "32",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "33"
+                    ],
+                    "goal_id": "34",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "34"
+                    ],
+                    "goal_id": "35",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "20"
+                    ],
+                    "goal_id": "35",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "35",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_pi6"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -45147,20 +46518,139 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "sec",
             "prop": "sec x = 1 / cos x",
             "ty": "def",
             "type": "real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "csc",
             "prop": "csc x = 1 / sin x",
             "ty": "def",
             "type": "real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "sin_csc_inverse",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(sin x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(sin x = 0) ⊢ ¬(sin x = 0)"
+                },
+                {
+                    "args": "real_inv_inv, sin x = real_inverse (real_inverse (sin x))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin x = real_inverse (real_inverse (sin x))"
+                },
+                {
+                    "args": "real_mul_lid, sin x = real_inverse (1 * real_inverse (sin x))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(sin x = 0) ⊢ sin x = real_inverse (1 * real_inverse (sin x))"
+                },
+                {
+                    "args": "real_divide_def, sin x = real_inverse (1 / sin x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(sin x = 0) ⊢ sin x = real_inverse (1 / sin x)"
+                },
+                {
+                    "args": "real_mul_lid, sin x = 1 * real_inverse (1 / sin x)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(sin x = 0) ⊢ sin x = 1 * real_inverse (1 / sin x)"
+                },
+                {
+                    "args": "real_divide_def, sin x = 1 / (1 / sin x)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(sin x = 0) ⊢ sin x = 1 / (1 / sin x)"
+                },
+                {
+                    "args": "csc_def, sin x = 1 / csc x",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(sin x = 0) ⊢ sin x = 1 / csc x"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(sin x = 0) ⟶ sin x = 1 / csc x"
+                }
+            ],
             "prop": "¬(sin x = 0) ⟶ sin x = 1 / csc x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "csc_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_inv"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -45168,7 +46658,117 @@
         },
         {
             "name": "cos_sec_inverse",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(cos x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(cos x = 0) ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_inv_inv, cos x = real_inverse (real_inverse (cos x))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ cos x = real_inverse (real_inverse (cos x))"
+                },
+                {
+                    "args": "real_mul_lid, cos x = real_inverse (1 * real_inverse (cos x))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ cos x = real_inverse (1 * real_inverse (cos x))"
+                },
+                {
+                    "args": "real_mul_lid, cos x = 1 * real_inverse (1 * real_inverse (cos x))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ cos x = 1 * real_inverse (1 * real_inverse (cos x))"
+                },
+                {
+                    "args": "real_divide_def, cos x = 1 * real_inverse (1 / cos x)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ cos x = 1 * real_inverse (1 / cos x)"
+                },
+                {
+                    "args": "real_divide_def, cos x = 1 / (1 / cos x)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ cos x = 1 / (1 / cos x)"
+                },
+                {
+                    "args": "sec_def, cos x = 1 / sec x",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(cos x = 0) ⊢ cos x = 1 / sec x"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(cos x = 0) ⟶ cos x = 1 / sec x"
+                }
+            ],
             "prop": "¬(cos x = 0) ⟶ cos x = 1 / sec x",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sec_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_inv"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -45188,7 +46788,43 @@
                 "hint_rewrite"
             ],
             "name": "atn_tan",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ tan (THE x. -(pi / 2) < x ∧ x < pi / 2 ∧ tan x = y) = y"
+                },
+                {
+                    "args": "atn_def, tan (atn y) = y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (atn y) = y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (atn y) = y"
+                }
+            ],
             "prop": "tan (atn y) = y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "atn_def"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "y": "real"
@@ -45199,7 +46835,43 @@
                 "hint_backward"
             ],
             "name": "atn_bound",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ abs (THE x. -(pi / 2) < x ∧ x < pi / 2 ∧ tan x = y) < pi / 2"
+                },
+                {
+                    "args": "atn_def, abs (atn y) < pi / 2",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (atn y) < pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs (atn y) < pi / 2"
+                }
+            ],
             "prop": "abs (atn y) < pi / 2",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "atn_def"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "y": "real"
@@ -45211,7 +46883,59 @@
                 "hint_backward1"
             ],
             "name": "tan_atn",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "-(pi / 2) < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < x ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "x < pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x < pi / 2, -(pi / 2) < x ⊢ (THE x1. -(pi / 2) < x1 ∧ x1 < pi / 2 ∧ tan x1 = tan x) = x"
+                },
+                {
+                    "args": "atn_def, atn (tan x) = x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < pi / 2, -(pi / 2) < x ⊢ atn (tan x) = x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) < x ⟶ x < pi / 2 ⟶ atn (tan x) = x"
+                }
+            ],
             "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ atn (tan x) = x",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "atn_def"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -45222,7 +46946,187 @@
                 "hint_rewrite"
             ],
             "name": "atn_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tan_0, atn 0 = atn (tan 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ atn 0 = atn (tan 0)"
+                },
+                {
+                    "args": "∀x::real. -x < 0 ⟷ 0 < x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. -x < 0 ⟷ 0 < x"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "0 < real_inverse 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 0 < real_inverse 2"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, 0 < pi / 2",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 < pi / 2"
+                },
+                {
+                    "args": "-(pi / 2) < 0",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ -(pi / 2) < 0"
+                },
+                {
+                    "args": "real_le_refl, {x: pi / 2}",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ pi / 2 ≤ pi / 2"
+                },
+                {
+                    "args": "real_lte_trans",
+                    "id": "8",
+                    "prevs": [
+                        "5",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi / 2"
+                },
+                {
+                    "args": "tan_atn",
+                    "id": "9",
+                    "prevs": [
+                        "6",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ atn (tan 0) = 0"
+                },
+                {
+                    "args": "atn 0 = 0",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ atn 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ atn 0 = 0"
+                }
+            ],
             "prop": "atn 0 = 0",
+            "steps": [
+                {
+                    "goal": "atn 0 = atn (tan 0)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_atn"
+                },
+                {
+                    "goal": "!x::real. -x < 0 <--> 0 < x",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lte_trans"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -45231,13 +47135,311 @@
                 "hint_rewrite"
             ],
             "name": "atn_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pi_pos",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "-(real_inverse 2) < real_inverse 4",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ -(real_inverse 2) < real_inverse 4"
+                },
+                {
+                    "args": "real_lt_lmul:",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ pi * -(real_inverse 2) < pi * real_inverse 4"
+                },
+                {
+                    "args": "real_mul_rneg, -(pi * real_inverse 2) < pi * real_inverse 4",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ -(pi * real_inverse 2) < pi * real_inverse 4"
+                },
+                {
+                    "args": "real_divide_def, -(pi / 2) < pi / 4",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(pi / 2) < pi / 4"
+                },
+                {
+                    "args": "real_inverse 4 < real_inverse 2",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ real_inverse 4 < real_inverse 2"
+                },
+                {
+                    "args": "real_lt_lmul:",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ pi * real_inverse 4 < pi * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, pi / 4 < pi / 2",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ pi / 4 < pi / 2"
+                },
+                {
+                    "args": "tan_atn",
+                    "id": "8",
+                    "prevs": [
+                        "4",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ atn (tan (pi / 4)) = pi / 4"
+                },
+                {
+                    "args": "tan_pi4, atn 1 = pi / 4",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ atn 1 = pi / 4"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ atn 1 = pi / 4"
+                }
+            ],
             "prop": "atn 1 = pi / 4",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "tan_pi4"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_atn"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mul_rneg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_lmul:"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_lmul:"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tan_pi3",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pi / 3 = 1 / 3 * pi",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ pi / 3 = 1 / 3 * pi"
+                },
+                {
+                    "args": "sqrt 3 / 2 / (1 / 2) = sqrt 3",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ sqrt 3 / 2 / (1 / 2) = sqrt 3"
+                },
+                {
+                    "args": "real_sin_pi3, sin (1 / 3 * pi) / (1 / 2) = sqrt 3",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (1 / 3 * pi) / (1 / 2) = sqrt 3"
+                },
+                {
+                    "args": "real_cos_pi3, sin (1 / 3 * pi) / cos (1 / 3 * pi) = sqrt 3",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (1 / 3 * pi) / cos (1 / 3 * pi) = sqrt 3"
+                },
+                {
+                    "args": "sin (pi / 3) / cos (pi / 3) = sqrt 3",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sin (pi / 3) / cos (pi / 3) = sqrt 3"
+                },
+                {
+                    "args": "tan_def, tan (pi / 3) = sqrt 3",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (pi / 3) = sqrt 3"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (pi / 3) = sqrt 3"
+                }
+            ],
+            "prop": "tan (pi / 3) = sqrt 3",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal": "pi/3= 1/3 * pi",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_cos_pi3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sin_pi3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "real_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "atn_sqrt_3",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ 3 ^ (1 / 2) = sqrt 3"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ atn (3 ^ (1 / 2)) = pi / 3"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ atn (3 ^ (1 / 2)) = pi / 3"
+                }
+            ],
             "prop": "atn (3 ^ (1 / 2)) = pi / 3",
+            "steps": [
+                {
+                    "goal": "3 ^ (1 / 2) = sqrt 3",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
