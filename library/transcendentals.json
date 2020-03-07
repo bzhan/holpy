@@ -39449,7 +39449,7 @@
                 "hint_backward"
             ],
             "name": "cos_tan",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "abs x < pi / 2",
@@ -39466,18 +39466,299 @@
                     "th": "⊢ ∀a. ∀c. ∀s. a * a = s ⟶ c * c * s = 1 ⟶ ¬(1 + c * a = 0) ⟶ c = 1 / a"
                 },
                 {
-                    "args": "",
+                    "args": "(0::real) ≤ 1",
                     "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "z3",
+                    "th": "⊢ (0::real) ≤ 1"
+                },
+                {
+                    "args": "real_le_pow_2, {x: tan x}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ tan x ^ (2::nat)"
+                },
+                {
+                    "args": "real_le_add",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ 0 ≤ 1 + tan x ^ (2::nat)"
+                },
+                {
+                    "args": "pow_2_sqrt",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ sqrt ((1 + tan x ^ (2::nat)) ^ (2::nat)) = 1 + tan x ^ (2::nat)"
+                },
+                {
+                    "args": "real_pow_2, sqrt ((1 + tan x ^ (2::nat)) * (1 + tan x ^ (2::nat))) = 1 + tan x ^ (2::nat)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < pi / 2 ⊢ sqrt ((1 + tan x ^ (2::nat)) * (1 + tan x ^ (2::nat))) = 1 + tan x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_mul, sqrt (1 + tan x ^ (2::nat)) * sqrt (1 + tan x ^ (2::nat)) = 1 + tan x ^ (2::nat)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < pi / 2 ⊢ sqrt (1 + tan x ^ (2::nat)) * sqrt (1 + tan x ^ (2::nat)) = 1 + tan x ^ (2::nat)"
+                },
+                {
+                    "args": "∀a. ∀b. ¬(b = 0) ⟶ b * (a / b) = a",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a. ∀b. ¬(b = 0) ⟶ b * (a / b) = a"
+                },
+                {
+                    "args": "∀a::real. 0 < a ⟶ ¬(a = 0)",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. 0 < a ⟶ ¬(a = 0)"
+                },
+                {
+                    "args": "real_abs_lt",
+                    "id": "10",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < pi / 2 ⊢ -(pi / 2) < x ∧ x < pi / 2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "12",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi",
+                    "id": "13",
+                    "prevs": [
+                        "11",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ 0 < cos x"
+                },
+                {
+                    "args": "cos x",
+                    "id": "14",
+                    "prevs": [
+                        "9",
+                        "13"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "abs x < pi / 2 ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "real_pow_nz, {n: (2::nat), x: cos x}",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "abs x < pi / 2 ⊢ ¬(cos x ^ (2::nat) = 0)"
+                },
+                {
+                    "args": "sin x ^ (2::nat), cos x ^ (2::nat)",
+                    "id": "16",
+                    "prevs": [
+                        "8",
+                        "15"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) * (sin x ^ (2::nat) / cos x ^ (2::nat)) = sin x ^ (2::nat)"
+                },
+                {
+                    "args": "sin_circle, sin x ^ (2::nat) + cos x ^ (2::nat) = 1",
+                    "id": "17",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin x ^ (2::nat) + cos x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "real_add_comm, cos x ^ (2::nat) + sin x ^ (2::nat) = 1",
+                    "id": "18",
+                    "prevs": [
+                        "17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) + sin x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "real_mul_rid, cos x ^ (2::nat) * 1 + sin x ^ (2::nat) = 1",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) * 1 + sin x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "cos x ^ (2::nat) * 1 + cos x ^ (2::nat) * (sin x ^ (2::nat) / cos x ^ (2::nat)) = 1",
+                    "id": "20",
+                    "prevs": [
+                        "16",
+                        "19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) * 1 + cos x ^ (2::nat) * (sin x ^ (2::nat) / cos x ^ (2::nat)) = 1"
+                },
+                {
+                    "args": "real_pow_div, cos x ^ (2::nat) * 1 + cos x ^ (2::nat) * (sin x / cos x) ^ (2::nat) = 1",
+                    "id": "21",
+                    "prevs": [
+                        "20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) * 1 + cos x ^ (2::nat) * (sin x / cos x) ^ (2::nat) = 1"
+                },
+                {
+                    "args": "tan_def, cos x ^ (2::nat) * 1 + cos x ^ (2::nat) * tan x ^ (2::nat) = 1",
+                    "id": "22",
+                    "prevs": [
+                        "21"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) * 1 + cos x ^ (2::nat) * tan x ^ (2::nat) = 1"
+                },
+                {
+                    "args": "real_add_ldistrib, cos x ^ (2::nat) * (1 + tan x ^ (2::nat)) = 1",
+                    "id": "23",
+                    "prevs": [
+                        "22"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ cos x ^ (2::nat) * (1 + tan x ^ (2::nat)) = 1"
+                },
+                {
+                    "args": "real_pow_2, cos x * cos x * (1 + tan x ^ (2::nat)) = 1",
+                    "id": "24",
+                    "prevs": [
+                        "23"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < pi / 2 ⊢ cos x * cos x * (1 + tan x ^ (2::nat)) = 1"
+                },
+                {
+                    "args": "∀a::real. a < 1 + a",
+                    "id": "25",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. a < 1 + a"
+                },
+                {
+                    "args": "tan x ^ (2::nat)",
+                    "id": "26",
+                    "prevs": [
+                        "25"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ tan x ^ (2::nat) < 1 + tan x ^ (2::nat)"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "27",
+                    "prevs": [
+                        "3",
+                        "26"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ 0 < 1 + tan x ^ (2::nat)"
+                },
+                {
+                    "args": "sqrt_lt_0, 0 < sqrt (1 + tan x ^ (2::nat))",
+                    "id": "28",
+                    "prevs": [
+                        "27"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 2 ⊢ 0 < sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "29",
+                    "prevs": [
+                        "13",
+                        "28"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ 0 < cos x * sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "cos x * sqrt (1 + tan x ^ (2::nat))",
+                    "id": "30",
+                    "prevs": [
+                        "25"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ cos x * sqrt (1 + tan x ^ (2::nat)) < 1 + cos x * sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "31",
+                    "prevs": [
+                        "29",
+                        "30"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 2 ⊢ 0 < 1 + cos x * sqrt (1 + tan x ^ (2::nat))"
+                },
+                {
+                    "args": "1 + cos x * sqrt (1 + tan x ^ (2::nat))",
+                    "id": "32",
+                    "prevs": [
+                        "9",
+                        "31"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "abs x < pi / 2 ⊢ ¬(1 + cos x * sqrt (1 + tan x ^ (2::nat)) = 0)"
+                },
+                {
+                    "args": "sqrt (1 + tan x ^ (2::nat)), cos x, 1 + tan x ^ (2::nat)",
+                    "id": "33",
+                    "prevs": [
+                        "1",
+                        "7",
+                        "24",
+                        "32"
+                    ],
+                    "rule": "apply_fact_for",
                     "th": "abs x < pi / 2 ⊢ cos x = 1 / sqrt (1 + tan x ^ (2::nat))"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "34",
                     "prevs": [
                         "0",
-                        "2"
+                        "33"
                     ],
                     "rule": "intros",
                     "th": "⊢ abs x < pi / 2 ⟶ cos x = 1 / sqrt (1 + tan x ^ (2::nat))"
@@ -39493,6 +39774,219 @@
                 {
                     "goal_id": "1",
                     "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev",
+                    "param_s": "1 + tan x ^ (2::nat)"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "sqrt_mul"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pow_2_sqrt"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_add"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_pow_2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_ldistrib"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_div"
+                },
+                {
+                    "goal": "!a. !b. ~(b=0) --> b * (a / b) = a",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "goal": "cos x ^ (2::nat) * (sin x ^ (2::nat) / cos x ^ (2::nat)) = sin x ^ (2::nat)",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_nz"
+                },
+                {
+                    "goal": "!a::real. 0 < a --> ~(a = 0)",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_lt"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "16"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rid"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_circle"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "25",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "25",
+                    "method_name": "apply_backward_step",
+                    "param_y": "cos x * sqrt (1 + tan x ^ (2::nat))",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "goal_id": "25",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "25",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sqrt_lt_0"
+                },
+                {
+                    "goal_id": "25",
+                    "method_name": "apply_backward_step",
+                    "param_y": "tan x ^ (2::nat)",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "goal": "∀a::real. a < 1 + a",
+                    "goal_id": "25",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "25",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "25"
+                    ],
+                    "goal_id": "26",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "25"
+                    ],
+                    "goal_id": "30",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -43327,7 +43821,356 @@
                 "hint_backward1"
             ],
             "name": "tan_mono_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < x ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "x < y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "y < pi / 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < pi / 2 ⊢ y < pi / 2"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ x < pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < cos x"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ -(pi / 2) < y"
+                },
+                {
+                    "args": "cos_pos_pi",
+                    "id": "6",
+                    "prevs": [
+                        "5",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < cos y"
+                },
+                {
+                    "args": "∀a::real. 0 < a ⟶ ¬(a = 0)",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. 0 < a ⟶ ¬(a = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ ¬(cos x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ ¬(cos y = 0)"
+                },
+                {
+                    "args": "real_sub_tan",
+                    "id": "10",
+                    "prevs": [
+                        "9",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ tan y - tan x = sin (y - x) / (cos y * cos x)"
+                },
+                {
+                    "args": "real_sub_lt, 0 < y - x",
+                    "id": "11",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < y - x"
+                },
+                {
+                    "args": "∀p. 0 < p ⟶ -(p / 2) < x ⟶ y < p / 2 ⟶ y - x < p",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < p ⟶ -(p / 2) < x ⟶ y < p / 2 ⟶ y - x < p"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "13",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "pi",
+                    "id": "14",
+                    "prevs": [
+                        "12",
+                        "13",
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ y - x < pi"
+                },
+                {
+                    "args": "sin_pos_pi",
+                    "id": "15",
+                    "prevs": [
+                        "11",
+                        "14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < sin (y - x)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "16",
+                    "prevs": [
+                        "6",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < cos y * cos x"
+                },
+                {
+                    "args": "real_lt_inv",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < real_inverse (cos y * cos x)"
+                },
+                {
+                    "args": "real_lt_mul",
+                    "id": "18",
+                    "prevs": [
+                        "15",
+                        "17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < sin (y - x) * real_inverse (cos y * cos x)"
+                },
+                {
+                    "args": "real_divide_def, 0 < sin (y - x) / (cos y * cos x)",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < sin (y - x) / (cos y * cos x)"
+                },
+                {
+                    "args": "0 < tan y - tan x",
+                    "id": "20",
+                    "prevs": [
+                        "10",
+                        "19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ 0 < tan y - tan x"
+                },
+                {
+                    "args": "real_sub_lt, tan x < tan y",
+                    "id": "21",
+                    "prevs": [
+                        "20"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x < y, y < pi / 2, -(pi / 2) < x ⊢ tan x < tan y"
+                },
+                {
+                    "args": "",
+                    "id": "22",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "21"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) < x ⟶ x < y ⟶ y < pi / 2 ⟶ tan x < tan y"
+                }
+            ],
             "prop": "-(pi / 2) < x ⟶ x < y ⟶ y < pi / 2 ⟶ tan x < tan y",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_sub_lt"
+                },
+                {
+                    "goal": "0 < cos x",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "y",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "goal": "0 < cos y",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "param_y": "x",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "goal": "!a::real. 0 < a --> ~(a=0) ",
+                    "goal_id": "7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "4"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "6"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "8"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_sub_tan"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sin_pos_pi"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_lt"
+                },
+                {
+                    "goal": "!p. 0 < p --> -(p/2)<x --> y < p/2 --> y - x < p",
+                    "goal_id": "12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_inv"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_mul"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -43340,7 +44183,197 @@
                 "hint_backward1"
             ],
             "name": "tan_mono_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < x ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "x ≤ y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ y ⊢ x ≤ y"
+                },
+                {
+                    "args": "y < pi / 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < pi / 2 ⊢ y < pi / 2"
+                },
+                {
+                    "args": "real_le_lt",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ≤ y ⊢ x < y ∨ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ x < y ⟶ tan x ≤ tan y"
+                },
+                {
+                    "args": "x < y",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "tan_mono_lt",
+                    "id": "4.1",
+                    "prevs": [
+                        "0",
+                        "4.0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ tan x < tan y"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ tan x ≤ tan y"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ x < y ⟶ tan x ≤ tan y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ x = y ⟶ tan x ≤ tan y"
+                },
+                {
+                    "args": "x = y",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y ⊢ x = y"
+                },
+                {
+                    "args": "real_le_refl, {x: tan y}",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tan y ≤ tan y"
+                },
+                {
+                    "args": "tan x ≤ tan y",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0",
+                        "5.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = y, x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ tan x ≤ tan y"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.0",
+                        "5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ x = y ⟶ tan x ≤ tan y"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ y, y < pi / 2, -(pi / 2) < x ⊢ tan x ≤ tan y"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) < x ⟶ x ≤ y ⟶ y < pi / 2 ⟶ tan x ≤ tan y"
+                }
+            ],
             "prop": "-(pi / 2) < x ⟶ x ≤ y ⟶ y < pi / 2 ⟶ tan x ≤ tan y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_mono_lt"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -43353,7 +44386,232 @@
                 "hint_backward1"
             ],
             "name": "tan_mono_lt_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < x ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "x < pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "-(pi / 2) < y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < y ⊢ -(pi / 2) < y"
+                },
+                {
+                    "args": "y < pi / 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < pi / 2 ⊢ y < pi / 2"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ ¬(tan y ≤ tan x) ⟶ ¬(y ≤ x)"
+                },
+                {
+                    "args": "¬(tan y ≤ tan x)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(tan y ≤ tan x) ⊢ ¬(tan y ≤ tan x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(tan y ≤ tan x), x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ y ≤ x ⟶ tan y ≤ tan x"
+                },
+                {
+                    "args": "y ≤ x",
+                    "id": "4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ≤ x ⊢ y ≤ x"
+                },
+                {
+                    "args": "tan_mono_le",
+                    "id": "4.1.1",
+                    "prevs": [
+                        "2",
+                        "4.1.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ≤ x, ¬(tan y ≤ tan x), x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ tan y ≤ tan x"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.2",
+                    "prevs": [
+                        "4.1.0",
+                        "4.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(tan y ≤ tan x), x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ y ≤ x ⟶ tan y ≤ tan x"
+                },
+                {
+                    "args": "double_neg, ¬¬(y ≤ x) ⟶ ¬¬(tan y ≤ tan x)",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(tan y ≤ tan x), x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ ¬¬(y ≤ x) ⟶ ¬¬(tan y ≤ tan x)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(tan y ≤ tan x), x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ ¬(y ≤ x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ ¬(tan y ≤ tan x) ⟶ ¬(y ≤ x)"
+                },
+                {
+                    "args": "real_less_def, tan x < tan y ⟶ x < y",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ tan x < tan y ⟶ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ x < y ⟶ tan x < tan y"
+                },
+                {
+                    "args": "x < y",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "tan_mono_lt",
+                    "id": "6.1",
+                    "prevs": [
+                        "0",
+                        "6.0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ tan x < tan y"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [
+                        "6.0",
+                        "6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ x < y ⟶ tan x < tan y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ tan x < tan y ⟷ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) < x ⟶ x < pi / 2 ⟶ -(pi / 2) < y ⟶ y < pi / 2 ⟶ tan x < tan y ⟷ x < y"
+                }
+            ],
             "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ -(pi / 2) < y ⟶ y < pi / 2 ⟶ tan x < tan y ⟷ x < y",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_less_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_mono_le"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_mono_lt"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -43366,7 +44624,118 @@
                 "hint_backward1"
             ],
             "name": "tan_mono_le_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-(pi / 2) < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < x ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "x < pi / 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < pi / 2 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "-(pi / 2) < y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-(pi / 2) < y ⊢ -(pi / 2) < y"
+                },
+                {
+                    "args": "y < pi / 2",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < pi / 2 ⊢ y < pi / 2"
+                },
+                {
+                    "args": "∀p. ∀q. (¬p ⟷ ¬q) ⟷ p ⟷ q",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ∀q. (¬p ⟷ ¬q) ⟷ p ⟷ q"
+                },
+                {
+                    "args": "tan_mono_lt_eq",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ tan y < tan x ⟷ y < x"
+                },
+                {
+                    "args": "¬(tan y < tan x) ⟷ ¬(y < x)",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ ¬(tan y < tan x) ⟷ ¬(y < x)"
+                },
+                {
+                    "args": "real_not_lt, tan x ≤ tan y ⟷ x ≤ y",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x < pi / 2, y < pi / 2, -(pi / 2) < x, -(pi / 2) < y ⊢ tan x ≤ tan y ⟷ x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -(pi / 2) < x ⟶ x < pi / 2 ⟶ -(pi / 2) < y ⟶ y < pi / 2 ⟶ tan x ≤ tan y ⟷ x ≤ y"
+                }
+            ],
             "prop": "-(pi / 2) < x ⟶ x < pi / 2 ⟶ -(pi / 2) < y ⟶ y < pi / 2 ⟶ tan x ≤ tan y ⟷ x ≤ y",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_not_lt"
+                },
+                {
+                    "goal": "!p. !q. (~p<--> ~q) <--> (p <--> q)",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_mono_lt_eq"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -43378,7 +44747,279 @@
                 "hint_backward"
             ],
             "name": "tan_bound_pi2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "abs x < pi / 4",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs x < pi / 4 ⊢ abs x < pi / 4"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "real_inverse 4 < real_inverse 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ real_inverse 4 < real_inverse 2"
+                },
+                {
+                    "args": "real_lt_lmul:",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ pi * real_inverse 4 < pi * real_inverse 2"
+                },
+                {
+                    "args": "real_divide_def, pi / 4 < pi / 2",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 4 ⊢ pi / 4 < pi / 2"
+                },
+                {
+                    "args": "real_lt_neg2, -(pi / 2) < -(pi / 4)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 4 ⊢ -(pi / 2) < -(pi / 4)"
+                },
+                {
+                    "args": "real_abs_lt",
+                    "id": "6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "abs x < pi / 4 ⊢ -(pi / 4) < x ∧ x < pi / 4"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ -(pi / 4) < x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ x < pi / 4"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ x < pi / 2"
+                },
+                {
+                    "args": "tan_mono_lt",
+                    "id": "10",
+                    "prevs": [
+                        "5",
+                        "7",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ tan (-(pi / 4)) < tan x"
+                },
+                {
+                    "args": "tan_neg, -(tan (pi / 4)) < tan x",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < pi / 4 ⊢ -(tan (pi / 4)) < tan x"
+                },
+                {
+                    "args": "real_lt_trans",
+                    "id": "12",
+                    "prevs": [
+                        "5",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ -(pi / 2) < x"
+                },
+                {
+                    "args": "tan_mono_lt",
+                    "id": "13",
+                    "prevs": [
+                        "12",
+                        "8",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ tan x < tan (pi / 4)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "14",
+                    "prevs": [
+                        "11",
+                        "13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "abs x < pi / 4 ⊢ -(tan (pi / 4)) < tan x ∧ tan x < tan (pi / 4)"
+                },
+                {
+                    "args": "real_abs_lt, abs (tan x) < tan (pi / 4)",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "abs x < pi / 4 ⊢ abs (tan x) < tan (pi / 4)"
+                },
+                {
+                    "args": "tan_pi4, abs (tan x) < 1",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "abs x < pi / 4 ⊢ abs (tan x) < 1"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x < pi / 4 ⟶ abs (tan x) < 1"
+                }
+            ],
             "prop": "abs x < pi / 4 ⟶ abs (tan x) < 1",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "tan_pi4"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_lt"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "tan_neg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_mono_lt"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_lt_neg2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_lmul:"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_abs_lt"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "4"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_trans"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "tan_mono_lt"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "7"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_trans"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -43389,7 +45030,79 @@
                 "hint_rewrite"
             ],
             "name": "tan_cot",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "cos_sin, sin (pi / 2 - x) / sin x = cos x / sin x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (pi / 2 - x) / sin x = cos x / sin x"
+                },
+                {
+                    "args": "sin_cos, sin (pi / 2 - x) / cos (pi / 2 - x) = cos x / sin x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sin (pi / 2 - x) / cos (pi / 2 - x) = cos x / sin x"
+                },
+                {
+                    "args": "tan_def, tan (pi / 2 - x) = cos x / sin x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (pi / 2 - x) = cos x / sin x"
+                },
+                {
+                    "args": "cot_def, tan (pi / 2 - x) = cot x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tan (pi / 2 - x) = cot x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tan (pi / 2 - x) = cot x"
+                }
+            ],
             "prop": "tan (pi / 2 - x) = cot x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cot_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tan_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_cos"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "cos_sin"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
