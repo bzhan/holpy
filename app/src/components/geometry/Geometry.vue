@@ -122,6 +122,11 @@
           "free": 0,
           "semi": 1,
           "fixed": 2
+        },
+        pointColor: {
+          0: "red",
+          1: "green",
+          2: "grey"
         }
       }
     },
@@ -1088,7 +1093,7 @@
           radius: 5,
           stroke: "black",
           strokeWidth: strokeWidth,
-          fill: "red",
+          fill: this.pointColor[type],
         })
         const newText = new Konva.Text({
           x: 5,
