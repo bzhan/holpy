@@ -20,6 +20,7 @@
           <b-dropdown-item href="#" @click="handleClickConstructParallel">Parallel</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Constraint" left>
+          <b-dropdown-item href="#" @click="handleClickCongruentSegment">Congruent Segment</b-dropdown-item>
           <b-dropdown-item href="#">Equal Angle</b-dropdown-item>
           <b-dropdown-item href="#">Equal Ratio</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -116,6 +117,11 @@
           "perpendicularPointToLine": 2,
           "perpendicularLineToLine": 3,
           "parallel": 2
+        },
+        pointType: {
+          "free": 0,
+          "semi": 1,
+          "fixed": 2
         }
       }
     },
@@ -169,22 +175,28 @@
             this.clearActivationAll()
           }
           else if (this.status === "point") {
-            this.addPoint(x, y)
+            this.addPoint(x, y, false, this.pointType.free)
             this.clearActivationAll()
           }
           else if (this.status === "line") {
-            let newId = this.addPoint(x, y, true)
-            this.addToSelected(newId)
-            if (this.checkReachLength(this.status)) {
+            if (this.checkSelectedPlace(0)) {
+              let newId = this.addPoint(x, y, true, this.pointType.free)
+              this.addToSelected(newId)
+            }
+            else if (this.checkSelectedPlace(1)) {
+              let newId = this.addPoint(x, y, false, this.pointType.free)
               this.addToSelected(newId)
               this.addLine(this.selected[0], this.selected[1])
               this.clearActivationAll()
             }
           }
           else if (this.status === "perpendicular") {
-            if (this.checkSelectedPlace(0) || (this.checkSelectedPlace(1) &&
-                    this.getTypeById(this.selected[0]) === "line")) {
-              let newId = this.addPoint(x, y, true)
+            if (this.checkSelectedPlace(0)) {
+              let newId = this.addPoint(x, y, true, this.pointType.free)
+              this.addToSelected(newId)
+            }
+            else if (this.checkSelectedPlace(1) && this.getTypeById(this.selected[0]) === "line") {
+              let newId = this.addPoint(x, y, true, this.pointType.free)
               this.addToSelected(newId)
             }
             else if (this.checkSelectedPlace(2)) {
@@ -192,14 +204,14 @@
               const endpoints = line.points()
               const p = this.getPedalCoordinatePointToSeg([x, y], [endpoints[0], endpoints[1]],
                       [endpoints[2], endpoints[3]])
-              const newId = this.addPoint(p[0], p[1])
+              const newId = this.addPoint(p[0], p[1], false, this.pointType.semi)
               this.addLine(this.selected[1], newId)
               this.clearActivationAll()
             }
 
           }
           else if (this.status === "circle") {
-            let newId = this.addPoint(x, y, true)
+            let newId = this.addPoint(x, y, true, this.pointType.free)
             this.addToSelected(newId)
             if (this.checkReachLength(this.status)) {
               this.addCircle(this.selected[0], this.selected[1])
@@ -208,7 +220,7 @@
           }
           else if (this.status === "parallel") {
             if (this.checkSelectedPlace(1)) {
-              let newId = this.addPoint(x, y, true)
+              let newId = this.addPoint(x, y, true, this.pointType.free)
               this.addToSelected(newId)
             }
             else if (this.checkSelectedPlace(2)) {
@@ -216,7 +228,7 @@
               const endpoints = line.points()
               const p = this.getPedalCoordinatePointToSeg([x, y], [endpoints[0], endpoints[1]],
                       [endpoints[2], endpoints[3]])
-              const newId = this.addPoint(p[0], p[1])
+              const newId = this.addPoint(p[0], p[1], false, this.pointType.semi)
               this.addLine(this.selected[1], newId)
               this.clearActivationAll()
             }
@@ -290,10 +302,10 @@
                     }
                   }
                   else if (this.status === "point") {
-                    this.addClickPosToLine(id, false)
+                    this.addClickPosToLine(id, false, this.pointType.semi)
                   }
                   else if (this.status === "line") {
-                    const pointId = this.addClickPosToLine(id, true)
+                    const pointId = this.addClickPosToLine(id, true, this.pointType.semi)
                     this.addToSelected(pointId)
                     if (this.checkReachLength(this.status)) {
                       this.addLine(this.selected[0], this.selected[1])
@@ -331,7 +343,7 @@
                       const intersectionPos = this.getIntersectionLines([paraLinePts[0], paraLinePts[1]], [paraLinePts[2], paraLinePts[3]],
                               this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
                       if (intersectionPos) {
-                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1], true, this.pointType.semi)
                         this.addPointToLine(newPtId, id)
                         this.addToSelected(newPtId)
                       }
@@ -342,7 +354,7 @@
                       const intersectionPos = this.getIntersectionLines([paraLinePts[0], paraLinePts[1]], [paraLinePts[2], paraLinePts[3]],
                               this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
                       if (intersectionPos) {
-                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1], false, this.pointType.fixed)
                         this.addPointToLine(newPtId, id)
                         this.addToSelected(newPtId)
                         this.addLine(this.selected[1], this.selected[2])
@@ -373,7 +385,7 @@
                           this.clearActivationAll()
                           return
                         }
-                        const footId = this.addPoint(footPos[0], footPos[1])
+                        const footId = this.addPoint(footPos[0], footPos[1], false, this.pointType.fixed)
                         const perpToLine = this.getLineByLineId(perpToId)
                         perpToLine.getAttr('points').push(footPos[0], footPos[1])
                         this.addPointToLineList(this.lines[perpToId], footId, footPos[0])
@@ -388,7 +400,7 @@
                         const intersectionPos = this.getIntersectionLines([perpLinePts[0], perpLinePts[1]], [perpLinePts[2], perpLinePts[3]],
                                 this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
                         if (intersectionPos) {
-                          const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+                          const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1], true, this.pointType.semi)
                           this.addPointToLine(newPtId, id)
                           this.addToSelected(newPtId)
                         }
@@ -400,7 +412,7 @@
                       const intersectionPos = this.getIntersectionLines([perpLinePts[0], perpLinePts[1]], [perpLinePts[2], perpLinePts[3]],
                               this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
                       if (intersectionPos) {
-                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+                        const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1], false, this.pointType.fixed)
                         this.addPointToLine(newPtId, id)
                         this.addToSelected(newPtId)
                         this.addLine(this.selected[1], this.selected[2])
@@ -470,11 +482,11 @@
             this.draw(["circle"])
           }
           else if (this.status === "point") {
-            this.addPointToCircleWithCheck(this.getMousePos(), id, false)
+            this.addPointToCircleWithCheck(this.getMousePos(), id, false, this.pointType.semi)
             this.draw(["circle"])
           }
           else if (this.status === "line") {
-            const pointId = this.addPointToCircleWithCheck(this.getMousePos(), id, true)
+            const pointId = this.addPointToCircleWithCheck(this.getMousePos(), id, true, this.pointType.semi)
             this.addToSelected(pointId)
             if (this.checkReachLength(this.status)) {
               this.addLine(this.selected[0], this.selected[1])
@@ -499,7 +511,7 @@
               const intersectionPos = this.getIntersectionLineAndCircle([endpointsPos[0], endpointsPos[1]], [endpointsPos[2], endpointsPos[3]],
                       [circle.x(), circle.y()], circle.radius())
               if (intersectionPos.length === 1) {
-                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true, this.pointType.semi)
                 this.addPointToCircle(newId, id)
                 this.addToSelected(newId)
               }
@@ -508,9 +520,9 @@
                 const dist2 = this.getDistByPointPos(intersectionPos[1], this.getMousePos())
                 let newPtId
                 if (dist1 < dist2) {
-                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true)
+                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true, this.pointType.semi)
                 } else {
-                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true)
+                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true, this.pointType.semi)
                 }
                 this.addPointToCircle(newPtId, id)
                 this.addToSelected(newPtId)
@@ -523,7 +535,7 @@
               const intersectionPos = this.getIntersectionLineAndCircle([endpointsPos[0], endpointsPos[1]], [endpointsPos[2], endpointsPos[3]],
                       [circle.x(), circle.y()], circle.radius())
               if (intersectionPos.length === 1) {
-                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], false, this.pointType.fixed)
                 this.addPointToCircle(newId, id)
                 this.addToSelected(newId)
               }
@@ -532,9 +544,9 @@
                 const dist2 = this.getDistByPointPos(intersectionPos[1], this.getMousePos())
                 let newPtId
                 if (dist1 < dist2) {
-                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true)
+                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], false, this.pointType.fixed)
                 } else {
-                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true)
+                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], false, this.pointType.fixed)
                 }
                 this.addPointToCircle(newPtId, id)
                 this.addToSelected(newPtId)
@@ -547,7 +559,7 @@
           }
           else if (this.status === "perpendicular") {
             if (this.checkSelectedPlace(0)) {
-              const newPtId = this.addPointToCircleWithCheck(this.getMousePos(), id, true)
+              const newPtId = this.addPointToCircleWithCheck(this.getMousePos(), id, true, this.pointType.semi)
               this.addToSelected(newPtId)
             }
             else if (this.checkSelectedPlace(1)) {
@@ -557,7 +569,7 @@
               const intersectionPos = this.getIntersectionLineAndCircle([endpointsPos[0], endpointsPos[1]], [endpointsPos[2], endpointsPos[3]],
                       [circle.x(), circle.y()], circle.radius())
               if (intersectionPos.length === 1) {
-                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true, this.pointType.semi)
                 this.addPointToCircle(newId, id)
                 this.addToSelected(newId)
               }
@@ -566,9 +578,9 @@
                 const dist2 = this.getDistByPointPos(intersectionPos[1], this.getMousePos())
                 let newPtId
                 if (dist1 < dist2) {
-                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true)
+                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true, this.pointType.semi)
                 } else {
-                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true)
+                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true, this.pointType.semi)
                 }
                 this.addPointToCircle(newPtId, id)
                 this.addToSelected(newPtId)
@@ -581,7 +593,7 @@
               const intersectionPos = this.getIntersectionLineAndCircle([endpointsPos[0], endpointsPos[1]], [endpointsPos[2], endpointsPos[3]],
                       [circle.x(), circle.y()], circle.radius())
               if (intersectionPos.length === 1) {
-                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+                const newId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], false, this.pointType.fixed)
                 this.addPointToCircle(newId, id)
                 this.addToSelected(newId)
               }
@@ -590,9 +602,9 @@
                 const dist2 = this.getDistByPointPos(intersectionPos[1], this.getMousePos())
                 let newPtId
                 if (dist1 < dist2) {
-                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], true)
+                  newPtId = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], false, this.pointType.fixed)
                 } else {
-                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], true)
+                  newPtId = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], false, this.pointType.fixed)
                 }
                 this.addPointToCircle(newPtId, id)
                 this.addToSelected(newPtId)
@@ -609,7 +621,7 @@
         this.draw(["circle"])
         return id
       },
-      addClickPosToLine(lineId, activated) {
+      addClickPosToLine(lineId, activated, type) {
         const newX = this.$refs.stage.getNode().getPointerPosition().x
         const newY = this.$refs.stage.getNode().getPointerPosition().y
         const endpoints = this.getEndpointsByLineId(lineId)
@@ -617,7 +629,7 @@
         const minDist = r[0]
         const foot = r[1]
         if (minDist < 5) {
-          const newPtId = this.addPoint(foot[0], foot[1], activated)
+          const newPtId = this.addPoint(foot[0], foot[1], activated, type)
           this.addPointToLine(newPtId, lineId)
           return newPtId
         }
@@ -646,7 +658,7 @@
         }
         info.points.push(id)
       },
-      addPointToCircleWithCheck(pointPos, circleId, activated) {
+      addPointToCircleWithCheck(pointPos, circleId, activated, type) {
         const circle = this.getCircleByCircleId(circleId)
         const x = circle.x()
         const y = circle.y()
@@ -672,7 +684,7 @@
             }
             else {
               if (this.getDistByPointPos(intersections[0], [x, y]) < 2) {
-                newPtId = this.addPoint(intersections[0][0], intersections[0][1], activated)
+                newPtId = this.addPoint(intersections[0][0], intersections[0][1], activated, type)
               }
             }
             this.addPointToCircle(newPtId, circleId)
@@ -840,7 +852,7 @@
           const intersectionPos = this.getIntersectionLines(this.getCoordinateByPoint(l1ps[0]), this.getCoordinateByPoint(l1ps[1]),
                   this.getCoordinateByPoint(l2ps[0]), this.getCoordinateByPoint(l2ps[1]))
           if (intersectionPos) {
-            const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1])
+            const newPtId = this.addPoint(intersectionPos[0], intersectionPos[1], false, this.pointType.fixed)
             this.addPointToLine(newPtId, this.selected[0])
             this.addPointToLine(newPtId, this.selected[1])
             return [newPtId]
@@ -854,11 +866,11 @@
           const intersectionPos = this.getIntersectionLineAndCircle(this.getCoordinateByPoint(endpoints[0]), this.getCoordinateByPoint(endpoints[1]),
           [circle.x(), circle.y()], circle.radius())
           if (intersectionPos.length >= 1) {
-            const newPtId1 = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+            const newPtId1 = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], false, this.pointType.fixed)
             this.addPointToCircle(newPtId1, circleId)
             this.addPointToLine(newPtId1, lineId)
             if (intersectionPos.length === 2) {
-              const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
+              const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], false, this.pointType.fixed)
               this.addPointToCircle(newPtId2, circleId)
               this.addPointToLine(newPtId2, lineId)
               return [newPtId1, newPtId2]
@@ -872,11 +884,11 @@
           const intersectionPos = this.getIntersectionCircles(this.getCenterByCircle(circle1), this.getRadiusByCircle(circle1),
           this.getCenterByCircle(circle2), this.getRadiusByCircle(circle2))
           if (intersectionPos) {
-            const newPtId1 = this.addPoint(intersectionPos[0][0], intersectionPos[0][1])
+            const newPtId1 = this.addPoint(intersectionPos[0][0], intersectionPos[0][1], false, this.pointType.fixed)
             this.addPointToCircle(newPtId1, id1)
             this.addPointToCircle(newPtId1, id2)
             if (intersectionPos.length === 2) {
-              const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1])
+              const newPtId2 = this.addPoint(intersectionPos[1][0], intersectionPos[1][1], false, this.pointType.fixed)
               this.addPointToCircle(newPtId2, id1)
               this.addPointToCircle(newPtId2, id2)
               return [newPtId1, newPtId2]
@@ -1043,7 +1055,7 @@
         const dy = y - pedalPos[1]
         return [Math.sqrt(dx * dx + dy * dy), pedalPos];
       },
-      addPoint(x, y, activated) {
+      addPoint(x, y, activated, type) {
         let id = 0
         while (this.points.hasOwnProperty(id)) {
           id += 1
@@ -1056,9 +1068,9 @@
         }
         let info = undefined
         if (activated) {
-          info = {"name": name, "activated": true, "x": x, "y": y}
+          info = {"name": name, "activated": true, "x": x, "y": y, "type": type}
         } else {
-          info = {"name": name, "activated": false, "x": x, "y": y}
+          info = {"name": name, "activated": false, "x": x, "y": y, "type": type}
         }
         this.points[id] = info
         const group = new Konva.Group({
@@ -1129,7 +1141,7 @@
                         '#' + this.selected[1])
                 let calX = (p1.x() + p2.x()) / 2
                 let calY = this.getYbyLinePos(p1.x(), p1.y(), p2.x(), p2.y(), calX)
-                const newPtId = this.addPoint(calX, calY)
+                const newPtId = this.addPoint(calX, calY, false, this.pointType.semi)
                 this.addPointToLine(newPtId, lineId)
                 this.midpoints.push(newPtId, this.selected[0], this.selected[1])
             }
@@ -1193,6 +1205,9 @@
       },
       handleClickConstructParallel() {
         this.status = "parallel"
+      },
+      handleClickCongruentSegment() {
+        this.status = "cong"
       },
       // updateDraggable() {
       //   for (let id in this.points) {
@@ -1402,7 +1417,7 @@
         if (this.selected.length === 1 && ["line", "circle", "perpendicular"].indexOf(this.status) !== -1) {
           const mousePos = this.getMousePos()
           let points, id
-          if (this.status === "perpendicular" && this.getTypeById(this.selected[0] === "line")) {
+          if (this.status === "perpendicular" && this.getTypeById(this.selected[0]) === "line") {
             id = "perpLine"
             const endpoints = this.getEndPointsIdByLineId(this.selected[0])
             const p1 = this.getRotatedPointPos(this.getCoordinateByPointId(endpoints[0]), mousePos, 90)
