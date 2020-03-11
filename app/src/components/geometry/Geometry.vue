@@ -1024,6 +1024,12 @@
         const y2 = pair2[1]
         return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2))
       },
+      getPedalCoordinatePointToSegById(ptId, lineId, extend) {
+        const ptPos = this.getCoordinateByPointId(ptId)
+        const endpoints = this.getEndpointsByLineId(lineId)
+        return this.getPedalCoordinatePointToSeg(ptPos, this.getCoordinateByPoint(endpoints[0]),
+        this.getCoordinateByPoint(endpoints[1]), extend)
+      },
       getPedalCoordinatePointToSeg(pair, pair1, pair2, extend) {
         if (!extend) {
           extend = true
@@ -1146,7 +1152,7 @@
                         '#' + this.selected[1])
                 let calX = (p1.x() + p2.x()) / 2
                 let calY = this.getYbyLinePos(p1.x(), p1.y(), p2.x(), p2.y(), calX)
-                const newPtId = this.addPoint(calX, calY, false, this.pointType.semi)
+                const newPtId = this.addPoint(calX, calY, false, this.pointType.fixed)
                 this.addPointToLine(newPtId, lineId)
                 this.midpoints.push(newPtId, this.selected[0], this.selected[1])
             }
@@ -1176,7 +1182,7 @@
           }
         })
         group.on("dragmove", () => {
-          this.updateFollow(id)
+          this.updateFollow2(id)
           this.updateObjects()
         })
         // group.on("dragend", this.handleDragEndAnchor)
@@ -1225,6 +1231,41 @@
       //     }
       //   }
       // },
+      updateFollow2(ptId) {
+        const pt = this.getPointById(ptId)
+        if (this.points[ptId].type === this.pointType.fixed) {
+          pt.x(this.points[ptId].x)
+          pt.y(this.points[ptId].y)
+        }
+        else if (this.points[ptId].type === this.pointType.semi) {
+          let lineId
+          for (let id in this.lines) {
+            if (this.lines[id].points.indexOf(ptId) !== -1) {
+              lineId = id
+              break
+            }
+          }
+        //  Move point on the line with lineId.
+          if (lineId) {
+            const endpoints = this.getEndPointsIdByLineId(lineId)
+            const mousePos = this.getMousePos()
+            const coor = this.getPedalCoordinatePointToSeg(mousePos, [this.points[endpoints[0]].x,
+                    this.points[endpoints[0]].y], [this.points[endpoints[1]].x, this.points[endpoints[1]].y],
+                    true)
+            window.console.log(coor, mousePos)
+
+            this.points[ptId].x = coor[0]
+            this.points[ptId].y = coor[1]
+
+            pt.x(this.points[ptId].x)
+            pt.y(this.points[ptId].y)
+          }
+          else {
+            pt.x(this.points[ptId].x)
+            pt.y(this.points[ptId].y)
+          }
+        }
+      },
       updateFollow(ptId) {
         let beforeX = this.points[ptId].x
         let beforeY = this.points[ptId].y
