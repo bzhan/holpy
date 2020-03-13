@@ -228,7 +228,11 @@ class apply_prev(Tactic):
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
-        inst = matcher.first_order_match(C, goal.prop)
+        if args is None:
+            inst = Inst()
+        else:
+            inst = args
+        inst = matcher.first_order_match(C, goal.prop, inst)
         for idx, prev_pt in enumerate(prev_pts):
             inst = matcher.first_order_match(As[idx], prev_pt.prop, inst)
 
