@@ -5,7 +5,7 @@
       <b-navbar-brand href="#">Integral</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
-          <b-dropdown-item href="#" v-on:click='openFile'>Open</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='open_file_prompt'>Open</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Calc" left>
           <b-dropdown-item href="#" v-on:click="back">Back</b-dropdown-item>
@@ -248,9 +248,14 @@ export default {
   },
 
   methods: {
-    openFile: async function () {
+
+    open_file_prompt: function() {
+      this.openFile(prompt('Please enter the filename', 'tongji7'))
+    },
+
+    openFile: async function (file_name) {
       const data = {
-        filename: this.filename
+        filename: file_name
       };
       const response = await axios.post("http://127.0.0.1:5000/api/integral-open-file", JSON.stringify(data))
       this.content = response.data.content
