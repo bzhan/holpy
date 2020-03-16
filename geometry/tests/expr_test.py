@@ -462,7 +462,7 @@ class ExprTest(unittest.TestCase):
             #
             # # Following tests proves some examples in "Geometry Expert".
             # # Examples -> 6_GDD_FULL -> 01-20
-            # # ... -> 01
+            # ... -> 01
             # (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "midp(F, C, B)", "midp(G, D, E)", "coll(A, D, B)",
             #            "coll(A, E, C)", "coll(D, G, E)", "coll(B, F, C)"], [], [], "perp(F, G, D, E)"),
             # # ... -> 02
@@ -507,6 +507,8 @@ class ExprTest(unittest.TestCase):
             (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
                       "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
                       "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "eqangle(C, I, I, K, H, I, I, K)"),
+
+            # (ruleset, ["eqangle(K, E, I, D, I, D, K, E)"], [], [], "perp(K, E, I, D)"),
             # ... -> 16 (Too slow)
             # (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
             #            "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",

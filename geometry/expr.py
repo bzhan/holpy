@@ -633,7 +633,7 @@ class Prover:
         return not(not hyp.shadowed and self.check_imply(hyp, fact))
 
     def check_imply_reverse(self, goal, fact) -> bool:
-        return not self.check_imply(fact, goal)
+        return not self.check_imply(goal, fact)
 
     def check_reflected(self, hyp, fact) -> bool:
         if fact.pred_name in ('eqangle'):
@@ -769,7 +769,7 @@ class Prover:
                         fact = new_fact
                         new_facts.append(new_fact)
 
-            print(new_facts[-1])
+            # print(new_facts[-1], facts, rule_name)
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
@@ -777,6 +777,7 @@ class Prover:
                 #     print("new fact:", new_fact, rule, facts)
                 self.classified_hyps[new_fact.pred_name].append(new_fact)
 
+            # print(new_facts[-1], self.concl, self.check_imply(new_facts[-1], self.concl))
             if self.check_imply(new_facts[-1], self.concl):
                 return new_facts[-1]
 
@@ -832,7 +833,9 @@ class Prover:
         to be generated, or conclusion is in the list of facts.
         Return the list of facts.
         """
-        self.search_step()
+        res = self.search_step()
+        if res is not None:
+            return res
         steps = 0
         # self.print_hyps(only_not_shadowed=True)
         # print(self.lines)
@@ -1085,6 +1088,7 @@ class Prover:
             # Check whether both lines in goal are in fact.
             f_pairs = make_pairs(fact.args)
             g_pairs = make_pairs(goal.args)
+            # print(all(any(self.equal_line(f, g) for f in f_pairs) for g in g_pairs))
             return all(any(self.equal_line(f, g) for f in f_pairs) for g in g_pairs)
 
         elif fact.pred_name in ("eqangle", "eqratio"):
