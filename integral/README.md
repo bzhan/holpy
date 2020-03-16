@@ -6,6 +6,13 @@ Use
 
 to run all tests.
 
+The user interface is a part of the combined user interface for holpy. To start,
+change to /app folder. Then run ```npm install``` followed by ```npm run serve```,
+then start the server (in the root directory) using ```python app.py```,
+and go to page ```localhost:8080```.
+
+There is also a tutorial for the user interface in /integral/tutorial.
+
 We primarily used three references:
 
 * Exam preparation in higher mathematics, Tongji University, 7th edition
