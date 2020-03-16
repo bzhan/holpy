@@ -66,13 +66,16 @@ export default {
     adjust_input_size: function () {
       const input = this.$refs.input
       const test_width = this.$refs.test_width
-      const text = $(input).val()
-      $(test_width).text(text)
-      $(input).css('width', $(test_width).css('width'))
-      if ($(test_width).width() + 20 < Number(this.minWidth)) {  // +20 to account for padding
-        $(input).css('width', this.minWidth + 'px')
+      const text = input.value
+      test_width.textContent = text
+      test_width.style.display = 'inline-block'
+      const width = test_width.offsetWidth
+      test_width.style.display = 'none'
+      input.style.width = width + 'px'
+      if (width < Number(this.minWidth)) {
+        input.style.width = this.minWidth + 'px'
       }
-      $(input).attr('rows', text.split('\n').length)
+      input.rows = text.split('\n').length
     },
 
     handle_input: function (event) {
@@ -82,8 +85,8 @@ export default {
 
     replace_unicode: function (event) {
       const input = this.$refs.input
-      var content = $(input).val().trim();
-      var pos = input.selectionStart;
+      var content = input.value.trim()
+      var pos = input.selectionStart
       if (pos !== 0 && event.keyCode === 9) {  // Tab
         var len = '';
         for (let i = 0; i < this.replace_obj.length; i++) {
@@ -101,7 +104,7 @@ export default {
           }
         }
         if (len) {
-          $(input).val(content);
+          input.value = content;
           input.setSelectionRange(pos - len + 1, pos - len + 1);
         }
       }       

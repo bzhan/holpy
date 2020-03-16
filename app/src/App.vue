@@ -8,8 +8,6 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-window.$ = require('jquery')
-
 
 export default {
   name: 'app',
