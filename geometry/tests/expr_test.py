@@ -389,7 +389,7 @@ class ExprTest(unittest.TestCase):
             # #            "eqratio(B, K, B, C, C, P, B, C)", "coll(N, Q, M)", "coll(A, Q, K)",
             # #            "coll(Z, B, C)", "coll(Z, Q, G)"], [], [], "eqratio(B, Z, Z, C, B, P, P, C)"),
             #
-            # # 6.60 (Too slow)
+            # # 6.60 (Failed)
             # # H1 -> P, H2 -> Q, A1 -> R
             # # (ruleset, ["midp(R, B, C)", "coll(H, B, C)", "para(A, R, H, N)", "coll(D, N, H)", "coll(B, A, D)", "coll(Q, A, P)",
             # #            "midp(K, N, C)", "midp(L, B, D)", "midp(K, H, P)", "midp(L, H, Q)"], [], [], "midp(A, P, Q)"),
@@ -399,7 +399,7 @@ class ExprTest(unittest.TestCase):
             # # (ruleset, ["coll(D, B, C)", "perp(D, O, O, A)", "coll(A, B, F)", "perp(F, O, O, C)", "coll(C, A, E)",
             # #            "perp(E, O, O, B)", "coll(E, D, Z)", "coll(A, B, Z)", "coll(E, F, D)"], [], [], "midp(Z, A, B)"),
             #
-            # # 6.63 (failed)
+            # # 6.63 (Failed)
             # # In a given triangle the three products of the segments into which
             # # the orthocenter divides the altitudes are equal.
             # # (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "coll(E, H, B)", "coll(C, H, D)", "coll(A, E, C)",
@@ -417,12 +417,12 @@ class ExprTest(unittest.TestCase):
             # # (ruleset, ["perp(A, H, B, C)", "perp(B, H, A, C)", "perp(C, H, A, B)", "circle(OA, B, H, C)",
             # #            "circle(OB, A, C, H)", "circle(OC, A, B, H)", "circle(O, A, B, C)"], [], [], "cong(OB, OC, B, C)"),
             #
-            # # 6.72 (too slow)
+            # # 6.72 (Failed)
             # # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "cong(D1, B, C, D)",
             # #            "cong(E1, A, C, E)", "cong(F1, A, B, F)", "coll(A, E1, E, C)", "coll(C, D1, D, B)",
             # #            "coll(A, F1, F, B)", "perp(I, E1, A, C)", "perp(I, D1, C, D)"], [], [], "perp(I, F1, A, B)"),
             #
-            # # 6.73 (failed)
+            # # 6.73 (Failed)
             # # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(P, D, B, A)", "coll(J, F, E)",
             # #            "coll(J, P, D)", "coll(B, P, F, A)", "coll(A, E, C)", "coll(B, D, C)"], [], [], "midp(P, D, J)"),
             #
@@ -463,56 +463,54 @@ class ExprTest(unittest.TestCase):
             # # Following tests proves some examples in "Geometry Expert".
             # # Examples -> 6_GDD_FULL -> 01-20
             # ... -> 01
-            # (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "midp(F, C, B)", "midp(G, D, E)", "coll(A, D, B)",
-            #            "coll(A, E, C)", "coll(D, G, E)", "coll(B, F, C)"], [], [], "perp(F, G, D, E)"),
-            # # ... -> 02
-            # (ruleset, ["midp(A1, C, B)", "midp(B1, C, A)", "midp(C1, B, A)", "circle(O, A, B, C)", "coll(A, B1, C)",
-            #            "coll(C, A1, B)", "coll(A, C1, B)"], [], [], "perp(O, A1, B1, C1)"),
-            # # ... -> 03
-            # (ruleset, ["perp(D, A, B, C)", "perp(E, B, E, C)", "perp(F, C, A, B)", "midp(a1, C, B)", "midp(P, E, B)",
-            #            "midp(Q, F, C)", "coll(A, F, B)", "coll(A, E, C)", "coll(A, H, D)",
-            #            "coll(B, P, H, E)", "coll(F, Q, H, C)", "coll(B, a1, D, C)"], [], [], "cyclic(P, Q, H, D)"),
-            # # ... -> 04
-            # (ruleset, ["circle(O, A, B, C, D)", "midp(Q, C, B)", "midp(J, S, Q)", "cong(J, O, J, M)",
-            #            "coll(A, S, D, I)", "coll(B, Q, C, I)", "coll(O, J, M)", "coll(S, J, Q)"], [], [],
-            #  "perp(S, M, B, C)"),
-            # # ... -> 06
-            # (ruleset, ["perp(E, C, A, B)", "perp(F, A, B, C)", "coll(A, E, B)", "coll(B, F, C)", "coll(E, H, C)",
-            #            "coll(A, H, F)"], [], [], "perp(B, H, A, C)"),
-            # # ... -> 07
-            # # TODO: Make use of "circle" facts when matching "cyclic" facts.
-            # # Adding "cyclic" fact with the same arguments as a "circle" fact (but without center) works smoothly.
-            # (ruleset, ["circle(O, A, B, C, D)", "perp(E, D, B, C)", "perp(F, D, A, C)", "perp(G, D, A, B)",
-            #            "coll(A, G, B)", "coll(A, F, C)", "coll(E, C, B)", "cyclic(A, B, C, D)"], [], [],
-            #  "coll(E, F, G)"),
-            # # ... -> 10
-            # (ruleset, ["circle(O1, C, D, E, Q)", "cyclic(C, D, E, Q)", "circle(O, B, E, A, Q)", "cyclic(B, E, A, Q)",
-            #            "coll(C, D, P)", "coll(C, E, B)", "coll(D, E, A)", "coll(P, B, A)"], [], [],
-            #  "cyclic(P, D, Q, A)"),
-            # # ... -> 11
-            # (ruleset, ["perp(D, A, B, C)", "midp(L, A, B)", "midp(M, C, B)", "midp(N, A, C)", "coll(A, L, B)",
-            #            "coll(A, N, C)", "coll(B, D, M, C)"], [], [], "cyclic(L, D, M, N)"),
-            # # ... -> 12
-            # (ruleset, ["perp(B, D, A, C)", "circle(O, A, B, C, D)", "cyclic(A, B, C, D)", "coll(E, A, C)",
-            #            "coll(E, B, D)", "coll(A, F, B)", "midp(F, B, A)"], [], [], "perp(F, E, C, D)"),
-            # # ... -> 13
-            # (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
-            #            "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
-            #  [], [], "para(E, F, G, H)"),
+            (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "midp(F, C, B)", "midp(G, D, E)", "coll(A, D, B)",
+                       "coll(A, E, C)", "coll(D, G, E)", "coll(B, F, C)"], [], [], "perp(F, G, D, E)"),
+            # ... -> 02
+            (ruleset, ["midp(A1, C, B)", "midp(B1, C, A)", "midp(C1, B, A)", "circle(O, A, B, C)", "coll(A, B1, C)",
+                       "coll(C, A1, B)", "coll(A, C1, B)"], [], [], "perp(O, A1, B1, C1)"),
+            # ... -> 03
+            (ruleset, ["perp(D, A, B, C)", "perp(E, B, E, C)", "perp(F, C, A, B)", "midp(a1, C, B)", "midp(P, E, B)",
+                       "midp(Q, F, C)", "coll(A, F, B)", "coll(A, E, C)", "coll(A, H, D)",
+                       "coll(B, P, H, E)", "coll(F, Q, H, C)", "coll(B, a1, D, C)"], [], [], "cyclic(P, Q, H, D)"),
+            # ... -> 04
+            (ruleset, ["circle(O, A, B, C, D)", "midp(Q, C, B)", "midp(J, S, Q)", "cong(J, O, J, M)",
+                       "coll(A, S, D, I)", "coll(B, Q, C, I)", "coll(O, J, M)", "coll(S, J, Q)"], [], [],
+             "perp(S, M, B, C)"),
+            # ... -> 06
+            (ruleset, ["perp(E, C, A, B)", "perp(F, A, B, C)", "coll(A, E, B)", "coll(B, F, C)", "coll(E, H, C)",
+                       "coll(A, H, F)"], [], [], "perp(B, H, A, C)"),
+            # ... -> 07
+            # TODO: Make use of "circle" facts when matching "cyclic" facts.
+            # Adding "cyclic" fact with the same arguments as a "circle" fact (but without center) works smoothly.
+            (ruleset, ["circle(O, A, B, C, D)", "perp(E, D, B, C)", "perp(F, D, A, C)", "perp(G, D, A, B)",
+                       "coll(A, G, B)", "coll(A, F, C)", "coll(E, C, B)", "cyclic(A, B, C, D)"], [], [],
+             "coll(E, F, G)"),
+            # ... -> 10
+            (ruleset, ["circle(O1, C, D, E, Q)", "cyclic(C, D, E, Q)", "circle(O, B, E, A, Q)", "cyclic(B, E, A, Q)",
+                       "coll(C, D, P)", "coll(C, E, B)", "coll(D, E, A)", "coll(P, B, A)"], [], [],
+             "cyclic(P, D, Q, A)"),
+            # ... -> 11
+            (ruleset, ["perp(D, A, B, C)", "midp(L, A, B)", "midp(M, C, B)", "midp(N, A, C)", "coll(A, L, B)",
+                       "coll(A, N, C)", "coll(B, D, M, C)"], [], [], "cyclic(L, D, M, N)"),
+            # ... -> 12
+            (ruleset, ["perp(B, D, A, C)", "circle(O, A, B, C, D)", "cyclic(A, B, C, D)", "coll(E, A, C)",
+                       "coll(E, B, D)", "coll(A, F, B)", "midp(F, B, A)"], [], [], "perp(F, E, C, D)"),
+            # ... -> 13
+            (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
+                       "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
+             [], [], "para(E, F, G, H)"),
             # ... -> 14 (Failed)
             # Can be resolved by adding a new rule.
-            # # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
-            # #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
-            # ... -> 15 (Too slow)
+            # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
+            #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
+            # ... -> 15
             (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
                       "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
-                      "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "eqangle(C, I, I, K, H, I, I, K)"),
-
-            # (ruleset, ["eqangle(K, E, I, D, I, D, K, E)"], [], [], "perp(K, E, I, D)"),
-            # ... -> 16 (Too slow)
-            # (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
-            #            "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",
-            #            "coll(O, T, D, P, A)", "coll(O, K, C, Q, B)", "coll(A, M, B)"], [], [], "perp(O, S, P, Q)"),
+                      "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "cyclic(H, K, I, G)"),
+            # ... -> 16
+            (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
+                       "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",
+                       "coll(O, T, D, P, A)", "coll(O, K, C, Q, B)", "coll(A, M, B)"], [], [], "perp(O, S, P, Q)"),
 
         ]
         # pr = cProfile.Profile()
