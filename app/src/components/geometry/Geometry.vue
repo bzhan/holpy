@@ -127,7 +127,7 @@
           0: "red",
           1: "green",
           2: "grey"
-        }
+        },
       }
     },
     mounted() {
@@ -278,6 +278,8 @@
           info = {"points": [id1, id2], "activated": false}
         } else {info = {"points": [id2, id1], "activated": false}}
         this.lines[id] = info
+        this.addContainerToPoint(id1, id)
+        this.addContainerToPoint(id2, id)
         const newLine = new Konva.Line({
           points: [x1, y1, x2, y2],
           stroke: "grey",
@@ -451,9 +453,11 @@
         }
         let info = undefined
         if (!p3) {
-          info = {"points": [p1, p2], "activated": false}
+          info = {"points": [id1, id2], "activated": false}
         }
         this.circles[id] = info
+        this.addContainerToPoint(id1, id)
+        this.addContainerToPoint(id2, id)
         const newCircle = new Konva.Circle({
           radius: radius,
           x: center.x(),
@@ -643,6 +647,7 @@
         const line = this.getLineByLineId(lineId)
         const pos = this.getCoordinateByPointId(pointId)
         line.getAttr('points').push(pos[0], pos[1])
+        this.addContainerToPoint(pointId, lineId)
         this.addPointToLineList(this.lines[lineId], pointId, pos[0])
       },
       addPointToLineList(info, id, x) {
@@ -684,7 +689,7 @@
                 minPt = 1
               }
               if (minDist < 2) {
-                newPtId = this.addPoint(intersections[minPt][0], intersections[minPt][1], activated)
+                newPtId = this.addPoint(intersections[minPt][0], intersections[minPt][1], activated, type)
               }
             }
             else {
@@ -699,6 +704,7 @@
         return null
       },
       addPointToCircle(pointId, circleId) {
+        this.addContainerToPoint(pointId, circleId)
         this.addPointToCircleList(this.circles[circleId], pointId)
       },
       addPointToCircleList(info, id) {
@@ -1066,6 +1072,11 @@
         const dy = y - pedalPos[1]
         return [Math.sqrt(dx * dx + dy * dy), pedalPos];
       },
+      addContainerToPoint(id, containerId) {
+        if (!this.points[id].container) {
+          this.points[id].container = containerId
+        }
+      },
       addPoint(x, y, activated, type) {
         let id = 0
         while (this.points.hasOwnProperty(id)) {
@@ -1079,9 +1090,9 @@
         }
         let info = undefined
         if (activated) {
-          info = {"name": name, "activated": true, "x": x, "y": y, "type": type}
+          info = {"name": name, "activated": true, "x": x, "y": y, "type": type, "container": null}
         } else {
-          info = {"name": name, "activated": false, "x": x, "y": y, "type": type}
+          info = {"name": name, "activated": false, "x": x, "y": y, "type": type, "container": null}
         }
         this.points[id] = info
         const group = new Konva.Group({
@@ -1233,30 +1244,37 @@
       // },
       updateFollow2(ptId) {
         const pt = this.getPointById(ptId)
+        const containerId = this.points[ptId].container
         if (this.points[ptId].type === this.pointType.fixed) {
           pt.x(this.points[ptId].x)
           pt.y(this.points[ptId].y)
         }
         else if (this.points[ptId].type === this.pointType.semi) {
-          let lineId
-          for (let id in this.lines) {
-            if (this.lines[id].points.indexOf(ptId) !== -1) {
-              lineId = id
-              break
+        //  Move point on the line or circle.
+          const mousePos = this.getMousePos()
+          let newPos
+          if (containerId) {
+            if (this.getTypeById(containerId) === "line") {
+              const endpoints = this.getEndPointsIdByLineId(containerId)
+              newPos = this.getPedalCoordinatePointToSeg(mousePos, [this.points[endpoints[0]].x,
+                        this.points[endpoints[0]].y], [this.points[endpoints[1]].x, this.points[endpoints[1]].y],
+                      true)
             }
-          }
-        //  Move point on the line with lineId.
-          if (lineId) {
-            const endpoints = this.getEndPointsIdByLineId(lineId)
-            const mousePos = this.getMousePos()
-            const coor = this.getPedalCoordinatePointToSeg(mousePos, [this.points[endpoints[0]].x,
-                    this.points[endpoints[0]].y], [this.points[endpoints[1]].x, this.points[endpoints[1]].y],
-                    true)
-            window.console.log(coor, mousePos)
-
-            this.points[ptId].x = coor[0]
-            this.points[ptId].y = coor[1]
-
+            else if (this.getTypeById(containerId) === "circle") {
+              const circle = this.getCircleByCircleId(containerId)
+              const centerPos = [circle.x(), circle.y()]
+              const intersectionPos = this.getIntersectionLineAndCircle(centerPos, mousePos, centerPos, circle.radius())
+              if (intersectionPos.length >= 1) {
+                if (intersectionPos.length === 2) {
+                  newPos = this.getDistByPointPos(intersectionPos[0], mousePos) < this.getDistByPointPos(intersectionPos[1], mousePos) ?
+                          intersectionPos[0] : intersectionPos[1]
+                } else {
+                  newPos = intersectionPos[0]
+                }
+              }
+            }
+            this.points[ptId].x = newPos[0]
+            this.points[ptId].y = newPos[1]
             pt.x(this.points[ptId].x)
             pt.y(this.points[ptId].y)
           }
@@ -1264,6 +1282,10 @@
             pt.x(this.points[ptId].x)
             pt.y(this.points[ptId].y)
           }
+        }
+        else if (this.points[ptId].type === this.pointType.free) {
+          this.points[ptId].x = pt.x()
+          this.points[ptId].y = pt.y()
         }
       },
       updateFollow(ptId) {
