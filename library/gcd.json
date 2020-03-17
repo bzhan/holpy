@@ -11,6 +11,256 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "divides_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃k. x = 0 * k) ⟶ x = 0"
+                },
+                {
+                    "args": "∃k. x = 0 * k",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃k. x = 0 * k ⊢ ∃k. x = 0 * k"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "x = 0 * k",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 * k ⊢ x = 0 * k"
+                },
+                {
+                    "args": "nat_times_def_1",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x = 0 * k ⊢ x = 0"
+                },
+                {
+                    "args": "∃k. x = 0 * k",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃k. x = 0 * k) ⟶ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = 0 ⟶ (∃k. x = 0 * k)"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "mult_0_right, x = 0 * 0",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0 ⊢ x = 0 * 0"
+                },
+                {
+                    "args": "exI, {P: λk. x = 0 * k, a: (0::nat)}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = 0 ⊢ ∃a1. x = 0 * a1"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = 0 ⟶ (∃k. x = 0 * k)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃k. x = 0 * k) ⟷ x = 0"
+                },
+                {
+                    "args": "divides_def, divides 0 x ⟷ x = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ divides 0 x ⟷ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides 0 x ⟷ x = 0"
+                }
+            ],
+            "prop": "divides 0 x ⟷ x = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "divides_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "mult_1_left, x = 1 * x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x = 1 * x"
+                },
+                {
+                    "args": "exI, {P: λk. x = 1 * k, a: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. x = 1 * a1"
+                },
+                {
+                    "args": "divides_def, divides 1 x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ divides 1 x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides 1 x"
+                }
+            ],
+            "prop": "divides 1 x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_left"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "divides_self",
@@ -708,7 +958,177 @@
                 "hint_forward"
             ],
             "name": "divides_sum2",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "divides k (m + n)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides k (m + n) ⊢ divides k (m + n)"
+                },
+                {
+                    "args": "divides k m",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides k m ⊢ divides k m"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides k (m + n) ⊢ ∃k1. m + n = k * k1"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides k m ⊢ ∃k1. m = k * k1"
+                },
+                {
+                    "args": "k1, nat",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k1"
+                },
+                {
+                    "args": "m + n = k * k1",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m + n = k * k1 ⊢ m + n = k * k1"
+                },
+                {
+                    "args": "k2, nat",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k2"
+                },
+                {
+                    "args": "m = k * k2",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = k * k2 ⊢ m = k * k2"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "5"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = k * k2, m + n = k * k1 ⊢ k * k2 + n = k * k1"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "divides k m, divides k (m + n), m = k * k2, m + n = k * k1 ⊢ n = k * (k1 - k2)"
+                },
+                {
+                    "args": "exI, {P: λk1. n = k * k1, a: k1 - k2}",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides k m, divides k (m + n), m = k * k2, m + n = k * k1 ⊢ ∃a1. n = k * a1"
+                },
+                {
+                    "args": "divides_def, divides k n",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides k m, divides k (m + n), m = k * k2, m + n = k * k1 ⊢ divides k n"
+                },
+                {
+                    "args": "∃k1. m = k * k1, ∃k1. m + n = k * k1",
+                    "id": "12",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4",
+                        "5",
+                        "3",
+                        "6",
+                        "7",
+                        "11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides k (m + n) ⟶ divides k m ⟶ divides k n"
+                }
+            ],
             "prop": "divides k (m + n) ⟶ divides k m ⟶ divides k n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "k1"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "exists_elim",
+                    "names": "k2"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "5"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "inst_exists_goal",
+                    "s": "k1-k2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "k": "nat",

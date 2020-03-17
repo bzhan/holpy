@@ -1,0 +1,9 @@
+{
+    "content": [
+    ],
+    "description": "Basic theory of divisibility, gcd, coprimality and primality (over N).",
+    "imports": [
+        "nat"
+    ],
+    "name": "prime"
+}

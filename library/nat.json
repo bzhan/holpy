@@ -6504,6 +6504,557 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "le_cases",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "le_0, {n: m}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ m"
+                },
+                {
+                    "args": "disjI2, {A: m ≤ 0, B: 0 ≤ m}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ 0 ∨ 0 ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. 0 ≤ n ∨ n ≤ 0 ⟶ 0 ≤ Suc n ∨ Suc n ≤ 0"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 ≤ n ∨ n ≤ 0",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ∨ n ≤ 0 ⊢ 0 ≤ n ∨ n ≤ 0"
+                },
+                {
+                    "args": "le_0, {n: Suc n}",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ Suc n"
+                },
+                {
+                    "args": "disjI1, {A: 0 ≤ Suc n, B: Suc n ≤ 0}",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ n ∨ n ≤ 0 ⊢ 0 ≤ Suc n ∨ Suc n ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. 0 ≤ n ∨ n ≤ 0 ⟶ 0 ≤ Suc n ∨ Suc n ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n) ⟶ (∀n1. Suc n ≤ n1 ∨ n1 ≤ Suc n ⟶ Suc n ≤ Suc n1 ∨ Suc n1 ≤ Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ ∀n1. Suc n ≤ n1 ∨ n1 ≤ Suc n ⟶ Suc n ≤ Suc n1 ∨ Suc n1 ≤ Suc n"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "Suc n ≤ m ∨ m ≤ Suc n",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc n ≤ m ∨ m ≤ Suc n ⊢ Suc n ≤ m ∨ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ m ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "Suc n ≤ m",
+                    "id": "3.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc n ≤ m ⊢ Suc n ≤ m"
+                },
+                {
+                    "args": "disjI2, {A: Suc n = Suc m, B: Suc n ≤ m}",
+                    "id": "3.2.2.1",
+                    "prevs": [
+                        "3.2.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "Suc n ≤ m, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n = Suc m ∨ Suc n ≤ m"
+                },
+                {
+                    "args": "nat_less_eq_def_2, Suc n ≤ Suc m",
+                    "id": "3.2.2.2",
+                    "prevs": [
+                        "3.2.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Suc n ≤ m, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ Suc m"
+                },
+                {
+                    "args": "disjI1, {A: Suc n ≤ Suc m, B: Suc m ≤ Suc n}",
+                    "id": "3.2.2.3",
+                    "prevs": [
+                        "3.2.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "Suc n ≤ m, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.2.4",
+                    "prevs": [
+                        "3.2.2.0",
+                        "3.2.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ m ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m ≤ Suc n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "m ≤ Suc n",
+                    "id": "3.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "nat_less_eq_def_2",
+                    "id": "3.2.3.1",
+                    "prevs": [
+                        "3.2.3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≤ Suc n ⊢ m = Suc n ∨ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m = Suc n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "m = Suc n",
+                    "id": "3.2.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ⊢ m = Suc n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3.2.3.2.1",
+                    "prevs": [
+                        "3.2.3.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = Suc n ⊢ Suc n = m"
+                },
+                {
+                    "args": "less_eq_refl, {n: m}",
+                    "id": "3.2.3.2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m"
+                },
+                {
+                    "args": "disjI2, {A: m = Suc m, B: m ≤ m}",
+                    "id": "3.2.3.2.3",
+                    "prevs": [
+                        "3.2.3.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = Suc n, m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m = Suc m ∨ m ≤ m"
+                },
+                {
+                    "args": "nat_less_eq_def_2, m ≤ Suc m",
+                    "id": "3.2.3.2.4",
+                    "prevs": [
+                        "3.2.3.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = Suc n, m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m ≤ Suc m"
+                },
+                {
+                    "args": "Suc n ≤ Suc m",
+                    "id": "3.2.3.2.5",
+                    "prevs": [
+                        "3.2.3.2.1",
+                        "3.2.3.2.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = Suc n, m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ Suc m"
+                },
+                {
+                    "args": "disjI1, {A: Suc n ≤ Suc m, B: Suc m ≤ Suc n}",
+                    "id": "3.2.3.2.6",
+                    "prevs": [
+                        "3.2.3.2.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = Suc n, m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3.2.7",
+                    "prevs": [
+                        "3.2.3.2.0",
+                        "3.2.3.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m = Suc n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m ≤ n ⟶ n ≤ m ∨ m ≤ n"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "3.2.3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "disjI2, {A: n ≤ m, B: m ≤ n}",
+                    "id": "3.2.3.3.1",
+                    "prevs": [
+                        "3.2.3.3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n, m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ n ≤ m ∨ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3.3.2",
+                    "prevs": [
+                        "3.2.3.3.0",
+                        "3.2.3.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m ≤ n ⟶ n ≤ m ∨ m ≤ n"
+                },
+                {
+                    "args": "le_suc, m ≤ n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n",
+                    "id": "3.2.3.4",
+                    "prevs": [
+                        "3.2.3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m ≤ n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.3.5",
+                    "prevs": [
+                        "3.2.3.1",
+                        "3.2.3.2",
+                        "3.2.3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ Suc n, Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3.6",
+                    "prevs": [
+                        "3.2.3.0",
+                        "3.2.3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ m ≤ Suc n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.4",
+                    "prevs": [
+                        "3.2.1",
+                        "3.2.2",
+                        "3.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc n ≤ m ∨ m ≤ Suc n, ∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.1",
+                        "3.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n ⊢ ∀m. Suc n ≤ m ∨ m ≤ Suc n ⟶ Suc n ≤ Suc m ∨ Suc m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (∀n1. n ≤ n1 ∨ n1 ≤ n ⟶ n ≤ Suc n1 ∨ Suc n1 ≤ n) ⟶ (∀n1. Suc n ≤ n1 ∨ n1 ≤ Suc n ⟶ Suc n ≤ Suc n1 ∨ Suc n1 ≤ Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λm. ∀n. m ≤ n ∨ n ≤ m ⟶ m ≤ Suc n ∨ Suc n ≤ m, x: m}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∀n. m ≤ n ∨ n ≤ m ⟶ m ≤ Suc n ∨ Suc n ≤ m"
+                },
+                {
+                    "args": "nat_induct, {P: λn. m ≤ n ∨ n ≤ m, x: n}",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ n ∨ n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ∨ n ≤ m"
+                }
+            ],
+            "prop": "m ≤ n ∨ n ≤ m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "m"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.1"
+                    ],
+                    "goal_id": "3.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "3.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "3.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "3.2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3.0"
+                    ],
+                    "goal_id": "3.2.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3.1"
+                    ],
+                    "goal_id": "3.2.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.3.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3.2.0"
+                    ],
+                    "goal_id": "3.2.3.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3.2.1"
+                    ],
+                    "goal_id": "3.2.3.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.2.3.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "3.2.3.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "3.2.3.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "3.2.3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_suc"
+                },
+                {
+                    "goal_id": "3.2.3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.3.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
             "name": "minus",
             "rules": [
                 {
@@ -7376,6 +7927,146 @@
             "vars": {
                 "x": "nat",
                 "y": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "left_sub_distrib",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "le_cases, {m: n, n: p}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n ≤ p ∨ p ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n - p = 0 ⟶ m * n - m * p = m * (n - p)"
+                },
+                {
+                    "args": "n - p = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n - p = 0 ⊢ n - p = 0"
+                },
+                {
+                    "args": "m * n - m * p = m * (n - p)",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ m * n - m * p = m * (n - p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n - p = 0 ⟶ m * n - m * p = m * (n - p)"
+                },
+                {
+                    "args": "sub_eq_0, n ≤ p ⟶ m * n - m * p = m * (n - p)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ n ≤ p ⟶ m * n - m * p = m * (n - p)"
+                },
+                {
+                    "args": "p ≤ n ⟶ m * n - m * p = m * (n - p)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ p ≤ n ⟶ m * n - m * p = m * (n - p)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m * n - m * p = m * (n - p)"
+                },
+                {
+                    "args": "eq_sym_eq, m * (n - p) = m * n - m * p",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m * (n - p) = m * n - m * p"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m * (n - p) = m * n - m * p"
+                }
+            ],
+            "prop": "m * (n - p) = m * n - m * p",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_m": "n",
+                    "param_n": "p",
+                    "theorem": "le_cases"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "sub_eq_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
             }
         },
         {
