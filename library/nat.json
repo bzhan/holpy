@@ -3154,55 +3154,458 @@
                 "hint_rewrite"
             ],
             "name": "lesseq_Suc_less",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ Suc m = 0 ⟶ false"
+                },
+                {
+                    "args": "Suc m = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc m = 0 ⊢ Suc m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc m = 0 ⊢ ¬false ⟶ ¬(Suc m = 0)"
+                },
+                {
+                    "args": "¬false",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "nat_zero_Suc_neq, {n: m}",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(0 = Suc m)"
+                },
+                {
+                    "args": "eq_sym_eq, ¬(Suc m = 0)",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, Suc m = 0 ⊢ ¬(Suc m = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc m = 0 ⊢ ¬false ⟶ ¬(Suc m = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc m = 0 ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Suc m = 0 ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ false ⟶ Suc m = 0"
+                },
+                {
+                    "args": "false",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ⊢ false"
+                },
+                {
+                    "args": "not_false_res, Suc m = 0",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "false ⊢ Suc m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ false ⟶ Suc m = 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "⊢ Suc m = 0 ⟷ false"
                 },
                 {
                     "args": "nat_less_eq_def_1, Suc m ≤ 0 ⟷ false",
-                    "id": "1",
+                    "id": "3",
                     "prevs": [
-                        "0"
+                        "2"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ Suc m ≤ 0 ⟷ false"
                 },
                 {
                     "args": "nat_less_def_1, Suc m ≤ 0 ⟷ m < 0",
-                    "id": "2",
+                    "id": "4",
                     "prevs": [
-                        "1"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ Suc m ≤ 0 ⟷ m < 0"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "5",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. Suc m ≤ n ⟷ m < n ⟶ Suc m ≤ Suc n ⟷ m < Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "Suc m ≤ n ⟷ m < n",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ Suc m ≤ n ⟷ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ Suc m = Suc n ∨ Suc m ≤ n ⟶ m = n ∨ m < n"
+                },
+                {
+                    "args": "Suc m = Suc n ∨ Suc m ≤ n",
+                    "id": "5.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc m = Suc n ∨ Suc m ≤ n ⊢ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ Suc m = Suc n ⟶ m = n ∨ m < n"
+                },
+                {
+                    "args": "Suc m = Suc n",
+                    "id": "5.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc m = Suc n ⊢ Suc m = Suc n"
+                },
+                {
+                    "args": "nat_Suc_inject",
+                    "id": "5.2.1.1",
+                    "prevs": [
+                        "5.2.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc m = Suc n, Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ m = n"
+                },
+                {
+                    "args": "disjI1, {A: m = n, B: m < n}",
+                    "id": "5.2.1.2",
+                    "prevs": [
+                        "5.2.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "Suc m = Suc n, Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ m = n ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.3",
+                    "prevs": [
+                        "5.2.1.0",
+                        "5.2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ Suc m = Suc n ⟶ m = n ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ Suc m ≤ n ⟶ m = n ∨ m < n"
+                },
+                {
+                    "args": "Suc m ≤ n",
+                    "id": "5.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc m ≤ n ⊢ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1",
+                    "prevs": [
+                        "5.1",
+                        "5.2.2.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "Suc m ≤ n, Suc m ≤ n ⟷ m < n ⊢ m < n"
+                },
+                {
+                    "args": "disjI2, {A: m = n, B: m < n}",
+                    "id": "5.2.2.2",
+                    "prevs": [
+                        "5.2.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "Suc m ≤ n, Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ m = n ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.3",
+                    "prevs": [
+                        "5.2.2.0",
+                        "5.2.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ Suc m ≤ n ⟶ m = n ∨ m < n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "5.2.3",
+                    "prevs": [
+                        "5.2.0",
+                        "5.2.1",
+                        "5.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc m ≤ n ⟷ m < n, Suc m = Suc n ∨ Suc m ≤ n ⊢ m = n ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.4",
+                    "prevs": [
+                        "5.2.0",
+                        "5.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ Suc m = Suc n ∨ Suc m ≤ n ⟶ m = n ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ m = n ∨ m < n ⟶ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "m = n ∨ m < n",
+                    "id": "5.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = n ∨ m < n ⊢ m = n ∨ m < n"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ m = n ⟶ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "m = n",
+                    "id": "5.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = n ⊢ m = n"
+                },
+                {
+                    "args": "Suc m = Suc n",
+                    "id": "5.3.1.1",
+                    "prevs": [
+                        "5.3.1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = n ⊢ Suc m = Suc n"
+                },
+                {
+                    "args": "disjI1, {A: Suc m = Suc n, B: Suc m ≤ n}",
+                    "id": "5.3.1.2",
+                    "prevs": [
+                        "5.3.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = n, m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.1.3",
+                    "prevs": [
+                        "5.3.1.0",
+                        "5.3.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ m = n ⟶ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ m < n ⟶ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "m < n",
+                    "id": "5.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < n ⊢ m < n"
+                },
+                {
+                    "args": "Suc m ≤ n",
+                    "id": "5.3.2.1",
+                    "prevs": [
+                        "5.1",
+                        "5.3.2.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m < n, m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ Suc m ≤ n"
+                },
+                {
+                    "args": "disjI2, {A: Suc m = Suc n, B: Suc m ≤ n}",
+                    "id": "5.3.2.2",
+                    "prevs": [
+                        "5.3.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m < n, m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.2.3",
+                    "prevs": [
+                        "5.3.2.0",
+                        "5.3.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ m < n ⟶ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "5.3.3",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.1",
+                        "5.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m = n ∨ m < n, Suc m ≤ n ⟷ m < n ⊢ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.4",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ m = n ∨ m < n ⟶ Suc m = Suc n ∨ Suc m ≤ n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.2",
+                        "5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ Suc m = Suc n ∨ Suc m ≤ n ⟷ m = n ∨ m < n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, Suc m ≤ Suc n ⟷ m = n ∨ m < n",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ Suc m ≤ Suc n ⟷ m = n ∨ m < n"
+                },
+                {
+                    "args": "nat_less_def_2, Suc m ≤ Suc n ⟷ m < Suc n",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Suc m ≤ n ⟷ m < n ⊢ Suc m ≤ Suc n ⟷ m < Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "5.7",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.6"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ ∀n. Suc m ≤ n ⟷ m < n ⟶ Suc m ≤ Suc n ⟷ m < Suc n"
                 },
                 {
                     "args": "nat_induct, {P: λn. Suc m ≤ n ⟷ m < n, x: n}",
-                    "id": "4",
+                    "id": "6",
                     "prevs": [
-                        "2",
-                        "3"
+                        "4",
+                        "5"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ Suc m ≤ n ⟷ m < n"
                 },
                 {
                     "args": "",
-                    "id": "5",
+                    "id": "7",
                     "prevs": [
-                        "4"
+                        "6"
                     ],
                     "rule": "intros",
                     "th": "⊢ Suc m ≤ n ⟷ m < n"
@@ -3225,6 +3628,159 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_zero_Suc_neq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.0"
+                    ],
+                    "goal_id": "5.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "5.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "5.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_Suc_inject"
+                },
+                {
+                    "goal_id": "5.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "5.1",
+                        "5.2.2.0"
+                    ],
+                    "goal_id": "5.2.2.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.0"
+                    ],
+                    "goal_id": "5.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "5.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.3.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.1.0"
+                    ],
+                    "goal_id": "5.3.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.3.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.3.2.1",
+                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -3238,64 +3794,374 @@
                 "hint_rewrite"
             ],
             "name": "less_Suc_lesseq",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ m = 0 ∨ false ⟶ m = 0"
+                },
+                {
+                    "args": "m = 0 ∨ false",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ∨ false ⊢ m = 0 ∨ false"
+                },
+                {
+                    "args": "m = 0 ⟶ m = 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ m = 0 ⟶ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = 0 ∨ false ⊢ false ⟶ m = 0"
+                },
+                {
+                    "args": "false",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ⊢ false"
+                },
+                {
+                    "args": "not_false_res, m = 0",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "false ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "m = 0 ∨ false ⊢ false ⟶ m = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m = 0 ∨ false ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = 0 ∨ false ⟶ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m = 0 ⟶ m = 0 ∨ false"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "disjI1, {A: m = 0, B: false}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = 0 ⊢ m = 0 ∨ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = 0 ⟶ m = 0 ∨ false"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "⊢ m = 0 ∨ false ⟷ m = 0"
                 },
                 {
                     "args": "nat_less_def_1, m = 0 ∨ m < 0 ⟷ m = 0",
-                    "id": "1",
+                    "id": "3",
                     "prevs": [
-                        "0"
+                        "2"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ m = 0 ∨ m < 0 ⟷ m = 0"
                 },
                 {
                     "args": "nat_less_def_2, m < Suc 0 ⟷ m = 0",
-                    "id": "2",
+                    "id": "4",
                     "prevs": [
-                        "1"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ m < Suc 0 ⟷ m = 0"
                 },
                 {
                     "args": "nat_less_eq_def_1, m < Suc 0 ⟷ m ≤ 0",
-                    "id": "3",
+                    "id": "5",
                     "prevs": [
-                        "2"
+                        "4"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ m < Suc 0 ⟷ m ≤ 0"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "6",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. m < Suc n ⟷ m ≤ n ⟶ m < Suc (Suc n) ⟷ m ≤ Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m < Suc n ⟷ m ≤ n",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m < Suc n ⟷ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m = Suc n ∨ m < Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "m = Suc n ∨ m < Suc n",
+                    "id": "6.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ∨ m < Suc n ⊢ m = Suc n ∨ m < Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m = Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "m = Suc n",
+                    "id": "6.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ⊢ m = Suc n"
+                },
+                {
+                    "args": "disjI1, {A: m = Suc n, B: m ≤ n}",
+                    "id": "6.2.1.1",
+                    "prevs": [
+                        "6.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = Suc n, m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m = Suc n ∨ m ≤ n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, m ≤ Suc n",
+                    "id": "6.2.1.2",
+                    "prevs": [
+                        "6.2.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = Suc n, m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.2.1.3",
+                    "prevs": [
+                        "6.2.1.0",
+                        "6.2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m = Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m ≤ n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "6.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "disjI2, {A: m = Suc n, B: m ≤ n}",
+                    "id": "6.2.2.1",
+                    "prevs": [
+                        "6.2.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n, m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m = Suc n ∨ m ≤ n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, m ≤ Suc n",
+                    "id": "6.2.2.2",
+                    "prevs": [
+                        "6.2.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.2.2.3",
+                    "prevs": [
+                        "6.2.2.0",
+                        "6.2.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m ≤ n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "m < Suc n ⟶ m ≤ Suc n",
+                    "id": "6.2.3",
+                    "prevs": [
+                        "6.1",
+                        "6.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m < Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6.2.4",
+                    "prevs": [
+                        "6.2.0",
+                        "6.2.1",
+                        "6.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < Suc n ⟷ m ≤ n, m = Suc n ∨ m < Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.2.5",
+                    "prevs": [
+                        "6.2.0",
+                        "6.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m = Suc n ∨ m < Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "m = Suc n ∨ m ≤ n ⟶ m = Suc n ∨ m ≤ n",
+                    "id": "6.3",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ m = Suc n ∨ m ≤ n ⟶ m = Suc n ∨ m ≤ n"
+                },
+                {
+                    "args": "m = Suc n ∨ m ≤ n ⟶ m = Suc n ∨ m < Suc n",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.1",
+                        "6.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m = Suc n ∨ m ≤ n ⟶ m = Suc n ∨ m < Suc n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, m ≤ Suc n ⟶ m = Suc n ∨ m < Suc n",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m ≤ Suc n ⟶ m = Suc n ∨ m < Suc n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "6.6",
+                    "prevs": [
+                        "6.2",
+                        "6.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m = Suc n ∨ m < Suc n ⟷ m ≤ Suc n"
+                },
+                {
+                    "args": "nat_less_def_2, m < Suc (Suc n) ⟷ m ≤ Suc n",
+                    "id": "6.7",
+                    "prevs": [
+                        "6.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < Suc n ⟷ m ≤ n ⊢ m < Suc (Suc n) ⟷ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "6.8",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.7"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ ∀n. m < Suc n ⟷ m ≤ n ⟶ m < Suc (Suc n) ⟷ m ≤ Suc n"
                 },
                 {
                     "args": "nat_induct, {P: λn. m < Suc n ⟷ m ≤ n, x: n}",
-                    "id": "5",
+                    "id": "7",
                     "prevs": [
-                        "3",
-                        "4"
+                        "5",
+                        "6"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ m < Suc n ⟷ m ≤ n"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "8",
                     "prevs": [
-                        "5"
+                        "7"
                     ],
                     "rule": "intros",
                     "th": "⊢ m < Suc n ⟷ m ≤ n"
@@ -3323,6 +4189,122 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "theorem": "nat_less_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.2.0"
+                    ],
+                    "goal_id": "6.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "6.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "6.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "6.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -3445,7 +4427,199 @@
                 "hint_forward"
             ],
             "name": "lt_imp_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m < 0 ⟶ m ≤ 0"
+                },
+                {
+                    "args": "m < 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < 0 ⊢ m < 0"
+                },
+                {
+                    "args": "nat_less_def_1",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m < 0 ⊢ false"
+                },
+                {
+                    "args": "not_false_res, m ≤ 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "m < 0 ⊢ m ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m < 0 ⟶ m ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (m < n ⟶ m ≤ n) ⟶ m < Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m < n ⟶ m ≤ n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < n ⟶ m ≤ n ⊢ m < n ⟶ m ≤ n"
+                },
+                {
+                    "args": "m < Suc n",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < Suc n ⊢ m < Suc n"
+                },
+                {
+                    "args": "less_Suc_lesseq",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m < Suc n ⊢ m ≤ n"
+                },
+                {
+                    "args": "disjI2, {A: m = Suc n, B: m ≤ n}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m < Suc n, m < n ⟶ m ≤ n ⊢ m = Suc n ∨ m ≤ n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, m ≤ Suc n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < Suc n, m < n ⟶ m ≤ n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (m < n ⟶ m ≤ n) ⟶ m < Suc n ⟶ m ≤ Suc n"
+                },
+                {
+                    "args": "nat_induct, {P: λn. m < n ⟶ m ≤ n, x: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m < n ⟶ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m < n ⟶ m ≤ n"
+                }
+            ],
             "prop": "m < n ⟶ m ≤ n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -3458,7 +4632,294 @@
                 "hint_forward"
             ],
             "name": "le_1_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬((0::nat) = 0) ⟶ (0::nat) < 0"
+                },
+                {
+                    "args": "¬((0::nat) = 0)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬((0::nat) = 0) ⊢ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "negE_gen, {A: (0::nat) = 0, C: (0::nat) < 0}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬((0::nat) = 0) ⊢ (0::nat) < 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬((0::nat) = 0) ⟶ (0::nat) < 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (¬(n = 0) ⟶ 0 < n) ⟶ ¬(Suc n = 0) ⟶ 0 < Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "¬(n = 0) ⟶ 0 < n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⟶ 0 < n ⊢ ¬(n = 0) ⟶ 0 < n"
+                },
+                {
+                    "args": "¬(Suc n = 0)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(Suc n = 0) ⊢ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ n = 0 ⟶ 0 ≤ n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1, (0::nat) ≤ 0",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::nat) ≤ 0"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, ¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ n = 0 ⟶ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ ¬(n = 0) ⟶ 0 ≤ n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1",
+                    "prevs": [
+                        "1.1",
+                        "1.4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(n = 0), ¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ 0 < n"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "1.4.2",
+                    "prevs": [
+                        "1.4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.3",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ ¬(n = 0) ⟶ 0 ≤ n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "less_Suc_lesseq, 0 < Suc n",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(Suc n = 0), ¬(n = 0) ⟶ 0 < n ⊢ 0 < Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (¬(n = 0) ⟶ 0 < n) ⟶ ¬(Suc n = 0) ⟶ 0 < Suc n"
+                },
+                {
+                    "args": "nat_induct, {P: λn::nat. ¬(n = 0) ⟶ 0 < n, x: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(n = 0) ⟶ 0 < n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ 0 < n"
+                }
+            ],
             "prop": "¬(n = 0) ⟶ 0 < n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "case": "n = 0",
+                    "goal_id": "1.3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.0"
+                    ],
+                    "goal_id": "1.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat"
@@ -3470,7 +4931,73 @@
                 "hint_forward"
             ],
             "name": "le_1_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ 0 < n"
+                },
+                {
+                    "args": "lesseq_Suc_less, Suc 0 ≤ n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ Suc 0 ≤ n"
+                },
+                {
+                    "args": "nat_one_def, 1 ≤ n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ 1 ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ 1 ≤ n"
+                }
+            ],
             "prop": "¬(n = 0) ⟶ 1 ≤ n",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lesseq_Suc_less"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat"
@@ -3640,7 +5167,48 @@
         },
         {
             "name": "less_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "le_0, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "less_Suc_lesseq, 0 < Suc n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 < Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < Suc n"
+                }
+            ],
             "prop": "0 < Suc n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat"
@@ -6729,10 +8297,2370 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "even_and_odd",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "even_or_odd, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even n ∨ odd n"
+                },
+                {
+                    "args": "disj_comm, odd n ∨ even n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ odd n ∨ even n"
+                },
+                {
+                    "args": "not_odd, odd n ∨ ¬(odd n)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ odd n ∨ ¬(odd n)"
+                },
+                {
+                    "args": "not_even, ¬(even n) ∨ ¬(odd n)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even n) ∨ ¬(odd n)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(even n ∧ odd n)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even n ∧ odd n)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(even n ∧ odd n)"
+                }
+            ],
+            "prop": "¬(even n ∧ odd n)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_even"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_odd"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disj_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "even_or_odd"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "even_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ even m ⟶ even m ⟷ true"
+                },
+                {
+                    "args": "even m",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ⊢ even m ⟶ true"
+                },
+                {
+                    "args": "trueI",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0",
+                        "0.1.0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even m ⟶ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ⊢ true ⟶ even m"
+                },
+                {
+                    "args": "true",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0",
+                        "0.0"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ⊢ true ⟶ even m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ⊢ even m ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even m ⟶ even m ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ even m ⟷ true ⟶ even m"
+                },
+                {
+                    "args": "even m ⟷ true",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⟷ true ⊢ even m ⟷ true"
+                },
+                {
+                    "args": "trueI",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "even m",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even m ⟷ true ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even m ⟷ true ⟶ even m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ even m ⟷ even m ⟷ true"
+                },
+                {
+                    "args": "even_def_1, even m ⟷ even m ⟷ even 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even m ⟷ even m ⟷ even 0"
+                },
+                {
+                    "args": "add_0_right, even (m + 0) ⟷ even m ⟷ even 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (m + 0) ⟷ even m ⟷ even 0"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. even (m + n) ⟷ even m ⟷ even n ⟶ even (m + Suc n) ⟷ even m ⟷ even (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "even (m + n) ⟷ even m ⟷ even n",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ even (m + n) ⟷ even m ⟷ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m ⟷ even n) ⟶ even m ⟷ ¬(even n)"
+                },
+                {
+                    "args": "¬(even m ⟷ even n)",
+                    "id": "5.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even m ⟷ even n) ⊢ ¬(even m ⟷ even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟶ ¬(even n)"
+                },
+                {
+                    "args": "even m",
+                    "id": "5.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even n ⟶ even m ⟷ even n"
+                },
+                {
+                    "args": "even n",
+                    "id": "5.2.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even n ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m, even n, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟶ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.1.1.0",
+                    "prevs": [
+                        "5.2.1.0",
+                        "5.2.1.1.0"
+                    ],
+                    "rule": "intros",
+                    "th": "even n, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟶ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m, even n, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even n ⟶ even m"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.1.2.0",
+                    "prevs": [
+                        "5.2.1.1.0",
+                        "5.2.1.0"
+                    ],
+                    "rule": "intros",
+                    "th": "even m, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even n ⟶ even m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5.2.1.1.3",
+                    "prevs": [
+                        "5.2.1.1.1",
+                        "5.2.1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m, even n, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟷ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.1.4",
+                    "prevs": [
+                        "5.2.1.1.0",
+                        "5.2.1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "even m, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even n ⟶ even m ⟷ even n"
+                },
+                {
+                    "args": "double_neg, ¬¬(even n) ⟶ ¬¬(even m ⟷ even n)",
+                    "id": "5.2.1.2",
+                    "prevs": [
+                        "5.2.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even m, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬¬(even n) ⟶ ¬¬(even m ⟷ even n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "5.2.1.3",
+                    "prevs": [
+                        "5.2.0",
+                        "5.2.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m, ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.1.4",
+                    "prevs": [
+                        "5.2.1.0",
+                        "5.2.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟶ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even n) ⟶ even m"
+                },
+                {
+                    "args": "¬(even n)",
+                    "id": "5.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even n) ⊢ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m) ⟶ even m ⟷ even n"
+                },
+                {
+                    "args": "¬(even m)",
+                    "id": "5.2.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even m) ⊢ ¬(even m)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(even m), ¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟶ even n"
+                },
+                {
+                    "args": "even m",
+                    "id": "5.2.2.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⊢ even m"
+                },
+                {
+                    "args": "negE_gen, {A: even m, C: even n}",
+                    "id": "5.2.2.1.1.1",
+                    "prevs": [
+                        "5.2.2.1.0",
+                        "5.2.2.1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even m, ¬(even m) ⊢ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1.1.2",
+                    "prevs": [
+                        "5.2.2.1.1.0",
+                        "5.2.2.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(even m), ¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟶ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(even m), ¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even n ⟶ even m"
+                },
+                {
+                    "args": "even n",
+                    "id": "5.2.2.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even n ⊢ even n"
+                },
+                {
+                    "args": "negE_gen, {A: even n, C: even m}",
+                    "id": "5.2.2.1.2.1",
+                    "prevs": [
+                        "5.2.2.0",
+                        "5.2.2.1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even n, ¬(even n) ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1.2.2",
+                    "prevs": [
+                        "5.2.2.1.2.0",
+                        "5.2.2.1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(even m), ¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even n ⟶ even m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5.2.2.1.3",
+                    "prevs": [
+                        "5.2.2.1.1",
+                        "5.2.2.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(even m), ¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟷ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.1.4",
+                    "prevs": [
+                        "5.2.2.1.0",
+                        "5.2.2.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m) ⟶ even m ⟷ even n"
+                },
+                {
+                    "args": "double_neg, ¬(even m) ⟶ ¬¬(even m ⟷ even n)",
+                    "id": "5.2.2.2",
+                    "prevs": [
+                        "5.2.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m) ⟶ ¬¬(even m ⟷ even n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "5.2.2.3",
+                    "prevs": [
+                        "5.2.0",
+                        "5.2.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(even n), ¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.2.4",
+                    "prevs": [
+                        "5.2.2.0",
+                        "5.2.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even n) ⟶ even m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5.2.3",
+                    "prevs": [
+                        "5.2.1",
+                        "5.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(even m ⟷ even n), even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟷ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2.4",
+                    "prevs": [
+                        "5.2.0",
+                        "5.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m ⟷ even n) ⟶ even m ⟷ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟷ ¬(even n) ⟶ ¬(even m ⟷ even n)"
+                },
+                {
+                    "args": "even m ⟷ ¬(even n)",
+                    "id": "5.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⟷ ¬(even n) ⊢ even m ⟷ ¬(even n)"
+                },
+                {
+                    "args": "∀p. ¬(¬p ⟷ p)",
+                    "id": "5.3.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ¬(¬p ⟷ p)"
+                },
+                {
+                    "args": "even n",
+                    "id": "5.3.2",
+                    "prevs": [
+                        "5.3.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ ¬(¬(even n) ⟷ even n)"
+                },
+                {
+                    "args": "¬(even m ⟷ even n)",
+                    "id": "5.3.3",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even m ⟷ ¬(even n), even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m ⟷ even n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.4",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ even m ⟷ ¬(even n) ⟶ ¬(even m ⟷ even n)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.2",
+                        "5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even m ⟷ even n) ⟷ even m ⟷ ¬(even n)"
+                },
+                {
+                    "args": "¬(even (m + n)) ⟷ even m ⟷ ¬(even n)",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.1",
+                        "5.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ ¬(even (m + n)) ⟷ even m ⟷ ¬(even n)"
+                },
+                {
+                    "args": "even_def_2, even (Suc (m + n)) ⟷ even m ⟷ even (Suc n)",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ even (Suc (m + n)) ⟷ even m ⟷ even (Suc n)"
+                },
+                {
+                    "args": "add_Suc_right, even (m + Suc n) ⟷ even m ⟷ even (Suc n)",
+                    "id": "5.7",
+                    "prevs": [
+                        "5.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m + n) ⟷ even m ⟷ even n ⊢ even (m + Suc n) ⟷ even m ⟷ even (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.8",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. even (m + n) ⟷ even m ⟷ even n ⟶ even (m + Suc n) ⟷ even m ⟷ even (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λn. even (m + n) ⟷ even m ⟷ even n, x: n}",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (m + n) ⟷ even m ⟷ even n"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even (m + n) ⟷ even m ⟷ even n"
+                }
+            ],
+            "prop": "even (m + n) ⟷ even m ⟷ even n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_Suc_right"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "5.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.0"
+                    ],
+                    "goal_id": "5.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "5.2.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "5.2.1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.0"
+                    ],
+                    "goal_id": "5.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "5.2.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.2.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "5.2.2.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.2.1.0",
+                        "5.2.2.1.1.0"
+                    ],
+                    "goal_id": "5.2.2.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "5.2.2.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2.2.0",
+                        "5.2.2.1.2.0"
+                    ],
+                    "goal_id": "5.2.2.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.0"
+                    ],
+                    "goal_id": "5.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!p. ~(~p <--> p)",
+                    "goal_id": "5.3.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.3.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.1"
+                    ],
+                    "goal_id": "5.3.2",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "even_mult",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ even 0 ⟶ even m ∨ even 0"
+                },
+                {
+                    "args": "even 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even 0 ⊢ even 0"
+                },
+                {
+                    "args": "disjI2, {A: even m, B: even 0}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even 0 ⊢ even m ∨ even 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even 0 ⟶ even m ∨ even 0"
+                },
+                {
+                    "args": "∀p. p ∨ true ⟷ true",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. p ∨ true ⟷ true"
+                },
+                {
+                    "args": "true ⟶ true",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ true ⟶ true"
+                },
+                {
+                    "args": "even m ∨ true ⟶ true",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ even m ∨ true ⟶ true"
+                },
+                {
+                    "args": "even_def_1, even m ∨ even 0 ⟶ even 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even m ∨ even 0 ⟶ even 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ even 0 ⟷ even m ∨ even 0"
+                },
+                {
+                    "args": "mult_0_right, even (m * 0) ⟷ even m ∨ even 0",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (m * 0) ⟷ even m ∨ even 0"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. even (m * n) ⟷ even m ∨ even n ⟶ even (m * Suc n) ⟷ even m ∨ even (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "even (m * n) ⟷ even m ∨ even n",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even (m * n) ⟷ even m ∨ even n"
+                },
+                {
+                    "args": "",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even m ⟷ even m ∨ even n ⟶ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "even m ⟷ even m ∨ even n",
+                    "id": "7.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⟷ even m ∨ even n ⊢ even m ⟷ even m ∨ even n"
+                },
+                {
+                    "args": "even_or_odd, {n: m}",
+                    "id": "7.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even m ∨ odd m"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even m ⟶ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "even m",
+                    "id": "7.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⊢ even m"
+                },
+                {
+                    "args": "disjI1, {A: even m, B: ¬(even n)}",
+                    "id": "7.2.2.1",
+                    "prevs": [
+                        "7.2.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.2.2",
+                    "prevs": [
+                        "7.2.2.0",
+                        "7.2.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even m ⟶ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ odd m ⟶ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "odd m",
+                    "id": "7.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "odd m ⊢ odd m"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "odd m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even n ⟶ ¬(even m ⟷ even m ∨ even n)"
+                },
+                {
+                    "args": "even n",
+                    "id": "7.2.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even n ⊢ even n"
+                },
+                {
+                    "args": "not_even",
+                    "id": "7.2.3.1.1",
+                    "prevs": [
+                        "7.2.3.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "odd m ⊢ ¬(even m)"
+                },
+                {
+                    "args": "∀p. ∀q. p ⟶ ¬q ⟶ ¬(q ⟷ q ∨ p)",
+                    "id": "7.2.3.1.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ∀q. p ⟶ ¬q ⟶ ¬(q ⟷ q ∨ p)"
+                },
+                {
+                    "args": "even n, even m",
+                    "id": "7.2.3.1.3",
+                    "prevs": [
+                        "7.2.3.1.2",
+                        "7.2.3.1.0",
+                        "7.2.3.1.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "even n, odd m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ ¬(even m ⟷ even m ∨ even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.3.1.4",
+                    "prevs": [
+                        "7.2.3.1.0",
+                        "7.2.3.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "odd m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even n ⟶ ¬(even m ⟷ even m ∨ even n)"
+                },
+                {
+                    "args": "double_neg, ¬¬(even n) ⟶ ¬(even m ⟷ even m ∨ even n)",
+                    "id": "7.2.3.2",
+                    "prevs": [
+                        "7.2.3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "odd m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ ¬¬(even n) ⟶ ¬(even m ⟷ even m ∨ even n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "7.2.3.3",
+                    "prevs": [
+                        "7.2.0",
+                        "7.2.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "odd m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ ¬(even n)"
+                },
+                {
+                    "args": "disjI2, {A: even m, B: ¬(even n)}",
+                    "id": "7.2.3.4",
+                    "prevs": [
+                        "7.2.3.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "odd m, even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.3.5",
+                    "prevs": [
+                        "7.2.3.0",
+                        "7.2.3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ odd m ⟶ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "7.2.4",
+                    "prevs": [
+                        "7.2.1",
+                        "7.2.2",
+                        "7.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ⟷ even m ∨ even n, even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.5",
+                    "prevs": [
+                        "7.2.0",
+                        "7.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even m ⟷ even m ∨ even n ⟶ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ ¬(even n) ⟶ even m ⟷ even m ∨ even n"
+                },
+                {
+                    "args": "even m ∨ ¬(even n)",
+                    "id": "7.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ∨ ¬(even n) ⊢ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m ⟶ even m ∨ even n"
+                },
+                {
+                    "args": "even m",
+                    "id": "7.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ⊢ even m"
+                },
+                {
+                    "args": "disjI1, {A: even m, B: even n}",
+                    "id": "7.3.1.1",
+                    "prevs": [
+                        "7.3.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even m, even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ even n"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.1.2",
+                    "prevs": [
+                        "7.3.1.0",
+                        "7.3.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m ⟶ even m ∨ even n"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ even n ⟶ even m"
+                },
+                {
+                    "args": "even m ∨ even n",
+                    "id": "7.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ∨ even n ⊢ even m ∨ even n"
+                },
+                {
+                    "args": "even m ⟶ even m",
+                    "id": "7.3.2.1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ even m ⟶ even m"
+                },
+                {
+                    "args": "even m ⟶ ¬(even n) ⟶ even m",
+                    "id": "7.3.2.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ even m ⟶ ¬(even n) ⟶ even m"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ∨ even n, even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even n ⟶ ¬(even n) ⟶ even m"
+                },
+                {
+                    "args": "even n",
+                    "id": "7.3.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even n ⊢ even n"
+                },
+                {
+                    "args": "¬(even n)",
+                    "id": "7.3.2.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even n) ⊢ ¬(even n)"
+                },
+                {
+                    "args": "negE_gen, {A: even n, C: even m}",
+                    "id": "7.3.2.3.2",
+                    "prevs": [
+                        "7.3.2.3.1",
+                        "7.3.2.3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even n, ¬(even n) ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.2.3.3",
+                    "prevs": [
+                        "7.3.2.3.0",
+                        "7.3.2.3.1",
+                        "7.3.2.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ∨ even n, even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even n ⟶ ¬(even n) ⟶ even m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "7.3.2.4",
+                    "prevs": [
+                        "7.3.2.0",
+                        "7.3.2.2",
+                        "7.3.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∨ even n, even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ ¬(even n) ⟶ even m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "7.3.2.5",
+                    "prevs": [
+                        "7.3.0",
+                        "7.3.2.1",
+                        "7.3.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∨ even n, even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.2.6",
+                    "prevs": [
+                        "7.3.2.0",
+                        "7.3.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ even n ⟶ even m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7.3.3",
+                    "prevs": [
+                        "7.3.1",
+                        "7.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∨ ¬(even n), even (m * n) ⟷ even m ∨ even n ⊢ even m ⟷ even m ∨ even n"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.4",
+                    "prevs": [
+                        "7.3.0",
+                        "7.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even m ∨ ¬(even n) ⟶ even m ⟷ even m ∨ even n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7.4",
+                    "prevs": [
+                        "7.2",
+                        "7.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ (even m ⟷ even m ∨ even n) ⟷ even m ∨ ¬(even n)"
+                },
+                {
+                    "args": "even_def_2, (even m ⟷ even m ∨ even n) ⟷ even m ∨ even (Suc n)",
+                    "id": "7.5",
+                    "prevs": [
+                        "7.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ (even m ⟷ even m ∨ even n) ⟷ even m ∨ even (Suc n)"
+                },
+                {
+                    "args": "(even m ⟷ even (m * n)) ⟷ even m ∨ even (Suc n)",
+                    "id": "7.6",
+                    "prevs": [
+                        "7.1",
+                        "7.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ (even m ⟷ even (m * n)) ⟷ even m ∨ even (Suc n)"
+                },
+                {
+                    "args": "even_add, even (m + m * n) ⟷ even m ∨ even (Suc n)",
+                    "id": "7.7",
+                    "prevs": [
+                        "7.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even (m + m * n) ⟷ even m ∨ even (Suc n)"
+                },
+                {
+                    "args": "mult_Suc_right, even (m * Suc n) ⟷ even m ∨ even (Suc n)",
+                    "id": "7.8",
+                    "prevs": [
+                        "7.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m * n) ⟷ even m ∨ even n ⊢ even (m * Suc n) ⟷ even m ∨ even (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "7.9",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. even (m * n) ⟷ even m ∨ even n ⟶ even (m * Suc n) ⟷ even m ∨ even (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λn. even (m * n) ⟷ even m ∨ even n, x: n}",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (m * n) ⟷ even m ∨ even n"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even (m * n) ⟷ even m ∨ even n"
+                }
+            ],
+            "prop": "even (m * n) ⟷ even m ∨ even n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal": "∀p. (p ∨ true) ⟷ true",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_Suc_right"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_add"
+                },
+                {
+                    "fact_ids": [
+                        "7.1"
+                    ],
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.2.1",
+                    "method_name": "apply_forward_step",
+                    "param_n": "m",
+                    "theorem": "even_or_odd"
+                },
+                {
+                    "fact_ids": [
+                        "7.2.1"
+                    ],
+                    "goal_id": "7.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "7.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "7.2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.2.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "7.2.0"
+                    ],
+                    "goal_id": "7.2.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "7.2.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "7.2.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.2.3.0"
+                    ],
+                    "goal_id": "7.2.3.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "not_even"
+                },
+                {
+                    "goal": "!p. !q. p --> ~q --> ~(q <--> q | p)",
+                    "goal_id": "7.2.3.1.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.2.3.1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7.2.3.1.2"
+                    ],
+                    "goal_id": "7.2.3.1.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "7.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.3.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "7.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.0"
+                    ],
+                    "goal_id": "7.3.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.2.0"
+                    ],
+                    "goal_id": "7.3.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "7.3.2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.2.3.1",
+                        "7.3.2.3.0"
+                    ],
+                    "goal_id": "7.3.2.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "even_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀p. ∀q. q ⟶ ¬true ⟷ p ∧ ¬q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ∀q. q ⟶ ¬true ⟷ p ∧ ¬q"
+                },
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "even m, (0::nat) = 0",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ ¬true ⟷ even m ∧ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "even_def_1, ¬(even 0) ⟷ even m ∧ ¬((0::nat) = 0)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even 0) ⟷ even m ∧ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "even_def_2, even (Suc 0) ⟷ even m ∧ ¬((0::nat) = 0)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (Suc 0) ⟷ even m ∧ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "nat_one_def, even 1 ⟷ even m ∧ ¬((0::nat) = 0)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even 1 ⟷ even m ∧ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "nat_nat_power_def_1, even (m ^ (0::nat)) ⟷ even m ∧ ¬((0::nat) = 0)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (m ^ (0::nat)) ⟷ even m ∧ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⟶ even (m ^ Suc n) ⟷ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "even (m ^ n) ⟷ even m ∧ ¬(n = 0)",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even (m ^ n) ⟷ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∨ even m ∧ ¬(n = 0) ⟶ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "even m ∨ even m ∧ ¬(n = 0)",
+                    "id": "7.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ∨ even m ∧ ¬(n = 0) ⊢ even m ∨ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "even m ⟶ even m",
+                    "id": "7.2.1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ even m ⟶ even m"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even m ∨ even m ∧ ¬(n = 0), even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∧ ¬(n = 0) ⟶ even m"
+                },
+                {
+                    "args": "even m ∧ ¬(n = 0)",
+                    "id": "7.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ∧ ¬(n = 0) ⊢ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7.2.2.1",
+                    "prevs": [
+                        "7.2.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∧ ¬(n = 0) ⊢ even m"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.2.2",
+                    "prevs": [
+                        "7.2.2.0",
+                        "7.2.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "even m ∨ even m ∧ ¬(n = 0), even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∧ ¬(n = 0) ⟶ even m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "7.2.3",
+                    "prevs": [
+                        "7.2.0",
+                        "7.2.1",
+                        "7.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∨ even m ∧ ¬(n = 0), even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m"
+                },
+                {
+                    "args": "nat_zero_Suc_neq, {n: n}",
+                    "id": "7.2.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(0 = Suc n)"
+                },
+                {
+                    "args": "eq_sym_eq, ¬(Suc n = 0)",
+                    "id": "7.2.5",
+                    "prevs": [
+                        "7.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even m ∨ even m ∧ ¬(n = 0), even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7.2.6",
+                    "prevs": [
+                        "7.2.3",
+                        "7.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∨ even m ∧ ¬(n = 0), even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2.7",
+                    "prevs": [
+                        "7.2.0",
+                        "7.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∨ even m ∧ ¬(n = 0) ⟶ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∧ ¬(Suc n = 0) ⟶ even m ∨ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "even m ∧ ¬(Suc n = 0)",
+                    "id": "7.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even m ∧ ¬(Suc n = 0) ⊢ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7.3.1",
+                    "prevs": [
+                        "7.3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even m ∧ ¬(Suc n = 0) ⊢ even m"
+                },
+                {
+                    "args": "disjI1, {A: even m, B: even m ∧ ¬(n = 0)}",
+                    "id": "7.3.2",
+                    "prevs": [
+                        "7.3.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "even m ∧ ¬(Suc n = 0), even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∨ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.3",
+                    "prevs": [
+                        "7.3.0",
+                        "7.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∧ ¬(Suc n = 0) ⟶ even m ∨ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7.4",
+                    "prevs": [
+                        "7.2",
+                        "7.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∨ even m ∧ ¬(n = 0) ⟷ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "even m ∨ even (m ^ n) ⟷ even m ∧ ¬(Suc n = 0)",
+                    "id": "7.5",
+                    "prevs": [
+                        "7.1",
+                        "7.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even m ∨ even (m ^ n) ⟷ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "even_mult, even (m * m ^ n) ⟷ even m ∧ ¬(Suc n = 0)",
+                    "id": "7.6",
+                    "prevs": [
+                        "7.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even (m * m ^ n) ⟷ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "nat_nat_power_def_2, even (m ^ Suc n) ⟷ even m ∧ ¬(Suc n = 0)",
+                    "id": "7.7",
+                    "prevs": [
+                        "7.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⊢ even (m ^ Suc n) ⟷ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7.8",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. even (m ^ n) ⟷ even m ∧ ¬(n = 0) ⟶ even (m ^ Suc n) ⟷ even m ∧ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "nat_induct, {P: λn::nat. even (m ^ n) ⟷ even m ∧ ¬(n = 0), x: n}",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (m ^ n) ⟷ even m ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even (m ^ n) ⟷ even m ∧ ¬(n = 0)"
+                }
+            ],
+            "prop": "even (m ^ n) ⟷ even m ∧ ¬(n = 0)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal": "∀p. ∀q. q ⟶ ¬true ⟷ p ∧ ~q",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_mult"
+                },
+                {
+                    "fact_ids": [
+                        "7.1"
+                    ],
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "7.2.0"
+                    ],
+                    "goal_id": "7.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "7.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.2.2.0"
+                    ],
+                    "goal_id": "7.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "7.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "7.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_zero_Suc_neq"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.0"
+                    ],
+                    "goal_id": "7.3.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "7.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "odd_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀p. ∀q. (¬p ⟷ ¬q) ⟷ p ⟷ q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. ∀q. (¬p ⟷ ¬q) ⟷ p ⟷ q"
+                },
+                {
+                    "args": "(even m ⟷ even n) ⟷ ¬(even m) ⟷ ¬(even n)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ (even m ⟷ even n) ⟷ ¬(even m) ⟷ ¬(even n)"
+                },
+                {
+                    "args": "¬(even m ⟷ even n) ⟷ ¬(¬(even m) ⟷ ¬(even n))",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ ¬(even m ⟷ even n) ⟷ ¬(¬(even m) ⟷ ¬(even n))"
+                },
+                {
+                    "args": "even_add, ¬(even (m + n)) ⟷ ¬(¬(even m) ⟷ ¬(even n))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even (m + n)) ⟷ ¬(¬(even m) ⟷ ¬(even n))"
+                },
+                {
+                    "args": "not_even, odd (m + n) ⟷ ¬(odd m ⟷ odd n)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ odd (m + n) ⟷ ¬(odd m ⟷ odd n)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ odd (m + n) ⟷ ¬(odd m ⟷ odd n)"
+                }
+            ],
+            "prop": "odd (m + n) ⟷ ¬(odd m ⟷ odd n)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_even"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_add"
+                },
+                {
+                    "goal": "∀p. ∀q. (¬p ⟷ ¬q) ⟷ p ⟷ q",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "odd_mult",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "de_morgan_thm2, ¬(even m ∨ even n) ⟷ ¬(even m) ∧ ¬(even n)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even m ∨ even n) ⟷ ¬(even m) ∧ ¬(even n)"
+                },
+                {
+                    "args": "even_mult, ¬(even (m * n)) ⟷ ¬(even m) ∧ ¬(even n)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even (m * n)) ⟷ ¬(even m) ∧ ¬(even n)"
+                },
+                {
+                    "args": "not_even, odd (m * n) ⟷ odd m ∧ odd n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ odd (m * n) ⟷ odd m ∧ odd n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ odd (m * n) ⟷ odd m ∧ odd n"
+                }
+            ],
             "prop": "odd (m * n) ⟷ odd m ∧ odd n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_even"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_mult"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "odd_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "double_neg, ¬(even m) ∨ ¬¬(n = 0) ⟷ ¬(even m) ∨ n = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even m) ∨ ¬¬(n = 0) ⟷ ¬(even m) ∨ n = 0"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(even m ∧ ¬(n = 0)) ⟷ ¬(even m) ∨ n = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even m ∧ ¬(n = 0)) ⟷ ¬(even m) ∨ n = 0"
+                },
+                {
+                    "args": "even_exp, ¬(even (m ^ n)) ⟷ ¬(even m) ∨ n = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even (m ^ n)) ⟷ ¬(even m) ∨ n = 0"
+                },
+                {
+                    "args": "not_even, odd (m ^ n) ⟷ odd m ∨ n = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ odd (m ^ n) ⟷ odd m ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ odd (m ^ n) ⟷ odd m ∨ n = 0"
+                }
+            ],
+            "prop": "odd (m ^ n) ⟷ odd m ∨ n = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_even"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_exp"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -7881,21 +11809,261 @@
         },
         {
             "name": "nat_power_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "mult_1_right, m * 1 = m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m * 1 = m"
+                },
+                {
+                    "args": "nat_nat_power_def_1, m * m ^ (0::nat) = m",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m * m ^ (0::nat) = m"
+                },
+                {
+                    "args": "nat_nat_power_def_2, m ^ Suc 0 = m",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ^ Suc 0 = m"
+                },
+                {
+                    "args": "nat_one_def, m ^ (1::nat) = m",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ^ (1::nat) = m"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ^ (1::nat) = m"
+                }
+            ],
+            "prop": "m ^ (1::nat) = m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_right"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat"
-            },
-            "prop": "m ^ (1::nat) = m"
+            }
         },
         {
             "name": "nat_power_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "mult_1_right, m ^ p = m ^ p * 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ^ p = m ^ p * 1"
+                },
+                {
+                    "args": "add_0_right, m ^ (p + 0) = m ^ p * 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ^ (p + 0) = m ^ p * 1"
+                },
+                {
+                    "args": "nat_nat_power_def_1, m ^ (p + 0) = m ^ p * m ^ (0::nat)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ^ (p + 0) = m ^ p * m ^ (0::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. m ^ (p + n) = m ^ p * m ^ n ⟶ m ^ (p + Suc n) = m ^ p * m ^ Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m ^ (p + n) = m ^ p * m ^ n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ^ (p + n) = m ^ p * m ^ n ⊢ m ^ (p + n) = m ^ p * m ^ n"
+                },
+                {
+                    "args": "m * (m ^ p * m ^ n) = m ^ p * (m * m ^ n)",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ m * (m ^ p * m ^ n) = m ^ p * (m * m ^ n)"
+                },
+                {
+                    "args": "m * m ^ (p + n) = m ^ p * (m * m ^ n)",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ^ (p + n) = m ^ p * m ^ n ⊢ m * m ^ (p + n) = m ^ p * (m * m ^ n)"
+                },
+                {
+                    "args": "nat_nat_power_def_2, m ^ Suc (p + n) = m ^ p * m ^ Suc n",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ^ (p + n) = m ^ p * m ^ n ⊢ m ^ Suc (p + n) = m ^ p * m ^ Suc n"
+                },
+                {
+                    "args": "add_Suc_right, m ^ (p + Suc n) = m ^ p * m ^ Suc n",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ^ (p + n) = m ^ p * m ^ n ⊢ m ^ (p + Suc n) = m ^ p * m ^ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. m ^ (p + n) = m ^ p * m ^ n ⟶ m ^ (p + Suc n) = m ^ p * m ^ Suc n"
+                },
+                {
+                    "args": "nat_induct, {P: λq. m ^ (p + q) = m ^ p * m ^ q, x: q}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ^ (p + q) = m ^ p * m ^ q"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ^ (p + q) = m ^ p * m ^ q"
+                }
+            ],
+            "prop": "m ^ (p + q) = m ^ p * m ^ q",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "q"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_right"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_Suc_right"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
                 "p": "nat",
                 "q": "nat"
-            },
-            "prop": "m ^ (p + q) = m ^ p * m ^ q"
+            }
         }
     ],
     "description": "Natural numbers",
