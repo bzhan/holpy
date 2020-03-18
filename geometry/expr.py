@@ -845,6 +845,7 @@ class Prover:
             res = self.search_step(only_updated=True)
 
             if res is not None:
+                print(res)
                 return res
 
         self.print_hyps(only_not_shadowed=True)
