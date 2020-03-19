@@ -11,6 +11,1073 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "divides_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides m n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides m n ⊢ divides m n"
+                },
+                {
+                    "args": "∀m::nat. ∀n. m ≤ m * n ∨ m * n = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀m::nat. ∀n. m ≤ m * n ∨ m * n = 0"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides m n ⊢ ∃k. n = m * k"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "n = m * k",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m * k ⊢ n = m * k"
+                },
+                {
+                    "args": "m, k",
+                    "id": "5",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ m ≤ m * k ∨ m * k = 0"
+                },
+                {
+                    "args": "m ≤ n ∨ n = 0",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides m n, n = m * k ⊢ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "∃k. n = m * k",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3",
+                        "4",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides m n ⟶ m ≤ n ∨ n = 0"
+                }
+            ],
+            "prop": "divides m n ⟶ m ≤ n ∨ n = 0",
+            "steps": [
+                {
+                    "goal": "!m. !n. m <= m * n | m * n = (0::nat) ",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "divides_le_strong",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides m n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides m n ⊢ divides m n"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n ⊢ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides m n ⊢ ∃k. n = m * k"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides m n ⊢ m = 0 ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "n = m * k",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m * k ⊢ n = m * k"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = 0, n = m * k ⊢ n = 0 * k"
+                },
+                {
+                    "args": "nat_times_def_1",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = 0, n = m * k ⊢ n = 0"
+                },
+                {
+                    "args": "disjI2, {A: 1 ≤ m ∧ m ≤ n, B: n = 0}",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides m n, m = 0, n = m * k ⊢ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "∃k. n = m * k",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "2",
+                        "3.1",
+                        "3.2",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "divides m n ⊢ m = 0 ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides m n ⊢ ¬(m = 0) ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "¬(m = 0)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides m n, ¬(m = 0) ⊢ m ≤ n ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "4.1.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n, m ≤ n, ¬(m = 0) ⊢ 1 ≤ m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1.2",
+                    "prevs": [
+                        "4.1.1",
+                        "4.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n, m ≤ n, ¬(m = 0) ⊢ 1 ≤ m ∧ m ≤ n"
+                },
+                {
+                    "args": "disjI1, {A: 1 ≤ m ∧ m ≤ n, B: n = 0}",
+                    "id": "4.1.3",
+                    "prevs": [
+                        "4.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides m n, m ≤ n, ¬(m = 0) ⊢ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.4",
+                    "prevs": [
+                        "4.1.0",
+                        "4.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "divides m n, ¬(m = 0) ⊢ m ≤ n ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides m n, ¬(m = 0) ⊢ n = 0 ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "disjI2, {A: 1 ≤ m ∧ m ≤ n, B: n = 0}",
+                    "id": "4.2.1",
+                    "prevs": [
+                        "4.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides m n, n = 0, ¬(m = 0) ⊢ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.2",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "divides m n, ¬(m = 0) ⊢ n = 0 ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4.3",
+                    "prevs": [
+                        "1",
+                        "4.1",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n, ¬(m = 0) ⊢ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "divides m n ⊢ ¬(m = 0) ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n ⊢ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides m n ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0"
+                }
+            ],
+            "prop": "divides m n ⟶ 1 ≤ m ∧ m ≤ n ∨ n = 0",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "case": "m=0",
+                    "goal_id": "3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "exists_elim",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "3.0",
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3"
+                    ],
+                    "goal_id": "3.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "divides_le_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides m n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides m n ⊢ divides m n"
+                },
+                {
+                    "args": "n = 0 ⟶ m = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⟶ m = 0 ⊢ n = 0 ⟶ m = 0"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n ⊢ m ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "m ≤ n ⟶ m ≤ n",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ m ≤ n ⟶ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides m n, n = 0 ⟶ m = 0 ⊢ n = 0 ⟶ m ≤ n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [
+                        "1",
+                        "4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n = 0, n = 0 ⟶ m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "le_0, {n: (0::nat)}",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) ≤ 0"
+                },
+                {
+                    "args": "m ≤ 0",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.1",
+                        "4.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides m n, n = 0, n = 0 ⟶ m = 0 ⊢ m ≤ 0"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides m n, n = 0, n = 0 ⟶ m = 0 ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.0",
+                        "4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "divides m n, n = 0 ⟶ m = 0 ⊢ n = 0 ⟶ m ≤ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m n, n = 0 ⟶ m = 0 ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides m n ⟶ (n = 0 ⟶ m = 0) ⟶ m ≤ n"
+                }
+            ],
+            "prop": "divides m n ⟶ (n = 0 ⟶ m = 0) ⟶ m ≤ n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "properly_divides_le_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides m n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides m n ⊢ divides m n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "¬(m = n)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = n) ⊢ ¬(m = n)"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides m n ⊢ ∃k. n = m * k"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "n = m * d",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m * d ⊢ n = m * d"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(m = n), n = m * d ⊢ ¬(m = m * d)"
+                },
+                {
+                    "args": "¬(m = m * d) ⟷ ¬(m = 0) ∧ ¬(d = 1)",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(m = m * d) ⟷ ¬(m = 0) ∧ ¬(d = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(m = n), n = m * d ⊢ ¬(m = 0) ∧ ¬(d = 1)"
+                },
+                {
+                    "args": "m * 2 ≤ n",
+                    "id": "9",
+                    "prevs": [
+                        "1",
+                        "2",
+                        "5",
+                        "8"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(m = n), ¬(n = 0), n = m * d ⊢ m * 2 ≤ n"
+                },
+                {
+                    "args": "mult_comm, 2 * m ≤ n",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides m n, ¬(m = n), ¬(n = 0), n = m * d ⊢ 2 * m ≤ n"
+                },
+                {
+                    "args": "∃k. n = m * k",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides m n ⟶ ¬(n = 0) ⟶ ¬(m = n) ⟶ 2 * m ≤ n"
+                }
+            ],
+            "prop": "divides m n ⟶ ¬(n = 0) ⟶ ¬(m = n) ⟶ 2 * m ≤ n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "2"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "~(m = m * d) <--> ~(m = 0) & ~(d = 1)",
+                    "goal_id": "7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "6"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2",
+                        "5",
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "divides_one",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃k. 1 = n * k) ⟶ n = 1"
+                },
+                {
+                    "args": "∃k. 1 = n * k",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃k. 1 = n * k ⊢ ∃k. 1 = n * k"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "1 = n * k",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 = n * k ⊢ 1 = n * k"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "1 = n * k ⊢ n * k = 1"
+                },
+                {
+                    "args": "mult_eq_1",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "1 = n * k ⊢ n = 1 ∧ k = 1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 = n * k ⊢ n = 1"
+                },
+                {
+                    "args": "∃k. 1 = n * k",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃k. 1 = n * k) ⟶ n = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 1 ⟶ (∃k. 1 = n * k)"
+                },
+                {
+                    "args": "n = 1",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 1 ⊢ n = 1"
+                },
+                {
+                    "args": "mult_1_left, (1::nat) = 1 * 1",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (1::nat) = 1 * 1"
+                },
+                {
+                    "args": "1 = n * 1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 1 ⊢ 1 = n * 1"
+                },
+                {
+                    "args": "exI, {P: λk. 1 = n * k, a: (1::nat)}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 1 ⊢ ∃a1. 1 = n * a1"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 1 ⟶ (∃k. 1 = n * k)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃k. 1 = n * k) ⟷ n = 1"
+                },
+                {
+                    "args": "divides_def, divides n 1 ⟷ n = 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ divides n 1 ⟷ n = 1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides n 1 ⟷ n = 1"
+                }
+            ],
+            "prop": "divides n 1 ⟷ n = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_eq_1"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(1::nat)"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_left"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "divides_0",
@@ -3276,13 +4343,1734 @@
                 "hint_backward1"
             ],
             "name": "divides_div_not",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x = q * n + r",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = q * n + r ⊢ x = q * n + r"
+                },
+                {
+                    "args": "0 < r",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < r ⊢ 0 < r"
+                },
+                {
+                    "args": "r < n",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "r < n ⊢ r < n"
+                },
+                {
+                    "args": "divides_self, {n: n}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n n"
+                },
+                {
+                    "args": "divides_lmul, {x: q}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n (q * n)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r < n, 0 < r, x = q * n + r ⊢ divides n (q * n + r) ⟶ false"
+                },
+                {
+                    "args": "divides n (q * n + r)",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides n (q * n + r) ⊢ divides n (q * n + r)"
+                },
+                {
+                    "args": "divides_sum2",
+                    "id": "5.1",
+                    "prevs": [
+                        "5.0",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides n (q * n + r) ⊢ divides n r"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides n (q * n + r) ⊢ n ≤ r ∨ r = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬false ⟶ ¬(n ≤ r ∨ r = 0)"
+                },
+                {
+                    "args": "¬false",
+                    "id": "5.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "not_le, ¬(n ≤ r)",
+                    "id": "5.3.1",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬(n ≤ r)"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬false, r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬¬(r = 0) ⟶ ¬(0 < r)"
+                },
+                {
+                    "args": "¬¬(r = 0)",
+                    "id": "5.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(r = 0) ⊢ ¬¬(r = 0)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "5.3.2.1",
+                    "prevs": [
+                        "5.3.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(r = 0) ⊢ r = 0"
+                },
+                {
+                    "args": "nat_less_def_1, ¬((0::nat) < 0)",
+                    "id": "5.3.2.2",
+                    "prevs": [
+                        "5.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, r < n, 0 < r, ¬¬(r = 0), divides n (q * n + r), x = q * n + r ⊢ ¬((0::nat) < 0)"
+                },
+                {
+                    "args": "¬(0 < r)",
+                    "id": "5.3.2.3",
+                    "prevs": [
+                        "5.3.2.1",
+                        "5.3.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬false, r < n, 0 < r, ¬¬(r = 0), divides n (q * n + r), x = q * n + r ⊢ ¬(0 < r)"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.2.4",
+                    "prevs": [
+                        "5.3.2.0",
+                        "5.3.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬false, r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬¬(r = 0) ⟶ ¬(0 < r)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "5.3.3",
+                    "prevs": [
+                        "1",
+                        "5.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬false, r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬(r = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.3.4",
+                    "prevs": [
+                        "5.3.1",
+                        "5.3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬false, r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬(n ≤ r) ∧ ¬(r = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n ≤ r ∨ r = 0)",
+                    "id": "5.3.5",
+                    "prevs": [
+                        "5.3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬(n ≤ r ∨ r = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.6",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ ¬false ⟶ ¬(n ≤ r ∨ r = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.2",
+                        "5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "r < n, 0 < r, divides n (q * n + r), x = q * n + r ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.0",
+                        "5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "r < n, 0 < r, x = q * n + r ⊢ divides n (q * n + r) ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "r < n, 0 < r, x = q * n + r ⊢ ¬(divides n (q * n + r))"
+                },
+                {
+                    "args": "¬(divides n x)",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "r < n, 0 < r, x = q * n + r ⊢ ¬(divides n x)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = q * n + r ⟶ 0 < r ⟶ r < n ⟶ ¬(divides n x)"
+                }
+            ],
             "prop": "x = q * n + r ⟶ 0 < r ⟶ r < n ⟶ ¬(divides n x)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "divides_self"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "param_x": "q",
+                    "theorem": "divides_lmul"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0",
+                        "4"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_sum2"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "5.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "5.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.2.0"
+                    ],
+                    "goal_id": "5.3.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.2.1"
+                    ],
+                    "goal_id": "5.3.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.3.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat",
                 "q": "nat",
                 "r": "nat",
                 "x": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "divides_mul2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides a b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides a b ⊢ divides a b"
+                },
+                {
+                    "args": "divides c d",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides c d ⊢ divides c d"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides a b ⊢ ∃k. b = a * k"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides c d ⊢ ∃k. d = c * k"
+                },
+                {
+                    "args": "k1, nat",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k1"
+                },
+                {
+                    "args": "b = a * k1",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = a * k1 ⊢ b = a * k1"
+                },
+                {
+                    "args": "k2, nat",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k2"
+                },
+                {
+                    "args": "d = c * k2",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = c * k2 ⊢ d = c * k2"
+                },
+                {
+                    "args": "a * k1 * (c * k2) = a * c * (k1 * k2)",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ a * k1 * (c * k2) = a * c * (k1 * k2)"
+                },
+                {
+                    "args": "a * k1 * d = a * c * (k1 * k2)",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides a b, divides c d, b = a * k1, d = c * k2 ⊢ a * k1 * d = a * c * (k1 * k2)"
+                },
+                {
+                    "args": "b * d = a * c * (k1 * k2)",
+                    "id": "10",
+                    "prevs": [
+                        "5",
+                        "9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides a b, divides c d, b = a * k1, d = c * k2 ⊢ b * d = a * c * (k1 * k2)"
+                },
+                {
+                    "args": "exI, {P: λk. b * d = a * c * k, a: k1 * k2}",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides a b, divides c d, b = a * k1, d = c * k2 ⊢ ∃a1. b * d = a * c * a1"
+                },
+                {
+                    "args": "divides_def, divides (a * c) (b * d)",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides a b, divides c d, b = a * k1, d = c * k2 ⊢ divides (a * c) (b * d)"
+                },
+                {
+                    "args": "∃k. d = c * k, ∃k. b = a * k",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4",
+                        "5",
+                        "3",
+                        "6",
+                        "7",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides a b ⟶ divides c d ⟶ divides (a * c) (b * d)"
+                }
+            ],
+            "prop": "divides a b ⟶ divides c d ⟶ divides (a * c) (b * d)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "k1"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "exists_elim",
+                    "names": "k2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "inst_exists_goal",
+                    "s": "k1*k2"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "nat_norm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "divides_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides x y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides x y ⊢ divides x y"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides x y ⊢ ∃k. y = x * k"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "y = x * k",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y = x * k ⊢ y = x * k"
+                },
+                {
+                    "args": "mult_exp, (x * k) ^ n = x ^ n * k ^ n",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (x * k) ^ n = x ^ n * k ^ n"
+                },
+                {
+                    "args": "y ^ n = x ^ n * k ^ n",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides x y, y = x * k ⊢ y ^ n = x ^ n * k ^ n"
+                },
+                {
+                    "args": "exI, {P: λk. y ^ n = x ^ n * k, a: k ^ n}",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides x y, y = x * k ⊢ ∃a1. y ^ n = x ^ n * a1"
+                },
+                {
+                    "args": "divides_def, divides (x ^ n) (y ^ n)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides x y, y = x * k ⊢ divides (x ^ n) (y ^ n)"
+                },
+                {
+                    "args": "∃k. y = x * k",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides x y ⟶ divides (x ^ n) (y ^ n)"
+                }
+            ],
+            "prop": "divides x y ⟶ divides (x ^ n) (y ^ n)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "k"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "inst_exists_goal",
+                    "s": "k ^ n"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_exp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "divides_exp2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬((0::nat) = 0) ⟶ divides (x ^ (0::nat)) y ⟶ divides x y"
+                },
+                {
+                    "args": "¬((0::nat) = 0)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬((0::nat) = 0) ⊢ ¬((0::nat) = 0)"
+                },
+                {
+                    "args": "divides (x ^ (0::nat)) y",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (x ^ (0::nat)) y ⊢ divides (x ^ (0::nat)) y"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬((0::nat) = 0) ⊢ (0::nat) < 0"
+                },
+                {
+                    "args": "nat_less_def_1",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬((0::nat) = 0) ⊢ false"
+                },
+                {
+                    "args": "not_false_res, divides x y",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "¬((0::nat) = 0) ⊢ divides x y"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬((0::nat) = 0) ⟶ divides (x ^ (0::nat)) y ⟶ divides x y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y) ⟶ ¬(Suc n = 0) ⟶ divides (x ^ Suc n) y ⟶ divides x y"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y ⊢ ¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y"
+                },
+                {
+                    "args": "¬(Suc n = 0)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(Suc n = 0) ⊢ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "divides (x ^ Suc n) y",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (x ^ Suc n) y ⊢ divides (x ^ Suc n) y"
+                },
+                {
+                    "args": "nat_nat_power_def_2",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides (x ^ Suc n) y ⊢ divides (x * x ^ n) y"
+                },
+                {
+                    "args": "divides_rmul2",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (x ^ Suc n) y ⊢ divides x y"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y) ⟶ ¬(Suc n = 0) ⟶ divides (x ^ Suc n) y ⟶ divides x y"
+                },
+                {
+                    "args": "nat_induct, {P: λn::nat. ¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y, x: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ divides (x ^ n) y ⟶ divides x y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "divides_exp_le_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≤ n ⊢ ∃p. n = m + p"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "n = m + d",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m + d ⊢ n = m + d"
+                },
+                {
+                    "args": "eq_refl, {x: p ^ m * p ^ d}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ p ^ m * p ^ d = p ^ m * p ^ d"
+                },
+                {
+                    "args": "exI, {P: λk. p ^ m * p ^ d = p ^ m * k, a: p ^ d}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n, n = m + d ⊢ ∃a1. p ^ m * p ^ d = p ^ m * a1"
+                },
+                {
+                    "args": "divides_def, divides (p ^ m) (p ^ m * p ^ d)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, n = m + d ⊢ divides (p ^ m) (p ^ m * p ^ d)"
+                },
+                {
+                    "args": "nat_power_add, divides (p ^ m) (p ^ (m + d))",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, n = m + d ⊢ divides (p ^ m) (p ^ (m + d))"
+                },
+                {
+                    "args": "divides (p ^ m) (p ^ n)",
+                    "id": "8",
+                    "prevs": [
+                        "3",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ n, n = m + d ⊢ divides (p ^ m) (p ^ n)"
+                },
+                {
+                    "args": "∃p. n = m + p",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ divides (p ^ m) (p ^ n)"
+                }
+            ],
+            "prop": "m ≤ n ⟶ divides (p ^ m) (p ^ n)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_power_add"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "inst_exists_goal",
+                    "s": "p ^ d"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "divides_exp_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "2 ≤ p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "2 ≤ p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "2 ≤ p ⊢ divides (p ^ m) (p ^ n) ⟶ m ≤ n"
+                },
+                {
+                    "args": "divides (p ^ m) (p ^ n)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ m) (p ^ n) ⊢ divides (p ^ m) (p ^ n)"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ m) (p ^ n) ⊢ p ^ m ≤ p ^ n ∨ p ^ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n) ⊢ p ^ m ≤ p ^ n ⟶ m ≤ n"
+                },
+                {
+                    "args": "p ^ m ≤ p ^ n",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ^ m ≤ p ^ n ⊢ p ^ m ≤ p ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ ¬(m ≤ n) ⟶ ¬(p ^ m ≤ p ^ n)"
+                },
+                {
+                    "args": "¬(m ≤ n)",
+                    "id": "1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m ≤ n) ⊢ ¬(m ≤ n)"
+                },
+                {
+                    "args": "not_le",
+                    "id": "1.2.1.1",
+                    "prevs": [
+                        "1.2.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(m ≤ n) ⊢ n < m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.1.2",
+                    "prevs": [
+                        "0",
+                        "1.2.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m ≤ n), 2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ 2 ≤ p ∧ n < m"
+                },
+                {
+                    "args": "disjI1, {A: 2 ≤ p ∧ n < m, B: p = 0 ∧ ¬(n = 0) ∧ m = 0}",
+                    "id": "1.2.1.3",
+                    "prevs": [
+                        "1.2.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m ≤ n), 2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ 2 ≤ p ∧ n < m ∨ p = 0 ∧ ¬(n = 0) ∧ m = 0"
+                },
+                {
+                    "args": "lt_exp, p ^ n < p ^ m",
+                    "id": "1.2.1.4",
+                    "prevs": [
+                        "1.2.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m ≤ n), 2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ p ^ n < p ^ m"
+                },
+                {
+                    "args": "not_le, ¬(p ^ m ≤ p ^ n)",
+                    "id": "1.2.1.5",
+                    "prevs": [
+                        "1.2.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m ≤ n), 2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ ¬(p ^ m ≤ p ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.6",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ ¬(m ≤ n) ⟶ ¬(p ^ m ≤ p ^ n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n), p ^ m ≤ p ^ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n) ⊢ p ^ m ≤ p ^ n ⟶ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n) ⊢ p ^ n = 0 ⟶ m ≤ n"
+                },
+                {
+                    "args": "p ^ n = 0",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ^ n = 0 ⊢ p ^ n = 0"
+                },
+                {
+                    "args": "exp_eq_0",
+                    "id": "1.3.1",
+                    "prevs": [
+                        "1.3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "p ^ n = 0 ⊢ p = 0 ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ^ n = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "0",
+                        "1.3.2"
+                    ],
+                    "rule": "z3",
+                    "th": "p ^ n = 0, 2 ≤ p ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.4",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n) ⊢ p ^ n = 0 ⟶ m ≤ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p, divides (p ^ m) (p ^ n) ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "2 ≤ p ⊢ divides (p ^ m) (p ^ n) ⟶ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "2 ≤ p ⊢ m ≤ n ⟶ divides (p ^ m) (p ^ n)"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "divides_exp_le_imp, {m: m, n: n, p: p}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n ⊢ divides (p ^ m) (p ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "2 ≤ p ⊢ m ≤ n ⟶ divides (p ^ m) (p ^ n)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p ⊢ divides (p ^ m) (p ^ n) ⟷ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 2 ≤ p ⟶ divides (p ^ m) (p ^ n) ⟷ m ≤ n"
+                }
+            ],
+            "prop": "2 ≤ p ⟶ divides (p ^ m) (p ^ n) ⟷ m ≤ n",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.0"
+                    ],
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "1.2.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lt_exp"
+                },
+                {
+                    "goal_id": "1.2.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.2.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.0"
+                    ],
+                    "goal_id": "1.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "exp_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1"
+                    ],
+                    "goal_id": "1.3.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1.3.2"
+                    ],
+                    "goal_id": "1.3.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_exp_le_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "divides_trivial_upperbound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "2 ≤ p",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "2 ≤ p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ divides (p ^ n) n ⟶ false"
+                },
+                {
+                    "args": "divides (p ^ n) n",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ n) n ⊢ divides (p ^ n) n"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ n) n ⊢ p ^ n ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ ¬false ⟶ ¬(p ^ n ≤ n ∨ n = 0)"
+                },
+                {
+                    "args": "¬false",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "lt_pow2_refl, {n: n}",
+                    "id": "2.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n < 2 ^ n"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ 1 ≤ n"
+                },
+                {
+                    "args": "exp_mono_le_imp, {n: n, x: (2::nat), y: p}",
+                    "id": "2.2.3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬false, ¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ 2 ^ n ≤ p ^ n"
+                },
+                {
+                    "args": "lte_trans",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "2.2.1",
+                        "2.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬false, ¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ n < p ^ n"
+                },
+                {
+                    "args": "not_le, ¬(p ^ n ≤ n)",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, ¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ ¬(p ^ n ≤ n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.2.6",
+                    "prevs": [
+                        "2.2.5",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬false, ¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ ¬(p ^ n ≤ n) ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(p ^ n ≤ n ∨ n = 0)",
+                    "id": "2.2.7",
+                    "prevs": [
+                        "2.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, ¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ ¬(p ^ n ≤ n ∨ n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.8",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ ¬false ⟶ ¬(p ^ n ≤ n ∨ n = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), divides (p ^ n) n, 2 ≤ p ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ divides (p ^ n) n ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ ¬(divides (p ^ n) n)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ 2 ≤ p ⟶ ¬(divides (p ^ n) n)"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ 2 ≤ p ⟶ ¬(divides (p ^ n) n)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "(2::nat) ^ n",
+                    "theorem": "lte_trans"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lt_pow2_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "goal_id": "2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exp_mono_le_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "p": "nat"
             }
         },
         {
