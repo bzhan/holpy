@@ -7205,9 +7205,840 @@
                 "hint_backward"
             ],
             "name": "finite_divisors",
-            "prop": "~(n = 0) --> finite {d. divides d n}",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "finite_natseg_le, {n: n}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m. m ≤ n})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ∀x. x ∈ {d. divides d n} ⟶ x ∈ {d. d ≤ n}"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "d ∈ {d1. divides d1 n}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d ∈ {d1. divides d1 n} ⊢ d ∈ {d1. divides d1 n}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "d ∈ {d1. divides d1 n} ⊢ divides d n"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "d ∈ {d1. divides d1 n} ⊢ d ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "d ≤ n ⟶ d ≤ n",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ d ≤ n ⟶ d ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), d ∈ {d1. divides d1 n} ⊢ n = 0 ⟶ d ≤ n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0, C: d ≤ n}",
+                    "id": "2.5.1",
+                    "prevs": [
+                        "0",
+                        "2.5.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, ¬(n = 0) ⊢ d ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.2",
+                    "prevs": [
+                        "2.5.0",
+                        "2.5.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), d ∈ {d1. divides d1 n} ⊢ n = 0 ⟶ d ≤ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.3",
+                        "2.4",
+                        "2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), d ∈ {d1. divides d1 n} ⊢ d ≤ n"
+                },
+                {
+                    "args": "member_collect, d ∈ {d1. d1 ≤ n}",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), d ∈ {d1. divides d1 n} ⊢ d ∈ {d1. d1 ≤ n}"
+                },
+                {
+                    "args": "",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ∀d. d ∈ {d1. divides d1 n} ⟶ d ∈ {d1. d1 ≤ n}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ {d. divides d n} ⊆ {d. d ≤ n}"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ finite ({d. divides d n})"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ finite ({d. divides d n})"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ finite ({d. divides d n})",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "{d. d <= n}",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg_le"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2.5.0"
+                    ],
+                    "goal_id": "2.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
             "ty": "thm",
             "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_special_divisors",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "finite_divisors",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ finite ({d. divides d n})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ∀x. P x ∧ divides x n ⟶ divides x n"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "P x ∧ divides x n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P x ∧ divides x n ⊢ P x ∧ divides x n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P x ∧ divides x n ⊢ divides x n"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ∀x. P x ∧ divides x n ⟶ divides x n"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ {d. P d ∧ divides d n} ⟶ x ∈ {d. divides d n}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ ∀x. x ∈ {d. P d ∧ divides d n} ⟶ x ∈ {d. divides d n}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ {d. P d ∧ divides d n} ⊆ {d. divides d n}"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ finite ({d. P d ∧ divides d n})"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ finite ({d. P d ∧ divides d n})"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ finite ({d. P d ∧ divides d n})",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "{d. divides d n}",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_divisors"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "divides_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m = n ⟶ (∀d. divides d m ⟷ divides d n)"
+                },
+                {
+                    "args": "m = n",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = n ⊢ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = n ⊢ ∀d. divides d m ⟷ divides d n"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "divides d m ⟷ divides d n",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = n ⊢ divides d m ⟷ divides d n"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "m = n ⊢ ∀d. divides d m ⟷ divides d n"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = n ⟶ (∀d. divides d m ⟷ divides d n)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀d. divides d m ⟷ divides d n) ⟶ m = n"
+                },
+                {
+                    "args": "∀d. divides d m ⟷ divides d n",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀d. divides d m ⟷ divides d n ⊢ ∀d. divides d m ⟷ divides d n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀d. divides d m ⟷ divides d n ⊢ ∀d. divides d n ⟷ divides d m"
+                },
+                {
+                    "args": "divides_self, {n: m}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides m m"
+                },
+                {
+                    "args": "divides m n",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀d. divides d m ⟷ divides d n ⊢ divides m n"
+                },
+                {
+                    "args": "divides_self, {n: n}",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n n"
+                },
+                {
+                    "args": "divides n m",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀d. divides d m ⟷ divides d n ⊢ divides n m"
+                },
+                {
+                    "args": "divides_antisym",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.3",
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀d. divides d m ⟷ divides d n ⊢ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀d. divides d m ⟷ divides d n) ⟶ m = n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m = n ⟷ (∀d. divides d m ⟷ divides d n)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = n ⟷ (∀d. divides d m ⟷ divides d n)"
+                }
+            ],
+            "prop": "m = n ⟷ (∀d. divides d m ⟷ divides d n)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "multiples_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m = n ⟶ (∀d. divides m d ⟷ divides n d)"
+                },
+                {
+                    "args": "m = n",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = n ⊢ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = n ⊢ ∀d. divides m d ⟷ divides n d"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "divides m d ⟷ divides n d",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = n ⊢ divides m d ⟷ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "m = n ⊢ ∀d. divides m d ⟷ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = n ⟶ (∀d. divides m d ⟷ divides n d)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀d. divides m d ⟷ divides n d) ⟶ m = n"
+                },
+                {
+                    "args": "∀d. divides m d ⟷ divides n d",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀d. divides m d ⟷ divides n d ⊢ ∀d. divides m d ⟷ divides n d"
+                },
+                {
+                    "args": "divides_self, {n: n}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n n"
+                },
+                {
+                    "args": "divides m n",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀d. divides m d ⟷ divides n d ⊢ divides m n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀d. divides m d ⟷ divides n d ⊢ ∀d. divides n d ⟷ divides m d"
+                },
+                {
+                    "args": "divides_self, {n: m}",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides m m"
+                },
+                {
+                    "args": "divides n m",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀d. divides m d ⟷ divides n d ⊢ divides n m"
+                },
+                {
+                    "args": "divides_antisym",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.2",
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀d. divides m d ⟷ divides n d ⊢ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀d. divides m d ⟷ divides n d) ⟶ m = n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m = n ⟷ (∀d. divides m d ⟷ divides n d)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = n ⟷ (∀d. divides m d ⟷ divides n d)"
+                }
+            ],
+            "prop": "m = n ⟷ (∀d. divides m d ⟷ divides n d)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
                 "n": "nat"
             }
         },

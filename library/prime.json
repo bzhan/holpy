@@ -1,9 +1,889 @@
 {
     "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "prime",
+            "prop": "prime p ⟷ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)",
+            "ty": "def",
+            "type": "nat ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "one_or_prime",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⟶ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ p = 1 ⟶ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1, p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ∀n. divides n p ⟶ n = 1 ∨ n = p"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "divides n p",
+                    "id": "0.1.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides n p ⊢ divides n p"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "divides n p, p = 1 ⊢ divides n 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "divides n p, p = 1 ⊢ divides n 1"
+                },
+                {
+                    "args": "divides_one",
+                    "id": "0.1.1.4",
+                    "prevs": [
+                        "0.1.1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides n p, p = 1 ⊢ n = 1"
+                },
+                {
+                    "args": "disjI1, {A: n = 1, B: n = p}",
+                    "id": "0.1.1.5",
+                    "prevs": [
+                        "0.1.1.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides n p, p = 1, p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ n = 1 ∨ n = p"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.6",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.1",
+                        "0.1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1, p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ∀n. divides n p ⟶ n = 1 ∨ n = p"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ p = 1 ⟶ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⟶ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ∀x. divides x p ⟶ x = 1 ∨ x = p"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⟶ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⊢ ∀n. divides n p ⟶ n = 1 ∨ n = p"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⟶ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀n. divides n p ⟶ n = 1 ∨ n = p) ⟶ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "∀n. divides n p ⟶ n = 1 ∨ n = p",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ ∀n. divides n p ⟶ n = 1 ∨ n = p"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ p = 1 ⟶ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "disjI1, {A: p = 1, B: ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)}",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 1, ∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ p = 1 ⟶ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ ¬(p = 1) ⟶ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "¬(p = 1)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 1) ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 1), ∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)}",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(p = 1), ∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ ¬(p = 1) ⟶ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. divides n p ⟶ n = 1 ∨ n = p ⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. divides n p ⟶ n = 1 ∨ n = p) ⟶ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ p = 1 ∨ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p) ⟷ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "prime_def, p = 1 ∨ prime p ⟷ (∀n. divides n p ⟶ n = 1 ∨ n = p)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ p = 1 ∨ prime p ⟷ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p = 1 ∨ prime p ⟷ (∀n. divides n p ⟶ n = 1 ∨ n = p)"
+                }
+            ],
+            "prop": "p = 1 ∨ prime p ⟷ (∀n. divides n p ⟶ n = 1 ∨ n = p)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0",
+                        "0.1.1.1"
+                    ],
+                    "goal_id": "0.1.1.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0",
+                        "0.1.1.1"
+                    ],
+                    "goal_id": "0.1.1.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.3"
+                    ],
+                    "goal_id": "0.1.1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_one"
+                },
+                {
+                    "goal_id": "0.1.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "p = 1",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "prime_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides_zero, {n: (2::nat)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 2 0"
+                },
+                {
+                    "args": "¬((2::nat) = 1)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 1)"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬((2::nat) = 1) ∧ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬((2::nat) = 1 ∨ (2::nat) = 0)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬((2::nat) = 1 ∨ (2::nat) = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides 2 0 ∧ ¬((2::nat) = 1 ∨ (2::nat) = 0)"
+                },
+                {
+                    "args": "not_imp, ¬(divides 2 0 ⟶ (2::nat) = 1 ∨ (2::nat) = 0)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(divides 2 0 ⟶ (2::nat) = 1 ∨ (2::nat) = 0)"
+                },
+                {
+                    "args": "exI, {P: λx. ¬(divides x 0 ⟶ x = 1 ∨ x = 0), a: (2::nat)}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. ¬(divides a1 0 ⟶ a1 = 1 ∨ a1 = 0)"
+                },
+                {
+                    "args": "not_all, ¬(∀x. divides x 0 ⟶ x = 1 ∨ x = 0)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(∀x. divides x 0 ⟶ x = 1 ∨ x = 0)"
+                },
+                {
+                    "args": "disjI2, {A: ¬¬((0::nat) = 1), B: ¬(∀x. divides x 0 ⟶ x = 1 ∨ x = 0)}",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬¬((0::nat) = 1) ∨ ¬(∀x. divides x 0 ⟶ x = 1 ∨ x = 0)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(¬((0::nat) = 1) ∧ (∀x. divides x 0 ⟶ x = 1 ∨ x = 0))",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(¬((0::nat) = 1) ∧ (∀x. divides x 0 ⟶ x = 1 ∨ x = 0))"
+                },
+                {
+                    "args": "prime_def, ¬(prime 0)",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(prime 0)"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(prime 0)"
+                }
+            ],
+            "prop": "¬(prime 0)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(2::nat)"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "nat_const_ineq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "prime_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "double_neg, ¬¬((1::nat) = 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬¬((1::nat) = 1)"
+                },
+                {
+                    "args": "disjI1, {A: ¬¬((1::nat) = 1), B: ¬(∀x. divides x 1 ⟶ x = 1 ∨ x = 1)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬¬((1::nat) = 1) ∨ ¬(∀x. divides x 1 ⟶ x = 1 ∨ x = 1)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(¬((1::nat) = 1) ∧ (∀x. divides x 1 ⟶ x = 1 ∨ x = 1))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(¬((1::nat) = 1) ∧ (∀x. divides x 1 ⟶ x = 1 ∨ x = 1))"
+                },
+                {
+                    "args": "prime_def, ¬(prime 1)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(prime 1)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(prime 1)"
+                }
+            ],
+            "prop": "¬(prime 1)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "prime_2",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "¬((2::nat) = 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. divides x 2 ⟶ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "divides x 2",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides x 2 ⊢ divides x 2"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides x 2 ⊢ x ≤ 2 ∨ (2::nat) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides x 2 ⊢ x ≤ 2 ⟶ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "x ≤ 2",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ 2 ⊢ x ≤ 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "divides x 2, x ≤ 2 ⊢ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "divides x 2 ⊢ x ≤ 2 ⟶ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "divides x 2 ⊢ (2::nat) = 0 ⟶ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.2",
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides x 2 ⊢ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. divides x 2 ⟶ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬((2::nat) = 1) ∧ (∀x. divides x 2 ⟶ x = 1 ∨ x = 2)"
+                },
+                {
+                    "args": "prime_def, prime 2",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ prime 2"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime 2"
+                }
+            ],
+            "prop": "prime 2",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        }
     ],
     "description": "Basic theory of divisibility, gcd, coprimality and primality (over N).",
     "imports": [
-        "nat"
+        "gcd"
     ],
     "name": "prime"
 }
