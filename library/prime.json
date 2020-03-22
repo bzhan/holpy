@@ -4,6 +4,15 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "coprime",
+            "prop": "coprime a b ⟷ (∃x. ∃y. a * x + b * y = 1)",
+            "ty": "def",
+            "type": "nat ⇒ nat ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "prime",
             "prop": "prime p ⟷ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)",
             "ty": "def",
@@ -706,7 +715,7 @@
                 "hint_backward"
             ],
             "name": "prime_2",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "¬((2::nat) = 1)",
@@ -763,15 +772,87 @@
                     "args": "",
                     "id": "1.3.1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "divides x 2, x ≤ 2 ⊢ x = 0 ⟶ ¬(divides x 2)"
+                },
+                {
+                    "args": "x = 0",
+                    "id": "1.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = 0 ⊢ x = 0"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "1.3.1.1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "divides_0, ¬(divides 0 2)",
+                    "id": "1.3.1.2",
+                    "prevs": [
+                        "1.3.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = 0, divides x 2, x ≤ 2 ⊢ ¬(divides 0 2)"
+                },
+                {
+                    "args": "¬(divides x 2)",
+                    "id": "1.3.1.3",
+                    "prevs": [
+                        "1.3.1.0",
+                        "1.3.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = 0, divides x 2, x ≤ 2 ⊢ ¬(divides x 2)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1.4",
+                    "prevs": [
+                        "1.3.1.0",
+                        "1.3.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "divides x 2, x ≤ 2 ⊢ x = 0 ⟶ ¬(divides x 2)"
+                },
+                {
+                    "args": "double_neg, ¬¬(x = 0) ⟶ ¬(divides x 2)",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides x 2, x ≤ 2 ⊢ ¬¬(x = 0) ⟶ ¬(divides x 2)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "1.1",
+                        "1.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides x 2, x ≤ 2 ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "x = 1 ∨ x = 2",
+                    "id": "1.3.4",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.3"
+                    ],
+                    "rule": "z3",
                     "th": "divides x 2, x ≤ 2 ⊢ x = 1 ∨ x = 2"
                 },
                 {
                     "args": "",
-                    "id": "1.3.2",
+                    "id": "1.3.5",
                     "prevs": [
                         "1.3.0",
-                        "1.3.1"
+                        "1.3.4"
                     ],
                     "rule": "intros",
                     "th": "divides x 2 ⊢ x ≤ 2 ⟶ x = 1 ∨ x = 2"
@@ -780,7 +861,65 @@
                     "args": "",
                     "id": "1.4",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "divides x 2 ⊢ (2::nat) = 0 ⟶ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "(2::nat) = 0",
+                    "id": "1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(2::nat) = 0 ⊢ (2::nat) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides x 2, (2::nat) = 0 ⊢ ¬(x = 1 ∨ x = 2) ⟶ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "¬(x = 1 ∨ x = 2)",
+                    "id": "1.4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 1 ∨ x = 2) ⊢ ¬(x = 1 ∨ x = 2)"
+                },
+                {
+                    "args": "¬((2::nat) = 0)",
+                    "id": "1.4.1.1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1.2",
+                    "prevs": [
+                        "1.4.1.0",
+                        "1.4.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "divides x 2, (2::nat) = 0 ⊢ ¬(x = 1 ∨ x = 2) ⟶ ¬((2::nat) = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.4.2",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides x 2, (2::nat) = 0 ⊢ x = 1 ∨ x = 2"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.3",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.2"
+                    ],
+                    "rule": "intros",
                     "th": "divides x 2 ⊢ (2::nat) = 0 ⟶ x = 1 ∨ x = 2"
                 },
                 {
@@ -875,6 +1014,3675 @@
                 {
                     "goal_id": "1.3",
                     "method_name": "introduction"
+                },
+                {
+                    "goal": "~(x = 0)",
+                    "goal_id": "1.3.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.0"
+                    ],
+                    "goal_id": "1.3.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "goal_id": "1.3.1.1",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.0",
+                        "1.3.3"
+                    ],
+                    "goal_id": "1.3.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.0"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.4.1.1",
+                    "method_name": "nat_const_ineq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "prime_ge_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ p < 2 ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "p < 2",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p < 2 ⊢ p < 2"
+                },
+                {
+                    "args": "p = 0 ∨ p = 1",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "z3",
+                    "th": "p < 2 ⊢ p = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, p < 2 ⊢ p = 0 ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "prime_0",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(prime 0)"
+                },
+                {
+                    "args": "¬(prime p)",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, p = 0, p < 2 ⊢ ¬(prime p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, p < 2 ⊢ p = 0 ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, p < 2 ⊢ p = 1 ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "prime_1",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(prime 1)"
+                },
+                {
+                    "args": "¬(prime p)",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, p = 1, p < 2 ⊢ ¬(prime p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, p < 2 ⊢ p = 1 ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, p < 2 ⊢ ¬(prime p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ p < 2 ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "not_le, ¬(2 ≤ p) ⟶ ¬(prime p)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ ¬(2 ≤ p) ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ 2 ≤ p"
+                }
+            ],
+            "prop": "prime p ⟶ 2 ≤ p",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "p = 0 | p = 1",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_0"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.0"
+                    ],
+                    "goal_id": "1.3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "prime_factor",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 1) ⊢ ¬(n = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 1) ⊢ ∀n. (∀m. m < n ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m)) ⟶ ¬(n = 1) ⟶ (∃p. prime p ∧ divides p n)"
+                },
+                {
+                    "args": "n1, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n1"
+                },
+                {
+                    "args": "∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m)",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m)"
+                },
+                {
+                    "args": "¬(n1 = 1)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n1 = 1) ⊢ ¬(n1 = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ prime n1 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "prime n1",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime n1 ⊢ prime n1"
+                },
+                {
+                    "args": "divides_self, {n: n1}",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n1 n1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime n1, ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ prime n1 ∧ divides n1 n1"
+                },
+                {
+                    "args": "exI, {P: λp. prime p ∧ divides p n1, a: n1}",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "1.3.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime n1, ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃a1. prime a1 ∧ divides a1 n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.4",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ prime n1 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ¬(prime n1) ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "¬(prime n1)",
+                    "id": "1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(prime n1) ⊢ ¬(prime n1)"
+                },
+                {
+                    "args": "prime_def",
+                    "id": "1.4.1",
+                    "prevs": [
+                        "1.4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(prime n1) ⊢ ¬(¬(n1 = 1) ∧ (∀x. divides x n1 ⟶ x = 1 ∨ x = n1))"
+                },
+                {
+                    "args": "de_morgan_thm1",
+                    "id": "1.4.2",
+                    "prevs": [
+                        "1.4.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(prime n1) ⊢ ¬¬(n1 = 1) ∨ ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "1.4.3",
+                    "prevs": [
+                        "1.4.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(prime n1) ⊢ n1 = 1 ∨ ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ n1 = 1 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "n1 = 1",
+                    "id": "1.4.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n1 = 1 ⊢ n1 = 1"
+                },
+                {
+                    "args": "negE_gen, {A: n1 = 1, C: ∃p. prime p ∧ divides p n1}",
+                    "id": "1.4.4.1",
+                    "prevs": [
+                        "1.2",
+                        "1.4.4.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n1 = 1, ¬(n1 = 1) ⊢ ∃p. prime p ∧ divides p n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.4.2",
+                    "prevs": [
+                        "1.4.4.0",
+                        "1.4.4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ n1 = 1 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1) ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1)",
+                    "id": "1.4.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1) ⊢ ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1)"
+                },
+                {
+                    "args": "not_all",
+                    "id": "1.4.5.1",
+                    "prevs": [
+                        "1.4.5.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1) ⊢ ∃x. ¬(divides x n1 ⟶ x = 1 ∨ x = n1)"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "1.4.5.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "¬(divides m n1 ⟶ m = 1 ∨ m = n1)",
+                    "id": "1.4.5.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ ¬(divides m n1 ⟶ m = 1 ∨ m = n1)"
+                },
+                {
+                    "args": "not_imp",
+                    "id": "1.4.5.4",
+                    "prevs": [
+                        "1.4.5.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ divides m n1 ∧ ¬(m = 1 ∨ m = n1)"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "1.4.5.5",
+                    "prevs": [
+                        "1.4.5.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ divides m n1 ∧ ¬(m = 1) ∧ ¬(m = n1)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.4.5.6",
+                    "prevs": [
+                        "1.4.5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ divides m n1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.4.5.7",
+                    "prevs": [
+                        "1.4.5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ ¬(m = 1) ∧ ¬(m = n1)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.4.5.8",
+                    "prevs": [
+                        "1.4.5.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ ¬(m = 1)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.4.5.9",
+                    "prevs": [
+                        "1.4.5.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ ¬(m = n1)"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "1.4.5.10",
+                    "prevs": [
+                        "1.4.5.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ m ≤ n1 ∨ n1 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5.11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ m ≤ n1 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "m ≤ n1",
+                    "id": "1.4.5.11.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n1 ⊢ m ≤ n1"
+                },
+                {
+                    "args": "m < n1",
+                    "id": "1.4.5.11.1",
+                    "prevs": [
+                        "1.4.5.11.0",
+                        "1.4.5.9"
+                    ],
+                    "rule": "z3",
+                    "th": "m ≤ n1, ¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ m < n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5.11.2",
+                    "prevs": [
+                        "1.1",
+                        "1.4.5.11.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "m ≤ n1, ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5.11.3",
+                    "prevs": [
+                        "1.4.5.11.2",
+                        "1.4.5.8"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "m ≤ n1, ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃p. prime p ∧ divides p m"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "1.4.5.11.4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "prime p ∧ divides p m",
+                    "id": "1.4.5.11.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ∧ divides p m ⊢ prime p ∧ divides p m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.4.5.11.6",
+                    "prevs": [
+                        "1.4.5.11.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p m ⊢ prime p"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.4.5.11.7",
+                    "prevs": [
+                        "1.4.5.11.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p m ⊢ divides p m"
+                },
+                {
+                    "args": "divides_trans",
+                    "id": "1.4.5.11.8",
+                    "prevs": [
+                        "1.4.5.11.7",
+                        "1.4.5.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p m, ¬(divides m n1 ⟶ m = 1 ∨ m = n1) ⊢ divides p n1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.4.5.11.9",
+                    "prevs": [
+                        "1.4.5.11.6",
+                        "1.4.5.11.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(prime n1), m ≤ n1, ¬(n = 1), ¬(n1 = 1), prime p ∧ divides p m, ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ prime p ∧ divides p n1"
+                },
+                {
+                    "args": "exI, {P: λp. prime p ∧ divides p n1, a: p}",
+                    "id": "1.4.5.11.10",
+                    "prevs": [
+                        "1.4.5.11.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(prime n1), m ≤ n1, ¬(n = 1), ¬(n1 = 1), prime p ∧ divides p m, ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃a1. prime a1 ∧ divides a1 n1"
+                },
+                {
+                    "args": "∃p. prime p ∧ divides p m",
+                    "id": "1.4.5.11.11",
+                    "prevs": [
+                        "1.4.5.11.0",
+                        "1.4.5.11.3",
+                        "1.4.5.11.4",
+                        "1.4.5.11.5",
+                        "1.4.5.11.10"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ m ≤ n1 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5.12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ n1 = 0 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "n1 = 0",
+                    "id": "1.4.5.12.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n1 = 0 ⊢ n1 = 0"
+                },
+                {
+                    "args": "prime_2",
+                    "id": "1.4.5.12.1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ prime 2"
+                },
+                {
+                    "args": "divides_zero, {n: (2::nat)}",
+                    "id": "1.4.5.12.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 2 0"
+                },
+                {
+                    "args": "divides 2 n1",
+                    "id": "1.4.5.12.3",
+                    "prevs": [
+                        "1.4.5.12.0",
+                        "1.4.5.12.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(prime n1), n1 = 0, ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ divides 2 n1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.4.5.12.4",
+                    "prevs": [
+                        "1.4.5.12.1",
+                        "1.4.5.12.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(prime n1), n1 = 0, ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ prime 2 ∧ divides 2 n1"
+                },
+                {
+                    "args": "exI, {P: λp. prime p ∧ divides p n1, a: (2::nat)}",
+                    "id": "1.4.5.12.5",
+                    "prevs": [
+                        "1.4.5.12.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(prime n1), n1 = 0, ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃a1. prime a1 ∧ divides a1 n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5.12.6",
+                    "prevs": [
+                        "1.4.5.12.0",
+                        "1.4.5.12.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ n1 = 0 ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.4.5.13",
+                    "prevs": [
+                        "1.4.5.10",
+                        "1.4.5.11",
+                        "1.4.5.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ¬(divides m n1 ⟶ m = 1 ∨ m = n1), ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃p. prime p ∧ divides p n1"
+                },
+                {
+                    "args": "∃x. ¬(divides x n1 ⟶ x = 1 ∨ x = n1)",
+                    "id": "1.4.5.14",
+                    "prevs": [
+                        "1.4.5.0",
+                        "1.4.5.1",
+                        "1.4.5.2",
+                        "1.4.5.3",
+                        "1.4.5.13"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ¬(∀x. divides x n1 ⟶ x = 1 ∨ x = n1) ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.4.6",
+                    "prevs": [
+                        "1.4.3",
+                        "1.4.4",
+                        "1.4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(prime n1), ¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃p. prime p ∧ divides p n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.7",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ¬(prime n1) ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 1), ¬(n1 = 1), ∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m) ⊢ ∃p. prime p ∧ divides p n1"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 1) ⊢ ∀n1. (∀m. m < n1 ⟶ ¬(m = 1) ⟶ (∃p. prime p ∧ divides p m)) ⟶ ¬(n1 = 1) ⟶ (∃p. prime p ∧ divides p n1)"
+                },
+                {
+                    "args": "nat_WF",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 1) ⊢ ∀n. ¬(n = 1) ⟶ (∃p. prime p ∧ divides p n)"
+                },
+                {
+                    "args": "n",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(n = 1) ⊢ ∃p. prime p ∧ divides p n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 1) ⟶ (∃p. prime p ∧ divides p n)"
+                }
+            ],
+            "prop": "¬(n = 1) ⟶ (∃p. prime p ∧ divides p n)",
+            "steps": [
+                {
+                    "goal": "!n. ¬(n = 1) ⟶ (∃p. prime p ∧ divides p n)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_WF"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n1"
+                },
+                {
+                    "case": "prime (n1)",
+                    "goal_id": "1.3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "n1"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.0"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.1"
+                    ],
+                    "goal_id": "1.4.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.2"
+                    ],
+                    "goal_id": "1.4.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.3"
+                    ],
+                    "goal_id": "1.4.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.4.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2",
+                        "1.4.4.0"
+                    ],
+                    "goal_id": "1.4.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.4.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.0"
+                    ],
+                    "goal_id": "1.4.5.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.1"
+                    ],
+                    "goal_id": "1.4.5.2",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.3"
+                    ],
+                    "goal_id": "1.4.5.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.4"
+                    ],
+                    "goal_id": "1.4.5.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.5"
+                    ],
+                    "goal_id": "1.4.5.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.5"
+                    ],
+                    "goal_id": "1.4.5.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.7"
+                    ],
+                    "goal_id": "1.4.5.8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.7"
+                    ],
+                    "goal_id": "1.4.5.9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.6"
+                    ],
+                    "goal_id": "1.4.5.10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.10"
+                    ],
+                    "goal_id": "1.4.5.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.4.5.11",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "m < n1",
+                    "goal_id": "1.4.5.11.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.11.0",
+                        "1.4.5.9"
+                    ],
+                    "goal_id": "1.4.5.11.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.1",
+                        "1.4.5.11.1"
+                    ],
+                    "goal_id": "1.4.5.11.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.11.2",
+                        "1.4.5.8"
+                    ],
+                    "goal_id": "1.4.5.11.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.11.3"
+                    ],
+                    "goal_id": "1.4.5.11.4",
+                    "method_name": "exists_elim",
+                    "names": "p"
+                },
+                {
+                    "goal_id": "1.4.5.11.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "p"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.11.5"
+                    ],
+                    "goal_id": "1.4.5.11.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.11.5"
+                    ],
+                    "goal_id": "1.4.5.11.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.4.5.11.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.11.7",
+                        "1.4.5.6"
+                    ],
+                    "goal_id": "1.4.5.11.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_trans"
+                },
+                {
+                    "goal_id": "1.4.5.12",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.4.5.12.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(2::nat)"
+                },
+                {
+                    "goal_id": "1.4.5.12.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.4.5.12.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.5.12.0"
+                    ],
+                    "goal_id": "1.4.5.12.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.4.5.12.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_zero"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "prime_factor_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "n = p * m",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = p * m ⊢ n = p * m"
+                },
+                {
+                    "args": "prime_ge_2",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ ∃p1. p = 2 + p1"
+                },
+                {
+                    "args": "q, nat",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR q"
+                },
+                {
+                    "args": "p = 2 + q",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 2 + q ⊢ p = 2 + q"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = p * m, p = 2 + q ⊢ n = (2 + q) * m"
+                },
+                {
+                    "args": "m + q * m = (1 + q) * m",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ m + q * m = (1 + q) * m"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ Suc q * m = 0 ⟶ false"
+                },
+                {
+                    "args": "Suc q * m = 0",
+                    "id": "9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc q * m = 0 ⊢ Suc q * m = 0"
+                },
+                {
+                    "args": "mult_nonzero",
+                    "id": "9.1",
+                    "prevs": [
+                        "9.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Suc q * m = 0 ⊢ Suc q = 0 ∨ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "9.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ Suc q = 0 ⟶ false"
+                },
+                {
+                    "args": "Suc q = 0",
+                    "id": "9.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Suc q = 0 ⊢ Suc q = 0"
+                },
+                {
+                    "args": "",
+                    "id": "9.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(n = 0), Suc q = 0, n = p * m, Suc q * m = 0, p = 2 + q ⊢ ¬false ⟶ ¬(Suc q = 0)"
+                },
+                {
+                    "args": "¬false",
+                    "id": "9.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "nat_zero_Suc_neq, {n: q}",
+                    "id": "9.2.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(0 = Suc q)"
+                },
+                {
+                    "args": "ineq_sym",
+                    "id": "9.2.1.2",
+                    "prevs": [
+                        "9.2.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬false, prime p, ¬(n = 0), Suc q = 0, n = p * m, Suc q * m = 0, p = 2 + q ⊢ ¬(Suc q = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "9.2.1.3",
+                    "prevs": [
+                        "9.2.1.0",
+                        "9.2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(n = 0), Suc q = 0, n = p * m, Suc q * m = 0, p = 2 + q ⊢ ¬false ⟶ ¬(Suc q = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "9.2.2",
+                    "prevs": [
+                        "9.2.0",
+                        "9.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(n = 0), Suc q = 0, n = p * m, Suc q * m = 0, p = 2 + q ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "9.2.3",
+                    "prevs": [
+                        "9.2.0",
+                        "9.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ Suc q = 0 ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "9.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ m = 0 ⟶ false"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "9.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "9.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, m = 0, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ ¬false ⟶ ¬¬(n = 0)"
+                },
+                {
+                    "args": "¬false",
+                    "id": "9.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "",
+                    "id": "9.3.1.1",
+                    "prevs": [
+                        "9.3.0",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = 0, n = p * m ⊢ n = p * 0"
+                },
+                {
+                    "args": "mult_0_right",
+                    "id": "9.3.1.2",
+                    "prevs": [
+                        "9.3.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = 0, n = p * m ⊢ n = 0"
+                },
+                {
+                    "args": "double_neg, ¬¬(n = 0)",
+                    "id": "9.3.1.3",
+                    "prevs": [
+                        "9.3.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬false, prime p, m = 0, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ ¬¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "9.3.1.4",
+                    "prevs": [
+                        "9.3.1.0",
+                        "9.3.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, m = 0, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ ¬false ⟶ ¬¬(n = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "9.3.2",
+                    "prevs": [
+                        "1",
+                        "9.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m = 0, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "9.3.3",
+                    "prevs": [
+                        "9.3.0",
+                        "9.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ m = 0 ⟶ false"
+                },
+                {
+                    "args": "disjE",
+                    "id": "9.4",
+                    "prevs": [
+                        "9.1",
+                        "9.2",
+                        "9.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(n = 0), n = p * m, Suc q * m = 0, p = 2 + q ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "9.5",
+                    "prevs": [
+                        "9.0",
+                        "9.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ Suc q * m = 0 ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ ¬(Suc q * m = 0)"
+                },
+                {
+                    "args": "add_1_left, ¬((1 + q) * m = 0)",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ ¬((1 + q) * m = 0)"
+                },
+                {
+                    "args": "¬(m + q * m = 0)",
+                    "id": "12",
+                    "prevs": [
+                        "8",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ ¬(m + q * m = 0)"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ 0 < m + q * m"
+                },
+                {
+                    "args": "lt_add, m < m + (m + q * m)",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ m < m + (m + q * m)"
+                },
+                {
+                    "args": "add_assoc, m < m + m + q * m",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ m < m + m + q * m"
+                },
+                {
+                    "args": "mult_2, m < 2 * m + q * m",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ m < 2 * m + q * m"
+                },
+                {
+                    "args": "distrib_r, m < (2 + q) * m",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ m < (2 + q) * m"
+                },
+                {
+                    "args": "m < n",
+                    "id": "18",
+                    "prevs": [
+                        "7",
+                        "17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(n = 0), n = p * m, p = 2 + q ⊢ m < n"
+                },
+                {
+                    "args": "∃p1. p = 2 + p1",
+                    "id": "19",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4",
+                        "5",
+                        "6",
+                        "18"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ ¬(n = 0) ⟶ n = p * m ⟶ m < n"
+                }
+            ],
+            "prop": "prime p ⟶ ¬(n = 0) ⟶ n = p * m ⟶ m < n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "prime_ge_2"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "exists_elim",
+                    "names": "q"
+                },
+                {
+                    "fact_ids": [
+                        "6",
+                        "2"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_assoc"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lt_add"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "goal": "m + q * m = (1+ q) * m",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_1_left"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "9.0"
+                    ],
+                    "goal_id": "9.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "mult_nonzero"
+                },
+                {
+                    "fact_ids": [
+                        "9.1"
+                    ],
+                    "goal_id": "9.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "9.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "9.2.0"
+                    ],
+                    "goal_id": "9.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "9.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "9.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ineq_sym"
+                },
+                {
+                    "goal_id": "9.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_zero_Suc_neq"
+                },
+                {
+                    "goal_id": "9.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "9.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "9.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "9.3.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "9.3.0",
+                        "2"
+                    ],
+                    "goal_id": "9.3.1.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "9.3.1.1"
+                    ],
+                    "goal_id": "9.3.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "prime_factor_induct",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P 0 ⊢ P 0"
+                },
+                {
+                    "args": "P 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P 1 ⊢ P 1"
+                },
+                {
+                    "args": "∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ∀n. (∀m. m < n ⟶ P m) ⟶ P n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "∀m. m < n ⟶ P m",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. m < n ⟶ P m ⊢ ∀m. m < n ⟶ P m"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ n = 0 ⟶ P n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "P n",
+                    "id": "3.2.1",
+                    "prevs": [
+                        "3.2.0",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "P 1, P 0, n = 0, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.2",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ n = 0 ⟶ P n"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬(n = 0) ⟶ P n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ¬(n = 0), ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ n = 1 ⟶ P n"
+                },
+                {
+                    "args": "n = 1",
+                    "id": "3.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 1 ⊢ n = 1"
+                },
+                {
+                    "args": "P n",
+                    "id": "3.3.1.1",
+                    "prevs": [
+                        "3.3.1.0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "P 1, P 0, n = 1, ¬(n = 0), ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.1.2",
+                    "prevs": [
+                        "3.3.1.0",
+                        "3.3.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ¬(n = 0), ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ n = 1 ⟶ P n"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ¬(n = 0), ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬(n = 1) ⟶ P n"
+                },
+                {
+                    "args": "¬(n = 1)",
+                    "id": "3.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 1) ⊢ ¬(n = 1)"
+                },
+                {
+                    "args": "prime_factor",
+                    "id": "3.3.2.1",
+                    "prevs": [
+                        "3.3.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 1) ⊢ ∃p. prime p ∧ divides p n"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "3.3.2.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "prime p ∧ divides p n",
+                    "id": "3.3.2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ∧ divides p n ⊢ prime p ∧ divides p n"
+                },
+                {
+                    "args": "p",
+                    "id": "3.3.2.4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.3.2.5",
+                    "prevs": [
+                        "3.3.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p n ⊢ prime p"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2.6",
+                    "prevs": [
+                        "3.3.2.4",
+                        "3.3.2.5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "prime p ∧ divides p n, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ∀n. ¬(n = 0) ⟶ P n ⟶ P (p * n)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.3.2.7",
+                    "prevs": [
+                        "3.3.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p n ⊢ divides p n"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "3.3.2.8",
+                    "prevs": [
+                        "3.3.2.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ∧ divides p n ⊢ ∃k. n = p * k"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "3.3.2.9",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "n = p * d",
+                    "id": "3.3.2.10",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = p * d ⊢ n = p * d"
+                },
+                {
+                    "args": "d",
+                    "id": "3.3.2.11",
+                    "prevs": [
+                        "3.3.2.6"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "prime p ∧ divides p n, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬(d = 0) ⟶ P d ⟶ P (p * d)"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2.12",
+                    "prevs": [
+                        "3.3.2.10",
+                        "3.3.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(n = 0), n = p * d ⊢ ¬(p * d = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2.13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ d = 0 ⟶ p * d = 0"
+                },
+                {
+                    "args": "d = 0",
+                    "id": "3.3.2.13.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = 0 ⊢ d = 0"
+                },
+                {
+                    "args": "mult_0_right, p * 0 = 0",
+                    "id": "3.3.2.13.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ p * 0 = 0"
+                },
+                {
+                    "args": "p * d = 0",
+                    "id": "3.3.2.13.2",
+                    "prevs": [
+                        "3.3.2.13.0",
+                        "3.3.2.13.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "P 1, P 0, d = 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ p * d = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2.13.3",
+                    "prevs": [
+                        "3.3.2.13.0",
+                        "3.3.2.13.2"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ d = 0 ⟶ p * d = 0"
+                },
+                {
+                    "args": "double_neg, ¬¬(d = 0) ⟶ ¬¬(p * d = 0)",
+                    "id": "3.3.2.14",
+                    "prevs": [
+                        "3.3.2.13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬¬(d = 0) ⟶ ¬¬(p * d = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "3.3.2.15",
+                    "prevs": [
+                        "3.3.2.12",
+                        "3.3.2.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬(d = 0)"
+                },
+                {
+                    "args": "prime_factor_lt",
+                    "id": "3.3.2.16",
+                    "prevs": [
+                        "3.3.2.5",
+                        "3.3.0",
+                        "3.3.2.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ d < n"
+                },
+                {
+                    "args": "d",
+                    "id": "3.3.2.17",
+                    "prevs": [
+                        "3.1",
+                        "3.3.2.16"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P d"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.2.18",
+                    "prevs": [
+                        "3.3.2.11",
+                        "3.3.2.15",
+                        "3.3.2.17"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P (p * d)"
+                },
+                {
+                    "args": "P n",
+                    "id": "3.3.2.19",
+                    "prevs": [
+                        "3.3.2.10",
+                        "3.3.2.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "P 1, P 0, ¬(n = 1), ¬(n = 0), n = p * d, prime p ∧ divides p n, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P n"
+                },
+                {
+                    "args": "∃k. n = p * k, ∃p. prime p ∧ divides p n",
+                    "id": "3.3.2.20",
+                    "prevs": [
+                        "3.3.2.0",
+                        "3.3.2.1",
+                        "3.3.2.2",
+                        "3.3.2.3",
+                        "3.3.2.8",
+                        "3.3.2.9",
+                        "3.3.2.10",
+                        "3.3.2.19"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ¬(n = 0), ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬(n = 1) ⟶ P n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3.3.3",
+                    "prevs": [
+                        "3.3.1",
+                        "3.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 1, P 0, ¬(n = 0), ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.4",
+                    "prevs": [
+                        "3.3.0",
+                        "3.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ¬(n = 0) ⟶ P n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.2",
+                        "3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 1, P 0, ∀m. m < n ⟶ P m, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ∀n. (∀m. m < n ⟶ P m) ⟶ P n"
+                },
+                {
+                    "args": "nat_WF",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 1, P 0, ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n) ⊢ ∀n. P n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P 0 ⟶ P 1 ⟶ (∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)) ⟶ (∀n. P n)"
+                }
+            ],
+            "prop": "P 0 ⟶ P 1 ⟶ (∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)) ⟶ (∀n. P n)",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_WF"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "case": "n=0",
+                    "goal_id": "3.2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.0"
+                    ],
+                    "goal_id": "3.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "n=1",
+                    "goal_id": "3.3.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.1.0"
+                    ],
+                    "goal_id": "3.3.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.0"
+                    ],
+                    "goal_id": "3.3.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "prime_factor"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.1"
+                    ],
+                    "goal_id": "3.3.2.2",
+                    "method_name": "exists_elim",
+                    "names": "p"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.3.2.4",
+                    "method_name": "forall_elim",
+                    "s": "p"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.3"
+                    ],
+                    "goal_id": "3.3.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.4",
+                        "3.3.2.5"
+                    ],
+                    "goal_id": "3.3.2.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.3"
+                    ],
+                    "goal_id": "3.3.2.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.7"
+                    ],
+                    "goal_id": "3.3.2.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.8"
+                    ],
+                    "goal_id": "3.3.2.9",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.6"
+                    ],
+                    "goal_id": "3.3.2.11",
+                    "method_name": "forall_elim",
+                    "s": "d"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.10"
+                    ],
+                    "goal_id": "3.3.2.12",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.11"
+                    ],
+                    "goal_id": "3.3.2.12",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.10",
+                        "3.3.0"
+                    ],
+                    "goal_id": "3.3.2.12",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.12"
+                    ],
+                    "goal_id": "3.3.2.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "3.3.2.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "3.3.2.13",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2.13.0"
+                    ],
+                    "goal_id": "3.3.2.13.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3.2.13.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.3.2.16",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.3.2.16",
+                    "method_name": "apply_backward_step",
+                    "param_p": "p",
+                    "theorem": "prime_factor_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "complete_factor_induct",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P 0 ⊢ P 0"
+                },
+                {
+                    "args": "P 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P 1 ⊢ P 1"
+                },
+                {
+                    "args": "∀p. prime p ⟶ P p",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀p. prime p ⟶ P p ⊢ ∀p. prime p ⟶ P p"
+                },
+                {
+                    "args": "∀m. ∀n. P m ⟶ P n ⟶ P (m * n)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. ∀n. P m ⟶ P n ⟶ P (m * n) ⊢ ∀m. ∀n. P m ⟶ P n ⟶ P (m * n)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 1, P 0, ∀p. prime p ⟶ P p, ∀m. ∀n. P m ⟶ P n ⟶ P (m * n) ⊢ ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "prime p",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "P n",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P n ⊢ P n"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "2",
+                        "4.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "prime p, ∀p. prime p ⟶ P p ⊢ P p"
+                },
+                {
+                    "args": "p, n",
+                    "id": "4.6",
+                    "prevs": [
+                        "3",
+                        "4.5",
+                        "4.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "P n, prime p, ∀p. prime p ⟶ P p, ∀m. ∀n. P m ⟶ P n ⟶ P (m * n) ⊢ P (p * n)"
+                },
+                {
+                    "args": "",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.4",
+                        "4.6"
+                    ],
+                    "rule": "intros",
+                    "th": "P 1, P 0, ∀p. prime p ⟶ P p, ∀m. ∀n. P m ⟶ P n ⟶ P (m * n) ⊢ ∀p. ∀n. prime p ⟶ ¬(n = 0) ⟶ P n ⟶ P (p * n)"
+                },
+                {
+                    "args": "prime_factor_induct",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 1, P 0, ∀p. prime p ⟶ P p, ∀m. ∀n. P m ⟶ P n ⟶ P (m * n) ⊢ ∀n. P n"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P 0 ⟶ P 1 ⟶ (∀p. prime p ⟶ P p) ⟶ (∀m. ∀n. P m ⟶ P n ⟶ P (m * n)) ⟶ (∀n. P n)"
+                }
+            ],
+            "prop": "P 0 ⟶ P 1 ⟶ (∀p. prime p ⟶ P p) ⟶ (∀m. ∀n. P m ⟶ P n ⟶ P (m * n)) ⟶ (∀n. P n)",
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_factor_induct"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "p,n"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "4.2"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4.5",
+                        "4.4"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "euclid_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime_factor, {n: fact n + 1}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(fact n + 1 = 1) ⟶ (∃p. prime p ∧ divides p (fact n + 1))"
+                },
+                {
+                    "args": "∀n::nat. 0 < n ⟶ ¬(n + 1 = 1)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀n::nat. 0 < n ⟶ ¬(n + 1 = 1)"
+                },
+                {
+                    "args": "fact_lt, {n: n}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < fact n"
+                },
+                {
+                    "args": "fact n",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ ¬(fact n + 1 = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ ∃p. prime p ∧ divides p (fact n + 1)"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "prime p ∧ divides p (fact n + 1)",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ prime p ∧ divides p (fact n + 1)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ prime p"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ divides p (fact n + 1)"
+                },
+                {
+                    "args": "divides_sum2",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ divides p (fact n) ⟶ divides p 1"
+                },
+                {
+                    "args": "divides_one",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ divides p (fact n) ⟶ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ p ≤ n ⟶ ¬(divides p (fact n) ⟶ p = 1)"
+                },
+                {
+                    "args": "p ≤ n",
+                    "id": "11.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ n ⊢ p ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "11.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ ¬(1 ≤ p) ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "¬(1 ≤ p)",
+                    "id": "11.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(1 ≤ p) ⊢ ¬(1 ≤ p)"
+                },
+                {
+                    "args": "not_le",
+                    "id": "11.1.1",
+                    "prevs": [
+                        "11.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(1 ≤ p) ⊢ p < 1"
+                },
+                {
+                    "args": "nat_one_def",
+                    "id": "11.1.2",
+                    "prevs": [
+                        "11.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(1 ≤ p) ⊢ p < Suc 0"
+                },
+                {
+                    "args": "less_Suc_lesseq",
+                    "id": "11.1.3",
+                    "prevs": [
+                        "11.1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(1 ≤ p) ⊢ p ≤ 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1",
+                    "id": "11.1.4",
+                    "prevs": [
+                        "11.1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(1 ≤ p) ⊢ p = 0"
+                },
+                {
+                    "args": "prime_0",
+                    "id": "11.1.5",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(prime 0)"
+                },
+                {
+                    "args": "¬(prime p)",
+                    "id": "11.1.6",
+                    "prevs": [
+                        "11.1.4",
+                        "11.1.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p ≤ n, ¬(1 ≤ p), prime p ∧ divides p (fact n + 1) ⊢ ¬(prime p)"
+                },
+                {
+                    "args": "",
+                    "id": "11.1.7",
+                    "prevs": [
+                        "11.1.0",
+                        "11.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ ¬(1 ≤ p) ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "11.2",
+                    "prevs": [
+                        "7",
+                        "11.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ 1 ≤ p"
+                },
+                {
+                    "args": "divides_fact",
+                    "id": "11.3",
+                    "prevs": [
+                        "11.2",
+                        "11.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ divides p (fact n)"
+                },
+                {
+                    "args": "",
+                    "id": "11.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ ¬¬(p = 1) ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "¬¬(p = 1)",
+                    "id": "11.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(p = 1) ⊢ ¬¬(p = 1)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "11.4.1",
+                    "prevs": [
+                        "11.4.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(p = 1) ⊢ p = 1"
+                },
+                {
+                    "args": "prime_1",
+                    "id": "11.4.2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(prime 1)"
+                },
+                {
+                    "args": "¬(prime p)",
+                    "id": "11.4.3",
+                    "prevs": [
+                        "11.4.1",
+                        "11.4.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p ≤ n, ¬¬(p = 1), prime p ∧ divides p (fact n + 1) ⊢ ¬(prime p)"
+                },
+                {
+                    "args": "",
+                    "id": "11.4.4",
+                    "prevs": [
+                        "11.4.0",
+                        "11.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ ¬¬(p = 1) ⟶ ¬(prime p)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "11.5",
+                    "prevs": [
+                        "7",
+                        "11.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "11.6",
+                    "prevs": [
+                        "11.3",
+                        "11.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ divides p (fact n) ∧ ¬(p = 1)"
+                },
+                {
+                    "args": "not_imp, ¬(divides p (fact n) ⟶ p = 1)",
+                    "id": "11.7",
+                    "prevs": [
+                        "11.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ n, prime p ∧ divides p (fact n + 1) ⊢ ¬(divides p (fact n) ⟶ p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "11.8",
+                    "prevs": [
+                        "11.0",
+                        "11.7"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ p ≤ n ⟶ ¬(divides p (fact n) ⟶ p = 1)"
+                },
+                {
+                    "args": "not_lt, ¬(n < p) ⟶ ¬(divides p (fact n) ⟶ p = 1)",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ ¬(n < p) ⟶ ¬(divides p (fact n) ⟶ p = 1)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "13",
+                    "prevs": [
+                        "10",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ n < p"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "14",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ p ≤ fact n + 1 ∨ fact n + 1 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ p ≤ fact n + 1 ⟶ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "p ≤ fact n + 1",
+                    "id": "15.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ fact n + 1 ⊢ p ≤ fact n + 1"
+                },
+                {
+                    "args": "add_1_right, p ≤ Suc (fact n)",
+                    "id": "15.1",
+                    "prevs": [
+                        "15.0"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "p ≤ fact n + 1, prime p ∧ divides p (fact n + 1) ⊢ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "",
+                    "id": "15.2",
+                    "prevs": [
+                        "15.0",
+                        "15.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ p ≤ fact n + 1 ⟶ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "",
+                    "id": "16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ fact n + 1 = 0 ⟶ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "fact n + 1 = 0",
+                    "id": "16.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "fact n + 1 = 0 ⊢ fact n + 1 = 0"
+                },
+                {
+                    "args": "add_is_zero",
+                    "id": "16.1",
+                    "prevs": [
+                        "16.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "fact n + 1 = 0 ⊢ fact n = 0 ∧ (1::nat) = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "16.2",
+                    "prevs": [
+                        "16.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "fact n + 1 = 0 ⊢ (1::nat) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "16.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "fact n + 1 = 0, prime p ∧ divides p (fact n + 1) ⊢ ¬(p ≤ Suc (fact n)) ⟶ ¬((1::nat) = 0)"
+                },
+                {
+                    "args": "¬(p ≤ Suc (fact n))",
+                    "id": "16.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p ≤ Suc (fact n)) ⊢ ¬(p ≤ Suc (fact n))"
+                },
+                {
+                    "args": "¬((1::nat) = 0)",
+                    "id": "16.3.1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((1::nat) = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "16.3.2",
+                    "prevs": [
+                        "16.3.0",
+                        "16.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "fact n + 1 = 0, prime p ∧ divides p (fact n + 1) ⊢ ¬(p ≤ Suc (fact n)) ⟶ ¬((1::nat) = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "16.4",
+                    "prevs": [
+                        "16.2",
+                        "16.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "fact n + 1 = 0, prime p ∧ divides p (fact n + 1) ⊢ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "",
+                    "id": "16.5",
+                    "prevs": [
+                        "16.0",
+                        "16.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ fact n + 1 = 0 ⟶ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "17",
+                    "prevs": [
+                        "14",
+                        "15",
+                        "16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "18",
+                    "prevs": [
+                        "13",
+                        "17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ n < p ∧ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "19",
+                    "prevs": [
+                        "7",
+                        "18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ prime p ∧ n < p ∧ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "exI, {P: λp. prime p ∧ n < p ∧ p ≤ Suc (fact n), a: p}",
+                    "id": "20",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ∧ divides p (fact n + 1) ⊢ ∃a1. prime a1 ∧ n < a1 ∧ a1 ≤ Suc (fact n)"
+                },
+                {
+                    "args": "∃p. prime p ∧ divides p (fact n + 1)",
+                    "id": "21",
+                    "prevs": [
+                        "4",
+                        "5",
+                        "6",
+                        "20"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃p. prime p ∧ n < p ∧ p ≤ Suc (fact n)"
+                }
+            ],
+            "prop": "∃p. prime p ∧ n < p ∧ p ≤ Suc (fact n)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "fact n + 1",
+                    "theorem": "prime_factor"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal": "¬(fact n + 1 = 1)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "!n::nat. 0 < n --> ~(n + 1 = 1)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "fact_lt"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "exists_elim",
+                    "names": "p"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "inst_exists_goal",
+                    "s": "p"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_sum2"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_one"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_lt"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "11.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "11.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "11.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_fact"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "11.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "11.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.0"
+                    ],
+                    "goal_id": "11.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.1"
+                    ],
+                    "goal_id": "11.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.2"
+                    ],
+                    "goal_id": "11.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.3"
+                    ],
+                    "goal_id": "11.1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.4"
+                    ],
+                    "goal_id": "11.1.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_0"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "11.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "11.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "11.4.0"
+                    ],
+                    "goal_id": "11.4.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "11.4.1"
+                    ],
+                    "goal_id": "11.4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_1"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "15.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "16.0"
+                    ],
+                    "goal_id": "16.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "add_is_zero"
+                },
+                {
+                    "fact_ids": [
+                        "16.1"
+                    ],
+                    "goal_id": "16.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "16.2"
+                    ],
+                    "goal_id": "16.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "16.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "16.3.1",
+                    "method_name": "nat_const_ineq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "euclid",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "euclid_bound, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃p. prime p ∧ n < p ∧ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "prime p ∧ n < p ∧ p ≤ Suc (fact n)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ prime p ∧ n < p ∧ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ prime p"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ n < p ∧ p ≤ Suc (fact n)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ n < p"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ prime p ∧ n < p"
+                },
+                {
+                    "args": "exI, {P: λp. prime p ∧ n < p, a: p}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ ∃a1. prime a1 ∧ n < a1"
+                },
+                {
+                    "args": "greater_def, ∃p. prime p ∧ p > n",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ∧ n < p ∧ p ≤ Suc (fact n) ⊢ ∃p. prime p ∧ p > n"
+                },
+                {
+                    "args": "∃p. prime p ∧ n < p ∧ p ≤ Suc (fact n)",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃p. prime p ∧ p > n"
+                }
+            ],
+            "prop": "∃p. prime p ∧ p > n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "euclid_bound"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "exists_elim",
+                    "names": "p"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "inst_exists_goal",
+                    "s": "p"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "prime_infinite",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. ¬(∀x1. prime x1 ⟶ x1 ≤ x)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "euclid, {n: n}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃p. prime p ∧ p > n"
+                },
+                {
+                    "args": "greater_def, ∃x. prime x ∧ n < x",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ ∃x. prime x ∧ n < x"
+                },
+                {
+                    "args": "not_le, ∃x. prime x ∧ ¬(x ≤ n)",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∃x. prime x ∧ ¬(x ≤ n)"
+                },
+                {
+                    "args": "not_imp, ∃x. ¬(prime x ⟶ x ≤ n)",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∃x. ¬(prime x ⟶ x ≤ n)"
+                },
+                {
+                    "args": "not_all, ¬(∀x. prime x ⟶ x ≤ n)",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(∀x. prime x ⟶ x ≤ n)"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. ¬(∀x. prime x ⟶ x ≤ n)"
+                },
+                {
+                    "args": "not_exists, ¬(∃a. ∀x. prime x ⟶ x ≤ a)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(∃a. ∀x. prime x ⟶ x ≤ a)"
+                },
+                {
+                    "args": "member_collect, ¬(∃a. ∀x. x ∈ {p. prime p} ⟶ x ≤ a)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(∃a. ∀x. x ∈ {p. prime p} ⟶ x ≤ a)"
+                },
+                {
+                    "args": "nat_finite, ¬(finite ({p. prime p}))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(finite ({p. prime p}))"
+                },
+                {
+                    "args": "infinite_def, infinite ({p. prime p})",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ infinite ({p. prime p})"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ infinite ({p. prime p})"
+                }
+            ],
+            "prop": "infinite ({p. prime p})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "infinite_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_finite"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_exists"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "greater_def"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "euclid"
                 }
             ],
             "ty": "thm",

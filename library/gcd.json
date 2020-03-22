@@ -8043,6 +8043,3719 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "ind_euclid",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀a. ∀b. P a b ⟷ P b a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. ∀b. P a b ⟷ P b a ⊢ ∀a. ∀b. P a b ⟷ P b a"
+                },
+                {
+                    "args": "∀a. P a 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. P a 0 ⊢ ∀a. P a 0"
+                },
+                {
+                    "args": "∀a. ∀b. P a b ⟶ P a (a + b)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀a. ∀b. P a b ⟶ P a (a + b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀n. (∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b)) ⟶ (∀a. ∀b. a + b = n ⟶ P a b)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b)",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ ∀a. ∀b. a + b = n ⟶ P a b"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, nat",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "a + b = n",
+                    "id": "3.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a + b = n ⊢ a + b = n"
+                },
+                {
+                    "args": "lt_cases, {m: a, n: b}",
+                    "id": "3.2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a < b ∨ b < a ∨ a = b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a < b ⟶ P a b"
+                },
+                {
+                    "args": "a < b",
+                    "id": "3.2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a < b ⊢ a < b"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "3.2.4.1",
+                    "prevs": [
+                        "3.2.4.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a < b ⊢ a ≤ b"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "3.2.4.2",
+                    "prevs": [
+                        "3.2.4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a < b ⊢ b - a + a = b"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3.2.4.3",
+                    "prevs": [
+                        "3.2.4.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a < b ⊢ b = b - a + a"
+                },
+                {
+                    "args": "a < b ⟶ a = 0 ∨ a + (b - a) < a + b",
+                    "id": "3.2.4.4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ a < b ⟶ a = 0 ∨ a + (b - a) < a + b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.5",
+                    "prevs": [
+                        "3.2.4.4",
+                        "3.2.4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a < b ⊢ a = 0 ∨ a + (b - a) < a + b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a = 0 ⟶ P a (b - a + a)"
+                },
+                {
+                    "args": "a = 0",
+                    "id": "3.2.4.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = 0 ⊢ a = 0"
+                },
+                {
+                    "args": "b - 0 + 0",
+                    "id": "3.2.4.6.1",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀a. P a 0 ⊢ P (b - 0 + 0) 0"
+                },
+                {
+                    "args": "P 0 (b - 0 + 0)",
+                    "id": "3.2.4.6.2",
+                    "prevs": [
+                        "0",
+                        "3.2.4.6.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a = 0, a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P 0 (b - 0 + 0)"
+                },
+                {
+                    "args": "P a (b - a + a)",
+                    "id": "3.2.4.6.3",
+                    "prevs": [
+                        "3.2.4.6.0",
+                        "3.2.4.6.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a = 0, a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a (b - a + a)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.6.4",
+                    "prevs": [
+                        "3.2.4.6.0",
+                        "3.2.4.6.3"
+                    ],
+                    "rule": "intros",
+                    "th": "a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a = 0 ⟶ P a (b - a + a)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a + (b - a) < a + b ⟶ P a (b - a + a)"
+                },
+                {
+                    "args": "a + (b - a) < a + b",
+                    "id": "3.2.4.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a + (b - a) < a + b ⊢ a + (b - a) < a + b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.7.1",
+                    "prevs": [
+                        "3.2.2",
+                        "3.2.4.7.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a + b = n, a + (b - a) < a + b ⊢ a + (b - a) < n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.7.2",
+                    "prevs": [
+                        "3.1",
+                        "3.2.4.7.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a + b = n, a + (b - a) < a + b, ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ ∀a1. ∀b1. a1 + b1 = a + (b - a) ⟶ P a1 b1"
+                },
+                {
+                    "args": "eq_refl, {x: a + (b - a)}",
+                    "id": "3.2.4.7.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a + (b - a) = a + (b - a)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.7.4",
+                    "prevs": [
+                        "3.2.4.7.2",
+                        "3.2.4.7.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a < b, ∀a. P a 0, a + b = n, a + (b - a) < a + b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a (b - a)"
+                },
+                {
+                    "args": "a, b - a",
+                    "id": "3.2.4.7.5",
+                    "prevs": [
+                        "2",
+                        "3.2.4.7.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a < b, ∀a. P a 0, a + b = n, a + (b - a) < a + b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a (a + (b - a))"
+                },
+                {
+                    "args": "add_comm, P a (b - a + a)",
+                    "id": "3.2.4.7.6",
+                    "prevs": [
+                        "3.2.4.7.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a < b, ∀a. P a 0, a + b = n, a + (b - a) < a + b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a (b - a + a)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.7.7",
+                    "prevs": [
+                        "3.2.4.7.0",
+                        "3.2.4.7.6"
+                    ],
+                    "rule": "intros",
+                    "th": "a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a + (b - a) < a + b ⟶ P a (b - a + a)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.4.8",
+                    "prevs": [
+                        "3.2.4.5",
+                        "3.2.4.6",
+                        "3.2.4.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a (b - a + a)"
+                },
+                {
+                    "args": "P a b",
+                    "id": "3.2.4.9",
+                    "prevs": [
+                        "3.2.4.3",
+                        "3.2.4.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a < b, ∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4.10",
+                    "prevs": [
+                        "3.2.4.0",
+                        "3.2.4.9"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a < b ⟶ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b < a ∨ a = b ⟶ P a b"
+                },
+                {
+                    "args": "b < a ∨ a = b",
+                    "id": "3.2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b < a ∨ a = b ⊢ b < a ∨ a = b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b < a ⟶ P a b"
+                },
+                {
+                    "args": "b < a",
+                    "id": "3.2.5.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b < a ⊢ b < a"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "3.2.5.1.1",
+                    "prevs": [
+                        "3.2.5.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b < a ⊢ b ≤ a"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "3.2.5.1.2",
+                    "prevs": [
+                        "3.2.5.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b < a ⊢ a - b + b = a"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3.2.5.1.3",
+                    "prevs": [
+                        "3.2.5.1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "b < a ⊢ a = a - b + b"
+                },
+                {
+                    "args": "b < a ⟶ b = 0 ∨ b + (a - b) < b + a",
+                    "id": "3.2.5.1.4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ b < a ⟶ b = 0 ∨ b + (a - b) < b + a"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.5",
+                    "prevs": [
+                        "3.2.5.1.4",
+                        "3.2.5.1.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "b < a ⊢ b = 0 ∨ b + (a - b) < b + a"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b = 0 ⟶ P (a - b + b) b"
+                },
+                {
+                    "args": "b = 0",
+                    "id": "3.2.5.1.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = 0 ⊢ b = 0"
+                },
+                {
+                    "args": "a - 0 + 0",
+                    "id": "3.2.5.1.6.1",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀a. P a 0 ⊢ P (a - 0 + 0) 0"
+                },
+                {
+                    "args": "P (a - b + b) b",
+                    "id": "3.2.5.1.6.2",
+                    "prevs": [
+                        "3.2.5.1.6.0",
+                        "3.2.5.1.6.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = 0, b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P (a - b + b) b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.6.3",
+                    "prevs": [
+                        "3.2.5.1.6.0",
+                        "3.2.5.1.6.2"
+                    ],
+                    "rule": "intros",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b = 0 ⟶ P (a - b + b) b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b + (a - b) < b + a ⟶ P (a - b + b) b"
+                },
+                {
+                    "args": "b + (a - b) < b + a",
+                    "id": "3.2.5.1.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b + (a - b) < b + a ⊢ b + (a - b) < b + a"
+                },
+                {
+                    "args": "add_comm",
+                    "id": "3.2.5.1.7.1",
+                    "prevs": [
+                        "3.2.5.1.7.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "b + (a - b) < b + a ⊢ a - b + b < a + b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.7.2",
+                    "prevs": [
+                        "3.2.2",
+                        "3.2.5.1.7.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a + b = n, b + (a - b) < b + a ⊢ a - b + b < n"
+                },
+                {
+                    "args": "add_comm",
+                    "id": "3.2.5.1.7.3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀a. ∀b. P a b ⟶ P a (b + a)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.7.4",
+                    "prevs": [
+                        "3.1",
+                        "3.2.5.1.7.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "a + b = n, b + (a - b) < b + a, ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ ∀a1. ∀b1. a1 + b1 = a - b + b ⟶ P a1 b1"
+                },
+                {
+                    "args": "b + (a - b) = a - b + b",
+                    "id": "3.2.5.1.7.5",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ b + (a - b) = a - b + b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.7.6",
+                    "prevs": [
+                        "3.2.5.1.7.4",
+                        "3.2.5.1.7.5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, b + (a - b) < b + a, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P b (a - b)"
+                },
+                {
+                    "args": "b, a - b",
+                    "id": "3.2.5.1.7.7",
+                    "prevs": [
+                        "3.2.5.1.7.3",
+                        "3.2.5.1.7.6"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, b + (a - b) < b + a, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P b (a - b + b)"
+                },
+                {
+                    "args": "P (a - b + b) b",
+                    "id": "3.2.5.1.7.8",
+                    "prevs": [
+                        "0",
+                        "3.2.5.1.7.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, b + (a - b) < b + a, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P (a - b + b) b"
+                },
+                {
+                    "args": "add_comm, P (b + (a - b)) b",
+                    "id": "3.2.5.1.7.9",
+                    "prevs": [
+                        "3.2.5.1.7.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, b + (a - b) < b + a, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P (b + (a - b)) b"
+                },
+                {
+                    "args": "add_comm, P (a - b + b) b",
+                    "id": "3.2.5.1.7.10",
+                    "prevs": [
+                        "3.2.5.1.7.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, b + (a - b) < b + a, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P (a - b + b) b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.7.11",
+                    "prevs": [
+                        "3.2.5.1.7.0",
+                        "3.2.5.1.7.10"
+                    ],
+                    "rule": "intros",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b + (a - b) < b + a ⟶ P (a - b + b) b"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.5.1.8",
+                    "prevs": [
+                        "3.2.5.1.5",
+                        "3.2.5.1.6",
+                        "3.2.5.1.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P (a - b + b) b"
+                },
+                {
+                    "args": "P a b",
+                    "id": "3.2.5.1.9",
+                    "prevs": [
+                        "3.2.5.1.3",
+                        "3.2.5.1.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b < a, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.1.10",
+                    "prevs": [
+                        "3.2.5.1.0",
+                        "3.2.5.1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b < a ⟶ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a = b ⟶ P a b"
+                },
+                {
+                    "args": "a = b",
+                    "id": "3.2.5.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = b ⊢ a = b"
+                },
+                {
+                    "args": "add_0_right, b = b + 0",
+                    "id": "3.2.5.2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ b = b + 0"
+                },
+                {
+                    "args": "b",
+                    "id": "3.2.5.2.2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀a. P a 0 ⊢ P b 0"
+                },
+                {
+                    "args": "b, (0::nat)",
+                    "id": "3.2.5.2.3",
+                    "prevs": [
+                        "2",
+                        "3.2.5.2.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a = b, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P b (b + 0)"
+                },
+                {
+                    "args": "P a (b + 0)",
+                    "id": "3.2.5.2.4",
+                    "prevs": [
+                        "3.2.5.2.0",
+                        "3.2.5.2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a = b, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a (b + 0)"
+                },
+                {
+                    "args": "P a b",
+                    "id": "3.2.5.2.5",
+                    "prevs": [
+                        "3.2.5.2.1",
+                        "3.2.5.2.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a = b, ∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.2.6",
+                    "prevs": [
+                        "3.2.5.2.0",
+                        "3.2.5.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ a = b ⟶ P a b"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.5.3",
+                    "prevs": [
+                        "3.2.5.0",
+                        "3.2.5.1",
+                        "3.2.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀a. P a 0, a + b = n, b < a ∨ a = b, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5.4",
+                    "prevs": [
+                        "3.2.5.0",
+                        "3.2.5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ b < a ∨ a = b ⟶ P a b"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.2.6",
+                    "prevs": [
+                        "3.2.3",
+                        "3.2.4",
+                        "3.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀a. P a 0, a + b = n, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.7",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.1",
+                        "3.2.2",
+                        "3.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b), ∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b) ⊢ ∀a. ∀b. a + b = n ⟶ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀n. (∀m. m < n ⟶ (∀a. ∀b. a + b = m ⟶ P a b)) ⟶ (∀a. ∀b. a + b = n ⟶ P a b)"
+                },
+                {
+                    "args": "nat_WF",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀n. ∀a. ∀b. a + b = n ⟶ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀a. ∀b. P a b"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, nat",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "eq_refl, {x: a + b}",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a + b = a + b"
+                },
+                {
+                    "args": "a + b, a, b",
+                    "id": "5.3",
+                    "prevs": [
+                        "4",
+                        "5.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b) ⊢ P a b"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. P a 0, ∀a. ∀b. P a b ⟷ P b a, ∀a. ∀b. P a b ⟶ P a (a + b) ⊢ ∀a. ∀b. P a b"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀a. ∀b. P a b ⟷ P b a) ⟶ (∀a. P a 0) ⟶ (∀a. ∀b. P a b ⟶ P a (a + b)) ⟶ (∀a. ∀b. P a b)"
+                }
+            ],
+            "prop": [
+                "(∀a. ∀b. P a b ⟷ P b a) ",
+                "⟶ (∀a. P a 0) ⟶ (∀a. ∀b. P a b ⟶ P a (a + b)) ⟶ (∀a. ∀b. P a b)"
+            ],
+            "steps": [
+                {
+                    "goal": "!n. !a. !b. (a + b = n) --> P a b",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_WF"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction",
+                    "names": "a,b"
+                },
+                {
+                    "goal_id": "3.2.3",
+                    "method_name": "apply_forward_step",
+                    "param_m": "a",
+                    "param_n": "b",
+                    "theorem": "lt_cases"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3"
+                    ],
+                    "goal_id": "3.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.0"
+                    ],
+                    "goal_id": "3.2.4.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.1"
+                    ],
+                    "goal_id": "3.2.4.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.2"
+                    ],
+                    "goal_id": "3.2.4.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.3"
+                    ],
+                    "goal_id": "3.2.4.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "a < b ⟶ a = 0 ∨ a + (b - a) < a + b",
+                    "goal_id": "3.2.4.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.4.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.4",
+                        "3.2.4.0"
+                    ],
+                    "goal_id": "3.2.4.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.5"
+                    ],
+                    "goal_id": "3.2.4.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.4.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.6.0"
+                    ],
+                    "goal_id": "3.2.4.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.2.4.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2.4.6.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2.4.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.4.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.2.4.7.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2",
+                        "3.2.4.7.0"
+                    ],
+                    "goal_id": "3.2.4.7.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.1",
+                        "3.2.4.7.1"
+                    ],
+                    "goal_id": "3.2.4.7.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4.7.2"
+                    ],
+                    "goal_id": "3.2.4.7.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2.4.7.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "3.2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.0"
+                    ],
+                    "goal_id": "3.2.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.5.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.0"
+                    ],
+                    "goal_id": "3.2.5.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.1"
+                    ],
+                    "goal_id": "3.2.5.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.2"
+                    ],
+                    "goal_id": "3.2.5.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.3"
+                    ],
+                    "goal_id": "3.2.5.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "b < a ⟶ b = 0 ∨ b + (a - b) < b + a",
+                    "goal_id": "3.2.5.1.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.5.1.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.4",
+                        "3.2.5.1.0"
+                    ],
+                    "goal_id": "3.2.5.1.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.5"
+                    ],
+                    "goal_id": "3.2.5.1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.2.5.1.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.6.0"
+                    ],
+                    "goal_id": "3.2.5.1.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2.5.1.6.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2.5.1.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.5.1.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.7.0"
+                    ],
+                    "goal_id": "3.2.5.1.7.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2",
+                        "3.2.5.1.7.1"
+                    ],
+                    "goal_id": "3.2.5.1.7.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "3.2.5.1.7.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.2.5.1.7.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.2.5.1.7.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.7.3"
+                    ],
+                    "goal_id": "3.2.5.1.7.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.1",
+                        "3.2.5.1.7.2"
+                    ],
+                    "goal_id": "3.2.5.1.7.4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.1.7.4"
+                    ],
+                    "goal_id": "3.2.5.1.7.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2.5.1.7.5",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "goal_id": "3.2.5.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "b = b + 0",
+                    "goal_id": "3.2.5.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.5.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.2.1"
+                    ],
+                    "goal_id": "3.2.5.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5.2.0"
+                    ],
+                    "goal_id": "3.2.5.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.2.5.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2.5.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "a, b"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_prev",
+                    "param_n": "a+b"
+                },
+                {
+                    "goal_id": "5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ nat ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "bezout_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ∨ b * x = a * y + d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d b"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ⟶ (∃x1. ∃y1. (divides d a ∧ divides d (a + b)) ∧ (a * x1 = (a + b) * y1 + d ∨ (a + b) * x1 = a * y1 + d))"
+                },
+                {
+                    "args": "a * x = b * y + d",
+                    "id": "9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * x = b * y + d ⊢ a * x = b * y + d"
+                },
+                {
+                    "args": "divides_sum",
+                    "id": "9.1",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d (a + b)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9.2",
+                    "prevs": [
+                        "7",
+                        "9.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a ∧ divides d (a + b)"
+                },
+                {
+                    "args": "b * y + d + a * y = (a + b) * y + d",
+                    "id": "9.3",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ b * y + d + a * y = (a + b) * y + d"
+                },
+                {
+                    "args": "a * x + a * y = (a + b) * y + d",
+                    "id": "9.4",
+                    "prevs": [
+                        "9.0",
+                        "9.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x + a * y = (a + b) * y + d"
+                },
+                {
+                    "args": "distrib_l, a * (x + y) = (a + b) * y + d",
+                    "id": "9.5",
+                    "prevs": [
+                        "9.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (x + y) = (a + b) * y + d"
+                },
+                {
+                    "args": "disjI1, {A: a * (x + y) = (a + b) * y + d, B: (a + b) * (x + y) = a * y + d}",
+                    "id": "9.6",
+                    "prevs": [
+                        "9.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (x + y) = (a + b) * y + d ∨ (a + b) * (x + y) = a * y + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9.7",
+                    "prevs": [
+                        "9.2",
+                        "9.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d (a + b)) ∧ (a * (x + y) = (a + b) * y + d ∨ (a + b) * (x + y) = a * y + d)"
+                },
+                {
+                    "args": "exI, {P: λy1. (divides d a ∧ divides d (a + b)) ∧ (a * (x + y) = (a + b) * y1 + d ∨ (a + b) * (x + y) = a * y1 + d), a: y}",
+                    "id": "9.8",
+                    "prevs": [
+                        "9.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d a ∧ divides d (a + b)) ∧ (a * (x + y) = (a + b) * a1 + d ∨ (a + b) * (x + y) = a * a1 + d)"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d), a: x + y}",
+                    "id": "9.9",
+                    "prevs": [
+                        "9.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * a1 = (a + b) * y + d ∨ (a + b) * a1 = a * y + d)"
+                },
+                {
+                    "args": "",
+                    "id": "9.10",
+                    "prevs": [
+                        "9.0",
+                        "9.9"
+                    ],
+                    "rule": "intros",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ⟶ (∃x1. ∃y1. (divides d a ∧ divides d (a + b)) ∧ (a * x1 = (a + b) * y1 + d ∨ (a + b) * x1 = a * y1 + d))"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ⟶ (∃x1. ∃y1. (divides d a ∧ divides d (a + b)) ∧ (a * x1 = (a + b) * y1 + d ∨ (a + b) * x1 = a * y1 + d))"
+                },
+                {
+                    "args": "b * x = a * y + d",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * x = a * y + d ⊢ b * x = a * y + d"
+                },
+                {
+                    "args": "divides_sum",
+                    "id": "10.1",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d (a + b)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10.2",
+                    "prevs": [
+                        "7",
+                        "10.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a ∧ divides d (a + b)"
+                },
+                {
+                    "args": "a * x + (a * y + d) = a * (x + y) + d",
+                    "id": "10.3",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ a * x + (a * y + d) = a * (x + y) + d"
+                },
+                {
+                    "args": "a * x + b * x = a * (x + y) + d",
+                    "id": "10.4",
+                    "prevs": [
+                        "10.0",
+                        "10.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x + b * x = a * (x + y) + d"
+                },
+                {
+                    "args": "distrib_r, (a + b) * x = a * (x + y) + d",
+                    "id": "10.5",
+                    "prevs": [
+                        "10.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (a + b) * x = a * (x + y) + d"
+                },
+                {
+                    "args": "disjI2, {A: a * x = (a + b) * (x + y) + d, B: (a + b) * x = a * (x + y) + d}",
+                    "id": "10.6",
+                    "prevs": [
+                        "10.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = (a + b) * (x + y) + d ∨ (a + b) * x = a * (x + y) + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10.7",
+                    "prevs": [
+                        "10.2",
+                        "10.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * (x + y) + d ∨ (a + b) * x = a * (x + y) + d)"
+                },
+                {
+                    "args": "exI, {P: λy. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d), a: x + y}",
+                    "id": "10.8",
+                    "prevs": [
+                        "10.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * a1 + d ∨ (a + b) * x = a * a1 + d)"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d), a: x}",
+                    "id": "10.9",
+                    "prevs": [
+                        "10.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * a1 = (a + b) * y + d ∨ (a + b) * a1 = a * y + d)"
+                },
+                {
+                    "args": "",
+                    "id": "10.10",
+                    "prevs": [
+                        "10.0",
+                        "10.9"
+                    ],
+                    "rule": "intros",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ⟶ (∃x1. ∃y1. (divides d a ∧ divides d (a + b)) ∧ (a * x1 = (a + b) * y1 + d ∨ (a + b) * x1 = a * y1 + d))"
+                },
+                {
+                    "args": "disjE",
+                    "id": "11",
+                    "prevs": [
+                        "6",
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d)"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d), a: d}",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 (a + b)) ∧ (a * x = (a + b) * y + a1 ∨ (a + b) * x = a * y + a1)"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d))"
+                }
+            ],
+            "prop": [
+                "(∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ",
+                "⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ ",
+                "          (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d))"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "exists_elim",
+                    "names": "d,x,y"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x+y"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_sum"
+                },
+                {
+                    "goal_id": "9.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "9.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_l"
+                },
+                {
+                    "fact_ids": [
+                        "9.0"
+                    ],
+                    "goal_id": "9.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9.3",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x+y"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_sum"
+                },
+                {
+                    "goal_id": "10.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "10.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "fact_ids": [
+                        "10.0"
+                    ],
+                    "goal_id": "10.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.3",
+                    "method_name": "nat_norm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "bezout_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "ind_euclid, {P: λa. λb. ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀a. ∀b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟷ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d))) ⟶ (∀a. ∃d. ∃x. ∃y. (divides d a ∧ divides d 0) ∧ (a * x = 0 * y + d ∨ 0 * x = a * y + d)) ⟶ (∀a. ∀b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d))) ⟶ (∀a. ∀b. ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀a. ∀b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟷ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d))"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d))"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "1.2.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "1.2.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ∨ b * x = a * y + d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.8",
+                        "1.2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d b ∧ divides d a"
+                },
+                {
+                    "args": "disj_comm, b * x = a * y + d ∨ a * x = b * y + d",
+                    "id": "1.2.10",
+                    "prevs": [
+                        "1.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ∨ a * x = b * y + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.11",
+                    "prevs": [
+                        "1.2.9",
+                        "1.2.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)"
+                },
+                {
+                    "args": "exI, {P: λy. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), a: y}",
+                    "id": "1.2.12",
+                    "prevs": [
+                        "1.2.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d b ∧ divides d a) ∧ (b * x = a * a1 + d ∨ a * x = b * a1 + d)"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), a: x}",
+                    "id": "1.2.13",
+                    "prevs": [
+                        "1.2.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d b ∧ divides d a) ∧ (b * a1 = a * y + d ∨ a * a1 = b * y + d)"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), a: d}",
+                    "id": "1.2.14",
+                    "prevs": [
+                        "1.2.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 b ∧ divides a1 a) ∧ (b * x = a * y + a1 ∨ a * x = b * y + a1)"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "1.2.15",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.2",
+                        "1.2.3",
+                        "1.2.4",
+                        "1.2.14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d))"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d))"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.3.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "1.3.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)",
+                    "id": "1.3.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.3.5",
+                    "prevs": [
+                        "1.3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ divides d b ∧ divides d a"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.3.6",
+                    "prevs": [
+                        "1.3.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ divides d b"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.3.7",
+                    "prevs": [
+                        "1.3.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.3.8",
+                    "prevs": [
+                        "1.3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ b * x = a * y + d ∨ a * x = b * y + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3.9",
+                    "prevs": [
+                        "1.3.7",
+                        "1.3.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "disj_comm, a * x = b * y + d ∨ b * x = a * y + d",
+                    "id": "1.3.10",
+                    "prevs": [
+                        "1.3.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ a * x = b * y + d ∨ b * x = a * y + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3.11",
+                    "prevs": [
+                        "1.3.9",
+                        "1.3.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "exI, {P: λy. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), a: y}",
+                    "id": "1.3.12",
+                    "prevs": [
+                        "1.3.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ ∃a1. (divides d a ∧ divides d b) ∧ (a * x = b * a1 + d ∨ b * x = a * a1 + d)"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), a: x}",
+                    "id": "1.3.13",
+                    "prevs": [
+                        "1.3.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d b) ∧ (a * a1 = b * y + d ∨ b * a1 = a * y + d)"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d), a: d}",
+                    "id": "1.3.14",
+                    "prevs": [
+                        "1.3.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d), ∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 b) ∧ (a * x = b * y + a1 ∨ b * x = a * y + a1)"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)",
+                    "id": "1.3.15",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.0",
+                        "1.3.1",
+                        "1.3.2",
+                        "1.3.3",
+                        "1.3.4",
+                        "1.3.14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d))"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟷ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d))"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀a. ∀b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟷ (∃d. ∃x. ∃y. (divides d b ∧ divides d a) ∧ (b * x = a * y + d ∨ a * x = b * y + d))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀a. ∃d. ∃x. ∃y. (divides d a ∧ divides d 0) ∧ (a * x = 0 * y + d ∨ 0 * x = a * y + d)"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "divides_self, {n: a}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides a a"
+                },
+                {
+                    "args": "divides_zero, {n: a}",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides a 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides a a ∧ divides a 0"
+                },
+                {
+                    "args": "a * 1 = 0 * 0 + a",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ a * 1 = 0 * 0 + a"
+                },
+                {
+                    "args": "disjI1, {A: a * 1 = 0 * 0 + a, B: 0 * 1 = a * 0 + a}",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a * 1 = 0 * 0 + a ∨ 0 * 1 = a * 0 + a"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.3",
+                        "2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (divides a a ∧ divides a 0) ∧ (a * 1 = 0 * 0 + a ∨ 0 * 1 = a * 0 + a)"
+                },
+                {
+                    "args": "exI, {P: λy. (divides a a ∧ divides a 0) ∧ (a * 1 = 0 * y + a ∨ 0 * 1 = a * y + a), a: (0::nat)}",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. (divides a a ∧ divides a 0) ∧ (a * 1 = 0 * a1 + a ∨ 0 * 1 = a * a1 + a)"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides a a ∧ divides a 0) ∧ (a * x = 0 * y + a ∨ 0 * x = a * y + a), a: (1::nat)}",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. ∃y. (divides a a ∧ divides a 0) ∧ (a * a1 = 0 * y + a ∨ 0 * a1 = a * y + a)"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d 0) ∧ (a * x = 0 * y + d ∨ 0 * x = a * y + d), a: a}",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 0) ∧ (a * x = 0 * y + a1 ∨ 0 * x = a * y + a1)"
+                },
+                {
+                    "args": "",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.0",
+                        "2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀a. ∃d. ∃x. ∃y. (divides d a ∧ divides d 0) ∧ (a * x = 0 * y + d ∨ 0 * x = a * y + d)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀a. ∀b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d))"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, nat",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "bezout_lemma",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀a. ∀b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d (a + b)) ∧ (a * x = (a + b) * y + d ∨ (a + b) * x = a * y + d))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ ∀a. ∀b. ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "a, b",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                }
+            ],
+            "prop": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_P": "(%a. %b. (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)))",
+                    "theorem": "ind_euclid"
+                },
+                {
+                    "goal": "!a. !b. ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "a, b"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "exists_elim",
+                    "names": "d,x,y"
+                },
+                {
+                    "goal_id": "1.2.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "1.2.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "1.2.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.4"
+                    ],
+                    "goal_id": "1.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.4"
+                    ],
+                    "goal_id": "1.2.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.5"
+                    ],
+                    "goal_id": "1.2.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.5"
+                    ],
+                    "goal_id": "1.2.8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disj_comm"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.0"
+                    ],
+                    "goal_id": "1.3.1",
+                    "method_name": "exists_elim",
+                    "names": "d,x,y"
+                },
+                {
+                    "goal_id": "1.3.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "1.3.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "1.3.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.4"
+                    ],
+                    "goal_id": "1.3.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.5"
+                    ],
+                    "goal_id": "1.3.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.5"
+                    ],
+                    "goal_id": "1.3.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.4"
+                    ],
+                    "goal_id": "1.3.8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.3.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.3.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.3.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disj_comm"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "a"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "a"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(1::nat)"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_zero"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "a,b"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "bezout_lemma"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "bezout",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "bezout_add, {a: a, b: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d b"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ∨ b * x = a * y + d"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ⟶ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "a * x = b * y + d",
+                    "id": "9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * x = b * y + d ⊢ a * x = b * y + d"
+                },
+                {
+                    "args": "nat_plus_minus_2, b * y + d - b * y = d",
+                    "id": "9.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ b * y + d - b * y = d"
+                },
+                {
+                    "args": "a * x - b * y = d",
+                    "id": "9.2",
+                    "prevs": [
+                        "9.0",
+                        "9.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x - b * y = d"
+                },
+                {
+                    "args": "disjI1, {A: a * x - b * y = d, B: b * x - a * y = d}",
+                    "id": "9.3",
+                    "prevs": [
+                        "9.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "",
+                    "id": "9.4",
+                    "prevs": [
+                        "9.0",
+                        "9.3"
+                    ],
+                    "rule": "intros",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ⟶ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ⟶ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "b * x = a * y + d",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * x = a * y + d ⊢ b * x = a * y + d"
+                },
+                {
+                    "args": "nat_plus_minus_2, a * y + d - a * y = d",
+                    "id": "10.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ a * y + d - a * y = d"
+                },
+                {
+                    "args": "b * x - a * y = d",
+                    "id": "10.2",
+                    "prevs": [
+                        "10.0",
+                        "10.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x - a * y = d"
+                },
+                {
+                    "args": "disjI2, {A: a * x - b * y = d, B: b * x - a * y = d}",
+                    "id": "10.3",
+                    "prevs": [
+                        "10.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "",
+                    "id": "10.4",
+                    "prevs": [
+                        "10.0",
+                        "10.3"
+                    ],
+                    "rule": "intros",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ⟶ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "disjE",
+                    "id": "11",
+                    "prevs": [
+                        "8",
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x - b * y = d ∨ b * x - a * y = d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "12",
+                    "prevs": [
+                        "5",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ (a * x - b * y = d ∨ b * x - a * y = d)"
+                },
+                {
+                    "args": "exI, {P: λy. (divides d a ∧ divides d b) ∧ (a * x - b * y = d ∨ b * x - a * y = d), a: y}",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d a ∧ divides d b) ∧ (a * x - b * a1 = d ∨ b * x - a * a1 = d)"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d b) ∧ (a * x - b * y = d ∨ b * x - a * y = d), a: x}",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d b) ∧ (a * a1 - b * y = d ∨ b * a1 - a * y = d)"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x - b * y = d ∨ b * x - a * y = d), a: d}",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 b) ∧ (a * x - b * y = a1 ∨ b * x - a * y = a1)"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "16",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "15"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x - b * y = d ∨ b * x - a * y = d)"
+                }
+            ],
+            "prop": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x - b * y = d ∨ b * x - a * y = d)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_b": "b",
+                    "theorem": "bezout_add"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "exists_elim",
+                    "names": "d,x,y"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "9.0"
+                    ],
+                    "goal_id": "9.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_minus_2"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "10.0"
+                    ],
+                    "goal_id": "10.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_minus_2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "bezout_add_strong",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "¬(a = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a = 0) ⊢ ¬(a = 0)"
+                },
+                {
+                    "args": "bezout_add, {a: a, b: b}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ divides d b"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "9",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ∨ b * x = a * y + d"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(a = 0), (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ⟶ (∃d1. ∃x1. ∃y1. (divides d1 a ∧ divides d1 b) ∧ a * x1 = b * y1 + d1)"
+                },
+                {
+                    "args": "a * x = b * y + d",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * x = b * y + d ⊢ a * x = b * y + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10.1",
+                    "prevs": [
+                        "6",
+                        "10.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(a = 0), a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ a * x = b * y + d"
+                },
+                {
+                    "args": "exI, {P: λy. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: y}",
+                    "id": "10.2",
+                    "prevs": [
+                        "10.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(a = 0), a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d a ∧ divides d b) ∧ a * x = b * a1 + d"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: x}",
+                    "id": "10.3",
+                    "prevs": [
+                        "10.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(a = 0), a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d b) ∧ a * a1 = b * y + d"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: d}",
+                    "id": "10.4",
+                    "prevs": [
+                        "10.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(a = 0), a * x = b * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 b) ∧ a * x = b * y + a1"
+                },
+                {
+                    "args": "",
+                    "id": "10.5",
+                    "prevs": [
+                        "10.0",
+                        "10.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(a = 0), (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * x = b * y + d ⟶ (∃d1. ∃x1. ∃y1. (divides d1 a ∧ divides d1 b) ∧ a * x1 = b * y1 + d1)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(a = 0), (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ⟶ (∃d1. ∃x1. ∃y1. (divides d1 a ∧ divides d1 b) ∧ a * x1 = b * y1 + d1)"
+                },
+                {
+                    "args": "b * x = a * y + d",
+                    "id": "11.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * x = a * y + d ⊢ b * x = a * y + d"
+                },
+                {
+                    "args": "",
+                    "id": "11.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b = 0 ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d)"
+                },
+                {
+                    "args": "b = 0",
+                    "id": "11.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = 0 ⊢ b = 0"
+                },
+                {
+                    "args": "",
+                    "id": "11.1.1",
+                    "prevs": [
+                        "11.1.0",
+                        "11.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "b = 0, b * x = a * y + d ⊢ 0 * x = a * y + d"
+                },
+                {
+                    "args": "nat_times_def_1",
+                    "id": "11.1.2",
+                    "prevs": [
+                        "11.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "b = 0, b * x = a * y + d ⊢ 0 = a * y + d"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "11.1.3",
+                    "prevs": [
+                        "11.1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "b = 0, b * x = a * y + d ⊢ a * y + d = 0"
+                },
+                {
+                    "args": "add_is_zero",
+                    "id": "11.1.4",
+                    "prevs": [
+                        "11.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b = 0, b * x = a * y + d ⊢ a * y = 0 ∧ d = 0"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "11.1.5",
+                    "prevs": [
+                        "11.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b = 0, b * x = a * y + d ⊢ a * y = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11.1.6",
+                    "prevs": [
+                        "11.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b = 0, b * x = a * y + d ⊢ d = 0"
+                },
+                {
+                    "args": "0 = 0 * x + 0",
+                    "id": "11.1.7",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ 0 = 0 * x + 0"
+                },
+                {
+                    "args": "0 = 0 * x + d",
+                    "id": "11.1.8",
+                    "prevs": [
+                        "11.1.6",
+                        "11.1.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ 0 = 0 * x + d"
+                },
+                {
+                    "args": "a * y = 0 * x + d",
+                    "id": "11.1.9",
+                    "prevs": [
+                        "11.1.5",
+                        "11.1.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * y = 0 * x + d"
+                },
+                {
+                    "args": "a * y = b * x + d",
+                    "id": "11.1.10",
+                    "prevs": [
+                        "11.1.0",
+                        "11.1.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * y = b * x + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "11.1.11",
+                    "prevs": [
+                        "6",
+                        "11.1.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ a * y = b * x + d"
+                },
+                {
+                    "args": "exI, {P: λy1. (divides d a ∧ divides d b) ∧ a * y = b * y1 + d, a: x}",
+                    "id": "11.1.12",
+                    "prevs": [
+                        "11.1.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d a ∧ divides d b) ∧ a * y = b * a1 + d"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: y}",
+                    "id": "11.1.13",
+                    "prevs": [
+                        "11.1.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d b) ∧ a * a1 = b * y + d"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: d}",
+                    "id": "11.1.14",
+                    "prevs": [
+                        "11.1.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b = 0, ¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 b) ∧ a * x = b * y + a1"
+                },
+                {
+                    "args": "",
+                    "id": "11.1.15",
+                    "prevs": [
+                        "11.1.0",
+                        "11.1.14"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b = 0 ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d)"
+                },
+                {
+                    "args": "",
+                    "id": "11.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ¬(b = 0) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d)"
+                },
+                {
+                    "args": "¬(b = 0)",
+                    "id": "11.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(b = 0) ⊢ ¬(b = 0)"
+                },
+                {
+                    "args": "b * ((b - 1) * x - d) = b * (b * x) - b * x - b * d",
+                    "id": "11.2.1",
+                    "prevs": [
+                        "11.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(b = 0) ⊢ b * ((b - 1) * x - d) = b * (b * x) - b * x - b * d"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "11.2.2",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ d ≤ b ∨ b = 0"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ d ≤ b ⟶ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "d ≤ b",
+                    "id": "11.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d ≤ b ⊢ d ≤ b"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "11.2.3.1",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ d ≤ a ∨ a = 0"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ d ≤ a ⟶ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "d ≤ a",
+                    "id": "11.2.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d ≤ a ⊢ d ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.3.2.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "d ≤ a, d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * b) - a * (y * 1) = b * (a * y) + b * d - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "distrib_l, a * (y * b) - a * (y * 1) = b * (a * y + d) - (a * y + d) - b * d + d",
+                    "id": "11.2.3.2.2",
+                    "prevs": [
+                        "11.2.3.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "d ≤ a, d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * b) - a * (y * 1) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "left_sub_distrib, a * (y * b - y * 1) = b * (a * y + d) - (a * y + d) - b * d + d",
+                    "id": "11.2.3.2.3",
+                    "prevs": [
+                        "11.2.3.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "d ≤ a, d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * b - y * 1) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "left_sub_distrib, a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d",
+                    "id": "11.2.3.2.4",
+                    "prevs": [
+                        "11.2.3.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "d ≤ a, d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.3.2.5",
+                    "prevs": [
+                        "11.2.3.2.0",
+                        "11.2.3.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ d ≤ a ⟶ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.3.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a = 0 ⟶ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "disjE",
+                    "id": "11.2.3.4",
+                    "prevs": [
+                        "11.2.3.1",
+                        "11.2.3.2",
+                        "11.2.3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "d ≤ b, ¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.3.5",
+                    "prevs": [
+                        "11.2.3.0",
+                        "11.2.3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ d ≤ b ⟶ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b = 0 ⟶ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "disjE",
+                    "id": "11.2.5",
+                    "prevs": [
+                        "11.2.2",
+                        "11.2.3",
+                        "11.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * (b - 1)) = b * (a * y + d) - (a * y + d) - b * d + d"
+                },
+                {
+                    "args": "a * (y * (b - 1)) = b * (b * x) - b * x - b * d + d",
+                    "id": "11.2.6",
+                    "prevs": [
+                        "11.0",
+                        "11.2.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * (b - 1)) = b * (b * x) - b * x - b * d + d"
+                },
+                {
+                    "args": "a * (y * (b - 1)) = b * ((b - 1) * x - d) + d",
+                    "id": "11.2.7",
+                    "prevs": [
+                        "11.2.1",
+                        "11.2.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ a * (y * (b - 1)) = b * ((b - 1) * x - d) + d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "11.2.8",
+                    "prevs": [
+                        "6",
+                        "11.2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ (divides d a ∧ divides d b) ∧ a * (y * (b - 1)) = b * ((b - 1) * x - d) + d"
+                },
+                {
+                    "args": "exI, {P: λy1. (divides d a ∧ divides d b) ∧ a * (y * (b - 1)) = b * y1 + d, a: (b - 1) * x - d}",
+                    "id": "11.2.9",
+                    "prevs": [
+                        "11.2.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. (divides d a ∧ divides d b) ∧ a * (y * (b - 1)) = b * a1 + d"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: y * (b - 1)}",
+                    "id": "11.2.10",
+                    "prevs": [
+                        "11.2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃y. (divides d a ∧ divides d b) ∧ a * a1 = b * y + d"
+                },
+                {
+                    "args": "exI, {P: λd. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d, a: d}",
+                    "id": "11.2.11",
+                    "prevs": [
+                        "11.2.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(a = 0), ¬(b = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃a1. ∃x. ∃y. (divides a1 a ∧ divides a1 b) ∧ a * x = b * y + a1"
+                },
+                {
+                    "args": "",
+                    "id": "11.2.12",
+                    "prevs": [
+                        "11.2.0",
+                        "11.2.11"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ¬(b = 0) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "11.3",
+                    "prevs": [
+                        "11.1",
+                        "11.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(a = 0), b * x = a * y + d, (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d"
+                },
+                {
+                    "args": "",
+                    "id": "11.4",
+                    "prevs": [
+                        "11.0",
+                        "11.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(a = 0), (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ b * x = a * y + d ⟶ (∃d1. ∃x1. ∃y1. (divides d1 a ∧ divides d1 b) ∧ a * x1 = b * y1 + d1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "12",
+                    "prevs": [
+                        "9",
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(a = 0), (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d) ⊢ ∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ (a * x = b * y + d ∨ b * x = a * y + d)",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(a = 0) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d)"
+                }
+            ],
+            "prop": "¬(a = 0) ⟶ (∃d. ∃x. ∃y. (divides d a ∧ divides d b) ∧ a * x = b * y + d)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_a": "a",
+                    "param_b": "b",
+                    "theorem": "bezout_add"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "d,x,y"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "10.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "b=0",
+                    "goal_id": "11.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "11.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "11.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "11.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "11.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "11.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.0",
+                        "11.0"
+                    ],
+                    "goal_id": "11.1.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.1"
+                    ],
+                    "goal_id": "11.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.2"
+                    ],
+                    "goal_id": "11.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.3"
+                    ],
+                    "goal_id": "11.1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "add_is_zero"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.4"
+                    ],
+                    "goal_id": "11.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.4"
+                    ],
+                    "goal_id": "11.1.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.0"
+                    ],
+                    "goal_id": "11.1.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.5"
+                    ],
+                    "goal_id": "11.1.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.1.6"
+                    ],
+                    "goal_id": "11.1.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11.1.7",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "goal_id": "11.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "11.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "11.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "y * (b - 1)"
+                },
+                {
+                    "goal_id": "11.2.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(b - 1) * x - d"
+                },
+                {
+                    "goal_id": "11.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal": "b * ((b - 1) * x - d) = b * (b * x) - b * x - b * d",
+                    "goal_id": "11.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "11.2.0"
+                    ],
+                    "goal_id": "11.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "11.2.1"
+                    ],
+                    "goal_id": "11.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.0"
+                    ],
+                    "goal_id": "11.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "11.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "11.2.2"
+                    ],
+                    "goal_id": "11.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "11.2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "11.2.3.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "11.2.3.1"
+                    ],
+                    "goal_id": "11.2.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "11.2.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "11.2.3.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "left_sub_distrib"
+                },
+                {
+                    "goal_id": "11.2.3.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "left_sub_distrib"
+                },
+                {
+                    "goal_id": "11.2.3.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_l"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
             "name": "gcd",
             "prop": [
                 "gcd m n = ",
