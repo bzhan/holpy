@@ -99,7 +99,7 @@ ruleset_raw = {
     "D83": "eqangle(A, B, B, C, D, E, E, F) :- contri(A, B, C, D, E, F)",
     # Obtaining contri from two triangles that have an identical side.
     # "D84": "contri(A, B, C, D, B, C) :- cong(A, B, D, B), eqangle(A, B, B, C, B, C, D, B)",  # SAS
-    "D85":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), cong(C, A, C, D)",  # SSS
+    # "D85":  "contri(A, B, C, D, B, C) :- cong(A, B, D, B), cong(C, A, C, D)",  # SSS
     # "D86":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(A, C, C, B, D, C, C, B)",  # ASA
     # "D87":  "contri(A, B, C, D, B, C) :- eqangle(A, B, B, C, D, B, B, C), eqangle(B, A, A, C, B, D, D, C)",  # AAS
     # D88 and D89 are using different sides of a triangle compares to D58.
@@ -108,6 +108,8 @@ ruleset_raw = {
 
     "D90": "eqangle(c, a, c, b) :- para(a, b)",
     "D91": "cong(O, A, O, B) :- circle(O, A, B, C)",
+    # "D92": "eqangle(C, A, A, B, C, B, A, B) :- coll(A, M, B), perp(C, M, A, B), midp(M, A, B)",
+    "D93": "midp(M, A, B) :- coll(A, M, B), perp(C, M, A, B), cong(C, A, C, B)"
 }
 
 ruleset = dict()

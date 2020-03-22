@@ -769,7 +769,7 @@ class Prover:
                         fact = new_fact
                         new_facts.append(new_fact)
 
-            # print(new_facts[-1], facts, rule_name)
+            print(new_facts[-1], facts, rule_name)
             self.hyps.extend(new_facts)
             for new_fact in new_facts:
                 # if new_fact.pred_name in ('simtri', 'contri', 'eqangle', 'para', 'midp'):
@@ -839,13 +839,12 @@ class Prover:
         steps = 0
         # self.print_hyps(only_not_shadowed=True)
         # print(self.lines)
-        while steps < 8:
+        while steps < 5:
             steps += 1
-            print("Step", steps)
+            print('Step', steps)
             res = self.search_step(only_updated=True)
 
             if res is not None:
-                print(res)
                 return res
 
         self.print_hyps(only_not_shadowed=True)
@@ -1134,7 +1133,7 @@ class Prover:
         else:
             print(s[:-5])
 
-    def print_search(self, res) -> None:
+    def print_search(self, res, show_combine=False) -> None:
         """Print the process of searching fixpoint.
         The given list of facts must contains all the deduce procedures
         (as parameters of facts in the list). Using a given ruleset to
@@ -1152,10 +1151,10 @@ class Prover:
             print_list.append(fact)
 
         rec(res)
-
         for fact in print_list:
             if fact.lemma == 'combine':
+                if show_combine:
+                    print('combine', fact)
                 pass
-                # print('combine', fact)
             elif fact.lemma:
                 print('(' + str(self.ruleset[fact.lemma]) + ')', fact, ':-', ', '.join(str(cond) for cond in fact.cond))

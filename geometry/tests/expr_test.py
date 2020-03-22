@@ -502,8 +502,8 @@ class ExprTest(unittest.TestCase):
             #  [], [], "para(E, F, G, H)"),
             # # ... -> 14 (Failed)
             # # Can be resolved by adding a new rule.˙
-            # # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
-            # #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
+            # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
+            #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
             # # ... -> 15
             # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
             #           "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
@@ -519,10 +519,31 @@ class ExprTest(unittest.TestCase):
             # # ... -> 19
             # (ruleset, ["circle(O, A, C, D, B)", "cyclic(A, C, D, B)", "circle(P, A, E, F, B)", "cyclic(A, E, F, B)",
             #            "coll(C, A, E)", "coll(D, B, F)"], [], [], "para(C, D, E, F)"),
-            # ... -> 20
-            (ruleset, ["coll(A, E, C)", "coll(C, D, B)", "coll(A, G, B)", "coll(E, H, B)", "coll(A, H, D)",
-                       "perp(B, E, A, C)", "perp(A, D, C, B)", "perp(H, G, A, B)"], [], [],
-             "eqangle(E, G, G, H, H, G, G, D)")
+            # # ... -> 20
+            # (ruleset, ["coll(A, E, C)", "coll(C, D, B)", "coll(A, G, B)", "coll(E, H, B)", "coll(A, H, D)",
+            #            "perp(B, E, A, C)", "perp(A, D, C, B)", "perp(H, G, A, B)"], [], [],
+            #  "eqangle(E, G, G, H, H, G, G, D)"),
+            # # Examples -> 6_GDD_FULL -> 21-40
+            # ... -> 22
+            # (ruleset, ["circle(O, A, M, B, C, N)", "cyclic(A, B, M, C, N)", "perp(P, O, A, C)", "perp(Q, O, A, B)",
+            #            "coll(A, E, P, R, C)", "coll(A, D, Q, B)", "coll(N, P, O)", "coll(N, E, D, M)", "coll(R, O, Q, M)"],
+            #  [], [], "eqangle(A, D, D, E, D, E, E, A)"),
+            # # ... -> 23
+            # (ruleset, ["circle(O, E, B, C, A, D)", "cyclic(E, B, C, A, D)", "coll(A, F, M, G, B)", "coll(C, F, D)",
+            #            "coll(C, M, O)", "coll(C, G, E)", "perp(O, M, A, B)"], [], [], "eqangle(A, G, G, C, C, D, D, E)"),
+            # # ... -> 24
+            # (ruleset, ["circle(O1, P, Q, R, S)", "cyclic(P, Q, R, S)", "circle(O, P, Q, X, Y)", "cyclic(P, Q, X, Y)",
+            #            "coll(I, Y, X)", "coll(I, S, R)", "coll(Q, Y, S)"], [], [], "eqangle(R, I, I, X, R, P, P, X)"),
+            # ... -> 28
+            # (ruleset, ["perp(F, C, A, B)", "perp(A, H, B, C)", "perp(B, H, A, C)", "perp(T, F, B, C)", "perp(Q, F, A, H)",
+            #            "perp(P, F, A, C)", "coll(A, P, C)", "coll(C, T, B)", "coll(A, Q, H)", "coll(A, F, B)"], [], [],
+            #  "coll(P, Q, T)"),
+            # ... -> 29
+            (ruleset, ["perp(D, A, B, C)", "perp(Q, D, A, B)", "perp(P, D, A, C)", "coll(A, Q, B)", "coll(A, P, C)",
+                       "coll(B, D, C)"], [], [], "cyclic(B, Q, P, C)"),
+            # ... -> 30 (Add an auxiliary point F manually)
+            (ruleset, ["circle(O, A, B, C, F)", "cyclic(A, B, C, F)", "perp(D, C, A, B)", "perp(E, B, A, C)",
+                       "coll(A, E, C)", "coll(A, D, B)", "coll(A, O, F)"], [], [], "perp(A, O, D, E)")
 
 
         ]
@@ -543,7 +564,7 @@ class ExprTest(unittest.TestCase):
             prover.print_search(res)
             print('')
         end = time.time()
-        print("Finished", len(test_data), "proofs in", "%.2f sec. " % (end - start))
+        print("Finished", len(test_data), "proof(s) in", "%.2f sec. " % (end - start))
         # p = Stats(pr)
         # p.strip_dirs()
         # p.sort_stats('cumtime')
