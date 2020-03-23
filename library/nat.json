@@ -11693,6 +11693,646 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "le_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m = 0 ⟶ m < 0 ∨ m = 0"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "disjI2, {A: m < 0, B: m = 0}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = 0 ⊢ m < 0 ∨ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = 0 ⟶ m < 0 ∨ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m < 0 ∨ m = 0 ⟶ m = 0"
+                },
+                {
+                    "args": "m < 0 ∨ m = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < 0 ∨ m = 0 ⊢ m < 0 ∨ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < 0 ∨ m = 0 ⊢ m < 0 ⟶ m = 0"
+                },
+                {
+                    "args": "m < 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < 0 ⊢ m < 0"
+                },
+                {
+                    "args": "nat_less_def_1",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m < 0 ⊢ false"
+                },
+                {
+                    "args": "not_false_res, m = 0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "m < 0 ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m < 0 ∨ m = 0 ⊢ m < 0 ⟶ m = 0"
+                },
+                {
+                    "args": "m = 0 ⟶ m = 0",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ m = 0 ⟶ m = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < 0 ∨ m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m < 0 ∨ m = 0 ⟶ m = 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m = 0 ⟷ m < 0 ∨ m = 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1, m ≤ 0 ⟷ m < 0 ∨ m = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m ≤ 0 ⟷ m < 0 ∨ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. m ≤ n ⟷ m < n ∨ m = n ⟶ m ≤ Suc n ⟷ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "m ≤ n ⟷ m < n ∨ m = n",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m ≤ n ⟷ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n ⟶ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "m = Suc n ∨ m < n ∨ m = n",
+                    "id": "4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ∨ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m = Suc n ⟶ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "m = Suc n",
+                    "id": "4.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ⊢ m = Suc n"
+                },
+                {
+                    "args": "disjI2, {A: m < Suc n, B: m = Suc n}",
+                    "id": "4.2.1.1",
+                    "prevs": [
+                        "4.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = Suc n, m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.1.2",
+                    "prevs": [
+                        "4.2.1.0",
+                        "4.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m = Suc n ⟶ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m < n ∨ m = n ⟶ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "m < n ∨ m = n",
+                    "id": "4.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < n ∨ m = n ⊢ m < n ∨ m = n"
+                },
+                {
+                    "args": "disj_comm, m = n ∨ m < n",
+                    "id": "4.2.2.1",
+                    "prevs": [
+                        "4.2.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < n ∨ m = n, m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m = n ∨ m < n"
+                },
+                {
+                    "args": "nat_less_def_2, m < Suc n",
+                    "id": "4.2.2.2",
+                    "prevs": [
+                        "4.2.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < n ∨ m = n, m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m < Suc n"
+                },
+                {
+                    "args": "disjI1, {A: m < Suc n, B: m = Suc n}",
+                    "id": "4.2.2.3",
+                    "prevs": [
+                        "4.2.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m < n ∨ m = n, m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.2.4",
+                    "prevs": [
+                        "4.2.2.0",
+                        "4.2.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m < n ∨ m = n ⟶ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4.2.3",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.1",
+                        "4.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n, m = Suc n ∨ m < n ∨ m = n ⊢ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.4",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n ⟶ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m < Suc n ∨ m = Suc n ⟶ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "m < Suc n ∨ m = Suc n",
+                    "id": "4.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < Suc n ∨ m = Suc n ⊢ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m < Suc n ⟶ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "m < Suc n",
+                    "id": "4.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m < Suc n ⊢ m < Suc n"
+                },
+                {
+                    "args": "nat_less_def_2",
+                    "id": "4.3.1.1",
+                    "prevs": [
+                        "4.3.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m < Suc n ⊢ m = n ∨ m < n"
+                },
+                {
+                    "args": "disj_comm, m < n ∨ m = n",
+                    "id": "4.3.1.2",
+                    "prevs": [
+                        "4.3.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m < Suc n, m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m < n ∨ m = n"
+                },
+                {
+                    "args": "disjI2, {A: m = Suc n, B: m < n ∨ m = n}",
+                    "id": "4.3.1.3",
+                    "prevs": [
+                        "4.3.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m < Suc n, m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "4.3.1.4",
+                    "prevs": [
+                        "4.3.1.0",
+                        "4.3.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m < Suc n ⟶ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "4.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ⟶ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "m = Suc n",
+                    "id": "4.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = Suc n ⊢ m = Suc n"
+                },
+                {
+                    "args": "disjI1, {A: m = Suc n, B: m < n ∨ m = n}",
+                    "id": "4.3.2.1",
+                    "prevs": [
+                        "4.3.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = Suc n, m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "4.3.2.2",
+                    "prevs": [
+                        "4.3.2.0",
+                        "4.3.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ⟶ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4.3.3",
+                    "prevs": [
+                        "4.3.0",
+                        "4.3.1",
+                        "4.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m < Suc n ∨ m = Suc n, m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "4.3.4",
+                    "prevs": [
+                        "4.3.0",
+                        "4.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m < Suc n ∨ m = Suc n ⟶ m = Suc n ∨ m < n ∨ m = n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.2",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m < n ∨ m = n ⟷ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "m = Suc n ∨ m ≤ n ⟷ m < Suc n ∨ m = Suc n",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.1",
+                        "4.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m = Suc n ∨ m ≤ n ⟷ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, m ≤ Suc n ⟷ m < Suc n ∨ m = Suc n",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⟷ m < n ∨ m = n ⊢ m ≤ Suc n ⟷ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. m ≤ n ⟷ m < n ∨ m = n ⟶ m ≤ Suc n ⟷ m < Suc n ∨ m = Suc n"
+                },
+                {
+                    "args": "nat_induct, {P: λn. m ≤ n ⟷ m < n ∨ m = n, x: n}",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ n ⟷ m < n ∨ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟷ m < n ∨ m = n"
+                }
+            ],
+            "prop": "m ≤ n ⟷ m < n ∨ m = n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "not_false_res"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.2.0"
+                    ],
+                    "goal_id": "4.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "4.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "4.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "goal_id": "4.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disj_comm"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.3.0"
+                    ],
+                    "goal_id": "4.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.3.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "4.3.1.0"
+                    ],
+                    "goal_id": "4.3.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "goal_id": "4.3.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disj_comm"
+                },
+                {
+                    "goal_id": "4.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.3.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "not_le",
             "num_gaps": 1,
             "proof": [
