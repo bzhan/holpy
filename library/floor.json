@@ -852,6 +852,47 @@
             "type": "real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "floor_frac_1",
+            "prop": "integer (floor x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "floor_frac_2",
+            "prop": "0 ≤ frac x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "floor_frac_3",
+            "prop": "frac x < 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "floor_frac_4",
+            "prop": "x = floor x + frac x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "floor_unique",
             "prop": "integer a ∧ a ≤ x ∧ x < a + 1 ⟷ floor x = a",
             "ty": "thm",
