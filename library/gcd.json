@@ -14978,22 +14978,15 @@
                     "th": "⊢ divides (gcd m n) m"
                 },
                 {
-                    "args": "k1, nat",
+                    "args": "gcd_divides2, {m: m, n: n}",
                     "id": "4.6",
                     "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR k1"
-                },
-                {
-                    "args": "k * m = b * k1",
-                    "id": "4.7",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "k * m = b * k1 ⊢ k * m = b * k1"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd m n) n"
                 },
                 {
                     "args": "divides_def",
-                    "id": "4.8",
+                    "id": "4.7",
                     "prevs": [
                         "4.5"
                     ],
@@ -15001,111 +14994,320 @@
                     "th": "⊢ ∃k. m = gcd m n * k"
                 },
                 {
-                    "args": "k2, nat",
-                    "id": "4.9",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR k2"
-                },
-                {
-                    "args": "m = gcd m n * k2",
-                    "id": "4.10",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "m = gcd m n * k2 ⊢ m = gcd m n * k2"
-                },
-                {
-                    "args": "",
-                    "id": "4.11",
-                    "prevs": [
-                        "4.10",
-                        "4.7"
-                    ],
-                    "rule": "rewrite_fact_with_prev",
-                    "th": "m = gcd m n * k2, k * m = b * k1 ⊢ k * (gcd m n * k2) = b * k1"
-                },
-                {
-                    "args": "gcd_divides2, {m: m, n: n}",
-                    "id": "4.12",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ divides (gcd m n) n"
-                },
-                {
                     "args": "divides_def",
-                    "id": "4.13",
+                    "id": "4.8",
                     "prevs": [
-                        "4.12"
+                        "4.6"
                     ],
                     "rule": "rewrite_fact",
                     "th": "⊢ ∃k. n = gcd m n * k"
                 },
                 {
+                    "args": "k1, nat",
+                    "id": "4.9",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k1"
+                },
+                {
+                    "args": "k * m = b * k1",
+                    "id": "4.10",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * m = b * k1 ⊢ k * m = b * k1"
+                },
+                {
+                    "args": "k2, nat",
+                    "id": "4.11",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k2"
+                },
+                {
+                    "args": "k * n = b * k2",
+                    "id": "4.12",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * n = b * k2 ⊢ k * n = b * k2"
+                },
+                {
                     "args": "k3, nat",
-                    "id": "4.14",
+                    "id": "4.13",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR k3"
                 },
                 {
-                    "args": "n = gcd m n * k3",
-                    "id": "4.15",
+                    "args": "m = gcd m n * k3",
+                    "id": "4.14",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "n = gcd m n * k3 ⊢ n = gcd m n * k3"
+                    "th": "m = gcd m n * k3 ⊢ m = gcd m n * k3"
                 },
                 {
-                    "args": "",
+                    "args": "k4, nat",
+                    "id": "4.15",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k4"
+                },
+                {
+                    "args": "n = gcd m n * k4",
                     "id": "4.16",
-                    "prevs": [
-                        "4.10",
-                        "4.7"
-                    ],
-                    "rule": "rewrite_fact_with_prev",
-                    "th": "m = gcd m n * k2, k * m = b * k1 ⊢ k * (gcd m n * k2) = b * k1"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = gcd m n * k4 ⊢ n = gcd m n * k4"
                 },
                 {
                     "args": "",
                     "id": "4.17",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k2, n = gcd m n * k3, k * m = b * k1 ⊢ k * gcd m n = b * (k * k2)"
+                    "prevs": [
+                        "4.14",
+                        "4.10"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = gcd m n * k3, k * m = b * k1 ⊢ k * (gcd m n * k3) = b * k1"
                 },
                 {
-                    "args": "exI, {P: λk1. k * gcd m n = b * k1, a: k * k2}",
+                    "args": "",
                     "id": "4.18",
+                    "prevs": [
+                        "4.16",
+                        "4.12"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = gcd m n * k4, k * n = b * k2 ⊢ k * (gcd m n * k4) = b * k2"
+                },
+                {
+                    "args": "mult_assoc",
+                    "id": "4.19",
                     "prevs": [
                         "4.17"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k2, n = gcd m n * k3, k * m = b * k1 ⊢ ∃a1. k * gcd m n = b * a1"
+                    "rule": "rewrite_fact_sym",
+                    "th": "m = gcd m n * k3, k * m = b * k1 ⊢ k * gcd m n * k3 = b * k1"
                 },
                 {
-                    "args": "divides_def, divides b (k * gcd m n)",
-                    "id": "4.19",
+                    "args": "mult_assoc",
+                    "id": "4.20",
                     "prevs": [
                         "4.18"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k2, n = gcd m n * k3, k * m = b * k1 ⊢ divides b (k * gcd m n)"
+                    "rule": "rewrite_fact_sym",
+                    "th": "n = gcd m n * k4, k * n = b * k2 ⊢ k * gcd m n * k4 = b * k2"
                 },
                 {
-                    "args": "∃k. n = gcd m n * k, ∃k. m = gcd m n * k, ∃k1. k * m = b * k1",
-                    "id": "4.20",
+                    "args": "∀x::nat. ∀y. ∀z. x = y ⟶ x * z = y * z",
+                    "id": "4.21",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::nat. ∀y. ∀z. x = y ⟶ x * z = y * z"
+                },
+                {
+                    "args": "",
+                    "id": "4.22",
+                    "prevs": [
+                        "4.21",
+                        "4.19"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "m = gcd m n * k3, k * m = b * k1 ⊢ ∀z. k * gcd m n * k3 * z = b * k1 * z"
+                },
+                {
+                    "args": "k2",
+                    "id": "4.23",
+                    "prevs": [
+                        "4.22"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "m = gcd m n * k3, k * m = b * k1 ⊢ k * gcd m n * k3 * k2 = b * k1 * k2"
+                },
+                {
+                    "args": "",
+                    "id": "4.24",
+                    "prevs": [
+                        "4.21",
+                        "4.20"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n = gcd m n * k4, k * n = b * k2 ⊢ ∀z. k * gcd m n * k4 * z = b * k2 * z"
+                },
+                {
+                    "args": "k1",
+                    "id": "4.25",
+                    "prevs": [
+                        "4.24"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "n = gcd m n * k4, k * n = b * k2 ⊢ k * gcd m n * k4 * k1 = b * k2 * k1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "4.26",
+                    "prevs": [
+                        "4.23"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = gcd m n * k3, k * m = b * k1 ⊢ b * k1 * k2 = k * gcd m n * k3 * k2"
+                },
+                {
+                    "args": "b * k2 * k1 = b * k1 * k2",
+                    "id": "4.27",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ b * k2 * k1 = b * k1 * k2"
+                },
+                {
+                    "args": "",
+                    "id": "4.28",
+                    "prevs": [
+                        "4.27",
+                        "4.25"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = gcd m n * k4, k * n = b * k2 ⊢ k * gcd m n * k4 * k1 = b * k1 * k2"
+                },
+                {
+                    "args": "",
+                    "id": "4.29",
+                    "prevs": [
+                        "4.26",
+                        "4.28"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k * gcd m n * k4 * k1 = k * gcd m n * k3 * k2"
+                },
+                {
+                    "args": "mult_assoc",
+                    "id": "4.30",
+                    "prevs": [
+                        "4.29"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k * gcd m n * (k4 * k1) = k * gcd m n * (k3 * k2)"
+                },
+                {
+                    "args": "eq_mult_lcancel",
+                    "id": "4.31",
+                    "prevs": [
+                        "4.30"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k * gcd m n = 0 ∨ k4 * k1 = k3 * k2"
+                },
+                {
+                    "args": "",
+                    "id": "4.32",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k * gcd m n = 0 ⟶ (∃k1. k * gcd m n = b * k1)"
+                },
+                {
+                    "args": "k * gcd m n = 0",
+                    "id": "4.32.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * gcd m n = 0 ⊢ k * gcd m n = 0"
+                },
+                {
+                    "args": "mult_0_right, k * gcd m n = b * 0",
+                    "id": "4.32.1",
+                    "prevs": [
+                        "4.32.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2, k * gcd m n = 0 ⊢ k * gcd m n = b * 0"
+                },
+                {
+                    "args": "exI, {P: λk1. k * gcd m n = b * k1, a: (0::nat)}",
+                    "id": "4.32.2",
+                    "prevs": [
+                        "4.32.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2, k * gcd m n = 0 ⊢ ∃a1. k * gcd m n = b * a1"
+                },
+                {
+                    "args": "",
+                    "id": "4.32.3",
+                    "prevs": [
+                        "4.32.0",
+                        "4.32.2"
+                    ],
+                    "rule": "intros",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k * gcd m n = 0 ⟶ (∃k1. k * gcd m n = b * k1)"
+                },
+                {
+                    "args": "",
+                    "id": "4.33",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k4 * k1 = k3 * k2 ⟶ (∃k5. k * gcd m n = b * k5)"
+                },
+                {
+                    "args": "k4 * k1 = k3 * k2",
+                    "id": "4.33.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k4 * k1 = k3 * k2 ⊢ k4 * k1 = k3 * k2"
+                },
+                {
+                    "args": "",
+                    "id": "4.33.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2, k4 * k1 = k3 * k2 ⊢ ∃k1. k * gcd m n = b * k1"
+                },
+                {
+                    "args": "",
+                    "id": "4.33.2",
+                    "prevs": [
+                        "4.33.0",
+                        "4.33.1"
+                    ],
+                    "rule": "intros",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k4 * k1 = k3 * k2 ⟶ (∃k5. k * gcd m n = b * k5)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4.34",
+                    "prevs": [
+                        "4.31",
+                        "4.32",
+                        "4.33"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ ∃k1. k * gcd m n = b * k1"
+                },
+                {
+                    "args": "divides_def, divides b (k * gcd m n)",
+                    "id": "4.35",
+                    "prevs": [
+                        "4.34"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ divides b (k * gcd m n)"
+                },
+                {
+                    "args": "∃k. n = gcd m n * k, ∃k. m = gcd m n * k, ∃k1. k * n = b * k1, ∃k1. k * m = b * k1",
+                    "id": "4.36",
                     "prevs": [
                         "4.0",
                         "4.1",
                         "4.2",
                         "4.3",
-                        "4.6",
-                        "4.7",
-                        "4.8",
                         "4.9",
                         "4.10",
+                        "4.4",
+                        "4.11",
+                        "4.12",
+                        "4.7",
                         "4.13",
                         "4.14",
+                        "4.8",
                         "4.15",
-                        "4.19"
+                        "4.16",
+                        "4.35"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀b. divides b (k * m) ⟶ divides b (k * n) ⟶ divides b (k * gcd m n)"
@@ -15189,16 +15391,24 @@
                     "theorem": "gcd_divide1"
                 },
                 {
-                    "fact_ids": [
-                        "4.3"
-                    ],
                     "goal_id": "4.6",
-                    "method_name": "exists_elim",
-                    "names": "k1"
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd_divides2"
                 },
                 {
                     "fact_ids": [
                         "4.5"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
                     ],
                     "goal_id": "4.8",
                     "method_name": "rewrite_fact",
@@ -15207,62 +15417,198 @@
                 },
                 {
                     "fact_ids": [
-                        "4.8"
+                        "4.3"
                     ],
                     "goal_id": "4.9",
+                    "method_name": "exists_elim",
+                    "names": "k1"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.11",
                     "method_name": "exists_elim",
                     "names": "k2"
                 },
                 {
                     "fact_ids": [
-                        "4.10",
                         "4.7"
                     ],
-                    "goal_id": "4.11",
-                    "method_name": "rewrite_fact_with_prev"
-                },
-                {
-                    "goal_id": "4.12",
-                    "method_name": "apply_forward_step",
-                    "param_m": "m",
-                    "param_n": "n",
-                    "theorem": "gcd_divides2"
-                },
-                {
-                    "fact_ids": [
-                        "4.12"
-                    ],
                     "goal_id": "4.13",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "divides_def"
-                },
-                {
-                    "fact_ids": [
-                        "4.13"
-                    ],
-                    "goal_id": "4.14",
                     "method_name": "exists_elim",
                     "names": "k3"
                 },
                 {
-                    "goal_id": "4.16",
+                    "fact_ids": [
+                        "4.8"
+                    ],
+                    "goal_id": "4.15",
+                    "method_name": "exists_elim",
+                    "names": "k4"
+                },
+                {
+                    "fact_ids": [
+                        "4.14",
+                        "4.10"
+                    ],
+                    "goal_id": "4.17",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.16",
+                        "4.12"
+                    ],
+                    "goal_id": "4.18",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "4.19",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "divides_def"
                 },
                 {
                     "fact_ids": [
-                        "4.10",
-                        "4.7"
+                        "4.17"
                     ],
-                    "goal_id": "4.16",
+                    "goal_id": "4.19",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "4.18"
+                    ],
+                    "goal_id": "4.20",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal": "∀x::nat. ∀y. !z. x = y ⟶ x * z = y * z",
+                    "goal_id": "4.21",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.21",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.21",
+                        "4.19"
+                    ],
+                    "goal_id": "4.22",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.22"
+                    ],
+                    "goal_id": "4.23",
+                    "method_name": "forall_elim",
+                    "s": "k2"
+                },
+                {
+                    "fact_ids": [
+                        "4.21",
+                        "4.20"
+                    ],
+                    "goal_id": "4.24",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.24"
+                    ],
+                    "goal_id": "4.25",
+                    "method_name": "forall_elim",
+                    "s": "k1"
+                },
+                {
+                    "fact_ids": [
+                        "4.23"
+                    ],
+                    "goal_id": "4.26",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "4.25"
+                    ],
+                    "goal": "b * k2 * k1 = b * k1 * k2",
+                    "goal_id": "4.27",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.27",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "4.27",
+                        "4.25"
+                    ],
+                    "goal_id": "4.28",
                     "method_name": "rewrite_fact_with_prev"
                 },
                 {
-                    "goal_id": "4.17",
+                    "fact_ids": [
+                        "4.26",
+                        "4.28"
+                    ],
+                    "goal_id": "4.29",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.29"
+                    ],
+                    "goal_id": "4.30",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "4.30"
+                    ],
+                    "goal_id": "4.31",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_mult_lcancel"
+                },
+                {
+                    "fact_ids": [
+                        "4.31"
+                    ],
+                    "goal_id": "4.32",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4.32",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.32.1",
                     "method_name": "inst_exists_goal",
-                    "s": "k * k2"
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "4.32.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "4.33",
+                    "method_name": "introduction"
                 }
             ],
             "ty": "thm",
