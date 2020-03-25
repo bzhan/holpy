@@ -34859,12 +34859,3099 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": "div_mod_exist",
+            "name": "divmod_exist",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "nat_WOP, {P: λr. ∃q. m = q * n + r}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∃n1. ∃q. m = q * n + n1) ⟷ (∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1)))"
+                },
+                {
+                    "args": "∀A. ∀B. A ⟷ B ⟶ A ⟶ B",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀A. ∀B. A ⟷ B ⟶ A ⟶ B"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ (∃n1. ∃q. m = q * n + n1) ⟶ (∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1)))"
+                },
+                {
+                    "args": "left_imp_exists_thm",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀x. (∃q. m = q * n + x) ⟶ (∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1)))"
+                },
+                {
+                    "args": "left_imp_exists_thm",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∀x. ∀x1. m = x1 * n + x ⟶ (∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1)))"
+                },
+                {
+                    "args": "m",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "⊢ ∀x1. m = x1 * n + m ⟶ (∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1)))"
+                },
+                {
+                    "args": "(0::nat)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "⊢ m = 0 * n + m ⟶ (∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1)))"
+                },
+                {
+                    "args": "m = 0 * n + m",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ m = 0 * n + m"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ ∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1))"
+                },
+                {
+                    "args": "r, nat",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR r"
+                },
+                {
+                    "args": "(∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1))",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ∃q. m = q * n + r"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "13",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)"
+                },
+                {
+                    "args": "q, nat",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR q"
+                },
+                {
+                    "args": "m = q * n + r",
+                    "id": "15",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = q * n + r ⊢ m = q * n + r"
+                },
+                {
+                    "args": "",
+                    "id": "16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ¬(r < n) ⟶ ¬(∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1))"
+                },
+                {
+                    "args": "¬(r < n)",
+                    "id": "16.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(r < n) ⊢ ¬(r < n)"
+                },
+                {
+                    "args": "not_lt",
+                    "id": "16.1",
+                    "prevs": [
+                        "16.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(r < n) ⊢ n ≤ r"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "16.2",
+                    "prevs": [
+                        "16.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(r < n) ⊢ ∃p. r = n + p"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "16.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "r = n + d",
+                    "id": "16.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "r = n + d ⊢ r = n + d"
+                },
+                {
+                    "args": "d < r",
+                    "id": "16.5",
+                    "prevs": [
+                        "0",
+                        "16.4"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(n = 0), r = n + d ⊢ d < r"
+                },
+                {
+                    "args": "q * n + (n + d) = (q + 1) * n + d",
+                    "id": "16.6",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ q * n + (n + d) = (q + 1) * n + d"
+                },
+                {
+                    "args": "q * n + r = (q + 1) * n + d",
+                    "id": "16.7",
+                    "prevs": [
+                        "16.4",
+                        "16.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ q * n + r = (q + 1) * n + d"
+                },
+                {
+                    "args": "m = (q + 1) * n + d",
+                    "id": "16.8",
+                    "prevs": [
+                        "15",
+                        "16.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ m = (q + 1) * n + d"
+                },
+                {
+                    "args": "exI, {P: λq. m = q * n + d, a: q + 1}",
+                    "id": "16.9",
+                    "prevs": [
+                        "16.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ∃a1. m = a1 * n + d"
+                },
+                {
+                    "args": "double_neg, ¬¬(∃q. m = q * n + d)",
+                    "id": "16.10",
+                    "prevs": [
+                        "16.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ¬¬(∃q. m = q * n + d)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "16.11",
+                    "prevs": [
+                        "16.5",
+                        "16.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ d < r ∧ ¬¬(∃q. m = q * n + d)"
+                },
+                {
+                    "args": "not_imp, ¬(d < r ⟶ ¬(∃q. m = q * n + d))",
+                    "id": "16.12",
+                    "prevs": [
+                        "16.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ¬(d < r ⟶ ¬(∃q. m = q * n + d))"
+                },
+                {
+                    "args": "exI, {P: λx. ¬(x < r ⟶ ¬(∃q. m = q * n + x)), a: d}",
+                    "id": "16.13",
+                    "prevs": [
+                        "16.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ∃a1. ¬(a1 < r ⟶ ¬(∃q. m = q * n + a1))"
+                },
+                {
+                    "args": "not_all, ¬(∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1))",
+                    "id": "16.14",
+                    "prevs": [
+                        "16.13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(r < n), r = n + d, m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ¬(∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1))"
+                },
+                {
+                    "args": "∃p. r = n + p",
+                    "id": "16.15",
+                    "prevs": [
+                        "16.0",
+                        "16.2",
+                        "16.3",
+                        "16.4",
+                        "16.14"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ¬(r < n) ⟶ ¬(∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1))"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "17",
+                    "prevs": [
+                        "13",
+                        "16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ r < n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "18",
+                    "prevs": [
+                        "15",
+                        "17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ m = q * n + r ∧ r < n"
+                },
+                {
+                    "args": "exI, {P: λr. m = q * n + r ∧ r < n, a: r}",
+                    "id": "19",
+                    "prevs": [
+                        "18"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ∃a1. m = q * n + a1 ∧ a1 < n"
+                },
+                {
+                    "args": "exI, {P: λq. ∃r. m = q * n + r ∧ r < n, a: q}",
+                    "id": "20",
+                    "prevs": [
+                        "19"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), m = q * n + r, (∃q. m = q * n + r) ∧ (∀m1. m1 < r ⟶ ¬(∃q. m = q * n + m1)) ⊢ ∃a1. ∃r. m = a1 * n + r ∧ r < n"
+                },
+                {
+                    "args": "∃q. m = q * n + r, ∃n1. (∃q. m = q * n + n1) ∧ (∀m1. m1 < n1 ⟶ ¬(∃q. m = q * n + m1))",
+                    "id": "21",
+                    "prevs": [
+                        "0",
+                        "9",
+                        "10",
+                        "11",
+                        "12",
+                        "14",
+                        "15",
+                        "20"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ (∃q. ∃r. m = q * n + r ∧ r < n)"
+                }
+            ],
             "prop": "¬(n = 0) ⟶ (∃q. ∃r. m = q * n + r ∧ r < n)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_P": "%r. ?q. m = q * n + r",
+                    "theorem": "nat_WOP"
+                },
+                {
+                    "goal": "!A. !B. (A<-->B)-->(A-->B)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "left_imp_exists_thm"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "left_imp_exists_thm"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "forall_elim",
+                    "s": "m"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "forall_elim",
+                    "s": "(0::nat)"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal": "m = 0 * n + m",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "exists_elim",
+                    "names": "r"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "exists_elim",
+                    "names": "q"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "inst_exists_goal",
+                    "s": "q"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "inst_exists_goal",
+                    "s": "r"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "16.0"
+                    ],
+                    "goal_id": "16.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_lt"
+                },
+                {
+                    "fact_ids": [
+                        "16.1"
+                    ],
+                    "goal_id": "16.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "16.2"
+                    ],
+                    "goal_id": "16.3",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "goal_id": "16.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_all"
+                },
+                {
+                    "goal_id": "16.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "16.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_imp"
+                },
+                {
+                    "goal_id": "16.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "16.4"
+                    ],
+                    "goal_id": "16.5",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "16.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "16.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "q+1"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "16.4"
+                    ],
+                    "goal_id": "16.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "16.6",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
                 "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "divmod_exist_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ (∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n)"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "eq_refl, {x: m}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m = m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n = 0 ⊢ (0::nat) = 0 ∧ m = m"
+                },
+                {
+                    "args": "exI, {P: λr. (0::nat) = 0 ∧ r = m, a: m}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0 ⊢ ∃a1. (0::nat) = 0 ∧ a1 = m"
+                },
+                {
+                    "args": "exI, {P: λq::nat. ∃r. q = 0 ∧ r = m, a: (0::nat)}",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0 ⊢ ∃a1::nat. ∃r. a1 = 0 ∧ r = m"
+                },
+                {
+                    "args": "if_P, ∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ ∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ (∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ (∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n)"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "divmod_exist, {m: m, n: n}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ ∃q. ∃r. m = q * n + r ∧ r < n"
+                },
+                {
+                    "args": "if_not_P, ∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ ∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ (∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n"
+                }
+            ],
+            "prop": "∃q. ∃r. if n = 0 then q = 0 ∧ r = m else m = q * n + r ∧ r < n",
+            "steps": [
+                {
+                    "case": "n= 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "m"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divmod_exist"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "division_0",
+            "prop": [
+                "if n = 0 then ",
+                "  m DIV n = 0 ∧ m MOD n = m",
+                "else ",
+                "  m = m DIV n * n + m MOD n ∧ m MOD n < n"
+            ],
+            "ty": "thm.ax",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "division",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "division_0, {m: m, n: n}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ if n = 0 then m DIV n = 0 ∧ m MOD n = m else m = m DIV n * n + m MOD n ∧ m MOD n < n"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(n = 0) ⊢ m = m DIV n * n + m MOD n ∧ m MOD n < n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ m = m DIV n * n + m MOD n ∧ m MOD n < n"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ m = m DIV n * n + m MOD n ∧ m MOD n < n",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "division_0"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "div_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "division_0, {m: n, n: (0::nat)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ if (0::nat) = 0 then n DIV 0 = 0 ∧ n MOD 0 = n else n = n DIV 0 * 0 + n MOD 0 ∧ n MOD 0 < 0"
+                },
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "if_P",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ n DIV 0 = 0 ∧ n MOD 0 = n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ n DIV 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n DIV 0 = 0"
+                }
+            ],
+            "prop": "n DIV 0 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_m": "n",
+                    "param_n": "(0::nat)",
+                    "theorem": "division_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal": "(0::nat) = 0",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "division_0, {m: n, n: (0::nat)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ if (0::nat) = 0 then n DIV 0 = 0 ∧ n MOD 0 = n else n = n DIV 0 * 0 + n MOD 0 ∧ n MOD 0 < 0"
+                },
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "if_P",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ n DIV 0 = 0 ∧ n MOD 0 = n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ n MOD 0 = n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n MOD 0 = n"
+                }
+            ],
+            "prop": "n MOD 0 = n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_m": "n",
+                    "param_n": "(0::nat)",
+                    "theorem": "division_0"
+                },
+                {
+                    "goal": "(0::nat) = 0",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "division_simp1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "nat_plus_def_1, 0 + m = m",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 + m = m"
+                },
+                {
+                    "args": "nat_times_def_1, 0 * 0 + m = m",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ 0 * 0 + m = m"
+                },
+                {
+                    "args": "mod_zero, 0 * 0 + m MOD 0 = m",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ 0 * 0 + m MOD 0 = m"
+                },
+                {
+                    "args": "div_zero, m DIV 0 * 0 + m MOD 0 = m",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ m DIV 0 * 0 + m MOD 0 = m"
+                },
+                {
+                    "args": "m DIV n * n + m MOD n = m",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "division, {m: m}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ m = m DIV n * n + m MOD n ∧ m MOD n < n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ m = m DIV n * n + m MOD n"
+                },
+                {
+                    "args": "eq_sym_eq, m DIV n * n + m MOD n = m",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m DIV n * n + m MOD n = m"
+                }
+            ],
+            "prop": "m DIV n * n + m MOD n = m",
+            "steps": [
+                {
+                    "case": "n = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "theorem": "division"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "division_simp2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "division_simp1, m DIV n * n + m MOD n = m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m DIV n * n + m MOD n = m"
+                },
+                {
+                    "args": "mult_comm, n * (m DIV n) + m MOD n = m",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ n * (m DIV n) + m MOD n = m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n * (m DIV n) + m MOD n = m"
+                }
+            ],
+            "prop": "n * (m DIV n) + m MOD n = m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eq_divmod",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m DIV p = n DIV p ∧ m MOD p = n MOD p ⟶ m = n"
+                },
+                {
+                    "args": "m DIV p = n DIV p ∧ m MOD p = n MOD p",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ m DIV p = n DIV p ∧ m MOD p = n MOD p"
+                },
+                {
+                    "args": "division_simp1, {m: m, n: p}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m DIV p * p + m MOD p = m"
+                },
+                {
+                    "args": "division_simp1, {m: n, n: p}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n DIV p * p + n MOD p = n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ m = m DIV p * p + m MOD p"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ n = n DIV p * p + n MOD p"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ m DIV p = n DIV p"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ m MOD p = n MOD p"
+                },
+                {
+                    "args": "n DIV p * p + m MOD p = n DIV p * p + n MOD p",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ n DIV p * p + m MOD p = n DIV p * p + n MOD p"
+                },
+                {
+                    "args": "m DIV p * p + m MOD p = n DIV p * p + n MOD p",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.5",
+                        "0.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ m DIV p * p + m MOD p = n DIV p * p + n MOD p"
+                },
+                {
+                    "args": "m DIV p * p + m MOD p = n",
+                    "id": "0.9",
+                    "prevs": [
+                        "0.4",
+                        "0.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ m DIV p * p + m MOD p = n"
+                },
+                {
+                    "args": "m = n",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.3",
+                        "0.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⊢ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "0.11",
+                    "prevs": [
+                        "0.0",
+                        "0.10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m DIV p = n DIV p ∧ m MOD p = n MOD p ⟶ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m = n ⟶ m DIV p = n DIV p ∧ m MOD p = n MOD p"
+                },
+                {
+                    "args": "m = n",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = n ⊢ m = n"
+                },
+                {
+                    "args": "eq_refl, {x: n DIV p}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n DIV p = n DIV p"
+                },
+                {
+                    "args": "eq_refl, {x: n MOD p}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n MOD p = n MOD p"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m = n ⊢ n DIV p = n DIV p ∧ n MOD p = n MOD p"
+                },
+                {
+                    "args": "m DIV p = n DIV p ∧ m MOD p = n MOD p",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = n ⊢ m DIV p = n DIV p ∧ m MOD p = n MOD p"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = n ⟶ m DIV p = n DIV p ∧ m MOD p = n MOD p"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m DIV p = n DIV p ∧ m MOD p = n MOD p ⟷ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m DIV p = n DIV p ∧ m MOD p = n MOD p ⟷ m = n"
+                }
+            ],
+            "prop": "m DIV p = n DIV p ∧ m MOD p = n MOD p ⟷ m = n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "p",
+                    "theorem": "division_simp1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_forward_step",
+                    "param_m": "n",
+                    "param_n": "p",
+                    "theorem": "division_simp1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.5"
+                    ],
+                    "goal_id": "0.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.6"
+                    ],
+                    "goal_id": "0.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_lt_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m MOD n < n ⟶ ¬(n = 0)"
+                },
+                {
+                    "args": "m MOD n < n",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m MOD n < n ⊢ m MOD n < n"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m MOD n < n ⊢ ¬¬(n = 0) ⟶ ¬(m MOD n < n)"
+                },
+                {
+                    "args": "¬¬(n = 0)",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(n = 0) ⊢ ¬¬(n = 0)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(n = 0) ⊢ n = 0"
+                },
+                {
+                    "args": "false ⟶ false",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬¬(n = 0), m MOD n < n ⊢ ¬false"
+                },
+                {
+                    "args": "nat_less_def_1, ¬(m MOD 0 < 0)",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬¬(n = 0), m MOD n < n ⊢ ¬(m MOD 0 < 0)"
+                },
+                {
+                    "args": "¬(m MOD n < n)",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬¬(n = 0), m MOD n < n ⊢ ¬(m MOD n < n)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "m MOD n < n ⊢ ¬¬(n = 0) ⟶ ¬(m MOD n < n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m MOD n < n ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m MOD n < n ⟶ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ m MOD n < n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "division, {m: m}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ m = m DIV n * n + m MOD n ∧ m MOD n < n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ m MOD n < n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ m MOD n < n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m MOD n < n ⟷ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m MOD n < n ⟷ ¬(n = 0)"
+                }
+            ],
+            "prop": "m MOD n < n ⟷ ¬(n = 0)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "theorem": "division"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_lt_eq_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ 0 < n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ 0 < n"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ 0 < n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 < n ⟶ ¬(n = 0)"
+                },
+                {
+                    "args": "0 < n",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < n ⊢ 0 < n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < n ⊢ ¬¬(n = 0) ⟶ n ≤ 0"
+                },
+                {
+                    "args": "¬¬(n = 0)",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(n = 0) ⊢ ¬¬(n = 0)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬¬(n = 0) ⊢ n = 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1, n ≤ 0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < n, ¬¬(n = 0) ⊢ n ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "0 < n ⊢ ¬¬(n = 0) ⟶ n ≤ 0"
+                },
+                {
+                    "args": "not_lt, ¬¬(n = 0) ⟶ ¬(0 < n)",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < n ⊢ ¬¬(n = 0) ⟶ ¬(0 < n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < n ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < n ⟶ ¬(n = 0)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(n = 0) ⟷ 0 < n"
+                },
+                {
+                    "args": "mod_lt_eq, m MOD n < n ⟷ 0 < n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m MOD n < n ⟷ 0 < n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m MOD n < n ⟷ 0 < n"
+                }
+            ],
+            "prop": "m MOD n < n ⟷ 0 < n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_lt_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_lt"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "divmod_uniq_lemma",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m = q1 * n + r1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = q1 * n + r1 ⊢ m = q1 * n + r1"
+                },
+                {
+                    "args": "r1 < n",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "r1 < n ⊢ r1 < n"
+                },
+                {
+                    "args": "m = q2 * n + r2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = q2 * n + r2 ⊢ m = q2 * n + r2"
+                },
+                {
+                    "args": "r2 < n",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "r2 < n ⊢ r2 < n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n + r1 = q2 * n + r2"
+                },
+                {
+                    "args": "le_cases, {m: q1, n: q2}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ q1 ≤ q2 ∨ q2 ≤ q1"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 ≤ q2 ⟶ r1 = r2"
+                },
+                {
+                    "args": "q1 ≤ q2",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q1 ≤ q2 ⊢ q1 ≤ q2"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "6.1",
+                    "prevs": [
+                        "6.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q1 ≤ q2 ⊢ ∃p. q2 = q1 + p"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "",
+                    "id": "6.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 = q1 + 0 ⟶ r1 = r2"
+                },
+                {
+                    "args": "q2 = q1 + 0",
+                    "id": "6.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q2 = q1 + 0 ⊢ q2 = q1 + 0"
+                },
+                {
+                    "args": "add_0_right",
+                    "id": "6.3.1",
+                    "prevs": [
+                        "6.3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q2 = q1 + 0 ⊢ q2 = q1"
+                },
+                {
+                    "args": "",
+                    "id": "6.3.2",
+                    "prevs": [
+                        "6.3.1",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "q2 = q1 + 0, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n + r1 = q1 * n + r2"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "6.3.3",
+                    "prevs": [
+                        "6.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "q2 = q1 + 0, m = q1 * n + r1, m = q2 * n + r2 ⊢ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "6.3.4",
+                    "prevs": [
+                        "6.3.0",
+                        "6.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 = q1 + 0 ⟶ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "6.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, m = q1 * n + r1, m = q2 * n + r2 ⊢ ∀n. (q2 = q1 + n ⟶ r1 = r2) ⟶ q2 = q1 + Suc n ⟶ r1 = r2"
+                },
+                {
+                    "args": "q2 = q1 + d ⟶ r1 = r2",
+                    "id": "6.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q2 = q1 + d ⟶ r1 = r2 ⊢ q2 = q1 + d ⟶ r1 = r2"
+                },
+                {
+                    "args": "q2 = q1 + Suc d",
+                    "id": "6.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q2 = q1 + Suc d ⊢ q2 = q1 + Suc d"
+                },
+                {
+                    "args": "",
+                    "id": "6.4.2",
+                    "prevs": [
+                        "6.4.1",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n + r1 = (q1 + Suc d) * n + r2"
+                },
+                {
+                    "args": "distrib_r",
+                    "id": "6.4.3",
+                    "prevs": [
+                        "6.4.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n + r1 = q1 * n + Suc d * n + r2"
+                },
+                {
+                    "args": "add_assoc",
+                    "id": "6.4.4",
+                    "prevs": [
+                        "6.4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n + r1 = q1 * n + (Suc d * n + r2)"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "6.4.5",
+                    "prevs": [
+                        "6.4.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ r1 = Suc d * n + r2"
+                },
+                {
+                    "args": "le_add, {m: Suc d * n, n: r2}",
+                    "id": "6.4.6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Suc d * n ≤ Suc d * n + r2"
+                },
+                {
+                    "args": "Suc d * n ≤ r1",
+                    "id": "6.4.7",
+                    "prevs": [
+                        "6.4.5",
+                        "6.4.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2, q2 = q1 + d ⟶ r1 = r2 ⊢ Suc d * n ≤ r1"
+                },
+                {
+                    "args": "nat_times_def_2",
+                    "id": "6.4.8",
+                    "prevs": [
+                        "6.4.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2, q2 = q1 + d ⟶ r1 = r2 ⊢ n + d * n ≤ r1"
+                },
+                {
+                    "args": "r1 = r2",
+                    "id": "6.4.9",
+                    "prevs": [
+                        "6.4.8",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, q2 = q1 + Suc d, m = q1 * n + r1, m = q2 * n + r2, q2 = q1 + d ⟶ r1 = r2 ⊢ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "6.4.10",
+                    "prevs": [
+                        "6.2",
+                        "6.4.0",
+                        "6.4.1",
+                        "6.4.9"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, m = q1 * n + r1, m = q2 * n + r2 ⊢ ∀d. (q2 = q1 + d ⟶ r1 = r2) ⟶ q2 = q1 + Suc d ⟶ r1 = r2"
+                },
+                {
+                    "args": "nat_induct, {P: λd. q2 = q1 + d ⟶ r1 = r2, x: d}",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.3",
+                        "6.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "r1 < n, r2 < n, q1 ≤ q2, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 = q1 + d ⟶ r1 = r2"
+                },
+                {
+                    "args": "∃p. q2 = q1 + p",
+                    "id": "6.6",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.2",
+                        "6.5"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 ≤ q2 ⟶ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 ≤ q1 ⟶ r1 = r2"
+                },
+                {
+                    "args": "q2 ≤ q1",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q2 ≤ q1 ⊢ q2 ≤ q1"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "7.1",
+                    "prevs": [
+                        "7.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q2 ≤ q1 ⊢ ∃p. q1 = q2 + p"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "",
+                    "id": "7.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 = q2 + 0 ⟶ r1 = r2"
+                },
+                {
+                    "args": "q1 = q2 + 0",
+                    "id": "7.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q1 = q2 + 0 ⊢ q1 = q2 + 0"
+                },
+                {
+                    "args": "add_0_right",
+                    "id": "7.3.1",
+                    "prevs": [
+                        "7.3.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q1 = q2 + 0 ⊢ q1 = q2"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.2",
+                    "prevs": [
+                        "7.3.1",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "q1 = q2 + 0, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 * n + r1 = q2 * n + r2"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "7.3.3",
+                    "prevs": [
+                        "7.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "q1 = q2 + 0, m = q1 * n + r1, m = q2 * n + r2 ⊢ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "7.3.4",
+                    "prevs": [
+                        "7.3.0",
+                        "7.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 = q2 + 0 ⟶ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "7.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, m = q1 * n + r1, m = q2 * n + r2 ⊢ ∀n. (q1 = q2 + n ⟶ r1 = r2) ⟶ q1 = q2 + Suc n ⟶ r1 = r2"
+                },
+                {
+                    "args": "q1 = q2 + d ⟶ r1 = r2",
+                    "id": "7.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q1 = q2 + d ⟶ r1 = r2 ⊢ q1 = q2 + d ⟶ r1 = r2"
+                },
+                {
+                    "args": "q1 = q2 + Suc d",
+                    "id": "7.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q1 = q2 + Suc d ⊢ q1 = q2 + Suc d"
+                },
+                {
+                    "args": "",
+                    "id": "7.4.2",
+                    "prevs": [
+                        "7.4.1",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ (q2 + Suc d) * n + r1 = q2 * n + r2"
+                },
+                {
+                    "args": "distrib_r",
+                    "id": "7.4.3",
+                    "prevs": [
+                        "7.4.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 * n + Suc d * n + r1 = q2 * n + r2"
+                },
+                {
+                    "args": "add_assoc",
+                    "id": "7.4.4",
+                    "prevs": [
+                        "7.4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 * n + (Suc d * n + r1) = q2 * n + r2"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "7.4.5",
+                    "prevs": [
+                        "7.4.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ Suc d * n + r1 = r2"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "7.4.6",
+                    "prevs": [
+                        "7.4.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2 ⊢ r2 = Suc d * n + r1"
+                },
+                {
+                    "args": "le_add, {m: Suc d * n, n: r1}",
+                    "id": "7.4.7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Suc d * n ≤ Suc d * n + r1"
+                },
+                {
+                    "args": "Suc d * n ≤ r2",
+                    "id": "7.4.8",
+                    "prevs": [
+                        "7.4.6",
+                        "7.4.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2, q1 = q2 + d ⟶ r1 = r2 ⊢ Suc d * n ≤ r2"
+                },
+                {
+                    "args": "nat_times_def_2",
+                    "id": "7.4.9",
+                    "prevs": [
+                        "7.4.8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2, q1 = q2 + d ⟶ r1 = r2 ⊢ n + d * n ≤ r2"
+                },
+                {
+                    "args": "r1 = r2",
+                    "id": "7.4.10",
+                    "prevs": [
+                        "7.4.9",
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, q1 = q2 + Suc d, m = q1 * n + r1, m = q2 * n + r2, q1 = q2 + d ⟶ r1 = r2 ⊢ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "7.4.11",
+                    "prevs": [
+                        "7.2",
+                        "7.4.0",
+                        "7.4.1",
+                        "7.4.10"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, m = q1 * n + r1, m = q2 * n + r2 ⊢ ∀d. (q1 = q2 + d ⟶ r1 = r2) ⟶ q1 = q2 + Suc d ⟶ r1 = r2"
+                },
+                {
+                    "args": "nat_induct, {P: λd. q1 = q2 + d ⟶ r1 = r2, x: d}",
+                    "id": "7.5",
+                    "prevs": [
+                        "7.3",
+                        "7.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "r1 < n, r2 < n, q2 ≤ q1, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 = q2 + d ⟶ r1 = r2"
+                },
+                {
+                    "args": "∃p. q1 = q2 + p",
+                    "id": "7.6",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.2",
+                        "7.5"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q2 ≤ q1 ⟶ r1 = r2"
+                },
+                {
+                    "args": "disjE",
+                    "id": "8",
+                    "prevs": [
+                        "5",
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n + r2 = q2 * n + r2"
+                },
+                {
+                    "args": "add_cancel_right",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 * n = q2 * n"
+                },
+                {
+                    "args": "eq_mult_rcancel",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ n = 0 ∨ q1 = q2"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ n = 0 ⟶ q1 = q2"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "12.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "q1 = q2",
+                    "id": "12.1",
+                    "prevs": [
+                        "12.0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "n = 0, r1 < n ⊢ q1 = q2"
+                },
+                {
+                    "args": "",
+                    "id": "12.2",
+                    "prevs": [
+                        "12.0",
+                        "12.1"
+                    ],
+                    "rule": "intros",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ n = 0 ⟶ q1 = q2"
+                },
+                {
+                    "args": "q1 = q2 ⟶ q1 = q2",
+                    "id": "13",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ q1 = q2 ⟶ q1 = q2"
+                },
+                {
+                    "args": "disjE",
+                    "id": "14",
+                    "prevs": [
+                        "11",
+                        "12",
+                        "13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 = q2"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15",
+                    "prevs": [
+                        "14",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "r1 < n, r2 < n, m = q1 * n + r1, m = q2 * n + r2 ⊢ q1 = q2 ∧ r1 = r2"
+                },
+                {
+                    "args": "",
+                    "id": "16",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "15"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = q1 * n + r1 ⟶ r1 < n ⟶ m = q2 * n + r2 ⟶ r2 < n ⟶ q1 = q2 ∧ r1 = r2"
+                }
+            ],
+            "prop": "m = q1 * n + r1 ⟶ r1 < n ⟶ m = q2 * n + r2 ⟶ r2 < n ⟶ q1 = q2 ∧ r1 = r2",
+            "steps": [
+                {
+                    "goal": "r1 = r2",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "param_m": "q1",
+                    "param_n": "q2",
+                    "theorem": "le_cases"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.0"
+                    ],
+                    "goal_id": "6.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "6.3"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "d"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.3.0"
+                    ],
+                    "goal_id": "6.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "6.3.1",
+                        "4"
+                    ],
+                    "goal_id": "6.3.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "6.3.2"
+                    ],
+                    "goal_id": "6.3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_cancel_left"
+                },
+                {
+                    "goal_id": "6.4",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.1",
+                        "4"
+                    ],
+                    "goal_id": "6.4.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.2"
+                    ],
+                    "goal_id": "6.4.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.3"
+                    ],
+                    "goal_id": "6.4.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.4"
+                    ],
+                    "goal_id": "6.4.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "add_cancel_left"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.5"
+                    ],
+                    "goal": "Suc d * n <= r1",
+                    "goal_id": "6.4.6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.5"
+                    ],
+                    "goal_id": "6.4.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6.4.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.7"
+                    ],
+                    "goal_id": "6.4.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_times_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "6.4.8",
+                        "1"
+                    ],
+                    "goal_id": "6.4.9",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.0"
+                    ],
+                    "goal_id": "7.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "7.1"
+                    ],
+                    "goal_id": "7.2",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "7.3"
+                    ],
+                    "goal_id": "7.4",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "d"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.0"
+                    ],
+                    "goal_id": "7.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.1",
+                        "4"
+                    ],
+                    "goal_id": "7.3.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7.3.2"
+                    ],
+                    "goal_id": "7.3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_cancel_left"
+                },
+                {
+                    "goal_id": "7.4",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.1",
+                        "4"
+                    ],
+                    "goal_id": "7.4.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.2"
+                    ],
+                    "goal_id": "7.4.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.3"
+                    ],
+                    "goal_id": "7.4.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.4"
+                    ],
+                    "goal_id": "7.4.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "add_cancel_left"
+                },
+                {
+                    "goal": "Suc d * n <= r2",
+                    "goal_id": "7.4.6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.5"
+                    ],
+                    "goal_id": "7.4.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.6"
+                    ],
+                    "goal_id": "7.4.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7.4.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.8"
+                    ],
+                    "goal_id": "7.4.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_times_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "7.4.9",
+                        "3"
+                    ],
+                    "goal_id": "7.4.10",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "4"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "add_cancel_right"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_mult_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "12.0",
+                        "1"
+                    ],
+                    "goal_id": "12.1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "q1": "nat",
+                "q2": "nat",
+                "r1": "nat",
+                "r2": "nat"
             }
         }
     ],

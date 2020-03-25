@@ -15252,18 +15252,34 @@
                     "th": "k4 * k1 = k3 * k2 ⊢ k4 * k1 = k3 * k2"
                 },
                 {
-                    "args": "",
+                    "args": "gcd_is_max, {a: b, m: m, n: n}",
                     "id": "4.33.1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2, k4 * k1 = k3 * k2 ⊢ ∃k1. k * gcd m n = b * k1"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides b m ⟶ divides b n ⟶ divides b (gcd m n)"
                 },
                 {
                     "args": "",
                     "id": "4.33.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2, k4 * k1 = k3 * k2 ⊢ k * gcd m n = b * n"
+                },
+                {
+                    "args": "exI, {P: λk1. k * gcd m n = b * k1, a: n}",
+                    "id": "4.33.3",
+                    "prevs": [
+                        "4.33.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2, k4 * k1 = k3 * k2 ⊢ ∃a1. k * gcd m n = b * a1"
+                },
+                {
+                    "args": "",
+                    "id": "4.33.4",
                     "prevs": [
                         "4.33.0",
-                        "4.33.1"
+                        "4.33.3"
                     ],
                     "rule": "intros",
                     "th": "divides b (k * m), divides b (k * n), m = gcd m n * k3, n = gcd m n * k4, k * m = b * k1, k * n = b * k2 ⊢ k4 * k1 = k3 * k2 ⟶ (∃k5. k * gcd m n = b * k5)"
@@ -15609,6 +15625,19 @@
                 {
                     "goal_id": "4.33",
                     "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.33.1",
+                    "method_name": "apply_forward_step",
+                    "param_a": "b",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd_is_max"
+                },
+                {
+                    "goal_id": "4.33.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
                 }
             ],
             "ty": "thm",
