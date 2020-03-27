@@ -389,7 +389,7 @@ class ExprTest(unittest.TestCase):
             # #            "eqratio(B, K, B, C, C, P, B, C)", "coll(N, Q, M)", "coll(A, Q, K)",
             # #            "coll(Z, B, C)", "coll(Z, Q, G)"], [], [], "eqratio(B, Z, Z, C, B, P, P, C)"),
             #
-            # # 6.60 (Too slow)
+            # # 6.60 (Failed)
             # # H1 -> P, H2 -> Q, A1 -> R
             # # (ruleset, ["midp(R, B, C)", "coll(H, B, C)", "para(A, R, H, N)", "coll(D, N, H)", "coll(B, A, D)", "coll(Q, A, P)",
             # #            "midp(K, N, C)", "midp(L, B, D)", "midp(K, H, P)", "midp(L, H, Q)"], [], [], "midp(A, P, Q)"),
@@ -399,7 +399,7 @@ class ExprTest(unittest.TestCase):
             # # (ruleset, ["coll(D, B, C)", "perp(D, O, O, A)", "coll(A, B, F)", "perp(F, O, O, C)", "coll(C, A, E)",
             # #            "perp(E, O, O, B)", "coll(E, D, Z)", "coll(A, B, Z)", "coll(E, F, D)"], [], [], "midp(Z, A, B)"),
             #
-            # # 6.63 (failed)
+            # # 6.63 (Failed)
             # # In a given triangle the three products of the segments into which
             # # the orthocenter divides the altitudes are equal.
             # # (ruleset, ["perp(D, C, A, B)", "perp(E, B, A, C)", "coll(E, H, B)", "coll(C, H, D)", "coll(A, E, C)",
@@ -417,12 +417,12 @@ class ExprTest(unittest.TestCase):
             # # (ruleset, ["perp(A, H, B, C)", "perp(B, H, A, C)", "perp(C, H, A, B)", "circle(OA, B, H, C)",
             # #            "circle(OB, A, C, H)", "circle(OC, A, B, H)", "circle(O, A, B, C)"], [], [], "cong(OB, OC, B, C)"),
             #
-            # # 6.72 (too slow)
+            # # 6.72 (Failed)
             # # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "cong(D1, B, C, D)",
             # #            "cong(E1, A, C, E)", "cong(F1, A, B, F)", "coll(A, E1, E, C)", "coll(C, D1, D, B)",
             # #            "coll(A, F1, F, B)", "perp(I, E1, A, C)", "perp(I, D1, C, D)"], [], [], "perp(I, F1, A, B)"),
             #
-            # # 6.73 (failed)
+            # # 6.73 (Failed)
             # # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(P, D, B, A)", "coll(J, F, E)",
             # #            "coll(J, P, D)", "coll(B, P, F, A)", "coll(A, E, C)", "coll(B, D, C)"], [], [], "midp(P, D, J)"),
             #
@@ -459,6 +459,7 @@ class ExprTest(unittest.TestCase):
             #
             # # This cannot be proved without additional D91 (the length of two radius are equal).
             # # (ruleset, ["circle(O, A, B, C, D, E)"], [], [], "cong(O, C, O, E)"),
+            #
             #
             # # Following tests proves some examples in "Geometry Expert".
             # # Examples -> 6_GDD_FULL -> 01-20
@@ -499,18 +500,51 @@ class ExprTest(unittest.TestCase):
             # (ruleset, ["perp(E, B, A, C)", "perp(F, A, B, D)", "perp(G, D, A, C)", "perp(H, C, B, D)",
             #            "coll(A, E, G, C)", "coll(B, F, H, D)", "para(A, D, B, C)", "para(A, B, C, D)"],
             #  [], [], "para(E, F, G, H)"),
-            # ... -> 14 (Failed)
-            # Can be resolved by adding a new rule.
-            # # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
-            # #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
-            # ... -> 15 (Too slow)
-            (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
-                      "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
-                      "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "eqangle(C, I, I, K, H, I, I, K)"),
-            # ... -> 16 (Too slow)
+            # # ... -> 14 (Failed)
+            # # Can be resolved by adding a new rule.˙
+            # (ruleset, ["circle(A, D, C, G)", "circle(B, C, F, G, E)", "cyclic(C, F, G, E)",
+            #            "coll(D, C, E)", "coll(F, B, E)", "perp(B, C, C, A)"], [], [], "coll(D, F, G)"),
+            # # ... -> 15
+            # (ruleset, ["perp(D, A, B, C)", "perp(E, B, A, C)", "perp(F, C, A, B)", "perp(G, F, B, C)",
+            #           "perp(H, F, A, C)", "perp(K, E, A, B)", "perp(I, D, A, B)", "coll(A, H, E, C)",
+            #           "coll(C, D, G, B)", "coll(A, K, F, I, B)"], [], [], "cyclic(H, K, I, G)"),
+            # # ... -> 16
             # (ruleset, ["perp(P, M, A, O)", "perp(Q, M, B, O)", "perp(D, B, A, O)", "perp(C, A, B, O)",
             #            "perp(T, Q, A, O)", "perp(K, P, B, O)", "coll(S, Q, T)", "coll(S, P, K)",
             #            "coll(O, T, D, P, A)", "coll(O, K, C, Q, B)", "coll(A, M, B)"], [], [], "perp(O, S, P, Q)"),
+            # # ... -> 17
+            # (ruleset, ["circle(O, A, C, K, N)", "cyclic(A, C, K, N)", "circle(O1, M, B, K, N)", "cyclic(M, B, K, N)",
+            #            "coll(A, K, B)", "coll(C, N, B)", "cyclic(C, A, M, B)", "circle(G, C, A, M, B)"],
+            #  [], [], "cyclic(M, K, O, N)"),
+            # # ... -> 19
+            # (ruleset, ["circle(O, A, C, D, B)", "cyclic(A, C, D, B)", "circle(P, A, E, F, B)", "cyclic(A, E, F, B)",
+            #            "coll(C, A, E)", "coll(D, B, F)"], [], [], "para(C, D, E, F)"),
+            # # ... -> 20
+            # (ruleset, ["coll(A, E, C)", "coll(C, D, B)", "coll(A, G, B)", "coll(E, H, B)", "coll(A, H, D)",
+            #            "perp(B, E, A, C)", "perp(A, D, C, B)", "perp(H, G, A, B)"], [], [],
+            #  "eqangle(E, G, G, H, H, G, G, D)"),
+            # # Examples -> 6_GDD_FULL -> 21-40
+            # ... -> 22
+            # (ruleset, ["circle(O, A, M, B, C, N)", "cyclic(A, B, M, C, N)", "perp(P, O, A, C)", "perp(Q, O, A, B)",
+            #            "coll(A, E, P, R, C)", "coll(A, D, Q, B)", "coll(N, P, O)", "coll(N, E, D, M)", "coll(R, O, Q, M)"],
+            #  [], [], "eqangle(A, D, D, E, D, E, E, A)"),
+            # # ... -> 23
+            # (ruleset, ["circle(O, E, B, C, A, D)", "cyclic(E, B, C, A, D)", "coll(A, F, M, G, B)", "coll(C, F, D)",
+            #            "coll(C, M, O)", "coll(C, G, E)", "perp(O, M, A, B)"], [], [], "eqangle(A, G, G, C, C, D, D, E)"),
+            # # ... -> 24
+            # (ruleset, ["circle(O1, P, Q, R, S)", "cyclic(P, Q, R, S)", "circle(O, P, Q, X, Y)", "cyclic(P, Q, X, Y)",
+            #            "coll(I, Y, X)", "coll(I, S, R)", "coll(Q, Y, S)"], [], [], "eqangle(R, I, I, X, R, P, P, X)"),
+            # ... -> 28
+            # (ruleset, ["perp(F, C, A, B)", "perp(A, H, B, C)", "perp(B, H, A, C)", "perp(T, F, B, C)", "perp(Q, F, A, H)",
+            #            "perp(P, F, A, C)", "coll(A, P, C)", "coll(C, T, B)", "coll(A, Q, H)", "coll(A, F, B)"], [], [],
+            #  "coll(P, Q, T)"),
+            # ... -> 29
+            (ruleset, ["perp(D, A, B, C)", "perp(Q, D, A, B)", "perp(P, D, A, C)", "coll(A, Q, B)", "coll(A, P, C)",
+                       "coll(B, D, C)"], [], [], "cyclic(B, Q, P, C)"),
+            # ... -> 30 (Add an auxiliary point F manually)
+            (ruleset, ["circle(O, A, B, C, F)", "cyclic(A, B, C, F)", "perp(D, C, A, B)", "perp(E, B, A, C)",
+                       "coll(A, E, C)", "coll(A, D, B)", "coll(A, O, F)"], [], [], "perp(A, O, D, E)")
+
 
         ]
         # pr = cProfile.Profile()
@@ -530,7 +564,7 @@ class ExprTest(unittest.TestCase):
             prover.print_search(res)
             print('')
         end = time.time()
-        print("Finished", len(test_data), "proofs in", "%.2f sec. " % (end - start))
+        print("Finished", len(test_data), "proof(s) in", "%.2f sec. " % (end - start))
         # p = Stats(pr)
         # p.strip_dirs()
         # p.sort_stats('cumtime')
