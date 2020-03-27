@@ -2518,6 +2518,150 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "eq_add_lcancel_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m + n = m ⟶ n = 0"
+                },
+                {
+                    "args": "m + n = m",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m + n = m ⊢ m + n = m"
+                },
+                {
+                    "args": "add_right_eq_zero",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m + n = m ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m + n = m ⟶ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ m + n = m"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "add_0_right, m + 0 = m",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m + 0 = m"
+                },
+                {
+                    "args": "m + n = m",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ m + n = m"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ m + n = m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m + n = m ⟷ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m + n = m ⟷ n = 0"
+                }
+            ],
+            "prop": "m + n = m ⟷ n = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_right_eq_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "mult_nonzero",
@@ -47624,6 +47768,578 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "mod_mult_lmod"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_exp_mod",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "mod_zero, (m MOD 0) ^ p = m ^ p",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (m MOD 0) ^ p = m ^ p"
+                },
+                {
+                    "args": "mod_zero, (m MOD 0) ^ p MOD 0 = m ^ p MOD 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ (m MOD 0) ^ p MOD 0 = m ^ p MOD 0"
+                },
+                {
+                    "args": "(m MOD n) ^ p MOD n = m ^ p MOD n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "nat_nat_power_def_1, (m MOD n) ^ (0::nat) MOD n = m ^ (0::nat) MOD n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (m MOD n) ^ (0::nat) MOD n = m ^ (0::nat) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ∀n1. (m MOD n) ^ n1 MOD n = m ^ n1 MOD n ⟶ (m MOD n) ^ Suc n1 MOD n = m ^ Suc n1 MOD n"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "(m MOD n) ^ p MOD n = m ^ p MOD n",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(m MOD n) ^ p MOD n = m ^ p MOD n ⊢ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "mod_mod_refl, m * (m MOD n) ^ p MOD n = m * (m MOD n) ^ p MOD n MOD n",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m * (m MOD n) ^ p MOD n = m * (m MOD n) ^ p MOD n MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(n = 0), (m MOD n) ^ p MOD n = m ^ p MOD n ⊢ m * (m MOD n) ^ p MOD n = m * m ^ p MOD n"
+                },
+                {
+                    "args": "mod_mod_refl, m * (m MOD n) ^ p MOD n MOD n = m * m ^ p MOD n",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), (m MOD n) ^ p MOD n = m ^ p MOD n ⊢ m * (m MOD n) ^ p MOD n MOD n = m * m ^ p MOD n"
+                },
+                {
+                    "args": "m * (m MOD n) ^ p MOD n = m * m ^ p MOD n",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.2",
+                        "1.2.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), (m MOD n) ^ p MOD n = m ^ p MOD n ⊢ m * (m MOD n) ^ p MOD n = m * m ^ p MOD n"
+                },
+                {
+                    "args": "mod_mult_lmod, m MOD n * (m MOD n) ^ p MOD n = m * m ^ p MOD n",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), (m MOD n) ^ p MOD n = m ^ p MOD n ⊢ m MOD n * (m MOD n) ^ p MOD n = m * m ^ p MOD n"
+                },
+                {
+                    "args": "nat_nat_power_def_2, (m MOD n) ^ Suc p MOD n = m ^ Suc p MOD n",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), (m MOD n) ^ p MOD n = m ^ p MOD n ⊢ (m MOD n) ^ Suc p MOD n = m ^ Suc p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ∀p. (m MOD n) ^ p MOD n = m ^ p MOD n ⟶ (m MOD n) ^ Suc p MOD n = m ^ Suc p MOD n"
+                },
+                {
+                    "args": "nat_induct, {P: λp::nat. (m MOD n) ^ p MOD n = m ^ p MOD n, x: p}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (m MOD n) ^ p MOD n = m ^ p MOD n"
+                }
+            ],
+            "prop": "(m MOD n) ^ p MOD n = m ^ p MOD n",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "p"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction",
+                    "names": "p"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_mult_lmod"
+                },
+                {
+                    "goal": "m * (m MOD n) ^ p MOD n = (m * ((m MOD n) ^ p) MOD n) MOD n",
+                    "goal_id": "1.2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_mod_refl"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2"
+                    ],
+                    "goal_id": "1.2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_mod_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_mult_add_1",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "nat_plus_def_1, (0 + p) MOD 0 = p MOD 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0 + p) MOD 0 = p MOD 0"
+                },
+                {
+                    "args": "mult_0_right, (m * 0 + p) MOD 0 = p MOD 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ (m * 0 + p) MOD 0 = p MOD 0"
+                },
+                {
+                    "args": "(m * n + p) MOD n = p MOD n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "p + m * n = m * n + p",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ p + m * n = m * n + p"
+                },
+                {
+                    "args": "division, {m: (0::nat)}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ 0 = 0 DIV n * n + 0 MOD n ∧ 0 MOD n < n"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(n = 0) ⊢ p DIV n * n = 0"
+                },
+                {
+                    "args": "eq_add_lcancel_0, m * n + p + p DIV n * n = m * n + p",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ m * n + p + p DIV n * n = m * n + p"
+                },
+                {
+                    "args": "eq_sym_eq, m * n + p = m * n + p + p DIV n * n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ m * n + p = m * n + p + p DIV n * n"
+                },
+                {
+                    "args": "m * n + p = p + m * n + p DIV n * n",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.1",
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0) ⊢ m * n + p = p + m * n + p DIV n * n"
+                },
+                {
+                    "args": "add_assoc, m * n + p = p + (m * n + p DIV n * n)",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0) ⊢ m * n + p = p + (m * n + p DIV n * n)"
+                },
+                {
+                    "args": "distrib_r, m * n + p = p + (m + p DIV n) * n",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ m * n + p = p + (m + p DIV n) * n"
+                },
+                {
+                    "args": "mod_eq",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.0",
+                        "1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (m * n + p) MOD n = p MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (m * n + p) MOD n = p MOD n"
+                }
+            ],
+            "prop": "(m * n + p) MOD n = p MOD n",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_q": "m + p DIV n",
+                    "theorem": "mod_eq"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_assoc"
+                },
+                {
+                    "goal": "p + m * n = m * n + p",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_add_lcancel_0"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "param_m": "(0::nat)",
+                    "theorem": "division"
                 }
             ],
             "ty": "thm",
