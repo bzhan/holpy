@@ -50274,6 +50274,2991 @@
                 "b": "nat",
                 "n": "nat"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "div_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "n = 1 * n + 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ n = 1 * n + 0"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ 0 < n"
+                },
+                {
+                    "args": "div_uniq",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ n DIV n = 1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ n DIV n = 1"
+                }
+            ],
+            "prop": "¬(n = 0) ⟶ n DIV n = 1",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_r": "(0::nat)",
+                    "theorem": "div_uniq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "mod_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ m MOD n ≤ m"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "less_eq_refl, {n: m}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m"
+                },
+                {
+                    "args": "mod_zero, m MOD 0 ≤ m",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ m MOD 0 ≤ m"
+                },
+                {
+                    "args": "m MOD n ≤ m",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ m MOD n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ m MOD n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ m MOD n ≤ m"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_add, {m: m MOD n, n: m DIV n * n}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m MOD n ≤ m MOD n + m DIV n * n"
+                },
+                {
+                    "args": "add_comm, m MOD n ≤ m DIV n * n + m MOD n",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ m MOD n ≤ m DIV n * n + m MOD n"
+                },
+                {
+                    "args": "less_eq_refl, {n: m}",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m"
+                },
+                {
+                    "args": "division_simp1, m DIV n * n + m MOD n ≤ m",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ m DIV n * n + m MOD n ≤ m"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.2",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ m MOD n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ m MOD n ≤ m"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m MOD n ≤ m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m MOD n ≤ m"
+                }
+            ],
+            "prop": "m MOD n ≤ m",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "m DIV n * n + m MOD n",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp1"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "div_mono2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(p = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "p ≤ m",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ m ⊢ p ≤ m"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: n, n: n DIV m}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(p = 0) ⊢ n DIV m ≤ n DIV p ⟷ p * (n DIV m) ≤ n"
+                },
+                {
+                    "args": "disjI1, {A: p ≤ m, B: n DIV m = 0}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p ≤ m, ¬(p = 0) ⊢ p ≤ m ∨ n DIV m = 0"
+                },
+                {
+                    "args": "le_mult_rcancel, p * (n DIV m) ≤ m * (n DIV m)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ m, ¬(p = 0) ⊢ p * (n DIV m) ≤ m * (n DIV m)"
+                },
+                {
+                    "args": "div_mul_le, {m: n, n: m}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m * (n DIV m) ≤ n"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ m, ¬(p = 0) ⊢ p * (n DIV m) ≤ n"
+                },
+                {
+                    "args": "n DIV m ≤ n DIV p",
+                    "id": "7",
+                    "prevs": [
+                        "2",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p ≤ m, ¬(p = 0) ⊢ n DIV m ≤ n DIV p"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(p = 0) ⟶ p ≤ m ⟶ n DIV m ≤ n DIV p"
+                }
+            ],
+            "prop": "¬(p = 0) ⟶ p ≤ m ⟶ n DIV m ≤ n DIV p",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_b": "n",
+                    "param_n": "n DIV m",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_m": "m * (n DIV m)",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_mult_rcancel"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_mul_le"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "div_le_exclusion",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(b = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(b = 0) ⊢ ¬(b = 0)"
+                },
+                {
+                    "args": "b * c < (a + 1) * d",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * c < (a + 1) * d ⊢ b * c < (a + 1) * d"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), b * c < (a + 1) * d ⊢ d = 0 ⟶ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "d = 0",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = 0 ⊢ d = 0"
+                },
+                {
+                    "args": "le_0, {n: a DIV b}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ a DIV b"
+                },
+                {
+                    "args": "div_zero, c DIV 0 ≤ a DIV b",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "d = 0, ¬(b = 0), b * c < (a + 1) * d ⊢ c DIV 0 ≤ a DIV b"
+                },
+                {
+                    "args": "c DIV d ≤ a DIV b",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "d = 0, ¬(b = 0), b * c < (a + 1) * d ⊢ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), b * c < (a + 1) * d ⊢ d = 0 ⟶ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), b * c < (a + 1) * d ⊢ ¬(d = 0) ⟶ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "¬(d = 0)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(d = 0) ⊢ ¬(d = 0)"
+                },
+                {
+                    "args": "∀a::nat. ∀b. (∀k. k ≤ a ⟶ k ≤ b) ⟶ a ≤ b",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::nat. ∀b. (∀k. k ≤ a ⟶ k ≤ b) ⟶ a ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), ¬(d = 0), b * c < (a + 1) * d ⊢ ∀k. k ≤ c DIV d ⟶ k ≤ a DIV b"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "k ≤ c DIV d",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ c DIV d ⊢ k ≤ c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * d * k ≤ b * c ⟶ b * k * d < (a + 1) * d"
+                },
+                {
+                    "args": "b * d * k ≤ b * c",
+                    "id": "3.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * d * k ≤ b * c ⊢ b * d * k ≤ b * c"
+                },
+                {
+                    "args": "b * k * d = b * d * k",
+                    "id": "3.2.2.1",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ b * k * d = b * d * k"
+                },
+                {
+                    "args": "let_trans",
+                    "id": "3.2.2.2",
+                    "prevs": [
+                        "3.2.2.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b * c < (a + 1) * d, b * d * k ≤ b * c ⊢ b * d * k < (a + 1) * d"
+                },
+                {
+                    "args": "b * k * d < (a + 1) * d",
+                    "id": "3.2.2.3",
+                    "prevs": [
+                        "3.2.2.1",
+                        "3.2.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d, b * d * k ≤ b * c ⊢ b * k * d < (a + 1) * d"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.2.4",
+                    "prevs": [
+                        "3.2.2.0",
+                        "3.2.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * d * k ≤ b * c ⟶ b * k * d < (a + 1) * d"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: c, n: k}",
+                    "id": "3.2.3",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(d = 0) ⊢ k ≤ c DIV d ⟷ d * k ≤ c"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.4",
+                    "prevs": [
+                        "3.2.3",
+                        "3.2.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(d = 0), k ≤ c DIV d ⊢ d * k ≤ c"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: a, n: k}",
+                    "id": "3.2.5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(b = 0) ⊢ k ≤ a DIV b ⟷ b * k ≤ a"
+                },
+                {
+                    "args": "lt_mult_rcancel",
+                    "id": "3.2.6",
+                    "prevs": [
+                        "3.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * d * k ≤ b * c ⟶ b * k < a + 1 ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "mult_assoc",
+                    "id": "3.2.7",
+                    "prevs": [
+                        "3.2.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * (d * k) ≤ b * c ⟶ b * k < a + 1 ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "mult_comm",
+                    "id": "3.2.8",
+                    "prevs": [
+                        "3.2.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ d * k * b ≤ c * b ⟶ k * b < a + 1 ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "le_mult_rcancel",
+                    "id": "3.2.9",
+                    "prevs": [
+                        "3.2.8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ d * k ≤ c ∨ b = 0 ⟶ k * b < a + 1 ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ k * b < a + 1 ∧ ¬(d = 0) ⟶ b * k < a + 1"
+                },
+                {
+                    "args": "k * b < a + 1 ∧ ¬(d = 0)",
+                    "id": "3.2.10.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k * b < a + 1 ∧ ¬(d = 0) ⊢ k * b < a + 1 ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.2.10.1",
+                    "prevs": [
+                        "3.2.10.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k * b < a + 1 ∧ ¬(d = 0) ⊢ k * b < a + 1"
+                },
+                {
+                    "args": "b * k = k * b",
+                    "id": "3.2.10.2",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ b * k = k * b"
+                },
+                {
+                    "args": "b * k < a + 1",
+                    "id": "3.2.10.3",
+                    "prevs": [
+                        "3.2.10.2",
+                        "3.2.10.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d, k * b < a + 1 ∧ ¬(d = 0) ⊢ b * k < a + 1"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.10.4",
+                    "prevs": [
+                        "3.2.10.0",
+                        "3.2.10.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ k * b < a + 1 ∧ ¬(d = 0) ⟶ b * k < a + 1"
+                },
+                {
+                    "args": "disjI1, {A: d * k ≤ c, B: b = 0}",
+                    "id": "3.2.11",
+                    "prevs": [
+                        "3.2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ d * k ≤ c ∨ b = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.12",
+                    "prevs": [
+                        "3.2.9",
+                        "3.2.11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ k * b < a + 1 ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.13",
+                    "prevs": [
+                        "3.2.10",
+                        "3.2.12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * k < a + 1"
+                },
+                {
+                    "args": "add_1_right, b * k < Suc a",
+                    "id": "3.2.14",
+                    "prevs": [
+                        "3.2.13"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * k < Suc a"
+                },
+                {
+                    "args": "less_Suc_lesseq, b * k ≤ a",
+                    "id": "3.2.15",
+                    "prevs": [
+                        "3.2.14"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ b * k ≤ a"
+                },
+                {
+                    "args": "k ≤ a DIV b",
+                    "id": "3.2.16",
+                    "prevs": [
+                        "3.2.5",
+                        "3.2.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(b = 0), ¬(d = 0), k ≤ c DIV d, b * c < (a + 1) * d ⊢ k ≤ a DIV b"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.17",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.1",
+                        "3.2.16"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), ¬(d = 0), b * c < (a + 1) * d ⊢ ∀k. k ≤ c DIV d ⟶ k ≤ a DIV b"
+                },
+                {
+                    "args": "c DIV d, a DIV b",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(b = 0), ¬(d = 0), b * c < (a + 1) * d ⊢ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), b * c < (a + 1) * d ⊢ ¬(d = 0) ⟶ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(b = 0), b * c < (a + 1) * d ⊢ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(b = 0) ⟶ b * c < (a + 1) * d ⟶ c DIV d ≤ a DIV b"
+                }
+            ],
+            "prop": "¬(b = 0) ⟶ b * c < (a + 1) * d ⟶ c DIV d ≤ a DIV b",
+            "steps": [
+                {
+                    "case": "d=0",
+                    "goal_id": "2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "!a. !b. (!k::nat. k <= a --> k <= b) --> a <= b",
+                    "goal_id": "3.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction",
+                    "names": "k"
+                },
+                {
+                    "goal": "b * d * k <= b * c --> (b * k) * d < (a + 1) * d",
+                    "goal_id": "3.2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "b * k * d = b * d * k",
+                    "goal_id": "3.2.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.2.1",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2.1"
+                    ],
+                    "goal_id": "3.2.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2.0",
+                        "1"
+                    ],
+                    "goal_id": "3.2.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "let_trans"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.2.3",
+                    "method_name": "apply_forward_step",
+                    "param_b": "c",
+                    "param_n": "k",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3",
+                        "3.2.1"
+                    ],
+                    "goal_id": "3.2.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.2.5",
+                    "method_name": "apply_forward_step",
+                    "param_b": "a",
+                    "param_n": "k",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5"
+                    ],
+                    "goal_id": "3.2.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2"
+                    ],
+                    "goal_id": "3.2.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "lt_mult_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.6"
+                    ],
+                    "goal_id": "3.2.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.7"
+                    ],
+                    "goal_id": "3.2.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.8"
+                    ],
+                    "goal_id": "3.2.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "le_mult_rcancel"
+                },
+                {
+                    "goal_id": "3.2.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "goal_id": "3.2.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal": "k * b < a + 1 ∧ ¬(d = 0) --> b * k < a + 1",
+                    "goal_id": "3.2.10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.10",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.10.0"
+                    ],
+                    "goal_id": "3.2.10.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "b * k = k * b",
+                    "goal_id": "3.2.10.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.10.2",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.10.2"
+                    ],
+                    "goal_id": "3.2.10.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.10"
+                    ],
+                    "goal_id": "3.2.11",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.9"
+                    ],
+                    "goal_id": "3.2.11",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "div_eq_exclusion",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "b * c < (a + 1) * d",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b * c < (a + 1) * d ⊢ b * c < (a + 1) * d"
+                },
+                {
+                    "args": "a * d < (c + 1) * b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * d < (c + 1) * b ⊢ a * d < (c + 1) * b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ b = 0 ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "b = 0",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = 0 ⊢ b = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ d = 0 ⟶ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "d = 0",
+                    "id": "2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = 0 ⊢ d = 0"
+                },
+                {
+                    "args": "div_zero, a DIV 0 = c DIV 0",
+                    "id": "2.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ a DIV 0 = c DIV 0"
+                },
+                {
+                    "args": "a DIV 0 = c DIV d",
+                    "id": "2.1.2",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = 0, d = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.3",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "b = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ d = 0 ⟶ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(d = 0) ⟶ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "¬(d = 0)",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(d = 0) ⊢ ¬(d = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.1",
+                    "prevs": [
+                        "2.0",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "b = 0, a * d < (c + 1) * b ⊢ a * d < (c + 1) * 0"
+                },
+                {
+                    "args": "mult_0_right",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "2.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "b = 0, a * d < (c + 1) * b ⊢ a * d < 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b = 0, ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(a DIV 0 = c DIV d) ⟶ ¬(a * d < 0)"
+                },
+                {
+                    "args": "¬(a DIV 0 = c DIV d)",
+                    "id": "2.2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a DIV 0 = c DIV d) ⊢ ¬(a DIV 0 = c DIV d)"
+                },
+                {
+                    "args": "le_0, {n: a * d}",
+                    "id": "2.2.3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ a * d"
+                },
+                {
+                    "args": "not_lt, ¬(a * d < 0)",
+                    "id": "2.2.3.2",
+                    "prevs": [
+                        "2.2.3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "b = 0, ¬(d = 0), ¬(a DIV 0 = c DIV d), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(a * d < 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.3.3",
+                    "prevs": [
+                        "2.2.3.0",
+                        "2.2.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "b = 0, ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(a DIV 0 = c DIV d) ⟶ ¬(a * d < 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "2.2.2",
+                        "2.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b = 0, ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "b = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(d = 0) ⟶ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV 0 = c DIV d"
+                },
+                {
+                    "args": "a DIV b = c DIV d",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b = 0, a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ b = 0 ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(b = 0) ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "¬(b = 0)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(b = 0) ⊢ ¬(b = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ d = 0 ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "d = 0",
+                    "id": "3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = 0 ⊢ d = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.1",
+                    "prevs": [
+                        "3.1.0",
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "d = 0, b * c < (a + 1) * d ⊢ b * c < (a + 1) * 0"
+                },
+                {
+                    "args": "mult_0_right",
+                    "id": "3.1.2",
+                    "prevs": [
+                        "3.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "d = 0, b * c < (a + 1) * d ⊢ b * c < 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "d = 0, ¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(a DIV b = c DIV d) ⟶ ¬(b * c < 0)"
+                },
+                {
+                    "args": "¬(a DIV b = c DIV d)",
+                    "id": "3.1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a DIV b = c DIV d) ⊢ ¬(a DIV b = c DIV d)"
+                },
+                {
+                    "args": "le_0, {n: b * c}",
+                    "id": "3.1.3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ b * c"
+                },
+                {
+                    "args": "not_lt, ¬(b * c < 0)",
+                    "id": "3.1.3.2",
+                    "prevs": [
+                        "3.1.3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "d = 0, ¬(b = 0), ¬(a DIV b = c DIV d), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(b * c < 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.3.3",
+                    "prevs": [
+                        "3.1.3.0",
+                        "3.1.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "d = 0, ¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(a DIV b = c DIV d) ⟶ ¬(b * c < 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "3.1.4",
+                    "prevs": [
+                        "3.1.2",
+                        "3.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "d = 0, ¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.5",
+                    "prevs": [
+                        "3.1.0",
+                        "3.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ d = 0 ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(d = 0) ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "¬(d = 0)",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(d = 0) ⊢ ¬(d = 0)"
+                },
+                {
+                    "args": "d * a = a * d",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ d * a = a * d"
+                },
+                {
+                    "args": "d * a < (c + 1) * b",
+                    "id": "3.2.2",
+                    "prevs": [
+                        "3.2.1",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(b = 0), ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ d * a < (c + 1) * b"
+                },
+                {
+                    "args": "div_le_exclusion",
+                    "id": "3.2.3",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(b = 0), ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b ≤ c DIV d"
+                },
+                {
+                    "args": "div_le_exclusion",
+                    "id": "3.2.4",
+                    "prevs": [
+                        "3.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(b = 0), ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.2.5",
+                    "prevs": [
+                        "3.2.3",
+                        "3.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(b = 0), ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b ≤ c DIV d ∧ c DIV d ≤ a DIV b"
+                },
+                {
+                    "args": "le_antisym, a DIV b = c DIV d",
+                    "id": "3.2.6",
+                    "prevs": [
+                        "3.2.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(b = 0), ¬(d = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.7",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(d = 0) ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(b = 0), a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ ¬(b = 0) ⟶ a DIV b = c DIV d"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a * d < (c + 1) * b, b * c < (a + 1) * d ⊢ a DIV b = c DIV d"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ b * c < (a + 1) * d ⟶ a * d < (c + 1) * b ⟶ a DIV b = c DIV d"
+                }
+            ],
+            "prop": "b * c < (a + 1) * d ⟶ a * d < (c + 1) * b ⟶ a DIV b = c DIV d",
+            "steps": [
+                {
+                    "case": "b=0",
+                    "goal_id": "2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "case": "d=0",
+                    "goal_id": "2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.0"
+                    ],
+                    "goal_id": "2.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0",
+                        "1"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.1"
+                    ],
+                    "goal_id": "2.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.2"
+                    ],
+                    "goal_id": "2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "2.2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.2.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_lt"
+                },
+                {
+                    "goal_id": "2.2.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "d=0",
+                    "goal_id": "3.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.0",
+                        "0"
+                    ],
+                    "goal_id": "3.1.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.1"
+                    ],
+                    "goal_id": "3.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.2"
+                    ],
+                    "goal_id": "3.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "3.1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_lt"
+                },
+                {
+                    "goal_id": "3.1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "le_antisym"
+                },
+                {
+                    "goal_id": "3.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_le_exclusion"
+                },
+                {
+                    "goal": "d * a = a*d",
+                    "goal_id": "3.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2.1",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.1"
+                    ],
+                    "goal_id": "3.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_le_exclusion"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "mult_div_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p = 0 ⟶ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "le_0, {n: (0::nat)}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) ≤ 0"
+                },
+                {
+                    "args": "mult_0_right, m * 0 ≤ 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0 ⊢ m * 0 ≤ 0"
+                },
+                {
+                    "args": "div_zero, m * (n DIV 0) ≤ m * n DIV 0",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0 ⊢ m * (n DIV 0) ≤ m * n DIV 0"
+                },
+                {
+                    "args": "m * (n DIV p) ≤ m * n DIV p",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 0 ⊢ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p = 0 ⟶ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(p = 0) ⟶ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "¬(p = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: m * n, n: m * (n DIV p)}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(p = 0) ⊢ m * (n DIV p) ≤ m * n DIV p ⟷ p * (m * (n DIV p)) ≤ m * n"
+                },
+                {
+                    "args": "p * (m * (n DIV p)) = m * (n DIV p) * p",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ p * (m * (n DIV p)) = m * (n DIV p) * p"
+                },
+                {
+                    "args": "less_eq_refl, {n: m}",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m"
+                },
+                {
+                    "args": "le_add, {m: n DIV p * p, n: n MOD p}",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n DIV p * p ≤ n DIV p * p + n MOD p"
+                },
+                {
+                    "args": "less_eq_refl, {n: n}",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n ≤ n"
+                },
+                {
+                    "args": "division_simp1, n DIV p * p + n MOD p ≤ n",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(p = 0) ⊢ n DIV p * p + n MOD p ≤ n"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.4",
+                        "1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 0) ⊢ n DIV p * p ≤ n"
+                },
+                {
+                    "args": "le_mult2",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.3",
+                        "1.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 0) ⊢ m * (n DIV p * p) ≤ m * n"
+                },
+                {
+                    "args": "mult_assoc, m * (n DIV p) * p ≤ m * n",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(p = 0) ⊢ m * (n DIV p) * p ≤ m * n"
+                },
+                {
+                    "args": "p * (m * (n DIV p)) ≤ m * n",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.2",
+                        "1.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(p = 0) ⊢ p * (m * (n DIV p)) ≤ m * n"
+                },
+                {
+                    "args": "m * (n DIV p) ≤ m * n DIV p",
+                    "id": "1.11",
+                    "prevs": [
+                        "1.1",
+                        "1.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(p = 0) ⊢ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "",
+                    "id": "1.12",
+                    "prevs": [
+                        "1.0",
+                        "1.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(p = 0) ⟶ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m * (n DIV p) ≤ m * n DIV p"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m * (n DIV p) ≤ m * n DIV p"
+                }
+            ],
+            "prop": "m * (n DIV p) ≤ m * n DIV p",
+            "steps": [
+                {
+                    "case": "p=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_b": "m * n",
+                    "param_n": "m * (n DIV p)",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "p * (m * (n DIV p)) = m * (n DIV p) * p",
+                    "goal_id": "1.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_mult2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "param_m": "n DIV p * p + n MOD p",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp1"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "div_div",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p = 0 ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "div_zero, m DIV n DIV 0 = m DIV 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m DIV n DIV 0 = m DIV 0"
+                },
+                {
+                    "args": "mult_0_right, m DIV n DIV 0 = m DIV (n * 0)",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0 ⊢ m DIV n DIV 0 = m DIV (n * 0)"
+                },
+                {
+                    "args": "m DIV n DIV p = m DIV (n * p)",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 0 ⊢ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p = 0 ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(p = 0) ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "¬(p = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p = 0) ⊢ n = 0 ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "div_0, 0 DIV p = 0",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 DIV p = 0"
+                },
+                {
+                    "args": "div_zero, m DIV 0 DIV p = m DIV 0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0, ¬(p = 0) ⊢ m DIV 0 DIV p = m DIV 0"
+                },
+                {
+                    "args": "nat_times_def_1, m DIV 0 DIV p = m DIV (0 * p)",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0, ¬(p = 0) ⊢ m DIV 0 DIV p = m DIV (0 * p)"
+                },
+                {
+                    "args": "m DIV n DIV p = m DIV (n * p)",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, ¬(p = 0) ⊢ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p = 0) ⊢ n = 0 ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p = 0) ⊢ ¬(n = 0) ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ∀k. k ≤ m DIV n DIV p ⟷ k ≤ m DIV (n * p)"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: m DIV n, n: k}",
+                    "id": "1.2.2.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(p = 0) ⊢ k ≤ m DIV n DIV p ⟷ p * k ≤ m DIV n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.2.2",
+                    "prevs": [
+                        "1.2.0",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(n = 0) ∧ ¬(p = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0 ∨ p = 0)",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(n = 0 ∨ p = 0)"
+                },
+                {
+                    "args": "mult_eq_0, ¬(n * p = 0)",
+                    "id": "1.2.2.4",
+                    "prevs": [
+                        "1.2.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(n * p = 0)"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: m, n: k}",
+                    "id": "1.2.2.5",
+                    "prevs": [
+                        "1.2.2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV (n * p) ⟷ n * p * k ≤ m"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: m, n: p * k}",
+                    "id": "1.2.2.6",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ p * k ≤ m DIV n ⟷ n * (p * k) ≤ m"
+                },
+                {
+                    "args": "mult_assoc, n * (p * k) ≤ m ⟷ n * p * k ≤ m",
+                    "id": "1.2.2.7",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ n * (p * k) ≤ m ⟷ n * p * k ≤ m"
+                },
+                {
+                    "args": "n * (p * k) ≤ m ⟷ k ≤ m DIV (n * p)",
+                    "id": "1.2.2.8",
+                    "prevs": [
+                        "1.2.2.5",
+                        "1.2.2.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ n * (p * k) ≤ m ⟷ k ≤ m DIV (n * p)"
+                },
+                {
+                    "args": "p * k ≤ m DIV n ⟷ k ≤ m DIV (n * p)",
+                    "id": "1.2.2.9",
+                    "prevs": [
+                        "1.2.2.6",
+                        "1.2.2.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ p * k ≤ m DIV n ⟷ k ≤ m DIV (n * p)"
+                },
+                {
+                    "args": "k ≤ m DIV n DIV p ⟷ k ≤ m DIV (n * p)",
+                    "id": "1.2.2.10",
+                    "prevs": [
+                        "1.2.2.1",
+                        "1.2.2.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n DIV p ⟷ k ≤ m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.11",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.10"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ∀k. k ≤ m DIV n DIV p ⟷ k ≤ m DIV (n * p)"
+                },
+                {
+                    "args": "m DIV n DIV p, m DIV (n * p)",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p = 0) ⊢ ¬(n = 0) ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 0) ⊢ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(p = 0) ⟶ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m DIV n DIV p = m DIV (n * p)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m DIV n DIV p = m DIV (n * p)"
+                }
+            ],
+            "prop": "m DIV n DIV p = m DIV (n * p)",
+            "steps": [
+                {
+                    "case": "p=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "n=0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_0"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "!m::nat. !n. (!k. k <= m <--> k <= n) --> m = n",
+                    "goal_id": "1.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_forward_step",
+                    "param_b": "m DIV n",
+                    "param_n": "k",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "goal": "~(n * p =0)",
+                    "goal_id": "1.2.2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "goal_id": "1.2.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.2.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.4"
+                    ],
+                    "goal_id": "1.2.2.5",
+                    "method_name": "apply_forward_step",
+                    "param_b": "m",
+                    "param_n": "k",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.2.6",
+                    "method_name": "apply_forward_step",
+                    "param_b": "m",
+                    "param_n": "p*k",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.1"
+                    ],
+                    "goal_id": "1.2.2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.6"
+                    ],
+                    "goal_id": "1.2.2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.5"
+                    ],
+                    "goal_id": "1.2.2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "div_mod",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p = 0 ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "mod_zero, m DIV n MOD 0 = m MOD 0 DIV n",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m DIV n MOD 0 = m MOD 0 DIV n"
+                },
+                {
+                    "args": "mult_0_right, m DIV n MOD 0 = m MOD (n * 0) DIV n",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0 ⊢ m DIV n MOD 0 = m MOD (n * 0) DIV n"
+                },
+                {
+                    "args": "m DIV n MOD p = m MOD (n * p) DIV n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 0 ⊢ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p = 0 ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(p = 0) ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "¬(p = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p = 0) ⊢ n = 0 ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "mod_0, 0 MOD p = 0",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 MOD p = 0"
+                },
+                {
+                    "args": "div_zero, m DIV 0 MOD p = m MOD (0 * p) DIV 0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0, ¬(p = 0) ⊢ m DIV 0 MOD p = m MOD (0 * p) DIV 0"
+                },
+                {
+                    "args": "m DIV n MOD p = m MOD (n * p) DIV n",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, ¬(p = 0) ⊢ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p = 0) ⊢ n = 0 ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p = 0) ⊢ ¬(n = 0) ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ∀k. k ≤ m DIV n MOD p ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟶ k + p * (m DIV n DIV p) ≤ m DIV n"
+                },
+                {
+                    "args": "k ≤ m DIV n MOD p",
+                    "id": "1.2.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ m DIV n MOD p ⊢ k ≤ m DIV n MOD p"
+                },
+                {
+                    "args": "less_eq_refl, {n: p * (m DIV n DIV p)}",
+                    "id": "1.2.2.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ p * (m DIV n DIV p) ≤ p * (m DIV n DIV p)"
+                },
+                {
+                    "args": "le_add2",
+                    "id": "1.2.2.1.2",
+                    "prevs": [
+                        "1.2.2.1.0",
+                        "1.2.2.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ k + p * (m DIV n DIV p) ≤ m DIV n MOD p + p * (m DIV n DIV p)"
+                },
+                {
+                    "args": "less_eq_refl, {n: m DIV n}",
+                    "id": "1.2.2.1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m DIV n ≤ m DIV n"
+                },
+                {
+                    "args": "division_simp2, p * (m DIV n DIV p) + m DIV n MOD p ≤ m DIV n",
+                    "id": "1.2.2.1.4",
+                    "prevs": [
+                        "1.2.2.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ p * (m DIV n DIV p) + m DIV n MOD p ≤ m DIV n"
+                },
+                {
+                    "args": "add_comm, m DIV n MOD p + p * (m DIV n DIV p) ≤ m DIV n",
+                    "id": "1.2.2.1.5",
+                    "prevs": [
+                        "1.2.2.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ m DIV n MOD p + p * (m DIV n DIV p) ≤ m DIV n"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "1.2.2.1.6",
+                    "prevs": [
+                        "1.2.2.1.2",
+                        "1.2.2.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ k + p * (m DIV n DIV p) ≤ m DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.1.7",
+                    "prevs": [
+                        "1.2.2.1.0",
+                        "1.2.2.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟶ k + p * (m DIV n DIV p) ≤ m DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV n DIV p) ≤ m DIV n ⟶ k ≤ m DIV n MOD p"
+                },
+                {
+                    "args": "k + p * (m DIV n DIV p) ≤ m DIV n",
+                    "id": "1.2.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k + p * (m DIV n DIV p) ≤ m DIV n ⊢ k + p * (m DIV n DIV p) ≤ m DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.2.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(n = 0), ¬(p = 0), k + p * (m DIV n DIV p) ≤ m DIV n ⊢ k ≤ m DIV n MOD p"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.2.2",
+                    "prevs": [
+                        "1.2.2.2.0",
+                        "1.2.2.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV n DIV p) ≤ m DIV n ⟶ k ≤ m DIV n MOD p"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.1",
+                        "1.2.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟷ k + p * (m DIV n DIV p) ≤ m DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.5",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ∀k. k ≤ m DIV n MOD p ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "m DIV n MOD p, m MOD (n * p) DIV n",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p = 0) ⊢ ¬(n = 0) ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 0) ⊢ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(p = 0) ⟶ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m DIV n MOD p = m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m DIV n MOD p = m MOD (n * p) DIV n"
+                }
+            ],
+            "prop": "m DIV n MOD p = m MOD (n * p) DIV n",
+            "steps": [
+                {
+                    "case": "p=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "n=0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_zero"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_0"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n",
+                    "goal_id": "1.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction",
+                    "names": "k"
+                },
+                {
+                    "goal": "k ≤ m DIV n MOD p ⟷ k + p * ((m DIV n) DIV p) <= (m DIV n)",
+                    "goal_id": "1.2.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "m DIV n MOD p + p * (m DIV n DIV p)",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "1.2.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add2"
+                },
+                {
+                    "goal_id": "1.2.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "1.2.2.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "goal_id": "1.2.2.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp2"
+                },
+                {
+                    "goal_id": "1.2.2.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "goal_id": "1.2.2.2",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
         }
     ],
     "description": "Natural numbers",
