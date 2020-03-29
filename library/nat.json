@@ -52769,7 +52769,7 @@
                 "hint_rewrite"
             ],
             "name": "div_mod",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -52921,135 +52921,179 @@
                     "th": "⊢ _VAR k"
                 },
                 {
-                    "args": "",
+                    "args": "le_add_lcancel, {m: p * (m DIV n DIV p), n: k, p: m DIV n MOD p}",
                     "id": "1.2.2.1",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟶ k + p * (m DIV n DIV p) ≤ m DIV n"
-                },
-                {
-                    "args": "k ≤ m DIV n MOD p",
-                    "id": "1.2.2.1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "k ≤ m DIV n MOD p ⊢ k ≤ m DIV n MOD p"
-                },
-                {
-                    "args": "less_eq_refl, {n: p * (m DIV n DIV p)}",
-                    "id": "1.2.2.1.1",
-                    "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ p * (m DIV n DIV p) ≤ p * (m DIV n DIV p)"
+                    "th": "⊢ p * (m DIV n DIV p) + k ≤ p * (m DIV n DIV p) + m DIV n MOD p ⟷ k ≤ m DIV n MOD p"
                 },
                 {
-                    "args": "le_add2",
-                    "id": "1.2.2.1.2",
-                    "prevs": [
-                        "1.2.2.1.0",
-                        "1.2.2.1.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ k + p * (m DIV n DIV p) ≤ m DIV n MOD p + p * (m DIV n DIV p)"
-                },
-                {
-                    "args": "less_eq_refl, {n: m DIV n}",
-                    "id": "1.2.2.1.3",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ m DIV n ≤ m DIV n"
-                },
-                {
-                    "args": "division_simp2, p * (m DIV n DIV p) + m DIV n MOD p ≤ m DIV n",
-                    "id": "1.2.2.1.4",
-                    "prevs": [
-                        "1.2.2.1.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ p * (m DIV n DIV p) + m DIV n MOD p ≤ m DIV n"
-                },
-                {
-                    "args": "add_comm, m DIV n MOD p + p * (m DIV n DIV p) ≤ m DIV n",
-                    "id": "1.2.2.1.5",
-                    "prevs": [
-                        "1.2.2.1.4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ m DIV n MOD p + p * (m DIV n DIV p) ≤ m DIV n"
-                },
-                {
-                    "args": "less_eq_trans",
-                    "id": "1.2.2.1.6",
-                    "prevs": [
-                        "1.2.2.1.2",
-                        "1.2.2.1.5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬(n = 0), ¬(p = 0), k ≤ m DIV n MOD p ⊢ k + p * (m DIV n DIV p) ≤ m DIV n"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.1.7",
-                    "prevs": [
-                        "1.2.2.1.0",
-                        "1.2.2.1.6"
-                    ],
-                    "rule": "intros",
-                    "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟶ k + p * (m DIV n DIV p) ≤ m DIV n"
-                },
-                {
-                    "args": "",
+                    "args": "division_simp2",
                     "id": "1.2.2.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV n DIV p) ≤ m DIV n ⟶ k ≤ m DIV n MOD p"
-                },
-                {
-                    "args": "k + p * (m DIV n DIV p) ≤ m DIV n",
-                    "id": "1.2.2.2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "k + p * (m DIV n DIV p) ≤ m DIV n ⊢ k + p * (m DIV n DIV p) ≤ m DIV n"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.2.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "¬(n = 0), ¬(p = 0), k + p * (m DIV n DIV p) ≤ m DIV n ⊢ k ≤ m DIV n MOD p"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.2.2",
                     "prevs": [
-                        "1.2.2.2.0",
-                        "1.2.2.2.1"
+                        "1.2.2.1"
                     ],
-                    "rule": "intros",
-                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV n DIV p) ≤ m DIV n ⟶ k ≤ m DIV n MOD p"
+                    "rule": "rewrite_fact",
+                    "th": "⊢ p * (m DIV n DIV p) + k ≤ m DIV n ⟷ k ≤ m DIV n MOD p"
                 },
                 {
-                    "args": "iffI",
+                    "args": "k ≤ m DIV n MOD p ⟷ p * (m DIV n DIV p) + k ≤ m DIV n",
                     "id": "1.2.2.3",
                     "prevs": [
-                        "1.2.2.1",
                         "1.2.2.2"
                     ],
-                    "rule": "apply_theorem",
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ k ≤ m DIV n MOD p ⟷ p * (m DIV n DIV p) + k ≤ m DIV n"
+                },
+                {
+                    "args": "add_comm, k ≤ m DIV n MOD p ⟷ k + p * (m DIV n DIV p) ≤ m DIV n",
+                    "id": "1.2.2.4",
+                    "prevs": [
+                        "1.2.2.3"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟷ k + p * (m DIV n DIV p) ≤ m DIV n"
                 },
                 {
-                    "args": "",
-                    "id": "1.2.2.4",
+                    "args": "conjI",
+                    "id": "1.2.2.5",
+                    "prevs": [
+                        "1.2.0",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(n = 0) ∧ ¬(p = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0 ∨ p = 0)",
+                    "id": "1.2.2.6",
+                    "prevs": [
+                        "1.2.2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(n = 0 ∨ p = 0)"
+                },
+                {
+                    "args": "mult_eq_0, ¬(n * p = 0)",
+                    "id": "1.2.2.7",
+                    "prevs": [
+                        "1.2.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(n * p = 0)"
+                },
+                {
+                    "args": "division, {m: m}",
+                    "id": "1.2.2.8",
+                    "prevs": [
+                        "1.2.2.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ m = m DIV (n * p) * (n * p) + m MOD (n * p) ∧ m MOD (n * p) < n * p"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.2.9",
+                    "prevs": [
+                        "1.2.2.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ m = m DIV (n * p) * (n * p) + m MOD (n * p)"
+                },
+                {
+                    "args": "division_simp2, m DIV n = (n * p * (m DIV (n * p)) + m MOD (n * p)) DIV n",
+                    "id": "1.2.2.10",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m DIV n = (n * p * (m DIV (n * p)) + m MOD (n * p)) DIV n"
+                },
+                {
+                    "args": "div_mult_add2, {a: p * (m DIV (n * p)), b: m MOD (n * p)}",
+                    "id": "1.2.2.11",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ (n * (p * (m DIV (n * p))) + m MOD (n * p)) DIV n = p * (m DIV (n * p)) + m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "k + p * (m DIV (n * p)) = p * (m DIV (n * p)) + k",
+                    "id": "1.2.2.12",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ k + p * (m DIV (n * p)) = p * (m DIV (n * p)) + k"
+                },
+                {
+                    "args": "le_add_lcancel, p * (m DIV (n * p)) + k ≤ p * (m DIV (n * p)) + m MOD (n * p) DIV n ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.13",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ p * (m DIV (n * p)) + k ≤ p * (m DIV (n * p)) + m MOD (n * p) DIV n ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "k + p * (m DIV (n * p)) ≤ p * (m DIV (n * p)) + m MOD (n * p) DIV n ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.14",
+                    "prevs": [
+                        "1.2.2.12",
+                        "1.2.2.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV (n * p)) ≤ p * (m DIV (n * p)) + m MOD (n * p) DIV n ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "k + p * (m DIV (n * p)) ≤ (n * (p * (m DIV (n * p))) + m MOD (n * p)) DIV n ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.15",
+                    "prevs": [
+                        "1.2.2.11",
+                        "1.2.2.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV (n * p)) ≤ (n * (p * (m DIV (n * p))) + m MOD (n * p)) DIV n ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "mult_assoc, k + p * (m DIV (n * p)) ≤ (n * p * (m DIV (n * p)) + m MOD (n * p)) DIV n ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.16",
+                    "prevs": [
+                        "1.2.2.15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV (n * p)) ≤ (n * p * (m DIV (n * p)) + m MOD (n * p)) DIV n ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "k + p * (m DIV (n * p)) ≤ m DIV n ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.17",
+                    "prevs": [
+                        "1.2.2.10",
+                        "1.2.2.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV (n * p)) ≤ m DIV n ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "div_div, k + p * (m DIV n DIV p) ≤ m DIV n ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.18",
+                    "prevs": [
+                        "1.2.2.17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ k + p * (m DIV n DIV p) ≤ m DIV n ⟷ k ≤ m MOD (n * p) DIV n"
+                },
+                {
+                    "args": "k ≤ m DIV n MOD p ⟷ k ≤ m MOD (n * p) DIV n",
+                    "id": "1.2.2.19",
+                    "prevs": [
+                        "1.2.2.4",
+                        "1.2.2.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "¬(n = 0), ¬(p = 0) ⊢ k ≤ m DIV n MOD p ⟷ k ≤ m MOD (n * p) DIV n"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.5",
+                    "id": "1.2.2.20",
                     "prevs": [
                         "1.2.2.0",
-                        "1.2.2.4"
+                        "1.2.2.19"
                     ],
                     "rule": "intros",
                     "th": "¬(n = 0), ¬(p = 0) ⊢ ∀k. k ≤ m DIV n MOD p ⟷ k ≤ m MOD (n * p) DIV n"
@@ -53208,49 +53252,444 @@
                 },
                 {
                     "goal_id": "1.2.2.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "iffI"
-                },
-                {
-                    "goal_id": "1.2.2.1",
-                    "method_name": "introduction"
-                },
-                {
-                    "goal_id": "1.2.2.1.1",
-                    "method_name": "apply_backward_step",
-                    "param_m": "m DIV n MOD p + p * (m DIV n DIV p)",
-                    "theorem": "less_eq_trans"
-                },
-                {
-                    "goal_id": "1.2.2.1.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "le_add2"
-                },
-                {
-                    "goal_id": "1.2.2.1.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "less_eq_refl"
-                },
-                {
-                    "goal_id": "1.2.2.1.3",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "add_comm"
                 },
                 {
-                    "goal_id": "1.2.2.1.3",
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "p * (m DIV n DIV p)",
+                    "param_n": "k",
+                    "param_p": "m DIV n MOD p",
+                    "theorem": "le_add_lcancel"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.1"
+                    ],
+                    "goal_id": "1.2.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "division_simp2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.2"
+                    ],
+                    "goal_id": "1.2.2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.4"
+                    ],
+                    "goal_id": "1.2.2.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_div"
+                },
+                {
+                    "goal": "~(n * p = 0)",
+                    "goal_id": "1.2.2.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "goal_id": "1.2.2.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.2.2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.7"
+                    ],
+                    "goal_id": "1.2.2.8",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "theorem": "division"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.8"
+                    ],
+                    "goal_id": "1.2.2.9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "m DIV n = ((n * p) * (m DIV (n * p)) + m MOD (n * p)) DIV n",
+                    "goal_id": "1.2.2.10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.10",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "division_simp2"
                 },
                 {
-                    "goal_id": "1.2.2.1.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "less_eq_refl"
+                    "fact_ids": [
+                        "1.2.2.10"
+                    ],
+                    "goal_id": "1.2.2.11",
+                    "method_name": "rewrite_goal_with_prev"
                 },
                 {
-                    "goal_id": "1.2.2.2",
+                    "goal_id": "1.2.2.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.2.11",
+                    "method_name": "apply_forward_step",
+                    "param_a": "p * (m DIV (n * p))",
+                    "param_b": "m MOD (n * p)",
+                    "theorem": "div_mult_add2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.11"
+                    ],
+                    "goal_id": "1.2.2.12",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "k + p * (m DIV (n * p)) = p * (m DIV (n * p)) + k",
+                    "goal_id": "1.2.2.12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.12",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.12"
+                    ],
+                    "goal_id": "1.2.2.13",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_add_lcancel"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_mult_mod",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "nat_plus_def_1, m MOD 0 = 0 + m MOD 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m MOD 0 = 0 + m MOD 0"
+                },
+                {
+                    "args": "nat_times_def_1, m MOD (0 * p) = 0 * (m DIV 0 MOD p) + m MOD 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ m MOD (0 * p) = 0 * (m DIV 0 MOD p) + m MOD 0"
+                },
+                {
+                    "args": "m MOD (n * p) = n * (m DIV n MOD p) + m MOD n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ p = 0 ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "division_simp2, m = n * (m DIV n) + m MOD n",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m = n * (m DIV n) + m MOD n"
+                },
+                {
+                    "args": "mod_zero, m MOD 0 = n * (m DIV n MOD 0) + m MOD n",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(n = 0) ⊢ m MOD 0 = n * (m DIV n MOD 0) + m MOD n"
+                },
+                {
+                    "args": "mult_0_right, m MOD (n * 0) = n * (m DIV n MOD 0) + m MOD n",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(n = 0) ⊢ m MOD (n * 0) = n * (m DIV n MOD 0) + m MOD n"
+                },
+                {
+                    "args": "m MOD (n * p) = n * (m DIV n MOD p) + m MOD n",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 0, ¬(n = 0) ⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ p = 0 ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ¬(p = 0) ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "¬(p = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "le_add_lcancel, {m: m DIV (n DIV p) * (n * p), n: m MOD (n * p), p: n * (m DIV n MOD p) + m MOD n}",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m DIV (n DIV p) * (n * p) + m MOD (n * p) ≤ m DIV (n DIV p) * (n * p) + (n * (m DIV n MOD p) + m MOD n) ⟷ m MOD (n * p) ≤ n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ¬(p = 0) ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
+                }
+            ],
+            "prop": "m MOD (n * p) = n * (m DIV n MOD p) + m MOD n",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
                     "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "p=0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp2"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m DIV (n DIV p) * (n * p)",
+                    "param_n": "m MOD (n * p)",
+                    "param_p": "n * (m DIV n MOD p) + m MOD n",
+                    "theorem": "le_add_lcancel"
                 }
             ],
             "ty": "thm",
