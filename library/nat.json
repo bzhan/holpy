@@ -53408,7 +53408,7 @@
                 "hint_rewrite"
             ],
             "name": "mod_mult_mod",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -53548,25 +53548,89 @@
                     "th": "¬(p = 0) ⊢ ¬(p = 0)"
                 },
                 {
-                    "args": "le_add_lcancel, {m: m DIV (n DIV p) * (n * p), n: m MOD (n * p), p: n * (m DIV n MOD p) + m MOD n}",
+                    "args": "n * (m DIV n DIV p * p) = m DIV n DIV p * (n * p)",
                     "id": "1.2.1",
                     "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ m DIV (n DIV p) * (n * p) + m MOD (n * p) ≤ m DIV (n DIV p) * (n * p) + (n * (m DIV n MOD p) + m MOD n) ⟷ m MOD (n * p) ≤ n * (m DIV n MOD p) + m MOD n"
+                    "rule": "nat_norm",
+                    "th": "⊢ n * (m DIV n DIV p * p) = m DIV n DIV p * (n * p)"
                 },
                 {
-                    "args": "",
+                    "args": "division_simp1, m DIV (n * p) * (n * p) + m MOD (n * p) = m",
                     "id": "1.2.2",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m DIV (n * p) * (n * p) + m MOD (n * p) = m"
+                },
+                {
+                    "args": "div_div, m DIV n DIV p * (n * p) + m MOD (n * p) = m",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ m DIV n DIV p * (n * p) + m MOD (n * p) = m"
+                },
+                {
+                    "args": "n * (m DIV n DIV p * p) + m MOD (n * p) = m",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ n * (m DIV n DIV p * p) + m MOD (n * p) = m"
+                },
+                {
+                    "args": "division_simp2, n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n) + m MOD n",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n) + m MOD n"
+                },
+                {
+                    "args": "division_simp1, n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n DIV p * p + m DIV n MOD p) + m MOD n",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n DIV p * p + m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "distrib_l, n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n DIV p * p) + n * (m DIV n MOD p) + m MOD n",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n DIV p * p) + n * (m DIV n MOD p) + m MOD n"
+                },
+                {
+                    "args": "add_assoc, n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n DIV p * p) + (n * (m DIV n MOD p) + m MOD n)",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ n * (m DIV n DIV p * p) + m MOD (n * p) = n * (m DIV n DIV p * p) + (n * (m DIV n MOD p) + m MOD n)"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.8"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "¬(n = 0), ¬(p = 0) ⊢ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
                 },
                 {
                     "args": "",
-                    "id": "1.2.3",
+                    "id": "1.2.10",
                     "prevs": [
                         "1.2.0",
-                        "1.2.2"
+                        "1.2.9"
                     ],
                     "rule": "intros",
                     "th": "¬(n = 0) ⊢ ¬(p = 0) ⟶ m MOD (n * p) = n * (m DIV n MOD p) + m MOD n"
@@ -53685,11 +53749,2453 @@
                 },
                 {
                     "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "param_x": "n * (m DIV n DIV p * p)",
+                    "theorem": "add_cancel_left"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_assoc"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "distrib_l"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp1"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp2"
+                },
+                {
+                    "goal": "n * (m DIV n DIV p * p) = m DIV n DIV p * (n * p)",
+                    "goal_id": "1.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_div"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "division_simp1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "name": "mod_mod_exp_min",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p = 0 ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0 ⊢ m = 0 ⟶ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = 0, p = 0 ⊢ m ≤ n ⟶ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "mod_0, 0 MOD (if n = 0 then 1 else 0) = 0",
+                    "id": "0.1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 MOD (if n = 0 then 1 else 0) = 0"
+                },
+                {
+                    "args": "mod_1, x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD 1",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 0, p = 0, m ≤ n ⊢ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD 1"
+                },
+                {
+                    "args": "if_P, x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if m = 0 then 1 else 0)",
+                    "id": "0.1.1.3",
+                    "prevs": [
+                        "0.1.1.2",
+                        "0.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 0, p = 0, m ≤ n ⊢ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if m = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_P, x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)",
+                    "id": "0.1.1.4",
+                    "prevs": [
+                        "0.1.1.3",
+                        "0.1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 0, p = 0, m ≤ n ⊢ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.5",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "m = 0, p = 0 ⊢ m ≤ n ⟶ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = 0, p = 0 ⊢ ¬(m ≤ n) ⟶ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "¬(m ≤ n)",
+                    "id": "0.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m ≤ n) ⊢ ¬(m ≤ n)"
+                },
+                {
+                    "args": "le_0, {n: n}",
+                    "id": "0.1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "0.1.2.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = 0, p = 0, ¬(m ≤ n) ⊢ m ≤ n"
+                },
+                {
+                    "args": "negE_gen, {A: m ≤ n, C: x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)}",
+                    "id": "0.1.2.3",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = 0, p = 0, ¬(m ≤ n) ⊢ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.4",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m = 0, p = 0 ⊢ ¬(m ≤ n) ⟶ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m = 0, p = 0 ⊢ x MOD 1 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_P, x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.3",
+                        "0.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 0, p = 0 ⊢ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0 ⊢ m = 0 ⟶ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0 ⊢ ¬(m = 0) ⟶ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "¬(m = 0)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, ¬(m = 0) ⊢ m ≤ n ⟶ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ n = 0 ⟶ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.2.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.1.1",
+                    "prevs": [
+                        "0.2.1.1.0",
+                        "0.2.1.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = 0, m ≤ n ⊢ m ≤ 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1",
+                    "id": "0.2.1.1.2",
+                    "prevs": [
+                        "0.2.1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "n = 0, m ≤ n ⊢ m = 0"
+                },
+                {
+                    "args": "negE_gen, {A: m = 0, C: x MOD (if n = 0 then 1 else 0) = x}",
+                    "id": "0.2.1.1.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, p = 0, m ≤ n, ¬(m = 0) ⊢ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.1.4",
+                    "prevs": [
+                        "0.2.1.1.0",
+                        "0.2.1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ n = 0 ⟶ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ ¬(n = 0) ⟶ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "0.2.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "mod_zero, x MOD 0 = x",
+                    "id": "0.2.1.2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x MOD 0 = x"
+                },
+                {
+                    "args": "if_not_P, x MOD (if n = 0 then 1 else 0) = x",
+                    "id": "0.2.1.2.2",
+                    "prevs": [
+                        "0.2.1.2.1",
+                        "0.2.1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, m ≤ n, ¬(m = 0), ¬(n = 0) ⊢ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.2.3",
+                    "prevs": [
+                        "0.2.1.2.0",
+                        "0.2.1.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ ¬(n = 0) ⟶ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.2.1.3",
+                    "prevs": [
+                        "0.2.1.1",
+                        "0.2.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ x MOD (if n = 0 then 1 else 0) = x"
+                },
+                {
+                    "args": "mod_zero, x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD 0",
+                    "id": "0.2.1.4",
+                    "prevs": [
+                        "0.2.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD 0"
+                },
+                {
+                    "args": "if_not_P, x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if m = 0 then 1 else 0)",
+                    "id": "0.2.1.5",
+                    "prevs": [
+                        "0.2.1.4",
+                        "0.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if m = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_P, x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)",
+                    "id": "0.2.1.6",
+                    "prevs": [
+                        "0.2.1.5",
+                        "0.2.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, m ≤ n, ¬(m = 0) ⊢ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.7",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, ¬(m = 0) ⊢ m ≤ n ⟶ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, ¬(m = 0) ⊢ ¬(m ≤ n) ⟶ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "¬(m ≤ n)",
+                    "id": "0.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m ≤ n) ⊢ ¬(m ≤ n)"
+                },
+                {
+                    "args": "mod_zero, x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if n = 0 then 1 else 0)",
+                    "id": "0.2.2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if n = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_not_P, x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)",
+                    "id": "0.2.2.2",
+                    "prevs": [
+                        "0.2.2.1",
+                        "0.2.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(m = 0), ¬(m ≤ n) ⊢ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2.3",
+                    "prevs": [
+                        "0.2.2.0",
+                        "0.2.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, ¬(m = 0) ⊢ ¬(m ≤ n) ⟶ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.1",
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, ¬(m = 0) ⊢ x MOD 0 MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "if_not_P, x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.3",
+                        "0.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(m = 0) ⊢ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.5",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0 ⊢ ¬(m = 0) ⟶ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0 ⊢ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if (if m ≤ n then m else n) = 0 then 1 else 0)"
+                },
+                {
+                    "args": "min_def, x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if min m n = 0 then 1 else 0)",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0 ⊢ x MOD (if m = 0 then 1 else 0) MOD (if n = 0 then 1 else 0) = x MOD (if min m n = 0 then 1 else 0)"
+                },
+                {
+                    "args": "exp_zero, x MOD 0 ^ m MOD 0 ^ n = x MOD 0 ^ min m n",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0 ⊢ x MOD 0 ^ m MOD 0 ^ n = x MOD 0 ^ min m n"
+                },
+                {
+                    "args": "x MOD p ^ m MOD p ^ n = x MOD p ^ min m n",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 0 ⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p = 0 ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(p = 0) ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "¬(p = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p = 0) ⊢ m ≤ n ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≤ n ⊢ ∃p. n = m + p"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "n = m + d",
+                    "id": "1.1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m + d ⊢ n = m + d"
+                },
+                {
+                    "args": "disjI1, {A: ¬(p = 0), B: m = 0}",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ ¬(p = 0) ∨ m = 0"
+                },
+                {
+                    "args": "exp_lt_0, 0 < p ^ m",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ 0 < p ^ m"
+                },
+                {
+                    "args": "mod_lt_eq_lt, x MOD p ^ m < p ^ m",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ x MOD p ^ m < p ^ m"
+                },
+                {
+                    "args": "le_add, {m: m, n: d}",
+                    "id": "1.1.7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m ≤ m + d"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: m ≤ m + d}",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ p = 1 ∨ m ≤ m + d"
+                },
+                {
+                    "args": "if_not_P, if p = 0 then m = 0 ⟶ m + d = 0 else p = 1 ∨ m ≤ m + d",
+                    "id": "1.1.9",
+                    "prevs": [
+                        "1.1.8",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ if p = 0 then m = 0 ⟶ m + d = 0 else p = 1 ∨ m ≤ m + d"
+                },
+                {
+                    "args": "le_exp, p ^ m ≤ p ^ (m + d)",
+                    "id": "1.1.10",
+                    "prevs": [
+                        "1.1.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ p ^ m ≤ p ^ (m + d)"
+                },
+                {
+                    "args": "lte_trans",
+                    "id": "1.1.11",
+                    "prevs": [
+                        "1.1.6",
+                        "1.1.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ x MOD p ^ m < p ^ (m + d)"
+                },
+                {
+                    "args": "mod_lt",
+                    "id": "1.1.12",
+                    "prevs": [
+                        "1.1.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ x MOD p ^ m MOD p ^ (m + d) = x MOD p ^ m"
+                },
+                {
+                    "args": "x MOD p ^ m MOD p ^ n = x MOD p ^ m",
+                    "id": "1.1.13",
+                    "prevs": [
+                        "1.1.3",
+                        "1.1.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ m"
+                },
+                {
+                    "args": "if_P, x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)",
+                    "id": "1.1.14",
+                    "prevs": [
+                        "1.1.13",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n, ¬(p = 0), n = m + d ⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "∃p. n = m + p",
+                    "id": "1.1.15",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2",
+                        "1.1.3",
+                        "1.1.14"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p = 0) ⊢ m ≤ n ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p = 0) ⊢ ¬(m ≤ n) ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "¬(m ≤ n)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m ≤ n) ⊢ ¬(m ≤ n)"
+                },
+                {
+                    "args": "not_le",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(m ≤ n) ⊢ n < m"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m ≤ n) ⊢ n ≤ m"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(m ≤ n) ⊢ ∃p. m = n + p"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1.2.4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "m = n + d",
+                    "id": "1.2.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = n + d ⊢ m = n + d"
+                },
+                {
+                    "args": "mod_mod, x MOD (p ^ n * p ^ d) MOD p ^ n = x MOD p ^ n",
+                    "id": "1.2.6",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x MOD (p ^ n * p ^ d) MOD p ^ n = x MOD p ^ n"
+                },
+                {
+                    "args": "nat_power_add, x MOD p ^ (n + d) MOD p ^ n = x MOD p ^ n",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(p = 0), ¬(m ≤ n), m = n + d ⊢ x MOD p ^ (n + d) MOD p ^ n = x MOD p ^ n"
+                },
+                {
+                    "args": "x MOD p ^ m MOD p ^ n = x MOD p ^ n",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.5",
+                        "1.2.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(p = 0), ¬(m ≤ n), m = n + d ⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ n"
+                },
+                {
+                    "args": "if_not_P, x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)",
+                    "id": "1.2.9",
+                    "prevs": [
+                        "1.2.8",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(p = 0), ¬(m ≤ n), m = n + d ⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "∃p. m = n + p",
+                    "id": "1.2.10",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3",
+                        "1.2.4",
+                        "1.2.5",
+                        "1.2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p = 0) ⊢ ¬(m ≤ n) ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p = 0) ⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(p = 0) ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ (if m ≤ n then m else n)"
+                },
+                {
+                    "args": "min_def, ¬(p = 0) ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(p = 0) ⟶ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x MOD p ^ m MOD p ^ n = x MOD p ^ min m n"
+                }
+            ],
+            "prop": "x MOD p ^ m MOD p ^ n = x MOD p ^ min m n",
+            "steps": [
+                {
+                    "case": "p=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_zero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "min_def"
+                },
+                {
+                    "case": "m=0",
+                    "goal_id": "0.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "case": "m ≤ n",
+                    "goal_id": "0.1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.0"
+                    ],
+                    "goal_id": "0.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_1"
+                },
+                {
+                    "goal_id": "0.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_0"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2.0"
+                    ],
+                    "goal_id": "0.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "case": "m ≤ n",
+                    "goal_id": "0.2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.0"
+                    ],
+                    "goal_id": "0.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "case": "n = 0",
+                    "goal_id": "0.2.1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.2.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.1.0",
+                        "0.2.1.0"
+                    ],
+                    "goal_id": "0.2.1.1.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.1.1"
+                    ],
+                    "goal_id": "0.2.1.1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "0.2.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.2.0"
+                    ],
+                    "goal_id": "0.2.1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "0.2.1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "0.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2.0"
+                    ],
+                    "goal_id": "0.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "0.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "min_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "m ≤ n",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "mod_lt"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_backward_step",
+                    "param_m": "p ^ m",
+                    "theorem": "lte_trans"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_lt_eq_lt"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_lt_0"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_exp"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.2",
                     "method_name": "apply_forward_step",
-                    "param_m": "m DIV (n DIV p) * (n * p)",
-                    "param_n": "m MOD (n * p)",
-                    "param_p": "n * (m DIV n MOD p) + m MOD n",
-                    "theorem": "le_add_lcancel"
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2"
+                    ],
+                    "goal_id": "1.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.3"
+                    ],
+                    "goal_id": "1.2.4",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.5"
+                    ],
+                    "goal_id": "1.2.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_power_add"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_mod"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat",
+                "x": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "div_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(m = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0) ⊢ p ≤ n ⟶ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "p ≤ n",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ n ⊢ p ≤ n"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n ⊢ n - p + p = n"
+                },
+                {
+                    "args": "m ^ n = m ^ (n - p + p)",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p ≤ n ⊢ m ^ n = m ^ (n - p + p)"
+                },
+                {
+                    "args": "nat_power_add, m ^ n = m ^ (n - p) * m ^ p",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "p ≤ n, ¬(m = 0) ⊢ m ^ n = m ^ (n - p) * m ^ p"
+                },
+                {
+                    "args": "add_0_right, m ^ n = m ^ (n - p) * m ^ p + 0",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ n, ¬(m = 0) ⊢ m ^ n = m ^ (n - p) * m ^ p + 0"
+                },
+                {
+                    "args": "disjI1, {A: ¬(m = 0), B: p = 0}",
+                    "id": "1.5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p ≤ n, ¬(m = 0) ⊢ ¬(m = 0) ∨ p = 0"
+                },
+                {
+                    "args": "exp_lt_0, 0 < m ^ p",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ n, ¬(m = 0) ⊢ 0 < m ^ p"
+                },
+                {
+                    "args": "div_uniq",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.4",
+                        "1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n, ¬(m = 0) ⊢ m ^ n DIV m ^ p = m ^ (n - p)"
+                },
+                {
+                    "args": "if_P, m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ n, ¬(m = 0) ⊢ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.0",
+                        "1.8"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0) ⊢ p ≤ n ⟶ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0) ⊢ ¬(p ≤ n) ⟶ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "¬(p ≤ n)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p ≤ n) ⊢ ¬(p ≤ n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0), ¬(p ≤ n) ⊢ m = 1 ⟶ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "m = 1",
+                    "id": "2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 1 ⊢ m = 1"
+                },
+                {
+                    "args": "div_1, 1 DIV 1 = 1",
+                    "id": "2.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 DIV 1 = 1"
+                },
+                {
+                    "args": "exp_one, 1 ^ n DIV 1 ^ p = 1",
+                    "id": "2.1.2",
+                    "prevs": [
+                        "2.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 1, ¬(m = 0), ¬(p ≤ n) ⊢ 1 ^ n DIV 1 ^ p = 1"
+                },
+                {
+                    "args": "m ^ n DIV m ^ p = 1",
+                    "id": "2.1.3",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = 1, ¬(m = 0), ¬(p ≤ n) ⊢ m ^ n DIV m ^ p = 1"
+                },
+                {
+                    "args": "if_P, m ^ n DIV m ^ p = (if m = 1 then 1 else 0)",
+                    "id": "2.1.4",
+                    "prevs": [
+                        "2.1.3",
+                        "2.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 1, ¬(m = 0), ¬(p ≤ n) ⊢ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.5",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0), ¬(p ≤ n) ⊢ m = 1 ⟶ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0), ¬(p ≤ n) ⊢ ¬(m = 1) ⟶ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "¬(m = 1)",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 1) ⊢ ¬(m = 1)"
+                },
+                {
+                    "args": "2 ≤ m",
+                    "id": "2.2.1",
+                    "prevs": [
+                        "2.2.0",
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(m = 1), ¬(m = 0) ⊢ 2 ≤ m"
+                },
+                {
+                    "args": "not_le",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(p ≤ n) ⊢ n < p"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.2.3",
+                    "prevs": [
+                        "2.2.1",
+                        "2.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 1), ¬(m = 0), ¬(p ≤ n) ⊢ 2 ≤ m ∧ n < p"
+                },
+                {
+                    "args": "disjI1, {A: 2 ≤ m ∧ n < p, B: m = 0 ∧ ¬(n = 0) ∧ p = 0}",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "2.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m = 1), ¬(m = 0), ¬(p ≤ n) ⊢ 2 ≤ m ∧ n < p ∨ m = 0 ∧ ¬(n = 0) ∧ p = 0"
+                },
+                {
+                    "args": "lt_exp, m ^ n < m ^ p",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 1), ¬(m = 0), ¬(p ≤ n) ⊢ m ^ n < m ^ p"
+                },
+                {
+                    "args": "div_lt",
+                    "id": "2.2.6",
+                    "prevs": [
+                        "2.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 1), ¬(m = 0), ¬(p ≤ n) ⊢ m ^ n DIV m ^ p = 0"
+                },
+                {
+                    "args": "if_not_P, m ^ n DIV m ^ p = (if m = 1 then 1 else 0)",
+                    "id": "2.2.7",
+                    "prevs": [
+                        "2.2.6",
+                        "2.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 1), ¬(m = 0), ¬(p ≤ n) ⊢ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.8",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0), ¬(p ≤ n) ⊢ ¬(m = 1) ⟶ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0), ¬(p ≤ n) ⊢ m ^ n DIV m ^ p = (if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "if_not_P, m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n) ⊢ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0) ⊢ ¬(p ≤ n) ⟶ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0) ⊢ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(m = 0) ⟶ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+                }
+            ],
+            "prop": [
+                "¬(m = 0) ",
+                "⟶ m ^ n DIV m ^ p = (if p ≤ n then m ^ (n - p) else if m = 1 then 1 else 0)"
+            ],
+            "steps": [
+                {
+                    "case": "p ≤ n",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_r": "(0::nat)",
+                    "theorem": "div_uniq"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "nat_power_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_lt_0"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "case": "m =1",
+                    "goal_id": "2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.0"
+                    ],
+                    "goal_id": "2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.0"
+                    ],
+                    "goal_id": "2.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_one"
+                },
+                {
+                    "goal_id": "2.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "div_1"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.0"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_lt"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lt_exp"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.0",
+                        "0"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "mod_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(m = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0) ⊢ p ≤ n ∨ m = 1 ⟶ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "p ≤ n ∨ m = 1",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ n ∨ m = 1 ⊢ p ≤ n ∨ m = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0), p ≤ n ∨ m = 1 ⊢ p ≤ n ⟶ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "p ≤ n",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ n ⊢ p ≤ n"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ≤ n ⊢ n - p + p = n"
+                },
+                {
+                    "args": "m ^ n = m ^ (n - p + p)",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p ≤ n ⊢ m ^ n = m ^ (n - p + p)"
+                },
+                {
+                    "args": "nat_power_add, m ^ n = m ^ (n - p) * m ^ p",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "p ≤ n, ¬(m = 0), p ≤ n ∨ m = 1 ⊢ m ^ n = m ^ (n - p) * m ^ p"
+                },
+                {
+                    "args": "exI, {P: λq. m ^ n = q * m ^ p, a: m ^ (n - p)}",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p ≤ n, ¬(m = 0), p ≤ n ∨ m = 1 ⊢ ∃a1. m ^ n = a1 * m ^ p"
+                },
+                {
+                    "args": "mod_eq_0, m ^ n MOD m ^ p = 0",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ n, ¬(m = 0), p ≤ n ∨ m = 1 ⊢ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0), p ≤ n ∨ m = 1 ⊢ p ≤ n ⟶ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0), p ≤ n ∨ m = 1 ⊢ m = 1 ⟶ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "m = 1",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 1 ⊢ m = 1"
+                },
+                {
+                    "args": "mod_1, 1 MOD 1 = 0",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 MOD 1 = 0"
+                },
+                {
+                    "args": "exp_one, 1 ^ n MOD 1 ^ p = 0",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m = 1, ¬(m = 0), p ≤ n ∨ m = 1 ⊢ 1 ^ n MOD 1 ^ p = 0"
+                },
+                {
+                    "args": "m ^ n MOD m ^ p = 0",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = 1, ¬(m = 0), p ≤ n ∨ m = 1 ⊢ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0), p ≤ n ∨ m = 1 ⊢ m = 1 ⟶ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0), p ≤ n ∨ m = 1 ⊢ m ^ n MOD m ^ p = 0"
+                },
+                {
+                    "args": "if_P, m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), p ≤ n ∨ m = 1 ⊢ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0) ⊢ p ≤ n ∨ m = 1 ⟶ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m = 0) ⊢ ¬(p ≤ n ∨ m = 1) ⟶ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "¬(p ≤ n ∨ m = 1)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p ≤ n ∨ m = 1) ⊢ ¬(p ≤ n ∨ m = 1)"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(p ≤ n ∨ m = 1) ⊢ ¬(p ≤ n) ∧ ¬(m = 1)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p ≤ n ∨ m = 1) ⊢ ¬(p ≤ n)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p ≤ n ∨ m = 1) ⊢ ¬(m = 1)"
+                },
+                {
+                    "args": "mult_1_right, (2::nat) = 2 * 1",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (2::nat) = 2 * 1"
+                },
+                {
+                    "args": "mult_2, (2::nat) = 1 + 1",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ (2::nat) = 1 + 1"
+                },
+                {
+                    "args": "add_1_right, 2 = Suc 1",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ 2 = Suc 1"
+                },
+                {
+                    "args": "nat_less_eq_def_1, ¬(m ≤ 0)",
+                    "id": "2.7",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m ≤ 0)"
+                },
+                {
+                    "args": "nat_plus_def_1, ¬(m = 0 + 1)",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m = 0 + 1)"
+                },
+                {
+                    "args": "add_1_right, ¬(m = Suc 0)",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m = Suc 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.7",
+                        "2.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m ≤ 0) ∧ ¬(m = Suc 0)"
+                },
+                {
+                    "args": "less_Suc_lesseq, ¬(m < Suc 0) ∧ ¬(m = Suc 0)",
+                    "id": "2.11",
+                    "prevs": [
+                        "2.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m < Suc 0) ∧ ¬(m = Suc 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(m < Suc 0 ∨ m = Suc 0)",
+                    "id": "2.12",
+                    "prevs": [
+                        "2.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m < Suc 0 ∨ m = Suc 0)"
+                },
+                {
+                    "args": "le_lt, ¬(m ≤ Suc 0)",
+                    "id": "2.13",
+                    "prevs": [
+                        "2.12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ ¬(m ≤ Suc 0)"
+                },
+                {
+                    "args": "not_le, Suc 0 < m",
+                    "id": "2.14",
+                    "prevs": [
+                        "2.13"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ Suc 0 < m"
+                },
+                {
+                    "args": "lesseq_Suc_less, Suc (Suc 0) ≤ m",
+                    "id": "2.15",
+                    "prevs": [
+                        "2.14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ Suc (Suc 0) ≤ m"
+                },
+                {
+                    "args": "nat_one_def, Suc 1 ≤ m",
+                    "id": "2.16",
+                    "prevs": [
+                        "2.15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ Suc 1 ≤ m"
+                },
+                {
+                    "args": "2 ≤ m",
+                    "id": "2.17",
+                    "prevs": [
+                        "2.6",
+                        "2.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ 2 ≤ m"
+                },
+                {
+                    "args": "not_le",
+                    "id": "2.18",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(p ≤ n ∨ m = 1) ⊢ n < p"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.19",
+                    "prevs": [
+                        "2.17",
+                        "2.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ 2 ≤ m ∧ n < p"
+                },
+                {
+                    "args": "disjI1, {A: 2 ≤ m ∧ n < p, B: m = 0 ∧ ¬(n = 0) ∧ p = 0}",
+                    "id": "2.20",
+                    "prevs": [
+                        "2.19"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ 2 ≤ m ∧ n < p ∨ m = 0 ∧ ¬(n = 0) ∧ p = 0"
+                },
+                {
+                    "args": "lt_exp, m ^ n < m ^ p",
+                    "id": "2.21",
+                    "prevs": [
+                        "2.20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ m ^ n < m ^ p"
+                },
+                {
+                    "args": "disjI2, {A: m ^ p = 0, B: m ^ n < m ^ p}",
+                    "id": "2.22",
+                    "prevs": [
+                        "2.21"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ m ^ p = 0 ∨ m ^ n < m ^ p"
+                },
+                {
+                    "args": "mod_eq_self, m ^ n MOD m ^ p = m ^ n",
+                    "id": "2.23",
+                    "prevs": [
+                        "2.22"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ m ^ n MOD m ^ p = m ^ n"
+                },
+                {
+                    "args": "if_not_P, m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)",
+                    "id": "2.24",
+                    "prevs": [
+                        "2.23",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m = 0), ¬(p ≤ n ∨ m = 1) ⊢ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.25",
+                    "prevs": [
+                        "2.0",
+                        "2.24"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m = 0) ⊢ ¬(p ≤ n ∨ m = 1) ⟶ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0) ⊢ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(m = 0) ⟶ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)"
+                }
+            ],
+            "prop": "¬(m = 0) ⟶ m ^ n MOD m ^ p = (if p ≤ n ∨ m = 1 then 0 else m ^ n)",
+            "steps": [
+                {
+                    "case": "p ≤ n ∨ m = 1",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_eq_0"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "m ^ (n-p)"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "nat_power_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_one"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_eq_self"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lt_exp"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal": "2 = Suc 1",
+                    "goal_id": "2.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "mult_2"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "2.6"
+                    ],
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lesseq_Suc_less"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_lt"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "less_Suc_lesseq"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.18",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
                 }
             ],
             "ty": "thm",
