@@ -69,7 +69,32 @@
         },
         {
             "name": "int_add_assoc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + (y + z) = x + y + z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ x + (y + z) = x + y + z"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + (y + z) = x + y + z"
+                }
+            ],
             "prop": "x + (y + z) = x + y + z",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "int",
