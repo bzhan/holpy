@@ -5,6 +5,7 @@ import importlib
 if importlib.util.find_spec("z3"):
     import z3
     z3_loaded = True
+    z3.set_param(timeout=5000, proof=True)
 else:
     z3_loaded = False
 
@@ -34,44 +35,44 @@ class Z3Exception(Exception):
         return self.err
 
 
-def convert_type(T):
+def convert_type(T, ctx):
     if T.is_tvar():
-        return z3.DeclareSort(T.name)
+        return z3.DeclareSort(T.name, ctx)
     if T == NatType or T == IntType:
-        return z3.IntSort()
+        return z3.IntSort(ctx)
     elif T == BoolType:
-        return z3.BoolSort()
+        return z3.BoolSort(ctx)
     elif T == RealType:
-        return z3.RealSort()
+        return z3.RealSort(ctx)
     elif T.is_fun():
-        domainT = convert_type(T.domain_type())
-        rangeT = convert_type(T.range_type())
+        domainT = convert_type(T.domain_type(), ctx)
+        rangeT = convert_type(T.range_type(), ctx)
         if isinstance(domainT, tuple):
             raise Z3Exception("convert: unsupported type " + repr(T))
         if isinstance(rangeT, tuple):
-            return tuple([domainT] + rangeT)
+            return tuple([domainT] + list(rangeT))
         else:
             return (domainT, rangeT)
     elif T.is_tconst() and T.name == 'set':
-        domainT = convert_type(T.args[0])
+        domainT = convert_type(T.args[0], ctx)
         if isinstance(domainT, tuple):
             raise Z3Exception("convert: unsupported type " + repr(T))
-        return (domainT, convert_type(BoolType))
+        return (domainT, convert_type(BoolType, ctx))
     else:
         raise Z3Exception("convert: unsupported type " + repr(T))
 
-def convert_const(name, T):
-    z3_T = convert_type(T)
+def convert_const(name, T, ctx):
+    z3_T = convert_type(T, ctx)
     if isinstance(z3_T, tuple):
         return z3.Function(name, *z3_T)
     else:
         return z3.Const(name, z3_T)
 
-def convert(t, var_names, assms, to_real):
+def convert(t, var_names, assms, to_real, ctx):
     """Convert term t to Z3 input."""
     def rec(t):
         if t.is_var():
-            z3_t = convert_const(t.name, t.T)
+            z3_t = convert_const(t.name, t.T, ctx)
             if t.T == NatType and t.name not in assms:
                 assms[t.name] = z3_t >= 0
             return z3_t
@@ -79,13 +80,13 @@ def convert(t, var_names, assms, to_real):
             nm = name.get_variant_name(t.arg.var_name, var_names)
             var_names.append(nm)
             v = Var(nm, t.arg.var_T)
-            z3_v = convert_const(nm, t.arg.var_T)
+            z3_v = convert_const(nm, t.arg.var_T, ctx)
             return z3.ForAll(z3_v, rec(t.arg.subst_bound(v)))
         elif t.is_exists():
             nm = name.get_variant_name(t.arg.var_name, var_names)
             var_names.append(nm)
             v = Var(nm, t.arg.var_T)
-            z3_v = convert_const(nm, t.arg.var_T)
+            z3_v = convert_const(nm, t.arg.var_T, ctx)
             return z3.Exists(z3_v, rec(t.arg.subst_bound(v)))
         elif t.is_number():
             return t.dest_number()
@@ -94,20 +95,20 @@ def convert(t, var_names, assms, to_real):
         elif t.is_equals():
             return rec(t.arg1) == rec(t.arg)
         elif t.is_conj():
-            return z3.And(rec(t.arg1), rec(t.arg))
+            return z3.And(rec(t.arg1), rec(t.arg)) if ctx is None else z3.And(rec(t.arg1), rec(t.arg), ctx)
         elif t.is_disj():
-            return z3.Or(rec(t.arg1), rec(t.arg))
+            return z3.Or(rec(t.arg1), rec(t.arg)) if ctx is None else z3.Or(rec(t.arg1), rec(t.arg), ctx)
         elif logic.is_if(t):
             b, t1, t2 = t.args
-            return z3.If(rec(b), rec(t1), rec(t2))
+            return z3.If(rec(b), rec(t1), rec(t2), ctx)
         elif t.is_not():
-            return z3.Not(rec(t.arg))
+            return z3.Not(rec(t.arg), ctx)
         elif t.is_plus():
             return rec(t.arg1) + rec(t.arg)
         elif t.is_minus():
             m, n = rec(t.arg1), rec(t.arg)
             if t.arg1.get_type() == NatType:
-                return z3.If(m >= n, m - n, 0)
+                return z3.If(m >= n, m - n, 0, ctx)
             return m - n
         elif t.is_uminus():
             return -rec(t.arg)
@@ -130,23 +131,23 @@ def convert(t, var_names, assms, to_real):
                         nm = name.get_variant_name("r" + t.arg.name, var_names)
                         var_names.append(nm)
                         to_real[t.arg.name] = nm
-                        z3_t = convert_const(nm, RealType)
+                        z3_t = convert_const(nm, RealType, ctx)
                         assms[nm] = z3_t >= 0
                         return z3_t
                     else:
-                        return convert_const(to_real[t.arg.name], RealType)
+                        return convert_const(to_real[t.arg.name], RealType, ctx)
                 return z3.ToReal(rec(t.arg))
             else:
                 raise Z3Exception("convert: unsupported of_nat " + repr(t))
         elif t.is_comb('max', 2):
             a, b = rec(t.arg1), rec(t.arg)
-            return z3.If(a >= b, a, b)
+            return z3.If(a >= b, a, b, ctx)
         elif t.is_comb('min', 2):
             a, b = rec(t.arg1), rec(t.arg)
-            return z3.If(a <= b, a, b)
+            return z3.If(a <= b, a, b, ctx)
         elif t.is_comb('abs', 1):
             a = rec(t.arg)
-            return z3.If(a >= 0, a, -a)
+            return z3.If(a >= 0, a, -a, ctx)
         elif t.is_comb('member', 2):
             a, S = rec(t.arg1), rec(t.arg)
             return S(a)
@@ -154,9 +155,9 @@ def convert(t, var_names, assms, to_real):
             return rec(t.fun)(rec(t.arg))
         elif t.is_const():
             if t == true:
-                return z3.BoolVal(True)
+                return z3.BoolVal(True, ctx)
             elif t == false:
-                return z3.BoolVal(False)
+                return z3.BoolVal(False, ctx)
             else:
                 raise Z3Exception("convert: unsupported constant " + repr(t))
         else:
@@ -203,11 +204,7 @@ def norm_term(t):
             t = rhs
     return fologic.simplify(t)
 
-def solve(t, debug=False):
-    """Solve the given goal using Z3."""
-    s = z3.Solver()
-    s.set('timeout', 5000)
-
+def solve_core(s, t, debug=False):
     # First strip foralls from t.
     t = norm_term(t)
     new_names = logic.get_forall_names(t, svar=False)
@@ -222,13 +219,13 @@ def solve(t, debug=False):
     to_real = dict()
     for A in As:
         try:
-            z3_A = convert(A, var_names, assms, to_real)
+            z3_A = convert(A, var_names, assms, to_real, s.ctx)
             print_debug('A', z3_A)
             s.add(z3_A)
         except Z3Exception as e:
             print_debug(e)
     try:
-        z3_C = convert(C, var_names, assms, to_real)
+        z3_C = convert(C, var_names, assms, to_real, s.ctx)
         print_debug('C', z3_C)
         s.add(z3.Not(z3_C))
     except Z3Exception as e:
@@ -237,8 +234,20 @@ def solve(t, debug=False):
     for nm, A in assms.items():
         print_debug('A', A)
         s.add(A)
-    return str(s.check()) == 'unsat'
+    
+    return s
 
+def solve(t, debug=False):
+    """Solve the given goal using Z3."""
+    s = solve_core(z3.Solver(), t, debug)
+    return str(s.check()) == 'unsat'
+ 
+
+def solve_and_proof(t, debug=False):
+    """Solve the given goal using Z3 and get proof."""
+    s = solve_core(z3.Solver(ctx=z3.Context()) ,t, debug)
+    assert str(s.check()) == 'unsat'
+    return s.proof()
 
 @register_macro('z3')
 class Z3Macro(Macro):
