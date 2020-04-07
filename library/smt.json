@@ -401,6 +401,15 @@
             ],
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "r062",
+            "prop": "x = y ⟷ x - y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
         }
     ],
     "description": "Used for z3 rule rewrite, th-lemma and def-axiom.",
