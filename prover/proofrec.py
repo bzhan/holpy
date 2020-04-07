@@ -6,7 +6,7 @@ from kernel.term import *
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm
 from kernel import theory
-from logic import basic, context
+from logic import basic, context, matcher
 from logic.logic import apply_theorem
 
 from collections import deque, namedtuple
@@ -15,7 +15,7 @@ import operator
 
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
-            'iff-true', 'iff-false', 'unit-resolution', 'comm', 'def-intro', 'apply-def', 'lambda',
+            'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def', 'lambda',
             'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk')
 
 Node = namedtuple('Node', ['term', 'tree'])
@@ -165,7 +165,8 @@ def translate(term, vars=[], isNat=True):
         elif z3.is_const(term): # note the difference of variable notion between SMT and HOL
             return Var(name, NatType) if name in vars else Var(name, IntType)
         elif kind == Z3_OP_ADD:
-            return sum([translate(term.arg(i), vars) for i in range(term.num_args())])
+            # bug: sum() occurs 0 in the start.
+            return reduce(lambda x, y: x + y, [translate(term.arg(i), vars) for i in range(term.num_args())])
         elif kind == Z3_OP_MUL:
             args = [translate(term.arg(i), vars) for i in range(term.num_args())]
             return reduce(operator.mul, args[1:], args[0])
@@ -188,13 +189,7 @@ def translate(term, vars=[], isNat=True):
     else:
         raise NotImplementedError
 
-def and_elim(imp):
-    context.set_context('nat')
-    macro = theory.global_macros['imp_conj']
-    pt1 = macro.get_proof_term(imp, None)
-    return macro.get_proof_term(imp, None)
-
-def new_and_elim(pt, concl):
+def and_elim(pt, concl):
     context.set_context('logic_base')
     r = dict()
     def rec(pt):
@@ -228,13 +223,57 @@ def mono(*pts):
 
     return pf
 
+def schematic_rules(thms, lhs, rhs):
+    """Rewrite by instantiating schematic theorems."""
+    context.set_context('smt')
+    for thm in thms:
+        context.set_context('smt')
+        pt = ProofTerm.theorem(thm)
+        try:
+            inst1 = matcher.first_order_match(pt.prop.lhs, lhs)
+            inst2 = matcher.first_order_match(pt.prop.rhs, rhs, inst=inst1)
+            return pt.substitution(inst1)
+        except matcher.MatchException:
+            continue
+    return None
+
 def rewrite(t):
-    if t.arg1.get_type() == BoolType:
-        return ProofTerm.sorry(Thm([], t))
-    else:
+    def norm_nat(t):
+        """Use nat norm macro to normalize nat expression."""
+        assert t.is_equals() and t.lhs.get_type() == NatType and t.rhs.get_type() == NatType
         context.set_context('nat')
         macro = theory.global_macros['nat_norm']
         return macro.get_proof_term(t, [])
+
+    def equal_is_true(pt):
+        """pt is ⊢ x = y, return: ⊢ (x = y) ↔ true"""
+        context.set_context('logic_base')
+        pt0 = apply_theorem('trueI') # ⊢ true
+        pt1 = pt0.implies_intr(pt.prop) # ⊢ (x = y) → true
+        pt2 = pt.implies_intr(pt0.prop) # ⊢ true → (x = y)
+        return ProofTerm.equal_intr(pt1, pt2)
+
+    pt = schematic_rules(['r001', 'r002', 'r038'], t.lhs, t.rhs)  # rewrite by schematic theorems 
+    if pt is None:
+        if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
+            eq = t.lhs
+            if eq.lhs.get_type() == NatType: # Maybe can reuse schematic theorems to prove ⊢ (x = y) in further
+                pt_eq = norm_nat(eq)
+                return equal_is_true(pt_eq)
+            else:
+                raise NotImplementedError
+        elif t.is_equals(): # Equations that can't match with schematic theorems
+            # Try nat norm macro:
+            if t.lhs.get_type() == NatType:
+                return norm_nat(t)
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+    else:
+        return pt  
+
+
 
 def convert_method(term, *args):
     name = term.decl().name()
@@ -242,7 +281,7 @@ def convert_method(term, *args):
         return ProofTerm.assume(args[0])
     elif name == 'and-elim':
         arg1, arg2 = args
-        return new_and_elim(arg1, arg2)
+        return and_elim(arg1, arg2)
     elif name == 'monotonicity':
         return mono(*args)
     elif name == 'trans':
@@ -251,7 +290,7 @@ def convert_method(term, *args):
     elif name == 'mp':
         arg1, arg2, _ = args
         return ProofTerm.equal_elim(arg2, arg1)
-    elif name == 'rewrite':
+    elif name == 'rewrite' or 'commutativity':
         arg1, = args
         return rewrite(arg1)
     else:
@@ -268,9 +307,11 @@ def proofrec(proof):
     for i in order:
         name = term[i].decl().name()
         args = (r[j] for j in net[i])
+        # print('term['+str(i)+']', term[i])
         if name not in method:
             r[i] = translate(term[i], ['A', 'B'])
         else:
             r[i] = convert_method(term[i], *args)
             basic.load_theory('nat')
+            # print('r['+str(i)+']', r[i])
     return r[0]
