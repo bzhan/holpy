@@ -44,11 +44,21 @@ class ProofrecTest(unittest.TestCase):
             self.assertEqual(proofrec.translate(i, vars), k)
 
     def testRec1(self):
-        context.set_context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
-        t = parse_term('s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B')
-        proof=z3wrapper.solve_and_proof(t)    
-        r = proofrec.proofrec(proof)
-        self.assertEqual(str(r.th), '~(s 1 = s 0 * B), s 0 = 0 & s 1 = 0 |- false')
+        test_data = [
+            ('s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B', 
+            '~(s 1 = s 0 * B), s 0 = 0 & s 1 = 0 |- false'),
+            ('s 0 + s 1 = A --> A + s 2 = B --> s 0 + s 2 + s 1 = B', 
+            's 0 + s 1 = A, A + s 2 = B, ~(s 0 + s 2 + s 1 = B) |- false'),
+            ('A * B + 1 = 1 + B * A', '~(A * B + 1 = 1 + B * A) |- false')
+        ]
+
+
+        for t, p in test_data:    
+            context.set_context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
+            t = parse_term(t)
+            proof=z3wrapper.solve_and_proof(t)    
+            r = proofrec.proofrec(proof)
+            self.assertEqual(str(r.th), p)
 
 if __name__ == "__main__":
     unittest.main()
