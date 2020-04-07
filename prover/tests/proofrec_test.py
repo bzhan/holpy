@@ -24,6 +24,8 @@ class ProofrecTest(unittest.TestCase):
         B = BoolSort()
         F = Function('F', Z, Z)
         x = zInt('x')
+        y = zInt('y')
+        # Focus on nat case now.
         test_data = [
             (IntVal(0), True, '(0::nat)'),
             (IntVal(10), True, '(10::nat)'),
@@ -32,15 +34,19 @@ class ProofrecTest(unittest.TestCase):
             (BoolVal(True), False, 'true'),
             (BoolVal(False), False, 'false'),
             (zInt('x'), True, 'x'),
+            (x + (-1) * y, True, 'x - y'),
+            (x + y, True, 'x + y'),
+            (x - y, True, 'x - y'),
+            (x - (-1) * y, True, 'x + y'),
             # (zInt('y'), False, 'y'),
             (F, True, 'F'),
             (F(0) * x, True, 'F(0) * x'),
         ]
 
         for i, j, k in test_data:
-            context.set_context('nat', vars={'x':'nat', 'F':'nat=>nat'})
+            context.set_context('nat', vars={'x':'nat', 'y':'nat',  'F':'nat=>nat'})
             k = parse_term(k)
-            vars = ['x']
+            vars = ['x', 'y']
             self.assertEqual(proofrec.translate(i, vars), k)
 
     def testRec1(self):
@@ -49,7 +55,9 @@ class ProofrecTest(unittest.TestCase):
             '~(s 1 = s 0 * B), s 0 = 0 & s 1 = 0 |- false'),
             ('s 0 + s 1 = A --> A + s 2 = B --> s 0 + s 2 + s 1 = B', 
             's 0 + s 1 = A, A + s 2 = B, ~(s 0 + s 2 + s 1 = B) |- false'),
-            ('A * B + 1 = 1 + B * A', '~(A * B + 1 = 1 + B * A) |- false')
+            ('A * B + 1 = 1 + B * A', '~(A * B + 1 = 1 + B * A) |- false'),
+            ('s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B', '~(s 1 = A * B), s 1 = s 0 * B & s 0 = A |- false'),
+            
         ]
 
 
