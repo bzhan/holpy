@@ -5,9 +5,1827 @@
                 "hint_rewrite"
             ],
             "name": "coprime",
-            "prop": "coprime a b ⟷ (∃x. ∃y. a * x + b * y = 1)",
+            "prop": "coprime a b ⟷ (∀d. divides d a ∧ divides d b ⟷ d = 1)",
             "ty": "def",
             "type": "nat ⇒ nat ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "coprime_gcd",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀d. divides d a ∧ divides d b ⟷ d = 1) ⟶ gcd a b = 1"
+                },
+                {
+                    "args": "∀d. divides d a ∧ divides d b ⟷ d = 1",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀d. divides d a ∧ divides d b ⟷ d = 1 ⊢ ∀d. divides d a ∧ divides d b ⟷ d = 1"
+                },
+                {
+                    "args": "divides_1, {x: a}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 a"
+                },
+                {
+                    "args": "divides_1, {x: b}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 b"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀d. divides d a ∧ divides d b ⟷ d = 1 ⊢ ∀b1. divides b1 a ⟶ divides b1 b ⟶ divides b1 1"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "0.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "divides d a",
+                    "id": "0.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides d a ⊢ divides d a"
+                },
+                {
+                    "args": "divides d b",
+                    "id": "0.3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides d b ⊢ divides d b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.3.3",
+                    "prevs": [
+                        "0.3.1",
+                        "0.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a, divides d b ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "divides d a, divides d b, ∀d. divides d a ∧ divides d b ⟷ d = 1 ⊢ d = 1"
+                },
+                {
+                    "args": "divides_one, divides 1 1",
+                    "id": "0.3.5",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ divides 1 1"
+                },
+                {
+                    "args": "divides d 1",
+                    "id": "0.3.6",
+                    "prevs": [
+                        "0.3.4",
+                        "0.3.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides d a, divides d b, ∀d. divides d a ∧ divides d b ⟷ d = 1 ⊢ divides d 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.7",
+                    "prevs": [
+                        "0.3.0",
+                        "0.3.1",
+                        "0.3.2",
+                        "0.3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "∀d. divides d a ∧ divides d b ⟷ d = 1 ⊢ ∀d. divides d a ⟶ divides d b ⟶ divides d 1"
+                },
+                {
+                    "args": "gcd_equals",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.1",
+                        "0.2",
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀d. divides d a ∧ divides d b ⟷ d = 1 ⊢ gcd a b = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀d. divides d a ∧ divides d b ⟷ d = 1) ⟶ gcd a b = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ gcd a b = 1 ⟶ (∀d. divides d a ∧ divides d b ⟷ d = 1)"
+                },
+                {
+                    "args": "gcd a b = 1",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "gcd a b = 1 ⊢ gcd a b = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "gcd a b = 1 ⊢ ∀d. divides d a ∧ divides d b ⟷ d = 1"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "gcd a b = 1 ⊢ divides d a ∧ divides d b ⟶ d = 1"
+                },
+                {
+                    "args": "divides d a ∧ divides d b",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides d a ∧ divides d b ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.1.1",
+                    "prevs": [
+                        "1.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d b ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.1.2",
+                    "prevs": [
+                        "1.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d b ⊢ divides d b"
+                },
+                {
+                    "args": "gcd_is_max",
+                    "id": "1.1.1.3",
+                    "prevs": [
+                        "1.1.1.1",
+                        "1.1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d b ⊢ divides d (gcd a b)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1.1.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "gcd a b = 1, divides d a ∧ divides d b ⊢ divides d 1"
+                },
+                {
+                    "args": "divides_one",
+                    "id": "1.1.1.5",
+                    "prevs": [
+                        "1.1.1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "gcd a b = 1, divides d a ∧ divides d b ⊢ d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.6",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "gcd a b = 1 ⊢ divides d a ∧ divides d b ⟶ d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "gcd a b = 1 ⊢ d = 1 ⟶ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "d = 1",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = 1 ⊢ d = 1"
+                },
+                {
+                    "args": "divides_1, {x: a}",
+                    "id": "1.1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 a"
+                },
+                {
+                    "args": "divides_1, {x: b}",
+                    "id": "1.1.2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.2.3",
+                    "prevs": [
+                        "1.1.2.1",
+                        "1.1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "d = 1, gcd a b = 1 ⊢ divides 1 a ∧ divides 1 b"
+                },
+                {
+                    "args": "divides d a ∧ divides d b",
+                    "id": "1.1.2.4",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "d = 1, gcd a b = 1 ⊢ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.5",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "gcd a b = 1 ⊢ d = 1 ⟶ divides d a ∧ divides d b"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "gcd a b = 1 ⊢ divides d a ∧ divides d b ⟷ d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "gcd a b = 1 ⊢ ∀d. divides d a ∧ divides d b ⟷ d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ gcd a b = 1 ⟶ (∀d. divides d a ∧ divides d b ⟷ d = 1)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀d. divides d a ∧ divides d b ⟷ d = 1) ⟷ gcd a b = 1"
+                },
+                {
+                    "args": "coprime_def, coprime a b ⟷ gcd a b = 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime a b ⟷ gcd a b = 1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a b ⟷ gcd a b = 1"
+                }
+            ],
+            "prop": "coprime a b ⟷ gcd a b = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_equals"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "0.3.1",
+                        "0.3.2"
+                    ],
+                    "goal_id": "0.3.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.0",
+                        "0.3.3"
+                    ],
+                    "goal_id": "0.3.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.3.4"
+                    ],
+                    "goal_id": "0.3.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_one"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.1",
+                        "1.1.1.2"
+                    ],
+                    "goal_id": "1.1.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "gcd_is_max"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.1.1.3"
+                    ],
+                    "goal_id": "1.1.1.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.4"
+                    ],
+                    "goal_id": "1.1.1.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_one"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                },
+                {
+                    "goal_id": "1.1.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_backward"
+            ],
+            "name": "coprime_sym",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ gcd a b = 1 ⟶ gcd b a = 1"
+                },
+                {
+                    "args": "gcd a b = 1",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "gcd a b = 1 ⊢ gcd a b = 1"
+                },
+                {
+                    "args": "gcd_comm, gcd b a = 1",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "gcd a b = 1 ⊢ gcd b a = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ gcd a b = 1 ⟶ gcd b a = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ gcd b a = 1 ⟶ gcd a b = 1"
+                },
+                {
+                    "args": "gcd b a = 1",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "gcd b a = 1 ⊢ gcd b a = 1"
+                },
+                {
+                    "args": "gcd_comm, gcd a b = 1",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "gcd b a = 1 ⊢ gcd a b = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ gcd b a = 1 ⟶ gcd a b = 1"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ gcd a b = 1 ⟷ gcd b a = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime a b ⟷ coprime b a",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime a b ⟷ coprime b a"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a b ⟷ coprime b a"
+                }
+            ],
+            "prop": "coprime a b ⟷ coprime b a",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_comm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "coprime_bezout",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides_one, gcd a b = 1 ⟷ divides (gcd a b) 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd a b = 1 ⟷ divides (gcd a b) 1"
+                },
+                {
+                    "args": "gcd_bezout, gcd a b = 1 ⟷ (∃x. ∃y. a * x - b * y = 1 ∨ b * x - a * y = 1)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd a b = 1 ⟷ (∃x. ∃y. a * x - b * y = 1 ∨ b * x - a * y = 1)"
+                },
+                {
+                    "args": "coprime_gcd, coprime a b ⟷ (∃x. ∃y. a * x - b * y = 1 ∨ b * x - a * y = 1)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime a b ⟷ (∃x. ∃y. a * x - b * y = 1 ∨ b * x - a * y = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a b ⟷ (∃x. ∃y. a * x - b * y = 1 ∨ b * x - a * y = 1)"
+                }
+            ],
+            "prop": "coprime a b ⟷ (∃x. ∃y. a * x - b * y = 1 ∨ b * x - a * y = 1)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_bezout"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_one"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "coprime_divprod",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides d (a * b)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides d (a * b) ⊢ divides d (a * b)"
+                },
+                {
+                    "args": "coprime d a",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d a ⊢ coprime d a"
+                },
+                {
+                    "args": "divides_lmul_gcd",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "divides d (a * b) ⊢ divides d (gcd d a * b)"
+                },
+                {
+                    "args": "coprime_gcd",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d a ⊢ gcd d a = 1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "coprime d a, divides d (a * b) ⊢ divides d (1 * b)"
+                },
+                {
+                    "args": "mult_1_left",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d a, divides d (a * b) ⊢ divides d b"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides d (a * b) ⟶ coprime d a ⟶ divides d b"
+                }
+            ],
+            "prop": "divides d (a * b) ⟶ coprime d a ⟶ divides d b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "divides_lmul_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_1_left"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "coprime_lmod",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1) ⟶ (∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1)"
+                },
+                {
+                    "args": "∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1"
+                },
+                {
+                    "args": "division_simp2, {m: a, n: n}",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n * (a DIV n) + a MOD n = a"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ a = n * (a DIV n) + a MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ a MOD n * x - n * y = 1 ⟶ (∃x1. ∃y1. (n * (a DIV n) + a MOD n) * x1 - n * y1 = 1 ∨ n * x1 - (n * (a DIV n) + a MOD n) * y1 = 1)"
+                },
+                {
+                    "args": "a MOD n * x - n * y = 1",
+                    "id": "0.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a MOD n * x - n * y = 1 ⊢ a MOD n * x - n * y = 1"
+                },
+                {
+                    "args": "∀a::nat. ∀b. ∀c. a - (b + c) = a - b - c",
+                    "id": "0.6.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::nat. ∀b. ∀c. a - (b + c) = a - b - c"
+                },
+                {
+                    "args": "∀a::nat. ∀b. a + b - a = b",
+                    "id": "0.6.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::nat. ∀b. a + b - a = b"
+                },
+                {
+                    "args": "n * (a DIV n) * x + a MOD n * x - n * (a DIV n) * x - n * y = 1",
+                    "id": "0.6.3",
+                    "prevs": [
+                        "0.6.2",
+                        "0.6.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * (a DIV n) * x + a MOD n * x - n * (a DIV n) * x - n * y = 1"
+                },
+                {
+                    "args": "mult_assoc, n * (a DIV n) * x + a MOD n * x - n * (a DIV n * x) - n * y = 1",
+                    "id": "0.6.4",
+                    "prevs": [
+                        "0.6.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * (a DIV n) * x + a MOD n * x - n * (a DIV n * x) - n * y = 1"
+                },
+                {
+                    "args": "n * (a DIV n) * x + a MOD n * x - (n * (a DIV n * x) + n * y) = 1",
+                    "id": "0.6.5",
+                    "prevs": [
+                        "0.6.1",
+                        "0.6.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * (a DIV n) * x + a MOD n * x - (n * (a DIV n * x) + n * y) = 1"
+                },
+                {
+                    "args": "distrib_l, n * (a DIV n) * x + a MOD n * x - n * (a DIV n * x + y) = 1",
+                    "id": "0.6.6",
+                    "prevs": [
+                        "0.6.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * (a DIV n) * x + a MOD n * x - n * (a DIV n * x + y) = 1"
+                },
+                {
+                    "args": "distrib_r, (n * (a DIV n) + a MOD n) * x - n * (a DIV n * x + y) = 1",
+                    "id": "0.6.7",
+                    "prevs": [
+                        "0.6.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ (n * (a DIV n) + a MOD n) * x - n * (a DIV n * x + y) = 1"
+                },
+                {
+                    "args": "disjI1, {A: (n * (a DIV n) + a MOD n) * x - n * (a DIV n * x + y) = 1, B: n * x - (n * (a DIV n) + a MOD n) * (a DIV n * x + y) = 1}",
+                    "id": "0.6.8",
+                    "prevs": [
+                        "0.6.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ (n * (a DIV n) + a MOD n) * x - n * (a DIV n * x + y) = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * (a DIV n * x + y) = 1"
+                },
+                {
+                    "args": "exI, {P: λy. (n * (a DIV n) + a MOD n) * x - n * y = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * y = 1, a: a DIV n * x + y}",
+                    "id": "0.6.9",
+                    "prevs": [
+                        "0.6.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃a1. (n * (a DIV n) + a MOD n) * x - n * a1 = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * a1 = 1"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (n * (a DIV n) + a MOD n) * x - n * y = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * y = 1, a: x}",
+                    "id": "0.6.10",
+                    "prevs": [
+                        "0.6.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a MOD n * x - n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃a1. ∃y. (n * (a DIV n) + a MOD n) * a1 - n * y = 1 ∨ n * a1 - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.6.11",
+                    "prevs": [
+                        "0.6.0",
+                        "0.6.10"
+                    ],
+                    "rule": "intros",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ a MOD n * x - n * y = 1 ⟶ (∃x1. ∃y1. (n * (a DIV n) + a MOD n) * x1 - n * y1 = 1 ∨ n * x1 - (n * (a DIV n) + a MOD n) * y1 = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * x - a MOD n * y = 1 ⟶ (∃x1. ∃y1. (n * (a DIV n) + a MOD n) * x1 - n * y1 = 1 ∨ n * x1 - (n * (a DIV n) + a MOD n) * y1 = 1)"
+                },
+                {
+                    "args": "n * x - a MOD n * y = 1",
+                    "id": "0.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n * x - a MOD n * y = 1 ⊢ n * x - a MOD n * y = 1"
+                },
+                {
+                    "args": "∀a::nat. ∀b. ∀c. a - (b + c) = a - b - c",
+                    "id": "0.7.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::nat. ∀b. ∀c. a - (b + c) = a - b - c"
+                },
+                {
+                    "args": "∀a::nat. ∀b. a + b - b = a",
+                    "id": "0.7.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::nat. ∀b. a + b - b = a"
+                },
+                {
+                    "args": "n * x + n * (a DIV n) * y - n * (a DIV n) * y - a MOD n * y = 1",
+                    "id": "0.7.3",
+                    "prevs": [
+                        "0.7.2",
+                        "0.7.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * x + n * (a DIV n) * y - n * (a DIV n) * y - a MOD n * y = 1"
+                },
+                {
+                    "args": "mult_assoc, n * x + n * (a DIV n * y) - n * (a DIV n) * y - a MOD n * y = 1",
+                    "id": "0.7.4",
+                    "prevs": [
+                        "0.7.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * x + n * (a DIV n * y) - n * (a DIV n) * y - a MOD n * y = 1"
+                },
+                {
+                    "args": "n * x + n * (a DIV n * y) - (n * (a DIV n) * y + a MOD n * y) = 1",
+                    "id": "0.7.5",
+                    "prevs": [
+                        "0.7.1",
+                        "0.7.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * x + n * (a DIV n * y) - (n * (a DIV n) * y + a MOD n * y) = 1"
+                },
+                {
+                    "args": "distrib_r, n * x + n * (a DIV n * y) - (n * (a DIV n) + a MOD n) * y = 1",
+                    "id": "0.7.6",
+                    "prevs": [
+                        "0.7.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * x + n * (a DIV n * y) - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "distrib_l, n * (x + a DIV n * y) - (n * (a DIV n) + a MOD n) * y = 1",
+                    "id": "0.7.7",
+                    "prevs": [
+                        "0.7.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * (x + a DIV n * y) - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "disjI2, {A: (n * (a DIV n) + a MOD n) * (x + a DIV n * y) - n * y = 1, B: n * (x + a DIV n * y) - (n * (a DIV n) + a MOD n) * y = 1}",
+                    "id": "0.7.8",
+                    "prevs": [
+                        "0.7.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ (n * (a DIV n) + a MOD n) * (x + a DIV n * y) - n * y = 1 ∨ n * (x + a DIV n * y) - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "exI, {P: λy1. (n * (a DIV n) + a MOD n) * (x + a DIV n * y) - n * y1 = 1 ∨ n * (x + a DIV n * y) - (n * (a DIV n) + a MOD n) * y1 = 1, a: y}",
+                    "id": "0.7.9",
+                    "prevs": [
+                        "0.7.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃a1. (n * (a DIV n) + a MOD n) * (x + a DIV n * y) - n * a1 = 1 ∨ n * (x + a DIV n * y) - (n * (a DIV n) + a MOD n) * a1 = 1"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. (n * (a DIV n) + a MOD n) * x - n * y = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * y = 1, a: x + a DIV n * y}",
+                    "id": "0.7.10",
+                    "prevs": [
+                        "0.7.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n * x - a MOD n * y = 1, a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃a1. ∃y. (n * (a DIV n) + a MOD n) * a1 - n * y = 1 ∨ n * a1 - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.7.11",
+                    "prevs": [
+                        "0.7.0",
+                        "0.7.10"
+                    ],
+                    "rule": "intros",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ n * x - a MOD n * y = 1 ⟶ (∃x1. ∃y1. (n * (a DIV n) + a MOD n) * x1 - n * y1 = 1 ∨ n * x1 - (n * (a DIV n) + a MOD n) * y1 = 1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.3",
+                        "0.6",
+                        "0.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃x. ∃y. (n * (a DIV n) + a MOD n) * x - n * y = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1",
+                    "id": "0.9",
+                    "prevs": [
+                        "0.5",
+                        "0.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1 ⊢ ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1"
+                },
+                {
+                    "args": "∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.3",
+                        "0.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1) ⟶ (∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1) ⟶ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1)"
+                },
+                {
+                    "args": "∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "a * x - n * y = 1 ∨ n * x - a * y = 1",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ a * x - n * y = 1 ∨ n * x - a * y = 1"
+                },
+                {
+                    "args": "division_simp2, {m: a, n: n}",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ n * (a DIV n) + a MOD n = a"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ a = n * (a DIV n) + a MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5",
+                        "1.3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ (n * (a DIV n) + a MOD n) * x - n * y = 1 ∨ n * x - (n * (a DIV n) + a MOD n) * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ (n * (a DIV n) + a MOD n) * x - n * y = 1 ⟶ (∃x1. ∃y1. a MOD n * x1 - n * y1 = 1 ∨ n * x1 - a MOD n * y1 = 1)"
+                },
+                {
+                    "args": "(n * (a DIV n) + a MOD n) * x - n * y = 1",
+                    "id": "1.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1 ⊢ (n * (a DIV n) + a MOD n) * x - n * y = 1"
+                },
+                {
+                    "args": "distrib_r",
+                    "id": "1.7.1",
+                    "prevs": [
+                        "1.7.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1 ⊢ n * (a DIV n) * x + a MOD n * x - n * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ a MOD n = 0 ⟶ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1)"
+                },
+                {
+                    "args": "a MOD n = 0",
+                    "id": "1.7.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a MOD n = 0 ⊢ a MOD n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.2.1",
+                    "prevs": [
+                        "1.7.2.0",
+                        "1.7.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1 ⊢ n * (a DIV n) * x + 0 * x - n * y = 1"
+                },
+                {
+                    "args": "nat_times_def_1",
+                    "id": "1.7.2.2",
+                    "prevs": [
+                        "1.7.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1 ⊢ n * (a DIV n) * x + 0 - n * y = 1"
+                },
+                {
+                    "args": "add_0_right",
+                    "id": "1.7.2.3",
+                    "prevs": [
+                        "1.7.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1 ⊢ n * (a DIV n) * x - n * y = 1"
+                },
+                {
+                    "args": "mult_assoc, n * (a DIV n * x) - n * y = 1",
+                    "id": "1.7.2.4",
+                    "prevs": [
+                        "1.7.2.3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ n * (a DIV n * x) - n * y = 1"
+                },
+                {
+                    "args": "left_sub_distrib, n * (a DIV n * x - y) = 1",
+                    "id": "1.7.2.5",
+                    "prevs": [
+                        "1.7.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ n * (a DIV n * x - y) = 1"
+                },
+                {
+                    "args": "nat_minus_def_1, n * (a DIV n * x - y) - 0 = 1",
+                    "id": "1.7.2.6",
+                    "prevs": [
+                        "1.7.2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ n * (a DIV n * x - y) - 0 = 1"
+                },
+                {
+                    "args": "nat_times_def_1, n * (a DIV n * x - y) - 0 * y = 1",
+                    "id": "1.7.2.7",
+                    "prevs": [
+                        "1.7.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ n * (a DIV n * x - y) - 0 * y = 1"
+                },
+                {
+                    "args": "n * (a DIV n * x - y) - a MOD n * y = 1",
+                    "id": "1.7.2.8",
+                    "prevs": [
+                        "1.7.2.0",
+                        "1.7.2.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ n * (a DIV n * x - y) - a MOD n * y = 1"
+                },
+                {
+                    "args": "disjI2, {A: a MOD n * (a DIV n * x - y) - n * y = 1, B: n * (a DIV n * x - y) - a MOD n * y = 1}",
+                    "id": "1.7.2.9",
+                    "prevs": [
+                        "1.7.2.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ a MOD n * (a DIV n * x - y) - n * y = 1 ∨ n * (a DIV n * x - y) - a MOD n * y = 1"
+                },
+                {
+                    "args": "exI, {P: λy1. a MOD n * (a DIV n * x - y) - n * y1 = 1 ∨ n * (a DIV n * x - y) - a MOD n * y1 = 1, a: y}",
+                    "id": "1.7.2.10",
+                    "prevs": [
+                        "1.7.2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ∃a1. a MOD n * (a DIV n * x - y) - n * a1 = 1 ∨ n * (a DIV n * x - y) - a MOD n * a1 = 1"
+                },
+                {
+                    "args": "exI, {P: λx. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1, a: a DIV n * x - y}",
+                    "id": "1.7.2.11",
+                    "prevs": [
+                        "1.7.2.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "a MOD n = 0, (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ∃a1. ∃y. a MOD n * a1 - n * y = 1 ∨ n * a1 - a MOD n * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.2.12",
+                    "prevs": [
+                        "1.7.2.0",
+                        "1.7.2.11"
+                    ],
+                    "rule": "intros",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ a MOD n = 0 ⟶ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ¬(a MOD n = 0) ⟶ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1)"
+                },
+                {
+                    "args": "¬(a MOD n = 0)",
+                    "id": "1.7.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a MOD n = 0) ⊢ ¬(a MOD n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.3.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(a MOD n = 0), (n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.3.2",
+                    "prevs": [
+                        "1.7.3.0",
+                        "1.7.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ¬(a MOD n = 0) ⟶ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.7.4",
+                    "prevs": [
+                        "1.7.2",
+                        "1.7.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n * (a DIV n) + a MOD n) * x - n * y = 1, a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.7.5",
+                    "prevs": [
+                        "1.7.0",
+                        "1.7.4"
+                    ],
+                    "rule": "intros",
+                    "th": "a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ (n * (a DIV n) + a MOD n) * x - n * y = 1 ⟶ (∃x1. ∃y1. a MOD n * x1 - n * y1 = 1 ∨ n * x1 - a MOD n * y1 = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.8",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ n * x - (n * (a DIV n) + a MOD n) * y = 1 ⟶ (∃x1. ∃y1. a MOD n * x1 - n * y1 = 1 ∨ n * x1 - a MOD n * y1 = 1)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.6",
+                        "1.7",
+                        "1.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a * x - n * y = 1 ∨ n * x - a * y = 1, ∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1 ⊢ ∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1"
+                },
+                {
+                    "args": "∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3",
+                        "1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1) ⟶ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x. ∃y. a MOD n * x - n * y = 1 ∨ n * x - a MOD n * y = 1) ⟷ (∃x. ∃y. a * x - n * y = 1 ∨ n * x - a * y = 1)"
+                },
+                {
+                    "args": "coprime_bezout, coprime (a MOD n) n ⟷ coprime a n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime (a MOD n) n ⟷ coprime a n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime (a MOD n) n ⟷ coprime a n"
+                }
+            ],
+            "prop": "coprime (a MOD n) n ⟷ coprime a n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_bezout"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "x,y"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "apply_forward_step",
+                    "param_m": "a",
+                    "param_n": "n",
+                    "theorem": "division_simp2"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.5"
+                    ],
+                    "goal_id": "0.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "a DIV n * x + y"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_l"
+                },
+                {
+                    "goal": "!a::nat. !b. !c. a-(b + c) = a - b - c",
+                    "goal_id": "0.6.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.6.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.1"
+                    ],
+                    "goal_id": "0.6.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal": "∀a::nat. ∀b. a + b - a = b",
+                    "goal_id": "0.6.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.6.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.6.2"
+                    ],
+                    "goal_id": "0.6.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.7.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "x + a DIV n * y"
+                },
+                {
+                    "goal_id": "0.7.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "0.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_l"
+                },
+                {
+                    "goal_id": "0.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "goal": "∀a::nat. ∀b. ∀c. a - (b + c) = a - b - c",
+                    "goal_id": "0.7.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.7.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.7.1"
+                    ],
+                    "goal_id": "0.7.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.7.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal": "∀a::nat. ∀b. a + b - b = a",
+                    "goal_id": "0.7.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.7.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.7.2"
+                    ],
+                    "goal_id": "0.7.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "x,y"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_forward_step",
+                    "param_m": "a",
+                    "param_n": "n",
+                    "theorem": "division_simp2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.5",
+                        "1.3"
+                    ],
+                    "goal_id": "1.6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.6"
+                    ],
+                    "goal_id": "1.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.0"
+                    ],
+                    "goal_id": "1.7.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "case": "a MOD n = 0",
+                    "goal_id": "1.7.2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.7.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.0",
+                        "1.7.1"
+                    ],
+                    "goal_id": "1.7.2.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.1"
+                    ],
+                    "goal_id": "1.7.2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.2"
+                    ],
+                    "goal_id": "1.7.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "(a DIV n) * x - y"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "1.7.2.0"
+                    ],
+                    "goal_id": "1.7.2.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_minus_def_1"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "left_sub_distrib"
+                },
+                {
+                    "goal_id": "1.7.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal_id": "1.7.3",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "n": "nat"
+            }
         },
         {
             "attributes": [
