@@ -17117,6 +17117,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
             "name": "gcd_assoc",
             "num_gaps": 0,
             "proof": [
@@ -22766,6 +22770,159 @@
             ],
             "ty": "thm",
             "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "gcd_mod",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nat_plus_def_1, gcd n (0 + d) = gcd n d",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd n (0 + d) = gcd n d"
+                },
+                {
+                    "args": "nat_times_def_1, gcd n (0 * n + d) = gcd n d",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd n (0 * n + d) = gcd n d"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n1. gcd n (n1 * n + d) = gcd n d ⟶ gcd n (Suc n1 * n + d) = gcd n d"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "gcd n (m * n + d) = gcd n d",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "gcd n (m * n + d) = gcd n d ⊢ gcd n (m * n + d) = gcd n d"
+                },
+                {
+                    "args": "gcd_add_left, gcd n (n + (m * n + d)) = gcd n d",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "gcd n (m * n + d) = gcd n d ⊢ gcd n (n + (m * n + d)) = gcd n d"
+                },
+                {
+                    "args": "add_assoc, gcd n (n + m * n + d) = gcd n d",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "gcd n (m * n + d) = gcd n d ⊢ gcd n (n + m * n + d) = gcd n d"
+                },
+                {
+                    "args": "nat_times_def_2, gcd n (Suc m * n + d) = gcd n d",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "gcd n (m * n + d) = gcd n d ⊢ gcd n (Suc m * n + d) = gcd n d"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀m. gcd n (m * n + d) = gcd n d ⟶ gcd n (Suc m * n + d) = gcd n d"
+                },
+                {
+                    "args": "nat_induct, {P: λm. gcd n (m * n + d) = gcd n d, x: m}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ gcd n (m * n + d) = gcd n d"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ gcd n (m * n + d) = gcd n d"
+                }
+            ],
+            "prop": "gcd n (m * n + d) = gcd n d",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "m"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_2"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_assoc"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_add_left"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "nat",
                 "m": "nat",
                 "n": "nat"
             }
