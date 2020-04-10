@@ -10429,6 +10429,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "divides_eq",
             "num_gaps": 0,
             "proof": [

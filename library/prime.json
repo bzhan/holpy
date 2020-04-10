@@ -1760,6 +1760,2491 @@
             }
         },
         {
+            "name": "gcd_coprime_rmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime a b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime a b ⊢ coprime a b"
+                },
+                {
+                    "args": "gcd_coprime_lmul, {a: a, b: b, c: c}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime a b ⊢ gcd (a * b) c = gcd a c * gcd b c"
+                },
+                {
+                    "args": "gcd_comm, gcd c (a * b) = gcd c a * gcd c b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime a b ⊢ gcd c (a * b) = gcd c a * gcd c b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a b ⟶ gcd c (a * b) = gcd c a * gcd c b"
+                }
+            ],
+            "prop": "coprime a b ⟶ gcd c (a * b) = gcd c a * gcd c b",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_comm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_coprime_lmul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "gcd_mul_coprime_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime a b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime a b ⊢ coprime a b"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "coprime a b ⊢ ∀d. divides d a ∧ divides d (b * c) ⟷ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "coprime a b ⊢ divides d a ∧ divides d (b * c) ⟶ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "divides d a ∧ divides d (b * c)",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides d a ∧ divides d (b * c) ⊢ divides d a ∧ divides d (b * c)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d (b * c) ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d (b * c) ⊢ divides d (b * c)"
+                },
+                {
+                    "args": "coprime_gcd",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime a b ⊢ gcd a b = 1"
+                },
+                {
+                    "args": "divides_gcd_right",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides d a ∧ divides d (b * c) ⊢ gcd a d = d"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides d a ∧ divides d (b * c) ⊢ d = gcd a d"
+                },
+                {
+                    "args": "gcd_comm",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime a b ⊢ gcd b a = 1"
+                },
+                {
+                    "args": "gcd_1_left, gcd 1 d = 1",
+                    "id": "1.1.7",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd 1 d = 1"
+                },
+                {
+                    "args": "gcd (gcd b a) d = 1",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.6",
+                        "1.1.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ gcd (gcd b a) d = 1"
+                },
+                {
+                    "args": "gcd_assoc, gcd b (gcd a d) = 1",
+                    "id": "1.1.9",
+                    "prevs": [
+                        "1.1.8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ gcd b (gcd a d) = 1"
+                },
+                {
+                    "args": "gcd_comm, gcd (gcd a d) b = 1",
+                    "id": "1.1.10",
+                    "prevs": [
+                        "1.1.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ gcd (gcd a d) b = 1"
+                },
+                {
+                    "args": "gcd d b = 1",
+                    "id": "1.1.11",
+                    "prevs": [
+                        "1.1.5",
+                        "1.1.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ gcd d b = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime d b",
+                    "id": "1.1.12",
+                    "prevs": [
+                        "1.1.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ coprime d b"
+                },
+                {
+                    "args": "coprime_divprod",
+                    "id": "1.1.13",
+                    "prevs": [
+                        "1.1.2",
+                        "1.1.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ divides d c"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.14",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime a b, divides d a ∧ divides d (b * c) ⊢ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.15",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.14"
+                    ],
+                    "rule": "intros",
+                    "th": "coprime a b ⊢ divides d a ∧ divides d (b * c) ⟶ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "coprime a b ⊢ divides d a ∧ divides d c ⟶ divides d a ∧ divides d (b * c)"
+                },
+                {
+                    "args": "divides d a ∧ divides d c",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides d a ∧ divides d c ⊢ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d c ⊢ divides d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides d a ∧ divides d c ⊢ divides d c"
+                },
+                {
+                    "args": "divides_lmul, {a: c, d: d, x: b}",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime a b, divides d a ∧ divides d c ⊢ divides d (b * c)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime a b, divides d a ∧ divides d c ⊢ divides d a ∧ divides d (b * c)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "coprime a b ⊢ divides d a ∧ divides d c ⟶ divides d a ∧ divides d (b * c)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime a b ⊢ divides d a ∧ divides d (b * c) ⟷ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "coprime a b ⊢ ∀d. divides d a ∧ divides d (b * c) ⟷ divides d a ∧ divides d c"
+                },
+                {
+                    "args": "gcd_eq",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime a b ⊢ gcd a (b * c) = gcd a c"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a b ⟶ gcd a (b * c) = gcd a c"
+                }
+            ],
+            "prop": "coprime a b ⟶ gcd a (b * c) = gcd a c",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "d"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_divprod"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_gcd_right"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.4"
+                    ],
+                    "goal_id": "1.1.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5"
+                    ],
+                    "goal_id": "1.1.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_comm"
+                },
+                {
+                    "goal_id": "1.1.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "gcd_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "gcd_comm"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.6"
+                    ],
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_1_left"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "gcd_mul_coprime_2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime a c",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime a c ⊢ coprime a c"
+                },
+                {
+                    "args": "gcd_mul_coprime_1, {a: a, b: c, c: b}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime a c ⊢ gcd a (c * b) = gcd a b"
+                },
+                {
+                    "args": "mult_comm, gcd a (b * c) = gcd a b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime a c ⊢ gcd a (b * c) = gcd a b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a c ⟶ gcd a (b * c) = gcd a b"
+                }
+            ],
+            "prop": "coprime a c ⟶ gcd a (b * c) = gcd a b",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_mul_coprime_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "gcd_mul_coprime_3",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "coprime b c",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime b c ⊢ coprime b c"
+                },
+                {
+                    "args": "gcd_mul_coprime_1, {c: a}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime b c ⊢ gcd b (c * a) = gcd b a"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "coprime b c ⊢ gcd a (b * c) = gcd a b * gcd a c"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime b c ⟶ gcd a (b * c) = gcd a b * gcd a c"
+                }
+            ],
+            "prop": "coprime b c ⟶ gcd a (b * c) = gcd a b * gcd a c",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_c": "a",
+                    "theorem": "gcd_mul_coprime_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "coprime_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "gcd_1_right, gcd a 1 = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd a 1 = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime a 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime a 1"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a 1"
+                }
+            ],
+            "prop": "coprime a 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_1_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "gcd_coprime",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(gcd a b = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(gcd a b = 0) ⊢ ¬(gcd a b = 0)"
+                },
+                {
+                    "args": "a = c * gcd a b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = c * gcd a b ⊢ a = c * gcd a b"
+                },
+                {
+                    "args": "b = d * gcd a b",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = d * gcd a b ⊢ b = d * gcd a b"
+                },
+                {
+                    "args": "gcd_mult_right, {k: gcd a b, m: c, n: d}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ gcd (c * gcd a b) (d * gcd a b) = gcd a b * gcd c d"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a = c * gcd a b ⊢ c * gcd a b = a"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "5",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "b = d * gcd a b ⊢ d * gcd a b = b"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a = c * gcd a b ⊢ gcd a (d * gcd a b) = gcd a b * gcd c d"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a = c * gcd a b, b = d * gcd a b ⊢ gcd a b = gcd a b * gcd c d"
+                },
+                {
+                    "args": "mult_1_right, gcd a b = gcd a b * 1",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd a b = gcd a b * 1"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "7"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "a = c * gcd a b, b = d * gcd a b ⊢ gcd a b * 1 = gcd a b * 1 * gcd c d"
+                },
+                {
+                    "args": "mult_assoc",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a = c * gcd a b, b = d * gcd a b ⊢ gcd a b * 1 = gcd a b * (1 * gcd c d)"
+                },
+                {
+                    "args": "mult_1_left",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a = c * gcd a b, b = d * gcd a b ⊢ gcd a b * 1 = gcd a b * gcd c d"
+                },
+                {
+                    "args": "eq_mult_lcancel",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "a = c * gcd a b, b = d * gcd a b ⊢ gcd a b = 0 ∨ 1 = gcd c d"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ gcd a b = 0 ⟶ gcd c d = 1"
+                },
+                {
+                    "args": "gcd a b = 0",
+                    "id": "13.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "gcd a b = 0 ⊢ gcd a b = 0"
+                },
+                {
+                    "args": "negE_gen, {A: gcd a b = 0, C: gcd c d = 1}",
+                    "id": "13.1",
+                    "prevs": [
+                        "0",
+                        "13.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "gcd a b = 0, ¬(gcd a b = 0) ⊢ gcd c d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "13.2",
+                    "prevs": [
+                        "13.0",
+                        "13.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ gcd a b = 0 ⟶ gcd c d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ 1 = gcd c d ⟶ gcd c d = 1"
+                },
+                {
+                    "args": "1 = gcd c d",
+                    "id": "14.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 = gcd c d ⊢ 1 = gcd c d"
+                },
+                {
+                    "args": "eq_sym_eq, gcd c d = 1",
+                    "id": "14.1",
+                    "prevs": [
+                        "14.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 = gcd c d, ¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ gcd c d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "14.2",
+                    "prevs": [
+                        "14.0",
+                        "14.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ 1 = gcd c d ⟶ gcd c d = 1"
+                },
+                {
+                    "args": "disjE",
+                    "id": "15",
+                    "prevs": [
+                        "12",
+                        "13",
+                        "14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ gcd c d = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime c d",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(gcd a b = 0), a = c * gcd a b, b = d * gcd a b ⊢ coprime c d"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(gcd a b = 0) ⟶ a = c * gcd a b ⟶ b = d * gcd a b ⟶ coprime c d"
+                }
+            ],
+            "prop": "¬(gcd a b = 0) ⟶ a = c * gcd a b ⟶ b = d * gcd a b ⟶ coprime c d",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_k": "gcd a b",
+                    "param_m": "c",
+                    "param_n": "d",
+                    "theorem": "gcd_mult_right"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal": "gcd a b = gcd a b * 1",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "7"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_1_left"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_mult_lcancel"
+                },
+                {
+                    "fact_ids": [
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "13.0"
+                    ],
+                    "goal_id": "13.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "14",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "14.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "gcd_coprime_exists",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ gcd a b = 0 ⟶ (∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d)"
+                },
+                {
+                    "args": "gcd a b = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "gcd a b = 0 ⊢ gcd a b = 0"
+                },
+                {
+                    "args": "gcd_zero",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "gcd a b = 0 ⊢ a = 0 ∧ b = 0"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "gcd a b = 0 ⊢ a = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "gcd a b = 0 ⊢ b = 0"
+                },
+                {
+                    "args": "nat_times_def_1, 0 = 0 * gcd 0 0",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = 0 * gcd 0 0"
+                },
+                {
+                    "args": "mult_0_right, (0::nat) = 1 * 0",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::nat) = 1 * 0"
+                },
+                {
+                    "args": "gcd_refl, 0 = 1 * gcd 0 0",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "gcd a b = 0 ⊢ 0 = 1 * gcd 0 0"
+                },
+                {
+                    "args": "coprime_1, {a: (0::nat)}",
+                    "id": "0.7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ coprime 0 1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.6",
+                        "0.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "gcd a b = 0 ⊢ 0 = 1 * gcd 0 0 ∧ coprime 0 1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.9",
+                    "prevs": [
+                        "0.4",
+                        "0.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "gcd a b = 0 ⊢ 0 = 0 * gcd 0 0 ∧ 0 = 1 * gcd 0 0 ∧ coprime 0 1"
+                },
+                {
+                    "args": "0 = 0 * gcd 0 b ∧ b = 1 * gcd 0 b ∧ coprime 0 1",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.3",
+                        "0.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "gcd a b = 0 ⊢ 0 = 0 * gcd 0 b ∧ b = 1 * gcd 0 b ∧ coprime 0 1"
+                },
+                {
+                    "args": "a = 0 * gcd a b ∧ b = 1 * gcd a b ∧ coprime 0 1",
+                    "id": "0.11",
+                    "prevs": [
+                        "0.2",
+                        "0.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "gcd a b = 0 ⊢ a = 0 * gcd a b ∧ b = 1 * gcd a b ∧ coprime 0 1"
+                },
+                {
+                    "args": "exI, {P: λa1. a = 0 * gcd a b ∧ b = a1 * gcd a b ∧ coprime 0 a1, a: (1::nat)}",
+                    "id": "0.12",
+                    "prevs": [
+                        "0.11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "gcd a b = 0 ⊢ ∃a1. a = 0 * gcd a b ∧ b = a1 * gcd a b ∧ coprime 0 a1"
+                },
+                {
+                    "args": "exI, {P: λc. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d, a: (0::nat)}",
+                    "id": "0.13",
+                    "prevs": [
+                        "0.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "gcd a b = 0 ⊢ ∃a1. ∃d. a = a1 * gcd a b ∧ b = d * gcd a b ∧ coprime a1 d"
+                },
+                {
+                    "args": "",
+                    "id": "0.14",
+                    "prevs": [
+                        "0.0",
+                        "0.13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ gcd a b = 0 ⟶ (∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(gcd a b = 0) ⟶ (∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d)"
+                },
+                {
+                    "args": "¬(gcd a b = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(gcd a b = 0) ⊢ ¬(gcd a b = 0)"
+                },
+                {
+                    "args": "gcd_divide1, {m: a, n: b}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd a b) a"
+                },
+                {
+                    "args": "gcd_divides2, {m: a, n: b}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd a b) b"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∃k. a = gcd a b * k"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∃k. b = gcd a b * k"
+                },
+                {
+                    "args": "k1, nat",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k1"
+                },
+                {
+                    "args": "a = gcd a b * k1",
+                    "id": "1.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = gcd a b * k1 ⊢ a = gcd a b * k1"
+                },
+                {
+                    "args": "k2, nat",
+                    "id": "1.7",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k2"
+                },
+                {
+                    "args": "b = gcd a b * k2",
+                    "id": "1.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b = gcd a b * k2 ⊢ b = gcd a b * k2"
+                },
+                {
+                    "args": "mult_comm, a = k1 * gcd a b",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ a = k1 * gcd a b"
+                },
+                {
+                    "args": "mult_comm, b = k2 * gcd a b",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ b = k2 * gcd a b"
+                },
+                {
+                    "args": "gcd_coprime",
+                    "id": "1.11",
+                    "prevs": [
+                        "1.0",
+                        "1.9",
+                        "1.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ coprime k1 k2"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.12",
+                    "prevs": [
+                        "1.10",
+                        "1.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ b = k2 * gcd a b ∧ coprime k1 k2"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.13",
+                    "prevs": [
+                        "1.9",
+                        "1.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ a = k1 * gcd a b ∧ b = k2 * gcd a b ∧ coprime k1 k2"
+                },
+                {
+                    "args": "exI, {P: λd. a = k1 * gcd a b ∧ b = d * gcd a b ∧ coprime k1 d, a: k2}",
+                    "id": "1.14",
+                    "prevs": [
+                        "1.13"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ ∃a1. a = k1 * gcd a b ∧ b = a1 * gcd a b ∧ coprime k1 a1"
+                },
+                {
+                    "args": "exI, {P: λc. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d, a: k1}",
+                    "id": "1.15",
+                    "prevs": [
+                        "1.14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(gcd a b = 0), a = gcd a b * k1, b = gcd a b * k2 ⊢ ∃a1. ∃d. a = a1 * gcd a b ∧ b = d * gcd a b ∧ coprime a1 d"
+                },
+                {
+                    "args": "∃k. b = gcd a b * k, ∃k. a = gcd a b * k",
+                    "id": "1.16",
+                    "prevs": [
+                        "1.0",
+                        "1.3",
+                        "1.5",
+                        "1.6",
+                        "1.4",
+                        "1.7",
+                        "1.8",
+                        "1.15"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(gcd a b = 0) ⟶ (∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d"
+                }
+            ],
+            "prop": "∃c. ∃d. a = c * gcd a b ∧ b = d * gcd a b ∧ coprime c d",
+            "steps": [
+                {
+                    "case": "gcd a b = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "gcd_zero"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::nat)"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "apply_backward_step",
+                    "param_a": "(1::nat)",
+                    "theorem": "exI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_refl"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "a",
+                    "param_n": "b",
+                    "theorem": "gcd_divide1"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "param_m": "a",
+                    "param_n": "b",
+                    "theorem": "gcd_divides2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "exists_elim",
+                    "names": "k1"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.7",
+                    "method_name": "exists_elim",
+                    "names": "k2"
+                },
+                {
+                    "goal_id": "1.9",
+                    "method_name": "inst_exists_goal",
+                    "s": "k1"
+                },
+                {
+                    "goal_id": "1.9",
+                    "method_name": "inst_exists_goal",
+                    "s": "k2"
+                },
+                {
+                    "goal_id": "1.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "1.11",
+                    "method_name": "apply_backward_step",
+                    "param_a": "a",
+                    "param_b": "b",
+                    "theorem": "gcd_coprime"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "coprime_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "gcd_zero_right, gcd d 0 = 1 ⟷ d = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ gcd d 0 = 1 ⟷ d = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime d 0 ⟷ d = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime d 0 ⟷ d = 1"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d 0 ⟷ d = 1"
+                }
+            ],
+            "prop": "coprime d 0 ⟷ d = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_zero_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "coprime_mul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime d a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d a ⊢ coprime d a"
+                },
+                {
+                    "args": "coprime d b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d b ⊢ coprime d b"
+                },
+                {
+                    "args": "coprime_gcd",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d a ⊢ gcd d a = 1"
+                },
+                {
+                    "args": "coprime_gcd",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d b ⊢ gcd d b = 1"
+                },
+                {
+                    "args": "gcd_mul_coprime_1, {c: b}",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime d a ⊢ gcd d (a * b) = gcd d b"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "coprime d a, coprime d b ⊢ gcd d (a * b) = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime d (a * b)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime d a, coprime d b ⊢ coprime d (a * b)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d a ⟶ coprime d b ⟶ coprime d (a * b)"
+                }
+            ],
+            "prop": "coprime d a ⟶ coprime d b ⟶ coprime d (a * b)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "param_c": "b",
+                    "theorem": "gcd_mul_coprime_1"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "coprime_lmul2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime d (a * b)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d (a * b) ⊢ coprime d (a * b)"
+                },
+                {
+                    "args": "coprime_gcd",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d (a * b) ⊢ gcd d (a * b) = 1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d (a * b) ⊢ 1 = gcd d (a * b)"
+                },
+                {
+                    "args": "gcd_divide1, {m: d, n: b}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd d b) d"
+                },
+                {
+                    "args": "gcd_divides2, {m: d, n: b}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd d b) b"
+                },
+                {
+                    "args": "divides_lmul, {a: b, d: gcd d b, x: a}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime d (a * b) ⊢ divides (gcd d b) (a * b)"
+                },
+                {
+                    "args": "gcd_is_max",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d (a * b) ⊢ divides (gcd d b) (gcd d (a * b))"
+                },
+                {
+                    "args": "divides (gcd d b) 1",
+                    "id": "7",
+                    "prevs": [
+                        "2",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "coprime d (a * b) ⊢ divides (gcd d b) 1"
+                },
+                {
+                    "args": "divides_1, {x: gcd d b}",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 (gcd d b)"
+                },
+                {
+                    "args": "divides_antisym",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d (a * b) ⊢ gcd d b = 1"
+                },
+                {
+                    "args": "coprime_gcd, coprime d b",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime d (a * b) ⊢ coprime d b"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d (a * b) ⟶ coprime d b"
+                }
+            ],
+            "prop": "coprime d (a * b) ⟶ coprime d b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_gcd"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_is_max"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_divide1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_lmul"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "gcd_divides2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "coprime_rmul2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime d (a * b)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d (a * b) ⊢ coprime d (a * b)"
+                },
+                {
+                    "args": "mult_comm",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "coprime d (a * b) ⊢ coprime d (b * a)"
+                },
+                {
+                    "args": "coprime_lmul2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d (a * b) ⊢ coprime d a"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d (a * b) ⟶ coprime d a"
+                }
+            ],
+            "prop": "coprime d (a * b) ⟶ coprime d a",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_lmul2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "coprime_rmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ coprime d (a * b) ⟶ coprime d a ∧ coprime d b"
+                },
+                {
+                    "args": "coprime d (a * b)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d (a * b) ⊢ coprime d (a * b)"
+                },
+                {
+                    "args": "coprime_rmul2",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d (a * b) ⊢ coprime d a"
+                },
+                {
+                    "args": "coprime_lmul2",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d (a * b) ⊢ coprime d b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d (a * b) ⊢ coprime d a ∧ coprime d b"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d (a * b) ⟶ coprime d a ∧ coprime d b"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ coprime d a ∧ coprime d b ⟶ coprime d (a * b)"
+                },
+                {
+                    "args": "coprime d a ∧ coprime d b",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d a ∧ coprime d b ⊢ coprime d a ∧ coprime d b"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d a ∧ coprime d b ⊢ coprime d a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d a ∧ coprime d b ⊢ coprime d b"
+                },
+                {
+                    "args": "coprime_mul",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d a ∧ coprime d b ⊢ coprime d (a * b)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d a ∧ coprime d b ⟶ coprime d (a * b)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ coprime d (a * b) ⟷ coprime d a ∧ coprime d b"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d (a * b) ⟷ coprime d a ∧ coprime d b"
+                }
+            ],
+            "prop": "coprime d (a * b) ⟷ coprime d a ∧ coprime d b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_rmul2"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_lmul2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "coprime_lmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime_rmul, coprime d (a * b) ⟷ coprime d a ∧ coprime d b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime d (a * b) ⟷ coprime d a ∧ coprime d b"
+                },
+                {
+                    "args": "coprime_sym, coprime (a * b) d ⟷ coprime a d ∧ coprime b d",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ coprime (a * b) d ⟷ coprime a d ∧ coprime b d"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime (a * b) d ⟷ coprime a d ∧ coprime b d"
+                }
+            ],
+            "prop": "coprime (a * b) d ⟷ coprime a d ∧ coprime b d",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_sym"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_rmul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "d": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "coprime_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime d a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d a ⊢ coprime d a"
+                },
+                {
+                    "args": "coprime_1, {a: d}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ coprime d 1"
+                },
+                {
+                    "args": "nat_nat_power_def_1, coprime d (a ^ (0::nat))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime d a ⊢ coprime d (a ^ (0::nat))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "coprime d a ⊢ ∀n. coprime d (a ^ n) ⟶ coprime d (a ^ Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "coprime d (a ^ n)",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime d (a ^ n) ⊢ coprime d (a ^ n)"
+                },
+                {
+                    "args": "coprime_mul",
+                    "id": "3.2",
+                    "prevs": [
+                        "0",
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "coprime d a, coprime d (a ^ n) ⊢ coprime d (a * a ^ n)"
+                },
+                {
+                    "args": "nat_nat_power_def_2, coprime d (a ^ Suc n)",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime d a, coprime d (a ^ n) ⊢ coprime d (a ^ Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "coprime d a ⊢ ∀n. coprime d (a ^ n) ⟶ coprime d (a ^ Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λn::nat. coprime d (a ^ n), x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime d a ⊢ coprime d (a ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime d a ⟶ coprime d (a ^ n)"
+                }
+            ],
+            "prop": "coprime d a ⟶ coprime d (a ^ n)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "d": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "coprime_exp_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "coprime a b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "coprime a b ⊢ coprime a b"
+                },
+                {
+                    "args": "coprime_sym, coprime b a",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime a b ⊢ coprime b a"
+                },
+                {
+                    "args": "coprime_exp, {a: a, d: b, n: n}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime a b ⊢ coprime b (a ^ n)"
+                },
+                {
+                    "args": "coprime_sym, coprime (a ^ n) b",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "coprime a b ⊢ coprime (a ^ n) b"
+                },
+                {
+                    "args": "coprime_exp, {a: b, d: a ^ n, n: n}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "coprime a b ⊢ coprime (a ^ n) (b ^ n)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ coprime a b ⟶ coprime (a ^ n) (b ^ n)"
+                }
+            ],
+            "prop": "coprime a b ⟶ coprime (a ^ n) (b ^ n)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_exp"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_sym"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "coprime_exp"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_sym"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "n": "nat"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
