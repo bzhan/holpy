@@ -18625,6 +18625,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "nat_minus_refl",
             "num_gaps": 0,
             "proof": [
