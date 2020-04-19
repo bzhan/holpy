@@ -1,24 +1,23 @@
 import z3
 from z3.z3consts import *
-
+from data.integer import int_norm_macro
 from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar
 from kernel.term import *
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm
+from kernel.macro import Macro
+from kernel.theory import check_proof, register_macro
 from kernel import theory
 from logic import basic, context, matcher
 from logic.logic import apply_theorem, resolution
-
-from collections import deque, namedtuple
+from collections import deque
 from functools import reduce
 import operator
 
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
-            'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def', 'lambda',
-            'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk')
-
-Node = namedtuple('Node', ['term', 'tree'])
+            'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def',
+            'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro')
 
 def Z3Term(proof):
     """Index all terms in z3 proof."""
@@ -29,7 +28,7 @@ def Z3Term(proof):
         if term not in s.keys():
             s[term] = id
             id += 1
-        if term.decl().name() in method:
+        if not z3.is_quantifier(term) and term.decl().name() in method:
             for child in term.children():
                 rec(child)
     rec(proof)
@@ -46,7 +45,7 @@ def Z3TermGraph(proof):
         for child in proof.children():
             if proof in s.keys():
                 r[s[proof]].append(s[child])
-            if child.decl().name() in method:
+            if not z3.is_quantifier(child) and child.decl().name() in method:
                 rec(child)
 
     rec(proof)
@@ -75,175 +74,95 @@ def translate_type(T):
     if T == Z3_BOOL_SORT:
         return BoolType
     elif T == Z3_INT_SORT:
-        return NatType
+        return IntType
     elif T == Z3_REAL_SORT:
         return RealType
     else:
         raise NotImplementedError
 
-# def translate_term(term, *args, isNat=False):
-#     """Convert a z3 term into holpy term. If term is a variable in nat, its type is NatType."""
-#     assert all(isinstance(arg, Term) for arg in args)
-
-#     kind = term.decl().kind() # kind of the term  
-#     name = term.decl().name() # name of the term
-#     sort = term.sort_kind() #sort of the term
-    
-#     if z3.is_int_value(term):
-#         n = term.as_long()
-#         if n < 0:
-#             return Int(n)
-#         return Nat(n) if isNat else Int(n)
-#     elif z3.is_algebraic_value(term):
-#         return Real(term.as_fraction())
-#     elif name == 'true':
-#         return true
-#     elif name == 'false':
-#         return false
-#     elif z3.is_const(term): # note the difference of variable notion between SMT and HOL
-#         return Var(name, NatType) if isNat else Var(name, translate_type(sort))
-#     elif kind == Z3_OP_UMINUS: # -x
-#         return -Var(term.arg(0).decl().name(), translate_type(term.sort_kind()))
-#     elif kind == Z3_OP_NOT:
-#         return Not(args[0]) # ¬x
-#     elif kind == Z3_OP_ADD: # (+ x y z)
-#         return sum(args)
-#     elif kind == Z3_OP_SUB: # (- x y z)
-#         return reduce(operator.sub, args[1:], args[0])
-#     elif kind == Z3_OP_MUL: # (* x y z)
-#         return reduce(operator.mul, args[1:], args[0])
-#     elif kind == Z3_OP_DIV: # (/ x y z)
-#         return reduce(operator.truediv, args[1:], args[0])
-#     elif kind == Z3_OP_AND: # (and x y z)
-#         return And(*args)
-#     elif kind == Z3_OP_OR: # (or x y z)
-#         return Or(*args)
-#     elif kind == Z3_OP_IMPLIES: # (=> x y)
-#         return Implies(*args) # note: z3 implies is binary.
-#     elif kind == Z3_OP_EQ: # (= x y)
-#         return Eq(*args)
-#     elif kind == Z3_OP_GT: # (> x y)
-#         return greater(translate_type(sort))(*args)
-#     elif kind == Z3_OP_GE: # (≥ x y)
-#         return greater_eq(translate_type(sort))(*args)
-#     elif kind == Z3_OP_LT: # (< x y)
-#         return less(translate_type(sort))(*args)
-#     elif kind == Z3_OP_LE: # (≤ x y)
-#         return less_eq(translate_type(sort))(*args)
-#     elif kind == Z3_OP_UNINTERPRETED: # s(0)
-#         types = [translate_type(term.arg(i).sort_kind()) for i in range(term.num_args())]
-#         print(*types)
-#         f = Var(name, TFun(types))
-#         return f(*args)
-#     else:
-#         raise NotImplementedError
-
-def sep_expr(term, typ):
-    """Separate the z3 addition, subtraction or multiplication expression term."""
-    assert z3.is_add(term) or z3.is_mul(term) or z3.is_sub(term)
-    children = []
-    def rec(term, typ=''):
-        if typ == 'add':
-            if z3.is_add(term):
-                for c in term.children():
-                    rec(c, 'add')
-            else:
-                children.append(term)
-        elif typ == 'sub':
-            if z3.is_sub(term):
-                for c in term.children():
-                    rec(c, 'sub')
-            else:
-                children.append(term)
-        elif typ == 'mul':
-            if z3.is_mul(term):
-                for c in term.children():
-                    rec(c, 'mul')
-            else:
-                children.append(term)
-        
-    rec(term, typ)
-    return children
-
-
-def translate(term, vars=[], isNat=True):
-
-    if isinstance(term, z3.FuncDeclRef):
+def translate(term, bounds=dict()):
+    """Transalte z3 term into holpy term.
+       bounds represents bounded variables, key is de-Bruijn index of the var, value is the bounded variable already in holpy.
+    """
+    if z3.is_func_decl(term): # z3 function, including name, sort of each arguments, constant is function with 0 arg.
         arity = term.arity()
         rangeT = translate_type(term.range().kind())
         domainT = [translate_type(term.domain(i).kind()) for i in range(arity)]
         types = domainT + [rangeT]
         return Var(term.name(), TFun(*types))
-    elif isinstance(term, z3.ExprRef):
-        kind = term.decl().kind() # kind of the term  
-        name = term.decl().name() # name of the term
-        sort = term.sort_kind() #sort of the term
-
-        if z3.is_int_value(term):
-            n = term.as_long()
-            if n < 0:
-                return Int(n)
-            return Nat(n) if isNat else Int(n)
-        elif z3.is_algebraic_value(term):
+    elif z3.is_quantifier(term): 
+        body = term.body()
+        var = tuple(Var(term.var_name(i), translate_type(term.var_sort(i).kind())) for i in range(term.num_vars()))
+        bounds = {i : var[i] for i in range(term.num_vars())}
+        # patterns = tuple(term.patterns(i) for i in range(term.num_patterns()))
+        if term.is_lambda():
+            if term.body().decl().name() == 'refl':
+                lhs = translate(body.arg(0).arg(0), bounds)
+                return ProofTerm.reflexive(Lambda(*var, lhs))
+            else:
+                raise NotImplementedError
+            
+            return Lambda(*var, translate(body, bounds))
+        elif term.is_exists():
+            return Exists(*var, translate(body, bounds))
+        elif term.is_forall():
+            return Forall(*var, translate(body, bounds))
+        else:
+            raise NotImplementedError
+    elif z3.is_expr(term):
+        if z3.is_var(term):
+            return bounds[z3.get_var_index(term)]
+        kind = term.decl().kind() # term function application
+        sort = translate_type(term.sort_kind()) # term sort
+        args = tuple(translate(term.arg(i), bounds) for i in range(term.num_args()))
+        if z3.is_int_value(term): # int number
+            return Int(term.as_long())
+        elif z3.is_algebraic_value(term): # real number
             return Real(term.as_fraction())
-        elif name == 'true':
+        elif z3.is_true(term):
             return true
-        elif name == 'false':
+        elif z3.is_false(term):
             return false
-        elif z3.is_const(term): # note the difference of variable notion between SMT and HOL
-            return Var(name, NatType) if name in vars else Var(name, IntType)
-        elif kind == Z3_OP_ADD:
-            # bug: sum() occurs 0 in the start.
-            children = sep_expr(term, 'add')
-            # If term looks like x + (-1)*y convert it to x - y
-            # So far assume the first item is positive in nat.
-            if isNat:
-                addition = translate(children[0], vars)
-                for c in children[1:]:
-                    if z3.is_mul(c): # -1 * y
-                        c_children = sep_expr(c, 'mul')
-                        if z3.is_int_value(c_children[0]) and c_children[0].as_long() < 0:
-                            addition -= translate(reduce(operator.mul, c_children[2:], c_children[1]), vars)
-                        else:
-                            addition += translate(c, vars)
-                    else:
-                        addition += translate(c, vars)
-                return addition
-            return reduce(lambda x, y: x + y, [translate(term.arg(i), vars) for i in range(term.num_args())])
-        elif kind == Z3_OP_SUB: # dual
-            children = sep_expr(term, 'sub')
-            if isNat:
-                addition = translate(children[0], vars)
-                for c in children[1:]:
-                    if z3.is_mul(c): # -1 * y
-                        c_children = sep_expr(c, 'mul')
-                        if z3.is_int_value(c_children[0]) and c_children[0].as_long() < 0:
-                            addition += translate(reduce(operator.mul, c_children[2:], c_children[1]), vars)
-                        else:
-                            addition -= translate(c, vars)
-                    else:
-                        addition -= translate(c, vars)
-                return addition
-            return reduce(lambda x, y: x + y, [translate(term.arg(i), vars) for i in range(term.num_args())])
-        elif kind == Z3_OP_MUL:
-            args = [translate(term.arg(i), vars) for i in range(term.num_args())]
-            return reduce(operator.mul, args[1:], args[0])
-        elif kind == Z3_OP_EQ:
-            t_lhs = translate(term.arg(0), vars)
-            t_rhs = translate(term.arg(1), vars)
-            return Eq(t_lhs, t_rhs)
-        elif kind == Z3_OP_NOT:
-            return Not(translate(term.arg(0), vars))
-        elif kind == Z3_OP_AND:
-            args = [translate(term.arg(i), vars) for i in range(term.num_args())]
+        elif z3.is_const(term): # incomplete, is_const(Int(1)) == true
+            return Var(term.decl().name(), IntType)
+        elif z3.is_add(term):
+            return reduce(lambda x, y: x + y, args)
+        elif term.decl().kind() == Z3_OP_UMINUS:
+            return uminus(sort)(*args)
+        elif z3.is_sub(term):
+            return reduce(lambda x, y: x - y, args)
+        elif z3.is_mul(term):
+            return reduce(lambda x, y: x * y, args)
+        elif z3.is_div(term) or z3.is_idiv(term):
+            return divides(sort)(*args)
+        elif z3.is_eq(term):
+            return Eq(*args)
+        elif z3.is_and(term):
             return And(*args)
-        elif kind == Z3_OP_OR:
-            args = [translate(term.arg(i), vars) for i in range(term.num_args())]
+        elif z3.is_or(term):
             return Or(*args)
+        elif z3.is_implies(term):
+            return Implies(*args)
+        elif z3.is_not(term):
+            return Not(*args)
+        elif z3.is_lt(term):
+            return less(sort)(*args)
+        elif z3.is_le(term):
+            return less_eq(sort)(*args)
+        elif z3.is_gt(term):
+            return greater(sort)(*args)
+        elif z3.is_ge(term):
+            return greater_eq(sort)(*args)
+        elif z3.is_distinct(term):
+            ineq = [Eq(translate(args[i], bounds), translate(args[j]), bounds) for j in range(i+1, len(args)) 
+                        for i in range(len(args))]
+            return Not(Or(*ineq))
         elif kind == Z3_OP_UNINTERPRETED: # s(0)
-            uf = translate(term.decl())
-            args = [translate(term.arg(i), vars) for i in range(term.num_args())]
+            uf = translate(term.decl(), bounds)
+            args = [translate(term.arg(i), bounds) for i in range(term.num_args())]
             return uf(*args)
+        elif z3.is_bool(term) and kind == Z3_OP_OEQ:
+            return Eq(translate(term.arg(0)), translate(term.arg(0)))
         else:
             raise NotImplementedError
     else:
@@ -298,12 +217,12 @@ def schematic_rules(thms, lhs, rhs):
     return None
 
 def rewrite(t):
-    def norm_nat(t):
+    def norm_int(t):
         """Use nat norm macro to normalize nat expression."""
-        assert t.is_equals() and t.lhs.get_type() == NatType and t.rhs.get_type() == NatType
-        context.set_context('nat')
-        macro = theory.global_macros['nat_norm']
-        return macro.get_proof_term(t, [])
+        # context.set_context('int')
+        # print("t: ", t)
+        # assert t.is_equals() and t.lhs.get_type() == IntType and t.rhs.get_type() == IntType
+        return int_norm_macro().get_proof_term(t, [])
 
     def equal_is_true(pt):
         """pt is ⊢ x = y, return: ⊢ (x = y) ↔ true"""
@@ -316,19 +235,19 @@ def rewrite(t):
     if t.lhs == t.rhs:
         return ProofTerm.reflexive(t.lhs)
 
-    pt = schematic_rules(['r001', 'r002', 'r038', 'r062'], t.lhs, t.rhs)  # rewrite by schematic theorems 
+    pt = schematic_rules(['r001', 'r002', 'r038', 'r065'], t.lhs, t.rhs)  # rewrite by schematic theorems 
     if pt is None:
         if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
             eq = t.lhs
-            if eq.lhs.get_type() == NatType: # Maybe can reuse schematic theorems to prove ⊢ (x = y) in further
-                pt_eq = norm_nat(eq)
+            if eq.lhs.get_type() == IntType: # Maybe can reuse schematic theorems to prove ⊢ (x = y) in further
+                pt_eq = norm_int(eq)
                 return equal_is_true(pt_eq)
             else:
                 raise NotImplementedError
         elif t.is_equals(): # Equations that can't match with schematic theorems
             # Try nat norm macro:
-            if t.lhs.get_type() == NatType:
-                return norm_nat(t)
+            if t.lhs.get_type() == IntType:
+                return norm_int(t)
             else:
                 raise NotImplementedError
         else:
@@ -336,6 +255,82 @@ def rewrite(t):
     else:
         return pt  
 
+def norm_nnf(term):
+    # incomplete
+    def rec(pt):
+        fm = pt.prop
+        if fm.is_conj():
+            pt1 = rec(ProofTerm.assume(fm.arg1)).implies_intr(fm.arg1) 
+            pt2 = rec(ProofTerm.assume(fm.arg)).implies_intr(fm.arg)
+            pt3 = apply_theorem('conjD1', pt)
+            pt4 = apply_theorem('conjD2', pt)
+            pt5 = pt1.implies_elim(pt3)
+            pt6 = pt2.implies_elim(pt4)
+            return apply_theorem('conjI', pt5, pt6)
+        elif fm.is_disj():
+            pt1 = rec(ProofTerm.assume(fm.arg1))
+            pt2 = rec(ProofTerm.assume(fm.arg))
+            pt3 = apply_theorem('disjI1', pt1, inst=Inst(B=pt2.prop))
+            pt4 = apply_theorem('disjI2', pt2, inst=Inst(A=pt1.prop))
+            pt5 = apply_theorem('disjE', pt, pt3.implies_intr(pt3.hyps[0]), pt4.implies_intr(pt4.hyps[0]))
+            return pt5
+        elif fm.is_implies():
+            pt1 = apply_theorem('disj_conv_imp', inst=Inst(A=fm.arg1, B=fm.arg))
+            pt2 = pt1.symmetric()
+            return rec(pt2.equal_elim(pt))
+        elif fm.is_not():
+            p = fm.arg
+            if p.is_not():
+                pt1 = apply_theorem('double_neg', inst=Inst(A=p.arg))
+                return rec(pt1.equal_elim(pt))
+            elif p.is_conj():
+                pt1 = apply_theorem('de_morgan_thm1', inst=Inst(A=p.arg1, B=p.arg))
+                pt7 = pt1.equal_elim(pt)
+                pt2 = rec(ProofTerm.assume(pt7.prop.arg1))
+                pt3 = rec(ProofTerm.assume(pt7.prop.arg))
+                pt4 = apply_theorem('disjI1', pt2, inst=Inst(B=pt3.prop))
+                pt5 = apply_theorem('disjI2', pt3, inst=Inst(A=pt2.prop))
+                pt6 = apply_theorem('disjE', pt7, pt4.implies_intr(pt4.hyps[0]), pt5.implies_intr(pt5.hyps[0]))
+                return pt6
+            elif p.is_disj():
+                pt1 = apply_theorem('de_morgan_thm2', inst=Inst(A=p.arg1, B=p.arg))
+                pt7 = pt1.equal_elim(pt)
+                pt2 = rec(ProofTerm.assume(pt7.prop.arg1)).implies_intr(pt7.prop.arg1)
+                pt3 = rec(ProofTerm.assume(pt7.prop.arg)).implies_intr(pt7.prop.arg)
+                pt4 = apply_theorem('conjD1', pt7)
+                pt5 = apply_theorem('conjD2', pt7)
+                pt6 = pt2.implies_elim(pt4)
+                pt7 = pt3.implies_elim(pt5)
+                pt8 = apply_theorem('conjI', pt6, pt7)
+                return pt8
+            elif p.is_forall():
+                pt1 = apply_theorem('not_all', inst=Inst(p.arg.fun))
+                pt2 = pt1.equal_elim(pt)
+                pt3 = rec(ProofTerm.assume(pt2.prop.arg.body))
+            else:
+                return pt
+        else:
+            return pt
+    return rec(ProofTerm.assume(term))
+
+def quant_inst(p):
+    basic.load_theory('logic')
+    pat = ProofTerm.theorem('forall_elim')
+    f = Implies(p.arg1.arg, p.arg)
+    inst = matcher.first_order_match(pat.prop, f)
+    pt1 = apply_theorem('forall_elim', inst=inst)
+    pt2 = apply_theorem('disj_conv_imp', inst=Inst(A=pt1.prop.arg1, B=pt1.prop.arg)).symmetric()
+    pt3 = pt2.equal_elim(pt1)
+    return pt3
+
+def quant_intro(p, q):
+    basic.load_theory('logic')
+    pat = ProofTerm.theorem('quant_intro')
+    f = Implies(p.prop, q)
+    inst = matcher.first_order_match(pat.prop, f)
+    pt1 = apply_theorem('quant_intro', inst=inst)
+    pt3 = pt1.implies_elim(p)
+    return pt3
 
 def convert_method(term, *args):
     name = term.decl().name()
@@ -349,17 +344,27 @@ def convert_method(term, *args):
     elif name == 'trans':
         arg1, arg2, _ = args
         return arg1.transitive(arg2)
-    elif name == 'mp':
+    elif name in ('mp', 'mp~'):
         arg1, arg2, _ = args
         return ProofTerm.equal_elim(arg2, arg1)
     elif name == 'rewrite' or name == 'commutativity':
         arg1, = args
         return rewrite(arg1)
     elif name == 'unit-resolution':
-        for arg in args:
-            print('arg: ', arg)
-        arg1, arg2, arg3 = args
-        return resolution(arg1, arg2)
+        pt = args[0]
+        for i in range(len(args) - 2):
+            pt = resolution(pt, args[i+1])
+        return pt
+    elif name in ('nnf-pos', 'nnf-neg'):
+        return ProofTerm.sorry(Thm([], args[-1]))
+    elif name == 'proof-bind':
+        return args[0]
+    elif name == 'quant-inst':
+        arg1, = args
+        return quant_inst(arg1)
+    elif name == 'quant-intro':
+        arg1, arg2, = args
+        return quant_intro(arg1, arg2)
     else:
         raise NotImplementedError
     
@@ -372,13 +377,14 @@ def proofrec(proof):
     r = dict()
 
     for i in order:
-        name = term[i].decl().name()
         args = (r[j] for j in net[i])
-        # print('term['+str(i)+']', term[i])
-        if name not in method:
-            r[i] = translate(term[i], ['A', 'B'])
+        #print('term['+str(i)+']', term[i])
+        if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
+            r[i] = translate(term[i])
         else:
             r[i] = convert_method(term[i], *args)
-            basic.load_theory('nat')
-            # print('r['+str(i)+']', r[i])
+            basic.load_theory('int')
+            #print('r['+str(i)+']', r[i])
     return r[0]
+
+    
