@@ -129,6 +129,1016 @@
                 "x": "int",
                 "y": "int"
             }
+        },
+        {
+            "name": "add_opp_r",
+            "prop": "n + -m = n - m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_0_l",
+            "prop": "0 - n = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_diag",
+            "prop": "n - n = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_opp_diag_l",
+            "prop": "-n + n = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_opp_diag_r",
+            "prop": "n + -n = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_opp_l",
+            "prop": "-m + n = n - m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_sub_assoc",
+            "prop": "n + (m - p) = n + m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "opp_involutive",
+            "prop": "--n = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_add_distr",
+            "prop": "-(n + m) = -n + -m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_sub_distr",
+            "prop": "-(n - m) = -n + m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_inj",
+            "prop": "-n = -m ⟶ n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_inj_wd",
+            "prop": "-n = -m ⟷ n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "eq_opp_l",
+            "prop": "-n = m ⟷ n = -m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "eq_opp_r",
+            "prop": "n = -m ⟷ -n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_add_distr",
+            "prop": "n - (m + p) = n - m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_sub_distr",
+            "prop": "n - (m - p) = n - m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_opp_l",
+            "prop": "-n - m = -m - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_opp_r",
+            "prop": "n - -m = n + m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_sub_swap",
+            "prop": "n + m - p = n - p + m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_cancel_l",
+            "prop": "n - m = n - p ⟷ m = p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_cancel_r",
+            "prop": "n - p = m - p ⟷ n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_move_l",
+            "prop": "n + m = p ⟷ m = p - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_move_r",
+            "prop": "n + m = p ⟷ n = p - m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_move_l",
+            "prop": "n - m = p ⟷ -m = p - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_move_0_1",
+            "prop": "n + m = 0 ⟷ m = -n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_move_0_r",
+            "prop": "n + m = 0 ⟷ n = -m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_move_0_l",
+            "prop": "n - m = 0 ⟷ -m = n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_move_0_r",
+            "prop": "n - m = 0 ⟷ n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_simpl_l",
+            "prop": "n + m - n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_simpl_r",
+            "prop": "n + m - m = n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_simpl_l",
+            "prop": "-n - m + n = -m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_simp_r",
+            "prop": "n - m + m = n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_add_simpl_l_l",
+            "prop": "n + m - (n + p) = m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_add_simpl_l_r",
+            "prop": "n + m - (p + n) = m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_add_simpl_r_l",
+            "prop": "n + m - (m + p) = n - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_add_simpl_r_r",
+            "prop": "n + m - (p + m) = n - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_add_simpl_r_l",
+            "prop": "n - m + (m + p) = n + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_add_simpl_r_r",
+            "prop": "n - m + (p + m) = n + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "add_neg_neg",
+            "prop": "n < 0 ⟶ m < 0 ⟶ n + m < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_neg_nonpos",
+            "prop": "n < 0 ⟶ m ≤ 0 ⟶ n + m < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_nonpos_neg",
+            "prop": "n ≤ 0 ⟶ m < 0 ⟶ n + m < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "add_nonpos_nonpos",
+            "prop": "n ≤ 0 ⟶ m ≤ 0 ⟶ n + m ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "lt_0_sub",
+            "prop": "0 < m - n ⟷ n < m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "le_0_sub",
+            "prop": "0 ≤ m - n ⟷ n ≤ m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_lt_mono",
+            "prop": "n < m ⟷ -m < -n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_le_mono",
+            "prop": "n ≤ m ⟷ -m ≤ -n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_pos_neg",
+            "prop": "0 < -n ⟷ n < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_neg_pos",
+            "prop": "-n < 0 ⟷ 0 < n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_nonneg_nonpos",
+            "prop": "0 ≤ -n ⟷ n ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "opp_nonpos_nonneg",
+            "prop": "-n ≤ 0 ⟷ 0 ≤ n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "lt_m1_0",
+            "prop": "-(1::int) < 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "sub_lt_mono_l",
+            "prop": "n < m ⟷ p - m < p - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_lt_mono_r",
+            "prop": "n < m ⟷ n - p < m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_lt_mono",
+            "prop": "n < m ⟶ q < p ⟶ n - p < m - q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "sub_le_mono_l",
+            "prop": "n ≤ m ⟷ p - m ≤ p - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_le_mono_r",
+            "prop": "n ≤ m ⟷ n - p ≤ m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "sub_le_mono",
+            "prop": "n ≤ m ⟶ q ≤ p ⟶ n - p ≤ m - q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "sub_lt_le_mono",
+            "prop": "n < m ⟶ q ≤ p ⟶ n - p < m - q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "sub_le_lt_mono",
+            "prop": "n ≤ m ⟶ q < p ⟶ n - p < m - q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "le_lt_sub_lt",
+            "prop": "n ≤ m ⟶ p - n < q - m ⟶ p < q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "lt_le_sub_lt",
+            "prop": "n < m ⟶ p - n ≤ q - m ⟶ p < q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "le_le_sub_lt",
+            "prop": "n ≤ m ⟶ p - n ≤ q - m ⟶ p < q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "lt_add_lt_sub_r",
+            "prop": "n + p < m ⟷ n < m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "le_add_le_sub_r",
+            "prop": "n + p ≤ m ⟷ n ≤ m - p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "lt_add_lt_sub_l",
+            "prop": "n + p < m ⟷ p < m - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "le_add_le_sub_l",
+            "prop": "n + p ≤ m ⟷ p ≤ m - n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "lt_sub_lt_add_r",
+            "prop": "n - p < m ⟷ n < m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "le_sub_le_add_r",
+            "prop": "n - p ≤ m ⟷ n ≤ m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "lt_sub_lt_add_l",
+            "prop": "n - m < p ⟷ n < m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "le_sub_le_add_l",
+            "prop": "n - m ≤ p ⟷ n ≤ m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "lt_sub_lt_add",
+            "prop": "n - m < p - q ⟷ n + q < m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "le_sub_le_add",
+            "prop": "n - m ≤ p - q ⟷ n + q ≤ m + p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "lt_sub_pos",
+            "prop": "0 < m ⟷ n - m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "le_sub_nonneg",
+            "prop": "0 ≤ m ⟷ n - m ≤ n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_lt_cases",
+            "prop": "n - m < p - q ⟶ n < m ∨ q < p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "sub_le_cases",
+            "prop": "n - m ≤ p - q ⟶ n ≤ m ∨ q ≤ p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "sub_neg_cases",
+            "prop": "n - m < 0 ⟶ n < 0 ∨ 0 < m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_pos_cases",
+            "prop": "0 < n - m ⟶ 0 < n ∨ m < 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_nonpos_cases",
+            "prop": "n - m ≤ 0 ⟶ n ≤ 0 ∨ 0 ≤ m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "sub_nonneg_cases",
+            "prop": "0 ≤ n - m ⟶ 0 ≤ n ∨ m ≤ 0",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_pos_cases",
+            "prop": "¬(n = 0) ⟷ n < 0 ∨ n > 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "nonpos_pos_cases",
+            "prop": "n ≤ 0 ∨ n > 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "neg_nonneg_cases",
+            "prop": "n < 0 ∨ n ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "nonpos_nonneg_cases",
+            "prop": "n ≤ 0 ∨ n ≥ 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_0_r",
+            "prop": "n * 0 = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_add_distr_r",
+            "prop": "(n + m) * p = n * p + m * p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "mul_add_distr_l",
+            "prop": "n * (m + p) = n * m + n * p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "mul_1_l",
+            "prop": "1 * n = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_1_r",
+            "prop": "n * 1 = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_shuffle0",
+            "prop": "n * m * p = n * p * m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "mul_shuffle1",
+            "prop": "n * m * (p * q) = n * p * (m * q)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "mul_shuffle2",
+            "prop": "n * m * (p * q) = n * q * (m * p)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "mul_shuffle3",
+            "prop": "n * (m * p) = m * (n * p)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int",
+                "q": "int"
+            }
+        },
+        {
+            "name": "mul_opp_l",
+            "prop": "-n * m = -(n * m)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_opp_r",
+            "prop": "n * -m = -(n * m)",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_opp_opp",
+            "prop": "-n * -m = n * m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_opp_comm",
+            "prop": "-n * m = n * -m",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_sub_distr_l",
+            "prop": "n * (m - p) = n * m - n * p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "mul_sub_distr_r",
+            "prop": "(n - m) * p = n * p - m * p",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int",
+                "p": "int"
+            }
+        },
+        {
+            "name": "int_poly_neg1",
+            "prop": "-m = -1 * m",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
+            }
+        },
+        {
+            "name": "int_poly_neg2",
+            "prop": "m - n = m + -1 * n",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_power_1",
+            "prop": "m ^ (1::int) = m",
+            "ty": "thm",
+            "vars": {
+                "m": "int"
+            }
+        },
+        {
+            "name": "int_power_add",
+            "prop": "m ^ (p + q) = m ^ p * m ^ q",
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "p": "nat",
+                "q": "nat"
+            }
+        },
+        {
+            "name": "int_add_0_right",
+            "prop": "n + 0 = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_add_0_left",
+            "prop": "0 + n = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "int_sub_n_0",
+            "prop": "n - 0 = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "mul_0_l",
+            "prop": "0 * n = 0",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
+        },
+        {
+            "name": "pow_1_r",
+            "prop": "n ^ (1::nat) = n",
+            "ty": "thm",
+            "vars": {
+                "n": "int"
+            }
         }
     ],
     "description": "integers",
