@@ -242,6 +242,376 @@
             }
         },
         {
+            "name": "r003",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p ⟶ p ⟷ true"
+                },
+                {
+                    "args": "p",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ⊢ p"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p ⊢ p ⟶ true"
+                },
+                {
+                    "args": "trueI",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.0",
+                        "0.1.0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ⟶ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p ⊢ true ⟶ p"
+                },
+                {
+                    "args": "true",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0",
+                        "0.0"
+                    ],
+                    "rule": "intros",
+                    "th": "p ⊢ true ⟶ p"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ⊢ p ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ⟶ p ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p ⟷ true ⟶ p"
+                },
+                {
+                    "args": "p ⟷ true",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ⟷ true ⊢ p ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "p ⟷ true ⊢ p"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ⟷ true ⟶ p"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ p ⟷ p ⟷ true"
+                },
+                {
+                    "args": "eq_sym_eq, (p ⟷ true) ⟷ p",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (p ⟷ true) ⟷ p"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (p ⟷ true) ⟷ p"
+                }
+            ],
+            "prop": "(p ⟷ true) ⟷ p",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r004",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p ⟶ true ⟷ p"
+                },
+                {
+                    "args": "p",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ⊢ p"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p ⊢ true ⟶ p"
+                },
+                {
+                    "args": "true",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0",
+                        "0.0"
+                    ],
+                    "rule": "intros",
+                    "th": "p ⊢ true ⟶ p"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p ⊢ p ⟶ true"
+                },
+                {
+                    "args": "trueI",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.0",
+                        "0.2.0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ⟶ true"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ⊢ true ⟷ p"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ⟶ true ⟷ p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ true ⟷ p ⟶ p"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ p ⟷ true ⟷ p"
+                },
+                {
+                    "args": "eq_sym_eq, (true ⟷ p) ⟷ p",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (true ⟷ p) ⟷ p"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (true ⟷ p) ⟷ p"
+                }
+            ],
+            "prop": "(true ⟷ p) ⟷ p",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r005",
+            "prop": "(p ⟷ false) ⟷ ¬p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
+            "name": "r006",
+            "prop": "(false ⟷ p) ⟷ ¬p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool"
+            }
+        },
+        {
             "name": "r038",
             "num_gaps": 0,
             "proof": [
@@ -403,19 +773,73 @@
             "vars": {}
         },
         {
-            "name": "r062",
-            "prop": "x = y ⟷ x - y = 0",
+            "name": "r065",
+            "prop": "x = y ⟷ x + -1 * y = 0",
             "ty": "thm",
             "vars": {
-                "x": "nat",
-                "y": "nat"
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "r007",
+            "prop": "(¬p ⟷ ¬q) ⟷ p ⟷ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r008",
+            "prop": "¬(p ⟷ ¬q) ⟷ p ⟷ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r009",
+            "prop": "¬(¬p ⟷ q) ⟷ p ⟷ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r010",
+            "prop": "if true then x else y ⟷ x",
+            "ty": "thm",
+            "vars": {
+                "x": "bool",
+                "y": "bool"
+            }
+        },
+        {
+            "name": "r011",
+            "prop": "if false then x else y ⟷ y",
+            "ty": "thm",
+            "vars": {
+                "x": "bool",
+                "y": "bool"
+            }
+        },
+        {
+            "name": "r012",
+            "prop": "(if p then q else true) ⟷ ¬p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
             }
         }
     ],
     "description": "Used for z3 rule rewrite, th-lemma and def-axiom.",
     "imports": [
         "logic_base",
-        "nat"
+        "int"
     ],
     "name": "smt"
 }
