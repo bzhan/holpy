@@ -2403,7 +2403,32 @@
                 "hint_rewrite"
             ],
             "name": "de_morgan_thm2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(A ∨ B) ⟷ ¬A ∧ ¬B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(A ∨ B) ⟷ ¬A ∧ ¬B"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(A ∨ B) ⟷ ¬A ∧ ¬B"
+                }
+            ],
             "prop": "¬(A ∨ B) ⟷ ¬A ∧ ¬B",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -4141,6 +4166,102 @@
                 "b": "'a",
                 "p": "'a ⇒ bool",
                 "q": "'a ⇒ bool"
+            }
+        },
+        {
+            "name": "forall_elim",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. P x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. P x ⊢ ∀x. P x"
+                },
+                {
+                    "args": "a",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. P x ⊢ P a"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. P x) ⟶ P a"
+                }
+            ],
+            "prop": "(∀x. P x) ⟶ P a",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "a": "'a"
+            }
+        },
+        {
+            "name": "quant_intro",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P = Q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P = Q ⊢ P = Q"
+                },
+                {
+                    "args": "(∀x1. P x1) ⟷ (∀x2. Q x2)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "P = Q ⊢ (∀x1. P x1) ⟷ (∀x2. Q x2)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P = Q ⟶ (∀x1. P x1) ⟷ (∀x2. Q x2)"
+                }
+            ],
+            "prop": "P = Q ⟶ (∀x1. P x1) ⟷ (∀x2. Q x2)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a ⇒ bool",
+                "Q": "'a ⇒ bool",
+                "x": "'a",
+                "y": "'a"
             }
         }
     ],
