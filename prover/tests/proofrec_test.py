@@ -71,5 +71,22 @@ class ProofrecTest(unittest.TestCase):
             r = proofrec.proofrec(proof)
             self.assertEqual(str(r.th), p)
 
+    def testRecSolveSet(self):
+        test_data = [
+            ('x Mem S --> S Sub T --> x Mem T', 'S x, ~(T x), !x1. S x1 --> T x1 |- false'),
+            ('m Mem univ', '~true |- false'),
+            ('x Mem (diff S T) --> x Mem S', '~(S x), S x & ~(T x) |- false'),
+        ]
+
+
+        for t, p in test_data:
+            context.set_context('set', vars={
+            'm': 'nat', 'S': 'nat set', 'T': 'nat set', 'x': 'nat',
+            'a': "'a", 'A': "'a set"})
+            t = parse_term(t)
+            proof=z3wrapper.solve_and_proof(t)    
+            r = proofrec.proofrec(proof)
+            self.assertEqual(str(r.th), p)
+
 if __name__ == "__main__":
     unittest.main()
