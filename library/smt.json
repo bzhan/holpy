@@ -810,7 +810,7 @@
         },
         {
             "name": "r010",
-            "prop": "if true then x else y ⟷ x",
+            "prop": "(if true then x else y) ⟷ x",
             "ty": "thm",
             "vars": {
                 "x": "bool",
@@ -819,7 +819,7 @@
         },
         {
             "name": "r011",
-            "prop": "if false then x else y ⟷ y",
+            "prop": "(if false then x else y) ⟷ y",
             "ty": "thm",
             "vars": {
                 "x": "bool",
@@ -829,6 +829,24 @@
         {
             "name": "r012",
             "prop": "(if p then q else true) ⟷ ¬p ∨ q",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r041",
+            "prop": "p ∨ q ⟷ q ∨ p",
+            "ty": "thm",
+            "vars": {
+                "p": "bool",
+                "q": "bool"
+            }
+        },
+        {
+            "name": "r031",
+            "prop": "(p ⟶ q) ⟷ ¬p ∨ q",
             "ty": "thm",
             "vars": {
                 "p": "bool",
