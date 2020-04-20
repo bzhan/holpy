@@ -13,6 +13,7 @@ from logic.logic import apply_theorem, resolution
 from collections import deque
 from functools import reduce
 import operator
+import json
 
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
@@ -96,9 +97,12 @@ def translate(term, bounds=dict()):
         bounds = {i : var[i] for i in range(term.num_vars())}
         # patterns = tuple(term.patterns(i) for i in range(term.num_patterns()))
         if term.is_lambda():
-            if term.body().decl().name() == 'refl':
+            if body.decl().name() == 'refl':
                 lhs = translate(body.arg(0).arg(0), bounds)
                 return ProofTerm.reflexive(Lambda(*var, lhs))
+            elif body.decl().name() in method:
+                prf = proofrec(z3.substitute_vars(body, z3.Const(term.var_name(0), term.var_sort(0))))
+                return prf.abstraction(var[0])
             else:
                 raise NotImplementedError
             
@@ -235,7 +239,11 @@ def rewrite(t):
     if t.lhs == t.rhs:
         return ProofTerm.reflexive(t.lhs)
 
-    pt = schematic_rules(['r001', 'r002', 'r038', 'r065'], t.lhs, t.rhs)  # rewrite by schematic theorems 
+    # first try use schematic theorems
+    with open('library/smt.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    th_name = [f_data['content'][i]['name'] for i in range(len(f_data['content']))]
+    pt = schematic_rules(th_name, t.lhs, t.rhs)  # rewrite by schematic theorems 
     if pt is None:
         if t.rhs == true and t.lhs.is_equals(): # prove ⊢ (x = y) ↔ true
             eq = t.lhs
@@ -325,10 +333,11 @@ def quant_inst(p):
 
 def quant_intro(p, q):
     basic.load_theory('logic')
-    pat = ProofTerm.theorem('quant_intro')
     f = Implies(p.prop, q)
+    is_exists = q.lhs.is_exists()
+    pat = ProofTerm.theorem('quant_intro_exists') if is_exists else ProofTerm.theorem('quant_intro_forall')
     inst = matcher.first_order_match(pat.prop, f)
-    pt1 = apply_theorem('quant_intro', inst=inst)
+    pt1 = apply_theorem('quant_intro_exists', inst=inst) if is_exists else apply_theorem('quant_intro_forall', inst=inst)
     pt3 = pt1.implies_elim(p)
     return pt3
 
@@ -378,13 +387,13 @@ def proofrec(proof):
 
     for i in order:
         args = (r[j] for j in net[i])
-        #print('term['+str(i)+']', term[i])
+        # print('term['+str(i)+']', term[i])
         if z3.is_quantifier(term[i]) or term[i].decl().name() not in method:
             r[i] = translate(term[i])
         else:
             r[i] = convert_method(term[i], *args)
             basic.load_theory('int')
-            #print('r['+str(i)+']', r[i])
+            # print('r['+str(i)+']', r[i])
     return r[0]
 
     
