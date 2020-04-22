@@ -45510,6 +45510,2513 @@
                 "m": "nat",
                 "n": "nat"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_exp_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "2 ≤ p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "2 ≤ p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "finite_natseg, {m: (0::nat), n: n}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({0..n})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "2 ≤ p ⊢ ∀x. P x ∧ p ^ x ≤ n ⟶ 0 ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "P x ∧ p ^ x ≤ n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P x ∧ p ^ x ≤ n ⊢ P x ∧ p ^ x ≤ n"
+                },
+                {
+                    "args": "le_0, {n: x}",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P x ∧ p ^ x ≤ n ⊢ p ^ x ≤ n"
+                },
+                {
+                    "args": "lt_pow2_refl, {n: x}",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x < 2 ^ x"
+                },
+                {
+                    "args": "lt_imp_le",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p, P x ∧ p ^ x ≤ n ⊢ x ≤ 2 ^ x"
+                },
+                {
+                    "args": "exp_mono_le_imp, {n: x, x: (2::nat), y: p}",
+                    "id": "2.6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "2 ≤ p, P x ∧ p ^ x ≤ n ⊢ 2 ^ x ≤ p ^ x"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.5",
+                        "2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p, P x ∧ p ^ x ≤ n ⊢ x ≤ p ^ x"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.7",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p, P x ∧ p ^ x ≤ n ⊢ x ≤ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.2",
+                        "2.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p, P x ∧ p ^ x ≤ n ⊢ 0 ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "2 ≤ p ⊢ ∀x. P x ∧ p ^ x ≤ n ⟶ 0 ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "member_numseg, ∀x. P x ∧ p ^ x ≤ n ⟶ x ∈ {0..n}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "2 ≤ p ⊢ ∀x. P x ∧ p ^ x ≤ n ⟶ x ∈ {0..n}"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ {j. P j ∧ p ^ j ≤ n} ⟶ x ∈ {0..n}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "2 ≤ p ⊢ ∀x. x ∈ {j. P j ∧ p ^ j ≤ n} ⟶ x ∈ {0..n}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p ⊢ {j. P j ∧ p ^ j ≤ n} ⊆ {0..n}"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "2 ≤ p ⊢ finite ({j. P j ∧ p ^ j ≤ n})"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 2 ≤ p ⟶ finite ({j. P j ∧ p ^ j ≤ n})"
+                }
+            ],
+            "prop": "2 ≤ p ⟶ finite ({j. P j ∧ p ^ j ≤ n})",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "{0..n}",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_numseg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "param_m": "p ^ x",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "param_m": "(2::nat) ^ x",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lt_pow2_refl"
+                },
+                {
+                    "goal_id": "2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exp_mono_le_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "finite_indices",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "2 ≤ p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "2 ≤ p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "finite_exp_le, {P: P, n: n, p: p}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "2 ≤ p ⊢ finite ({j. P j ∧ p ^ j ≤ n})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ ∀x. P x ∧ divides (p ^ x) n ⟶ P x ∧ p ^ x ≤ n"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "P i ∧ divides (p ^ i) n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P i ∧ divides (p ^ i) n ⊢ P i ∧ divides (p ^ i) n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P i ∧ divides (p ^ i) n ⊢ P i"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P i ∧ divides (p ^ i) n ⊢ divides (p ^ i) n"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P i ∧ divides (p ^ i) n ⊢ p ^ i ≤ n ∨ n = 0"
+                },
+                {
+                    "args": "p ^ i ≤ n ⟶ p ^ i ≤ n",
+                    "id": "3.5",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ p ^ i ≤ n ⟶ p ^ i ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), 2 ≤ p, P i ∧ divides (p ^ i) n ⊢ n = 0 ⟶ p ^ i ≤ n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "3.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0, C: p ^ i ≤ n}",
+                    "id": "3.6.1",
+                    "prevs": [
+                        "1",
+                        "3.6.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, ¬(n = 0) ⊢ p ^ i ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.6.2",
+                    "prevs": [
+                        "3.6.0",
+                        "3.6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), 2 ≤ p, P i ∧ divides (p ^ i) n ⊢ n = 0 ⟶ p ^ i ≤ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.4",
+                        "3.5",
+                        "3.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), 2 ≤ p, P i ∧ divides (p ^ i) n ⊢ p ^ i ≤ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.2",
+                        "3.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), 2 ≤ p, P i ∧ divides (p ^ i) n ⊢ P i ∧ p ^ i ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.8"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ ∀i. P i ∧ divides (p ^ i) n ⟶ P i ∧ p ^ i ≤ n"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ {j. P j ∧ divides (p ^ j) n} ⟶ x ∈ {j. P j ∧ p ^ j ≤ n}",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ ∀x. x ∈ {j. P j ∧ divides (p ^ j) n} ⟶ x ∈ {j. P j ∧ p ^ j ≤ n}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ {j. P j ∧ divides (p ^ j) n} ⊆ {j. P j ∧ p ^ j ≤ n}"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "6",
+                    "prevs": [
+                        "2",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), 2 ≤ p ⊢ finite ({j. P j ∧ divides (p ^ j) n})"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 2 ≤ p ⟶ ¬(n = 0) ⟶ finite ({j. P j ∧ divides (p ^ j) n})"
+                }
+            ],
+            "prop": "2 ≤ p ⟶ ¬(n = 0) ⟶ finite ({j. P j ∧ divides (p ^ j) n})",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_t": "{j. P j ∧ p ^ j ≤ n}",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_exp_le"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "3.3"
+                    ],
+                    "goal_id": "3.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.4"
+                    ],
+                    "goal_id": "3.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "3.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "3.6.0"
+                    ],
+                    "goal_id": "3.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "index",
+            "prop": [
+                "index p n = ",
+                "(if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n}))"
+            ],
+            "ty": "def",
+            "type": "nat ⇒ nat ⇒ nat"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "index_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "disjI2, {A: p ≤ 1, B: (0::nat) = 0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ p ≤ 1 ∨ (0::nat) = 0"
+                },
+                {
+                    "args": "if_P, (if p ≤ 1 ∨ (0::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 0})) = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if p ≤ 1 ∨ (0::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 0})) = 0"
+                },
+                {
+                    "args": "index_def, index p 0 = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ index p 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ index p 0 = 0"
+                }
+            ],
+            "prop": "index p 0 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_def"
+                },
+                {
+                    "goal": "p ≤ 1 ∨ (0::nat) = 0",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "primepow_divides_indes",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0 ⊢ divides (p ^ k) 0 ⟶ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0"
+                },
+                {
+                    "args": "divides (p ^ k) 0",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ k) 0 ⊢ divides (p ^ k) 0"
+                },
+                {
+                    "args": "eq_refl, {x: (0::nat)}",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) = 0"
+                },
+                {
+                    "args": "disjI1, {A: (0::nat) = 0, B: p = 1 ∨ k ≤ index p 0}",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, divides (p ^ k) 0 ⊢ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0 ⊢ divides (p ^ k) 0 ⟶ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0 ⊢ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0 ⟶ divides (p ^ k) 0"
+                },
+                {
+                    "args": "(0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0 ⊢ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0"
+                },
+                {
+                    "args": "divides_zero, {n: p ^ k}",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (p ^ k) 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0 ⊢ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0 ⟶ divides (p ^ k) 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n = 0 ⊢ divides (p ^ k) 0 ⟷ (0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0"
+                },
+                {
+                    "args": "divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ p = 0 ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "p = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, ¬(n = 0) ⊢ k = 0 ⟶ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "k = 0",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k = 0 ⊢ k = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ divides 1 n ⟶ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "divides 1 n",
+                    "id": "1.1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides 1 n ⊢ divides 1 n"
+                },
+                {
+                    "args": "le_0, {n: index 0 n}",
+                    "id": "1.1.1.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "disjI2, {A: (0::nat) = 1, B: 0 ≤ index 0 n}",
+                    "id": "1.1.1.1.2",
+                    "prevs": [
+                        "1.1.1.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides 1 n, k = 0, p = 0, ¬(n = 0) ⊢ (0::nat) = 1 ∨ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: (0::nat) = 1 ∨ 0 ≤ index 0 n}",
+                    "id": "1.1.1.1.3",
+                    "prevs": [
+                        "1.1.1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides 1 n, k = 0, p = 0, ¬(n = 0) ⊢ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.1.4",
+                    "prevs": [
+                        "1.1.1.1.0",
+                        "1.1.1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ divides 1 n ⟶ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n ⟶ divides 1 n"
+                },
+                {
+                    "args": "n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n",
+                    "id": "1.1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n ⊢ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "divides_1, {x: n}",
+                    "id": "1.1.1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.2.2",
+                    "prevs": [
+                        "1.1.1.2.0",
+                        "1.1.1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n ⟶ divides 1 n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.1.3",
+                    "prevs": [
+                        "1.1.1.1",
+                        "1.1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ divides 1 n ⟷ n = 0 ∨ (0::nat) = 1 ∨ 0 ≤ index 0 n"
+                },
+                {
+                    "args": "divides 1 n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n",
+                    "id": "1.1.1.4",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ divides 1 n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "if_P, divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n",
+                    "id": "1.1.1.5",
+                    "prevs": [
+                        "1.1.1.4",
+                        "1.1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "k = 0, p = 0, ¬(n = 0) ⊢ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.6",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, ¬(n = 0) ⊢ k = 0 ⟶ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, ¬(n = 0) ⊢ ¬(k = 0) ⟶ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "¬(k = 0)",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(k = 0) ⊢ ¬(k = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0) ⊢ divides 0 n ⟶ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "divides 0 n",
+                    "id": "1.1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides 0 n ⊢ divides 0 n"
+                },
+                {
+                    "args": "divides_0",
+                    "id": "1.1.2.1.1",
+                    "prevs": [
+                        "1.1.2.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides 0 n ⊢ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0, C: n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n}",
+                    "id": "1.1.2.1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1.2.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides 0 n, ¬(n = 0) ⊢ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.1.3",
+                    "prevs": [
+                        "1.1.2.1.0",
+                        "1.1.2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0) ⊢ divides 0 n ⟶ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0) ⊢ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⟶ divides 0 n"
+                },
+                {
+                    "args": "n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n",
+                    "id": "1.1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "¬((0::nat) = 1)",
+                    "id": "1.1.2.2.1",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬((0::nat) = 1)"
+                },
+                {
+                    "args": "le_0, {n: (1::nat)}",
+                    "id": "1.1.2.2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::nat) ≤ 1"
+                },
+                {
+                    "args": "disjI1, {A: (0::nat) ≤ 1, B: n = 0}",
+                    "id": "1.1.2.2.3",
+                    "prevs": [
+                        "1.1.2.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ (0::nat) ≤ 1 ∨ n = 0"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "1.1.2.2.4",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ 0 < k"
+                },
+                {
+                    "args": "not_le, ¬(k ≤ 0)",
+                    "id": "1.1.2.2.5",
+                    "prevs": [
+                        "1.1.2.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬(k ≤ 0)"
+                },
+                {
+                    "args": "if_P, ¬(k ≤ (if (0::nat) ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (0 ^ j) n})))",
+                    "id": "1.1.2.2.6",
+                    "prevs": [
+                        "1.1.2.2.5",
+                        "1.1.2.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬(k ≤ (if (0::nat) ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (0 ^ j) n})))"
+                },
+                {
+                    "args": "index_def, ¬(k ≤ index 0 n)",
+                    "id": "1.1.2.2.7",
+                    "prevs": [
+                        "1.1.2.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬(k ≤ index 0 n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.2.2.8",
+                    "prevs": [
+                        "1.1.2.2.1",
+                        "1.1.2.2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬((0::nat) = 1) ∧ ¬(k ≤ index 0 n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.2.2.9",
+                    "prevs": [
+                        "1.0",
+                        "1.1.2.2.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬(n = 0) ∧ ¬((0::nat) = 1) ∧ ¬(k ≤ index 0 n)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0) ∧ ¬((0::nat) = 1 ∨ k ≤ index 0 n)",
+                    "id": "1.1.2.2.10",
+                    "prevs": [
+                        "1.1.2.2.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬(n = 0) ∧ ¬((0::nat) = 1 ∨ k ≤ index 0 n)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n)",
+                    "id": "1.1.2.2.11",
+                    "prevs": [
+                        "1.1.2.2.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ ¬(n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n)"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n, C: divides 0 n}",
+                    "id": "1.1.2.2.12",
+                    "prevs": [
+                        "1.1.2.2.11",
+                        "1.1.2.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0), n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⊢ divides 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.2.13",
+                    "prevs": [
+                        "1.1.2.2.0",
+                        "1.1.2.2.12"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0) ⊢ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n ⟶ divides 0 n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.2.3",
+                    "prevs": [
+                        "1.1.2.1",
+                        "1.1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0) ⊢ divides 0 n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "if_not_P, divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n",
+                    "id": "1.1.2.4",
+                    "prevs": [
+                        "1.1.2.3",
+                        "1.1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(k = 0), ¬(n = 0) ⊢ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.5",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 0, ¬(n = 0) ⊢ ¬(k = 0) ⟶ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 0, ¬(n = 0) ⊢ divides (if k = 0 then 1 else 0) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "exp_zero, divides (0 ^ k) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 0, ¬(n = 0) ⊢ divides (0 ^ k) n ⟷ n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n"
+                },
+                {
+                    "args": "divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 0, ¬(n = 0) ⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ p = 0 ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ¬(p = 0) ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "¬(p = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 0) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ p = 1 ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0) ⊢ divides (p ^ k) n ⟶ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "divides (p ^ k) n",
+                    "id": "1.2.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ k) n ⊢ divides (p ^ k) n"
+                },
+                {
+                    "args": "disjI1, {A: p = 1, B: k ≤ index p n}",
+                    "id": "1.2.1.1.1",
+                    "prevs": [
+                        "1.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0), divides (p ^ k) n ⊢ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: p = 1 ∨ k ≤ index p n}",
+                    "id": "1.2.1.1.2",
+                    "prevs": [
+                        "1.2.1.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0), divides (p ^ k) n ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.1.3",
+                    "prevs": [
+                        "1.2.1.1.0",
+                        "1.2.1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0) ⊢ divides (p ^ k) n ⟶ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0) ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n ⟶ divides (p ^ k) n"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1 ∨ k ≤ index p n",
+                    "id": "1.2.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "divides_1, {x: n}",
+                    "id": "1.2.1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides 1 n"
+                },
+                {
+                    "args": "exp_one, divides (1 ^ k) n",
+                    "id": "1.2.1.2.2",
+                    "prevs": [
+                        "1.2.1.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ divides (1 ^ k) n"
+                },
+                {
+                    "args": "divides (p ^ k) n",
+                    "id": "1.2.1.2.3",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ divides (p ^ k) n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.2.4",
+                    "prevs": [
+                        "1.2.1.2.0",
+                        "1.2.1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0) ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n ⟶ divides (p ^ k) n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.2.1.3",
+                    "prevs": [
+                        "1.2.1.1",
+                        "1.2.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 1, ¬(n = 0), ¬(p = 0) ⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.4",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ p = 1 ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(p = 1) ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "¬(p = 1)",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 1) ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "2 ≤ p",
+                    "id": "1.2.2.1",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(p = 1), ¬(p = 0) ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "factorization_index, {n: n, p: p}",
+                    "id": "1.2.2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(n = 0) ⟶ 2 ≤ p ⟶ (∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.2",
+                        "1.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(n = 0) ⊢ 2 ≤ p ⟶ (∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n)))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.4",
+                    "prevs": [
+                        "1.2.2.3",
+                        "1.2.2.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0) ⊢ ∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n))"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "1.2.2.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n))",
+                    "id": "1.2.2.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∀k. divides (p ^ k) n ⟷ k ≤ a"
+                },
+                {
+                    "args": "k1, nat",
+                    "id": "1.2.2.7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k1) n ⟶ k1 ≤ a"
+                },
+                {
+                    "args": "divides (p ^ k1) n",
+                    "id": "1.2.2.7.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ k1) n ⊢ divides (p ^ k1) n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.2.7.1.1",
+                    "prevs": [
+                        "1.2.2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∀l. a < l ⟶ ¬(divides (p ^ l) n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ k1) n, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ a < k1 ⟶ ¬(divides (p ^ k1) n)"
+                },
+                {
+                    "args": "a < k1",
+                    "id": "1.2.2.7.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a < k1 ⊢ a < k1"
+                },
+                {
+                    "args": "k1",
+                    "id": "1.2.2.7.1.2.1",
+                    "prevs": [
+                        "1.2.2.7.1.1",
+                        "1.2.2.7.1.2.0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a < k1, ¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ k1) n, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides (p ^ k1) n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.1.2.2",
+                    "prevs": [
+                        "1.2.2.7.1.2.0",
+                        "1.2.2.7.1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ k1) n, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ a < k1 ⟶ ¬(divides (p ^ k1) n)"
+                },
+                {
+                    "args": "double_neg, ¬¬(a < k1) ⟶ ¬(divides (p ^ k1) n)",
+                    "id": "1.2.2.7.1.3",
+                    "prevs": [
+                        "1.2.2.7.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ k1) n, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬¬(a < k1) ⟶ ¬(divides (p ^ k1) n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.2.2.7.1.4",
+                    "prevs": [
+                        "1.2.2.7.1.0",
+                        "1.2.2.7.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ k1) n, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(a < k1)"
+                },
+                {
+                    "args": "not_lt, k1 ≤ a",
+                    "id": "1.2.2.7.1.5",
+                    "prevs": [
+                        "1.2.2.7.1.4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ k1) n, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k1 ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.1.6",
+                    "prevs": [
+                        "1.2.2.7.1.0",
+                        "1.2.2.7.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k1) n ⟶ k1 ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k1 ≤ a ⟶ divides (p ^ k1) n"
+                },
+                {
+                    "args": "k1 ≤ a",
+                    "id": "1.2.2.7.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k1 ≤ a ⊢ k1 ≤ a"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.2.7.2.1",
+                    "prevs": [
+                        "1.2.2.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ a) n"
+                },
+                {
+                    "args": "divides_exp_le_imp, {m: k1, n: a, p: p}",
+                    "id": "1.2.2.7.2.2",
+                    "prevs": [
+                        "1.2.2.7.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "k1 ≤ a, ¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k1) (p ^ a)"
+                },
+                {
+                    "args": "divides_trans",
+                    "id": "1.2.2.7.2.3",
+                    "prevs": [
+                        "1.2.2.7.2.2",
+                        "1.2.2.7.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k1 ≤ a, ¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k1) n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.2.4",
+                    "prevs": [
+                        "1.2.2.7.2.0",
+                        "1.2.2.7.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k1 ≤ a ⟶ divides (p ^ k1) n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.2.2.7.3",
+                    "prevs": [
+                        "1.2.2.7.1",
+                        "1.2.2.7.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k1) n ⟷ k1 ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7.4",
+                    "prevs": [
+                        "1.2.2.7.0",
+                        "1.2.2.7.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∀k1. divides (p ^ k1) n ⟷ k1 ≤ a"
+                },
+                {
+                    "args": "¬(p ≤ 1)",
+                    "id": "1.2.2.8",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(p = 1), ¬(p = 0) ⊢ ¬(p ≤ 1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.2.9",
+                    "prevs": [
+                        "1.2.2.8",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(p ≤ 1) ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(p ≤ 1 ∨ n = 0)",
+                    "id": "1.2.2.10",
+                    "prevs": [
+                        "1.2.2.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(p ≤ 1 ∨ n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟶ n = 0 ∨ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "k ≤ a",
+                    "id": "1.2.2.11.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ a ⊢ k ≤ a"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k ≤ a}",
+                    "id": "1.2.2.11.1",
+                    "prevs": [
+                        "1.2.2.11.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "k ≤ a, ¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: p = 1 ∨ k ≤ a}",
+                    "id": "1.2.2.11.2",
+                    "prevs": [
+                        "1.2.2.11.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "k ≤ a, ¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ n = 0 ∨ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.11.3",
+                    "prevs": [
+                        "1.2.2.11.0",
+                        "1.2.2.11.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟶ n = 0 ∨ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ n = 0 ∨ p = 1 ∨ k ≤ a ⟶ k ≤ a"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1 ∨ k ≤ a",
+                    "id": "1.2.2.12.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ∨ k ≤ a ⊢ n = 0 ∨ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ n = 0 ⟶ k ≤ a"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.2.2.12.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0, C: k ≤ a}",
+                    "id": "1.2.2.12.1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.2.2.12.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, ¬(n = 0) ⊢ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.1.2",
+                    "prevs": [
+                        "1.2.2.12.1.0",
+                        "1.2.2.12.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ n = 0 ⟶ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ p = 1 ∨ k ≤ a ⟶ k ≤ a"
+                },
+                {
+                    "args": "p = 1 ∨ k ≤ a",
+                    "id": "1.2.2.12.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ∨ k ≤ a ⊢ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), p = 1 ∨ k ≤ a, n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ p = 1 ⟶ k ≤ a"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "1.2.2.12.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "negE_gen, {A: p = 1, C: k ≤ a}",
+                    "id": "1.2.2.12.2.1.1",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.12.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 1, ¬(p = 1) ⊢ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.2.1.2",
+                    "prevs": [
+                        "1.2.2.12.2.1.0",
+                        "1.2.2.12.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), p = 1 ∨ k ≤ a, n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ p = 1 ⟶ k ≤ a"
+                },
+                {
+                    "args": "k ≤ a ⟶ k ≤ a",
+                    "id": "1.2.2.12.2.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k ≤ a ⟶ k ≤ a"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.2.2.12.2.3",
+                    "prevs": [
+                        "1.2.2.12.2.0",
+                        "1.2.2.12.2.1",
+                        "1.2.2.12.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), p = 1 ∨ k ≤ a, n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.2.4",
+                    "prevs": [
+                        "1.2.2.12.2.0",
+                        "1.2.2.12.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ p = 1 ∨ k ≤ a ⟶ k ≤ a"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.2.2.12.3",
+                    "prevs": [
+                        "1.2.2.12.0",
+                        "1.2.2.12.1",
+                        "1.2.2.12.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), n = 0 ∨ p = 1 ∨ k ≤ a, divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.12.4",
+                    "prevs": [
+                        "1.2.2.12.0",
+                        "1.2.2.12.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ n = 0 ∨ p = 1 ∨ k ≤ a ⟶ k ≤ a"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.2.2.13",
+                    "prevs": [
+                        "1.2.2.11",
+                        "1.2.2.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ a"
+                },
+                {
+                    "args": "card_natseg_1, k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ card ({1..a})",
+                    "id": "1.2.2.14",
+                    "prevs": [
+                        "1.2.2.13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ card ({1..a})"
+                },
+                {
+                    "args": "nat_interval_def, k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ card ({j. 1 ≤ j ∧ j ≤ a})",
+                    "id": "1.2.2.15",
+                    "prevs": [
+                        "1.2.2.14"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ card ({j. 1 ≤ j ∧ j ≤ a})"
+                },
+                {
+                    "args": "k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n})",
+                    "id": "1.2.2.16",
+                    "prevs": [
+                        "1.2.2.7",
+                        "1.2.2.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n})"
+                },
+                {
+                    "args": "if_not_P, k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ (if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n}))",
+                    "id": "1.2.2.17",
+                    "prevs": [
+                        "1.2.2.16",
+                        "1.2.2.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ (if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n}))"
+                },
+                {
+                    "args": "index_def, k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n",
+                    "id": "1.2.2.18",
+                    "prevs": [
+                        "1.2.2.17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n",
+                    "id": "1.2.2.19",
+                    "prevs": [
+                        "1.2.2.7",
+                        "1.2.2.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 1), ¬(p = 0), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n))",
+                    "id": "1.2.2.20",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.4",
+                        "1.2.2.5",
+                        "1.2.2.6",
+                        "1.2.2.19"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ ¬(p = 1) ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 0) ⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ¬(p = 0) ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                }
+            ],
+            "prop": "divides (p ^ k) n ⟷ n = 0 ∨ p = 1 ∨ k ≤ index p n",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_zero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "p=0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_zero"
+                },
+                {
+                    "case": "k = 0",
+                    "goal_id": "1.1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "goal_id": "1.1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.1.0"
+                    ],
+                    "goal_id": "1.1.2.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.1.2.1.1"
+                    ],
+                    "goal_id": "1.1.2.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.1.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "~(n = 0 ∨ (0::nat) = 1 ∨ k ≤ index 0 n)",
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.2.2.1",
+                    "method_name": "nat_const_ineq"
+                },
+                {
+                    "goal_id": "1.1.2.2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_def"
+                },
+                {
+                    "goal": "(0::nat) ≤ 1 ∨ n = 0",
+                    "goal_id": "1.1.2.2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.2.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.1.2.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.2.3"
+                    ],
+                    "goal_id": "1.1.2.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.2.2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "1.1.2.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.2.11",
+                        "1.1.2.2.0"
+                    ],
+                    "goal_id": "1.1.2.2.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "p = 1",
+                    "goal_id": "1.2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.2.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.0"
+                    ],
+                    "goal_id": "1.2.1.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_one"
+                },
+                {
+                    "goal_id": "1.2.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_1"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "2 <= p",
+                    "goal_id": "1.2.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.0",
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.2.2.2",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "param_p": "p",
+                    "theorem": "factorization_index"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.2",
+                        "1.0"
+                    ],
+                    "goal_id": "1.2.2.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.3",
+                        "1.2.2.1"
+                    ],
+                    "goal_id": "1.2.2.4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.4"
+                    ],
+                    "goal_id": "1.2.2.5",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "goal": "!k. divides (p ^ k) n ⟷  k <= a",
+                    "goal_id": "1.2.2.7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.7",
+                    "method_name": "introduction",
+                    "names": "k1"
+                },
+                {
+                    "goal_id": "1.2.2.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2.2.7.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.6"
+                    ],
+                    "goal_id": "1.2.2.7.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.2.2.7.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "not_lt"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.7.1.0"
+                    ],
+                    "goal_id": "1.2.2.7.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.2.2.7.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "1.2.2.7.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.7.1.1"
+                    ],
+                    "goal_id": "1.2.2.7.1.2.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.2.2.7.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.6"
+                    ],
+                    "goal_id": "1.2.2.7.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "1.2.2.7.2.2",
+                    "method_name": "apply_backward_step",
+                    "param_m": "(p ^ a)",
+                    "theorem": "divides_trans"
+                },
+                {
+                    "goal_id": "1.2.2.7.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_exp_le_imp"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.7"
+                    ],
+                    "goal_id": "1.2.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_def"
+                },
+                {
+                    "goal": "~(p ≤ 1 ∨ n = 0)",
+                    "goal_id": "1.2.2.8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.2.2.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.0",
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.2.8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.10"
+                    ],
+                    "goal_id": "1.2.2.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.7"
+                    ],
+                    "goal_id": "1.2.2.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "nat_interval_def"
+                },
+                {
+                    "goal_id": "1.2.2.11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "card_natseg_1"
+                },
+                {
+                    "goal_id": "1.2.2.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2.2.11",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.2.11.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.2.11.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.2.12",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.12.0"
+                    ],
+                    "goal_id": "1.2.2.12.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2.2.12.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "1.2.2.12.1.0"
+                    ],
+                    "goal_id": "1.2.2.12.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "1.2.2.12.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.12.2.0"
+                    ],
+                    "goal_id": "1.2.2.12.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2.2.12.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.0",
+                        "1.2.2.12.2.1.0"
+                    ],
+                    "goal_id": "1.2.2.12.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
         }
     ],
     "description": "Basic theory of divisibility, gcd, coprimality and primality (over N).",

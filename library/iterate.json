@@ -174,6 +174,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "numseg_add_split",
             "prop": "m ≤ n + 1 ⟶ {m..n + p} = {m..n} ∪ {n + 1..p + 1}",
             "ty": "thm",
@@ -181,6 +184,86 @@
                 "m": "nat",
                 "n": "nat",
                 "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "card_natseg",
+            "prop": "card ({m..n}) = n + 1 - m",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "card_natseg_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nat_plus_minus_2, 1 + n - 1 = n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 + n - 1 = n"
+                },
+                {
+                    "args": "add_comm, n + 1 - 1 = n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ n + 1 - 1 = n"
+                },
+                {
+                    "args": "card_natseg, card ({1..n}) = n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ card ({1..n}) = n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ card ({1..n}) = n"
+                }
+            ],
+            "prop": "card ({1..n}) = n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "card_natseg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_minus_2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
             }
         },
         {
