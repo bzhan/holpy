@@ -4515,11 +4515,14 @@
             ],
             "name": "iterate_insert_gen",
             "prop": [
-                "monoidal op ⟶ (!f. !x. !s. finite (support op (f::'b => 'a) (s::'b set)) ⟶ (iterate op (insert (x::'b) s) f = if (member x s) then (iterate op s f) else (op (f x) (iterate op s f))))"
+                "monoidal op ",
+                "⟶ (∀f. ∀x::'b. ∀s. finite (support op f s) ",
+                "          ⟶ iterate op (insert x s) f = ",
+                "             (if x ∈ s then iterate op s f else op (f x) (iterate op s f)))"
             ],
             "ty": "thm",
             "vars": {
-                "op": "'a=>'a=>'a"
+                "op": "'a ⇒ 'a ⇒ 'a"
             }
         },
         {
