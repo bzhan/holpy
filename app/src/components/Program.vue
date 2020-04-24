@@ -18,7 +18,7 @@
         <a href="#" v-else style="margin-left:30px;color:red"
            v-on:click="on_proof = index">Failed</a>
         <div v-if="on_proof === index">
-          <ProofArea v-bind:theory_name="'hoare'" v-bind:thm_name="undefined"
+          <ProofArea v-bind:theory_name="'hoare'" v-bind:thm_name="''"
                     v-bind:vars="line.vars" v-bind:prop="line.prop"
                     v-bind:ref_status="ref_status"
                     v-bind:ref_context="ref_context"

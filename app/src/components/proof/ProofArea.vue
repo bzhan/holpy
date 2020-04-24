@@ -153,10 +153,14 @@ export default {
         fact_ids.push(this.proof[this.facts[i]].id)
       }
       var goal_id = this.proof[this.goal].id
+      var profile = false
+      if (this.editor !== undefined) {
+        profile = this.editor.profile
+      }
 
       return {
         username: this.$state.user,
-        profile: this.editor.profile,
+        profile: profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         vars: this.vars,
