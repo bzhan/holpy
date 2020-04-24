@@ -5909,6 +5909,89 @@
             "type": "('a ⇒ 'b ⇒ 'b) ⇒ 'a set ⇒ 'b ⇒ 'b"
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_recursion",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s) ⊢ ∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s) ⊢ ((THE g. g ∅ = b ∧ (∀x. ∀s1. finite s1 ⟶ g (insert x s1) = (if x ∈ s1 then g s1 else f x (g s1)))) ∅) = b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s) ⊢ ∀x. ∀s. finite s ⟶ ((THE g. g ∅ = b ∧ (∀x1. ∀s1. finite s1 ⟶ g (insert x1 s1) = (if x1 ∈ s1 then g s1 else f x1 (g s1)))) (insert x s)) = (if x ∈ s then (THE g. g ∅ = b ∧ (∀x1. ∀s1. finite s1 ⟶ g (insert x1 s1) = (if x1 ∈ s1 then g s1 else f x1 (g s1)))) s else f x ((THE g. g ∅ = b ∧ (∀x1. ∀s1. finite s1 ⟶ g (insert x1 s1) = (if x1 ∈ s1 then g s1 else f x1 (g s1)))) s))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s) ⊢ ((THE g. g ∅ = b ∧ (∀x. ∀s1. finite s1 ⟶ g (insert x s1) = (if x ∈ s1 then g s1 else f x (g s1)))) ∅) = b ∧ (∀x. ∀s. finite s ⟶ ((THE g. g ∅ = b ∧ (∀x1. ∀s1. finite s1 ⟶ g (insert x1 s1) = (if x1 ∈ s1 then g s1 else f x1 (g s1)))) (insert x s)) = (if x ∈ s then (THE g. g ∅ = b ∧ (∀x1. ∀s1. finite s1 ⟶ g (insert x1 s1) = (if x1 ∈ s1 then g s1 else f x1 (g s1)))) s else f x ((THE g. g ∅ = b ∧ (∀x1. ∀s1. finite s1 ⟶ g (insert x1 s1) = (if x1 ∈ s1 then g s1 else f x1 (g s1)))) s)))"
+                },
+                {
+                    "args": "itset_def, itset f ∅ b = b ∧ (∀x. ∀s. finite s ⟶ itset f (insert x s) b = (if x ∈ s then itset f s b else f x (itset f s b)))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s) ⊢ itset f ∅ b = b ∧ (∀x. ∀s. finite s ⟶ itset f (insert x s) b = (if x ∈ s then itset f s b else f x (itset f s b)))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s)) ⟶ itset f ∅ b = b ∧ (∀x. ∀s. finite s ⟶ itset f (insert x s) b = (if x ∈ s then itset f s b else f x (itset f s b)))"
+                }
+            ],
+            "prop": [
+                "(∀x. ∀y. ∀s. ¬(x = y) ⟶ f x (f y s) = f y (f x s)) ",
+                "⟶ itset f ∅ b = b ∧ ",
+                "   (∀x. ∀s. finite s ",
+                "        ⟶ itset f (insert x s) b = (if x ∈ s then itset f s b else f x (itset f s b)))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "itset_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "'b",
+                "f": "'a ⇒ 'b ⇒ 'b"
+            }
+        },
+        {
             "name": "card",
             "prop": "card s = itset (λx. λn. Suc n) s 0",
             "ty": "def",
