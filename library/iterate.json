@@ -4889,7 +4889,8 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "iterate_insert_gen",
             "num_gaps": 1,
@@ -5094,9 +5095,9 @@
             ],
             "prop": [
                 "monoidal op ",
-                "⟶ (∀f. ∀x::'b. ∀s. finite (support op f s) ",
-                "          ⟶ iterate op (insert x s) f = ",
-                "             (if x ∈ s then iterate op s f else op (f x) (iterate op s f)))"
+                "⟶ finite (support op f s) ",
+                "   ⟶ iterate op (insert x s) f = ",
+                "      (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
             ],
             "steps": [
                 {
@@ -5178,7 +5179,10 @@
             ],
             "ty": "thm",
             "vars": {
-                "op": "'a ⇒ 'a ⇒ 'a"
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set",
+                "x": "'b"
             }
         },
         {
