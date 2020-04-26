@@ -4893,7 +4893,7 @@
                 "hint_backward1"
             ],
             "name": "iterate_insert_gen",
-            "num_gaps": 1,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "monoidal op",
@@ -4903,194 +4903,336 @@
                     "th": "monoidal op ⊢ monoidal op"
                 },
                 {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "monoidal op ⊢ ∀f. ∀x::'b. ∀s. finite (support op f s) ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
-                },
-                {
-                    "args": "f, 'b ⇒ 'a",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR f"
-                },
-                {
-                    "args": "x, 'b",
-                    "id": "1.1",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "s, 'b set",
-                    "id": "1.2",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR s"
-                },
-                {
                     "args": "finite (support op f s)",
-                    "id": "1.3",
+                    "id": "1",
                     "prevs": [],
                     "rule": "assume",
                     "th": "finite (support op f s) ⊢ finite (support op f s)"
                 },
                 {
                     "args": "",
-                    "id": "1.4",
+                    "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "monoidal op, finite (support op f s) ⊢ f x = neutral op ⟶ finite (if f x = neutral op then support op f s else insert x (support op f s))"
+                    "th": "monoidal op, finite (support op f s) ⊢ x ∈ s ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ ∀x1. x1 = x ∨ x1 ∈ s ⟷ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "2.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ x1 = x ∨ x1 ∈ s ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "x1 = x ∨ x1 ∈ s",
+                    "id": "2.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 = x ∨ x1 ∈ s ⊢ x1 = x ∨ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, x ∈ s, finite (support op f s), x1 = x ∨ x1 ∈ s ⊢ x1 = x ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "x1 = x",
+                    "id": "2.1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 = x ⊢ x1 = x"
+                },
+                {
+                    "args": "x1 ∈ s",
+                    "id": "2.1.1.1.1",
+                    "prevs": [
+                        "2.1.1.1.0",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x1 = x, x ∈ s, finite (support op f s), x1 = x ∨ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.1.1.2",
+                    "prevs": [
+                        "2.1.1.1.0",
+                        "2.1.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, x ∈ s, finite (support op f s), x1 = x ∨ x1 ∈ s ⊢ x1 = x ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "x1 ∈ s ⟶ x1 ∈ s",
+                    "id": "2.1.1.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ x1 ∈ s ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.1.1.3",
+                    "prevs": [
+                        "2.1.1.0",
+                        "2.1.1.1",
+                        "2.1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, finite (support op f s), x1 = x ∨ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.1.4",
+                    "prevs": [
+                        "2.1.1.0",
+                        "2.1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ x1 = x ∨ x1 ∈ s ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ x1 ∈ s ⟶ x1 = x ∨ x1 ∈ s"
+                },
+                {
+                    "args": "x1 ∈ s",
+                    "id": "2.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "disjI2, {A: x1 = x, B: x1 ∈ s}",
+                    "id": "2.1.2.1",
+                    "prevs": [
+                        "2.1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, x ∈ s, x1 ∈ s, finite (support op f s) ⊢ x1 = x ∨ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.2.2",
+                    "prevs": [
+                        "2.1.2.0",
+                        "2.1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ x1 ∈ s ⟶ x1 = x ∨ x1 ∈ s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2.1.3",
+                    "prevs": [
+                        "2.1.1",
+                        "2.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ x1 = x ∨ x1 ∈ s ⟷ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.4",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ ∀x1. x1 = x ∨ x1 ∈ s ⟷ x1 ∈ s"
+                },
+                {
+                    "args": "member_insert, ∀x1. x1 ∈ insert x s ⟷ x1 ∈ s",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ ∀x1. x1 ∈ insert x s ⟷ x1 ∈ s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ insert x s = s"
+                },
+                {
+                    "args": "iterate op (insert x s) f = iterate op s f",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ iterate op (insert x s) f = iterate op s f"
+                },
+                {
+                    "args": "if_P, iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ s, finite (support op f s) ⊢ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, finite (support op f s) ⊢ x ∈ s ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, finite (support op f s) ⊢ ¬(x ∈ s) ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ f x = neutral op ⟶ (if finite (if f x = neutral op then support op f s else insert x (support op f s)) then itset (λx1. λa. op (f x1) a) (if f x = neutral op then support op f s else insert x (support op f s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)"
                 },
                 {
                     "args": "f x = neutral op",
-                    "id": "1.4.0",
+                    "id": "3.1.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "f x = neutral op ⊢ f x = neutral op"
                 },
                 {
-                    "args": "if_P, finite (if f x = neutral op then support op f s else insert x (support op f s))",
-                    "id": "1.4.1",
-                    "prevs": [
-                        "1.3",
-                        "1.4.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "monoidal op, finite (support op f s), f x = neutral op ⊢ finite (if f x = neutral op then support op f s else insert x (support op f s))"
+                    "args": "",
+                    "id": "3.1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s), f x = neutral op ⊢ (if finite (if f x = neutral op then support op f s else insert x (support op f s)) then itset (λx1. λa. op (f x1) a) (if f x = neutral op then support op f s else insert x (support op f s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)"
                 },
                 {
                     "args": "",
-                    "id": "1.4.2",
+                    "id": "3.1.2",
                     "prevs": [
-                        "1.4.0",
-                        "1.4.1"
+                        "3.1.0",
+                        "3.1.1"
                     ],
                     "rule": "intros",
-                    "th": "monoidal op, finite (support op f s) ⊢ f x = neutral op ⟶ finite (if f x = neutral op then support op f s else insert x (support op f s))"
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ f x = neutral op ⟶ (if finite (if f x = neutral op then support op f s else insert x (support op f s)) then itset (λx1. λa. op (f x1) a) (if f x = neutral op then support op f s else insert x (support op f s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)"
                 },
                 {
                     "args": "",
-                    "id": "1.5",
+                    "id": "3.2",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "monoidal op, finite (support op f s) ⊢ ¬(f x = neutral op) ⟶ finite (if f x = neutral op then support op f s else insert x (support op f s))"
-                },
-                {
-                    "args": "¬(f x = neutral op)",
-                    "id": "1.5.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬(f x = neutral op) ⊢ ¬(f x = neutral op)"
-                },
-                {
-                    "args": "finite_insert, {A: support op f s, x: x}",
-                    "id": "1.5.1",
-                    "prevs": [
-                        "1.3"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "monoidal op, finite (support op f s), ¬(f x = neutral op) ⊢ finite (insert x (support op f s))"
-                },
-                {
-                    "args": "if_not_P, finite (if f x = neutral op then support op f s else insert x (support op f s))",
-                    "id": "1.5.2",
-                    "prevs": [
-                        "1.5.1",
-                        "1.5.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "monoidal op, finite (support op f s), ¬(f x = neutral op) ⊢ finite (if f x = neutral op then support op f s else insert x (support op f s))"
-                },
-                {
-                    "args": "",
-                    "id": "1.5.3",
-                    "prevs": [
-                        "1.5.0",
-                        "1.5.2"
-                    ],
-                    "rule": "intros",
-                    "th": "monoidal op, finite (support op f s) ⊢ ¬(f x = neutral op) ⟶ finite (if f x = neutral op then support op f s else insert x (support op f s))"
+                    "rule": "sorry",
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ ¬(f x = neutral op) ⟶ (if finite (if f x = neutral op then support op f s else insert x (support op f s)) then itset (λx1. λa. op (f x1) a) (if f x = neutral op then support op f s else insert x (support op f s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)"
                 },
                 {
                     "args": "classical_cases",
-                    "id": "1.6",
+                    "id": "3.3",
                     "prevs": [
-                        "1.4",
-                        "1.5"
+                        "3.1",
+                        "3.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "monoidal op, finite (support op f s) ⊢ finite (if f x = neutral op then support op f s else insert x (support op f s))"
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ (if finite (if f x = neutral op then support op f s else insert x (support op f s)) then itset (λx1. λa. op (f x1) a) (if f x = neutral op then support op f s else insert x (support op f s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)"
                 },
                 {
-                    "args": "support_insert, finite (support op f (insert x s))",
-                    "id": "1.7",
+                    "args": "support_insert, (if finite (support op f (insert x s)) then itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)",
+                    "id": "3.4",
                     "prevs": [
-                        "1.6"
+                        "3.3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "monoidal op, finite (support op f s) ⊢ finite (support op f (insert x s))"
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ (if finite (support op f (insert x s)) then itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) else neutral op) = op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op)"
+                },
+                {
+                    "args": "iterate_def, iterate op (insert x s) f = op (f x) (iterate op s f)",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ iterate op (insert x s) f = op (f x) (iterate op s f)"
+                },
+                {
+                    "args": "if_not_P, iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5",
+                        "3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ¬(x ∈ s), finite (support op f s) ⊢ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
                 },
                 {
                     "args": "",
-                    "id": "1.8",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "monoidal op, finite (support op f s) ⊢ itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) = (if x ∈ s then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else op (f x) (itset (λx1. λa. op (f x1) a) (support op f s) (neutral op)))"
+                    "id": "3.7",
+                    "prevs": [
+                        "3.0",
+                        "3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, finite (support op f s) ⊢ ¬(x ∈ s) ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
                 },
                 {
-                    "args": "if_P, itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) = (if x ∈ s then if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op else op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op))",
-                    "id": "1.9",
+                    "args": "classical_cases",
+                    "id": "4",
                     "prevs": [
-                        "1.8",
-                        "1.3"
+                        "2",
+                        "3"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "monoidal op, finite (support op f s) ⊢ itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) = (if x ∈ s then if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op else op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op))"
-                },
-                {
-                    "args": "if_P, (if finite (support op f (insert x s)) then itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) else neutral op) = (if x ∈ s then if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op else op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op))",
-                    "id": "1.10",
-                    "prevs": [
-                        "1.9",
-                        "1.7"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "monoidal op, finite (support op f s) ⊢ (if finite (support op f (insert x s)) then itset (λx1. λa. op (f x1) a) (support op f (insert x s)) (neutral op) else neutral op) = (if x ∈ s then if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op else op (f x) (if finite (support op f s) then itset (λx1. λa. op (f x1) a) (support op f s) (neutral op) else neutral op))"
-                },
-                {
-                    "args": "iterate_def, iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))",
-                    "id": "1.11",
-                    "prevs": [
-                        "1.10"
-                    ],
-                    "rule": "rewrite_goal",
+                    "rule": "apply_theorem",
                     "th": "monoidal op, finite (support op f s) ⊢ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
                 },
                 {
                     "args": "",
-                    "id": "1.12",
-                    "prevs": [
-                        "1.0",
-                        "1.1",
-                        "1.2",
-                        "1.3",
-                        "1.11"
-                    ],
-                    "rule": "intros",
-                    "th": "monoidal op ⊢ ∀f. ∀x::'b. ∀s. finite (support op f s) ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
-                },
-                {
-                    "args": "",
-                    "id": "2",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "1"
+                        "1",
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ monoidal op ⟶ (∀f. ∀x::'b. ∀s. finite (support op f s) ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f)))"
+                    "th": "⊢ monoidal op ⟶ finite (support op f s) ⟶ iterate op (insert x s) f = (if x ∈ s then iterate op s f else op (f x) (iterate op s f))"
                 }
             ],
             "prop": [
@@ -5101,80 +5243,121 @@
             ],
             "steps": [
                 {
-                    "goal_id": "1",
-                    "method_name": "introduction",
-                    "names": "f,x,s"
+                    "case": "x ∈ s",
+                    "goal_id": "2",
+                    "method_name": "cases"
                 },
                 {
-                    "goal_id": "1.4",
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "(insert x s) = s",
+                    "goal_id": "2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "goal_id": "2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.1.0"
+                    ],
+                    "goal_id": "2.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.1.1.0"
+                    ],
+                    "goal_id": "2.1.1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "3.1",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "iterate_def"
                 },
                 {
-                    "goal": "finite (support op f (insert x s))",
-                    "goal_id": "1.4",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "1.4",
+                    "goal_id": "3.1",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "support_insert"
                 },
                 {
                     "case": "f x = neutral op",
-                    "goal_id": "1.4",
+                    "goal_id": "3.1",
                     "method_name": "cases"
                 },
                 {
-                    "goal_id": "1.4",
+                    "goal_id": "3.1",
                     "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "1.4.0"
-                    ],
-                    "goal_id": "1.4.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "if_P"
-                },
-                {
-                    "goal_id": "1.5",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "1.5.0"
-                    ],
-                    "goal_id": "1.5.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "goal_id": "1.5.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "finite_insert"
-                },
-                {
-                    "fact_ids": [
-                        "1.7"
-                    ],
-                    "goal_id": "1.8",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "if_P"
-                },
-                {
-                    "fact_ids": [
-                        "1.3"
-                    ],
-                    "goal_id": "1.8",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "if_P"
                 }
             ],
             "ty": "thm",
