@@ -2542,6 +2542,15 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "delete",
+            "prop": "delete A x = {y. ¬(y = x) ∧ y ∈ A}",
+            "ty": "def",
+            "type": "'a set ⇒ 'a ⇒ 'a set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "member_insert",
             "num_gaps": 0,
             "proof": [
@@ -2581,6 +2590,61 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "member_delete",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, y ∈ {y1. ¬(y1 = x) ∧ y1 ∈ A} ⟷ ¬(y = x) ∧ y ∈ A",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ {y1. ¬(y1 = x) ∧ y1 ∈ A} ⟷ ¬(y = x) ∧ y ∈ A"
+                },
+                {
+                    "args": "delete_def, y ∈ delete x A ⟷ ¬(y = x) ∧ y ∈ A",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ delete x A ⟷ ¬(y = x) ∧ y ∈ A"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ y ∈ delete x A ⟷ ¬(y = x) ∧ y ∈ A"
+                }
+            ],
+            "prop": "y ∈ delete A x ⟷ ¬(y = x) ∧ y ∈ A",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "delete_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "member_collect"
                 }
             ],
@@ -2805,6 +2869,100 @@
             "vars": {
                 "x": "'a",
                 "y": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "insert_delete",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x ∈ A",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ A ⊢ x ∈ A"
+                },
+                {
+                    "args": "∀x1. x1 = x ∨ ¬(x1 = x) ∧ x1 ∈ A ⟷ x1 ∈ A",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ A ⊢ ∀x1. x1 = x ∨ ¬(x1 = x) ∧ x1 ∈ A ⟷ x1 ∈ A"
+                },
+                {
+                    "args": "member_delete, ∀x1. x1 = x ∨ x1 ∈ delete A x ⟷ x1 ∈ A",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ A ⊢ ∀x1. x1 = x ∨ x1 ∈ delete A x ⟷ x1 ∈ A"
+                },
+                {
+                    "args": "member_insert, ∀x1. x1 ∈ insert x (delete A x) ⟷ x1 ∈ A",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ A ⊢ ∀x1. x1 ∈ insert x (delete A x) ⟷ x1 ∈ A"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ A ⊢ insert x (delete A x) = A"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ A ⟶ insert x (delete A x) = A"
+                }
+            ],
+            "prop": "x ∈ A ⟶ insert x (delete A x) = A",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "x": "'a"
             }
         },
         {
@@ -6234,6 +6392,18 @@
             ],
             "name": "finite_image",
             "prop": "finite s ⟶ finite (image f s)",
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_image_inj_eq",
+            "prop": "(∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ⟶ finite (image f s) ⟷ finite s",
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ 'b",

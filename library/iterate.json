@@ -4529,6 +4529,489 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "support_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op))"
+                },
+                {
+                    "args": "x, 'c",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op))"
+                },
+                {
+                    "args": "(∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op)",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ ∃x1. x = f x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = f x1 ∧ x1 ∈ s",
+                    "id": "0.1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f x1 ∧ x1 ∈ s ⊢ x = f x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ⊢ x = f x1"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.5",
+                        "0.1.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x = f x1 ∧ x1 ∈ s, (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.7",
+                    "prevs": [
+                        "0.1.4",
+                        "0.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s, (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ (x = f x1 ∧ x1 ∈ s) ∧ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "conj_assoc, x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)",
+                    "id": "0.1.8",
+                    "prevs": [
+                        "0.1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = f x1 ∧ x1 ∈ s, (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "exI, {P: λx1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op), a: x1}",
+                    "id": "0.1.9",
+                    "prevs": [
+                        "0.1.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = f x1 ∧ x1 ∈ s, (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⊢ ∃a1. x = f a1 ∧ a1 ∈ s ∧ ¬(g (f a1) = neutral op)"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ s",
+                    "id": "0.1.10",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.3",
+                        "0.1.4",
+                        "0.1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op))"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ ∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)",
+                    "id": "0.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ x = f x1"
+                },
+                {
+                    "args": "conj_assoc",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ (x = f x1 ∧ x1 ∈ s) ∧ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.5",
+                    "prevs": [
+                        "0.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ ¬(g (f x1) = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.6",
+                    "prevs": [
+                        "0.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ x = f x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "exI, {P: λa1. x = f a1 ∧ a1 ∈ s, a: x1}",
+                    "id": "0.2.7",
+                    "prevs": [
+                        "0.2.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ ∃a1. x = f a1 ∧ a1 ∈ s"
+                },
+                {
+                    "args": "¬(g x = neutral op)",
+                    "id": "0.2.8",
+                    "prevs": [
+                        "0.2.3",
+                        "0.2.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op), ∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.9",
+                    "prevs": [
+                        "0.2.7",
+                        "0.2.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op), ∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op) ⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)",
+                    "id": "0.2.10",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.0",
+                        "0.2.1",
+                        "0.2.2",
+                        "0.2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op)) ⟶ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op))"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬(g (f x1) = neutral op))"
+                },
+                {
+                    "args": "comp_fun_def, ∀x. (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬((g ∘ f) x1 = neutral op))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ s ∧ ¬((g ∘ f) x1 = neutral op))"
+                },
+                {
+                    "args": "in_support, ∀x. (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ support op (g ∘ f) s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. (∃x1. x = f x1 ∧ x1 ∈ s) ∧ ¬(g x = neutral op) ⟷ (∃x1. x = f x1 ∧ x1 ∈ support op (g ∘ f) s)"
+                },
+                {
+                    "args": "in_image, ∀x. x ∈ image f s ∧ ¬(g x = neutral op) ⟷ x ∈ image f (support op (g ∘ f) s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ image f s ∧ ¬(g x = neutral op) ⟷ x ∈ image f (support op (g ∘ f) s)"
+                },
+                {
+                    "args": "in_support, ∀x. x ∈ support op g (image f s) ⟷ x ∈ image f (support op (g ∘ f) s)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀x. x ∈ support op g (image f s) ⟷ x ∈ image f (support op (g ∘ f) s)"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ support op g (image f s) = image f (support op (g ∘ f) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ support op g (image f s) = image f (support op (g ∘ f) s)"
+                }
+            ],
+            "prop": "support op g (image f s) = image f (support op (g ∘ f) s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.4"
+                    ],
+                    "goal_id": "0.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "0.1.6",
+                    "method_name": "inst_exists_goal",
+                    "s": "x1"
+                },
+                {
+                    "goal_id": "0.1.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "0.1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.5",
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.4"
+                    ],
+                    "goal_id": "0.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.4"
+                    ],
+                    "goal_id": "0.2.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.6"
+                    ],
+                    "goal_id": "0.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.3"
+                    ],
+                    "goal_id": "0.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'c",
+                "g": "'c ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "support_delta",
             "num_gaps": 0,
             "proof": [
@@ -10907,6 +11390,2618 @@
             "vars": {
                 "P": "'a ⇒ bool",
                 "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_related_nonempty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2)"
+                },
+                {
+                    "args": "finite s",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, monoidal op, ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ ¬((∅::'b set) = ∅) ⟶ (∀x. x ∈ ∅ ⟶ R (f x) (g x)) ⟶ R (iterate op ∅ f) (iterate op ∅ g)"
+                },
+                {
+                    "args": "¬((∅::'b set) = ∅)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬((∅::'b set) = ∅) ⊢ ¬((∅::'b set) = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ ∅ ⟶ R (f x) (g x)",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ ∅ ⟶ R (f x) (g x) ⊢ ∀x. x ∈ ∅ ⟶ R (f x) (g x)"
+                },
+                {
+                    "args": "eq_refl, {x: (∅::'b set)}",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∅::'b set) = ∅"
+                },
+                {
+                    "args": "negE_gen, {A: (∅::'b set) = ∅, C: R (iterate op ∅ f) (iterate op ∅ g)}",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, monoidal op, ¬((∅::'b set) = ∅), ∀x. x ∈ ∅ ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ R (iterate op ∅ f) (iterate op ∅ g)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, monoidal op, ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ ¬((∅::'b set) = ∅) ⟶ (∀x. x ∈ ∅ ⟶ R (f x) (g x)) ⟶ R (iterate op ∅ f) (iterate op ∅ g)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, monoidal op, ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ ∀x. ∀s1. (¬(s1 = ∅) ⟶ (∀x1. x1 ∈ s1 ⟶ R (f x1) (g x1)) ⟶ R (iterate op s1 f) (iterate op s1 g)) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ ¬(insert x s1 = ∅) ⟶ (∀x1. x1 ∈ insert x s1 ⟶ R (f x1) (g x1)) ⟶ R (iterate op (insert x s1) f) (iterate op (insert x s1) g)"
+                },
+                {
+                    "args": "a, 'b",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "t, 'b set",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t"
+                },
+                {
+                    "args": "¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g)",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g)"
+                },
+                {
+                    "args": "¬(a ∈ t)",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a ∈ t) ⊢ ¬(a ∈ t)"
+                },
+                {
+                    "args": "finite t",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "¬(insert a t = ∅)",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(insert a t = ∅) ⊢ ¬(insert a t = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ insert a t ⟶ R (f x) (g x)",
+                    "id": "4.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ insert a t ⟶ R (f x) (g x) ⊢ ∀x. x ∈ insert a t ⟶ R (f x) (g x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, finite t, monoidal op, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ t = ∅ ⟶ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "t = ∅",
+                    "id": "4.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "t = ∅ ⊢ t = ∅"
+                },
+                {
+                    "args": "iterate_sing, {f: f, x: a}",
+                    "id": "4.7.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ({a}) f = f a"
+                },
+                {
+                    "args": "iterate_sing, {f: g, x: a}",
+                    "id": "4.7.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ({a}) g = g a"
+                },
+                {
+                    "args": "eq_refl, {x: a}",
+                    "id": "4.7.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a = a"
+                },
+                {
+                    "args": "disjI1, {A: a = a, B: a ∈ t}",
+                    "id": "4.7.4",
+                    "prevs": [
+                        "4.7.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, monoidal op, t = ∅, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ a = a ∨ a ∈ t"
+                },
+                {
+                    "args": "member_insert, a ∈ insert a t",
+                    "id": "4.7.5",
+                    "prevs": [
+                        "4.7.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, monoidal op, t = ∅, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ a ∈ insert a t"
+                },
+                {
+                    "args": "a",
+                    "id": "4.7.6",
+                    "prevs": [
+                        "4.6",
+                        "4.7.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, finite t, monoidal op, t = ∅, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (f a) (g a)"
+                },
+                {
+                    "args": "R (f a) (iterate op ({a}) g)",
+                    "id": "4.7.7",
+                    "prevs": [
+                        "4.7.2",
+                        "4.7.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite t, monoidal op, t = ∅, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (f a) (iterate op ({a}) g)"
+                },
+                {
+                    "args": "R (iterate op ({a}) f) (iterate op ({a}) g)",
+                    "id": "4.7.8",
+                    "prevs": [
+                        "4.7.1",
+                        "4.7.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite t, monoidal op, t = ∅, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (iterate op ({a}) f) (iterate op ({a}) g)"
+                },
+                {
+                    "args": "R (iterate op (insert a t) f) (iterate op (insert a t) g)",
+                    "id": "4.7.9",
+                    "prevs": [
+                        "4.7.0",
+                        "4.7.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite t, monoidal op, t = ∅, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "",
+                    "id": "4.7.10",
+                    "prevs": [
+                        "4.7.0",
+                        "4.7.9"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, finite t, monoidal op, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ t = ∅ ⟶ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "",
+                    "id": "4.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, finite t, monoidal op, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ ¬(t = ∅) ⟶ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "¬(t = ∅)",
+                    "id": "4.8.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(t = ∅) ⊢ ¬(t = ∅)"
+                },
+                {
+                    "args": "iterate_insert, {f: f, x: a}",
+                    "id": "4.8.1",
+                    "prevs": [
+                        "0",
+                        "4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, monoidal op ⊢ iterate op (insert a t) f = (if a ∈ t then iterate op t f else op (f a) (iterate op t f))"
+                },
+                {
+                    "args": "iterate_insert, {f: g, x: a}",
+                    "id": "4.8.2",
+                    "prevs": [
+                        "0",
+                        "4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, monoidal op ⊢ iterate op (insert a t) g = (if a ∈ t then iterate op t g else op (g a) (iterate op t g))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "4.8.3",
+                    "prevs": [
+                        "4.8.1",
+                        "4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite t, monoidal op, ¬(a ∈ t) ⊢ iterate op (insert a t) f = op (f a) (iterate op t f)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "4.8.4",
+                    "prevs": [
+                        "4.8.2",
+                        "4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite t, monoidal op, ¬(a ∈ t) ⊢ iterate op (insert a t) g = op (g a) (iterate op t g)"
+                },
+                {
+                    "args": "eq_refl, {x: a}",
+                    "id": "4.8.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a = a"
+                },
+                {
+                    "args": "disjI1, {A: a = a, B: a ∈ t}",
+                    "id": "4.8.6",
+                    "prevs": [
+                        "4.8.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ a = a ∨ a ∈ t"
+                },
+                {
+                    "args": "member_insert, a ∈ insert a t",
+                    "id": "4.8.7",
+                    "prevs": [
+                        "4.8.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ a ∈ insert a t"
+                },
+                {
+                    "args": "a",
+                    "id": "4.8.8",
+                    "prevs": [
+                        "4.6",
+                        "4.8.7"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (f a) (g a)"
+                },
+                {
+                    "args": "",
+                    "id": "4.8.9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ ∀x. x ∈ t ⟶ R (f x) (g x)"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "4.8.9.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "4.8.9.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "disjI2, {A: x = a, B: x ∈ t}",
+                    "id": "4.8.9.2",
+                    "prevs": [
+                        "4.8.9.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, monoidal op, x ∈ t, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ x = a ∨ x ∈ t"
+                },
+                {
+                    "args": "member_insert, x ∈ insert a t",
+                    "id": "4.8.9.3",
+                    "prevs": [
+                        "4.8.9.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, monoidal op, x ∈ t, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ x ∈ insert a t"
+                },
+                {
+                    "args": "x",
+                    "id": "4.8.9.4",
+                    "prevs": [
+                        "4.6",
+                        "4.8.9.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, finite t, monoidal op, x ∈ t, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (f x) (g x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.8.9.5",
+                    "prevs": [
+                        "4.8.9.0",
+                        "4.8.9.1",
+                        "4.8.9.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ ∀x. x ∈ t ⟶ R (f x) (g x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.8.10",
+                    "prevs": [
+                        "4.2",
+                        "4.8.0",
+                        "4.8.9"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (iterate op t f) (iterate op t g)"
+                },
+                {
+                    "args": "f a, iterate op t f, g a, iterate op t g",
+                    "id": "4.8.11",
+                    "prevs": [
+                        "1",
+                        "4.8.8",
+                        "4.8.10"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (op (f a) (iterate op t f)) (op (g a) (iterate op t g))"
+                },
+                {
+                    "args": "R (op (f a) (iterate op t f)) (iterate op (insert a t) g)",
+                    "id": "4.8.12",
+                    "prevs": [
+                        "4.8.4",
+                        "4.8.11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (op (f a) (iterate op t f)) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "R (iterate op (insert a t) f) (iterate op (insert a t) g)",
+                    "id": "4.8.13",
+                    "prevs": [
+                        "4.8.3",
+                        "4.8.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite t, monoidal op, ¬(t = ∅), ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "",
+                    "id": "4.8.14",
+                    "prevs": [
+                        "4.8.0",
+                        "4.8.13"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, finite t, monoidal op, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ ¬(t = ∅) ⟶ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.7",
+                        "4.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, finite t, monoidal op, ¬(a ∈ t), ¬(insert a t = ∅), ∀x. x ∈ insert a t ⟶ R (f x) (g x), ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2), ¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g) ⊢ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "",
+                    "id": "4.10",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.4",
+                        "4.5",
+                        "4.6",
+                        "4.9"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, monoidal op, ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ ∀a. ∀t. (¬(t = ∅) ⟶ (∀x. x ∈ t ⟶ R (f x) (g x)) ⟶ R (iterate op t f) (iterate op t g)) ⟶ ¬(a ∈ t) ⟶ finite t ⟶ ¬(insert a t = ∅) ⟶ (∀x. x ∈ insert a t ⟶ R (f x) (g x)) ⟶ R (iterate op (insert a t) f) (iterate op (insert a t) g)"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op, ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2) ⊢ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (iterate op s f) (iterate op s g)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2)) ⟶ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (iterate op s f) (iterate op s g)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ (∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (op x1 y1) (op x2 y2)) ",
+                "   ⟶ finite s ",
+                "      ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (iterate op s f) (iterate op s g)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "a,t"
+                },
+                {
+                    "case": "t = ∅",
+                    "goal_id": "4.7",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "4.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.7.0"
+                    ],
+                    "goal_id": "4.7.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.7.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "a",
+                    "theorem": "iterate_sing"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.7.2",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "a",
+                    "theorem": "iterate_sing"
+                },
+                {
+                    "fact_ids": [
+                        "4.7.1"
+                    ],
+                    "goal_id": "4.7.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.7.2"
+                    ],
+                    "goal_id": "4.7.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.7.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.7.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "4.7.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "4.7.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "4.8",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "4.4"
+                    ],
+                    "goal_id": "4.8.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "4.4"
+                    ],
+                    "goal_id": "4.8.2",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "4.8.1",
+                        "4.3"
+                    ],
+                    "goal_id": "4.8.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.8.2",
+                        "4.3"
+                    ],
+                    "goal_id": "4.8.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.8.3"
+                    ],
+                    "goal_id": "4.8.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.8.4"
+                    ],
+                    "goal_id": "4.8.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4.8.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.8.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.8.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "4.8.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "4.8.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.8.9",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.8.9",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.8.9.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.8.9.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "4.8.9.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "R": "'a ⇒ 'a ⇒ bool",
+                "f": "'b ⇒ 'a",
+                "g": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_delete",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "a ∈ s",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ⊢ a ∈ s"
+                },
+                {
+                    "args": "insert_delete",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ∈ s ⊢ insert a (delete s a) = s"
+                },
+                {
+                    "args": "iterate op s f = iterate op (insert a (delete s a)) f",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ∈ s ⊢ iterate op s f = iterate op (insert a (delete s a)) f"
+                },
+                {
+                    "args": "∀x. ¬(x = a) ∧ x ∈ s ⟶ x ∈ s",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. ¬(x = a) ∧ x ∈ s ⟶ x ∈ s"
+                },
+                {
+                    "args": "member_delete, ∀x. x ∈ delete s a ⟶ x ∈ s",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ ∀x. x ∈ delete s a ⟶ x ∈ s"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ delete s a ⊆ s"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ finite (delete s a)"
+                },
+                {
+                    "args": "iterate_insert, {f: f, x: a}",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ iterate op (insert a (delete s a)) f = (if a ∈ delete s a then iterate op (delete s a) f else op (f a) (iterate op (delete s a) f))"
+                },
+                {
+                    "args": "¬(¬(a = a) ∧ a ∈ s)",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(¬(a = a) ∧ a ∈ s)"
+                },
+                {
+                    "args": "member_delete, ¬(a ∈ delete s a)",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ ¬(a ∈ delete s a)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "12",
+                    "prevs": [
+                        "9",
+                        "11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ iterate op (insert a (delete s a)) f = op (f a) (iterate op (delete s a) f)"
+                },
+                {
+                    "args": "eq_sym_eq, op (f a) (iterate op (delete s a) f) = iterate op (insert a (delete s a)) f",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ op (f a) (iterate op (delete s a) f) = iterate op (insert a (delete s a)) f"
+                },
+                {
+                    "args": "op (f a) (iterate op (delete s a) f) = iterate op s f",
+                    "id": "14",
+                    "prevs": [
+                        "4",
+                        "13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, monoidal op, a ∈ s ⊢ op (f a) (iterate op (delete s a) f) = iterate op s f"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ finite s ⟶ a ∈ s ⟶ op (f a) (iterate op (delete s a) f) = iterate op s f"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ finite s ⟶ a ∈ s ⟶ op (f a) (iterate op (delete s a) f) = iterate op s f"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "insert_delete"
+                },
+                {
+                    "goal": "iterate op s f = iterate op (insert a (delete s a)) f",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "finite (delete s a)",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "param_t": "s",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "goal": "~(a ∈ delete s a)",
+                    "goal_id": "10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'b",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "iterate_delta",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op ⊢ a ∈ s ⟶ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "a ∈ s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ⊢ a ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, a ∈ s ⊢ f a = neutral op ⟶ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "f a = neutral op",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f a = neutral op ⊢ f a = neutral op"
+                },
+                {
+                    "args": "iterate_empty, {f: λx. if x = a then f x else neutral op}",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ∅ (λx. if x = a then f x else neutral op) = neutral op"
+                },
+                {
+                    "args": "neutral op = f a",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "f a = neutral op ⊢ neutral op = f a"
+                },
+                {
+                    "args": "iterate op ∅ (λx. if x = a then f x else neutral op) = f a",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, a ∈ s, f a = neutral op ⊢ iterate op ∅ (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "support_empty, iterate op (support op f ∅) (λx. if x = a then f x else neutral op) = f a",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, a ∈ s, f a = neutral op ⊢ iterate op (support op f ∅) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "if_P, iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, a ∈ s, f a = neutral op ⊢ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, a ∈ s ⊢ f a = neutral op ⟶ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, a ∈ s ⊢ ¬(f a = neutral op) ⟶ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "¬(f a = neutral op)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(f a = neutral op) ⊢ ¬(f a = neutral op)"
+                },
+                {
+                    "args": "iterate_sing, {f: λx. if x = a then f x else neutral op, x: a}",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ({a}) (λx. if x = a then f x else neutral op) = (if a = a then f a else neutral op)"
+                },
+                {
+                    "args": "eq_refl, {x: a}",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a = a"
+                },
+                {
+                    "args": "if_P",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "monoidal op ⊢ iterate op ({a}) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "support_empty, iterate op (insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, a ∈ s, ¬(f a = neutral op) ⊢ iterate op (insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "if_not_P, iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a",
+                    "id": "1.2.5",
+                    "prevs": [
+                        "1.2.4",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, a ∈ s, ¬(f a = neutral op) ⊢ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.6",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, a ∈ s ⊢ ¬(f a = neutral op) ⟶ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, a ∈ s ⊢ iterate op (if f a = neutral op then support op f ∅ else insert a (support op f ∅)) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "support_insert, iterate op (support op f ({a})) (λx. if x = a then f x else neutral op) = f a",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, a ∈ s ⊢ iterate op (support op f ({a})) (λx. if x = a then f x else neutral op) = f a"
+                },
+                {
+                    "args": "if_P, iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, a ∈ s ⊢ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op ⊢ a ∈ s ⟶ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op ⊢ ¬(a ∈ s) ⟶ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "¬(a ∈ s)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a ∈ s) ⊢ ¬(a ∈ s)"
+                },
+                {
+                    "args": "iterate_empty, {f: λx. if x = a then f x else neutral op, op: op}",
+                    "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, ¬(a ∈ s) ⊢ iterate op ∅ (λx. if x = a then f x else neutral op) = neutral op"
+                },
+                {
+                    "args": "if_not_P, iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ¬(a ∈ s) ⊢ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op ⊢ ¬(a ∈ s) ⟶ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ iterate op (if a ∈ s then support op f ({a}) else ∅) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "support_delta, iterate op (support op (λx. if x = a then f x else neutral op) s) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op ⊢ iterate op (support op (λx. if x = a then f x else neutral op) s) (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "iterate_support, iterate op s (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "monoidal op ⊢ iterate op s (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ iterate op s (λx. if x = a then f x else neutral op) = (if a ∈ s then f a else neutral op)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ iterate op s (λx. if x = a then f x else neutral op) = ",
+                "   (if a ∈ s then f a else neutral op)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "iterate_support"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_delta"
+                },
+                {
+                    "case": "a ∈ s",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_insert"
+                },
+                {
+                    "case": "f a = neutral op",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_empty"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx. if x = a then f x else neutral op)",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_empty"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx. if x = a then f x else neutral op)",
+                    "param_x": "a",
+                    "theorem": "iterate_sing"
+                },
+                {
+                    "goal": "a = a",
+                    "goal_id": "1.2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "goal_id": "1.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'b",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀s. finite s ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f s) g = iterate op s (g ∘ f)"
+                },
+                {
+                    "args": "t, 'b set",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t"
+                },
+                {
+                    "args": "finite t",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ (∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f ∅) g = iterate op ∅ (g ∘ f)"
+                },
+                {
+                    "args": "∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "iterate_empty, {f: g}",
+                    "id": "2.2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ∅ g = neutral op"
+                },
+                {
+                    "args": "iterate_empty, {f: g ∘ f}",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ∅ (g ∘ f) = neutral op"
+                },
+                {
+                    "args": "neutral op = iterate op ∅ (g ∘ f)",
+                    "id": "2.2.3",
+                    "prevs": [
+                        "2.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op ⊢ neutral op = iterate op ∅ (g ∘ f)"
+                },
+                {
+                    "args": "iterate op ∅ g = iterate op ∅ (g ∘ f)",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "2.2.1",
+                        "2.2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y ⊢ iterate op ∅ g = iterate op ∅ (g ∘ f)"
+                },
+                {
+                    "args": "image_empty, iterate op (image f ∅) g = iterate op ∅ (g ∘ f)",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y ⊢ iterate op (image f ∅) g = iterate op ∅ (g ∘ f)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.6",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ (∀x. ∀y. x ∈ ∅ ⟶ y ∈ ∅ ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f ∅) g = iterate op ∅ (g ∘ f)"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀s1. ((∀x1. ∀y. x1 ∈ s1 ⟶ y ∈ s1 ⟶ f x1 = f y ⟶ x1 = y) ⟶ iterate op (image f s1) g = iterate op s1 (g ∘ f)) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∀x1. ∀y. x1 ∈ insert x s1 ⟶ y ∈ insert x s1 ⟶ f x1 = f y ⟶ x1 = y) ⟶ iterate op (image f (insert x s1)) g = iterate op (insert x s1) (g ∘ f)"
+                },
+                {
+                    "args": "a, 'b",
+                    "id": "2.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "t1, 'b set",
+                    "id": "2.3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t1"
+                },
+                {
+                    "args": "(∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f)",
+                    "id": "2.3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f)"
+                },
+                {
+                    "args": "¬(a ∈ t1)",
+                    "id": "2.3.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a ∈ t1) ⊢ ¬(a ∈ t1)"
+                },
+                {
+                    "args": "finite t1",
+                    "id": "2.3.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t1 ⊢ finite t1"
+                },
+                {
+                    "args": "∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y",
+                    "id": "2.3.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "finite_image, {f: f, s: t1}",
+                    "id": "2.3.6",
+                    "prevs": [
+                        "2.3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ finite (image f t1)"
+                },
+                {
+                    "args": "iterate_insert, {f: g, x: f a}",
+                    "id": "2.3.7",
+                    "prevs": [
+                        "0",
+                        "2.3.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ iterate op (insert (f a) (image f t1)) g = (if f a ∈ image f t1 then iterate op (image f t1) g else op (g (f a)) (iterate op (image f t1) g))"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ (∃x. f a = f x ∧ x ∈ t1) ⟶ a ∈ t1"
+                },
+                {
+                    "args": "∃x. f a = f x ∧ x ∈ t1",
+                    "id": "2.3.8.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. f a = f x ∧ x ∈ t1 ⊢ ∃x. f a = f x ∧ x ∈ t1"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "2.3.8.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "f a = f x ∧ x ∈ t1",
+                    "id": "2.3.8.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f a = f x ∧ x ∈ t1 ⊢ f a = f x ∧ x ∈ t1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.3.8.3",
+                    "prevs": [
+                        "2.3.8.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f a = f x ∧ x ∈ t1 ⊢ f a = f x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.3.8.4",
+                    "prevs": [
+                        "2.3.8.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f a = f x ∧ x ∈ t1 ⊢ x ∈ t1"
+                },
+                {
+                    "args": "eq_refl, {x: a}",
+                    "id": "2.3.8.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a = a"
+                },
+                {
+                    "args": "disjI1, {A: a = a, B: a ∈ t1}",
+                    "id": "2.3.8.6",
+                    "prevs": [
+                        "2.3.8.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), f a = f x ∧ x ∈ t1, ∃x. f a = f x ∧ x ∈ t1, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ a = a ∨ a ∈ t1"
+                },
+                {
+                    "args": "member_insert, a ∈ insert a t1",
+                    "id": "2.3.8.7",
+                    "prevs": [
+                        "2.3.8.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), f a = f x ∧ x ∈ t1, ∃x. f a = f x ∧ x ∈ t1, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ a ∈ insert a t1"
+                },
+                {
+                    "args": "disjI2, {A: x = a, B: x ∈ t1}",
+                    "id": "2.3.8.8",
+                    "prevs": [
+                        "2.3.8.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), f a = f x ∧ x ∈ t1, ∃x. f a = f x ∧ x ∈ t1, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ x = a ∨ x ∈ t1"
+                },
+                {
+                    "args": "member_insert, x ∈ insert a t1",
+                    "id": "2.3.8.9",
+                    "prevs": [
+                        "2.3.8.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), f a = f x ∧ x ∈ t1, ∃x. f a = f x ∧ x ∈ t1, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ x ∈ insert a t1"
+                },
+                {
+                    "args": "a, x",
+                    "id": "2.3.8.10",
+                    "prevs": [
+                        "2.3.5",
+                        "2.3.8.7",
+                        "2.3.8.9",
+                        "2.3.8.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), f a = f x ∧ x ∈ t1, ∃x. f a = f x ∧ x ∈ t1, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ a = x"
+                },
+                {
+                    "args": "a ∈ t1",
+                    "id": "2.3.8.11",
+                    "prevs": [
+                        "2.3.8.10",
+                        "2.3.8.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), f a = f x ∧ x ∈ t1, ∃x. f a = f x ∧ x ∈ t1, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ a ∈ t1"
+                },
+                {
+                    "args": "∃x. f a = f x ∧ x ∈ t1",
+                    "id": "2.3.8.12",
+                    "prevs": [
+                        "2.3.8.0",
+                        "2.3.8.0",
+                        "2.3.8.1",
+                        "2.3.8.2",
+                        "2.3.8.11"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ (∃x. f a = f x ∧ x ∈ t1) ⟶ a ∈ t1"
+                },
+                {
+                    "args": "in_image, f a ∈ image f t1 ⟶ a ∈ t1",
+                    "id": "2.3.9",
+                    "prevs": [
+                        "2.3.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ f a ∈ image f t1 ⟶ a ∈ t1"
+                },
+                {
+                    "args": "double_neg, ¬¬(f a ∈ image f t1) ⟶ ¬¬(a ∈ t1)",
+                    "id": "2.3.10",
+                    "prevs": [
+                        "2.3.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ ¬¬(f a ∈ image f t1) ⟶ ¬¬(a ∈ t1)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "2.3.11",
+                    "prevs": [
+                        "2.3.3",
+                        "2.3.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ ¬(f a ∈ image f t1)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2.3.12",
+                    "prevs": [
+                        "2.3.7",
+                        "2.3.11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ iterate op (insert (f a) (image f t1)) g = op (g (f a)) (iterate op (image f t1) g)"
+                },
+                {
+                    "args": "iterate_insert, {f: g ∘ f, x: a}",
+                    "id": "2.3.13",
+                    "prevs": [
+                        "0",
+                        "2.3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t1, monoidal op ⊢ iterate op (insert a t1) (g ∘ f) = (if a ∈ t1 then iterate op t1 (g ∘ f) else op ((g ∘ f) a) (iterate op t1 (g ∘ f)))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2.3.14",
+                    "prevs": [
+                        "2.3.13",
+                        "2.3.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite t1, monoidal op, ¬(a ∈ t1) ⊢ iterate op (insert a t1) (g ∘ f) = op ((g ∘ f) a) (iterate op t1 (g ∘ f))"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.15",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ ∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "2.3.15.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'b",
+                    "id": "2.3.15.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ t1",
+                    "id": "2.3.15.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t1 ⊢ x ∈ t1"
+                },
+                {
+                    "args": "y ∈ t1",
+                    "id": "2.3.15.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ t1 ⊢ y ∈ t1"
+                },
+                {
+                    "args": "f x = f y",
+                    "id": "2.3.15.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x = f y ⊢ f x = f y"
+                },
+                {
+                    "args": "disjI2, {A: x = a, B: x ∈ t1}",
+                    "id": "2.3.15.5",
+                    "prevs": [
+                        "2.3.15.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, finite t1, monoidal op, x ∈ t1, y ∈ t1, ¬(a ∈ t1), f x = f y, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ x = a ∨ x ∈ t1"
+                },
+                {
+                    "args": "member_insert, x ∈ insert a t1",
+                    "id": "2.3.15.6",
+                    "prevs": [
+                        "2.3.15.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, x ∈ t1, y ∈ t1, ¬(a ∈ t1), f x = f y, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ x ∈ insert a t1"
+                },
+                {
+                    "args": "disjI2, {A: y = a, B: y ∈ t1}",
+                    "id": "2.3.15.7",
+                    "prevs": [
+                        "2.3.15.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, finite t1, monoidal op, x ∈ t1, y ∈ t1, ¬(a ∈ t1), f x = f y, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ y = a ∨ y ∈ t1"
+                },
+                {
+                    "args": "member_insert, y ∈ insert a t1",
+                    "id": "2.3.15.8",
+                    "prevs": [
+                        "2.3.15.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, x ∈ t1, y ∈ t1, ¬(a ∈ t1), f x = f y, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ y ∈ insert a t1"
+                },
+                {
+                    "args": "x, y",
+                    "id": "2.3.15.9",
+                    "prevs": [
+                        "2.3.5",
+                        "2.3.15.6",
+                        "2.3.15.8",
+                        "2.3.15.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite t, finite t1, monoidal op, x ∈ t1, y ∈ t1, ¬(a ∈ t1), f x = f y, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.15.10",
+                    "prevs": [
+                        "2.3.15.0",
+                        "2.3.15.1",
+                        "2.3.15.2",
+                        "2.3.15.3",
+                        "2.3.15.4",
+                        "2.3.15.9"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ ∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.16",
+                    "prevs": [
+                        "2.3.2",
+                        "2.3.15"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ iterate op (image f t1) g = iterate op t1 (g ∘ f)"
+                },
+                {
+                    "args": "op (g (f a)) (iterate op (image f t1) g) = op (g (f a)) (iterate op t1 (g ∘ f))",
+                    "id": "2.3.17",
+                    "prevs": [
+                        "2.3.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ op (g (f a)) (iterate op (image f t1) g) = op (g (f a)) (iterate op t1 (g ∘ f))"
+                },
+                {
+                    "args": "comp_fun_eval, op (g (f a)) (iterate op (image f t1) g) = op ((g ∘ f) a) (iterate op t1 (g ∘ f))",
+                    "id": "2.3.18",
+                    "prevs": [
+                        "2.3.17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ op (g (f a)) (iterate op (image f t1) g) = op ((g ∘ f) a) (iterate op t1 (g ∘ f))"
+                },
+                {
+                    "args": "op (g (f a)) (iterate op (image f t1) g) = iterate op (insert a t1) (g ∘ f)",
+                    "id": "2.3.19",
+                    "prevs": [
+                        "2.3.14",
+                        "2.3.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ op (g (f a)) (iterate op (image f t1) g) = iterate op (insert a t1) (g ∘ f)"
+                },
+                {
+                    "args": "iterate op (insert (f a) (image f t1)) g = iterate op (insert a t1) (g ∘ f)",
+                    "id": "2.3.20",
+                    "prevs": [
+                        "2.3.12",
+                        "2.3.19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ iterate op (insert (f a) (image f t1)) g = iterate op (insert a t1) (g ∘ f)"
+                },
+                {
+                    "args": "image_insert, iterate op (image f (insert a t1)) g = iterate op (insert a t1) (g ∘ f)",
+                    "id": "2.3.21",
+                    "prevs": [
+                        "2.3.20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite t1, monoidal op, ¬(a ∈ t1), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y, ∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y, (∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f) ⊢ iterate op (image f (insert a t1)) g = iterate op (insert a t1) (g ∘ f)"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.22",
+                    "prevs": [
+                        "2.3.0",
+                        "2.3.1",
+                        "2.3.2",
+                        "2.3.3",
+                        "2.3.4",
+                        "2.3.5",
+                        "2.3.21"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀a. ∀t1. ((∀x. ∀y. x ∈ t1 ⟶ y ∈ t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t1) g = iterate op t1 (g ∘ f)) ⟶ ¬(a ∈ t1) ⟶ finite t1 ⟶ (∀x. ∀y. x ∈ insert a t1 ⟶ y ∈ insert a t1 ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f (insert a t1)) g = iterate op (insert a t1) (g ∘ f)"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.1",
+                        "2.2",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ (∀x. ∀y. x ∈ t ⟶ y ∈ t ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t) g = iterate op t (g ∘ f)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀t. finite t ⟶ (∀x. ∀y. x ∈ t ⟶ y ∈ t ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f t) g = iterate op t (g ∘ f)"
+                },
+                {
+                    "args": "∀a. ∀a1. ∀b::'a. ∀b1. ∀c. a ⟷ a1 ⟶ (a1 ⟶ b = b1) ⟶ (if a then b else c) = (if a1 then b1 else c)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a. ∀a1. ∀b::'a. ∀b1. ∀c. a ⟷ a1 ⟶ (a1 ⟶ b = b1) ⟶ (if a then b else c) = (if a1 then b1 else c)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀y. x ∈ support op (g ∘ f) s ⟶ y ∈ support op (g ∘ f) s ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'b",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ support op (g ∘ f) s",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ support op (g ∘ f) s ⊢ x ∈ support op (g ∘ f) s"
+                },
+                {
+                    "args": "y ∈ support op (g ∘ f) s",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ support op (g ∘ f) s ⊢ y ∈ support op (g ∘ f) s"
+                },
+                {
+                    "args": "f x = f y",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x = f y ⊢ f x = f y"
+                },
+                {
+                    "args": "support_subset, {f: g ∘ f, op: op, s: s}",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ support op (g ∘ f) s ⊆ s"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, f x = f y, x ∈ support op (g ∘ f) s, y ∈ support op (g ∘ f) s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ x ∈ s"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.5",
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, f x = f y, x ∈ support op (g ∘ f) s, y ∈ support op (g ∘ f) s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ y ∈ s"
+                },
+                {
+                    "args": "x, y",
+                    "id": "4.8",
+                    "prevs": [
+                        "1",
+                        "4.6",
+                        "4.7",
+                        "4.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, f x = f y, x ∈ support op (g ∘ f) s, y ∈ support op (g ∘ f) s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.4",
+                        "4.8"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀y. x ∈ support op (g ∘ f) s ⟶ y ∈ support op (g ∘ f) s ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "finite_image_inj_eq",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (image f (support op (g ∘ f) s)) ⟷ finite (support op (g ∘ f) s)"
+                },
+                {
+                    "args": "support_image, finite (support op g (image f s)) ⟷ finite (support op (g ∘ f) s)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (support op g (image f s)) ⟷ finite (support op (g ∘ f) s)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (support op (g ∘ f) s) ⟶ iterate op (image f (support op (g ∘ f) s)) g = iterate op (support op (g ∘ f) s) (g ∘ f)"
+                },
+                {
+                    "args": "finite (support op (g ∘ f) s)",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (support op (g ∘ f) s) ⊢ finite (support op (g ∘ f) s)"
+                },
+                {
+                    "args": "support op (g ∘ f) s",
+                    "id": "7.1",
+                    "prevs": [
+                        "2",
+                        "7.0",
+                        "4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, finite (support op (g ∘ f) s), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ iterate op (image f (support op (g ∘ f) s)) g = iterate op (support op (g ∘ f) s) (g ∘ f)"
+                },
+                {
+                    "args": "",
+                    "id": "7.2",
+                    "prevs": [
+                        "7.0",
+                        "7.1"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (support op (g ∘ f) s) ⟶ iterate op (image f (support op (g ∘ f) s)) g = iterate op (support op (g ∘ f) s) (g ∘ f)"
+                },
+                {
+                    "args": "support_image, finite (support op (g ∘ f) s) ⟶ iterate op (support op g (image f s)) g = iterate op (support op (g ∘ f) s) (g ∘ f)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (support op (g ∘ f) s) ⟶ iterate op (support op g (image f s)) g = iterate op (support op (g ∘ f) s) (g ∘ f)"
+                },
+                {
+                    "args": "finite (support op g (image f s)), finite (support op (g ∘ f) s), iterate op (support op g (image f s)) g, iterate op (support op (g ∘ f) s) (g ∘ f), neutral op",
+                    "id": "9",
+                    "prevs": [
+                        "3",
+                        "6",
+                        "8"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ (if finite (support op g (image f s)) then iterate op (support op g (image f s)) g else neutral op) = (if finite (support op (g ∘ f) s) then iterate op (support op (g ∘ f) s) (g ∘ f) else neutral op)"
+                },
+                {
+                    "args": "iterate_expand_cases, iterate op (image f s) g = iterate op s (g ∘ f)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ iterate op (image f s) g = iterate op s (g ∘ f)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ⟶ iterate op (image f s) g = iterate op s (g ∘ f)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ",
+                "   ⟶ iterate op (image f s) g = iterate op s (g ∘ f)"
+            ],
+            "steps": [
+                {
+                    "goal": "!s. finite s ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) \n   ⟶ iterate op (image f s) g = iterate op s (g ∘ f)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "t"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "image_empty"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2.2",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g ∘ f",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.1"
+                    ],
+                    "goal_id": "2.2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.2"
+                    ],
+                    "goal_id": "2.2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "introduction",
+                    "names": "a,t1"
+                },
+                {
+                    "goal_id": "2.3.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "image_insert"
+                },
+                {
+                    "goal": "finite (image f t1)",
+                    "goal_id": "2.3.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.3.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_image"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2.3.6"
+                    ],
+                    "goal_id": "2.3.7",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "f a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "goal": "~(f a ∈ image f t1)",
+                    "goal_id": "2.3.8",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.3"
+                    ],
+                    "goal_id": "2.3.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "2.3.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "2.3.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "2.3.8",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.8.0"
+                    ],
+                    "goal_id": "2.3.8.1",
+                    "method_name": "exists_elim",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.8.2"
+                    ],
+                    "goal_id": "2.3.8.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.8.2"
+                    ],
+                    "goal_id": "2.3.8.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal": "a=x",
+                    "goal_id": "2.3.8.5",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.5"
+                    ],
+                    "goal_id": "2.3.8.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.3.8.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.3.8.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.3.8.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "2.3.8.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.3.8.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.8.10"
+                    ],
+                    "goal_id": "2.3.8.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.7",
+                        "2.3.11"
+                    ],
+                    "goal_id": "2.3.12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2.3.4"
+                    ],
+                    "goal_id": "2.3.13",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g ∘ f",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.13",
+                        "2.3.3"
+                    ],
+                    "goal_id": "2.3.14",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.12"
+                    ],
+                    "goal_id": "2.3.15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.14"
+                    ],
+                    "goal_id": "2.3.15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.3.15",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "comp_fun_eval"
+                },
+                {
+                    "goal": "iterate op (image f t1) g = iterate op t1 (g ∘ f)",
+                    "goal_id": "2.3.15",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.2"
+                    ],
+                    "goal_id": "2.3.15",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.3.15",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.5"
+                    ],
+                    "goal_id": "2.3.15.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.3.15.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.3.15.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.3.15.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.3.15.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.3.16"
+                    ],
+                    "goal_id": "2.3.17",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "iterate_expand_cases"
+                },
+                {
+                    "goal": "!a::bool. !a1. !b::'a. !b1. !c. (a <--> a1) --> (a1 --> (b = b1))\n      --> (if a then b else c) = (if a1 then b1 else c)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_image"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_image_inj_eq"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "apply_backward_step",
+                    "param_A": "support op (g ∘ f) s",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "support_subset"
+                },
+                {
+                    "goal_id": "4.7",
+                    "method_name": "apply_backward_step",
+                    "param_A": "support op (g ∘ f) s",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_image"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7.1",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'c",
+                "g": "'c ⇒ 'a",
                 "op": "'a ⇒ 'a ⇒ 'a",
                 "s": "'b set"
             }
