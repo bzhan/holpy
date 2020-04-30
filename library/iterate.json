@@ -14008,6 +14008,3530 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_bijection",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ p x ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ p x ∈ s ⊢ ∀x. x ∈ s ⟶ p x ∈ s"
+                },
+                {
+                    "args": "∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∀x. x ∈ s ⟷ (∃x1. x = p x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ x ∈ s ⟶ (∃x1. x = p x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.1",
+                    "prevs": [
+                        "2",
+                        "3.1.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∃!x1. x1 ∈ s ∧ p x1 = x"
+                },
+                {
+                    "args": "theI'",
+                    "id": "3.1.2",
+                    "prevs": [
+                        "3.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ (THE x1. x1 ∈ s ∧ p x1 = x) ∈ s ∧ p (THE x1. x1 ∈ s ∧ p x1 = x) = x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.1.3",
+                    "prevs": [
+                        "3.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ (THE x1. x1 ∈ s ∧ p x1 = x) ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.1.4",
+                    "prevs": [
+                        "3.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ p (THE x1. x1 ∈ s ∧ p x1 = x) = x"
+                },
+                {
+                    "args": "x = p (THE x1. x1 ∈ s ∧ p x1 = x)",
+                    "id": "3.1.5",
+                    "prevs": [
+                        "3.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ x = p (THE x1. x1 ∈ s ∧ p x1 = x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.1.6",
+                    "prevs": [
+                        "3.1.5",
+                        "3.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ x = p (THE x1. x1 ∈ s ∧ p x1 = x) ∧ (THE x1. x1 ∈ s ∧ p x1 = x) ∈ s"
+                },
+                {
+                    "args": "exI, {P: λx1. x = p x1 ∧ x1 ∈ s, a: THE x1. x1 ∈ s ∧ p x1 = x}",
+                    "id": "3.1.7",
+                    "prevs": [
+                        "3.1.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, x ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∃a1. x = p a1 ∧ a1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.8",
+                    "prevs": [
+                        "3.1.0",
+                        "3.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ x ∈ s ⟶ (∃x1. x = p x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ (∃x1. x = p x1 ∧ x1 ∈ s) ⟶ x ∈ s"
+                },
+                {
+                    "args": "∃x1. x = p x1 ∧ x1 ∈ s",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = p x1 ∧ x1 ∈ s ⊢ ∃x1. x = p x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = p x1 ∧ x1 ∈ s",
+                    "id": "3.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = p x1 ∧ x1 ∈ s ⊢ x = p x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.2.3",
+                    "prevs": [
+                        "3.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p x1 ∧ x1 ∈ s ⊢ x = p x1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.2.4",
+                    "prevs": [
+                        "3.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p x1 ∧ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "x1",
+                    "id": "3.2.5",
+                    "prevs": [
+                        "1",
+                        "3.2.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, x = p x1 ∧ x1 ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∃x1. x = p x1 ∧ x1 ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ p x1 ∈ s"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "3.2.6",
+                    "prevs": [
+                        "3.2.3",
+                        "3.2.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x = p x1 ∧ x1 ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∃x1. x = p x1 ∧ x1 ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ x ∈ s"
+                },
+                {
+                    "args": "∃x1. x = p x1 ∧ x1 ∈ s",
+                    "id": "3.2.7",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.0",
+                        "3.2.1",
+                        "3.2.2",
+                        "3.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ (∃x1. x = p x1 ∧ x1 ∈ s) ⟶ x ∈ s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ x ∈ s ⟷ (∃x1. x = p x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∀x. x ∈ s ⟷ (∃x1. x = p x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "in_image, ∀x. x ∈ s ⟷ x ∈ image p s",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∀x. x ∈ s ⟷ x ∈ image p s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ s = image p s"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ image p s = s"
+                },
+                {
+                    "args": "iterate op s f = iterate op (image p s) f",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ iterate op s f = iterate op (image p s) f"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'b",
+                    "id": "8.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "8.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "y ∈ s",
+                    "id": "8.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ s ⊢ y ∈ s"
+                },
+                {
+                    "args": "p x = p y",
+                    "id": "8.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p x = p y ⊢ p x = p y"
+                },
+                {
+                    "args": "",
+                    "id": "8.5",
+                    "prevs": [
+                        "1",
+                        "8.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ p x ∈ s ⊢ p x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "8.6",
+                    "prevs": [
+                        "2",
+                        "8.5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∃!x1. x1 ∈ s ∧ p x1 = p x"
+                },
+                {
+                    "args": "exists1_def",
+                    "id": "8.7",
+                    "prevs": [
+                        "8.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∃x1. (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1)"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "8.8",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "(x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1)",
+                    "id": "8.9",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "8.10",
+                    "prevs": [
+                        "8.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ x1 ∈ s ∧ p x1 = p x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "8.11",
+                    "prevs": [
+                        "8.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ ∀y. y ∈ s ∧ p y = p x ⟶ y = x1"
+                },
+                {
+                    "args": "eq_refl, {x: p x}",
+                    "id": "8.12",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ p x = p x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8.13",
+                    "prevs": [
+                        "8.2",
+                        "8.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ x ∈ s ∧ p x = p x"
+                },
+                {
+                    "args": "x",
+                    "id": "8.14",
+                    "prevs": [
+                        "8.11",
+                        "8.13"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ x = x1"
+                },
+                {
+                    "args": "eq_sym_eq, p y = p x",
+                    "id": "8.15",
+                    "prevs": [
+                        "8.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ p y = p x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8.16",
+                    "prevs": [
+                        "8.3",
+                        "8.15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ y ∈ s ∧ p y = p x"
+                },
+                {
+                    "args": "y",
+                    "id": "8.17",
+                    "prevs": [
+                        "8.11",
+                        "8.16"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ y = x1"
+                },
+                {
+                    "args": "y = x",
+                    "id": "8.18",
+                    "prevs": [
+                        "8.14",
+                        "8.17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ y = x"
+                },
+                {
+                    "args": "eq_sym_eq, x = y",
+                    "id": "8.19",
+                    "prevs": [
+                        "8.18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ s, y ∈ s, p x = p y, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y), (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1) ⊢ x = y"
+                },
+                {
+                    "args": "∃x1. (x1 ∈ s ∧ p x1 = p x) ∧ (∀y. y ∈ s ∧ p y = p x ⟶ y = x1)",
+                    "id": "8.20",
+                    "prevs": [
+                        "8.0",
+                        "8.1",
+                        "8.2",
+                        "8.3",
+                        "8.4",
+                        "8.7",
+                        "8.8",
+                        "8.9",
+                        "8.19"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y"
+                },
+                {
+                    "args": "iterate_image, {f: p, g: f, op: op, s: s}",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ iterate op (image p s) f = iterate op s (f ∘ p)"
+                },
+                {
+                    "args": "iterate op s f = iterate op s (f ∘ p)",
+                    "id": "10",
+                    "prevs": [
+                        "7",
+                        "9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y) ⊢ iterate op s f = iterate op s (f ∘ p)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀x. x ∈ s ⟶ p x ∈ s) ⟶ (∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)) ⟶ iterate op s f = iterate op s (f ∘ p)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ (∀x. x ∈ s ⟶ p x ∈ s) ",
+                "   ⟶ (∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)) ⟶ iterate op s f = iterate op s (f ∘ p)"
+            ],
+            "steps": [
+                {
+                    "goal": "s = (image p s)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3.1.0"
+                    ],
+                    "goal_id": "3.1.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.1"
+                    ],
+                    "goal_id": "3.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "theI'"
+                },
+                {
+                    "goal_id": "3.1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "(THE x1. x1 ∈ s ∧ p x1 = x)"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.2"
+                    ],
+                    "goal_id": "3.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.2"
+                    ],
+                    "goal_id": "3.1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "3.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.4"
+                    ],
+                    "goal_id": "3.1.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.0"
+                    ],
+                    "goal_id": "3.2.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2"
+                    ],
+                    "goal_id": "3.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2"
+                    ],
+                    "goal_id": "3.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3"
+                    ],
+                    "goal_id": "3.2.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3.2.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "iterate op s f = iterate op (image p s) f",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_image"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "8.2"
+                    ],
+                    "goal_id": "8.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "8.5"
+                    ],
+                    "goal_id": "8.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "8.6"
+                    ],
+                    "goal_id": "8.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "",
+                    "theorem": "exists1_def"
+                },
+                {
+                    "fact_ids": [
+                        "8.7"
+                    ],
+                    "goal_id": "8.8",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "8.9"
+                    ],
+                    "goal_id": "8.10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "8.9"
+                    ],
+                    "goal_id": "8.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "8.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal": "x=x1",
+                    "goal_id": "8.12",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "8.11"
+                    ],
+                    "goal_id": "8.12",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "8.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "8.14"
+                    ],
+                    "goal_id": "8.15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8.11"
+                    ],
+                    "goal_id": "8.15",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "8.15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8.15",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "p": "'b ⇒ 'b",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x = g x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ s ⟶ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ s ∧ ¬(g x = neutral op) ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(g x = neutral op) ⟶ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(g x = neutral op)",
+                    "id": "2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(g x = neutral op) ⊢ x ∈ s ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.1.1",
+                    "prevs": [
+                        "2.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(g x = neutral op) ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.1.2",
+                    "prevs": [
+                        "2.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(g x = neutral op) ⊢ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.3",
+                    "prevs": [
+                        "1",
+                        "2.1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s ∧ ¬(g x = neutral op), ∀x. x ∈ s ⟶ f x = g x ⊢ f x = g x"
+                },
+                {
+                    "args": "¬(f x = neutral op)",
+                    "id": "2.1.4",
+                    "prevs": [
+                        "2.1.3",
+                        "2.1.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x ∈ s ∧ ¬(g x = neutral op), ∀x. x ∈ s ⟶ f x = g x ⊢ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.1.5",
+                    "prevs": [
+                        "2.1.1",
+                        "2.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s ∧ ¬(g x = neutral op), ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.6",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(g x = neutral op) ⟶ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ x ∈ s ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.2.1",
+                    "prevs": [
+                        "2.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "2.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.3",
+                    "prevs": [
+                        "1",
+                        "2.2.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op), ∀x. x ∈ s ⟶ f x = g x ⊢ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "2.2.3",
+                        "2.2.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op), ∀x. x ∈ s ⟶ f x = g x ⊢ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.1",
+                        "2.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s ∧ ¬(f x = neutral op), ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.6",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ x ∈ s ∧ ¬(g x = neutral op)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ∧ ¬(g x = neutral op) ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ s ∧ ¬(g x = neutral op) ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "in_support, ∀x. x ∈ support op g s ⟷ x ∈ support op f s",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ support op g s ⟷ x ∈ support op f s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ support op g s = support op f s"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ finite (support op f s) ⟶ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "finite (support op f s)",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (support op f s) ⊢ finite (support op f s)"
+                },
+                {
+                    "args": "",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ support op f s ⟶ f x = g x"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "5.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ support op f s",
+                    "id": "5.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ support op f s ⊢ x ∈ support op f s"
+                },
+                {
+                    "args": "support_subset, {f: f, op: op, s: s}",
+                    "id": "5.1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ support op f s ⊆ s"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "5.1.3",
+                    "prevs": [
+                        "5.1.2",
+                        "5.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, finite (support op f s), x ∈ support op f s, ∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "5.1.4",
+                    "prevs": [
+                        "1",
+                        "5.1.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, finite (support op f s), x ∈ support op f s, ∀x. x ∈ s ⟶ f x = g x ⊢ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "5.1.5",
+                    "prevs": [
+                        "5.1.0",
+                        "5.1.1",
+                        "5.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ support op f s ⟶ f x = g x"
+                },
+                {
+                    "args": "finite_induct_strong, {P: λs. (∀x. x ∈ s ⟶ f x = g x) ⟶ iterate op s f = iterate op s g}",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite (support op f s) ⊢ ((∀x. x ∈ ∅ ⟶ f x = g x) ⟶ iterate op ∅ f = iterate op ∅ g) ⟶ (∀x. ∀s1. ((∀x1. x1 ∈ s1 ⟶ f x1 = g x1) ⟶ iterate op s1 f = iterate op s1 g) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1) ⟶ iterate op (insert x s1) f = iterate op (insert x s1) g) ⟶ (∀x. x ∈ support op f s ⟶ f x = g x) ⟶ iterate op (support op f s) f = iterate op (support op f s) g"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ (∀x. x ∈ ∅ ⟶ f x = g x) ⟶ iterate op ∅ f = iterate op ∅ g"
+                },
+                {
+                    "args": "∀x. x ∈ ∅ ⟶ f x = g x",
+                    "id": "5.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ ∅ ⟶ f x = g x ⊢ ∀x. x ∈ ∅ ⟶ f x = g x"
+                },
+                {
+                    "args": "iterate_empty, {f: g}",
+                    "id": "5.3.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ∅ g = neutral op"
+                },
+                {
+                    "args": "iterate_empty, {f: f, op: op}",
+                    "id": "5.3.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x. x ∈ ∅ ⟶ f x = g x ⊢ iterate op ∅ f = neutral op"
+                },
+                {
+                    "args": "iterate op ∅ f = iterate op ∅ g",
+                    "id": "5.3.3",
+                    "prevs": [
+                        "5.3.1",
+                        "5.3.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x. x ∈ ∅ ⟶ f x = g x ⊢ iterate op ∅ f = iterate op ∅ g"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.4",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ (∀x. x ∈ ∅ ⟶ f x = g x) ⟶ iterate op ∅ f = iterate op ∅ g"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. ∀s1. ((∀x1. x1 ∈ s1 ⟶ f x1 = g x1) ⟶ iterate op s1 f = iterate op s1 g) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1) ⟶ iterate op (insert x s1) f = iterate op (insert x s1) g"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "5.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s1, 'b set",
+                    "id": "5.4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "(∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g",
+                    "id": "5.4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g"
+                },
+                {
+                    "args": "¬(x ∈ s1)",
+                    "id": "5.4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s1) ⊢ ¬(x ∈ s1)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "5.4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ⊢ finite s1"
+                },
+                {
+                    "args": "∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1",
+                    "id": "5.4.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1 ⊢ ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1"
+                },
+                {
+                    "args": "iterate_insert, {f: g, x: x}",
+                    "id": "5.4.6",
+                    "prevs": [
+                        "0",
+                        "5.4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op ⊢ iterate op (insert x s1) g = (if x ∈ s1 then iterate op s1 g else op (g x) (iterate op s1 g))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "5.4.7",
+                    "prevs": [
+                        "5.4.6",
+                        "5.4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1) ⊢ iterate op (insert x s1) g = op (g x) (iterate op s1 g)"
+                },
+                {
+                    "args": "iterate_insert, {f: f, x: x}",
+                    "id": "5.4.8",
+                    "prevs": [
+                        "0",
+                        "5.4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op ⊢ iterate op (insert x s1) f = (if x ∈ s1 then iterate op s1 f else op (f x) (iterate op s1 f))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "5.4.9",
+                    "prevs": [
+                        "5.4.8",
+                        "5.4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1) ⊢ iterate op (insert x s1) f = op (f x) (iterate op s1 f)"
+                },
+                {
+                    "args": "eq_refl, {x: x}",
+                    "id": "5.4.10",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "disjI1, {A: x = x, B: x ∈ s1}",
+                    "id": "5.4.11",
+                    "prevs": [
+                        "5.4.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ x = x ∨ x ∈ s1"
+                },
+                {
+                    "args": "member_insert, x ∈ insert x s1",
+                    "id": "5.4.12",
+                    "prevs": [
+                        "5.4.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ x ∈ insert x s1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.13",
+                    "prevs": [
+                        "5.4.5",
+                        "5.4.12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.14",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ ∀x. x ∈ s1 ⟶ f x = g x"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "5.4.14.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 ∈ s1",
+                    "id": "5.4.14.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ s1 ⊢ x1 ∈ s1"
+                },
+                {
+                    "args": "disjI2, {A: x1 = x, B: x1 ∈ s1}",
+                    "id": "5.4.14.2",
+                    "prevs": [
+                        "5.4.14.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op, x1 ∈ s1, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ x1 = x ∨ x1 ∈ s1"
+                },
+                {
+                    "args": "member_insert, x1 ∈ insert x s1",
+                    "id": "5.4.14.3",
+                    "prevs": [
+                        "5.4.14.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s1, monoidal op, x1 ∈ s1, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ x1 ∈ insert x s1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.14.4",
+                    "prevs": [
+                        "5.4.5",
+                        "5.4.14.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s1, monoidal op, x1 ∈ s1, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ f x1 = g x1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.14.5",
+                    "prevs": [
+                        "5.4.14.0",
+                        "5.4.14.1",
+                        "5.4.14.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ ∀x1. x1 ∈ s1 ⟶ f x1 = g x1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.15",
+                    "prevs": [
+                        "5.4.2",
+                        "5.4.14"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ iterate op s1 f = iterate op s1 g"
+                },
+                {
+                    "args": "op (f x) (iterate op s1 g) = op (g x) (iterate op s1 g)",
+                    "id": "5.4.16",
+                    "prevs": [
+                        "5.4.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ op (f x) (iterate op s1 g) = op (g x) (iterate op s1 g)"
+                },
+                {
+                    "args": "op (f x) (iterate op s1 f) = op (g x) (iterate op s1 g)",
+                    "id": "5.4.17",
+                    "prevs": [
+                        "5.4.15",
+                        "5.4.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ op (f x) (iterate op s1 f) = op (g x) (iterate op s1 g)"
+                },
+                {
+                    "args": "op (f x) (iterate op s1 f) = iterate op (insert x s1) g",
+                    "id": "5.4.18",
+                    "prevs": [
+                        "5.4.7",
+                        "5.4.17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ op (f x) (iterate op s1 f) = iterate op (insert x s1) g"
+                },
+                {
+                    "args": "iterate op (insert x s1) f = iterate op (insert x s1) g",
+                    "id": "5.4.19",
+                    "prevs": [
+                        "5.4.9",
+                        "5.4.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s1, monoidal op, ¬(x ∈ s1), finite (support op f s), ∀x. x ∈ s ⟶ f x = g x, ∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1, (∀x. x ∈ s1 ⟶ f x = g x) ⟶ iterate op s1 f = iterate op s1 g ⊢ iterate op (insert x s1) f = iterate op (insert x s1) g"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.20",
+                    "prevs": [
+                        "5.4.0",
+                        "5.4.1",
+                        "5.4.2",
+                        "5.4.3",
+                        "5.4.4",
+                        "5.4.5",
+                        "5.4.19"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. ∀s1. ((∀x1. x1 ∈ s1 ⟶ f x1 = g x1) ⟶ iterate op s1 f = iterate op s1 g) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∀x1. x1 ∈ insert x s1 ⟶ f x1 = g x1) ⟶ iterate op (insert x s1) f = iterate op (insert x s1) g"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.2",
+                        "5.3",
+                        "5.4",
+                        "5.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ iterate op (support op f s) f = iterate op (support op f s) g"
+                },
+                {
+                    "args": "if_P, (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)",
+                    "id": "5.6",
+                    "prevs": [
+                        "5.5",
+                        "5.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, finite (support op f s), ∀x. x ∈ s ⟶ f x = g x ⊢ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "5.7",
+                    "prevs": [
+                        "5.0",
+                        "5.6"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ finite (support op f s) ⟶ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ ¬(finite (support op f s)) ⟶ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "¬(finite (support op f s))",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(finite (support op f s)) ⊢ ¬(finite (support op f s))"
+                },
+                {
+                    "args": "if_not_P, (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)",
+                    "id": "6.1",
+                    "prevs": [
+                        "6.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(finite (support op f s)) ⊢ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [
+                        "6.0",
+                        "6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ ¬(finite (support op f s)) ⟶ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op f s) then iterate op (support op f s) g else neutral op)"
+                },
+                {
+                    "args": "(if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op g s) then iterate op (support op g s) g else neutral op)",
+                    "id": "8",
+                    "prevs": [
+                        "4",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ (if finite (support op f s) then iterate op (support op f s) f else neutral op) = (if finite (support op g s) then iterate op (support op g s) g else neutral op)"
+                },
+                {
+                    "args": "iterate_expand_cases, iterate op s f = iterate op s g",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀x. x ∈ s ⟶ f x = g x ⊢ iterate op s f = iterate op s g"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀x. x ∈ s ⟶ f x = g x) ⟶ iterate op s f = iterate op s g"
+                }
+            ],
+            "prop": "monoidal op ⟶ (∀x. x ∈ s ⟶ f x = g x) ⟶ iterate op s f = iterate op s g",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "iterate_expand_cases"
+                },
+                {
+                    "goal": "support op g s = support op f s",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.0"
+                    ],
+                    "goal_id": "2.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.0"
+                    ],
+                    "goal_id": "2.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.1.1"
+                    ],
+                    "goal_id": "2.1.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.3"
+                    ],
+                    "goal_id": "2.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.0"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.0"
+                    ],
+                    "goal_id": "2.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.2.1"
+                    ],
+                    "goal_id": "2.2.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.3",
+                        "2.2.2"
+                    ],
+                    "goal_id": "2.2.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "case": "finite (support op f s)",
+                    "goal_id": "5",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal": "(!x. x ∈ (support op f s) --> f x = g x)",
+                    "goal_id": "5.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5.1.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5.1.2",
+                    "method_name": "apply_backward_step",
+                    "param_A": "support op f s",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "5.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "support_subset"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_forward_step",
+                    "param_P": "(%s. (∀x. x ∈ s ⟶ f x = g x) ⟶ iterate op s f = iterate op s g)",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5.3.1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.1"
+                    ],
+                    "goal_id": "5.3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "goal_id": "5.4",
+                    "method_name": "introduction",
+                    "names": "x,s1"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "5.4.4"
+                    ],
+                    "goal_id": "5.4.6",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "x",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.6",
+                        "5.4.3"
+                    ],
+                    "goal_id": "5.4.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "5.4.4"
+                    ],
+                    "goal_id": "5.4.8",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "x",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.8",
+                        "5.4.3"
+                    ],
+                    "goal_id": "5.4.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.9"
+                    ],
+                    "goal_id": "5.4.10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.7"
+                    ],
+                    "goal_id": "5.4.10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "f x = g x",
+                    "goal_id": "5.4.10",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.5"
+                    ],
+                    "goal_id": "5.4.10",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5.4.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "5.4.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "5.4.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal": "iterate op s1 f = iterate op s1 g",
+                    "goal_id": "5.4.14",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.2"
+                    ],
+                    "goal_id": "5.4.14",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5.4.14",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.5"
+                    ],
+                    "goal_id": "5.4.14.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5.4.14.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "5.4.14.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.15"
+                    ],
+                    "goal_id": "5.4.16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.13"
+                    ],
+                    "goal_id": "5.4.16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.0"
+                    ],
+                    "goal_id": "6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'a",
+                "g": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_restrict_set",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀x. ∀a. ¬((if P x then f x else a) = a) ⟷ P x ∧ ¬(f x = a)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. ∀a. ¬((if P x then f x else a) = a) ⟷ P x ∧ ¬(f x = a)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op ⊢ ∀x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op) ⟶ f x = (if P x then f x else neutral op)"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "(x ∈ s ∧ P x) ∧ ¬(f x = neutral op)",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x ∈ s ∧ P x) ∧ ¬(f x = neutral op) ⊢ (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x ∈ s ∧ P x) ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ P x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x ∈ s ∧ P x) ∧ ¬(f x = neutral op) ⊢ P x"
+                },
+                {
+                    "args": "if_P, f x = (if P x then f x else neutral op)",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(x ∈ s ∧ P x) ∧ ¬(f x = neutral op) ⊢ f x = (if P x then f x else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op ⊢ ∀x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op) ⟶ f x = (if P x then f x else neutral op)"
+                },
+                {
+                    "args": "member_collect, ∀x. x ∈ {x1. (x1 ∈ s ∧ P x1) ∧ ¬(f x1 = neutral op)} ⟶ f x = (if P x then f x else neutral op)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op ⊢ ∀x. x ∈ {x1. (x1 ∈ s ∧ P x1) ∧ ¬(f x1 = neutral op)} ⟶ f x = (if P x then f x else neutral op)"
+                },
+                {
+                    "args": "iterate_eq",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ iterate op ({x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)}) f = iterate op ({x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)}) (λx. if P x then f x else neutral op)"
+                },
+                {
+                    "args": "conj_assoc, iterate op ({x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)}) f = iterate op ({x. x ∈ s ∧ P x ∧ ¬(f x = neutral op)}) (λx. if P x then f x else neutral op)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op ⊢ iterate op ({x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)}) f = iterate op ({x. x ∈ s ∧ P x ∧ ¬(f x = neutral op)}) (λx. if P x then f x else neutral op)"
+                },
+                {
+                    "args": "iterate op ({x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)}) f = iterate op ({x. x ∈ s ∧ ¬((if P x then f x else neutral op) = neutral op)}) (λx. if P x then f x else neutral op)",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op ⊢ iterate op ({x. (x ∈ s ∧ P x) ∧ ¬(f x = neutral op)}) f = iterate op ({x. x ∈ s ∧ ¬((if P x then f x else neutral op) = neutral op)}) (λx. if P x then f x else neutral op)"
+                },
+                {
+                    "args": "member_collect, iterate op ({x. x ∈ {x1. x1 ∈ s ∧ P x1} ∧ ¬(f x = neutral op)}) f = iterate op ({x. x ∈ s ∧ ¬((if P x then f x else neutral op) = neutral op)}) (λx. if P x then f x else neutral op)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op ⊢ iterate op ({x. x ∈ {x1. x1 ∈ s ∧ P x1} ∧ ¬(f x = neutral op)}) f = iterate op ({x. x ∈ s ∧ ¬((if P x then f x else neutral op) = neutral op)}) (λx. if P x then f x else neutral op)"
+                },
+                {
+                    "args": "support_def, iterate op (support op f ({x. x ∈ s ∧ P x})) f = iterate op (support op (λx. if P x then f x else neutral op) s) (λx. if P x then f x else neutral op)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op ⊢ iterate op (support op f ({x. x ∈ s ∧ P x})) f = iterate op (support op (λx. if P x then f x else neutral op) s) (λx. if P x then f x else neutral op)"
+                },
+                {
+                    "args": "iterate_support, iterate op ({x. x ∈ s ∧ P x}) f = iterate op s (λx. if P x then f x else neutral op)",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "monoidal op ⊢ iterate op ({x. x ∈ s ∧ P x}) f = iterate op s (λx. if P x then f x else neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ iterate op ({x. x ∈ s ∧ P x}) f = iterate op s (λx. if P x then f x else neutral op)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ iterate op ({x. x ∈ s ∧ P x}) f = ",
+                "   iterate op s (λx. if P x then f x else neutral op)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "iterate_support"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal": "∀x. ∀a. ¬((if P x then f x else a) = a) ⟷ P x ∧ ¬(f x = a)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_eq"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'b ⇒ bool",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_eq_general",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y) ⊢ ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ t ⟷ (∃x1. x = h x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ x ∈ t ⟶ (∃x1. x = h x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t ⊢ x ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.1",
+                    "prevs": [
+                        "1",
+                        "3.1.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ t, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y) ⊢ ∃!x1. x1 ∈ s ∧ h x1 = x"
+                },
+                {
+                    "args": "theI'",
+                    "id": "3.1.2",
+                    "prevs": [
+                        "3.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ t, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y) ⊢ (THE x1. x1 ∈ s ∧ h x1 = x) ∈ s ∧ h (THE x1. x1 ∈ s ∧ h x1 = x) = x"
+                },
+                {
+                    "args": "exI, {P: λa1. a1 ∈ s ∧ h a1 = x, a: THE x1. x1 ∈ s ∧ h x1 = x}",
+                    "id": "3.1.3",
+                    "prevs": [
+                        "3.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ t, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y) ⊢ ∃a1. a1 ∈ s ∧ h a1 = x"
+                },
+                {
+                    "args": "eq_sym_eq, ∃x1. x1 ∈ s ∧ x = h x1",
+                    "id": "3.1.4",
+                    "prevs": [
+                        "3.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ t, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∃x1. x1 ∈ s ∧ x = h x1"
+                },
+                {
+                    "args": "conj_comm, ∃x1. x = h x1 ∧ x1 ∈ s",
+                    "id": "3.1.5",
+                    "prevs": [
+                        "3.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ t, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∃x1. x = h x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "3.1.6",
+                    "prevs": [
+                        "3.1.0",
+                        "3.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ x ∈ t ⟶ (∃x1. x = h x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ⟶ x ∈ t"
+                },
+                {
+                    "args": "∃x1. x = h x1 ∧ x1 ∈ s",
+                    "id": "3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = h x1 ∧ x1 ∈ s ⊢ ∃x1. x = h x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'c",
+                    "id": "3.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = h x1 ∧ x1 ∈ s",
+                    "id": "3.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = h x1 ∧ x1 ∈ s ⊢ x = h x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.2.3",
+                    "prevs": [
+                        "3.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.2.4",
+                    "prevs": [
+                        "3.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s ⊢ x = h x1"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.5",
+                    "prevs": [
+                        "2",
+                        "3.2.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x = h x1 ∧ x1 ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ h x1 ∈ t ∧ g (h x1) = f x1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.2.6",
+                    "prevs": [
+                        "3.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = h x1 ∧ x1 ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ h x1 ∈ t"
+                },
+                {
+                    "args": "x ∈ t",
+                    "id": "3.2.7",
+                    "prevs": [
+                        "3.2.4",
+                        "3.2.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x = h x1 ∧ x1 ∈ s, ∃x1. x = h x1 ∧ x1 ∈ s, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ x ∈ t"
+                },
+                {
+                    "args": "∃x1. x = h x1 ∧ x1 ∈ s",
+                    "id": "3.2.8",
+                    "prevs": [
+                        "3.2.0",
+                        "3.2.0",
+                        "3.2.1",
+                        "3.2.2",
+                        "3.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ (∃x1. x = h x1 ∧ x1 ∈ s) ⟶ x ∈ t"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ x ∈ t ⟷ (∃x1. x = h x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ t ⟷ (∃x1. x = h x1 ∧ x1 ∈ s)"
+                },
+                {
+                    "args": "in_image, ∀x. x ∈ t ⟷ x ∈ image h s",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ t ⟷ x ∈ image h s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ t = image h s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ f x = g (h x)"
+                },
+                {
+                    "args": "x, 'c",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [
+                        "2",
+                        "6.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ h x ∈ t ∧ g (h x) = f x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ g (h x) = f x"
+                },
+                {
+                    "args": "f x = g (h x)",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ f x = g (h x)"
+                },
+                {
+                    "args": "",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.4"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ f x = g (h x)"
+                },
+                {
+                    "args": "comp_fun_eval, ∀x. x ∈ s ⟶ f x = (g ∘ h) x",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ f x = (g ∘ h) x"
+                },
+                {
+                    "args": "iterate_eq",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ iterate op s f = iterate op s (g ∘ h)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ h x = h y ⟶ x = y"
+                },
+                {
+                    "args": "x, 'c",
+                    "id": "9.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'c",
+                    "id": "9.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "9.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "y ∈ s",
+                    "id": "9.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ s ⊢ y ∈ s"
+                },
+                {
+                    "args": "h x = h y",
+                    "id": "9.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "h x = h y ⊢ h x = h y"
+                },
+                {
+                    "args": "",
+                    "id": "9.5",
+                    "prevs": [
+                        "2",
+                        "9.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ h y ∈ t ∧ g (h y) = f y"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "9.6",
+                    "prevs": [
+                        "9.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ h y ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "9.7",
+                    "prevs": [
+                        "1",
+                        "9.6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y ∈ s, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∃!x. x ∈ s ∧ h x = h y"
+                },
+                {
+                    "args": "exists1_def",
+                    "id": "9.8",
+                    "prevs": [
+                        "9.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y ∈ s, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∃x. (x ∈ s ∧ h x = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x)"
+                },
+                {
+                    "args": "x1, 'c",
+                    "id": "9.9",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "(x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1)",
+                    "id": "9.10",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "9.11",
+                    "prevs": [
+                        "9.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ ∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9.12",
+                    "prevs": [
+                        "9.2",
+                        "9.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, y ∈ s, h x = h y, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x, (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ x ∈ s ∧ h x = h y"
+                },
+                {
+                    "args": "x",
+                    "id": "9.13",
+                    "prevs": [
+                        "9.11",
+                        "9.12"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, x ∈ s, y ∈ s, h x = h y, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x, (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ x = x1"
+                },
+                {
+                    "args": "eq_refl, {x: h y}",
+                    "id": "9.14",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ h y = h y"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9.15",
+                    "prevs": [
+                        "9.3",
+                        "9.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, y ∈ s, h x = h y, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x, (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ y ∈ s ∧ h y = h y"
+                },
+                {
+                    "args": "y",
+                    "id": "9.16",
+                    "prevs": [
+                        "9.11",
+                        "9.15"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op, x ∈ s, y ∈ s, h x = h y, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x, (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ y = x1"
+                },
+                {
+                    "args": "eq_sym_eq, x1 = y",
+                    "id": "9.17",
+                    "prevs": [
+                        "9.16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, x ∈ s, y ∈ s, h x = h y, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x, (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ x1 = y"
+                },
+                {
+                    "args": "x = y",
+                    "id": "9.18",
+                    "prevs": [
+                        "9.13",
+                        "9.17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, x ∈ s, y ∈ s, h x = h y, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x, (x1 ∈ s ∧ h x1 = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x1) ⊢ x = y"
+                },
+                {
+                    "args": "∃x. (x ∈ s ∧ h x = h y) ∧ (∀y1. y1 ∈ s ∧ h y1 = h y ⟶ y1 = x)",
+                    "id": "9.19",
+                    "prevs": [
+                        "9.0",
+                        "9.1",
+                        "9.2",
+                        "9.3",
+                        "9.4",
+                        "9.8",
+                        "9.9",
+                        "9.10",
+                        "9.18"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ h x = h y ⟶ x = y"
+                },
+                {
+                    "args": "iterate_image, {f: h, g: g, op: op, s: s}",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ iterate op (image h s) g = iterate op s (g ∘ h)"
+                },
+                {
+                    "args": "eq_sym_eq, iterate op s (g ∘ h) = iterate op (image h s) g",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ iterate op s (g ∘ h) = iterate op (image h s) g"
+                },
+                {
+                    "args": "iterate op s f = iterate op (image h s) g",
+                    "id": "12",
+                    "prevs": [
+                        "8",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ iterate op s f = iterate op (image h s) g"
+                },
+                {
+                    "args": "iterate op s f = iterate op t g",
+                    "id": "13",
+                    "prevs": [
+                        "5",
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ iterate op s f = iterate op t g"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)) ⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x) ⟶ iterate op s f = iterate op t g"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ (∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)) ",
+                "   ⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x) ⟶ iterate op s f = iterate op t g"
+            ],
+            "steps": [
+                {
+                    "goal": "t = image h s",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "3.1.0"
+                    ],
+                    "goal_id": "3.1.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.1"
+                    ],
+                    "goal_id": "3.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "theI'"
+                },
+                {
+                    "goal_id": "3.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "3.1.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.1.2"
+                    ],
+                    "goal_id": "3.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.0"
+                    ],
+                    "goal_id": "3.2.1",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2"
+                    ],
+                    "goal_id": "3.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.2"
+                    ],
+                    "goal_id": "3.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.4"
+                    ],
+                    "goal_id": "3.2.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3.2.3"
+                    ],
+                    "goal_id": "3.2.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.5"
+                    ],
+                    "goal_id": "3.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "iterate op s f = iterate op s ((g) O (h))",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_eq"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "comp_fun_eval"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "6.1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6.2"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "6.3"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_image"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "9.3"
+                    ],
+                    "goal_id": "9.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9.5"
+                    ],
+                    "goal_id": "9.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "9.6"
+                    ],
+                    "goal_id": "9.7",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "9.7"
+                    ],
+                    "goal_id": "9.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "",
+                    "theorem": "exists1_def"
+                },
+                {
+                    "fact_ids": [
+                        "9.8"
+                    ],
+                    "goal_id": "9.9",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "9.10"
+                    ],
+                    "goal_id": "9.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal": "x=x1",
+                    "goal_id": "9.12",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "9.11"
+                    ],
+                    "goal_id": "9.12",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "9.12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "9.13"
+                    ],
+                    "goal_id": "9.14",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9.14",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "9.11"
+                    ],
+                    "goal_id": "9.14",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "9.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "9.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'c ⇒ 'a",
+                "g": "'b ⇒ 'a",
+                "h": "'c ⇒ 'b",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'c set",
+                "t": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_eq_general_inverses",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y ⊢ ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)"
+                },
+                {
+                    "args": "y, 'b",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "y ∈ t",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ t ⊢ y ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "1",
+                        "3.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y ∈ t, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y ⊢ k y ∈ s ∧ h (k y) = y"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, y ∈ t, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀y1. y1 ∈ s ∧ h y1 = y ⟶ y1 = k y"
+                },
+                {
+                    "args": "y1, 'c",
+                    "id": "3.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y1"
+                },
+                {
+                    "args": "y1 ∈ s ∧ h y1 = y",
+                    "id": "3.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y1 ∈ s ∧ h y1 = y ⊢ y1 ∈ s ∧ h y1 = y"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.3.2",
+                    "prevs": [
+                        "3.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y ⊢ y1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.3.3",
+                    "prevs": [
+                        "3.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y ⊢ h y1 = y"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.4",
+                    "prevs": [
+                        "2",
+                        "3.3.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h y1 ∈ t ∧ k (h y1) = y1 ∧ g (h y1) = f y1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.3.5",
+                    "prevs": [
+                        "3.3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h y1 ∈ t"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.6",
+                    "prevs": [
+                        "1",
+                        "3.3.5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ k (h y1) ∈ s ∧ h (k (h y1)) = h y1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.3.7",
+                    "prevs": [
+                        "3.3.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h (k (h y1)) = h y1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.3.8",
+                    "prevs": [
+                        "3.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y ⊢ h y1 = y"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.9",
+                    "prevs": [
+                        "3.3.8",
+                        "3.3.7"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h (k y) = y"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3.3.10",
+                    "prevs": [
+                        "3.3.8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y1 ∈ s ∧ h y1 = y ⊢ y = h y1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.3.11",
+                    "prevs": [
+                        "3.3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ k (h y1) = y1 ∧ g (h y1) = f y1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.3.12",
+                    "prevs": [
+                        "3.3.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ k (h y1) = y1"
+                },
+                {
+                    "args": "y1 = k (h y1)",
+                    "id": "3.3.13",
+                    "prevs": [
+                        "3.3.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "y1 ∈ s ∧ h y1 = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ y1 = k (h y1)"
+                },
+                {
+                    "args": "y1 = k y",
+                    "id": "3.3.14",
+                    "prevs": [
+                        "3.3.10",
+                        "3.3.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op, y ∈ t, y1 ∈ s ∧ h y1 = y, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ y1 = k y"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.15",
+                    "prevs": [
+                        "3.3.0",
+                        "3.3.1",
+                        "3.3.14"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, y ∈ t, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀y1. y1 ∈ s ∧ h y1 = y ⟶ y1 = k y"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.2",
+                        "3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, y ∈ t, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ (k y ∈ s ∧ h (k y) = y) ∧ (∀y1. y1 ∈ s ∧ h y1 = y ⟶ y1 = k y)"
+                },
+                {
+                    "args": "exI, {P: λx. (x ∈ s ∧ h x = y) ∧ (∀y1. y1 ∈ s ∧ h y1 = y ⟶ y1 = x), a: k y}",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, y ∈ t, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∃a1. (a1 ∈ s ∧ h a1 = y) ∧ (∀y1. y1 ∈ s ∧ h y1 = y ⟶ y1 = a1)"
+                },
+                {
+                    "args": "exists1_def, ∃!x. x ∈ s ∧ h x = y",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op, y ∈ t, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∃!x. x ∈ s ∧ h x = y"
+                },
+                {
+                    "args": "",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x"
+                },
+                {
+                    "args": "x, 'c",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "2",
+                        "4.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h x ∈ t"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ k (h x) = x ∧ g (h x) = f x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ g (h x) = f x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.3",
+                        "4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op, x ∈ s, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ h x ∈ t ∧ g (h x) = f x"
+                },
+                {
+                    "args": "",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.6"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x"
+                },
+                {
+                    "args": "iterate_eq_general, {f: f, g: g, h: h, op: op, s: s, t: t}",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op, ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ iterate op s f = iterate op t g"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y) ⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x) ⟶ iterate op s f = iterate op t g"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ (∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y) ",
+                "   ⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x) ",
+                "      ⟶ iterate op s f = iterate op t g"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_h": "h",
+                    "theorem": "iterate_eq_general"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "exists1_def"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "k y"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "introduction",
+                    "names": "y1"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.1"
+                    ],
+                    "goal_id": "3.3.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.1"
+                    ],
+                    "goal_id": "3.3.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3.3.2"
+                    ],
+                    "goal_id": "3.3.4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.4"
+                    ],
+                    "goal_id": "3.3.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "3.3.5"
+                    ],
+                    "goal_id": "3.3.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.6"
+                    ],
+                    "goal_id": "3.3.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.1"
+                    ],
+                    "goal_id": "3.3.8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.8",
+                        "3.3.7"
+                    ],
+                    "goal_id": "3.3.9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.8"
+                    ],
+                    "goal_id": "3.3.10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.10"
+                    ],
+                    "goal_id": "3.3.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.4"
+                    ],
+                    "goal_id": "3.3.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.11"
+                    ],
+                    "goal_id": "3.3.12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.12"
+                    ],
+                    "goal_id": "3.3.13",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'c ⇒ 'a",
+                "g": "'b ⇒ 'a",
+                "h": "'c ⇒ 'b",
+                "k": "'b ⇒ 'c",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'c set",
+                "t": "'b set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "sum",
