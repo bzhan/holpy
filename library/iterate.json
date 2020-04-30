@@ -17532,6 +17532,1034 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_injection",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ p x ∈ s",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ p x ∈ s ⊢ ∀x. x ∈ s ⟶ p x ∈ s"
+                },
+                {
+                    "args": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)"
+                },
+                {
+                    "args": "iterate_bijection, {f: f, op: op, p: p, s: s}",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ iterate op s f = iterate op s (f ∘ p)"
+                },
+                {
+                    "args": "eq_sym_eq, iterate op s (f ∘ p) = iterate op s f",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ iterate op s (f ∘ p) = iterate op s f"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ finite s ⟶ (∀x. x ∈ s ⟶ p x ∈ s) ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y) ⟶ iterate op s (f ∘ p) = iterate op s f"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ finite s ",
+                "   ⟶ (∀x. x ∈ s ⟶ p x ∈ s) ",
+                "      ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y) ",
+                "         ⟶ iterate op s (f ∘ p) = iterate op s f"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_bijection"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "p": "'b ⇒ 'b",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_union_nonzero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "finite t",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "∀x. x ∈ s ∩ t ⟶ f x = neutral op",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ ∀x. x ∈ s ∩ t ⟶ f x = neutral op"
+                },
+                {
+                    "args": "finite_support, {f: f, op: op, s: s}",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ finite (support op f s)"
+                },
+                {
+                    "args": "finite_support, {f: f, op: op, s: t}",
+                    "id": "5",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ finite (support op f t)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ ∀x. x ∈ s ∩ t ∧ ¬(f x = neutral op) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ x ∈ s ∩ t ∧ ¬(f x = neutral op) ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "x ∈ s ∩ t ∧ ¬(f x = neutral op)",
+                    "id": "6.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∩ t ∧ ¬(f x = neutral op) ⊢ x ∈ s ∩ t ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6.1.1",
+                    "prevs": [
+                        "6.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∩ t ∧ ¬(f x = neutral op) ⊢ x ∈ s ∩ t"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6.1.2",
+                    "prevs": [
+                        "6.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∩ t ∧ ¬(f x = neutral op) ⊢ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "6.1.3",
+                    "prevs": [
+                        "3",
+                        "6.1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x ∈ s ∩ t ∧ ¬(f x = neutral op), ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ f x = neutral op"
+                },
+                {
+                    "args": "negE_gen, {A: f x = neutral op, C: x ∈ ∅}",
+                    "id": "6.1.4",
+                    "prevs": [
+                        "6.1.2",
+                        "6.1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ∩ t ∧ ¬(f x = neutral op), ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "6.1.5",
+                    "prevs": [
+                        "6.1.0",
+                        "6.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ x ∈ s ∩ t ∧ ¬(f x = neutral op) ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ x ∈ ∅ ⟶ x ∈ s ∩ t ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "x ∈ ∅",
+                    "id": "6.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty, x ∈ s ∩ t ∧ ¬(f x = neutral op)",
+                    "id": "6.2.1",
+                    "prevs": [
+                        "6.2.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ x ∈ s ∩ t ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "6.2.2",
+                    "prevs": [
+                        "6.2.0",
+                        "6.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ x ∈ ∅ ⟶ x ∈ s ∩ t ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.1",
+                        "6.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ x ∈ s ∩ t ∧ ¬(f x = neutral op) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.0",
+                        "6.3"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ ∀x. x ∈ s ∩ t ∧ ¬(f x = neutral op) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "in_support, ∀x. x ∈ support op f (s ∩ t) ⟷ x ∈ ∅",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ ∀x. x ∈ support op f (s ∩ t) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ support op f (s ∩ t) = ∅"
+                },
+                {
+                    "args": "support_inter, support op f s ∩ support op f t = ∅",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ support op f s ∩ support op f t = ∅"
+                },
+                {
+                    "args": "disjoint_def, disjoint (support op f s) (support op f t)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ disjoint (support op f s) (support op f t)"
+                },
+                {
+                    "args": "iterate_union, {f: f, op: op, s: support op f s, t: support op f t}",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "4",
+                        "5",
+                        "10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ iterate op (support op f s ∪ support op f t) f = op (iterate op (support op f s) f) (iterate op (support op f t) f)"
+                },
+                {
+                    "args": "support_union, iterate op (support op f (s ∪ t)) f = op (iterate op (support op f s) f) (iterate op (support op f t) f)",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ iterate op (support op f (s ∪ t)) f = op (iterate op (support op f s) f) (iterate op (support op f t) f)"
+                },
+                {
+                    "args": "iterate_support, iterate op (s ∪ t) f = op (iterate op s f) (iterate op t f)",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s, finite t, monoidal op, ∀x. x ∈ s ∩ t ⟶ f x = neutral op ⊢ iterate op (s ∪ t) f = op (iterate op s f) (iterate op t f)"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ finite s ⟶ finite t ⟶ (∀x. x ∈ s ∩ t ⟶ f x = neutral op) ⟶ iterate op (s ∪ t) f = op (iterate op s f) (iterate op t f)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ finite s ",
+                "   ⟶ finite t ",
+                "      ⟶ (∀x. x ∈ s ∩ t ⟶ f x = neutral op) ",
+                "         ⟶ iterate op (s ∪ t) f = op (iterate op s f) (iterate op t f)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "iterate_support"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_union"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_union"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_support"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_support"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disjoint_def"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "support_inter"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "6.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.1.0"
+                    ],
+                    "goal_id": "6.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6.1.0"
+                    ],
+                    "goal_id": "6.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "6.1.1"
+                    ],
+                    "goal_id": "6.1.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6.1.2",
+                        "6.1.3"
+                    ],
+                    "goal_id": "6.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.2.0"
+                    ],
+                    "goal_id": "6.2.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set",
+                "t": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "iterate_op",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "monoidal_ac",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. op (neutral op) a = a) ∧ (∀a. op a (neutral op) = a) ∧ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ ∀a. op (neutral op) a = a"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. op a (neutral op) = a) ∧ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "iterate_empty, {f: f}",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ∅ f = neutral op"
+                },
+                {
+                    "args": "iterate_empty, {f: g}",
+                    "id": "6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ iterate op ∅ g = neutral op"
+                },
+                {
+                    "args": "iterate_empty, {f: λx. op (f x) (g x), op: op}",
+                    "id": "7",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, monoidal op ⊢ iterate op ∅ (λx. op (f x) (g x)) = neutral op"
+                },
+                {
+                    "args": "iterate op ∅ (λx. op (f x) (g x)) = iterate op ∅ g",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, monoidal op ⊢ iterate op ∅ (λx. op (f x) (g x)) = iterate op ∅ g"
+                },
+                {
+                    "args": "iterate op ∅ (λx. op (f x) (g x)) = op (neutral op) (iterate op ∅ g)",
+                    "id": "9",
+                    "prevs": [
+                        "3",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, monoidal op ⊢ iterate op ∅ (λx. op (f x) (g x)) = op (neutral op) (iterate op ∅ g)"
+                },
+                {
+                    "args": "iterate op ∅ (λx. op (f x) (g x)) = op (iterate op ∅ f) (iterate op ∅ g)",
+                    "id": "10",
+                    "prevs": [
+                        "5",
+                        "9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, monoidal op ⊢ iterate op ∅ (λx. op (f x) (g x)) = op (iterate op ∅ f) (iterate op ∅ g)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, monoidal op ⊢ ∀x. ∀s1. iterate op s1 (λx1. op (f x1) (g x1)) = op (iterate op s1 f) (iterate op s1 g) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ iterate op (insert x s1) (λx1. op (f x1) (g x1)) = op (iterate op (insert x s1) f) (iterate op (insert x s1) g)"
+                },
+                {
+                    "args": "a, 'b",
+                    "id": "11.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "s1, 'b set",
+                    "id": "11.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g)",
+                    "id": "11.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⊢ iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g)"
+                },
+                {
+                    "args": "¬(a ∈ s1)",
+                    "id": "11.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a ∈ s1) ⊢ ¬(a ∈ s1)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "11.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ⊢ finite s1"
+                },
+                {
+                    "args": "iterate_insert, {f: λx. op (f x) (g x), x: a}",
+                    "id": "11.5",
+                    "prevs": [
+                        "0",
+                        "11.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op ⊢ iterate op (insert a s1) (λx. op (f x) (g x)) = (if a ∈ s1 then iterate op s1 (λx. op (f x) (g x)) else op (op (f a) (g a)) (iterate op s1 (λx. op (f x) (g x))))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "11.6",
+                    "prevs": [
+                        "11.5",
+                        "11.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, monoidal op, ¬(a ∈ s1) ⊢ iterate op (insert a s1) (λx. op (f x) (g x)) = op (op (f a) (g a)) (iterate op s1 (λx. op (f x) (g x)))"
+                },
+                {
+                    "args": "iterate_insert, {f: f, x: a}",
+                    "id": "11.7",
+                    "prevs": [
+                        "0",
+                        "11.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op ⊢ iterate op (insert a s1) f = (if a ∈ s1 then iterate op s1 f else op (f a) (iterate op s1 f))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "11.8",
+                    "prevs": [
+                        "11.7",
+                        "11.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, monoidal op, ¬(a ∈ s1) ⊢ iterate op (insert a s1) f = op (f a) (iterate op s1 f)"
+                },
+                {
+                    "args": "iterate_insert, {f: g, x: a}",
+                    "id": "11.9",
+                    "prevs": [
+                        "0",
+                        "11.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1, monoidal op ⊢ iterate op (insert a s1) g = (if a ∈ s1 then iterate op s1 g else op (g a) (iterate op s1 g))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "11.10",
+                    "prevs": [
+                        "11.9",
+                        "11.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, monoidal op, ¬(a ∈ s1) ⊢ iterate op (insert a s1) g = op (g a) (iterate op s1 g)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11.11",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11.12",
+                    "prevs": [
+                        "11.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "11.13",
+                    "prevs": [
+                        "11.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op (op a b) c = op a (op b c)"
+                },
+                {
+                    "args": "",
+                    "id": "11.14",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s, finite s1, monoidal op, ¬(a ∈ s1), iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⊢ op (op (f a) (g a)) (op (iterate op s1 f) (iterate op s1 g)) = op (op (f a) (iterate op s1 f)) (op (g a) (iterate op s1 g))"
+                },
+                {
+                    "args": "op (op (f a) (g a)) (iterate op s1 (λx. op (f x) (g x))) = op (op (f a) (iterate op s1 f)) (op (g a) (iterate op s1 g))",
+                    "id": "11.15",
+                    "prevs": [
+                        "11.2",
+                        "11.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite s1, monoidal op, ¬(a ∈ s1), iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⊢ op (op (f a) (g a)) (iterate op s1 (λx. op (f x) (g x))) = op (op (f a) (iterate op s1 f)) (op (g a) (iterate op s1 g))"
+                },
+                {
+                    "args": "iterate op (insert a s1) (λx. op (f x) (g x)) = op (op (f a) (iterate op s1 f)) (op (g a) (iterate op s1 g))",
+                    "id": "11.16",
+                    "prevs": [
+                        "11.6",
+                        "11.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite s1, monoidal op, ¬(a ∈ s1), iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⊢ iterate op (insert a s1) (λx. op (f x) (g x)) = op (op (f a) (iterate op s1 f)) (op (g a) (iterate op s1 g))"
+                },
+                {
+                    "args": "iterate op (insert a s1) (λx. op (f x) (g x)) = op (iterate op (insert a s1) f) (op (g a) (iterate op s1 g))",
+                    "id": "11.17",
+                    "prevs": [
+                        "11.8",
+                        "11.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite s1, monoidal op, ¬(a ∈ s1), iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⊢ iterate op (insert a s1) (λx. op (f x) (g x)) = op (iterate op (insert a s1) f) (op (g a) (iterate op s1 g))"
+                },
+                {
+                    "args": "iterate op (insert a s1) (λx. op (f x) (g x)) = op (iterate op (insert a s1) f) (iterate op (insert a s1) g)",
+                    "id": "11.18",
+                    "prevs": [
+                        "11.10",
+                        "11.17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, finite s1, monoidal op, ¬(a ∈ s1), iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⊢ iterate op (insert a s1) (λx. op (f x) (g x)) = op (iterate op (insert a s1) f) (iterate op (insert a s1) g)"
+                },
+                {
+                    "args": "",
+                    "id": "11.19",
+                    "prevs": [
+                        "11.0",
+                        "11.1",
+                        "11.2",
+                        "11.3",
+                        "11.4",
+                        "11.18"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, monoidal op ⊢ ∀a. ∀s1. iterate op s1 (λx. op (f x) (g x)) = op (iterate op s1 f) (iterate op s1 g) ⟶ ¬(a ∈ s1) ⟶ finite s1 ⟶ iterate op (insert a s1) (λx. op (f x) (g x)) = op (iterate op (insert a s1) f) (iterate op (insert a s1) g)"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "12",
+                    "prevs": [
+                        "1",
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op ⊢ iterate op s (λx. op (f x) (g x)) = op (iterate op s f) (iterate op s g)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ finite s ⟶ iterate op s (λx. op (f x) (g x)) = op (iterate op s f) (iterate op s g)"
+                }
+            ],
+            "prop": [
+                "monoidal op ",
+                "⟶ finite s ",
+                "   ⟶ iterate op s (λx. op (f x) (g x)) = op (iterate op s f) (iterate op s g)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "monoidal_ac"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_empty"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "introduction",
+                    "names": "a,s1"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "11.4"
+                    ],
+                    "goal_id": "11.5",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx. op (f x) (g x))",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "11.5",
+                        "11.3"
+                    ],
+                    "goal_id": "11.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "11.4"
+                    ],
+                    "goal_id": "11.7",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "11.7",
+                        "11.3"
+                    ],
+                    "goal_id": "11.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "11.4"
+                    ],
+                    "goal_id": "11.9",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "a",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "fact_ids": [
+                        "11.9",
+                        "11.3"
+                    ],
+                    "goal_id": "11.10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "11.10"
+                    ],
+                    "goal_id": "11.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.8"
+                    ],
+                    "goal_id": "11.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.6"
+                    ],
+                    "goal_id": "11.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.2"
+                    ],
+                    "goal_id": "11.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "11.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "11.11"
+                    ],
+                    "goal_id": "11.12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "11.12"
+                    ],
+                    "goal_id": "11.13",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ 'a",
+                "g": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "sum",
