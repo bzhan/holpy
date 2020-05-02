@@ -17536,7 +17536,7 @@
                 "hint_backward1"
             ],
             "name": "iterate_injection",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "monoidal op",
@@ -17570,38 +17570,351 @@
                     "args": "",
                     "id": "4",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀x. (∃x1. x = p x1 ∧ x1 ∈ s) ⟶ x ∈ s"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "∃x1. x = p x1 ∧ x1 ∈ s",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = p x1 ∧ x1 ∈ s ⊢ ∃x1. x = p x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "x1, 'b",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x = p x1 ∧ x1 ∈ s",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = p x1 ∧ x1 ∈ s ⊢ x = p x1 ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p x1 ∧ x1 ∈ s ⊢ x = p x1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p x1 ∧ x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "2",
+                        "4.5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "x = p x1 ∧ x1 ∈ s, ∀x. x ∈ s ⟶ p x ∈ s ⊢ p x1 ∈ s"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.4",
+                        "4.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, monoidal op, x = p x1 ∧ x1 ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∃x1. x = p x1 ∧ x1 ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ x ∈ s"
+                },
+                {
+                    "args": "∃x1. x = p x1 ∧ x1 ∈ s",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀x. (∃x1. x = p x1 ∧ x1 ∈ s) ⟶ x ∈ s"
+                },
+                {
+                    "args": "in_image, ∀x. x ∈ image p s ⟶ x ∈ s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀x. x ∈ image p s ⟶ x ∈ s"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ image p s ⊆ s"
+                },
+                {
+                    "args": "surjective_iff_injective",
+                    "id": "7",
+                    "prevs": [
+                        "1",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ (∀y. y ∈ s ⟶ (∃x. x ∈ s ∧ p x = y)) ⟷ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y) ⟷ (∀y. y ∈ s ⟶ (∃x. x ∈ s ∧ p x = y))"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "3"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀y. y ∈ s ⟶ (∃x. x ∈ s ∧ p x = y)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)"
+                },
+                {
+                    "args": "y, 'b",
+                    "id": "10.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "y ∈ s",
+                    "id": "10.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ s ⊢ y ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "10.2",
+                    "prevs": [
+                        "9",
+                        "10.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, monoidal op, y ∈ s, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∃x. x ∈ s ∧ p x = y"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "10.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s ∧ p x = y",
+                    "id": "10.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ p x = y ⊢ x ∈ s ∧ p x = y"
+                },
+                {
+                    "args": "",
+                    "id": "10.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀y1. y1 ∈ s ∧ p y1 = y ⟶ y1 = x"
+                },
+                {
+                    "args": "y1, 'b",
+                    "id": "10.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y1"
+                },
+                {
+                    "args": "y1 ∈ s ∧ p y1 = y",
+                    "id": "10.5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y1 ∈ s ∧ p y1 = y ⊢ y1 ∈ s ∧ p y1 = y"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "10.5.2",
+                    "prevs": [
+                        "10.5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ p y1 = y ⊢ y1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "10.5.3",
+                    "prevs": [
+                        "10.5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y1 ∈ s ∧ p y1 = y ⊢ p y1 = y"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "10.5.4",
+                    "prevs": [
+                        "10.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ p x = y ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "10.5.5",
+                    "prevs": [
+                        "10.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ p x = y ⊢ p x = y"
+                },
+                {
+                    "args": "eq_sym_eq, y = p x",
+                    "id": "10.5.6",
+                    "prevs": [
+                        "10.5.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, y1 ∈ s ∧ p y1 = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ y = p x"
+                },
+                {
+                    "args": "p y1 = p x",
+                    "id": "10.5.7",
+                    "prevs": [
+                        "10.5.3",
+                        "10.5.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, y1 ∈ s ∧ p y1 = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ p y1 = p x"
+                },
+                {
+                    "args": "y1, x",
+                    "id": "10.5.8",
+                    "prevs": [
+                        "3",
+                        "10.5.2",
+                        "10.5.4",
+                        "10.5.7"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, y1 ∈ s ∧ p y1 = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ y1 = x"
+                },
+                {
+                    "args": "",
+                    "id": "10.5.9",
+                    "prevs": [
+                        "10.5.0",
+                        "10.5.1",
+                        "10.5.8"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀y1. y1 ∈ s ∧ p y1 = y ⟶ y1 = x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10.6",
+                    "prevs": [
+                        "10.4",
+                        "10.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ (x ∈ s ∧ p x = y) ∧ (∀y1. y1 ∈ s ∧ p y1 = y ⟶ y1 = x)"
+                },
+                {
+                    "args": "exI, {P: λx. (x ∈ s ∧ p x = y) ∧ (∀y1. y1 ∈ s ∧ p y1 = y ⟶ y1 = x), a: x}",
+                    "id": "10.7",
+                    "prevs": [
+                        "10.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∃a1. (a1 ∈ s ∧ p a1 = y) ∧ (∀y1. y1 ∈ s ∧ p y1 = y ⟶ y1 = a1)"
+                },
+                {
+                    "args": "exists1_def, ∃!x. x ∈ s ∧ p x = y",
+                    "id": "10.8",
+                    "prevs": [
+                        "10.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, monoidal op, y ∈ s, x ∈ s ∧ p x = y, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∃!x. x ∈ s ∧ p x = y"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ p x = y",
+                    "id": "10.9",
+                    "prevs": [
+                        "10.0",
+                        "10.1",
+                        "10.2",
+                        "10.3",
+                        "10.4",
+                        "10.8"
+                    ],
+                    "rule": "intros",
                     "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀y. y ∈ s ⟶ (∃!x. x ∈ s ∧ p x = y)"
                 },
                 {
                     "args": "iterate_bijection, {f: f, op: op, p: p, s: s}",
-                    "id": "5",
+                    "id": "11",
                     "prevs": [
                         "0",
                         "2",
-                        "4"
+                        "10"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ iterate op s f = iterate op s (f ∘ p)"
                 },
                 {
                     "args": "eq_sym_eq, iterate op s (f ∘ p) = iterate op s f",
-                    "id": "6",
+                    "id": "12",
                     "prevs": [
-                        "5"
+                        "11"
                     ],
                     "rule": "rewrite_goal",
                     "th": "finite s, monoidal op, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ iterate op s (f ∘ p) = iterate op s f"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "13",
                     "prevs": [
                         "0",
                         "1",
                         "2",
                         "3",
-                        "6"
+                        "12"
                     ],
                     "rule": "intros",
                     "th": "⊢ monoidal op ⟶ finite s ⟶ (∀x. x ∈ s ⟶ p x ∈ s) ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y) ⟶ iterate op s (f ∘ p) = iterate op s f"
@@ -17629,6 +17942,186 @@
                     "goal_id": "4",
                     "method_name": "apply_backward_step",
                     "theorem": "iterate_bijection"
+                },
+                {
+                    "goal": "image p s ⊆ s",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "exists_elim",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "4.5"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "surjective_iff_injective"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "8",
+                        "3"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "goal_id": "10.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "exists1_def"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "10.1"
+                    ],
+                    "goal_id": "10.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "10.2"
+                    ],
+                    "goal_id": "10.3",
+                    "method_name": "exists_elim",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "10.5",
+                    "method_name": "introduction",
+                    "names": "y1"
+                },
+                {
+                    "fact_ids": [
+                        "10.5.1"
+                    ],
+                    "goal_id": "10.5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "10.5.1"
+                    ],
+                    "goal_id": "10.5.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "10.5.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "10.4"
+                    ],
+                    "goal_id": "10.5.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "10.5.3"
+                    ],
+                    "goal_id": "10.5.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "10.5.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "10.4"
+                    ],
+                    "goal_id": "10.5.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
