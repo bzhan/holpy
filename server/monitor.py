@@ -17,6 +17,7 @@ from server import method
 from logic import logic
 from server import items
 from syntax import parser
+from prover import z3wrapper
 from syntax.settings import settings, global_setting
 
 
@@ -157,6 +158,8 @@ if __name__ == "__main__":
     opts, args = getopt.getopt(sys.argv[1:], 'p')
 
     basic.load_metadata()
+    z3wrapper.check_z3 = False
+
     files = []
     if not args:
         # Load all file names.
