@@ -36529,6 +36529,1372 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_union_rzero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite u",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite u ⊢ finite u"
+                },
+                {
+                    "args": "∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0"
+                },
+                {
+                    "args": "u ∪ v = u ∪ {x. x ∈ v ∧ ¬(x ∈ u)}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ u ∪ v = u ∪ {x. x ∈ v ∧ ¬(x ∈ u)}"
+                },
+                {
+                    "args": "diff_def, u ∪ v = u ∪ diff v u",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ u ∪ v = u ∪ diff v u"
+                },
+                {
+                    "args": "subset_union_id, {A: u, B: diff v u}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ u ⊆ u ∪ diff v u"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ ∀x. x ∈ u ∪ diff v u ⟶ ¬(x ∈ u) ⟶ f x = 0"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ u ∪ diff v u",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ u ∪ diff v u ⊢ x ∈ u ∪ diff v u"
+                },
+                {
+                    "args": "¬(x ∈ u)",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ u) ⊢ ¬(x ∈ u)"
+                },
+                {
+                    "args": "diff_def",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ u ∪ diff v u ⊢ x ∈ u ∪ {x1. x1 ∈ v ∧ ¬(x1 ∈ u)}"
+                },
+                {
+                    "args": "member_union_iff",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ u ∪ diff v u ⊢ x ∈ u ∨ x ∈ {x1. x1 ∈ v ∧ ¬(x1 ∈ u)}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ u ∪ diff v u ⊢ x ∈ u ∨ x ∈ v ∧ ¬(x ∈ u)"
+                },
+                {
+                    "args": "",
+                    "id": "5.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite u, ¬(x ∈ u), x ∈ u ∪ diff v u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ x ∈ u ⟶ x ∈ v"
+                },
+                {
+                    "args": "x ∈ u",
+                    "id": "5.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ u ⊢ x ∈ u"
+                },
+                {
+                    "args": "negE_gen, {A: x ∈ u, C: x ∈ v}",
+                    "id": "5.6.1",
+                    "prevs": [
+                        "5.2",
+                        "5.6.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ u, ¬(x ∈ u) ⊢ x ∈ v"
+                },
+                {
+                    "args": "",
+                    "id": "5.6.2",
+                    "prevs": [
+                        "5.6.0",
+                        "5.6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "finite u, ¬(x ∈ u), x ∈ u ∪ diff v u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ x ∈ u ⟶ x ∈ v"
+                },
+                {
+                    "args": "",
+                    "id": "5.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite u, ¬(x ∈ u), x ∈ u ∪ diff v u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ x ∈ v ∧ ¬(x ∈ u) ⟶ x ∈ v"
+                },
+                {
+                    "args": "x ∈ v ∧ ¬(x ∈ u)",
+                    "id": "5.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ v ∧ ¬(x ∈ u) ⊢ x ∈ v ∧ ¬(x ∈ u)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.7.1",
+                    "prevs": [
+                        "5.7.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ v ∧ ¬(x ∈ u) ⊢ x ∈ v"
+                },
+                {
+                    "args": "",
+                    "id": "5.7.2",
+                    "prevs": [
+                        "5.7.0",
+                        "5.7.1"
+                    ],
+                    "rule": "intros",
+                    "th": "finite u, ¬(x ∈ u), x ∈ u ∪ diff v u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ x ∈ v ∧ ¬(x ∈ u) ⟶ x ∈ v"
+                },
+                {
+                    "args": "disjE",
+                    "id": "5.8",
+                    "prevs": [
+                        "5.5",
+                        "5.6",
+                        "5.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite u, ¬(x ∈ u), x ∈ u ∪ diff v u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ x ∈ v"
+                },
+                {
+                    "args": "x",
+                    "id": "5.9",
+                    "prevs": [
+                        "1",
+                        "5.8",
+                        "5.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite u, ¬(x ∈ u), x ∈ u ∪ diff v u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ f x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5.10",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.2",
+                        "5.9"
+                    ],
+                    "rule": "intros",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ ∀x. x ∈ u ∪ diff v u ⟶ ¬(x ∈ u) ⟶ f x = 0"
+                },
+                {
+                    "args": "nsum_superset",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ nsum (u ∪ diff v u) f = nsum u f"
+                },
+                {
+                    "args": "nsum (u ∪ v) f = nsum u f",
+                    "id": "7",
+                    "prevs": [
+                        "3",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ nsum (u ∪ v) f = nsum u f"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite u ⟶ (∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0) ⟶ nsum (u ∪ v) f = nsum u f"
+                }
+            ],
+            "prop": "finite u ⟶ (∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0) ⟶ nsum (u ∪ v) f = nsum u f",
+            "steps": [
+                {
+                    "goal": "u ∪ v = u ∪ (diff v u)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_superset"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "diff_def"
+                },
+                {
+                    "fact_ids": [
+                        "5.3"
+                    ],
+                    "goal_id": "5.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_union_iff"
+                },
+                {
+                    "fact_ids": [
+                        "5.4"
+                    ],
+                    "goal_id": "5.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "5.5"
+                    ],
+                    "goal_id": "5.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "5.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2",
+                        "5.6.0"
+                    ],
+                    "goal_id": "5.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "5.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.7.0"
+                    ],
+                    "goal_id": "5.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "u": "'b set",
+                "v": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_union_lzero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite u",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite u ⊢ finite u"
+                },
+                {
+                    "args": "∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0"
+                },
+                {
+                    "args": "nsum_union_rzero",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ nsum (u ∪ v) f = nsum u f"
+                },
+                {
+                    "args": "union_comm, nsum (v ∪ u) f = nsum u f",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite u, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0 ⊢ nsum (v ∪ u) f = nsum u f"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite u ⟶ (∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0) ⟶ nsum (v ∪ u) f = nsum u f"
+                }
+            ],
+            "prop": "finite u ⟶ (∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 0) ⟶ nsum (v ∪ u) f = nsum u f",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "union_comm"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_union_rzero"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "u": "'b set",
+                "v": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_restrict",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x. x ∈ s ⟶ (if x ∈ s then f x else 0) = f x"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "if_P, (if x ∈ s then f x else 0) = f x",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ s ⊢ (if x ∈ s then f x else 0) = f x"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ ∀x. x ∈ s ⟶ (if x ∈ s then f x else 0) = f x"
+                },
+                {
+                    "args": "nsum_eq",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ nsum s (λx. if x ∈ s then f x else 0) = nsum s f"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ nsum s (λx. if x ∈ s then f x else 0) = nsum s f"
+                }
+            ],
+            "prop": "finite s ⟶ nsum s (λx. if x ∈ s then f x else 0) = nsum s f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x ≤ b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x ≤ b ⊢ ∀x. x ∈ s ⟶ f x ≤ b"
+                },
+                {
+                    "args": "nsum_const, {c: b}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ nsum s (λn. b) = card s * b"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s ⊢ card s * b = nsum s (λn. b)"
+                },
+                {
+                    "args": "nsum_le",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀x. x ∈ s ⟶ f x ≤ b ⊢ nsum s f ≤ nsum s (λx. b)"
+                },
+                {
+                    "args": "nsum s f ≤ card s * b",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ∀x. x ∈ s ⟶ f x ≤ b ⊢ nsum s f ≤ card s * b"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ b) ⟶ nsum s f ≤ card s * b"
+                }
+            ],
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ b) ⟶ nsum s f ≤ card s * b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_c": "b",
+                    "theorem": "nsum_const"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_le"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "nat",
+                "f": "'a ⇒ nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_bound_gen",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "¬(s = ∅)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x ≤ b DIV card s",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ ∀x. x ∈ s ⟶ f x ≤ b DIV card s"
+                },
+                {
+                    "args": "card_eq_0",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ card s = 0 ⟷ s = ∅"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s ⊢ s = ∅ ⟷ card s = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "finite s, ¬(s = ∅) ⊢ ¬(card s = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ ∀x. x ∈ s ⟶ card s * f x ≤ b"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: b, n: f x}",
+                    "id": "6.2",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ¬(s = ∅) ⊢ f x ≤ b DIV card s ⟷ card s * f x ≤ b"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(s = ∅) ⊢ card s * f x ≤ b ⟷ f x ≤ b DIV card s"
+                },
+                {
+                    "args": "x",
+                    "id": "6.4",
+                    "prevs": [
+                        "2",
+                        "6.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, x ∈ s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ f x ≤ b DIV card s"
+                },
+                {
+                    "args": "card s * f x ≤ b",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.3",
+                        "6.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, x ∈ s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ card s * f x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "6.6",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ ∀x. x ∈ s ⟶ card s * f x ≤ b"
+                },
+                {
+                    "args": "nsum_bound",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ nsum s (λx. card s * f x) ≤ card s * b"
+                },
+                {
+                    "args": "nsum_lmul",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ card s * nsum s f ≤ card s * b"
+                },
+                {
+                    "args": "mult_comm",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ nsum s f * card s ≤ b * card s"
+                },
+                {
+                    "args": "le_mult_rcancel",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ nsum s f ≤ b ∨ card s = 0"
+                },
+                {
+                    "args": "nsum s f ≤ b ⟶ nsum s f ≤ b",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ nsum s f ≤ b ⟶ nsum s f ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ card s = 0 ⟶ nsum s f ≤ b"
+                },
+                {
+                    "args": "card s = 0",
+                    "id": "12.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "card s = 0 ⊢ card s = 0"
+                },
+                {
+                    "args": "negE_gen, {A: card s = 0, C: nsum s f ≤ b}",
+                    "id": "12.1",
+                    "prevs": [
+                        "5",
+                        "12.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ¬(s = ∅), card s = 0 ⊢ nsum s f ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "12.2",
+                    "prevs": [
+                        "12.0",
+                        "12.1"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ card s = 0 ⟶ nsum s f ≤ b"
+                },
+                {
+                    "args": "disjE",
+                    "id": "13",
+                    "prevs": [
+                        "10",
+                        "11",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ f x ≤ b DIV card s ⊢ nsum s f ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ f x ≤ b DIV card s) ⟶ nsum s f ≤ b"
+                }
+            ],
+            "prop": "finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ f x ≤ b DIV card s) ⟶ nsum s f ≤ b",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "card_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "1"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "nsum s (%x. card s * f x) <= card s * b",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_bound"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "apply_forward_step",
+                    "param_b": "b",
+                    "param_n": "f x",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "6.2"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "6.3"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nsum_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "le_mult_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "12.0"
+                    ],
+                    "goal_id": "12.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "nat",
+                "f": "'a ⇒ nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_bound_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x ≤ b",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x ≤ b ⊢ ∀x. x ∈ s ⟶ f x ≤ b"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ f x < b",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. x ∈ s ∧ f x < b ⊢ ∃x. x ∈ s ∧ f x < b"
+                },
+                {
+                    "args": "nsum_lt",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀x. x ∈ s ⟶ f x ≤ b, ∃x. x ∈ s ∧ f x < b ⊢ nsum s f < nsum s (λx. b)"
+                },
+                {
+                    "args": "nsum_const, {c: b}",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ nsum s (λn. b) = card s * b"
+                },
+                {
+                    "args": "less_eq_refl, {n: card s * b}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ card s * b ≤ card s * b"
+                },
+                {
+                    "args": "nsum s (λx. b) ≤ card s * b",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ∀x. x ∈ s ⟶ f x ≤ b, ∃x. x ∈ s ∧ f x < b ⊢ nsum s (λn. b) ≤ card s * b"
+                },
+                {
+                    "args": "lte_trans",
+                    "id": "7",
+                    "prevs": [
+                        "3",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀x. x ∈ s ⟶ f x ≤ b, ∃x. x ∈ s ∧ f x < b ⊢ nsum s f < card s * b"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ b) ⟶ (∃x. x ∈ s ∧ f x < b) ⟶ nsum s f < card s * b"
+                }
+            ],
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ b) ⟶ (∃x. x ∈ s ∧ f x < b) ⟶ nsum s f < card s * b",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "param_m": "nsum s (%x::'a. b)",
+                    "theorem": "lte_trans"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_lt"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "param_c": "b",
+                    "theorem": "nsum_const"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "nat",
+                "f": "'a ⇒ nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_union_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite u",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite u ⊢ finite u"
+                },
+                {
+                    "args": "s ∩ t = ∅",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ∩ t = ∅ ⊢ s ∩ t = ∅"
+                },
+                {
+                    "args": "s ∪ t = u",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ∪ t = u ⊢ s ∪ t = u"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "s ∪ t = u ⊢ u = s ∪ t"
+                },
+                {
+                    "args": "subset_union_id, {A: s, B: t}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s ⊆ s ∪ t"
+                },
+                {
+                    "args": "s ⊆ u",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ s ⊆ u"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ finite s"
+                },
+                {
+                    "args": "subset_union_id, {A: t, B: s}",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ t ⊆ t ∪ s"
+                },
+                {
+                    "args": "union_comm, t ⊆ s ∪ t",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ t ⊆ s ∪ t"
+                },
+                {
+                    "args": "t ⊆ u",
+                    "id": "9",
+                    "prevs": [
+                        "3",
+                        "8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ t ⊆ u"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ finite t"
+                },
+                {
+                    "args": "disjoint_def, disjoint s t",
+                    "id": "11",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ disjoint s t"
+                },
+                {
+                    "args": "nsum_union, {f: f, s: s, t: t}",
+                    "id": "12",
+                    "prevs": [
+                        "6",
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ nsum (s ∪ t) f = nsum s f + nsum t f"
+                },
+                {
+                    "args": "eq_sym_eq, nsum s f + nsum t f = nsum (s ∪ t) f",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ nsum s f + nsum t f = nsum (s ∪ t) f"
+                },
+                {
+                    "args": "nsum s f + nsum t f = nsum u f",
+                    "id": "14",
+                    "prevs": [
+                        "3",
+                        "13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite u, s ∩ t = ∅, s ∪ t = u ⊢ nsum s f + nsum t f = nsum u f"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "14"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite u ⟶ s ∩ t = ∅ ⟶ s ∪ t = u ⟶ nsum s f + nsum t f = nsum u f"
+                }
+            ],
+            "prop": "finite u ⟶ s ∩ t = ∅ ⟶ s ∪ t = u ⟶ nsum s f + nsum t f = nsum u f",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_union"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "param_t": "u",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "param_t": "u",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "union_comm"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disjoint_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "s": "'b set",
+                "t": "'b set",
+                "u": "'b set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "sum",
