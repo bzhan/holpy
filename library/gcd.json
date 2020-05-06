@@ -15363,7 +15363,7 @@
             "name": "gcd",
             "prop": [
                 "gcd m n = ",
-                "(THE k. divides k m ∧ divides k n ∧ (∀a. a divides m ∧ a divides n ⟶ a divides k))"
+                "(THE k. divides k m ∧ divides k n ∧ (∀a. divides a m ∧ divides a n ⟶ divides a k))"
             ],
             "ty": "def",
             "type": "nat ⇒ nat ⇒ nat"

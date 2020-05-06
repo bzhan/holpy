@@ -30418,7 +30418,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": "iterate_refect",
+            "name": "iterate_reflect",
             "num_gaps": 0,
             "proof": [
                 {
@@ -42115,6 +42115,4045 @@
                 "f": "'b ⇒ nat",
                 "p": "'b ⇒ 'b",
                 "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_eq_general",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y) ⊢ ∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_eq_general, {f: f, g: g, h: h, op: (plus::nat ⇒ nat ⇒ nat), s: s, t: t}",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ iterate plus s f = iterate plus t g"
+                },
+                {
+                    "args": "nsum_def, nsum s f = nsum t g",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y), ∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x ⊢ nsum s f = nsum t g"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)) ⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x) ⟶ nsum s f = nsum t g"
+                }
+            ],
+            "prop": [
+                "(∀y. y ∈ t ⟶ (∃!x. x ∈ s ∧ h x = y)) ",
+                "⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ g (h x) = f x) ⟶ nsum s f = nsum t g"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_h": "h",
+                    "theorem": "iterate_eq_general"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "g": "'a ⇒ nat",
+                "h": "'b ⇒ 'a",
+                "s": "'b set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_eq_general_inverse",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y ⊢ ∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_eq_general_inverses, {f: f, g: g, h: h, k: k, op: (plus::nat ⇒ nat ⇒ nat), s: s, t: t}",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ iterate plus s f = iterate plus t g"
+                },
+                {
+                    "args": "nsum_def, nsum s f = nsum t g",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y, ∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x ⊢ nsum s f = nsum t g"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y) ⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x) ⟶ nsum s f = nsum t g"
+                }
+            ],
+            "prop": [
+                "(∀y. y ∈ t ⟶ k y ∈ s ∧ h (k y) = y) ",
+                "⟶ (∀x. x ∈ s ⟶ h x ∈ t ∧ k (h x) = x ∧ g (h x) = f x) ⟶ nsum s f = nsum t g"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_h": "h",
+                    "param_k": "k",
+                    "theorem": "iterate_eq_general_inverses"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "g": "'a ⇒ nat",
+                "h": "'b ⇒ 'a",
+                "k": "'a ⇒ 'b",
+                "s": "'b set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_injection",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ p x ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ p x ∈ s ⊢ ∀x. x ∈ s ⟶ p x ∈ s"
+                },
+                {
+                    "args": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_injection, {f: f, op: (plus::nat ⇒ nat ⇒ nat), p: p, s: s}",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ iterate plus s (f ∘ p) = iterate plus s f"
+                },
+                {
+                    "args": "nsum_def, nsum s (f ∘ p) = nsum s f",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ∀x. x ∈ s ⟶ p x ∈ s, ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y ⊢ nsum s (f ∘ p) = nsum s f"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ p x ∈ s) ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y) ⟶ nsum s (f ∘ p) = nsum s f"
+                }
+            ],
+            "prop": [
+                "finite s ",
+                "⟶ (∀x. x ∈ s ⟶ p x ∈ s) ",
+                "   ⟶ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ p x = p y ⟶ x = y) ⟶ nsum s (f ∘ p) = nsum s f"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_injection"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "p": "'b ⇒ 'b",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_union_nonzero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "finite t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "∀x. x ∈ s ∩ t ⟶ f x = 0",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ∩ t ⟶ f x = 0 ⊢ ∀x. x ∈ s ∩ t ⟶ f x = 0"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "neutral_nat_add, ∀x. x ∈ s ∩ t ⟶ f x = neutral plus",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, ∀x. x ∈ s ∩ t ⟶ f x = 0 ⊢ ∀x. x ∈ s ∩ t ⟶ f x = neutral plus"
+                },
+                {
+                    "args": "iterate_union_nonzero",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, finite t, ∀x. x ∈ s ∩ t ⟶ f x = 0 ⊢ iterate plus (s ∪ t) f = iterate plus s f + iterate plus t f"
+                },
+                {
+                    "args": "nsum_def, nsum (s ∪ t) f = nsum s f + nsum t f",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, ∀x. x ∈ s ∩ t ⟶ f x = 0 ⊢ nsum (s ∪ t) f = nsum s f + nsum t f"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite t ⟶ (∀x. x ∈ s ∩ t ⟶ f x = 0) ⟶ nsum (s ∪ t) f = nsum s f + nsum t f"
+                }
+            ],
+            "prop": [
+                "finite s ",
+                "⟶ finite t ⟶ (∀x. x ∈ s ∩ t ⟶ f x = 0) ⟶ nsum (s ∪ t) f = nsum s f + nsum t f"
+            ],
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_union_nonzero"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b ⇒ nat",
+                "s": "'b set",
+                "t": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_cases",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_cases, {P: P, f: f, g: g, op: (plus::nat ⇒ nat ⇒ nat), s: s}",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ iterate plus s (λx. if P x then f x else g x) = iterate plus ({x. x ∈ s ∧ P x}) f + iterate plus ({x. x ∈ s ∧ ¬(P x)}) g"
+                },
+                {
+                    "args": "nsum_def, nsum s (λx. if P x then f x else g x) = nsum ({x. x ∈ s ∧ P x}) f + nsum ({x. x ∈ s ∧ ¬(P x)}) g",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ nsum s (λx. if P x then f x else g x) = nsum ({x. x ∈ s ∧ P x}) f + nsum ({x. x ∈ s ∧ ¬(P x)}) g"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ nsum s (λx. if P x then f x else g x) = nsum ({x. x ∈ s ∧ P x}) f + nsum ({x. x ∈ s ∧ ¬(P x)}) g"
+                }
+            ],
+            "prop": [
+                "finite s ",
+                "⟶ nsum s (λx. if P x then f x else g x) = ",
+                "   nsum ({x. x ∈ s ∧ P x}) f + nsum ({x. x ∈ s ∧ ¬(P x)}) g"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "'b ⇒ bool",
+                "f": "'b ⇒ nat",
+                "g": "'b ⇒ nat",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_closed",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P 0 ⊢ P 0"
+                },
+                {
+                    "args": "∀x. ∀y. P x ⟶ P y ⟶ P (x + y)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ ∀x. ∀y. P x ⟶ P y ⟶ P (x + y)"
+                },
+                {
+                    "args": "∀a. a ∈ s ⟶ P (f a)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. a ∈ s ⟶ P (f a) ⊢ ∀a. a ∈ s ⟶ P (f a)"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "neutral_nat_add, P (neutral plus)",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "P 0, ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ P (neutral plus)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P 0, ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ ∀x. x ∈ s ∧ ¬(f x = neutral plus) ⟶ P (f x)"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(f x = neutral plus)",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(f x = neutral plus) ⊢ x ∈ s ∧ ¬(f x = neutral plus)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = neutral plus) ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "5.3",
+                    "prevs": [
+                        "2",
+                        "5.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "P 0, ∀a. a ∈ s ⟶ P (f a), x ∈ s ∧ ¬(f x = neutral plus), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ P (f x)"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "P 0, ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ ∀x. x ∈ s ∧ ¬(f x = neutral plus) ⟶ P (f x)"
+                },
+                {
+                    "args": "iterate_closed",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P 0, ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ P (iterate plus s f)"
+                },
+                {
+                    "args": "nsum_def, P (nsum s f)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "P 0, ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ P (nsum s f)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P 0 ⟶ (∀x. ∀y. P x ⟶ P y ⟶ P (x + y)) ⟶ (∀a. a ∈ s ⟶ P (f a)) ⟶ P (nsum s f)"
+                }
+            ],
+            "prop": "P 0 ⟶ (∀x. ∀y. P x ⟶ P y ⟶ P (x + y)) ⟶ (∀a. a ∈ s ⟶ P (f a)) ⟶ P (nsum s f)",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_closed"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_nat_add"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool",
+                "f": "'b ⇒ nat",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_related",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "R 0 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "R 0 0 ⊢ R 0 0"
+                },
+                {
+                    "args": "∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)"
+                },
+                {
+                    "args": "finite s",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ R (f x) (g x)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ R (f x) (g x) ⊢ ∀x. x ∈ s ⟶ R (f x) (g x)"
+                },
+                {
+                    "args": "iterate_related, {R: R, f: f, g: g, op: (plus::nat ⇒ nat ⇒ nat), s: s}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat) ⟶ R (neutral plus) (neutral plus) ⟶ (∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (x1 + y1) (x2 + y2)) ⟶ finite s ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (iterate plus s f) (iterate plus s g)"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "neutral_nat_add, R (neutral plus) (neutral plus)",
+                    "id": "6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, R 0 0, ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (neutral plus) (neutral plus)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, R 0 0, ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (x1 + y1) (x2 + y2)"
+                },
+                {
+                    "args": "x1, nat",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "y1, nat",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y1"
+                },
+                {
+                    "args": "x2, nat",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x2"
+                },
+                {
+                    "args": "y2, nat",
+                    "id": "7.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y2"
+                },
+                {
+                    "args": "R x1 x2",
+                    "id": "7.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "R x1 x2 ⊢ R x1 x2"
+                },
+                {
+                    "args": "R y1 y2",
+                    "id": "7.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "R y1 y2 ⊢ R y1 y2"
+                },
+                {
+                    "args": "x1, x2, y1, y2",
+                    "id": "7.6",
+                    "prevs": [
+                        "1",
+                        "7.4",
+                        "7.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, R x1 x2, R y1 y2, R 0 0, ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (x1 + y1) (x2 + y2)"
+                },
+                {
+                    "args": "",
+                    "id": "7.7",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.2",
+                        "7.3",
+                        "7.4",
+                        "7.5",
+                        "7.6"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, R 0 0, ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (x1 + y1) (x2 + y2)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "4",
+                        "5",
+                        "6",
+                        "7",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, R 0 0, ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (iterate plus s f) (iterate plus s g)"
+                },
+                {
+                    "args": "nsum_def, R (nsum s f) (nsum s g)",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, R 0 0, ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (nsum s f) (nsum s g)"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ R 0 0 ⟶ (∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)) ⟶ finite s ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (nsum s f) (nsum s g)"
+                }
+            ],
+            "prop": [
+                "R 0 0 ",
+                "⟶ (∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)) ",
+                "   ⟶ finite s ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (nsum s f) (nsum s g)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "param_R": "R",
+                    "param_f": "f",
+                    "param_g": "g",
+                    "param_op": "(plus::nat=>nat=>nat)",
+                    "param_s": "s",
+                    "theorem": "iterate_related"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_nat_add"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "x1,y1,x2,y2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "7.6",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "R": "nat ⇒ nat ⇒ bool",
+                "f": "'b ⇒ nat",
+                "g": "'b ⇒ nat",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_closed_nonempty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "¬(s = ∅)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "∀x. ∀y. P x ⟶ P y ⟶ P (x + y)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ ∀x. ∀y. P x ⟶ P y ⟶ P (x + y)"
+                },
+                {
+                    "args": "∀a. a ∈ s ⟶ P (f a)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. a ∈ s ⟶ P (f a) ⊢ ∀a. a ∈ s ⟶ P (f a)"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_closed_nonempty",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "2",
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(s = ∅), ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ P (iterate plus s f)"
+                },
+                {
+                    "args": "nsum_def, P (nsum s f)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(s = ∅), ∀a. a ∈ s ⟶ P (f a), ∀x. ∀y. P x ⟶ P y ⟶ P (x + y) ⊢ P (nsum s f)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ ¬(s = ∅) ⟶ (∀x. ∀y. P x ⟶ P y ⟶ P (x + y)) ⟶ (∀a. a ∈ s ⟶ P (f a)) ⟶ P (nsum s f)"
+                }
+            ],
+            "prop": [
+                "finite s ",
+                "⟶ ¬(s = ∅) ",
+                "   ⟶ (∀x. ∀y. P x ⟶ P y ⟶ P (x + y)) ⟶ (∀a. a ∈ s ⟶ P (f a)) ⟶ P (nsum s f)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_closed_nonempty"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "nat ⇒ bool",
+                "f": "'b ⇒ nat",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_related_nonempty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "¬(s = ∅)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(s = ∅) ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ R (f x) (g x)",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ R (f x) (g x) ⊢ ∀x. x ∈ s ⟶ R (f x) (g x)"
+                },
+                {
+                    "args": "iterate_related_nonempty, {R: R, f: f, g: g, op: (plus::nat ⇒ nat ⇒ nat), s: s}",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat) ⟶ (∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (x1 + y1) (x2 + y2)) ⟶ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (iterate plus s f) (iterate plus s g)"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (x1 + y1) (x2 + y2)"
+                },
+                {
+                    "args": "x1, nat",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "y1, nat",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y1"
+                },
+                {
+                    "args": "x2, nat",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x2"
+                },
+                {
+                    "args": "y2, nat",
+                    "id": "6.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y2"
+                },
+                {
+                    "args": "R x1 x2",
+                    "id": "6.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "R x1 x2 ⊢ R x1 x2"
+                },
+                {
+                    "args": "R y1 y2",
+                    "id": "6.5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "R y1 y2 ⊢ R y1 y2"
+                },
+                {
+                    "args": "x1, x2, y1, y2",
+                    "id": "6.6",
+                    "prevs": [
+                        "0",
+                        "6.4",
+                        "6.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, R x1 x2, R y1 y2, ¬(s = ∅), ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (x1 + y1) (x2 + y2)"
+                },
+                {
+                    "args": "",
+                    "id": "6.7",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.2",
+                        "6.3",
+                        "6.4",
+                        "6.5",
+                        "6.6"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ ∀x1. ∀y1. ∀x2. ∀y2. R x1 x2 ⟶ R y1 y2 ⟶ R (x1 + y1) (x2 + y2)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "4",
+                        "5",
+                        "6",
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (iterate plus s f) (iterate plus s g)"
+                },
+                {
+                    "args": "nsum_def, R (nsum s f) (nsum s g)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(s = ∅), ∀x. x ∈ s ⟶ R (f x) (g x), ∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1) ⊢ R (nsum s f) (nsum s g)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)) ⟶ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (nsum s f) (nsum s g)"
+                }
+            ],
+            "prop": [
+                "(∀m. ∀n. ∀m1. ∀n1. R m n ⟶ R m1 n1 ⟶ R (m + m1) (n + n1)) ",
+                "⟶ finite s ⟶ ¬(s = ∅) ⟶ (∀x. x ∈ s ⟶ R (f x) (g x)) ⟶ R (nsum s f) (nsum s g)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "param_R": "R",
+                    "param_f": "f",
+                    "param_g": "g",
+                    "param_op": "(plus::nat=>nat=>nat)",
+                    "param_s": "s",
+                    "theorem": "iterate_related_nonempty"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "x1,y1,x2,y2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6.6",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "R": "nat ⇒ nat ⇒ bool",
+                "f": "'b ⇒ nat",
+                "g": "'b ⇒ nat",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_add_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_natseg, {m: m, n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m..n})"
+                },
+                {
+                    "args": "nsum_add, {f: f, g: g, s: {m..n}}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum ({m..n}) (λx. f x + g x) = nsum ({m..n}) f + nsum ({m..n}) g"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m..n}) (λi. f i + g i) = nsum ({m..n}) f + nsum ({m..n}) g"
+                }
+            ],
+            "prop": "nsum ({m..n}) (λi. f i + g i) = nsum ({m..n}) f + nsum ({m..n}) g",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_add"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "g": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_le_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i ⊢ ∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i"
+                },
+                {
+                    "args": "finite_natseg, {m: m, n: n}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m..n})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i ⊢ ∀x. m ≤ x ∧ x ≤ n ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "m ≤ i ∧ i ≤ n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ m ≤ i ∧ i ≤ n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ m ≤ i"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ i ≤ n"
+                },
+                {
+                    "args": "i",
+                    "id": "2.4",
+                    "prevs": [
+                        "0",
+                        "2.2",
+                        "2.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≤ i ∧ i ≤ n, ∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i ⊢ f i ≤ g i"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i ⊢ ∀i. m ≤ i ∧ i ≤ n ⟶ f i ≤ g i"
+                },
+                {
+                    "args": "member_natseg, ∀x. x ∈ {m..n} ⟶ f x ≤ g x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i ⊢ ∀x. x ∈ {m..n} ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "nsum_le",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i ⊢ nsum ({m..n}) f ≤ nsum ({m..n}) g"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i) ⟶ nsum ({m..n}) f ≤ nsum ({m..n}) g"
+                }
+            ],
+            "prop": "(∀i. m ≤ i ⟶ i ≤ n ⟶ f i ≤ g i) ⟶ nsum ({m..n}) f ≤ nsum ({m..n}) g",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_le"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "g": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_eq_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i ⊢ ∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i ⊢ ∀x. m ≤ x ∧ x ≤ n ⟶ f x = g x"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "m ≤ i ∧ i ≤ n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ m ≤ i ∧ i ≤ n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ m ≤ i"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ i ≤ n"
+                },
+                {
+                    "args": "i",
+                    "id": "1.4",
+                    "prevs": [
+                        "0",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≤ i ∧ i ≤ n, ∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i ⊢ f i = g i"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i ⊢ ∀i. m ≤ i ∧ i ≤ n ⟶ f i = g i"
+                },
+                {
+                    "args": "member_natseg, ∀x. x ∈ {m..n} ⟶ f x = g x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i ⊢ ∀x. x ∈ {m..n} ⟶ f x = g x"
+                },
+                {
+                    "args": "nsum_eq",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i ⊢ nsum ({m..n}) f = nsum ({m..n}) g"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i) ⟶ nsum ({m..n}) f = nsum ({m..n}) g"
+                }
+            ],
+            "prop": "(∀i. m ≤ i ⟶ i ≤ n ⟶ f i = g i) ⟶ nsum ({m..n}) f = nsum ({m..n}) g",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "g": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_const_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_natseg, {m: m, n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m..n})"
+                },
+                {
+                    "args": "nsum_const, {c: c, s: {m..n}}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum ({m..n}) (λn1. c) = card ({m..n}) * c"
+                },
+                {
+                    "args": "card_natseg, nsum ({m..n}) (λn1. c) = (n + 1 - m) * c",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ nsum ({m..n}) (λn1. c) = (n + 1 - m) * c"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m..n}) (λn1. c) = (n + 1 - m) * c"
+                }
+            ],
+            "prop": "nsum ({m..n}) (λn1. c) = (n + 1 - m) * c",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "card_natseg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_const"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_eq_0_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0 ⊢ ∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0 ⊢ ∀x. m ≤ x ∧ x ≤ n ⟶ f x = 0"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "m ≤ i ∧ i ≤ n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ m ≤ i ∧ i ≤ n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ m ≤ i"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ i ∧ i ≤ n ⊢ i ≤ n"
+                },
+                {
+                    "args": "i",
+                    "id": "1.4",
+                    "prevs": [
+                        "0",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "m ≤ i ∧ i ≤ n, ∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0 ⊢ f i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0 ⊢ ∀i. m ≤ i ∧ i ≤ n ⟶ f i = 0"
+                },
+                {
+                    "args": "member_natseg, ∀x. x ∈ {m..n} ⟶ f x = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0 ⊢ ∀x. x ∈ {m..n} ⟶ f x = 0"
+                },
+                {
+                    "args": "nsum_eq_0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0 ⊢ nsum ({m..n}) f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0) ⟶ nsum ({m..n}) f = 0"
+                }
+            ],
+            "prop": "(∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0) ⟶ nsum ({m..n}) f = 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_eq_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_eq_0_iff_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_natseg, {m: m, n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m..n})"
+                },
+                {
+                    "args": "nsum_eq_0_iff, {f: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum ({m..n}) f = 0 ⟷ (∀x. x ∈ {m..n} ⟶ f x = 0)"
+                },
+                {
+                    "args": "(∀x. m ≤ x ∧ x ≤ n ⟶ f x = 0) ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∀x. m ≤ x ∧ x ≤ n ⟶ f x = 0) ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)"
+                },
+                {
+                    "args": "member_natseg, (∀x. x ∈ {m..n} ⟶ f x = 0) ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x. x ∈ {m..n} ⟶ f x = 0) ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)"
+                },
+                {
+                    "args": "nsum ({m..n}) f = 0 ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ nsum ({m..n}) f = 0 ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m..n}) f = 0 ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)"
+                }
+            ],
+            "prop": "nsum ({m..n}) f = 0 ⟷ (∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0)",
+            "steps": [
+                {
+                    "goal": "finite {m..n}",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "theorem": "nsum_eq_0_iff"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_triv_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "n < m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⊢ n < m"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n < m ⊢ ∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "m ≤ i",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ i ⊢ m ≤ i"
+                },
+                {
+                    "args": "i ≤ n",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i ≤ n ⊢ i ≤ n"
+                },
+                {
+                    "args": "f i = 0",
+                    "id": "1.3",
+                    "prevs": [
+                        "0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "z3",
+                    "th": "n < m, i ≤ n, m ≤ i ⊢ f i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "n < m ⊢ ∀i. m ≤ i ⟶ i ≤ n ⟶ f i = 0"
+                },
+                {
+                    "args": "nsum_eq_0_iff_natseg, nsum ({m..n}) f = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n < m ⊢ nsum ({m..n}) f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n < m ⟶ nsum ({m..n}) f = 0"
+                }
+            ],
+            "prop": "n < m ⟶ nsum ({m..n}) f = 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_eq_0_iff_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "i"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_sing_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nsum_sing, nsum ({n}) f = f n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({n}) f = f n"
+                },
+                {
+                    "args": "natseg_sing, nsum ({n..n}) f = f n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({n..n}) f = f n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({n..n}) f = f n"
+                }
+            ],
+            "prop": "nsum ({n..n}) f = f n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "natseg_sing"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_sing"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_0_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_natseg_0, {f: f, m: m}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate plus ({m..0}) f = (if m = 0 then f 0 else neutral plus)"
+                },
+                {
+                    "args": "neutral_nat_add",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ iterate plus ({m..0}) f = (if m = 0 then f 0 else 0)"
+                },
+                {
+                    "args": "nsum_def, nsum ({m..0}) f = (if m = 0 then f 0 else 0)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({m..0}) f = (if m = 0 then f 0 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m..0}) f = (if m = 0 then f 0 else 0)"
+                }
+            ],
+            "prop": "nsum ({m..0}) f = (if m = 0 then f 0 else 0)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "theorem": "monoidal_nat_add"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_m": "m",
+                    "theorem": "iterate_natseg_0"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "neutral_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_Suc_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_natseg_Suc, {f: f, m: m, n: n, op: (plus::nat ⇒ nat ⇒ nat)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate plus ({m..Suc n}) f = (if m ≤ Suc n then iterate plus ({m..n}) f + f (Suc n) else iterate plus ({m..n}) f)"
+                },
+                {
+                    "args": "nsum_def, nsum ({m..Suc n}) f = (if m ≤ Suc n then nsum ({m..n}) f + f (Suc n) else nsum ({m..n}) f)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({m..Suc n}) f = (if m ≤ Suc n then nsum ({m..n}) f + f (Suc n) else nsum ({m..n}) f)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m..Suc n}) f = (if m ≤ Suc n then nsum ({m..n}) f + f (Suc n) else nsum ({m..n}) f)"
+                }
+            ],
+            "prop": [
+                "nsum ({m..Suc n}) f = ",
+                "(if m ≤ Suc n then nsum ({m..n}) f + f (Suc n) else nsum ({m..n}) f)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_natseg_Suc"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_0_natseg_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nsum_empty, nsum ∅ f = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ∅ f = 0"
+                },
+                {
+                    "args": "natseg_clauses_lt_1, nsum ({i. i < 0}) f = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({i. i < 0}) f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({i. i < 0}) f = 0"
+                }
+            ],
+            "prop": "nsum ({i. i < 0}) f = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "natseg_clauses_lt_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_Suc_natseg_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_natseg_Suc_lt, {f: f, k: k, op: (plus::nat ⇒ nat ⇒ nat)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate plus ({i. i < Suc k}) f = iterate plus ({i. i < k}) f + f k"
+                },
+                {
+                    "args": "nsum_def, nsum ({i. i < Suc k}) f = nsum ({i. i < k}) f + f k",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({i. i < Suc k}) f = nsum ({i. i < k}) f + f k"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({i. i < Suc k}) f = nsum ({i. i < k}) f + f k"
+                }
+            ],
+            "prop": "nsum ({i. i < Suc k}) f = nsum ({i. i < k}) f + f k",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_natseg_Suc_lt"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_0_natseg_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nsum_sing, nsum ({0}) f = f 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({0}) f = f 0"
+                },
+                {
+                    "args": "natseg_clauses_le_1, nsum ({i. i ≤ 0}) f = f 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({i. i ≤ 0}) f = f 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({i. i ≤ 0}) f = f 0"
+                }
+            ],
+            "prop": "nsum ({i. i ≤ 0}) f = f 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "natseg_clauses_le_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_sing"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_Suc_natseg_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_natseg_Suc_le, {f: f, k: k, op: (plus::nat ⇒ nat ⇒ nat)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate plus ({i. i ≤ Suc k}) f = iterate plus ({i. i ≤ k}) f + f (Suc k)"
+                },
+                {
+                    "args": "nsum_def, nsum ({i. i ≤ Suc k}) f = nsum ({i. i ≤ k}) f + f (Suc k)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({i. i ≤ Suc k}) f = nsum ({i. i ≤ k}) f + f (Suc k)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({i. i ≤ Suc k}) f = nsum ({i. i ≤ k}) f + f (Suc k)"
+                }
+            ],
+            "prop": "nsum ({i. i ≤ Suc k}) f = nsum ({i. i ≤ k}) f + f (Suc k)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_natseg_Suc_le"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "k": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_swap_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_natseg, {m: a, n: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({a..b})"
+                },
+                {
+                    "args": "finite_natseg, {m: c, n: d}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({c..d})"
+                },
+                {
+                    "args": "nsum_swap, {f: f, s: {a..b}, t: {c..d}}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum ({a..b}) (λi. nsum ({c..d}) (f i)) = nsum ({c..d}) (λj. nsum ({a..b}) (λi. f i j))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({a..b}) (λi. nsum ({c..d}) (f i)) = nsum ({c..d}) (λj. nsum ({a..b}) (λi. f i j))"
+                }
+            ],
+            "prop": [
+                "nsum ({a..b}) (λi. nsum ({c..d}) (f i)) = ",
+                "nsum ({c..d}) (λj. nsum ({a..b}) (λi. f i j))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_swap"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "c": "nat",
+                "d": "nat",
+                "f": "nat ⇒ nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_add_split",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n + 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n + 1 ⊢ m ≤ n + 1"
+                },
+                {
+                    "args": "natseg_add_split, {p: p}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n + 1 ⊢ {m..n + p} = {m..n} ∪ {n + 1..n + p}"
+                },
+                {
+                    "args": "finite_natseg, {m: m, n: n}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m..n})"
+                },
+                {
+                    "args": "finite_natseg, {m: n + 1, n: n + p}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({n + 1..n + p})"
+                },
+                {
+                    "args": "n < n + 1",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ n < n + 1"
+                },
+                {
+                    "args": "disjI1, {A: n < n + 1, B: n + p < m ∨ n < m ∨ n + p < n + 1}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n + 1 ⊢ n < n + 1 ∨ n + p < m ∨ n < m ∨ n + p < n + 1"
+                },
+                {
+                    "args": "disjoint_natseg, disjoint ({m..n}) ({n + 1..n + p})",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n + 1 ⊢ disjoint ({m..n}) ({n + 1..n + p})"
+                },
+                {
+                    "args": "nsum_union, {f: f, s: {m..n}, t: {n + 1..n + p}}",
+                    "id": "7",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n + 1 ⊢ nsum ({m..n} ∪ {n + 1..n + p}) f = nsum ({m..n}) f + nsum ({n + 1..n + p}) f"
+                },
+                {
+                    "args": "nsum ({m..n + p}) f = nsum ({m..n}) f + nsum ({n + 1..n + p}) f",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ n + 1 ⊢ nsum ({m..n + p}) f = nsum ({m..n}) f + nsum ({n + 1..n + p}) f"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n + 1 ⟶ nsum ({m..n + p}) f = nsum ({m..n}) f + nsum ({n + 1..n + p}) f"
+                }
+            ],
+            "prop": "m ≤ n + 1 ⟶ nsum ({m..n + p}) f = nsum ({m..n}) f + nsum ({n + 1..n + p}) f",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_p": "p",
+                    "theorem": "natseg_add_split"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_union"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "disjoint_natseg"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_offset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "comp_fun_def, (λi. f (i + p)) = f ∘ (λi. i + p)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (λi. f (i + p)) = f ∘ (λi. i + p)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. ∀y. x ∈ {m..n} ⟶ y ∈ {m..n} ⟶ x + p = y + p ⟶ x = y"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ {m..n}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ {m..n} ⊢ x ∈ {m..n}"
+                },
+                {
+                    "args": "y ∈ {m..n}",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ {m..n} ⊢ y ∈ {m..n}"
+                },
+                {
+                    "args": "x + p = y + p",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + p = y + p ⊢ x + p = y + p"
+                },
+                {
+                    "args": "add_cancel_right",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x + p = y + p ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3",
+                        "1.4",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ∀y. x ∈ {m..n} ⟶ y ∈ {m..n} ⟶ x + p = y + p ⟶ x = y"
+                },
+                {
+                    "args": "nsum_image, {f: λi. i + p, g: f, s: {m..n}}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum (image (λi. i + p) ({m..n})) f = nsum ({m..n}) (f ∘ (λi. i + p))"
+                },
+                {
+                    "args": "nsum (image (λi. i + p) ({m..n})) f = nsum ({m..n}) (λi. f (i + p))",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ nsum (image (λi. i + p) ({m..n})) f = nsum ({m..n}) (λi. f (i + p))"
+                },
+                {
+                    "args": "natseg_offset_image, nsum ({m + p..n + p}) f = nsum ({m..n}) (λi. f (i + p))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({m + p..n + p}) f = nsum ({m..n}) (λi. f (i + p))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m + p..n + p}) f = nsum ({m..n}) (λi. f (i + p))"
+                }
+            ],
+            "prop": "nsum ({m + p..n + p}) f = nsum ({m..n}) (λi. f (i + p))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "natseg_offset_image"
+                },
+                {
+                    "goal": "(λi. f (i + p)) = f O (λi. i + p)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "comp_fun_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_image"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_cancel_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_offset_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n ⊢ n - m + m = n"
+                },
+                {
+                    "args": "nsum ({m..n}) f = nsum ({m..n - m + m}) f",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ n ⊢ nsum ({m..n}) f = nsum ({m..n - m + m}) f"
+                },
+                {
+                    "args": "nat_plus_def_1, nsum ({m..n}) f = nsum ({0 + m..n - m + m}) f",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⊢ nsum ({m..n}) f = nsum ({0 + m..n - m + m}) f"
+                },
+                {
+                    "args": "nsum_offset, nsum ({m..n}) f = nsum ({0..n - m}) (λi. f (i + m))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "m ≤ n ⊢ nsum ({m..n}) f = nsum ({0..n - m}) (λi. f (i + m))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ nsum ({m..n}) f = nsum ({0..n - m}) (λi. f (i + m))"
+                }
+            ],
+            "prop": "m ≤ n ⟶ nsum ({m..n}) f = nsum ({0..n - m}) (λi. f (i + m))",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "nsum_offset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nsum_clauses_left",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "natseg_lrec",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n ⊢ {m..n} = insert m ({m + 1..n})"
+                },
+                {
+                    "args": "finite_natseg, {m: m + 1, n: n}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({m + 1..n})"
+                },
+                {
+                    "args": "nsum_insert, {f: f, x: m}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum (insert m ({m + 1..n})) f = (if m ∈ {m + 1..n} then nsum ({m + 1..n}) f else f m + nsum ({m + 1..n}) f)"
+                },
+                {
+                    "args": "m < m + 1",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ m < m + 1"
+                },
+                {
+                    "args": "not_le, ¬(m + 1 ≤ m)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⊢ ¬(m + 1 ≤ m)"
+                },
+                {
+                    "args": "disjI1, {A: ¬(m + 1 ≤ m), B: ¬(m ≤ n)}",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m ≤ n ⊢ ¬(m + 1 ≤ m) ∨ ¬(m ≤ n)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(m + 1 ≤ m ∧ m ≤ n)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⊢ ¬(m + 1 ≤ m ∧ m ≤ n)"
+                },
+                {
+                    "args": "member_natseg, ¬(m ∈ {m + 1..n})",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⊢ ¬(m ∈ {m + 1..n})"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "9",
+                    "prevs": [
+                        "3",
+                        "8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≤ n ⊢ nsum (insert m ({m + 1..n})) f = f m + nsum ({m + 1..n}) f"
+                },
+                {
+                    "args": "nsum ({m..n}) f = f m + nsum ({m + 1..n}) f",
+                    "id": "10",
+                    "prevs": [
+                        "1",
+                        "9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m ≤ n ⊢ nsum ({m..n}) f = f m + nsum ({m + 1..n}) f"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ nsum ({m..n}) f = f m + nsum ({m + 1..n}) f"
+                }
+            ],
+            "prop": "m ≤ n ⟶ nsum ({m..n}) f = f m + nsum ({m + 1..n}) f",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "natseg_lrec"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "finite {m + 1..n}",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "m",
+                    "theorem": "nsum_insert"
+                },
+                {
+                    "goal": "~(m ∈ {m + 1..n})",
+                    "goal_id": "4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nsum_clauses_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (0::nat) < 0 ⟶ m ≤ 0 ⟶ nsum ({m..0}) f = nsum ({m..0 - 1}) f + f 0"
+                },
+                {
+                    "args": "(0::nat) < 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(0::nat) < 0 ⊢ (0::nat) < 0"
+                },
+                {
+                    "args": "m ≤ 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ 0 ⊢ m ≤ 0"
+                },
+                {
+                    "args": "nsum ({m..0}) f = nsum ({m..0 - 1}) f + f 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "(0::nat) < 0 ⊢ nsum ({m..0}) f = nsum ({m..0 - 1}) f + f 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (0::nat) < 0 ⟶ m ≤ 0 ⟶ nsum ({m..0}) f = nsum ({m..0 - 1}) f + f 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n) ⟶ 0 < Suc n ⟶ m ≤ Suc n ⟶ nsum ({m..Suc n}) f = nsum ({m..Suc n - 1}) f + f (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n ⊢ 0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n"
+                },
+                {
+                    "args": "0 < Suc n",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < Suc n ⊢ 0 < Suc n"
+                },
+                {
+                    "args": "m ≤ Suc n",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ Suc n ⊢ m ≤ Suc n"
+                },
+                {
+                    "args": "if_P, (if m ≤ Suc n then nsum ({m..n}) f + f (Suc n) else nsum ({m..n}) f) = nsum ({m..n}) f + f (Suc n)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ Suc n ⊢ (if m ≤ Suc n then nsum ({m..n}) f + f (Suc n) else nsum ({m..n}) f) = nsum ({m..n}) f + f (Suc n)"
+                },
+                {
+                    "args": "nsum_Suc_natseg, nsum ({m..Suc n}) f = nsum ({m..n}) f + f (Suc n)",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < Suc n, m ≤ Suc n, 0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n ⊢ nsum ({m..Suc n}) f = nsum ({m..n}) f + f (Suc n)"
+                },
+                {
+                    "args": "suc_sub1, nsum ({m..Suc n}) f = nsum ({m..Suc n - 1}) f + f (Suc n)",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < Suc n, m ≤ Suc n, 0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n ⊢ nsum ({m..Suc n}) f = nsum ({m..Suc n - 1}) f + f (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n) ⟶ 0 < Suc n ⟶ m ≤ Suc n ⟶ nsum ({m..Suc n}) f = nsum ({m..Suc n - 1}) f + f (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λn. 0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n, x: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n"
+                }
+            ],
+            "prop": "0 < n ⟶ m ≤ n ⟶ nsum ({m..n}) f = nsum ({m..n - 1}) f + f n",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "suc_sub1"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_Suc_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_pair",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_pair, {f: f, m: m, n: n, op: (plus::nat ⇒ nat ⇒ nat)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate plus ({2 * m..2 * n + 1}) f = iterate plus ({m..n}) (λi. f (2 * i) + f (2 * i + 1))"
+                },
+                {
+                    "args": "nsum_def, nsum ({2 * m..2 * n + 1}) f = nsum ({m..n}) (λi. f (2 * i) + f (2 * i + 1))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({2 * m..2 * n + 1}) f = nsum ({m..n}) (λi. f (2 * i) + f (2 * i + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({2 * m..2 * n + 1}) f = nsum ({m..n}) (λi. f (2 * i) + f (2 * i + 1))"
+                }
+            ],
+            "prop": "nsum ({2 * m..2 * n + 1}) f = nsum ({m..n}) (λi. f (2 * i) + f (2 * i + 1))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_pair"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nsum_reflect",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "iterate_reflect, {m: m, n: n, op: (plus::nat ⇒ nat ⇒ nat), x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat) ⟶ iterate plus ({m..n}) x = (if n < m then neutral plus else iterate plus ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "monoidal_nat_add",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "⊢ iterate plus ({m..n}) x = (if n < m then neutral plus else iterate plus ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "neutral_nat_add",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ iterate plus ({m..n}) x = (if n < m then 0 else iterate plus ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "nsum_def, nsum ({m..n}) x = (if n < m then 0 else nsum ({0..n - m}) (λi. x (n - i)))",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ({m..n}) x = (if n < m then 0 else nsum ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({m..n}) x = (if n < m then 0 else nsum ({0..n - m}) (λi. x (n - i)))"
+                }
+            ],
+            "prop": "nsum ({m..n}) x = (if n < m then 0 else nsum ({0..n - m}) (λi. x (n - i)))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "param_op": "(plus::nat=>nat=>nat)",
+                    "param_x": "x",
+                    "theorem": "iterate_reflect"
+                },
+                {
+                    "goal": "monoidal (plus::nat ⇒ nat ⇒ nat)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_add"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "neutral_nat_add"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "x": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "mod_nsum_mod",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ n = 0 ⟶ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "eta_conversion, nsum s f = nsum s (λi. f i)",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum s f = nsum s (λi. f i)"
+                },
+                {
+                    "args": "mod_zero, nsum s f = nsum s (λi. f i MOD 0)",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, n = 0 ⊢ nsum s f = nsum s (λi. f i MOD 0)"
+                },
+                {
+                    "args": "mod_zero, nsum s f MOD 0 = nsum s (λi. f i MOD 0) MOD 0",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, n = 0 ⊢ nsum s f MOD 0 = nsum s (λi. f i MOD 0) MOD 0"
+                },
+                {
+                    "args": "nsum s f MOD n = nsum s (λi. f i MOD n) MOD n",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, n = 0 ⊢ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ n = 0 ⟶ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ¬(n = 0) ⟶ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "nsum_empty, nsum ∅ f MOD n = nsum ∅ (λi. f i MOD n) MOD n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nsum ∅ f MOD n = nsum ∅ (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ¬(n = 0) ⊢ ∀x. ∀s1. nsum s1 f MOD n = nsum s1 (λi. f i MOD n) MOD n ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ nsum (insert x s1) f MOD n = nsum (insert x s1) (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "2.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "nsum s f MOD n = nsum s (λi. f i MOD n) MOD n",
+                    "id": "2.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⊢ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "2.2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "nsum_insert, {f: λi. f i MOD n, x: x}",
+                    "id": "2.2.4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ nsum (insert x s) (λi. f i MOD n) = (if x ∈ s then nsum s (λi. f i MOD n) else f x MOD n + nsum s (λi. f i MOD n))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2.2.5",
+                    "prevs": [
+                        "2.2.4",
+                        "2.2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ nsum (insert x s) (λi. f i MOD n) = f x MOD n + nsum s (λi. f i MOD n)"
+                },
+                {
+                    "args": "nsum_insert, {f: f, x: x}",
+                    "id": "2.2.6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ nsum (insert x s) f = (if x ∈ s then nsum s f else f x + nsum s f)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2.2.7",
+                    "prevs": [
+                        "2.2.6",
+                        "2.2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ nsum (insert x s) f = f x + nsum s f"
+                },
+                {
+                    "args": "(f x MOD n + nsum s f MOD n) MOD n = (f x MOD n + nsum s (λi. f i MOD n) MOD n) MOD n",
+                    "id": "2.2.8",
+                    "prevs": [
+                        "2.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⊢ (f x MOD n + nsum s f MOD n) MOD n = (f x MOD n + nsum s (λi. f i MOD n) MOD n) MOD n"
+                },
+                {
+                    "args": "mod_mod_refl, (f x MOD n + nsum s f MOD n) MOD n = (f x MOD n MOD n + nsum s (λi. f i MOD n) MOD n) MOD n",
+                    "id": "2.2.9",
+                    "prevs": [
+                        "2.2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(n = 0), ¬(x ∈ s), nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⊢ (f x MOD n + nsum s f MOD n) MOD n = (f x MOD n MOD n + nsum s (λi. f i MOD n) MOD n) MOD n"
+                },
+                {
+                    "args": "mod_add_mod, (f x + nsum s f) MOD n = (f x MOD n + nsum s (λi. f i MOD n)) MOD n",
+                    "id": "2.2.10",
+                    "prevs": [
+                        "2.2.9"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s, ¬(n = 0), ¬(x ∈ s), nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⊢ (f x + nsum s f) MOD n = (f x MOD n + nsum s (λi. f i MOD n)) MOD n"
+                },
+                {
+                    "args": "nsum (insert x s) f MOD n = (f x MOD n + nsum s (λi. f i MOD n)) MOD n",
+                    "id": "2.2.11",
+                    "prevs": [
+                        "2.2.7",
+                        "2.2.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(n = 0), ¬(x ∈ s), nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⊢ nsum (insert x s) f MOD n = (f x MOD n + nsum s (λi. f i MOD n)) MOD n"
+                },
+                {
+                    "args": "nsum (insert x s) f MOD n = nsum (insert x s) (λi. f i MOD n) MOD n",
+                    "id": "2.2.12",
+                    "prevs": [
+                        "2.2.5",
+                        "2.2.11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(n = 0), ¬(x ∈ s), nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⊢ nsum (insert x s) f MOD n = nsum (insert x s) (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.13",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.1",
+                        "2.2.2",
+                        "2.2.3",
+                        "0",
+                        "2.2.12"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ∀x. ∀s. nsum s f MOD n = nsum s (λi. f i MOD n) MOD n ⟶ ¬(x ∈ s) ⟶ finite s ⟶ nsum (insert x s) f MOD n = nsum (insert x s) (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "2.3",
+                    "prevs": [
+                        "0",
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(n = 0) ⊢ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ ¬(n = 0) ⟶ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n"
+                }
+            ],
+            "prop": "finite s ⟶ nsum s f MOD n = nsum s (λi. f i MOD n) MOD n",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_zero"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_empty"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction",
+                    "names": "x,s"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2.4",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λi. f i MOD n)",
+                    "param_x": "x",
+                    "theorem": "nsum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.4",
+                        "2.2.3"
+                    ],
+                    "goal_id": "2.2.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.5"
+                    ],
+                    "goal_id": "2.2.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2.6",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "x",
+                    "theorem": "nsum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.6",
+                        "2.2.3"
+                    ],
+                    "goal_id": "2.2.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.7"
+                    ],
+                    "goal_id": "2.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "mod_add_mod"
+                },
+                {
+                    "goal_id": "2.2.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mod_mod_refl"
+                },
+                {
+                    "fact_ids": [
+                        "2.2.2"
+                    ],
+                    "goal_id": "2.2.8",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ nat",
+                "n": "nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "mod_nsum_mod_natseg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_natseg, {m: a, n: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({a..b})"
+                },
+                {
+                    "args": "mod_nsum_mod, {f: f, n: n, s: {a..b}}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum ({a..b}) f MOD n = nsum ({a..b}) (λi. f i MOD n) MOD n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nsum ({a..b}) f MOD n = nsum ({a..b}) (λi. f i MOD n) MOD n"
+                }
+            ],
+            "prop": "nsum ({a..b}) f MOD n = nsum ({a..b}) (λi. f i MOD n) MOD n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "mod_nsum_mod"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat",
+                "b": "nat",
+                "f": "nat ⇒ nat",
+                "n": "nat"
             }
         },
         {
