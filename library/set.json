@@ -6117,8 +6117,60 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "finite_restrict",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "{x. x ∈ s ∧ P x} ⊆ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {x. x ∈ s ∧ P x} ⊆ s"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ finite ({x. x ∈ s ∧ P x})"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite ({x. x ∈ s ∧ P x})"
+                }
+            ],
             "prop": "finite s ⟶ finite ({x. x ∈ s ∧ P x})",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "s",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "P": "'a ⇒ bool",
@@ -6314,6 +6366,897 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "finite_union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite (s ∪ t) ⟶ finite s ∧ finite t"
+                },
+                {
+                    "args": "finite (s ∪ t)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (s ∪ t) ⊢ finite (s ∪ t)"
+                },
+                {
+                    "args": "subset_union_id, {A: s, B: t}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s ⊆ s ∪ t"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite (s ∪ t) ⊢ finite s"
+                },
+                {
+                    "args": "subset_union_id, {A: t, B: s}",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ t ⊆ t ∪ s"
+                },
+                {
+                    "args": "union_comm, t ⊆ s ∪ t",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite (s ∪ t) ⊢ t ⊆ s ∪ t"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite (s ∪ t) ⊢ finite t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.2",
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite (s ∪ t) ⊢ finite s ∧ finite t"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite (s ∪ t) ⟶ finite s ∧ finite t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite s ∧ finite t ⟶ finite (s ∪ t)"
+                },
+                {
+                    "args": "finite s ∧ finite t",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ finite t ⊢ finite s ∧ finite t"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ finite t ⊢ finite s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ finite t ⊢ finite t"
+                },
+                {
+                    "args": "finite_union_imp",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ finite t ⊢ finite (s ∪ t)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ finite t ⟶ finite (s ∪ t)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite (s ∪ t) ⟷ finite s ∧ finite t"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite (s ∪ t) ⟷ finite s ∧ finite t"
+                }
+            ],
+            "prop": "finite (s ∪ t) ⟷ finite s ∧ finite t",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "(s ∪ t)",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "param_t": "(s ∪ t)",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "union_comm"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_union_id"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_union_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_inter",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∨ finite t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∨ finite t ⊢ finite s ∨ finite t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ∨ finite t ⊢ finite s ⟶ finite (s ∩ t)"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "inter_subset_id, {A: s, B: t}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s ∩ t ⊆ s"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, finite s ∨ finite t ⊢ finite (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ∨ finite t ⊢ finite s ⟶ finite (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ∨ finite t ⊢ finite t ⟶ finite (s ∩ t)"
+                },
+                {
+                    "args": "finite t",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "inter_subset_id, {A: t, B: s}",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ t ∩ s ⊆ t"
+                },
+                {
+                    "args": "inter_comm, s ∩ t ⊆ t",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, finite s ∨ finite t ⊢ s ∩ t ⊆ t"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, finite s ∨ finite t ⊢ finite (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ∨ finite t ⊢ finite t ⟶ finite (s ∩ t)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∨ finite t ⊢ finite (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∨ finite t ⟶ finite (s ∩ t)"
+                }
+            ],
+            "prop": "finite s ∨ finite t ⟶ finite (s ∩ t)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "s",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "inter_subset_id"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "t",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "inter_comm"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "inter_subset_id"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_sing",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite_empty, {}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::'a set)"
+                },
+                {
+                    "args": "finite_insert, {A: (∅::'a set), x: a}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({a})"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({a})"
+                }
+            ],
+            "prop": "finite ({a})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_insert"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_delete_imp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x1. ¬(x1 = x) ∧ x1 ∈ s ⟶ x1 ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x1. ¬(x1 = x) ∧ x1 ∈ s ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "member_delete, ∀x1. x1 ∈ delete s x ⟶ x1 ∈ s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ ∀x1. x1 ∈ delete s x ⟶ x1 ∈ s"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ delete s x ⊆ s"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ finite (delete s x)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite (delete s x)"
+                }
+            ],
+            "prop": "finite s ⟶ finite (delete s x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "s",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "finite_delete",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite (delete s x) ⟶ finite s"
+                },
+                {
+                    "args": "finite (delete s x)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (delete s x) ⊢ finite (delete s x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite (delete s x) ⊢ x ∈ s ⟶ finite s"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "insert_delete",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s, finite (delete s x) ⊢ insert x (delete s x) = s"
+                },
+                {
+                    "args": "eq_sym_eq, s = insert x (delete s x)",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ s, finite (delete s x) ⊢ s = insert x (delete s x)"
+                },
+                {
+                    "args": "finite_insert, {A: delete s x, x: x}",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s, finite (delete s x) ⊢ finite (insert x (delete s x))"
+                },
+                {
+                    "args": "finite s",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.2",
+                        "0.1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x ∈ s, finite (delete s x) ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite (delete s x) ⊢ x ∈ s ⟶ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite (delete s x) ⊢ ¬(x ∈ s) ⟶ finite s"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "∀x1. ¬(x1 = x) ∧ x1 ∈ s ⟷ x1 ∈ s",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x ∈ s) ⊢ ∀x1. ¬(x1 = x) ∧ x1 ∈ s ⟷ x1 ∈ s"
+                },
+                {
+                    "args": "member_delete, ∀x1. x1 ∈ delete s x ⟷ x1 ∈ s",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite (delete s x), ¬(x ∈ s) ⊢ ∀x1. x1 ∈ delete s x ⟷ x1 ∈ s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite (delete s x), ¬(x ∈ s) ⊢ delete s x = s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.3",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "finite (delete s x), ¬(x ∈ s) ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.5",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite (delete s x) ⊢ ¬(x ∈ s) ⟶ finite s"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite (delete s x) ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite (delete s x) ⟶ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ finite s ⟶ finite (delete s x)"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "finite_delete_imp, {s: s, x: x}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ finite (delete s x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite (delete s x)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ finite (delete s x) ⟷ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite (delete s x) ⟷ finite s"
+                }
+            ],
+            "prop": "finite (delete s x) ⟷ finite s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "x ∈ s",
+                    "goal_id": "0.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "s = insert x (delete s x)",
+                    "goal_id": "0.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "insert_delete"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_insert"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "delete s x = s",
+                    "goal_id": "0.2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.3",
+                        "0.0"
+                    ],
+                    "goal_id": "0.2.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_delete_imp"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_finite_unions",
+            "prop": "finite s ⟶ finite (⋃s) ⟷ (∀t. t ∈ s ⟶ finite t)",
+            "ty": "thm",
+            "vars": {
+                "s": "'a set set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_image_expand",
+            "prop": "finite s ⟶ finite ({y. ∃x. x ∈ s ∧ y = f x})",
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "image",
             "prop": "image f s = {y. ∃x. x ∈ s ∧ y = f x}",
             "ty": "def",
@@ -6391,7 +7334,58 @@
                 "hint_backward"
             ],
             "name": "finite_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "finite_image_expand, {f: f, s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ finite ({y. ∃x. x ∈ s ∧ y = f x})"
+                },
+                {
+                    "args": "image_def, finite (image f s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ finite (image f s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite (image f s)"
+                }
+            ],
             "prop": "finite s ⟶ finite (image f s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "image_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_image_expand"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ 'b",
@@ -6550,6 +7544,68 @@
             "ty": "thm",
             "vars": {
                 "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "finite_diff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "subset_diff, {s: s, t: t}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ diff s t ⊆ s"
+                },
+                {
+                    "args": "finite_subset",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ finite (diff s t)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite (diff s t)"
+                }
+            ],
+            "prop": "finite s ⟶ finite (diff s t)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_t": "s",
+                    "theorem": "finite_subset"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_diff"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "t": "'a set"
             }
         },
         {
