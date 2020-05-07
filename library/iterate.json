@@ -46838,7 +46838,71 @@
                 "hint_forward"
             ],
             "name": "sum_insert",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "iterate_insert, {f: f, op: (plus::real ⇒ real ⇒ real), s: s, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ iterate plus (insert x s) f = (if x ∈ s then iterate plus s f else f x + iterate plus s f)"
+                },
+                {
+                    "args": "sum_def, sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)"
+                }
+            ],
             "prop": "finite s ⟶ sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_insert"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -46853,7 +46917,89 @@
                 "hint_forward"
             ],
             "name": "sum_union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "finite t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "disjoint s t",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "disjoint s t ⊢ disjoint s t"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "iterate_union, {f: f, op: (plus::real ⇒ real ⇒ real), s: s, t: t}",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, finite t, disjoint s t ⊢ iterate plus (s ∪ t) f = iterate plus s f + iterate plus t f"
+                },
+                {
+                    "args": "sum_def, sum (s ∪ t) f = sum s f + sum t f",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t, disjoint s t ⊢ sum (s ∪ t) f = sum s f + sum t f"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite t ⟶ disjoint s t ⟶ sum (s ∪ t) f = sum s f + sum t f"
+                }
+            ],
             "prop": "finite s ⟶ finite t ⟶ disjoint s t ⟶ sum (s ∪ t) f = sum s f + sum t f",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_union"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -46868,7 +47014,113 @@
                 "hint_forward"
             ],
             "name": "sum_diff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "t ⊆ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "t ⊆ s ⊢ t ⊆ s"
+                },
+                {
+                    "args": "∀x::real. ∀y. ∀z. x = y - z ⟷ x + z = y",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀y. ∀z. x = y - z ⟷ x + z = y"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "iterate_diff, {f: f, op: (plus::real ⇒ real ⇒ real), s: s, t: t}",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, t ⊆ s ⊢ iterate plus (diff s t) f + iterate plus t f = iterate plus s f"
+                },
+                {
+                    "args": "sum_def, sum (diff s t) f + sum t f = sum s f",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, t ⊆ s ⊢ sum (diff s t) f + sum t f = sum s f"
+                },
+                {
+                    "args": "sum (diff s t) f = sum s f - sum t f",
+                    "id": "6",
+                    "prevs": [
+                        "2",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, t ⊆ s ⊢ sum (diff s t) f = sum s f - sum t f"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ t ⊆ s ⟶ sum (diff s t) f = sum s f - sum t f"
+                }
+            ],
             "prop": "finite s ⟶ t ⊆ s ⟶ sum (diff s t) f = sum s f - sum t f",
+            "steps": [
+                {
+                    "goal": "!x::real. !y. !z. (x = y - z) <--> (x + z = y)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_diff"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -46883,7 +47135,99 @@
                 "hint_forward"
             ],
             "name": "sum_incl_excl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "finite t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "iterate_incl_excl, {f: f, op: (plus::real ⇒ real ⇒ real), s: s, t: t}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real) ⟶ finite s ⟶ finite t ⟶ iterate plus s f + iterate plus t f = iterate plus (s ∪ t) f + iterate plus (s ∩ t) f"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, finite t ⊢ iterate plus s f + iterate plus t f = iterate plus (s ∪ t) f + iterate plus (s ∩ t) f"
+                },
+                {
+                    "args": "sum_def, sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, finite t ⊢ sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f"
+                }
+            ],
             "prop": "finite s ⟶ finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_op": "(plus::real=>real=>real)",
+                    "param_s": "s",
+                    "param_t": "t",
+                    "theorem": "iterate_incl_excl"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -46966,7 +47310,71 @@
                 "hint_forward"
             ],
             "name": "sum_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "iterate_op, {f: f, g: g, op: (plus::real ⇒ real ⇒ real), s: s}",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ iterate plus s (λx. f x + g x) = iterate plus s f + iterate plus s g"
+                },
+                {
+                    "args": "sum_def, sum s (λx. f x + g x) = sum s f + sum s g",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ sum s (λx. f x + g x) = sum s f + sum s g"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ sum s (λx. f x + g x) = sum s f + sum s g"
+                }
+            ],
             "prop": "finite s ⟶ sum s (λx. f x + g x) = sum s f + sum s g",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_op"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -46981,9 +47389,142 @@
                 "hint_forward"
             ],
             "name": "sum_add_gen",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite ({x. x ∈ s ∧ ¬(f x = 0)})",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ finite ({x. x ∈ s ∧ ¬(f x = 0)})"
+                },
+                {
+                    "args": "finite ({x. x ∈ s ∧ ¬(g x = 0)})",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ finite ({x. x ∈ s ∧ ¬(g x = 0)})"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "neutral_real_add, finite ({x. x ∈ s ∧ ¬(f x = neutral plus)})",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}), finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ finite ({x. x ∈ s ∧ ¬(f x = neutral plus)})"
+                },
+                {
+                    "args": "support_def, finite (support plus f s)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}), finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ finite (support plus f s)"
+                },
+                {
+                    "args": "neutral_real_add, finite ({x. x ∈ s ∧ ¬(g x = neutral plus)})",
+                    "id": "5",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}), finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ finite ({x. x ∈ s ∧ ¬(g x = neutral plus)})"
+                },
+                {
+                    "args": "support_def, finite (support plus g s)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}), finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ finite (support plus g s)"
+                },
+                {
+                    "args": "iterate_op_gen",
+                    "id": "7",
+                    "prevs": [
+                        "2",
+                        "4",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}), finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ iterate plus s (λx. f x + g x) = iterate plus s f + iterate plus s g"
+                },
+                {
+                    "args": "sum_def, sum s (λx. f x + g x) = sum s f + sum s g",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({x. x ∈ s ∧ ¬(f x = 0)}), finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⊢ sum s (λx. f x + g x) = sum s f + sum s g"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⟶ sum s (λx. f x + g x) = sum s f + sum s g"
+                }
+            ],
             "prop": [
                 "finite ({x. x ∈ s ∧ ¬(f x = 0)}) ",
                 "⟶ finite ({x. x ∈ s ∧ ¬(g x = 0)}) ⟶ sum s (λx. f x + g x) = sum s f + sum s g"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_op_gen"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -46998,7 +47539,101 @@
                 "hint_forward"
             ],
             "name": "sum_eq_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ f x = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x = 0 ⊢ ∀x. x ∈ s ⟶ f x = 0"
+                },
+                {
+                    "args": "monoidal_real_add",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                },
+                {
+                    "args": "neutral_real_add, ∀x. x ∈ s ⟶ f x = neutral plus",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ f x = 0 ⊢ ∀x. x ∈ s ⟶ f x = neutral plus"
+                },
+                {
+                    "args": "iterate_eq_neutral",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = 0 ⊢ iterate plus s f = neutral plus"
+                },
+                {
+                    "args": "neutral_real_add, iterate plus s f = 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "∀x. x ∈ s ⟶ f x = 0 ⊢ iterate plus s f = 0"
+                },
+                {
+                    "args": "sum_def, sum s f = 0",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ f x = 0 ⊢ sum s f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = 0) ⟶ sum s f = 0"
+                }
+            ],
             "prop": "(∀x. x ∈ s ⟶ f x = 0) ⟶ sum s f = 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "neutral_real_add"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_eq_neutral"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_real_add"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -47060,7 +47695,1003 @@
                 "hint_rewrite"
             ],
             "name": "sum_lmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ c = 0 ⟶ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "c = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c = 0 ⊢ c = 0"
+                },
+                {
+                    "args": "sum_0, sum s (λx. 0) = 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum s (λx. 0) = 0"
+                },
+                {
+                    "args": "real_mul_lzero, sum s (λx. 0 * f x) = 0 * sum s f",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "c = 0 ⊢ sum s (λx. 0 * f x) = 0 * sum s f"
+                },
+                {
+                    "args": "sum s (λx. c * f x) = c * sum s f",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "c = 0 ⊢ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ c = 0 ⟶ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(c = 0) ⟶ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "¬(c = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(c = 0) ⊢ ¬(c = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ ∀x. x ∈ s ∧ ¬(c * f x = neutral plus) ⟷ x ∈ s ∧ ¬(f x = neutral plus)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ x ∈ s ∧ ¬(c * f x = 0) ⟶ x ∈ s ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(c * f x = 0)",
+                    "id": "1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(c * f x = 0) ⊢ x ∈ s ∧ ¬(c * f x = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.1.1",
+                    "prevs": [
+                        "1.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(c * f x = 0) ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.1.2",
+                    "prevs": [
+                        "1.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(c * f x = 0) ⊢ ¬(c * f x = 0)"
+                },
+                {
+                    "args": "real_entire",
+                    "id": "1.1.1.3",
+                    "prevs": [
+                        "1.1.1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ s ∧ ¬(c * f x = 0) ⊢ ¬(c = 0 ∨ f x = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "1.1.1.4",
+                    "prevs": [
+                        "1.1.1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ s ∧ ¬(c * f x = 0) ⊢ ¬(c = 0) ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.1.5",
+                    "prevs": [
+                        "1.1.1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(c * f x = 0) ⊢ ¬(f x = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.1.6",
+                    "prevs": [
+                        "1.1.1.1",
+                        "1.1.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0), x ∈ s ∧ ¬(c * f x = 0) ⊢ x ∈ s ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1.7",
+                    "prevs": [
+                        "1.1.1.0",
+                        "1.1.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ x ∈ s ∧ ¬(c * f x = 0) ⟶ x ∈ s ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ x ∈ s ∧ ¬(f x = 0) ⟶ x ∈ s ∧ ¬(c * f x = 0)"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(f x = 0)",
+                    "id": "1.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(f x = 0) ⊢ x ∈ s ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.2.1",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = 0) ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.2.2",
+                    "prevs": [
+                        "1.1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = 0) ⊢ ¬(f x = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.2.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0), x ∈ s ∧ ¬(f x = 0) ⊢ ¬(c = 0) ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(c = 0 ∨ f x = 0)",
+                    "id": "1.1.2.4",
+                    "prevs": [
+                        "1.1.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), x ∈ s ∧ ¬(f x = 0) ⊢ ¬(c = 0 ∨ f x = 0)"
+                },
+                {
+                    "args": "real_entire, ¬(c * f x = 0)",
+                    "id": "1.1.2.5",
+                    "prevs": [
+                        "1.1.2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), x ∈ s ∧ ¬(f x = 0) ⊢ ¬(c * f x = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.2.6",
+                    "prevs": [
+                        "1.1.2.1",
+                        "1.1.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0), x ∈ s ∧ ¬(f x = 0) ⊢ x ∈ s ∧ ¬(c * f x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2.7",
+                    "prevs": [
+                        "1.1.2.0",
+                        "1.1.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ x ∈ s ∧ ¬(f x = 0) ⟶ x ∈ s ∧ ¬(c * f x = 0)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0) ⊢ x ∈ s ∧ ¬(c * f x = 0) ⟷ x ∈ s ∧ ¬(f x = 0)"
+                },
+                {
+                    "args": "neutral_real_add, x ∈ s ∧ ¬(c * f x = neutral plus) ⟷ x ∈ s ∧ ¬(f x = neutral plus)",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0) ⊢ x ∈ s ∧ ¬(c * f x = neutral plus) ⟷ x ∈ s ∧ ¬(f x = neutral plus)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ ∀x. x ∈ s ∧ ¬(c * f x = neutral plus) ⟷ x ∈ s ∧ ¬(f x = neutral plus)"
+                },
+                {
+                    "args": "in_support, ∀x. x ∈ support plus (λx1. c * f x1) s ⟷ x ∈ support plus f s",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0) ⊢ ∀x. x ∈ support plus (λx1. c * f x1) s ⟷ x ∈ support plus f s"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0) ⊢ support plus (λx. c * f x) s = support plus f s"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ finite (support plus f s) ⟶ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "finite (support plus f s)",
+                    "id": "1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (support plus f s) ⊢ finite (support plus f s)"
+                },
+                {
+                    "args": "finite_induct_strong, {P: λs. sum s (λx. c * f x) = c * sum s f}",
+                    "id": "1.4.1",
+                    "prevs": [
+                        "1.4.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite (support plus f s) ⊢ sum ∅ (λx. c * f x) = c * sum ∅ f ⟶ (∀x. ∀s1. sum s1 (λx1. c * f x1) = c * sum s1 f ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ sum (insert x s1) (λx1. c * f x1) = c * sum (insert x s1) f) ⟶ sum (support plus f s) (λx. c * f x) = c * sum (support plus f s) f"
+                },
+                {
+                    "args": "real_mul_rzero, 0 = c * 0",
+                    "id": "1.4.2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = c * 0"
+                },
+                {
+                    "args": "sum_empty, sum ∅ (λx. c * f x) = c * sum ∅ f",
+                    "id": "1.4.3",
+                    "prevs": [
+                        "1.4.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), finite (support plus f s) ⊢ sum ∅ (λx. c * f x) = c * sum ∅ f"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0), finite (support plus f s) ⊢ ∀x. ∀s1. sum s1 (λx1. c * f x1) = c * sum s1 f ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ sum (insert x s1) (λx1. c * f x1) = c * sum (insert x s1) f"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "1.4.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "s1, 'a set",
+                    "id": "1.4.4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "sum s1 (λx. c * f x) = c * sum s1 f",
+                    "id": "1.4.4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sum s1 (λx. c * f x) = c * sum s1 f ⊢ sum s1 (λx. c * f x) = c * sum s1 f"
+                },
+                {
+                    "args": "¬(a ∈ s1)",
+                    "id": "1.4.4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a ∈ s1) ⊢ ¬(a ∈ s1)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "1.4.4.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ⊢ finite s1"
+                },
+                {
+                    "args": "sum_insert, {f: f, x: a}",
+                    "id": "1.4.4.5",
+                    "prevs": [
+                        "1.4.4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1 ⊢ sum (insert a s1) f = (if a ∈ s1 then sum s1 f else f a + sum s1 f)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "1.4.4.6",
+                    "prevs": [
+                        "1.4.4.5",
+                        "1.4.4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, ¬(a ∈ s1) ⊢ sum (insert a s1) f = f a + sum s1 f"
+                },
+                {
+                    "args": "sum_insert, {f: λx. c * f x, x: a}",
+                    "id": "1.4.4.7",
+                    "prevs": [
+                        "1.4.4.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s1 ⊢ sum (insert a s1) (λx. c * f x) = (if a ∈ s1 then sum s1 (λx. c * f x) else c * f a + sum s1 (λx. c * f x))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "1.4.4.8",
+                    "prevs": [
+                        "1.4.4.7",
+                        "1.4.4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s1, ¬(a ∈ s1) ⊢ sum (insert a s1) (λx. c * f x) = c * f a + sum s1 (λx. c * f x)"
+                },
+                {
+                    "args": "real_eq_add_lcancel, c * f a + sum s1 (λx. c * f x) = c * f a + c * sum s1 f",
+                    "id": "1.4.4.9",
+                    "prevs": [
+                        "1.4.4.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s1, ¬(c = 0), ¬(a ∈ s1), finite (support plus f s), sum s1 (λx. c * f x) = c * sum s1 f ⊢ c * f a + sum s1 (λx. c * f x) = c * f a + c * sum s1 f"
+                },
+                {
+                    "args": "real_add_ldistrib, c * f a + sum s1 (λx. c * f x) = c * (f a + sum s1 f)",
+                    "id": "1.4.4.10",
+                    "prevs": [
+                        "1.4.4.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s1, ¬(c = 0), ¬(a ∈ s1), finite (support plus f s), sum s1 (λx. c * f x) = c * sum s1 f ⊢ c * f a + sum s1 (λx. c * f x) = c * (f a + sum s1 f)"
+                },
+                {
+                    "args": "c * f a + sum s1 (λx. c * f x) = c * sum (insert a s1) f",
+                    "id": "1.4.4.11",
+                    "prevs": [
+                        "1.4.4.6",
+                        "1.4.4.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s1, ¬(c = 0), ¬(a ∈ s1), finite (support plus f s), sum s1 (λx. c * f x) = c * sum s1 f ⊢ c * f a + sum s1 (λx. c * f x) = c * sum (insert a s1) f"
+                },
+                {
+                    "args": "sum (insert a s1) (λx. c * f x) = c * sum (insert a s1) f",
+                    "id": "1.4.4.12",
+                    "prevs": [
+                        "1.4.4.8",
+                        "1.4.4.11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s1, ¬(c = 0), ¬(a ∈ s1), finite (support plus f s), sum s1 (λx. c * f x) = c * sum s1 f ⊢ sum (insert a s1) (λx. c * f x) = c * sum (insert a s1) f"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.4.13",
+                    "prevs": [
+                        "1.4.4.0",
+                        "1.4.4.1",
+                        "1.4.4.2",
+                        "1.4.4.3",
+                        "1.4.4.4",
+                        "1.4.4.12"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0), finite (support plus f s) ⊢ ∀a. ∀s1. sum s1 (λx. c * f x) = c * sum s1 f ⟶ ¬(a ∈ s1) ⟶ finite s1 ⟶ sum (insert a s1) (λx. c * f x) = c * sum (insert a s1) f"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.5",
+                    "prevs": [
+                        "1.4.1",
+                        "1.4.3",
+                        "1.4.4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "¬(c = 0), finite (support plus f s) ⊢ sum (support plus f s) (λx. c * f x) = c * sum (support plus f s) f"
+                },
+                {
+                    "args": "sum_def, iterate plus (support plus f s) (λx. c * f x) = c * iterate plus (support plus f s) f",
+                    "id": "1.4.6",
+                    "prevs": [
+                        "1.4.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "¬(c = 0), finite (support plus f s) ⊢ iterate plus (support plus f s) (λx. c * f x) = c * iterate plus (support plus f s) f"
+                },
+                {
+                    "args": "if_P, (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)",
+                    "id": "1.4.7",
+                    "prevs": [
+                        "1.4.6",
+                        "1.4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), finite (support plus f s) ⊢ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.8",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ finite (support plus f s) ⟶ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ ¬(finite (support plus f s)) ⟶ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "¬(finite (support plus f s))",
+                    "id": "1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(finite (support plus f s)) ⊢ ¬(finite (support plus f s))"
+                },
+                {
+                    "args": "real_mul_rzero, 0 = c * 0",
+                    "id": "1.5.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = c * 0"
+                },
+                {
+                    "args": "neutral_real_add, neutral plus = c * neutral plus",
+                    "id": "1.5.2",
+                    "prevs": [
+                        "1.5.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), ¬(finite (support plus f s)) ⊢ neutral plus = c * neutral plus"
+                },
+                {
+                    "args": "if_not_P, (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)",
+                    "id": "1.5.3",
+                    "prevs": [
+                        "1.5.2",
+                        "1.5.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0), ¬(finite (support plus f s)) ⊢ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.4",
+                    "prevs": [
+                        "1.5.0",
+                        "1.5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ ¬(finite (support plus f s)) ⟶ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.4",
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0) ⊢ (if finite (support plus f s) then iterate plus (support plus f s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "(if finite (support plus (λx. c * f x) s) then iterate plus (support plus (λx. c * f x) s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.3",
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(c = 0) ⊢ (if finite (support plus (λx. c * f x) s) then iterate plus (support plus (λx. c * f x) s) (λx. c * f x) else neutral plus) = c * (if finite (support plus f s) then iterate plus (support plus f s) f else neutral plus)"
+                },
+                {
+                    "args": "iterate_expand_cases, iterate plus s (λx. c * f x) = c * iterate plus s f",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0) ⊢ iterate plus s (λx. c * f x) = c * iterate plus s f"
+                },
+                {
+                    "args": "sum_def, sum s (λx. c * f x) = c * sum s f",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0) ⊢ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "1.10",
+                    "prevs": [
+                        "1.0",
+                        "1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(c = 0) ⟶ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum s (λx. c * f x) = c * sum s f"
+                }
+            ],
             "prop": "sum s (λx. c * f x) = c * sum s f",
+            "steps": [
+                {
+                    "case": "c=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "iterate_expand_cases"
+                },
+                {
+                    "goal": "support plus (λx. c * f x) s = support plus f s",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.0"
+                    ],
+                    "goal_id": "1.1.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.2"
+                    ],
+                    "goal_id": "1.1.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.3"
+                    ],
+                    "goal_id": "1.1.1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.4"
+                    ],
+                    "goal_id": "1.1.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.1.1.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2.0"
+                    ],
+                    "goal_id": "1.1.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_entire"
+                },
+                {
+                    "goal_id": "1.1.2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "case": "finite (support plus f s)",
+                    "goal_id": "1.4",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.0"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "sum_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.0"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "apply_forward_step",
+                    "param_P": "(%s. sum s (λx. c * f x) = c * sum s f)",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.1"
+                    ],
+                    "goal_id": "1.4.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_empty"
+                },
+                {
+                    "goal_id": "1.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "1.4.4",
+                    "method_name": "introduction",
+                    "names": "a,s1"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.4.4"
+                    ],
+                    "goal_id": "1.4.4.5",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "a",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.4.5",
+                        "1.4.4.3"
+                    ],
+                    "goal_id": "1.4.4.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.4.4"
+                    ],
+                    "goal_id": "1.4.4.7",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx. c * f x)",
+                    "param_x": "a",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.4.7",
+                        "1.4.4.3"
+                    ],
+                    "goal_id": "1.4.4.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.4.8"
+                    ],
+                    "goal_id": "1.4.4.9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.4.4.6"
+                    ],
+                    "goal_id": "1.4.4.9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.4.4.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_ldistrib"
+                },
+                {
+                    "goal_id": "1.4.4.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_eq_add_lcancel"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.0"
+                    ],
+                    "goal_id": "1.5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                },
+                {
+                    "goal_id": "1.5.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "'a ⇒ real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_rmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "sum_lmul, sum s (λx. c * f x) = c * sum s f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum s (λx. c * f x) = c * sum s f"
+                },
+                {
+                    "args": "real_mult_comm, sum s (λx. f x * c) = sum s f * c",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum s (λx. f x * c) = sum s f * c"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum s (λx. f x * c) = sum s f * c"
+                }
+            ],
+            "prop": "sum s (λx. f x * c) = sum s f * c",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_lmul"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -47304,7 +48935,511 @@
                 "hint_forward"
             ],
             "name": "sum_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ (∀x. x ∈ ∅ ⟶ f x ≤ g x) ⟶ sum ∅ f ≤ sum ∅ g"
+                },
+                {
+                    "args": "∀x. x ∈ ∅ ⟶ f x ≤ g x",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ ∅ ⟶ f x ≤ g x ⊢ ∀x. x ∈ ∅ ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "real_le_refl, {x: (0::real)}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "sum_empty, sum ∅ f ≤ sum ∅ g",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ∀x. x ∈ ∅ ⟶ f x ≤ g x ⊢ sum ∅ f ≤ sum ∅ g"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ (∀x. x ∈ ∅ ⟶ f x ≤ g x) ⟶ sum ∅ f ≤ sum ∅ g"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x. ∀s1. ((∀x1. x1 ∈ s1 ⟶ f x1 ≤ g x1) ⟶ sum s1 f ≤ sum s1 g) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ (∀x1. x1 ∈ insert x s1 ⟶ f x1 ≤ g x1) ⟶ sum (insert x s1) f ≤ sum (insert x s1) g"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "(∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1 ⊢ ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1"
+                },
+                {
+                    "args": "sum_insert, {f: f, x: x}",
+                    "id": "2.5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5",
+                        "2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ sum (insert x s) f = f x + sum s f"
+                },
+                {
+                    "args": "sum_insert, {f: g, x: x}",
+                    "id": "2.7",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ sum (insert x s) g = (if x ∈ s then sum s g else g x + sum s g)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.7",
+                        "2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ sum (insert x s) g = g x + sum s g"
+                },
+                {
+                    "args": "eq_refl, {x: x}",
+                    "id": "2.9",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "disjI1, {A: x = x, B: x ∈ s}",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ x = x ∨ x ∈ s"
+                },
+                {
+                    "args": "member_insert, x ∈ insert x s",
+                    "id": "2.11",
+                    "prevs": [
+                        "2.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ x ∈ insert x s"
+                },
+                {
+                    "args": "",
+                    "id": "2.12",
+                    "prevs": [
+                        "2.4",
+                        "2.11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ f x ≤ g x"
+                },
+                {
+                    "args": "",
+                    "id": "2.13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ ∀x. x ∈ s ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "2.13.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 ∈ s",
+                    "id": "2.13.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ s ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "disjI2, {A: x1 = x, B: x1 ∈ s}",
+                    "id": "2.13.2",
+                    "prevs": [
+                        "2.13.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, x1 ∈ s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ x1 = x ∨ x1 ∈ s"
+                },
+                {
+                    "args": "member_insert, x1 ∈ insert x s",
+                    "id": "2.13.3",
+                    "prevs": [
+                        "2.13.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, x1 ∈ s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ x1 ∈ insert x s"
+                },
+                {
+                    "args": "",
+                    "id": "2.13.4",
+                    "prevs": [
+                        "2.4",
+                        "2.13.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, x1 ∈ s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ f x1 ≤ g x1"
+                },
+                {
+                    "args": "",
+                    "id": "2.13.5",
+                    "prevs": [
+                        "2.13.0",
+                        "2.13.1",
+                        "2.13.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ ∀x1. x1 ∈ s ⟶ f x1 ≤ g x1"
+                },
+                {
+                    "args": "",
+                    "id": "2.14",
+                    "prevs": [
+                        "2.2",
+                        "2.13"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ sum s f ≤ sum s g"
+                },
+                {
+                    "args": "real_le_ladd_imp, {x: f x, y: sum s f, z: sum s g}",
+                    "id": "2.15",
+                    "prevs": [
+                        "2.14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ f x + sum s f ≤ f x + sum s g"
+                },
+                {
+                    "args": "real_le_ladd_imp, {x: sum s g, y: f x, z: g x}",
+                    "id": "2.16",
+                    "prevs": [
+                        "2.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ sum s g + f x ≤ sum s g + g x"
+                },
+                {
+                    "args": "real_add_comm, f x + sum s g ≤ g x + sum s g",
+                    "id": "2.17",
+                    "prevs": [
+                        "2.16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ f x + sum s g ≤ g x + sum s g"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "2.18",
+                    "prevs": [
+                        "2.15",
+                        "2.17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ f x + sum s f ≤ g x + sum s g"
+                },
+                {
+                    "args": "sum (insert x s) f ≤ g x + sum s g",
+                    "id": "2.19",
+                    "prevs": [
+                        "2.6",
+                        "2.18"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ sum (insert x s) f ≤ g x + sum s g"
+                },
+                {
+                    "args": "sum (insert x s) f ≤ sum (insert x s) g",
+                    "id": "2.20",
+                    "prevs": [
+                        "2.8",
+                        "2.19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), ∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1, (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g ⊢ sum (insert x s) f ≤ sum (insert x s) g"
+                },
+                {
+                    "args": "",
+                    "id": "2.21",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.3",
+                        "0",
+                        "2.4",
+                        "2.20"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ∀s. ((∀x1. x1 ∈ s ⟶ f x1 ≤ g x1) ⟶ sum s f ≤ sum s g) ⟶ ¬(x ∈ s) ⟶ finite s ⟶ (∀x1. x1 ∈ insert x s ⟶ f x1 ≤ g x1) ⟶ sum (insert x s) f ≤ sum (insert x s) g"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g"
+                }
+            ],
             "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "revert_intro"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_empty"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x,s"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "x",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "2.5",
+                        "2.3"
+                    ],
+                    "goal_id": "2.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.7",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "x",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "2.7",
+                        "2.3"
+                    ],
+                    "goal_id": "2.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.8"
+                    ],
+                    "goal_id": "2.9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.6"
+                    ],
+                    "goal_id": "2.9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "f x <= g x",
+                    "goal_id": "2.9",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.9",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal": "sum s f ≤ sum s g",
+                    "goal_id": "2.13",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.13",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.13",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.13.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.13.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_insert"
+                },
+                {
+                    "goal_id": "2.13.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.15",
+                    "method_name": "apply_backward_step",
+                    "param_y": "f x + sum s g",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "2.15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_ladd_imp"
+                },
+                {
+                    "goal_id": "2.16",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "2.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_ladd_imp"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -47319,7 +49454,459 @@
                 "hint_forward"
             ],
             "name": "sum_lt",
-            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ (∃x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x ≤ g x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x ≤ g x ⊢ ∀x. x ∈ s ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ f x < g x",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. x ∈ s ∧ f x < g x ⊢ ∃x. x ∈ s ∧ f x < g x"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "a ∈ s ∧ f a < g a",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ∧ f a < g a ⊢ a ∈ s ∧ f a < g a"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ∈ s ∧ f a < g a ⊢ a ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ∈ s ∧ f a < g a ⊢ f a < g a"
+                },
+                {
+                    "args": "insert_delete",
+                    "id": "7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ insert a (delete s a) = s"
+                },
+                {
+                    "args": "eq_sym_eq, s = insert a (delete s a)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ s = insert a (delete s a)"
+                },
+                {
+                    "args": "finite_delete, finite (delete s a)",
+                    "id": "9",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ finite (delete s a)"
+                },
+                {
+                    "args": "sum_insert, {f: f, x: a}",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (insert a (delete s a)) f = (if a ∈ delete s a then sum (delete s a) f else f a + sum (delete s a) f)"
+                },
+                {
+                    "args": "¬(¬(a = a) ∧ a ∈ s)",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(¬(a = a) ∧ a ∈ s)"
+                },
+                {
+                    "args": "member_delete, ¬(a ∈ delete s a)",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ ¬(a ∈ delete s a)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "13",
+                    "prevs": [
+                        "10",
+                        "12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (insert a (delete s a)) f = f a + sum (delete s a) f"
+                },
+                {
+                    "args": "sum_insert, {f: g, x: a}",
+                    "id": "14",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (insert a (delete s a)) g = (if a ∈ delete s a then sum (delete s a) g else g a + sum (delete s a) g)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "15",
+                    "prevs": [
+                        "14",
+                        "12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (insert a (delete s a)) g = g a + sum (delete s a) g"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. ∀d. a < b ⟶ c ≤ d ⟶ a + c < b + d",
+                    "id": "16",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. ∀d. a < b ⟶ c ≤ d ⟶ a + c < b + d"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ ∀x. x ∈ delete s a ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "x1, 'a",
+                    "id": "17.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x1"
+                },
+                {
+                    "args": "x1 ∈ delete s a",
+                    "id": "17.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x1 ∈ delete s a ⊢ x1 ∈ delete s a"
+                },
+                {
+                    "args": "member_delete",
+                    "id": "17.2",
+                    "prevs": [
+                        "17.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x1 ∈ delete s a ⊢ ¬(x1 = a) ∧ x1 ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "17.3",
+                    "prevs": [
+                        "17.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x1 ∈ delete s a ⊢ x1 ∈ s"
+                },
+                {
+                    "args": "x1",
+                    "id": "17.4",
+                    "prevs": [
+                        "1",
+                        "17.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, x1 ∈ delete s a, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ f x1 ≤ g x1"
+                },
+                {
+                    "args": "",
+                    "id": "17.5",
+                    "prevs": [
+                        "17.0",
+                        "17.1",
+                        "17.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ ∀x1. x1 ∈ delete s a ⟶ f x1 ≤ g x1"
+                },
+                {
+                    "args": "sum_le",
+                    "id": "18",
+                    "prevs": [
+                        "9",
+                        "17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (delete s a) f ≤ sum (delete s a) g"
+                },
+                {
+                    "args": "f a, g a, sum (delete s a) f, sum (delete s a) g",
+                    "id": "19",
+                    "prevs": [
+                        "16",
+                        "6",
+                        "18"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ f a + sum (delete s a) f < g a + sum (delete s a) g"
+                },
+                {
+                    "args": "sum (insert a (delete s a)) f < g a + sum (delete s a) g",
+                    "id": "20",
+                    "prevs": [
+                        "13",
+                        "19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (insert a (delete s a)) f < g a + sum (delete s a) g"
+                },
+                {
+                    "args": "sum (insert a (delete s a)) f < sum (insert a (delete s a)) g",
+                    "id": "21",
+                    "prevs": [
+                        "15",
+                        "20"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum (insert a (delete s a)) f < sum (insert a (delete s a)) g"
+                },
+                {
+                    "args": "sum s f < sum s g",
+                    "id": "22",
+                    "prevs": [
+                        "8",
+                        "21"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, a ∈ s ∧ f a < g a, ∀x. x ∈ s ⟶ f x ≤ g x, ∃x. x ∈ s ∧ f x < g x ⊢ sum s f < sum s g"
+                },
+                {
+                    "args": "∃x. x ∈ s ∧ f x < g x",
+                    "id": "23",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "2",
+                        "3",
+                        "4",
+                        "22"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ (∃x. x ∈ s ∧ f x < g x) ⟶ sum s f < sum s g"
+                }
+            ],
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ (∃x. x ∈ s ∧ f x < g x) ⟶ sum s f < sum s g",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "goal": "s= insert a (delete s a)",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "insert_delete"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "finite(delete s a)",
+                    "goal_id": "9",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "finite_delete"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "a",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal": "~(a ∈ delete s a)",
+                    "goal_id": "11",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "10",
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "apply_forward_step",
+                    "param_f": "g",
+                    "param_x": "a",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "14",
+                        "12"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "15"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. !c. !d. a < b --> c <= d --> a + c < b + d",
+                    "goal_id": "16",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "16",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "16"
+                    ],
+                    "goal_id": "17",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_le"
+                },
+                {
+                    "goal_id": "17",
+                    "method_name": "introduction",
+                    "names": "x1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "17.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "17.1"
+                    ],
+                    "goal_id": "17.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "fact_ids": [
+                        "17.2"
+                    ],
+                    "goal_id": "17.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ real",
@@ -47825,6 +50412,768 @@
             "vars": {
                 "f": "'a ⇒ real",
                 "g": "'a ⇒ real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sub_abs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "real_le_refl, {x: (0::real)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "real_abs_0, abs (0::real) ≤ 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ abs (0::real) ≤ 0"
+                },
+                {
+                    "args": "sum_empty, abs (sum ∅ f) ≤ sum ∅ (λx. abs (f x))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ abs (sum ∅ f) ≤ sum ∅ (λx. abs (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x. ∀s1. abs (sum s1 f) ≤ sum s1 (λx1. abs (f x1)) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ abs (sum (insert x s1) f) ≤ sum (insert x s1) (λx1. abs (f x1))"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "abs (sum s f) ≤ sum s (λx. abs (f x))",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "abs (sum s f) ≤ sum s (λx. abs (f x)) ⊢ abs (sum s f) ≤ sum s (λx. abs (f x))"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "sum_insert, {f: f, x: x}",
+                    "id": "4.4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4",
+                        "4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ sum (insert x s) f = f x + sum s f"
+                },
+                {
+                    "args": "sum_insert, {f: λx1. abs (f x1), x: x}",
+                    "id": "4.6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ sum (insert x s) (λx1. abs (f x1)) = (if x ∈ s then sum s (λx1. abs (f x1)) else abs (f x) + sum s (λx1. abs (f x1)))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6",
+                        "4.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ sum (insert x s) (λx1. abs (f x1)) = abs (f x) + sum s (λx1. abs (f x1))"
+                },
+                {
+                    "args": "∀a. ∀b. abs a ≤ b ⟶ abs (f x + a) ≤ abs (f x) + b",
+                    "id": "4.8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a. ∀b. abs a ≤ b ⟶ abs (f x + a) ≤ abs (f x) + b"
+                },
+                {
+                    "args": "sum s f, sum s (λx1. abs (f x1))",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.8",
+                        "4.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite s, ¬(x ∈ s), abs (sum s f) ≤ sum s (λx. abs (f x)) ⊢ abs (f x + sum s f) ≤ abs (f x) + sum s (λx1. abs (f x1))"
+                },
+                {
+                    "args": "abs (sum (insert x s) f) ≤ abs (f x) + sum s (λx1. abs (f x1))",
+                    "id": "4.10",
+                    "prevs": [
+                        "4.5",
+                        "4.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), abs (sum s f) ≤ sum s (λx. abs (f x)) ⊢ abs (sum (insert x s) f) ≤ abs (f x) + sum s (λx1. abs (f x1))"
+                },
+                {
+                    "args": "abs (sum (insert x s) f) ≤ sum (insert x s) (λx1. abs (f x1))",
+                    "id": "4.11",
+                    "prevs": [
+                        "4.7",
+                        "4.10"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), abs (sum s f) ≤ sum s (λx. abs (f x)) ⊢ abs (sum (insert x s) f) ≤ sum (insert x s) (λx1. abs (f x1))"
+                },
+                {
+                    "args": "",
+                    "id": "4.12",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "0",
+                        "4.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ∀s. abs (sum s f) ≤ sum s (λx1. abs (f x1)) ⟶ ¬(x ∈ s) ⟶ finite s ⟶ abs (sum (insert x s) f) ≤ sum (insert x s) (λx1. abs (f x1))"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ abs (sum s f) ≤ sum s (λx. abs (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ abs (sum s f) ≤ sum s (λx. abs (f x))"
+                }
+            ],
+            "prop": "finite s ⟶ abs (sum s f) ≤ sum s (λx. abs (f x))",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x,s"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_x": "x",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "4.4",
+                        "4.3"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λx1. abs (f x1))",
+                    "param_x": "x",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "4.6",
+                        "4.3"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.7"
+                    ],
+                    "goal_id": "4.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.5"
+                    ],
+                    "goal_id": "4.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. abs(a) <= b --> abs(f x + a) <= abs(f x) + b",
+                    "goal_id": "4.8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.8"
+                    ],
+                    "goal_id": "4.9",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "sum_abs_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ abs (f x) ≤ g x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ abs (f x) ≤ g x ⊢ ∀x. x ∈ s ⟶ abs (f x) ≤ g x"
+                },
+                {
+                    "args": "sub_abs, {f: f, s: s}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, ∀x. x ∈ s ⟶ abs (f x) ≤ g x ⊢ abs (sum s f) ≤ sum s (λx. abs (f x))"
+                },
+                {
+                    "args": "sum_le",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀x. x ∈ s ⟶ abs (f x) ≤ g x ⊢ sum s (λx. abs (f x)) ≤ sum s g"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ∀x. x ∈ s ⟶ abs (f x) ≤ g x ⊢ abs (sum s f) ≤ sum s g"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⟶ abs (sum s f) ≤ sum s g"
+                }
+            ],
+            "prop": "finite s ⟶ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⟶ abs (sum s f) ≤ sum s g",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_y": "sum s (%x. abs(f x))",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sub_abs"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_le"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "sum_const",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "real_mul_lzero, 0 = 0 * c",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = 0 * c"
+                },
+                {
+                    "args": "real_zero_def, 0 = of_nat 0 * c",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s ⊢ 0 = of_nat 0 * c"
+                },
+                {
+                    "args": "card_empty, 0 = of_nat (card (∅::'a set)) * c",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ 0 = of_nat (card (∅::'a set)) * c"
+                },
+                {
+                    "args": "sum_empty, sum ∅ (λn::'a. c) = of_nat (card (∅::'a set)) * c",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ sum ∅ (λn::'a. c) = of_nat (card (∅::'a set)) * c"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x::'a. ∀s1. sum s1 (λn. c) = of_nat (card s1) * c ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ sum (insert x s1) (λn. c) = of_nat (card (insert x s1)) * c"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "sum s (λn. c) = of_nat (card s) * c",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "sum s (λn. c) = of_nat (card s) * c ⊢ sum s (λn. c) = of_nat (card s) * c"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "sum_insert, {f: λn::'a. c, x: x}",
+                    "id": "5.4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ sum (insert x s) (λn. c) = (if x ∈ s then sum s (λn. c) else c + sum s (λn. c))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.4",
+                        "5.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ sum (insert x s) (λn. c) = c + sum s (λn. c)"
+                },
+                {
+                    "args": "card_insert, {x: x}",
+                    "id": "5.6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ card (insert x s) = (if x ∈ s then card s else Suc (card s))"
+                },
+                {
+                    "args": "if_not_P",
+                    "id": "5.7",
+                    "prevs": [
+                        "5.6",
+                        "5.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s, ¬(x ∈ s) ⊢ card (insert x s) = Suc (card s)"
+                },
+                {
+                    "args": "c + of_nat (card s) * c = of_nat (card s) * c + c",
+                    "id": "5.8",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ c + of_nat (card s) * c = of_nat (card s) * c + c"
+                },
+                {
+                    "args": "c + sum s (λn. c) = of_nat (card s) * c + c",
+                    "id": "5.9",
+                    "prevs": [
+                        "5.2",
+                        "5.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = of_nat (card s) * c + c"
+                },
+                {
+                    "args": "real_mul_lid, c + sum s (λn. c) = of_nat (card s) * c + 1 * c",
+                    "id": "5.10",
+                    "prevs": [
+                        "5.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = of_nat (card s) * c + 1 * c"
+                },
+                {
+                    "args": "real_one_def, c + sum s (λn. c) = of_nat (card s) * c + of_nat 1 * c",
+                    "id": "5.11",
+                    "prevs": [
+                        "5.10"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = of_nat (card s) * c + of_nat 1 * c"
+                },
+                {
+                    "args": "real_add_rdistrib, c + sum s (λn. c) = (of_nat (card s) + of_nat 1) * c",
+                    "id": "5.12",
+                    "prevs": [
+                        "5.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = (of_nat (card s) + of_nat 1) * c"
+                },
+                {
+                    "args": "real_of_nat_add, c + sum s (λn. c) = of_nat (card s + 1) * c",
+                    "id": "5.13",
+                    "prevs": [
+                        "5.12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = of_nat (card s + 1) * c"
+                },
+                {
+                    "args": "add_1_right, c + sum s (λn. c) = of_nat (Suc (card s)) * c",
+                    "id": "5.14",
+                    "prevs": [
+                        "5.13"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = of_nat (Suc (card s)) * c"
+                },
+                {
+                    "args": "c + sum s (λn. c) = of_nat (card (insert x s)) * c",
+                    "id": "5.15",
+                    "prevs": [
+                        "5.7",
+                        "5.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ c + sum s (λn. c) = of_nat (card (insert x s)) * c"
+                },
+                {
+                    "args": "sum (insert x s) (λn. c) = of_nat (card (insert x s)) * c",
+                    "id": "5.16",
+                    "prevs": [
+                        "5.5",
+                        "5.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), sum s (λn. c) = of_nat (card s) * c ⊢ sum (insert x s) (λn. c) = of_nat (card (insert x s)) * c"
+                },
+                {
+                    "args": "",
+                    "id": "5.17",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.2",
+                        "5.3",
+                        "0",
+                        "5.16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x::'a. ∀s. sum s (λn. c) = of_nat (card s) * c ⟶ ¬(x ∈ s) ⟶ finite s ⟶ sum (insert x s) (λn. c) = of_nat (card (insert x s)) * c"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ sum s (λn. c) = of_nat (card s) * c"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ sum s (λn. c) = of_nat (card s) * c"
+                }
+            ],
+            "prop": "finite s ⟶ sum s (λn. c) = of_nat (card s) * c",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "card_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x,s"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5.4",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λn::'a. c)",
+                    "param_x": "x",
+                    "theorem": "sum_insert"
+                },
+                {
+                    "fact_ids": [
+                        "5.4",
+                        "5.3"
+                    ],
+                    "goal_id": "5.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "5.5"
+                    ],
+                    "goal_id": "5.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5.6",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "card_insert"
+                },
+                {
+                    "fact_ids": [
+                        "5.6",
+                        "5.3"
+                    ],
+                    "goal_id": "5.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "5.7"
+                    ],
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rdistrib"
+                },
+                {
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5.8",
+                    "method_name": "real_norm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
                 "s": "'a set"
             }
         },
