@@ -9310,7 +9310,8 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1"
             ],
             "name": "card_eq_0",
             "num_gaps": 0,
