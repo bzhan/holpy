@@ -6092,10 +6092,747 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "finite_induct",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "finite1 ∅",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite1 ∅ ⊢ finite1 ∅"
+                },
+                {
+                    "args": "∀x. ∀s. finite1 s ⟶ finite1 (insert x s)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ ∀x. ∀s. finite1 s ⟶ finite1 (insert x s)"
+                },
+                {
+                    "args": "finite a",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite a ⊢ finite a"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite1 ∅, finite a, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ a = ∅ ⟶ finite1 a"
+                },
+                {
+                    "args": "a = ∅",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = ∅ ⊢ a = ∅"
+                },
+                {
+                    "args": "finite1 a",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite1 ∅, finite a, a = ∅, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ finite1 a"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "finite1 ∅, finite a, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ a = ∅ ⟶ finite1 a"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite1 ∅, finite a, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ ¬(a = ∅) ⟶ finite1 a"
+                },
+                {
+                    "args": "¬(a = ∅)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(a = ∅) ⊢ ¬(a = ∅)"
+                },
+                {
+                    "args": "∃x. x ∈ a",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(a = ∅) ⊢ ∃x. x ∈ a"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ a",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ a ⊢ x ∈ a"
+                },
+                {
+                    "args": "insert_delete",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite1 ∅, finite a, x ∈ a, ¬(a = ∅), ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ insert x (delete a x) = a"
+                },
+                {
+                    "args": "eq_sym_eq, a = insert x (delete a x)",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite1 ∅, finite a, x ∈ a, ¬(a = ∅), ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ a = insert x (delete a x)"
+                },
+                {
+                    "args": "exI, {P: λs. a = insert x s, a: delete a x}",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite1 ∅, finite a, x ∈ a, ¬(a = ∅), ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ ∃a1. a = insert x a1"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "4.7",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "a = insert x s",
+                    "id": "4.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a = insert x s ⊢ a = insert x s"
+                },
+                {
+                    "args": "x",
+                    "id": "4.9",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ ∀s. finite1 s ⟶ finite1 (insert x s)"
+                },
+                {
+                    "args": "s",
+                    "id": "4.10",
+                    "prevs": [
+                        "4.9"
+                    ],
+                    "rule": "forall_elim_gen",
+                    "th": "∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ finite1 s ⟶ finite1 (insert x s)"
+                },
+                {
+                    "args": "",
+                    "id": "4.11",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite1 ∅, finite a, x ∈ a, ¬(a = ∅), a = insert x s, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ finite1 s"
+                },
+                {
+                    "args": "",
+                    "id": "4.12",
+                    "prevs": [
+                        "4.10",
+                        "4.11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite1 ∅, finite a, x ∈ a, ¬(a = ∅), a = insert x s, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ finite1 (insert x s)"
+                },
+                {
+                    "args": "finite1 a",
+                    "id": "4.13",
+                    "prevs": [
+                        "4.8",
+                        "4.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite1 ∅, finite a, x ∈ a, ¬(a = ∅), a = insert x s, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ finite1 a"
+                },
+                {
+                    "args": "∃a1. a = insert x a1, ∃x. x ∈ a",
+                    "id": "4.14",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "4.6",
+                        "4.7",
+                        "4.8",
+                        "4.13"
+                    ],
+                    "rule": "intros",
+                    "th": "finite1 ∅, finite a, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ ¬(a = ∅) ⟶ finite1 a"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite1 ∅, finite a, ∀x. ∀s. finite1 s ⟶ finite1 (insert x s) ⊢ finite1 a"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite1 ∅ ⟶ (∀x. ∀s. finite1 s ⟶ finite1 (insert x s)) ⟶ finite a ⟶ finite1 a"
+                }
+            ],
+            "prop": "finite1 ∅ ⟶ (∀x. ∀s. finite1 s ⟶ finite1 (insert x s)) ⟶ finite a ⟶ finite1 a",
+            "steps": [
+                {
+                    "case": "a = {}",
+                    "goal_id": "3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "?x. x ∈ a",
+                    "goal_id": "4.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "exists_elim",
+                    "names": "x"
+                },
+                {
+                    "goal": "?s. a = insert x s",
+                    "goal_id": "4.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "inst_exists_goal",
+                    "s": "delete a x"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "insert_delete"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "exists_elim",
+                    "names": "s"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4.9",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.9"
+                    ],
+                    "goal_id": "4.10",
+                    "method_name": "forall_elim",
+                    "s": "s"
+                },
+                {
+                    "fact_ids": [
+                        "4.8"
+                    ],
+                    "goal_id": "4.11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.10"
+                    ],
+                    "goal_id": "4.11",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a set",
+                "finite1": "'a set ⇒ bool"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward1"
             ],
             "name": "finite_induct_strong",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "P ∅",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ∅ ⊢ P ∅"
+                },
+                {
+                    "args": "∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ∀s. finite s ⟶ finite s ∧ P s"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "finite_induct, {a: s, finite1: λs. finite s ∧ P s}",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::'a set) ∧ P ∅ ⟶ (∀x. ∀s1. finite s1 ∧ P s1 ⟶ finite (insert x s1) ∧ P (insert x s1)) ⟶ finite s ⟶ finite s ∧ P s"
+                },
+                {
+                    "args": "finite_empty, {}",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::'a set)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ finite (∅::'a set) ∧ P ∅"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ∀x. ∀s. finite s ∧ P s ⟶ finite (insert x s) ∧ P (insert x s)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "3.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s1, 'a set",
+                    "id": "3.4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "finite s1 ∧ P s1",
+                    "id": "3.4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s1 ∧ P s1 ⊢ finite s1 ∧ P s1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3.4.3",
+                    "prevs": [
+                        "3.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s1 ∧ P s1 ⊢ finite s1"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3.4.4",
+                    "prevs": [
+                        "3.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s1 ∧ P s1 ⊢ P s1"
+                },
+                {
+                    "args": "finite_insert, {A: s1, x: x}",
+                    "id": "3.4.5",
+                    "prevs": [
+                        "3.4.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ finite (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ x ∈ s1 ⟶ P (insert x s1)"
+                },
+                {
+                    "args": "x ∈ s1",
+                    "id": "3.4.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s1 ⊢ x ∈ s1"
+                },
+                {
+                    "args": "insert x s1 = s1",
+                    "id": "3.4.6.1",
+                    "prevs": [
+                        "3.4.6.0"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ s1 ⊢ insert x s1 = s1"
+                },
+                {
+                    "args": "P (insert x s1)",
+                    "id": "3.4.6.2",
+                    "prevs": [
+                        "3.4.6.1",
+                        "3.4.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "P ∅, finite s, x ∈ s1, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ P (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.6.3",
+                    "prevs": [
+                        "3.4.6.0",
+                        "3.4.6.2"
+                    ],
+                    "rule": "intros",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ x ∈ s1 ⟶ P (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ¬(x ∈ s1) ⟶ P (insert x s1)"
+                },
+                {
+                    "args": "¬(x ∈ s1)",
+                    "id": "3.4.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s1) ⊢ ¬(x ∈ s1)"
+                },
+                {
+                    "args": "x, s1",
+                    "id": "3.4.7.1",
+                    "prevs": [
+                        "2",
+                        "3.4.4",
+                        "3.4.7.0",
+                        "3.4.3"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "P ∅, finite s, ¬(x ∈ s1), finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ P (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.7.2",
+                    "prevs": [
+                        "3.4.7.0",
+                        "3.4.7.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ¬(x ∈ s1) ⟶ P (insert x s1)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3.4.8",
+                    "prevs": [
+                        "3.4.6",
+                        "3.4.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ P (insert x s1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.4.9",
+                    "prevs": [
+                        "3.4.5",
+                        "3.4.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ∅, finite s, finite s1 ∧ P s1, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ finite (insert x s1) ∧ P (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.10",
+                    "prevs": [
+                        "3.4.0",
+                        "3.4.1",
+                        "3.4.2",
+                        "3.4.9"
+                    ],
+                    "rule": "intros",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ∀x. ∀s1. finite s1 ∧ P s1 ⟶ finite (insert x s1) ∧ P (insert x s1)"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.1",
+                        "3.3",
+                        "3.4",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ finite s ∧ P s"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "0",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "P ∅, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ ∀s. finite s ⟶ finite s ∧ P s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ finite s ∧ P s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ∅, finite s, ∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1) ⊢ P s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ P ∅ ⟶ (∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1)) ⟶ P s"
+                }
+            ],
             "prop": "finite s ⟶ P ∅ ⟶ (∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1)) ⟶ P s",
+            "steps": [
+                {
+                    "goal": "!s. finite s ⟶ finite s & P s",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "s"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_forward_step",
+                    "param_a": "s",
+                    "param_finite1": "(%s. finite s ∧ P s)",
+                    "theorem": "finite_induct"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "introduction",
+                    "names": "x,s1"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2"
+                    ],
+                    "goal_id": "3.4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.2"
+                    ],
+                    "goal_id": "3.4.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "3.4.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.4.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_insert"
+                },
+                {
+                    "case": "x ∈ s1",
+                    "goal_id": "3.4.6",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3.4.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "insert x s1 = s1",
+                    "goal_id": "3.4.6.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.6.0"
+                    ],
+                    "goal_id": "3.4.6.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.6.1"
+                    ],
+                    "goal_id": "3.4.6.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.4.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3.4.7.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "P": "'a set ⇒ bool",
@@ -6109,7 +6846,539 @@
                 "hint_forward"
             ],
             "name": "finite_subset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite t ⊢ finite t"
+                },
+                {
+                    "args": "s ⊆ t",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ⊆ t ⊢ s ⊆ t"
+                },
+                {
+                    "args": "finite_induct, {a: t, finite1: λt::'a set. ∀s. s ⊆ t ⟶ finite s}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀s::'a set. s ⊆ ∅ ⟶ finite s) ⟶ (∀x::'a. ∀s. (∀s1. s1 ⊆ s ⟶ finite s1) ⟶ (∀s1. s1 ⊆ insert x s ⟶ finite s1)) ⟶ finite t ⟶ (∀s. s ⊆ t ⟶ finite s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, s ⊆ t ⊢ ∀s::'a set. s ⊆ ∅ ⟶ finite s"
+                },
+                {
+                    "args": "s1, 'a set",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "s1 ⊆ ∅",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s1 ⊆ ∅ ⊢ s1 ⊆ ∅"
+                },
+                {
+                    "args": "subset_empty, {A: s1}",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∅ ⊆ s1"
+                },
+                {
+                    "args": "subset_antisym",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.1",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, s ⊆ t, s1 ⊆ ∅ ⊢ s1 = ∅"
+                },
+                {
+                    "args": "finite_empty, {}",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::'a set)"
+                },
+                {
+                    "args": "finite s1",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.3",
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite t, s ⊆ t, s1 ⊆ ∅ ⊢ finite s1"
+                },
+                {
+                    "args": "",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.5"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, s ⊆ t ⊢ ∀s1::'a set. s1 ⊆ ∅ ⟶ finite s1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite t, s ⊆ t ⊢ (∀x::'a. ∀s. (∀s1. s1 ⊆ s ⟶ finite s1) ⟶ (∀s1. s1 ⊆ insert x s ⟶ finite s1)) ⟶ finite t ⟶ (∀s. s ⊆ t ⟶ finite s)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, s ⊆ t ⊢ ∀x::'a. ∀s. (∀s1. s1 ⊆ s ⟶ finite s1) ⟶ (∀s1. s1 ⊆ insert x s ⟶ finite s1)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "u, 'a set",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR u"
+                },
+                {
+                    "args": "∀s1. s1 ⊆ u ⟶ finite s1",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀s1. s1 ⊆ u ⟶ finite s1 ⊢ ∀s1. s1 ⊆ u ⟶ finite s1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, s ⊆ t, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ ∀s1. s1 ⊆ insert x u ⟶ finite s1"
+                },
+                {
+                    "args": "t1, 'a set",
+                    "id": "5.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t1"
+                },
+                {
+                    "args": "t1 ⊆ insert x u",
+                    "id": "5.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "t1 ⊆ insert x u ⊢ t1 ⊆ insert x u"
+                },
+                {
+                    "args": "∀x1. ¬(x1 = x) ∧ x1 ∈ t1 ⟶ x1 ∈ u",
+                    "id": "5.3.2",
+                    "prevs": [
+                        "5.3.1"
+                    ],
+                    "rule": "z3",
+                    "th": "t1 ⊆ insert x u ⊢ ∀x1. ¬(x1 = x) ∧ x1 ∈ t1 ⟶ x1 ∈ u"
+                },
+                {
+                    "args": "member_delete, ∀x1. x1 ∈ delete t1 x ⟶ x1 ∈ u",
+                    "id": "5.3.3",
+                    "prevs": [
+                        "5.3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ ∀x1. x1 ∈ delete t1 x ⟶ x1 ∈ u"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "5.3.4",
+                    "prevs": [
+                        "5.3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ delete t1 x ⊆ u"
+                },
+                {
+                    "args": "delete t1 x",
+                    "id": "5.3.5",
+                    "prevs": [
+                        "5.2",
+                        "5.3.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ finite (delete t1 x)"
+                },
+                {
+                    "args": "finite_insert, {A: delete t1 x, x: x}",
+                    "id": "5.3.6",
+                    "prevs": [
+                        "5.3.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ finite (insert x (delete t1 x))"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ x ∈ t1 ⟶ finite t1"
+                },
+                {
+                    "args": "x ∈ t1",
+                    "id": "5.3.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ t1 ⊢ x ∈ t1"
+                },
+                {
+                    "args": "insert_delete",
+                    "id": "5.3.7.1",
+                    "prevs": [
+                        "5.3.7.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, x ∈ t1, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ insert x (delete t1 x) = t1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.7.2",
+                    "prevs": [
+                        "5.3.7.1",
+                        "5.3.6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "finite t, x ∈ t1, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ finite t1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.7.3",
+                    "prevs": [
+                        "5.3.7.0",
+                        "5.3.7.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ x ∈ t1 ⟶ finite t1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ ¬(x ∈ t1) ⟶ finite t1"
+                },
+                {
+                    "args": "¬(x ∈ t1)",
+                    "id": "5.3.8.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ t1) ⊢ ¬(x ∈ t1)"
+                },
+                {
+                    "args": "t1 ⊆ u",
+                    "id": "5.3.8.1",
+                    "prevs": [
+                        "5.3.1",
+                        "5.3.8.0"
+                    ],
+                    "rule": "z3",
+                    "th": "¬(x ∈ t1), t1 ⊆ insert x u ⊢ t1 ⊆ u"
+                },
+                {
+                    "args": "t1",
+                    "id": "5.3.8.2",
+                    "prevs": [
+                        "5.2",
+                        "5.3.8.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite t, s ⊆ t, ¬(x ∈ t1), t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ finite t1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.8.3",
+                    "prevs": [
+                        "5.3.8.0",
+                        "5.3.8.2"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ ¬(x ∈ t1) ⟶ finite t1"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5.3.9",
+                    "prevs": [
+                        "5.3.7",
+                        "5.3.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite t, s ⊆ t, t1 ⊆ insert x u, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ finite t1"
+                },
+                {
+                    "args": "",
+                    "id": "5.3.10",
+                    "prevs": [
+                        "5.3.0",
+                        "5.3.1",
+                        "5.3.9"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, s ⊆ t, ∀s1. s1 ⊆ u ⟶ finite s1 ⊢ ∀t1. t1 ⊆ insert x u ⟶ finite t1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.2",
+                        "5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "finite t, s ⊆ t ⊢ ∀x::'a. ∀u. (∀s1. s1 ⊆ u ⟶ finite s1) ⟶ (∀s1. s1 ⊆ insert x u ⟶ finite s1)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite t, s ⊆ t ⊢ finite t ⟶ (∀s. s ⊆ t ⟶ finite s)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite t, s ⊆ t ⊢ ∀s. s ⊆ t ⟶ finite s"
+                },
+                {
+                    "args": "s",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "finite t, s ⊆ t ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite t ⟶ s ⊆ t ⟶ finite s"
+                }
+            ],
             "prop": "finite t ⟶ s ⊆ t ⟶ finite s",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_a": "t",
+                    "param_finite1": "(%t::'a set. (!s. s ⊆ t --> finite s))",
+                    "theorem": "finite_induct"
+                },
+                {
+                    "goal": "(∀s::'a set. s ⊆ ∅ ⟶ finite s)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "s1"
+                },
+                {
+                    "goal": "s1= {}",
+                    "goal_id": "3.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_antisym"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_empty"
+                },
+                {
+                    "fact_ids": [
+                        "3.3"
+                    ],
+                    "goal_id": "3.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "(∀x::'a. ∀s. (∀s1. s1 ⊆ s ⟶ finite s1) ⟶ (∀s1. s1 ⊆ insert x s ⟶ finite s1))",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x,u"
+                },
+                {
+                    "goal_id": "5.3",
+                    "method_name": "introduction",
+                    "names": "t1"
+                },
+                {
+                    "goal": "finite (insert x (delete t1 x))",
+                    "goal_id": "5.3.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_insert"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "5.3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "5.3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_delete"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.1"
+                    ],
+                    "goal_id": "5.3.2",
+                    "method_name": "z3"
+                },
+                {
+                    "case": "x ∈ t1",
+                    "goal_id": "5.3.7",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "5.3.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "insert x (delete t1 x) = t1",
+                    "goal_id": "5.3.7.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.3.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "insert_delete"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.7.1",
+                        "5.3.6"
+                    ],
+                    "goal_id": "5.3.7.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "5.3.8",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.3.8.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.3.1",
+                        "5.3.8.0"
+                    ],
+                    "goal_id": "5.3.8.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6",
+                        "0"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "'a set",
@@ -7235,7 +8504,62 @@
                 "hint_backward"
             ],
             "name": "finite_finite_unions",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ⊢ finite (⋃(∅::'a set set)) ⟷ (∀t::'a set. t ∈ ∅ ⟶ finite t)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ⊢ ∀x::'a set. ∀s1. finite (⋃s1) ⟷ (∀t. t ∈ s1 ⟶ finite t) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ finite (⋃(insert x s1)) ⟷ (∀t. t ∈ insert x s1 ⟶ finite t)"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ finite (⋃s) ⟷ (∀t. t ∈ s ⟶ finite t)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite (⋃s) ⟷ (∀t. t ∈ s ⟶ finite t)"
+                }
+            ],
             "prop": "finite s ⟶ finite (⋃s) ⟷ (∀t. t ∈ s ⟶ finite t)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "'a set set"
@@ -7246,7 +8570,207 @@
                 "hint_backward"
             ],
             "name": "finite_image_expand",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "{y. ∃x. x ∈ ∅ ∧ y = f x} = ∅",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {y. ∃x. x ∈ ∅ ∧ y = f x} = ∅"
+                },
+                {
+                    "args": "finite_empty, {}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite (∅::'b set)"
+                },
+                {
+                    "args": "finite ({y. ∃x. x ∈ ∅ ∧ y = f x})",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s ⊢ finite ({y. ∃x. x ∈ ∅ ∧ y = f x})"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ⊢ ∀x. ∀s1. finite ({y. ∃x1. x1 ∈ s1 ∧ y = f x1}) ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ finite ({y. ∃x1. x1 ∈ insert x s1 ∧ y = f x1})"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "finite ({y. ∃x. x ∈ s ∧ y = f x})",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({y. ∃x. x ∈ s ∧ y = f x}) ⊢ finite ({y. ∃x. x ∈ s ∧ y = f x})"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "4.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "{y. ∃x1. x1 ∈ insert x s ∧ y = f x1} = {y. ∃x1. x1 ∈ s ∧ y = f x1} ∪ {f x}",
+                    "id": "4.4",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {y. ∃x1. x1 ∈ insert x s ∧ y = f x1} = {y. ∃x1. x1 ∈ s ∧ y = f x1} ∪ {f x}"
+                },
+                {
+                    "args": "finite_sing, {a: f x}",
+                    "id": "4.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({f x})"
+                },
+                {
+                    "args": "finite_union_imp",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.2",
+                        "4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s, ¬(x ∈ s), finite ({y. ∃x. x ∈ s ∧ y = f x}) ⊢ finite ({y. ∃x1. x1 ∈ s ∧ y = f x1} ∪ {f x})"
+                },
+                {
+                    "args": "finite ({y. ∃x1. x1 ∈ insert x s ∧ y = f x1})",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.4",
+                        "4.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s, ¬(x ∈ s), finite ({y. ∃x. x ∈ s ∧ y = f x}) ⊢ finite ({y. ∃x1. x1 ∈ insert x s ∧ y = f x1})"
+                },
+                {
+                    "args": "",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.3",
+                        "0",
+                        "4.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ∀s. finite ({y. ∃x1. x1 ∈ s ∧ y = f x1}) ⟶ ¬(x ∈ s) ⟶ finite s ⟶ finite ({y. ∃x1. x1 ∈ insert x s ∧ y = f x1})"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ⊢ finite ({y. ∃x. x ∈ s ∧ y = f x})"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ finite ({y. ∃x. x ∈ s ∧ y = f x})"
+                }
+            ],
             "prop": "finite s ⟶ finite ({y. ∃x. x ∈ s ∧ y = f x})",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
+                },
+                {
+                    "goal": "{y. ∃x. x ∈ ∅ ∧ y = f x} = {}",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x,s"
+                },
+                {
+                    "goal": "{y. ∃x1. x1 ∈ insert x s ∧ y = f x1} = {y. ∃x. x ∈ s ∧ y = f x} ∪ {f x}",
+                    "goal_id": "4.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.4",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_union_imp"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_sing"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ 'b",
@@ -7397,7 +8921,86 @@
                 "hint_backward"
             ],
             "name": "finite_image_inj_eq",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (image f s) ⟶ finite s"
+                },
+                {
+                    "args": "finite (image f s)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite (image f s) ⊢ finite (image f s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite (image f s), ∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (image f s) ⟶ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite s ⟶ finite (image f s)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y ⊢ finite (image f s) ⟷ finite s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ⟶ finite (image f s) ⟷ finite s"
+                }
+            ],
             "prop": "(∀x. ∀y. x ∈ s ⟶ y ∈ s ⟶ f x = f y ⟶ x = y) ⟶ finite (image f s) ⟷ finite s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a ⇒ 'b",
