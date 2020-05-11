@@ -537,7 +537,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_backward"
             ],
             "name": "add_comm",
             "num_gaps": 0,
@@ -1710,7 +1711,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_backward"
             ],
             "name": "mult_comm",
             "num_gaps": 0,
