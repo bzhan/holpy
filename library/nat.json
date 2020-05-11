@@ -18729,6 +18729,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "nat_plus_minus",
             "num_gaps": 0,
             "proof": [
