@@ -8,6 +8,7 @@ from flask.json import jsonify
 from lark import Lark, Transformer, v_args, exceptions
 from fractions import Fraction
 from sympy import expand_multinomial
+import copy
 
 import integral
 from app.app import app
@@ -56,6 +57,115 @@ def integral_super_simplify():
         'latex': integral.latex.convert_expr(problem),
         'reason': "Simplification"
     })
+
+@app.route("/api/integral-oracle", methods=['POST'])
+def integral_oracle():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rules_set = [integral.rules.Simplify(), integral.rules.Linearity(), integral.rules.Oracle(), integral.rules.OnSubterm(integral.rules.CommonIntegral())]
+    abs_rule = integral.rules.ElimAbs()
+    problem = integral.parser.parse_expr(data['problem'])
+    # integrals = problem.separate_integral()
+    reason = []
+    if not (abs_rule.check_zero_point(problem) and len(problem.getAbs()) == 0):
+        # If there are no abs expression or there are no zero point
+        rules_set.append(integral.rules.OnSubterm(integral.rules.ElimAbs()))
+    def simplify(problem):
+        initial = copy.deepcopy(problem)
+        for i in range(8):
+            for r in rules_set:
+                old_problem = copy.deepcopy(problem) # store the problem before oracle
+                if isinstance(r, integral.rules.Oracle):
+                    integrals = old_problem.separate_integral()
+                    for p, l in integrals:
+                        new_p = r.eval(copy.deepcopy(p))
+                        new_p_int = new_p[0][0] if isinstance(new_p[0], tuple) else new_p[0]
+                        if new_p_int != p:
+                            if old_problem != initial:                                
+                                reason.append({
+                                'text': str(old_problem),
+                                'latex': integral.latex.convert_expr(old_problem),
+                                'reason': "Simplification"
+                            })
+                            if new_p[-1] == "degree_one":
+                                print(new_p[-2])
+                                initial = old_problem.replace_trig(p, new_p[0][0])
+                                reason.append({
+                                    'text': str(initial),
+                                    'latex': integral.latex.convert_expr(initial),
+                                    'reason': "Substitution",
+                                    'location': l,
+                                    'params': {
+                                        'f': str(new_p[0][1]),
+                                        'g': str(new_p[1][0]),
+                                        'var_name': new_p[-2]
+                                    },
+                                    '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
+                                        integral.latex.convert_expr(integral.expr.Var(new_p[-2])), integral.latex.convert_expr(new_p[1][0]))
+                                })
+                                problem = initial
+                            elif new_p[-1] == "sqrt":
+                                initial = old_problem.replace_trig(p, new_p[0])
+                                reason.append({
+                                    'text': str(initial),
+                                    'latex': integral.latex.convert_expr(initial),
+                                    'reason': "Substitution inverse",
+                                    'location': l,
+                                    'params': {
+                                        'g': str(integral.expr.sin(integral.expr.Var("u"))),
+                                        'var_name': "u",
+                                        "a": str(new_p[0].lower),
+                                        "b": str(new_p[0].upper)
+                                    },
+                                    '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
+                                        integral.latex.convert_expr(integral.parser.parse_expr(old_problem.var)), integral.expr.sin(integral.expr.Var("u"))
+                                    )
+                                })
+                                problem = initial
+                            elif new_p[-1] == "sin_to_cos":
+                                initial = old_problem.replace_trig(p, new_p[0])
+                                reason.append({
+                                    "reason": "Rewrite trigonometric",
+                                    'text': str(initial),
+                                    'latex': integral.latex.convert_expr(initial),
+                                    "params":{
+                                        "rule": "TR5"
+                                    },
+                                    '_latex_reason': "Rewrite trigonometric \\(%s\\) to \\(%s\\)" % 
+                                                (integral.latex.convert_expr(new_p[1][0].args[0]), integral.latex.convert_expr(new_p[2])), 
+                                    # If there is only one integral in the full expression, location begins from the body;
+                                    # Else from the integral
+                                    "location": l + new_p[1][1]
+                                })
+                                problem = initial
+                            elif new_p[-1] == "reduce cos power":
+                                initial = old_problem.replace_trig(p, new_p[0])
+                                reason.append({
+                                    "reason": "Rewrite trigonometric",
+                                    'text': str(initial),
+                                    'latex': integral.latex.convert_expr(initial),
+                                    "params":{
+                                        "rule": "TR7"
+                                    },
+                                    '_latex_reason': "Rewrite trigonometric \\(%s\\) to \\(%s\\)" % 
+                                                (integral.latex.convert_expr(p.body), integral.latex.convert_expr(new_p[1])), 
+                                    # If there is only one integral in the full expression, location begins from the body;
+                                    # Else from the integral
+                                    "location": l + ".0"
+                                })
+                                problem = initial
+                            elif new_p[-1] == "no change":
+                                problem = new_p[0]
+                else:
+                    problem = r.eval(problem)
+        if problem != initial:
+            reason.append({
+                'text': str(problem),
+                'latex': integral.latex.convert_expr(problem),
+                'reason': "Simplification"
+            })
+        return problem
+    problem = simplify(integral.parser.parse_expr(data['problem']))
+    return json.dumps(reason)
 
 @app.route("/api/integral-elim-abs", methods=["POST"])
 def integral_elim_abs():
