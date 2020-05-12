@@ -2,13 +2,16 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity, sympy_style, holpy_style, OP, CONST, INTEGRAL
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr, trig_identity, \
+        sympy_style, holpy_style, OP, CONST, INTEGRAL, VAR, sin, cos, FUN
 import functools, operator
 from sympy.parsing import sympy_parser
 from sympy import solvers, Interval, solveset, expand_multinomial, apart
 from integral import parser
 from fractions import Fraction
 import copy
+import random
+import string
 
 class Rule:
     """Represents a rule for integration. It takes an integral
@@ -239,10 +242,11 @@ class Substitution1(Rule):
             gu = solvers.solve(expr.sympy_style(var_subst - var_name), expr.sympy_style(e.var))
             gu = gu[-1] if isinstance(gu, list) else gu
             gu = expr.holpy_style(gu)
+            var_subst_1 = copy.deepcopy(var_subst)
             c = e.body.replace_trig(parser.parse_expr(e.var), gu)
             new_problem_body = holpy_style(sympy_style(e.body.replace_trig(parser.parse_expr(e.var), gu)*expr.deriv(str(var_name), gu)))
-            lower = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.lower)))
-            upper = holpy_style(sympy_style(var_subst).subs(sympy_style(e.var), sympy_style(e.upper)))
+            lower = holpy_style(sympy_style(var_subst_1).subs(sympy_style(e.var), sympy_style(e.lower)))
+            upper = holpy_style(sympy_style(var_subst_1).subs(sympy_style(e.var), sympy_style(e.upper)))
             if sympy_style(lower) < sympy_style(upper):
                 return Integral(self.var_name, lower, upper, new_problem_body), new_problem_body
             else:
@@ -480,3 +484,105 @@ class IntegrateByEquation(Rule):
         new_rhs = (self.rhs+((-coeff)*self.lhs.alpha_convert(self.var))).normalize().normalize()
         return (new_rhs/(Const(1) - coeff)).normalize()
         
+
+class Oracle(Rule):
+    """Try to solve integral by combining primitive methods."""
+    def __init__(self):
+        pass
+
+    def eval(self, e, letter=None):
+        def is_sqrt(e, f):
+            """Find pattern: (a - b*f(x)^2) ^ (1/2)"""
+            e = e.normalize()
+            if e.ty == OP and e.op == "^" and e.args[1] == Const(Fraction(1/2)):
+                d = e.args[0]
+                if d.ty == OP and d.op == "-": # need to repair normalize later
+                    a = d.args[0] # a
+                    b = d.args[1] # b * x^2
+                    if a.ty == CONST:
+                        if b.ty == OP and b.op == "*": # b * x ^ 2
+                            b0 = b.args[0] # b
+                            b1 = b.args[1] # x ^ 2
+                            if b0.ty == CONST and b0.val > 0:
+                                return b1.ty == OP and b1.op == "^" and b1.args[0] == f \
+                                        and b1.args[1] == Const(2)
+                        else: # x ^ 2
+                            return b.ty == OP and b.op == "^" and b.args[0] == f and b.args[1] == Const(2)
+                    else:
+                        return False
+                else:
+                    return False
+            else:
+                return False
+
+
+        def is_degree_one(e, f=None):
+            """Find pattern: a*x + b or b + a * x"""
+            e = e.normalize()
+            return e.ty == OP and e.op in ("+", "-") and len(e.args) == 2 and \
+                    (e.args[0].is_constant() and (e.args[1].ty == OP and e.args[1].op == "*" \
+                    and e.args[1].args[0].ty == CONST and e.args[1].args[1].ty == VAR or e.args[1].ty == VAR) or \
+                    e.args[1].is_constant() and (e.args[0].ty == OP and e.args[0].op == "*" \
+                    and e.args[0].args[0].ty == CONST and e.args[0].args[1].ty == VAR or e.args[0].ty == VAR)) or \
+                    e.ty == OP and e.op == "*" and e.args[0].ty == CONST and e.args[1].ty == VAR
+
+        def is_more_than_power(e, f=None):
+            """Find pattern: x ^ n, n >= 2"""
+            e = e.normalize()
+            return e.ty == OP and e.op == "^" and e.args[1].ty == CONST and e.args[1].val >= 2 and e.args[0].ty == VAR
+        
+        def find_coeff(e, f=None):
+            """Find a and b in a - b * f^2(x)"""
+            a = e.args[0]
+            if e.args[1].ty == OP and e.args[1].op == "*":
+                b = e.args[1].args[0]
+                return a, b
+            elif e.args[1].ty == OP and e.args[1].op == "^":
+                b = Const(1)
+                return a, b
+            else:
+                raise TypeError
+
+        def is_trig_power(e, f=None):
+            """Find pattern: cos^2(x)"""
+            return e.ty == OP and e.op == "^" and e.args[1] == Const(2) and e.args[0].ty == FUN \
+                and e.args[0].func_name == "cos" and e.args[0].args[0].ty == VAR
+
+        integrals = e.separate_integral()
+        v = integrals[0][0].var
+        poly_1 = expr.find_pattern(e, is_degree_one)
+        poly_2 = expr.find_pattern(e, is_sqrt, Var(v))
+        poly_3 = expr.find_pattern(e, is_sqrt, sin(Var(v)))
+        poly_4 = expr.find_pattern(e, is_sqrt, cos(Var(v)))
+        poly_5 = expr.find_pattern(e, is_more_than_power)
+        if len(poly_1) == 1 and len(poly_5) == 0:
+            letter = random.choices(string.ascii_lowercase.replace(v, ''))[0]
+            print("letter, ", letter)
+            rule = Substitution1(letter, poly_1[0][0])
+            rule.eval(copy.deepcopy(e))
+            return rule.eval(copy.deepcopy(e)), poly_1[0], letter, "degree_one"
+        elif len(poly_2) == 1:
+            a, b = find_coeff(poly_2[0][0].args[0], Var(v))
+            c = (Const(Fraction(a.val, b.val))^(Const(Fraction(1, 2)))).normalize()
+            rule = Substitution2("u", c * sin(Var("u")))
+            return rule.eval(copy.deepcopy(e)), poly_2[0], "sqrt"
+        elif len(poly_3) == 1:
+            a, b = find_coeff(poly_3[0][0].args[0], sin(Var(v)))
+            assert a == b, "%s != %s" % (a, b)
+            from sympy.simplify.fu import TR5
+            new_e = e.body.replace_trig(poly_3[0][0].args[0], holpy_style(TR5(sympy_style(poly_3[0][0].args[0]))))
+            return Integral(e.var, e.lower, e.upper, new_e), poly_3[0],\
+                    holpy_style(TR5(sympy_style(poly_3[0][0].args[0]))), "sin_to_cos"
+        elif len(poly_4) == 1:
+            a, b = find_coeff(poly_4[0][0].args[0], cos(Var(v)))
+            assert a == b, "%s != %s" % (a, b)
+            from sympy.simplify.fu import TR6
+            new_e = e.body.replace_trig(poly_4[0][0].args[0], holpy_style(TR6(sympy_style(poly_4[0][0].args[0]))))
+            return Integral(e.var, e.lower, e.upper, new_e), poly_4[0],\
+                    holpy_style(TR6(sympy_style(poly_4[0][0].args[0]))), "sin_to_cos"  
+        elif is_trig_power(e.body):
+            from sympy.simplify.fu import TR7
+            new_e = e.body.replace_trig(e.body,holpy_style(TR7(sympy_style(e.body))))
+            return Integral(e.var, e.lower, e.upper, new_e), holpy_style(TR7(sympy_style(e.body))), "reduce cos power"
+        else:
+            return e, "no change"
