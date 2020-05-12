@@ -5,7 +5,7 @@ import importlib
 if importlib.util.find_spec("z3"):
     import z3
     z3_loaded = True
-    z3.set_param(timeout=5000, proof=True)
+    z3.set_param(proof=True)
 else:
     z3_loaded = False
 

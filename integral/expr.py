@@ -861,6 +861,23 @@ def collect(m, res = {}, sub = 0, el = None):
     else:
         raise NotImplementedError
 
+def find_pattern(e, is_pattern, f=None):
+    """Find subexpr with given pattern."""
+    poly = []
+    def find(exp):
+        if is_pattern(exp, f):
+            exp.selected = True
+            poly.append((exp, e.get_location()))
+        elif exp.ty in (OP, FUN):
+            for arg in exp.args:
+                find(arg)
+        elif exp.ty == INTEGRAL:
+            find(exp.body)
+    
+    find(e)
+    return poly
+        
+
 def deriv(var, e):
     """Compute the derivative of e with respect to variable
     name var.
