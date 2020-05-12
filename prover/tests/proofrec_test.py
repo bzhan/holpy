@@ -69,6 +69,7 @@ class ProofrecTest(unittest.TestCase):
             t = parse_term(t)
             proof=z3wrapper.solve_and_proof(t)    
             r = proofrec.proofrec(proof)
+            basic.load_theory('int')
             self.assertEqual(str(r.th), p)
 
     def testRecSolveSet(self):
