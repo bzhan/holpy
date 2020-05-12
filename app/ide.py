@@ -50,7 +50,10 @@ class ProofCache():
         self.prop = data['prop']
         self.steps = data['steps']
 
-        limit = ('thm', self.thm_name)
+        if self.thm_name != '':
+            limit = ('thm', self.thm_name)
+        else:
+            limit = None
         context.set_context(self.theory_name, limit=limit, username=self.username, vars=self.vars)
         state = server.parse_init_state(self.prop)
 
@@ -267,7 +270,11 @@ def search_method():
         proof_cache.create_cache(data)
         print("Load: %f" % (time.perf_counter() - start_time))
 
-    basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), username=data['username'])
+    if data['thm_name'] != '':
+        limit = ('thm', data['thm_name'])
+    else:
+        limit = None
+    basic.load_theory(data['theory_name'], limit=limit, username=data['username'])
 
     start_time = time.perf_counter()
     state = proof_cache.states[data['index']]

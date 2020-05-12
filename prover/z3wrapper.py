@@ -9,6 +9,9 @@ if importlib.util.find_spec("z3"):
 else:
     z3_loaded = False
 
+# Whether to check using z3.
+check_z3 = True
+
 from kernel.type import TFun, BoolType, NatType, IntType, RealType
 from kernel import term
 from kernel.term import Term, Var, BoolType, Implies, true, false
@@ -260,7 +263,8 @@ class Z3Macro(Macro):
     def eval(self, args, prevs):
         if z3_loaded:
             assms = [prev.prop for prev in prevs]
-            assert solve(Implies(*(assms + [args]))), "Z3: not solved."
+            if check_z3:
+                assert solve(Implies(*(assms + [args]))), "Z3: not solved."
         else:
             print("Warning: Z3 is not installed")
 
@@ -299,5 +303,6 @@ class Z3Method(Method):
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
         goal = cur_item.th.prop
 
-        assert solve(Implies(*(assms + [goal]))), "Z3 method: not solved"
+        if check_z3:
+            assert solve(Implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)

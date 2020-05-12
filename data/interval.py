@@ -25,10 +25,10 @@ class numseg_conv(Conv):
         if n < m:
             less_goal = nat.less(nt, mt)
             less_pt = nat.nat_const_less_macro().get_proof_term(less_goal, [])
-            return pt.on_rhs(rewr_conv("numseg_emptyI", conds=[less_pt]))
+            return pt.on_rhs(rewr_conv("natseg_emptyI", conds=[less_pt]))
         else:
             le_goal = nat.less_eq(mt, nt)
             le_pt = nat.nat_const_less_eq_macro().get_proof_term(le_goal, [])
-            return pt.on_rhs(rewr_conv("numseg_lrec", conds=[le_pt]),
+            return pt.on_rhs(rewr_conv("natseg_lrec", conds=[le_pt]),
                              arg_conv(arg1_conv(nat.nat_conv())),
                              arg_conv(self))

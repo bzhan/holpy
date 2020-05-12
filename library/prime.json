@@ -46158,7 +46158,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "primepow_divides_indes",
+            "name": "primepow_divides_index",
             "num_gaps": 0,
             "proof": [
                 {
@@ -48009,6 +48009,3324 @@
                     "goal_id": "1.2.2.12.2.1.1",
                     "method_name": "apply_backward_step",
                     "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "le_index",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0 ⊢ k ≤ 0 ⟶ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0)"
+                },
+                {
+                    "args": "k ≤ 0",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ 0 ⊢ k ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0, k ≤ 0 ⊢ (0::nat) = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "(0::nat) = 0 ∨ p = 1",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(0::nat) = 0 ∨ p = 1 ⊢ (0::nat) = 0 ∨ p = 1"
+                },
+                {
+                    "args": "nat_le_zero",
+                    "id": "0.1.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k ≤ 0 ⊢ k = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0, k ≤ 0 ⊢ (0::nat) = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k ≤ 0}",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, k ≤ 0 ⊢ p = 1 ∨ k ≤ 0"
+                },
+                {
+                    "args": "disjI2, {A: (0::nat) = 0, B: p = 1 ∨ k ≤ 0}",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, k ≤ 0 ⊢ (0::nat) = 0 ∨ p = 1 ∨ k ≤ 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n = 0, k ≤ 0 ⊢ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0 ⊢ k ≤ 0 ⟶ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0 ⊢ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⟶ k ≤ 0"
+                },
+                {
+                    "args": "((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ (0::nat) = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ (0::nat) = 0 ∨ p = 1 ∨ k ≤ 0"
+                },
+                {
+                    "args": "disj_assoc",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ ((0::nat) = 0 ∨ p = 1) ∨ k ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "n = 0, ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ (0::nat) = 0 ∨ p = 1 ⟶ k ≤ 0"
+                },
+                {
+                    "args": "(0::nat) = 0 ∨ p = 1",
+                    "id": "0.2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(0::nat) = 0 ∨ p = 1 ⊢ (0::nat) = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4.1",
+                    "prevs": [
+                        "0.2.1",
+                        "0.2.4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(0::nat) = 0 ∨ p = 1, ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ k = 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1, k ≤ 0",
+                    "id": "0.2.4.2",
+                    "prevs": [
+                        "0.2.4.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0, (0::nat) = 0 ∨ p = 1, ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ k ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4.3",
+                    "prevs": [
+                        "0.2.4.0",
+                        "0.2.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0, ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ (0::nat) = 0 ∨ p = 1 ⟶ k ≤ 0"
+                },
+                {
+                    "args": "k ≤ 0 ⟶ k ≤ 0",
+                    "id": "0.2.5",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k ≤ 0 ⟶ k ≤ 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.2.6",
+                    "prevs": [
+                        "0.2.3",
+                        "0.2.4",
+                        "0.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n = 0, ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⊢ k ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.7",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "n = 0 ⊢ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0) ⟶ k ≤ 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "n = 0 ⊢ k ≤ 0 ⟷ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ 0)"
+                },
+                {
+                    "args": "index_0, k ≤ index p 0 ⟷ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0)",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ k ≤ index p 0 ⟷ ((0::nat) = 0 ∨ p = 1 ⟶ k = 0) ∧ ((0::nat) = 0 ∨ p = 1 ∨ k ≤ index p 0)"
+                },
+                {
+                    "args": "k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ p = 1 ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "disjI2, {A: p < 1, B: p = 1}",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 1, ¬(n = 0) ⊢ p < 1 ∨ p = 1"
+                },
+                {
+                    "args": "le_lt, p ≤ 1",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 1, ¬(n = 0) ⊢ p ≤ 1"
+                },
+                {
+                    "args": "disjI1, {A: p ≤ 1, B: n = 0}",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "p = 1, ¬(n = 0) ⊢ p ≤ 1 ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1, ¬(n = 0) ⊢ k = 0 ⟶ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0)"
+                },
+                {
+                    "args": "k = 0",
+                    "id": "1.1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k = 0 ⊢ k = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "k = 0, p = 1, ¬(n = 0) ⊢ n = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1",
+                    "id": "1.1.4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ⊢ n = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4.1.1",
+                    "prevs": [
+                        "1.1.4.1.0",
+                        "1.1.4.0"
+                    ],
+                    "rule": "intros",
+                    "th": "k = 0, p = 1, ¬(n = 0) ⊢ n = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k = 0}",
+                    "id": "1.1.4.2",
+                    "prevs": [
+                        "1.1.4.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "k = 0, p = 1, ¬(n = 0) ⊢ p = 1 ∨ k = 0"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: p = 1 ∨ k = 0}",
+                    "id": "1.1.4.3",
+                    "prevs": [
+                        "1.1.4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "k = 0, p = 1, ¬(n = 0) ⊢ n = 0 ∨ p = 1 ∨ k = 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.4.4",
+                    "prevs": [
+                        "1.1.4.1",
+                        "1.1.4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k = 0, p = 1, ¬(n = 0) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.4.5",
+                    "prevs": [
+                        "1.1.4.0",
+                        "1.1.4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1, ¬(n = 0) ⊢ k = 0 ⟶ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p = 1, ¬(n = 0) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⟶ k = 0"
+                },
+                {
+                    "args": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0)",
+                    "id": "1.1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1.5.1",
+                    "prevs": [
+                        "1.1.5.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⊢ n = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.1.5.2",
+                    "prevs": [
+                        "1.1.5.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⊢ n = 0 ∨ p = 1 ∨ k = 0"
+                },
+                {
+                    "args": "disj_assoc",
+                    "id": "1.1.5.3",
+                    "prevs": [
+                        "1.1.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⊢ (n = 0 ∨ p = 1) ∨ k = 0"
+                },
+                {
+                    "args": "k = 0 ⟶ k = 0",
+                    "id": "1.1.5.4",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k = 0 ⟶ k = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.1.5.5",
+                    "prevs": [
+                        "1.1.5.3",
+                        "1.1.5.1",
+                        "1.1.5.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 1, ¬(n = 0), (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⊢ k = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5.6",
+                    "prevs": [
+                        "1.1.5.0",
+                        "1.1.5.5"
+                    ],
+                    "rule": "intros",
+                    "th": "p = 1, ¬(n = 0) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0) ⟶ k = 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.4",
+                        "1.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p = 1, ¬(n = 0) ⊢ k = 0 ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k = 0)"
+                },
+                {
+                    "args": "nat_less_eq_def_1, k ≤ 0 ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ 0)",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 1, ¬(n = 0) ⊢ k ≤ 0 ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ 0)"
+                },
+                {
+                    "args": "if_P, k ≤ (if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n})) ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ (if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n})))",
+                    "id": "1.1.8",
+                    "prevs": [
+                        "1.1.7",
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 1, ¬(n = 0) ⊢ k ≤ (if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n})) ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ (if p ≤ 1 ∨ n = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) n})))"
+                },
+                {
+                    "args": "index_def, k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)",
+                    "id": "1.1.9",
+                    "prevs": [
+                        "1.1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p = 1, ¬(n = 0) ⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.10",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.9"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ p = 1 ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0) ⊢ ¬(p = 1) ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "¬(p = 1)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p = 1) ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1) ⊢ k ≤ index p n ⟶ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "k ≤ index p n",
+                    "id": "1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ index p n ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n ⊢ n = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1",
+                    "id": "1.2.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ⊢ n = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n, n = 0 ∨ p = 1 ⊢ ¬(k = 0) ⟶ ¬(n = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "¬(k = 0)",
+                    "id": "1.2.1.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(k = 0) ⊢ ¬(k = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.1.1.1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(k = 0), ¬(n = 0), ¬(p = 1), k ≤ index p n, n = 0 ∨ p = 1 ⊢ ¬(n = 0) ∧ ¬(p = 1)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0 ∨ p = 1)",
+                    "id": "1.2.1.1.1.2",
+                    "prevs": [
+                        "1.2.1.1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(k = 0), ¬(n = 0), ¬(p = 1), k ≤ index p n, n = 0 ∨ p = 1 ⊢ ¬(n = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.1.1.3",
+                    "prevs": [
+                        "1.2.1.1.1.0",
+                        "1.2.1.1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n, n = 0 ∨ p = 1 ⊢ ¬(k = 0) ⟶ ¬(n = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.2.1.1.2",
+                    "prevs": [
+                        "1.2.1.1.0",
+                        "1.2.1.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n, n = 0 ∨ p = 1 ⊢ k = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.1.3",
+                    "prevs": [
+                        "1.2.1.1.0",
+                        "1.2.1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n ⊢ n = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k ≤ index p n}",
+                    "id": "1.2.1.2",
+                    "prevs": [
+                        "1.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n ⊢ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: p = 1 ∨ k ≤ index p n}",
+                    "id": "1.2.1.3",
+                    "prevs": [
+                        "1.2.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.1.4",
+                    "prevs": [
+                        "1.2.1.1",
+                        "1.2.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), k ≤ index p n ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.5",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1) ⊢ k ≤ index p n ⟶ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2.2.1",
+                    "prevs": [
+                        "1.2.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ n = 0 ∨ p = 1 ⟶ k = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2.2.2",
+                    "prevs": [
+                        "1.2.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disj_assoc",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ (n = 0 ∨ p = 1) ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(n = 0), ¬(p = 1), (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ n = 0 ∨ p = 1 ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1",
+                    "id": "1.2.2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ⊢ n = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.4.1",
+                    "prevs": [
+                        "1.2.2.1",
+                        "1.2.2.4.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "n = 0 ∨ p = 1, (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ k = 0"
+                },
+                {
+                    "args": "le_0, {n: index p n}",
+                    "id": "1.2.2.4.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p n",
+                    "id": "1.2.2.4.3",
+                    "prevs": [
+                        "1.2.2.4.1",
+                        "1.2.2.4.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0), ¬(p = 1), n = 0 ∨ p = 1, (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.4.4",
+                    "prevs": [
+                        "1.2.2.4.0",
+                        "1.2.2.4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1), (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ n = 0 ∨ p = 1 ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p n ⟶ k ≤ index p n",
+                    "id": "1.2.2.5",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k ≤ index p n ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.2.2.6",
+                    "prevs": [
+                        "1.2.2.3",
+                        "1.2.2.4",
+                        "1.2.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1), (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.7",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0), ¬(p = 1) ⊢ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n) ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0), ¬(p = 1) ⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(n = 0) ⊢ ¬(p = 1) ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ (n = 0 ∨ p = 1 ∨ k ≤ index p n)"
+                },
+                {
+                    "args": "primepow_divides_index, k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ divides (p ^ k) n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ divides (p ^ k) n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ divides (p ^ k) n"
+                }
+            ],
+            "prop": "k ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ k = 0) ∧ divides (p ^ k) n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "primepow_divides_index"
+                },
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_0"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "nat_le_zero"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "disj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.3"
+                    ],
+                    "goal_id": "0.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1",
+                        "0.2.4.0"
+                    ],
+                    "goal_id": "0.2.4.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "0.2.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "p=1",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_def"
+                },
+                {
+                    "goal": "p ≤ 1 ∨ n = 0",
+                    "goal_id": "1.1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_lt"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.1.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.0"
+                    ],
+                    "goal_id": "1.1.5.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.0"
+                    ],
+                    "goal_id": "1.1.5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.2"
+                    ],
+                    "goal_id": "1.1.5.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "disj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.5.3"
+                    ],
+                    "goal_id": "1.1.5.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.1.0"
+                    ],
+                    "goal_id": "1.2.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.2.1.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.1.1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.2.1.1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.2.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.0"
+                    ],
+                    "goal_id": "1.2.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.0"
+                    ],
+                    "goal_id": "1.2.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.2"
+                    ],
+                    "goal_id": "1.2.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "disj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.3"
+                    ],
+                    "goal_id": "1.2.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2.2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.1",
+                        "1.2.2.4.0"
+                    ],
+                    "goal_id": "1.2.2.4.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.4.1"
+                    ],
+                    "goal_id": "1.2.2.4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "exp_index_divides",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "le_index, {k: index p n, n: n, p: p}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ index p n ≤ index p n ⟷ (n = 0 ∨ p = 1 ⟶ index p n = 0) ∧ divides (p ^ index p n) n"
+                },
+                {
+                    "args": "less_eq_refl, {n: index p n}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ index p n ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "⊢ (n = 0 ∨ p = 1 ⟶ index p n = 0) ∧ divides (p ^ index p n) n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides (p ^ index p n) n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides (p ^ index p n) n"
+                }
+            ],
+            "prop": "divides (p ^ index p n) n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_k": "index p n",
+                    "param_n": "n",
+                    "param_p": "p",
+                    "theorem": "le_index"
+                },
+                {
+                    "goal": "index p n ≤ index p n",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "less_eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "index_1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ p ≤ 1 ∨ (1::nat) = 0 ⟶ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "p ≤ 1 ∨ (1::nat) = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ≤ 1 ∨ (1::nat) = 0 ⊢ p ≤ 1 ∨ (1::nat) = 0"
+                },
+                {
+                    "args": "if_P, (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "p ≤ 1 ∨ (1::nat) = 0 ⊢ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ≤ 1 ∨ (1::nat) = 0 ⟶ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(p ≤ 1 ∨ (1::nat) = 0) ⟶ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "¬(p ≤ 1 ∨ (1::nat) = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ ¬(p ≤ 1 ∨ (1::nat) = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ ¬(p ≤ 1) ∧ ¬((1::nat) = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ ¬(p ≤ 1)"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ ∀x::nat. x ∈ {j. 1 ≤ j ∧ divides (p ^ j) 1} ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "j, nat",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR j"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ 1 ≤ j ∧ divides (p ^ j) 1 ⟶ j ∈ ∅"
+                },
+                {
+                    "args": "1 ≤ j ∧ divides (p ^ j) 1",
+                    "id": "1.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 ≤ j ∧ divides (p ^ j) 1 ⊢ 1 ≤ j ∧ divides (p ^ j) 1"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.3.1.1",
+                    "prevs": [
+                        "1.3.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ j ∧ divides (p ^ j) 1 ⊢ 1 ≤ j"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.3.1.2",
+                    "prevs": [
+                        "1.3.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ j ∧ divides (p ^ j) 1 ⊢ divides (p ^ j) 1"
+                },
+                {
+                    "args": "divides_one",
+                    "id": "1.3.1.3",
+                    "prevs": [
+                        "1.3.1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "1 ≤ j ∧ divides (p ^ j) 1 ⊢ p ^ j = 1"
+                },
+                {
+                    "args": "exp_eq_1",
+                    "id": "1.3.1.4",
+                    "prevs": [
+                        "1.3.1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "1 ≤ j ∧ divides (p ^ j) 1 ⊢ p = 1 ∨ j = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0), 1 ≤ j ∧ divides (p ^ j) 1 ⊢ p = 1 ⟶ j ∈ ∅"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "1.3.1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "j ∈ ∅",
+                    "id": "1.3.1.5.1",
+                    "prevs": [
+                        "1.3.1.5.0",
+                        "1.2"
+                    ],
+                    "rule": "z3",
+                    "th": "p = 1, ¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ j ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1.5.2",
+                    "prevs": [
+                        "1.3.1.5.0",
+                        "1.3.1.5.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0), 1 ≤ j ∧ divides (p ^ j) 1 ⊢ p = 1 ⟶ j ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0), 1 ≤ j ∧ divides (p ^ j) 1 ⊢ j = 0 ⟶ j ∈ ∅"
+                },
+                {
+                    "args": "j = 0",
+                    "id": "1.3.1.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "j = 0 ⊢ j = 0"
+                },
+                {
+                    "args": "j ∈ ∅",
+                    "id": "1.3.1.6.1",
+                    "prevs": [
+                        "1.3.1.6.0",
+                        "1.3.1.1"
+                    ],
+                    "rule": "z3",
+                    "th": "j = 0, 1 ≤ j ∧ divides (p ^ j) 1 ⊢ j ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1.6.2",
+                    "prevs": [
+                        "1.3.1.6.0",
+                        "1.3.1.6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0), 1 ≤ j ∧ divides (p ^ j) 1 ⊢ j = 0 ⟶ j ∈ ∅"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3.1.7",
+                    "prevs": [
+                        "1.3.1.4",
+                        "1.3.1.5",
+                        "1.3.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0), 1 ≤ j ∧ divides (p ^ j) 1 ⊢ j ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.1.8",
+                    "prevs": [
+                        "1.3.1.0",
+                        "1.3.1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ 1 ≤ j ∧ divides (p ^ j) 1 ⟶ j ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ j ∈ ∅ ⟶ 1 ≤ j ∧ divides (p ^ j) 1"
+                },
+                {
+                    "args": "j ∈ ∅",
+                    "id": "1.3.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "j ∈ ∅ ⊢ j ∈ ∅"
+                },
+                {
+                    "args": "member_empty, 1 ≤ j ∧ divides (p ^ j) 1",
+                    "id": "1.3.2.1",
+                    "prevs": [
+                        "1.3.2.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "j ∈ ∅ ⊢ 1 ≤ j ∧ divides (p ^ j) 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2.2",
+                    "prevs": [
+                        "1.3.2.0",
+                        "1.3.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ j ∈ ∅ ⟶ 1 ≤ j ∧ divides (p ^ j) 1"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.3.3",
+                    "prevs": [
+                        "1.3.1",
+                        "1.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ 1 ≤ j ∧ divides (p ^ j) 1 ⟷ j ∈ ∅"
+                },
+                {
+                    "args": "member_collect, j ∈ {j1. 1 ≤ j1 ∧ divides (p ^ j1) 1} ⟷ j ∈ ∅",
+                    "id": "1.3.4",
+                    "prevs": [
+                        "1.3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ j ∈ {j1. 1 ≤ j1 ∧ divides (p ^ j1) 1} ⟷ j ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.5",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ ∀j::nat. j ∈ {j1. 1 ≤ j1 ∧ divides (p ^ j1) 1} ⟷ j ∈ ∅"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ {j::nat. 1 ≤ j ∧ divides (p ^ j) 1} = ∅"
+                },
+                {
+                    "args": "card_empty, card (∅::nat set) = 0",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ card (∅::nat set) = 0"
+                },
+                {
+                    "args": "card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1}) = 0",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.4",
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1}) = 0"
+                },
+                {
+                    "args": "if_not_P, (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(p ≤ 1 ∨ (1::nat) = 0) ⊢ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.0",
+                        "1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(p ≤ 1 ∨ (1::nat) = 0) ⟶ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (if p ≤ 1 ∨ (1::nat) = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) 1})) = 0"
+                },
+                {
+                    "args": "index_def, index p 1 = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ index p 1 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ index p 1 = 0"
+                }
+            ],
+            "prop": "index p 1 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_def"
+                },
+                {
+                    "case": "p ≤ 1 ∨ (1::nat) = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "{j::nat. 1 ≤ j ∧ divides (p ^ j) 1} = {}",
+                    "goal_id": "1.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction",
+                    "names": "j"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.0"
+                    ],
+                    "goal_id": "1.3.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.0"
+                    ],
+                    "goal_id": "1.3.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.2"
+                    ],
+                    "goal_id": "1.3.1.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_one"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.3"
+                    ],
+                    "goal_id": "1.3.1.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "exp_eq_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.4"
+                    ],
+                    "goal_id": "1.3.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.3.1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.5.0",
+                        "1.2"
+                    ],
+                    "goal_id": "1.3.1.5.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.3.1.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1.6.0",
+                        "1.3.1.1"
+                    ],
+                    "goal_id": "1.3.1.6.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.3.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.2.0"
+                    ],
+                    "goal_id": "1.3.2.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "card_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "index_mul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "¬(m = 0)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "prime_def",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "∀m::nat. ∀n. (∀k. k ≤ m ⟶ k ≤ n) ⟶ m ≤ n",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀m::nat. ∀n. (∀k. k ≤ m ⟶ k ≤ n) ⟶ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ ∀k. k ≤ index p (m * n) ⟶ k ≤ index p m + index p n"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "k ≤ index p (m * n)",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ index p (m * n) ⊢ k ≤ index p (m * n)"
+                },
+                {
+                    "args": "primepow_divides_prod, {k: k, m: m, n: n}",
+                    "id": "6.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ⊢ divides (p ^ k) (m * n) ⟶ (∃i. ∃j. divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j)"
+                },
+                {
+                    "args": "le_index",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "k ≤ index p (m * n) ⊢ (m * n = 0 ∨ p = 1 ⟶ k = 0) ∧ divides (p ^ k) (m * n)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k ≤ index p (m * n) ⊢ divides (p ^ k) (m * n)"
+                },
+                {
+                    "args": "",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.2",
+                        "6.4"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "prime p, k ≤ index p (m * n) ⊢ ∃i. ∃j. divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j"
+                },
+                {
+                    "args": "i, nat",
+                    "id": "6.6",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "j, nat",
+                    "id": "6.7",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR j"
+                },
+                {
+                    "args": "divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j",
+                    "id": "6.8",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6.9",
+                    "prevs": [
+                        "6.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ divides (p ^ i) m"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6.10",
+                    "prevs": [
+                        "6.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ divides (p ^ j) n ∧ k = i + j"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6.11",
+                    "prevs": [
+                        "6.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ divides (p ^ j) n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6.12",
+                    "prevs": [
+                        "6.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ k = i + j"
+                },
+                {
+                    "args": "",
+                    "id": "6.13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ m = 0 ∨ p = 1 ⟶ i = 0"
+                },
+                {
+                    "args": "m = 0 ∨ p = 1",
+                    "id": "6.13.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ∨ p = 1 ⊢ m = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "6.13.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), m = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(i = 0) ⟶ ¬(m = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "¬(i = 0)",
+                    "id": "6.13.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(i = 0) ⊢ ¬(i = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6.13.1.1",
+                    "prevs": [
+                        "1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(i = 0), ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), m = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(m = 0) ∧ ¬(p = 1)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(m = 0 ∨ p = 1)",
+                    "id": "6.13.1.2",
+                    "prevs": [
+                        "6.13.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(i = 0), ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), m = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(m = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "6.13.1.3",
+                    "prevs": [
+                        "6.13.1.0",
+                        "6.13.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), m = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(i = 0) ⟶ ¬(m = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "6.13.2",
+                    "prevs": [
+                        "6.13.0",
+                        "6.13.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), m = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6.13.3",
+                    "prevs": [
+                        "6.13.0",
+                        "6.13.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ m = 0 ∨ p = 1 ⟶ i = 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6.14",
+                    "prevs": [
+                        "6.13",
+                        "6.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ (m = 0 ∨ p = 1 ⟶ i = 0) ∧ divides (p ^ i) m"
+                },
+                {
+                    "args": "le_index, i ≤ index p m",
+                    "id": "6.15",
+                    "prevs": [
+                        "6.14"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ i ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "6.16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ n = 0 ∨ p = 1 ⟶ j = 0"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1",
+                    "id": "6.16.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ⊢ n = 0 ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "6.16.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), n = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(j = 0) ⟶ ¬(n = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "¬(j = 0)",
+                    "id": "6.16.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(j = 0) ⊢ ¬(j = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6.16.1.1",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(j = 0), ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), n = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(n = 0) ∧ ¬(p = 1)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0 ∨ p = 1)",
+                    "id": "6.16.1.2",
+                    "prevs": [
+                        "6.16.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(j = 0), ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), n = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(n = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "6.16.1.3",
+                    "prevs": [
+                        "6.16.1.0",
+                        "6.16.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), n = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ ¬(j = 0) ⟶ ¬(n = 0 ∨ p = 1)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "6.16.2",
+                    "prevs": [
+                        "6.16.0",
+                        "6.16.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), n = 0 ∨ p = 1, divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ j = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6.16.3",
+                    "prevs": [
+                        "6.16.0",
+                        "6.16.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ n = 0 ∨ p = 1 ⟶ j = 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6.17",
+                    "prevs": [
+                        "6.16",
+                        "6.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ (n = 0 ∨ p = 1 ⟶ j = 0) ∧ divides (p ^ j) n"
+                },
+                {
+                    "args": "le_index, j ≤ index p n",
+                    "id": "6.18",
+                    "prevs": [
+                        "6.17"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ j ≤ index p n"
+                },
+                {
+                    "args": "le_add2",
+                    "id": "6.19",
+                    "prevs": [
+                        "6.15",
+                        "6.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ i + j ≤ index p m + index p n"
+                },
+                {
+                    "args": "k ≤ index p m + index p n",
+                    "id": "6.20",
+                    "prevs": [
+                        "6.12",
+                        "6.19"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), k ≤ index p (m * n), divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j ⊢ k ≤ index p m + index p n"
+                },
+                {
+                    "args": "∃i. ∃j. divides (p ^ i) m ∧ divides (p ^ j) n ∧ k = i + j",
+                    "id": "6.21",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.5",
+                        "6.6",
+                        "6.7",
+                        "6.8",
+                        "6.20"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ ∀k. k ≤ index p (m * n) ⟶ k ≤ index p m + index p n"
+                },
+                {
+                    "args": "index p (m * n), index p m + index p n",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ index p (m * n) ≤ index p m + index p n"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ m * n = 0 ∨ p = 1 ⟶ index p m + index p n = 0"
+                },
+                {
+                    "args": "m * n = 0 ∨ p = 1",
+                    "id": "8.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m * n = 0 ∨ p = 1 ⊢ m * n = 0 ∨ p = 1"
+                },
+                {
+                    "args": "mult_eq_0",
+                    "id": "8.1",
+                    "prevs": [
+                        "8.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m * n = 0 ∨ p = 1 ⊢ (m = 0 ∨ n = 0) ∨ p = 1"
+                },
+                {
+                    "args": "",
+                    "id": "8.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1 ⊢ ¬(index p m + index p n = 0) ⟶ ¬((m = 0 ∨ n = 0) ∨ p = 1)"
+                },
+                {
+                    "args": "¬(index p m + index p n = 0)",
+                    "id": "8.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(index p m + index p n = 0) ⊢ ¬(index p m + index p n = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8.2.1",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1, ¬(index p m + index p n = 0) ⊢ ¬(m = 0) ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8.2.2",
+                    "prevs": [
+                        "8.2.1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1, ¬(index p m + index p n = 0) ⊢ (¬(m = 0) ∧ ¬(n = 0)) ∧ ¬(p = 1)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(m = 0 ∨ n = 0) ∧ ¬(p = 1)",
+                    "id": "8.2.3",
+                    "prevs": [
+                        "8.2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1, ¬(index p m + index p n = 0) ⊢ ¬(m = 0 ∨ n = 0) ∧ ¬(p = 1)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬((m = 0 ∨ n = 0) ∨ p = 1)",
+                    "id": "8.2.4",
+                    "prevs": [
+                        "8.2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1, ¬(index p m + index p n = 0) ⊢ ¬((m = 0 ∨ n = 0) ∨ p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "8.2.5",
+                    "prevs": [
+                        "8.2.0",
+                        "8.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1 ⊢ ¬(index p m + index p n = 0) ⟶ ¬((m = 0 ∨ n = 0) ∨ p = 1)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "8.3",
+                    "prevs": [
+                        "8.1",
+                        "8.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m * n = 0 ∨ p = 1 ⊢ index p m + index p n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "8.4",
+                    "prevs": [
+                        "8.0",
+                        "8.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ m * n = 0 ∨ p = 1 ⟶ index p m + index p n = 0"
+                },
+                {
+                    "args": "exp_index_divides, {n: m, p: p}",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (p ^ index p m) m"
+                },
+                {
+                    "args": "exp_index_divides, {n: n, p: p}",
+                    "id": "10",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (p ^ index p n) n"
+                },
+                {
+                    "args": "divides_mul2",
+                    "id": "11",
+                    "prevs": [
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ divides (p ^ index p m * p ^ index p n) (m * n)"
+                },
+                {
+                    "args": "nat_power_add, divides (p ^ (index p m + index p n)) (m * n)",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ divides (p ^ (index p m + index p n)) (m * n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "13",
+                    "prevs": [
+                        "8",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ (m * n = 0 ∨ p = 1 ⟶ index p m + index p n = 0) ∧ divides (p ^ (index p m + index p n)) (m * n)"
+                },
+                {
+                    "args": "le_index, index p m + index p n ≤ index p (m * n)",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ index p m + index p n ≤ index p (m * n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15",
+                    "prevs": [
+                        "7",
+                        "14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ index p (m * n) ≤ index p m + index p n ∧ index p m + index p n ≤ index p (m * n)"
+                },
+                {
+                    "args": "le_antisym, index p (m * n) = index p m + index p n",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0) ⊢ index p (m * n) = index p m + index p n"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ ¬(m = 0) ⟶ ¬(n = 0) ⟶ index p (m * n) = index p m + index p n"
+                }
+            ],
+            "prop": "prime p ⟶ ¬(m = 0) ⟶ ¬(n = 0) ⟶ index p (m * n) = index p m + index p n",
+            "steps": [
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal": "!m. !n. (∀k::nat. k ≤ m ⟶ k ≤ n) ⟶ m ≤ n",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "apply_forward_step",
+                    "param_k": "k",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "primepow_divides_prod"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "le_index"
+                },
+                {
+                    "fact_ids": [
+                        "6.3"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "6.2",
+                        "6.4"
+                    ],
+                    "goal_id": "6.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "6.5"
+                    ],
+                    "goal_id": "6.6",
+                    "method_name": "exists_elim",
+                    "names": "i,j"
+                },
+                {
+                    "fact_ids": [
+                        "6.8"
+                    ],
+                    "goal_id": "6.9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6.8"
+                    ],
+                    "goal_id": "6.10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "6.10"
+                    ],
+                    "goal_id": "6.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6.10"
+                    ],
+                    "goal_id": "6.12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "6.12"
+                    ],
+                    "goal_id": "6.13",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_add2"
+                },
+                {
+                    "goal_id": "6.13",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_index"
+                },
+                {
+                    "goal_id": "6.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "6.13",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.13.0"
+                    ],
+                    "goal_id": "6.13.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "6.13.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.13.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "6.13.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "6.16",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_index"
+                },
+                {
+                    "goal_id": "6.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "6.16",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.16.0"
+                    ],
+                    "goal_id": "6.16.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "6.16.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "6.16.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "6.16.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "le_index"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.0"
+                    ],
+                    "goal_id": "8.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "8.1"
+                    ],
+                    "goal_id": "8.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "8.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "8.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "8.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "8.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_power_add"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_mul2"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exp_index_divides"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exp_index_divides"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "index_exp",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ n = 0 ⟶ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, n = 0 ⊢ k = 0 ⟶ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "k = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k = 0 ⊢ k = 0"
+                },
+                {
+                    "args": "mult_0_right, 0 = k * 0",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = k * 0"
+                },
+                {
+                    "args": "index_0, 0 = k * index p 0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, k = 0, n = 0 ⊢ 0 = k * index p 0"
+                },
+                {
+                    "args": "index_1, index p 1 = k * index p 0",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, k = 0, n = 0 ⊢ index p 1 = k * index p 0"
+                },
+                {
+                    "args": "if_P, index p (if k = 0 then 1 else 0) = k * index p 0",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3",
+                        "1.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, k = 0, n = 0 ⊢ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, n = 0 ⊢ k = 0 ⟶ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, n = 0 ⊢ ¬(k = 0) ⟶ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "¬(k = 0)",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(k = 0) ⊢ ¬(k = 0)"
+                },
+                {
+                    "args": "mult_0_right, 0 = k * 0",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = k * 0"
+                },
+                {
+                    "args": "index_0, index p 0 = k * index p 0",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, n = 0, ¬(k = 0) ⊢ index p 0 = k * index p 0"
+                },
+                {
+                    "args": "if_not_P, index p (if k = 0 then 1 else 0) = k * index p 0",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, n = 0, ¬(k = 0) ⊢ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, n = 0 ⊢ ¬(k = 0) ⟶ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, n = 0 ⊢ index p (if k = 0 then 1 else 0) = k * index p 0"
+                },
+                {
+                    "args": "exp_zero, index p (0 ^ k) = k * index p 0",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, n = 0 ⊢ index p (0 ^ k) = k * index p 0"
+                },
+                {
+                    "args": "index p (n ^ k) = k * index p n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, n = 0 ⊢ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ n = 0 ⟶ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ¬(n = 0) ⟶ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "index_1, index p 1 = 0",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ index p 1 = 0"
+                },
+                {
+                    "args": "nat_times_def_1, index p 1 = 0 * index p n",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0) ⊢ index p 1 = 0 * index p n"
+                },
+                {
+                    "args": "nat_nat_power_def_1, index p (n ^ (0::nat)) = 0 * index p n",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0) ⊢ index p (n ^ (0::nat)) = 0 * index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(n = 0) ⊢ ∀n1. index p (n ^ n1) = n1 * index p n ⟶ index p (n ^ Suc n1) = Suc n1 * index p n"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "2.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "index p (n ^ k) = k * index p n",
+                    "id": "2.4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "index p (n ^ k) = k * index p n ⊢ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "2.4.2",
+                    "prevs": [
+                        "2.4.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "index p (n ^ k) = k * index p n ⊢ k * index p n = index p (n ^ k)"
+                },
+                {
+                    "args": "disjI1, {A: ¬(n = 0), B: ¬¬(k = 0)}",
+                    "id": "2.4.3",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ ¬(n = 0) ∨ ¬¬(k = 0)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(n = 0 ∧ ¬(k = 0))",
+                    "id": "2.4.4",
+                    "prevs": [
+                        "2.4.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ ¬(n = 0 ∧ ¬(k = 0))"
+                },
+                {
+                    "args": "exp_eq_0, ¬(n ^ k = 0)",
+                    "id": "2.4.5",
+                    "prevs": [
+                        "2.4.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ ¬(n ^ k = 0)"
+                },
+                {
+                    "args": "index_mul",
+                    "id": "2.4.6",
+                    "prevs": [
+                        "0",
+                        "2.4.5",
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n ^ k * n) = index p (n ^ k) + index p n"
+                },
+                {
+                    "args": "mult_comm, index p (n * n ^ k) = index p (n ^ k) + index p n",
+                    "id": "2.4.7",
+                    "prevs": [
+                        "2.4.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n * n ^ k) = index p (n ^ k) + index p n"
+                },
+                {
+                    "args": "index p (n * n ^ k) = k * index p n + index p n",
+                    "id": "2.4.8",
+                    "prevs": [
+                        "2.4.2",
+                        "2.4.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n * n ^ k) = k * index p n + index p n"
+                },
+                {
+                    "args": "mult_1_left, index p (n * n ^ k) = k * index p n + 1 * index p n",
+                    "id": "2.4.9",
+                    "prevs": [
+                        "2.4.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n * n ^ k) = k * index p n + 1 * index p n"
+                },
+                {
+                    "args": "distrib_r, index p (n * n ^ k) = (k + 1) * index p n",
+                    "id": "2.4.10",
+                    "prevs": [
+                        "2.4.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n * n ^ k) = (k + 1) * index p n"
+                },
+                {
+                    "args": "add_1_right, index p (n * n ^ k) = Suc k * index p n",
+                    "id": "2.4.11",
+                    "prevs": [
+                        "2.4.10"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n * n ^ k) = Suc k * index p n"
+                },
+                {
+                    "args": "nat_nat_power_def_2, index p (n ^ Suc k) = Suc k * index p n",
+                    "id": "2.4.12",
+                    "prevs": [
+                        "2.4.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(n = 0), index p (n ^ k) = k * index p n ⊢ index p (n ^ Suc k) = Suc k * index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.13",
+                    "prevs": [
+                        "2.4.0",
+                        "2.4.1",
+                        "2.4.12"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(n = 0) ⊢ ∀k. index p (n ^ k) = k * index p n ⟶ index p (n ^ Suc k) = Suc k * index p n"
+                },
+                {
+                    "args": "nat_induct, {P: λk. index p (n ^ k) = k * index p n, x: k}",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.3",
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, ¬(n = 0) ⊢ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ¬(n = 0) ⟶ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ index p (n ^ k) = k * index p n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ index p (n ^ k) = k * index p n"
+                }
+            ],
+            "prop": "prime p ⟶ index p (n ^ k) = k * index p n",
+            "steps": [
+                {
+                    "case": "n=0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_zero"
+                },
+                {
+                    "case": "k = 0",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_1"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_0"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_0"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "k"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_1"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_times_def_1"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_1"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "introduction",
+                    "names": "k"
+                },
+                {
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_nat_power_def_2"
+                },
+                {
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "distrib_r"
+                },
+                {
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_1_left"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.1"
+                    ],
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.2"
+                    ],
+                    "goal_id": "2.4.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.4.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "2.4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "index_mul"
+                },
+                {
+                    "goal_id": "2.4.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_eq_0"
+                },
+                {
+                    "goal_id": "2.4.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "2.4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
                 }
             ],
             "ty": "thm",
