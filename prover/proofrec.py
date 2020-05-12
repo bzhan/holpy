@@ -1,7 +1,13 @@
+"""
+Z3 proof reconstruction.
+Reference: Fast LCF-Style Proof Reconstruction for Z3
+by Sascha Böhme and Tjark Weber.
+"""
+
 import z3
 from z3.z3consts import *
 from data.integer import int_norm_macro
-from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar
+from kernel.type import TFun, BoolType, NatType, IntType, RealType, STVar, TVar
 from kernel.term import *
 from kernel.thm import Thm
 from kernel.proofterm import ProofTerm
@@ -18,7 +24,8 @@ import json
 # Z3 proof method name.
 method = ('mp', 'mp~', 'asserted', 'trans', 'monotonicity', 'rewrite', 'and-elim', 'not-or-elim',
             'iff-true', 'iff-false', 'unit-resolution', 'commutativity', 'def-intro', 'apply-def',
-            'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro')
+            'def-axiom', 'iff~', 'nnf-pos', 'nnf-neg', 'sk', 'proof-bind', 'quant-inst', 'quant-intro',
+            'lemma', 'hypothesis', 'symm', 'refl')
 
 def Z3Term(proof):
     """Index all terms in z3 proof."""
@@ -70,14 +77,17 @@ def DepthFirstOrder(G):
     
     return reversePost
 
-def translate_type(T):
+def translate_type(sort):
     """Translate z3 type into holpy type."""
+    T = sort.kind()
     if T == Z3_BOOL_SORT:
         return BoolType
     elif T == Z3_INT_SORT:
         return IntType
     elif T == Z3_REAL_SORT:
         return RealType
+    elif T == Z3_UNINTERPRETED_SORT:
+        return TVar(sort.name())
     else:
         raise NotImplementedError
 
@@ -87,13 +97,13 @@ def translate(term, bounds=dict()):
     """
     if z3.is_func_decl(term): # z3 function, including name, sort of each arguments, constant is function with 0 arg.
         arity = term.arity()
-        rangeT = translate_type(term.range().kind())
-        domainT = [translate_type(term.domain(i).kind()) for i in range(arity)]
+        rangeT = translate_type(term.range())
+        domainT = [translate_type(term.domain(i)) for i in range(arity)]
         types = domainT + [rangeT]
         return Var(term.name(), TFun(*types))
     elif z3.is_quantifier(term): 
         body = term.body()
-        var = tuple(Var(term.var_name(i), translate_type(term.var_sort(i).kind())) for i in range(term.num_vars()))
+        var = tuple(Var(term.var_name(i), translate_type(term.var_sort(i))) for i in range(term.num_vars()))
         bounds = {i : var[i] for i in range(term.num_vars())}
         # patterns = tuple(term.patterns(i) for i in range(term.num_patterns()))
         if term.is_lambda():
@@ -117,7 +127,7 @@ def translate(term, bounds=dict()):
         if z3.is_var(term):
             return bounds[z3.get_var_index(term)]
         kind = term.decl().kind() # term function application
-        sort = translate_type(term.sort_kind()) # term sort
+        sort = translate_type(term.sort()) # term sort
         args = tuple(translate(term.arg(i), bounds) for i in range(term.num_args()))
         if z3.is_int_value(term): # int number
             return Int(term.as_long())
@@ -128,7 +138,7 @@ def translate(term, bounds=dict()):
         elif z3.is_false(term):
             return false
         elif z3.is_const(term): # incomplete, is_const(Int(1)) == true
-            return Var(term.decl().name(), IntType)
+            return Var(term.decl().name(), sort)
         elif z3.is_add(term):
             return reduce(lambda x, y: x + y, args)
         elif term.decl().kind() == Z3_OP_UMINUS:
@@ -343,7 +353,7 @@ def quant_intro(p, q):
 
 def convert_method(term, *args):
     name = term.decl().name()
-    if name == 'asserted': # {P} ⊢ {P}
+    if name in ('asserted', 'hypothesis'): # {P} ⊢ {P}
         return ProofTerm.assume(args[0])
     elif name == 'and-elim':
         arg1, arg2 = args
@@ -356,7 +366,7 @@ def convert_method(term, *args):
     elif name in ('mp', 'mp~'):
         arg1, arg2, _ = args
         return ProofTerm.equal_elim(arg2, arg1)
-    elif name == 'rewrite' or name == 'commutativity':
+    elif name in ('rewrite', 'commutativity'):
         arg1, = args
         return rewrite(arg1)
     elif name == 'unit-resolution':
@@ -374,6 +384,12 @@ def convert_method(term, *args):
     elif name == 'quant-intro':
         arg1, arg2, = args
         return quant_intro(arg1, arg2)
+    # elif name == 'lemma':
+    #     return 
+    elif name == 'symm':
+        return args[0].symmetric()
+    elif name == 'refl':
+        return ProofTerm.reflexive(args[0])
     else:
         raise NotImplementedError
     
@@ -392,7 +408,7 @@ def proofrec(proof):
             r[i] = translate(term[i])
         else:
             r[i] = convert_method(term[i], *args)
-            basic.load_theory('int')
+            # basic.load_theory('int')
             # print('r['+str(i)+']', r[i])
     return r[0]
 
