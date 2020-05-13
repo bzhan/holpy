@@ -6174,6 +6174,752 @@
         },
         {
             "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nproduct_superset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "u ⊆ v",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "u ⊆ v ⊢ u ⊆ v"
+                },
+                {
+                    "args": "∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1 ⊢ ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1"
+                },
+                {
+                    "args": "monoidal_nat_mul",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (times::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "neutral_nat_mul, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = neutral times",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "u ⊆ v, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1 ⊢ ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = neutral times"
+                },
+                {
+                    "args": "iterate_superset",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "u ⊆ v, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1 ⊢ iterate times v f = iterate times u f"
+                },
+                {
+                    "args": "nproduct_def, nproduct v f = nproduct u f",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "u ⊆ v, ∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1 ⊢ nproduct v f = nproduct u f"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ u ⊆ v ⟶ (∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1) ⟶ nproduct v f = nproduct u f"
+                }
+            ],
+            "prop": "u ⊆ v ⟶ (∀x. x ∈ v ⟶ ¬(x ∈ u) ⟶ f x = 1) ⟶ nproduct v f = nproduct u f",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_superset"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_nat_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ nat",
+                "u": "'a set",
+                "v": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "nproduct_univ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "support times f univ ⊆ s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "support times f univ ⊆ s ⊢ support times f univ ⊆ s"
+                },
+                {
+                    "args": "monoidal_nat_mul",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (times::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_univ",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "support times f univ ⊆ s ⊢ iterate times s f = iterate times univ f"
+                },
+                {
+                    "args": "nproduct_def, nproduct s f = nproduct univ f",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "support times f univ ⊆ s ⊢ nproduct s f = nproduct univ f"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ support times f univ ⊆ s ⟶ nproduct s f = nproduct univ f"
+                }
+            ],
+            "prop": "support times f univ ⊆ s ⟶ nproduct s f = nproduct univ f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_univ"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a ⇒ nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nproduct_pair",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_mul",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (times::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_pair, {f: f, m: m, n: n, op: (times::nat ⇒ nat ⇒ nat)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate times ({2 * m..2 * n + 1}) f = iterate times ({m..n}) (λi. f (2 * i) * f (2 * i + 1))"
+                },
+                {
+                    "args": "nproduct_def, nproduct ({2 * m..2 * n + 1}) f = nproduct ({m..n}) (λi. f (2 * i) * f (2 * i + 1))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nproduct ({2 * m..2 * n + 1}) f = nproduct ({m..n}) (λi. f (2 * i) * f (2 * i + 1))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nproduct ({2 * m..2 * n + 1}) f = nproduct ({m..n}) (λi. f (2 * i) * f (2 * i + 1))"
+                }
+            ],
+            "prop": [
+                "nproduct ({2 * m..2 * n + 1}) f = ",
+                "nproduct ({m..n}) (λi. f (2 * i) * f (2 * i + 1))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_pair"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat ⇒ nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nproduct_reflect",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_mul",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (times::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_reflect, {m: m, n: n, op: (times::nat ⇒ nat ⇒ nat), x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate times ({m..n}) x = (if n < m then neutral times else iterate times ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "neutral_nat_mul, iterate times ({m..n}) x = (if n < m then 1 else iterate times ({0..n - m}) (λi. x (n - i)))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ iterate times ({m..n}) x = (if n < m then 1 else iterate times ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "nproduct_def, nproduct ({m..n}) x = (if n < m then 1 else nproduct ({0..n - m}) (λi. x (n - i)))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nproduct ({m..n}) x = (if n < m then 1 else nproduct ({0..n - m}) (λi. x (n - i)))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nproduct ({m..n}) x = (if n < m then 1 else nproduct ({0..n - m}) (λi. x (n - i)))"
+                }
+            ],
+            "prop": [
+                "nproduct ({m..n}) x = ",
+                "(if n < m then 1 else nproduct ({0..n - m}) (λi. x (n - i)))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "neutral_nat_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_reflect"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "x": "nat ⇒ nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "nproduct_delete",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "a ∈ s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ⊢ a ∈ s"
+                },
+                {
+                    "args": "monoidal_nat_mul",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (times::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_delete, {a: a, f: f, op: (times::nat ⇒ nat ⇒ nat), s: s}",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s, a ∈ s ⊢ f a * iterate times (delete s a) f = iterate times s f"
+                },
+                {
+                    "args": "nproduct_def, f a * nproduct (delete s a) f = nproduct s f",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, a ∈ s ⊢ f a * nproduct (delete s a) f = nproduct s f"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ a ∈ s ⟶ f a * nproduct (delete s a) f = nproduct s f"
+                }
+            ],
+            "prop": "finite s ⟶ a ∈ s ⟶ f a * nproduct (delete s a) f = nproduct s f",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_delete"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "f": "'a ⇒ nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nproduct_fact",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀i::nat. 1 ≤ i ⟶ i ≤ 0 ⟶ i = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀i::nat. 1 ≤ i ⟶ i ≤ 0 ⟶ i = 1"
+                },
+                {
+                    "args": "nproduct_eq_1_natseg",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ nproduct ({1..0}) (λi. i) = 1"
+                },
+                {
+                    "args": "fact_def_1, nproduct ({1..0}) (λm. m) = fact 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nproduct ({1..0}) (λm. m) = fact 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. nproduct ({1..n}) (λm. m) = fact n ⟶ nproduct ({1..Suc n}) (λm. m) = fact (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "nproduct ({1..n}) (λm. m) = fact n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ nproduct ({1..n}) (λm. m) = fact n"
+                },
+                {
+                    "args": "nat_zero_Suc_neq, {n: n}",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(0 = Suc n)"
+                },
+                {
+                    "args": "ineq_sym",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ 1 ≤ Suc n"
+                },
+                {
+                    "args": "mult_comm, {x: fact n, y: Suc n}",
+                    "id": "3.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ fact n * Suc n = Suc n * fact n"
+                },
+                {
+                    "args": "fact_def_2, fact n * Suc n = fact (Suc n)",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ fact n * Suc n = fact (Suc n)"
+                },
+                {
+                    "args": "nproduct ({1..n}) (λm. m) * Suc n = fact (Suc n)",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.1",
+                        "3.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ nproduct ({1..n}) (λm. m) * Suc n = fact (Suc n)"
+                },
+                {
+                    "args": "if_P, (if 1 ≤ Suc n then nproduct ({1..n}) (λm. m) * Suc n else nproduct ({1..n}) (λm. m)) = fact (Suc n)",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.7",
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ (if 1 ≤ Suc n then nproduct ({1..n}) (λm. m) * Suc n else nproduct ({1..n}) (λm. m)) = fact (Suc n)"
+                },
+                {
+                    "args": "nproduct_Suc_natseg, nproduct ({1..Suc n}) (λm. m) = fact (Suc n)",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "nproduct ({1..n}) (λm. m) = fact n ⊢ nproduct ({1..Suc n}) (λm. m) = fact (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "3.10",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. nproduct ({1..n}) (λm. m) = fact n ⟶ nproduct ({1..Suc n}) (λm. m) = fact (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {P: λn. nproduct ({1..n}) (λm. m) = fact n, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nproduct ({1..n}) (λm. m) = fact n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nproduct ({1..n}) (λm. m) = fact n"
+                }
+            ],
+            "prop": "nproduct ({1..n}) (λm. m) = fact n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fact_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nproduct_eq_1_natseg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_Suc_natseg"
+                },
+                {
+                    "goal": "1 ≤ Suc n",
+                    "goal_id": "3.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ineq_sym"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_zero_Suc_neq"
+                },
+                {
+                    "fact_ids": [
+                        "3.4"
+                    ],
+                    "goal_id": "3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fact_def_2"
+                },
+                {
+                    "goal_id": "3.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "mult_comm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nproduct_delta",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "monoidal_nat_mul",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ monoidal (times::nat ⇒ nat ⇒ nat)"
+                },
+                {
+                    "args": "iterate_delta, {a: a, f: λx::'a. b, op: (times::nat ⇒ nat ⇒ nat), s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ iterate times s (λx. if x = a then b else neutral times) = (if a ∈ s then b else neutral times)"
+                },
+                {
+                    "args": "neutral_nat_mul, iterate times s (λx. if x = a then b else 1) = (if a ∈ s then b else 1)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ iterate times s (λx. if x = a then b else 1) = (if a ∈ s then b else 1)"
+                },
+                {
+                    "args": "nproduct_def, nproduct s (λx. if x = a then b else 1) = (if a ∈ s then b else 1)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nproduct s (λx. if x = a then b else 1) = (if a ∈ s then b else 1)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ nproduct s (λx. if x = a then b else 1) = (if a ∈ s then b else 1)"
+                }
+            ],
+            "prop": "nproduct s (λx. if x = a then b else 1) = (if a ∈ s then b else 1)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nproduct_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "neutral_nat_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iterate_delta"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "monoidal_nat_mul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "nat",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "iproduct",

@@ -22933,7 +22933,7 @@
     ],
     "description": "Greatest common divisors",
     "imports": [
-        "iterate"
+        "products"
     ],
     "name": "gcd"
 }

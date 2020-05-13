@@ -51335,6 +51335,336 @@
                 "n": "nat",
                 "p": "nat"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "index_fact",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "∀i. 1 ≤ i ⟶ i ≤ 0 ⟶ index p i = 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀i. 1 ≤ i ⟶ i ≤ 0 ⟶ index p i = 0"
+                },
+                {
+                    "args": "nsum_eq_0_iff_natseg, nsum ({1..0}) (λm. index p m) = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ nsum ({1..0}) (λm. index p m) = 0"
+                },
+                {
+                    "args": "eq_sym_eq, 0 = nsum ({1..0}) (λm. index p m)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ 0 = nsum ({1..0}) (λm. index p m)"
+                },
+                {
+                    "args": "index_1, index p 1 = nsum ({1..0}) (λm. index p m)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ index p 1 = nsum ({1..0}) (λm. index p m)"
+                },
+                {
+                    "args": "fact_def_1, index p (fact 0) = nsum ({1..0}) (λm. index p m)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ index p (fact 0) = nsum ({1..0}) (λm. index p m)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ∀n. index p (fact n) = nsum ({1..n}) (λm. index p m) ⟶ index p (fact (Suc n)) = nsum ({1..Suc n}) (λm. index p m)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "index p (fact n) = nsum ({1..n}) (λm. index p m)",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (fact n) = nsum ({1..n}) (λm. index p m)"
+                },
+                {
+                    "args": "nat_zero_Suc_neq, {n: n}",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(0 = Suc n)"
+                },
+                {
+                    "args": "ineq_sym",
+                    "id": "6.3",
+                    "prevs": [
+                        "6.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ ¬(Suc n = 0)"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ 1 ≤ Suc n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ nsum ({1..n}) (λm. index p m) = index p (fact n)"
+                },
+                {
+                    "args": "fact_nz, {n: n}",
+                    "id": "6.6",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(fact n = 0)"
+                },
+                {
+                    "args": "index_mul",
+                    "id": "6.7",
+                    "prevs": [
+                        "0",
+                        "6.3",
+                        "6.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (Suc n * fact n) = index p (Suc n) + index p (fact n)"
+                },
+                {
+                    "args": "add_comm, index p (Suc n * fact n) = index p (fact n) + index p (Suc n)",
+                    "id": "6.8",
+                    "prevs": [
+                        "6.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (Suc n * fact n) = index p (fact n) + index p (Suc n)"
+                },
+                {
+                    "args": "index p (Suc n * fact n) = nsum ({1..n}) (λm. index p m) + index p (Suc n)",
+                    "id": "6.9",
+                    "prevs": [
+                        "6.5",
+                        "6.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (Suc n * fact n) = nsum ({1..n}) (λm. index p m) + index p (Suc n)"
+                },
+                {
+                    "args": "if_P, index p (Suc n * fact n) = (if 1 ≤ Suc n then nsum ({1..n}) (λm. index p m) + index p (Suc n) else nsum ({1..n}) (λm. index p m))",
+                    "id": "6.10",
+                    "prevs": [
+                        "6.9",
+                        "6.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (Suc n * fact n) = (if 1 ≤ Suc n then nsum ({1..n}) (λm. index p m) + index p (Suc n) else nsum ({1..n}) (λm. index p m))"
+                },
+                {
+                    "args": "nsum_Suc_natseg, index p (Suc n * fact n) = nsum ({1..Suc n}) (λm. index p m)",
+                    "id": "6.11",
+                    "prevs": [
+                        "6.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (Suc n * fact n) = nsum ({1..Suc n}) (λm. index p m)"
+                },
+                {
+                    "args": "fact_def_2, index p (fact (Suc n)) = nsum ({1..Suc n}) (λm. index p m)",
+                    "id": "6.12",
+                    "prevs": [
+                        "6.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, index p (fact n) = nsum ({1..n}) (λm. index p m) ⊢ index p (fact (Suc n)) = nsum ({1..Suc n}) (λm. index p m)"
+                },
+                {
+                    "args": "",
+                    "id": "6.13",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.12"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ∀n. index p (fact n) = nsum ({1..n}) (λm. index p m) ⟶ index p (fact (Suc n)) = nsum ({1..Suc n}) (λm. index p m)"
+                },
+                {
+                    "args": "nat_induct, {P: λn. index p (fact n) = nsum ({1..n}) (λm. index p m), x: n}",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ⊢ index p (fact n) = nsum ({1..n}) (λm. index p m)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ index p (fact n) = nsum ({1..n}) (λm. index p m)"
+                }
+            ],
+            "prop": "prime p ⟶ index p (fact n) = nsum ({1..n}) (λm. index p m)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fact_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_eq_0_iff_natseg"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fact_def_2"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nsum_Suc_natseg"
+                },
+                {
+                    "goal": "1 ≤ Suc n",
+                    "goal_id": "6.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ineq_sym"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nat_zero_Suc_neq"
+                },
+                {
+                    "fact_ids": [
+                        "6.4"
+                    ],
+                    "goal_id": "6.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "6.1"
+                    ],
+                    "goal_id": "6.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "6.5"
+                    ],
+                    "goal_id": "6.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_comm"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "index_mul"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "fact_nz"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "p": "nat"
+            }
         }
     ],
     "description": "Basic theory of divisibility, gcd, coprimality and primality (over N).",
