@@ -51665,6 +51665,917 @@
                 "n": "nat",
                 "p": "nat"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "index_fact_alt",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "index_fact, {n: n}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ⊢ index p (fact n) = nsum ({1..n}) (λm. index p m)"
+                },
+                {
+                    "args": "prime_imp_nz",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "prime_def",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "prime_ge_2",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ 2 ≤ p"
+                },
+                {
+                    "args": "¬(p ≤ 1)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "z3",
+                    "th": "prime p ⊢ ¬(p ≤ 1)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ∀i. 1 ≤ i ⟶ i ≤ n ⟶ (if p ≤ 1 ∨ i = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) i})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) i then 1 else 0)"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "1 ≤ m",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 ≤ m ⊢ 1 ≤ m"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "¬(m = 0)",
+                    "id": "7.3",
+                    "prevs": [
+                        "7.1"
+                    ],
+                    "rule": "z3",
+                    "th": "1 ≤ m ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7.4",
+                    "prevs": [
+                        "6",
+                        "7.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ ¬(p ≤ 1) ∧ ¬(m = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(p ≤ 1 ∨ m = 0)",
+                    "id": "7.5",
+                    "prevs": [
+                        "7.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ ¬(p ≤ 1 ∨ m = 0)"
+                },
+                {
+                    "args": "finite_indices, {P: λj::nat. 1 ≤ j, n: m, p: p}",
+                    "id": "7.6",
+                    "prevs": [
+                        "5",
+                        "7.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ finite ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})"
+                },
+                {
+                    "args": "nsum_const, {c: (1::nat)}",
+                    "id": "7.7",
+                    "prevs": [
+                        "7.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn. 1) = card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) * 1"
+                },
+                {
+                    "args": "mult_1_right",
+                    "id": "7.8",
+                    "prevs": [
+                        "7.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn. 1) = card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "7.9",
+                    "prevs": [
+                        "7.8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) = nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn. 1)"
+                },
+                {
+                    "args": "nsum_restrict_set, {P: λj::nat. divides (p ^ j) m, f: λn1::nat. (1::nat), s: {j::nat. 1 ≤ j ∧ p ^ j ≤ n}}",
+                    "id": "7.10",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ nsum ({x::nat. x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n} ∧ divides (p ^ x) m}) (λn1. 1) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. if divides (p ^ x) m then 1 else 0)"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "7.11",
+                    "prevs": [
+                        "7.10"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ nsum ({x::nat. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}) (λn1. 1) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. if divides (p ^ x) m then 1 else 0)"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "7.12",
+                    "prevs": [
+                        "7.11"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. if divides (p ^ x) m then 1 else 0) = nsum ({x::nat. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}) (λn1. 1)"
+                },
+                {
+                    "args": "",
+                    "id": "7.13",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ ∀x::nat. x ∈ {j. 1 ≤ j ∧ divides (p ^ j) m} ⟷ x ∈ {x1. (1 ≤ x1 ∧ p ^ x1 ≤ n) ∧ divides (p ^ x1) m}"
+                },
+                {
+                    "args": "j, nat",
+                    "id": "7.13.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR j"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ 1 ≤ j ∧ divides (p ^ j) m ⟶ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "1 ≤ j ∧ divides (p ^ j) m",
+                    "id": "7.13.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 ≤ j ∧ divides (p ^ j) m ⊢ 1 ≤ j ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7.13.1.1",
+                    "prevs": [
+                        "7.13.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ j ∧ divides (p ^ j) m ⊢ 1 ≤ j"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7.13.1.2",
+                    "prevs": [
+                        "7.13.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ j ∧ divides (p ^ j) m ⊢ divides (p ^ j) m"
+                },
+                {
+                    "args": "divides_le",
+                    "id": "7.13.1.3",
+                    "prevs": [
+                        "7.13.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ j ∧ divides (p ^ j) m ⊢ p ^ j ≤ m ∨ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ p ^ j ≤ m ⟶ p ^ j ≤ n"
+                },
+                {
+                    "args": "p ^ j ≤ m",
+                    "id": "7.13.1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ^ j ≤ m ⊢ p ^ j ≤ m"
+                },
+                {
+                    "args": "less_eq_trans",
+                    "id": "7.13.1.4.1",
+                    "prevs": [
+                        "7.13.1.4.0",
+                        "7.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m, p ^ j ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ p ^ j ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.1.4.2",
+                    "prevs": [
+                        "7.13.1.4.0",
+                        "7.13.1.4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ p ^ j ≤ m ⟶ p ^ j ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ m = 0 ⟶ p ^ j ≤ n"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "7.13.1.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "negE_gen, {A: m = 0, C: p ^ j ≤ n}",
+                    "id": "7.13.1.5.1",
+                    "prevs": [
+                        "7.3",
+                        "7.13.1.5.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = 0, 1 ≤ m ⊢ p ^ j ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.1.5.2",
+                    "prevs": [
+                        "7.13.1.5.0",
+                        "7.13.1.5.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ m = 0 ⟶ p ^ j ≤ n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "7.13.1.6",
+                    "prevs": [
+                        "7.13.1.3",
+                        "7.13.1.4",
+                        "7.13.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ p ^ j ≤ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7.13.1.7",
+                    "prevs": [
+                        "7.13.1.1",
+                        "7.13.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ 1 ≤ j ∧ p ^ j ≤ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7.13.1.8",
+                    "prevs": [
+                        "7.13.1.7",
+                        "7.13.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m, 1 ≤ j ∧ divides (p ^ j) m ⊢ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.1.9",
+                    "prevs": [
+                        "7.13.1.0",
+                        "7.13.1.8"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ 1 ≤ j ∧ divides (p ^ j) m ⟶ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⟶ 1 ≤ j ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "(1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m",
+                    "id": "7.13.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⊢ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7.13.2.1",
+                    "prevs": [
+                        "7.13.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⊢ 1 ≤ j ∧ p ^ j ≤ n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7.13.2.2",
+                    "prevs": [
+                        "7.13.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⊢ divides (p ^ j) m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "7.13.2.3",
+                    "prevs": [
+                        "7.13.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⊢ 1 ≤ j"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7.13.2.4",
+                    "prevs": [
+                        "7.13.2.3",
+                        "7.13.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m, (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⊢ 1 ≤ j ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.2.5",
+                    "prevs": [
+                        "7.13.2.0",
+                        "7.13.2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m ⟶ 1 ≤ j ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "7.13.3",
+                    "prevs": [
+                        "7.13.1",
+                        "7.13.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ 1 ≤ j ∧ divides (p ^ j) m ⟷ (1 ≤ j ∧ p ^ j ≤ n) ∧ divides (p ^ j) m"
+                },
+                {
+                    "args": "member_collect, j ∈ {j1. 1 ≤ j1 ∧ divides (p ^ j1) m} ⟷ j ∈ {x. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}",
+                    "id": "7.13.4",
+                    "prevs": [
+                        "7.13.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ j ∈ {j1. 1 ≤ j1 ∧ divides (p ^ j1) m} ⟷ j ∈ {x. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}"
+                },
+                {
+                    "args": "",
+                    "id": "7.13.5",
+                    "prevs": [
+                        "7.13.0",
+                        "7.13.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ ∀j::nat. j ∈ {j1. 1 ≤ j1 ∧ divides (p ^ j1) m} ⟷ j ∈ {x. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "7.14",
+                    "prevs": [
+                        "7.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ {j::nat. 1 ≤ j ∧ divides (p ^ j) m} = {x. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}"
+                },
+                {
+                    "args": "nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn1. 1) = nsum ({x::nat. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}) (λn1. 1)",
+                    "id": "7.15",
+                    "prevs": [
+                        "7.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn1. 1) = nsum ({x::nat. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}) (λn1. 1)"
+                },
+                {
+                    "args": "nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn1. 1) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) m then 1 else 0)",
+                    "id": "7.16",
+                    "prevs": [
+                        "7.12",
+                        "7.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ nsum ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) (λn1. 1) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. if divides (p ^ x) m then 1 else 0)"
+                },
+                {
+                    "args": "card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) m then 1 else 0)",
+                    "id": "7.17",
+                    "prevs": [
+                        "7.9",
+                        "7.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m}) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) m then 1 else 0)"
+                },
+                {
+                    "args": "if_not_P, (if p ≤ 1 ∨ m = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) m then 1 else 0)",
+                    "id": "7.18",
+                    "prevs": [
+                        "7.17",
+                        "7.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, m ≤ n, 1 ≤ m ⊢ (if p ≤ 1 ∨ m = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) m then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "7.19",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.2",
+                        "7.18"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ∀m. 1 ≤ m ⟶ m ≤ n ⟶ (if p ≤ 1 ∨ m = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) m then 1 else 0)"
+                },
+                {
+                    "args": "nsum_eq_natseg",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ nsum ({1..n}) (λi. if p ≤ 1 ∨ i = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) i})) = nsum ({1..n}) (λi. nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) i then 1 else 0))"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "prime p ⊢ nsum ({1..n}) (λi. nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) i then 1 else 0)) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "nsum ({1..n}) (λm. if p ≤ 1 ∨ m = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
+                    "id": "10",
+                    "prevs": [
+                        "8",
+                        "9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p ⊢ nsum ({1..n}) (λi. if p ≤ 1 ∨ i = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) i})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "index_def, nsum ({1..n}) (λm. index p m) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ nsum ({1..n}) (λm. index p m) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
+                    "id": "12",
+                    "prevs": [
+                        "1",
+                        "11"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p ⊢ index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                }
+            ],
+            "prop": [
+                "prime p ",
+                "⟶ index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "index_fact"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "~(p = 0)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_imp_nz"
+                },
+                {
+                    "goal": "~(p = 1)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "2 <= p",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_ge_2"
+                },
+                {
+                    "goal": "~(p <= 1)",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_def"
+                },
+                {
+                    "goal": "nsum ({1..n}) (λm. if p ≤ 1 ∨ m = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})) = nsum({1..n}) (%m. nsum {j::nat. 1 <= j & p ^ j <= n}\n                         (%j. if divides (p ^ j) m then 1 else 0))",
+                    "goal_id": "7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_eq_natseg"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "m"
+                },
+                {
+                    "goal": "~(p ≤ 1 ∨ m = 0)",
+                    "goal_id": "7.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "7.1"
+                    ],
+                    "goal_id": "7.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "7.5"
+                    ],
+                    "goal_id": "7.6",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal": "finite {j::nat. 1 ≤ j ∧ divides (p ^ j) m}",
+                    "goal_id": "7.6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_indices"
+                },
+                {
+                    "fact_ids": [
+                        "7.6"
+                    ],
+                    "goal_id": "7.7",
+                    "method_name": "apply_forward_step",
+                    "param_c": "(1::nat)",
+                    "theorem": "nsum_const"
+                },
+                {
+                    "fact_ids": [
+                        "7.7"
+                    ],
+                    "goal_id": "7.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "7.8"
+                    ],
+                    "goal_id": "7.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "7.9"
+                    ],
+                    "goal_id": "7.10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "7.10",
+                    "method_name": "apply_forward_step",
+                    "param_P": "(%j::nat. divides (p ^ j) m)",
+                    "param_f": "(λn1::nat. (1::nat))",
+                    "param_s": "{j::nat. 1 ≤ j ∧ p ^ j ≤ n}",
+                    "theorem": "nsum_restrict_set"
+                },
+                {
+                    "fact_ids": [
+                        "7.10"
+                    ],
+                    "goal_id": "7.11",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "7.11"
+                    ],
+                    "goal_id": "7.12",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "7.12"
+                    ],
+                    "goal_id": "7.13",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "{j::nat. 1 ≤ j ∧ divides (p ^ j) m} = {x::nat. (1 ≤ x ∧ p ^ x ≤ n) ∧ divides (p ^ x) m}",
+                    "goal_id": "7.13",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7.13",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "7.13",
+                    "method_name": "introduction",
+                    "names": "j"
+                },
+                {
+                    "goal_id": "7.13.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "7.13.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "7.13.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.1.0"
+                    ],
+                    "goal_id": "7.13.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.1.0"
+                    ],
+                    "goal_id": "7.13.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "7.13.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "7.13.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.1.2"
+                    ],
+                    "goal_id": "7.13.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "divides_le"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.1.3"
+                    ],
+                    "goal_id": "7.13.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "7.13.1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "7.13.1.4.1",
+                    "method_name": "apply_backward_step",
+                    "param_m": "m",
+                    "theorem": "less_eq_trans"
+                },
+                {
+                    "goal_id": "7.13.1.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.3",
+                        "7.13.1.5.0"
+                    ],
+                    "goal_id": "7.13.1.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "7.13.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.2.0"
+                    ],
+                    "goal_id": "7.13.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.2.0"
+                    ],
+                    "goal_id": "7.13.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "7.13.2.1"
+                    ],
+                    "goal_id": "7.13.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "7.13.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "7.14"
+                    ],
+                    "goal_id": "7.15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "p": "nat"
+            }
         }
     ],
     "description": "Basic theory of divisibility, gcd, coprimality and primality (over N).",
