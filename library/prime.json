@@ -51672,7 +51672,7 @@
                 "hint_backward1"
             ],
             "name": "index_fact_alt",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "prime p",
@@ -52177,47 +52177,892 @@
                     "th": "prime p ⊢ nsum ({1..n}) (λi. if p ≤ 1 ∨ i = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) i})) = nsum ({1..n}) (λi. nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) i then 1 else 0))"
                 },
                 {
-                    "args": "",
+                    "args": "nsum_swap, {f: λj::nat. λi. if divides (p ^ j) i then (1::nat) else 0, s: {j::nat. 1 ≤ j ∧ p ^ j ≤ n}, t: {1..n}}",
                     "id": "9",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "prime p ⊢ nsum ({1..n}) (λi. nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) i then 1 else 0)) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) ⟶ finite ({1..n}) ⟶ nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λi. nsum ({1..n}) (λi1. if divides (p ^ i) i1 then 1 else 0)) = nsum ({1..n}) (λj. nsum ({j1::nat. 1 ≤ j1 ∧ p ^ j1 ≤ n}) (λi. if divides (p ^ i) j then 1 else 0))"
+                },
+                {
+                    "args": "finite_exp_le, {P: λj::nat. 1 ≤ j, n: n, p: p}",
+                    "id": "10",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ⊢ finite ({j::nat. 1 ≤ j ∧ p ^ j ≤ n})"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "9",
+                        "10"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "prime p ⊢ finite ({1..n}) ⟶ nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λi. nsum ({1..n}) (λi1. if divides (p ^ i) i1 then 1 else 0)) = nsum ({1..n}) (λj. nsum ({j1::nat. 1 ≤ j1 ∧ p ^ j1 ≤ n}) (λi. if divides (p ^ i) j then 1 else 0))"
+                },
+                {
+                    "args": "finite_natseg, {m: (1::nat), n: n}",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({1..n})"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "11",
+                        "12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "prime p ⊢ nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λi. nsum ({1..n}) (λi1. if divides (p ^ i) i1 then 1 else 0)) = nsum ({1..n}) (λj. nsum ({j1::nat. 1 ≤ j1 ∧ p ^ j1 ≤ n}) (λi. if divides (p ^ i) j then 1 else 0))"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ nsum ({1..n}) (λj. nsum ({j1::nat. 1 ≤ j1 ∧ p ^ j1 ≤ n}) (λi. if divides (p ^ i) j then 1 else 0)) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λi. nsum ({1..n}) (λi1. if divides (p ^ i) i1 then 1 else 0))"
+                },
+                {
+                    "args": "",
+                    "id": "15",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ∀x::nat. x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n} ⟶ nsum ({1..n}) (λi. if divides (p ^ x) i then 1 else 0) = n DIV p ^ x"
+                },
+                {
+                    "args": "j, nat",
+                    "id": "15.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR j"
+                },
+                {
+                    "args": "j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}",
+                    "id": "15.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "15.2",
+                    "prevs": [
+                        "15.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ 1 ≤ j ∧ p ^ j ≤ n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.3",
+                    "prevs": [
+                        "15.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ 1 ≤ j"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "15.4",
+                    "prevs": [
+                        "15.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ p ^ j ≤ n"
+                },
+                {
+                    "args": "finite_restrict, {P: divides (p ^ j), s: {1..n}}",
+                    "id": "15.5",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ finite ({x. x ∈ {1..n} ∧ divides (p ^ j) x})"
+                },
+                {
+                    "args": "nsum_const, {c: (1::nat)}",
+                    "id": "15.6",
+                    "prevs": [
+                        "15.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ nsum ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) (λn1. 1) = card ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) * 1"
+                },
+                {
+                    "args": "mult_1_right",
+                    "id": "15.7",
+                    "prevs": [
+                        "15.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ nsum ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) (λn1. 1) = card ({x. x ∈ {1..n} ∧ divides (p ^ j) x})"
+                },
+                {
+                    "args": "",
+                    "id": "15.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ ∀x. x ∈ {x1. x1 ∈ {1..n} ∧ divides (p ^ j) x1} ⟷ x ∈ image (λq. p ^ j * q) ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "15.8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "15.8.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⟶ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j)"
+                },
+                {
+                    "args": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k)",
+                    "id": "15.8.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.8.1.1",
+                    "prevs": [
+                        "15.8.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ 1 ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "15.8.1.2",
+                    "prevs": [
+                        "15.8.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ∃k. x = p ^ j * k"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "15.8.1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x = p ^ j * d",
+                    "id": "15.8.1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = p ^ j * d ⊢ x = p ^ j * d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.8.1.5",
+                    "prevs": [
+                        "15.8.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ 1 ≤ x"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "15.8.1.6",
+                    "prevs": [
+                        "15.8.1.5"
+                    ],
+                    "rule": "z3",
+                    "th": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "15.8.1.7",
+                    "prevs": [
+                        "15.8.1.4",
+                        "15.8.1.6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x = p ^ j * d, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ¬(p ^ j * d = 0)"
+                },
+                {
+                    "args": "mult_eq_0",
+                    "id": "15.8.1.8",
+                    "prevs": [
+                        "15.8.1.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x = p ^ j * d, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ¬(p ^ j = 0 ∨ d = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "15.8.1.9",
+                    "prevs": [
+                        "15.8.1.8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x = p ^ j * d, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ¬(p ^ j = 0) ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "15.8.1.10",
+                    "prevs": [
+                        "15.8.1.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p ^ j * d, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ¬(d = 0)"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "15.8.1.11",
+                    "prevs": [
+                        "15.8.1.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, x = p ^ j * d, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ 1 ≤ d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.8.1.12",
+                    "prevs": [
+                        "15.8.1.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p ^ j * d, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ¬(p ^ j = 0)"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: n, n: d}",
+                    "id": "15.8.1.13",
+                    "prevs": [
+                        "15.8.1.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = p ^ j * d, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ d ≤ n DIV p ^ j ⟷ p ^ j * d ≤ n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "15.8.1.14",
+                    "prevs": [
+                        "15.8.1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x = p ^ j * d ⊢ p ^ j * d = x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "15.8.1.15",
+                    "prevs": [
+                        "15.8.1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ x ≤ n"
+                },
+                {
+                    "args": "p ^ j * d ≤ n",
+                    "id": "15.8.1.16",
+                    "prevs": [
+                        "15.8.1.14",
+                        "15.8.1.15"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, x = p ^ j * d, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ p ^ j * d ≤ n"
+                },
+                {
+                    "args": "d ≤ n DIV p ^ j",
+                    "id": "15.8.1.17",
+                    "prevs": [
+                        "15.8.1.13",
+                        "15.8.1.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, x = p ^ j * d, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ d ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15.8.1.18",
+                    "prevs": [
+                        "15.8.1.11",
+                        "15.8.1.17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, x = p ^ j * d, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ 1 ≤ d ∧ d ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15.8.1.19",
+                    "prevs": [
+                        "15.8.1.4",
+                        "15.8.1.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, x = p ^ j * d, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "exI, {P: λx1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j, a: d}",
+                    "id": "15.8.1.20",
+                    "prevs": [
+                        "15.8.1.19"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, x = p ^ j * d, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⊢ ∃a1. x = p ^ j * a1 ∧ 1 ≤ a1 ∧ a1 ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "∃k. x = p ^ j * k",
+                    "id": "15.8.1.21",
+                    "prevs": [
+                        "15.8.1.0",
+                        "15.8.1.2",
+                        "15.8.1.3",
+                        "15.8.1.4",
+                        "15.8.1.20"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⟶ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j)"
+                },
+                {
+                    "args": "",
+                    "id": "15.8.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j) ⟶ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k)"
+                },
+                {
+                    "args": "∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j",
+                    "id": "15.8.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "d, nat",
+                    "id": "15.8.2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j",
+                    "id": "15.8.2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.8.2.3",
+                    "prevs": [
+                        "15.8.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ x = p ^ j * d"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "15.8.2.4",
+                    "prevs": [
+                        "15.8.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ 1 ≤ d ∧ d ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.8.2.5",
+                    "prevs": [
+                        "15.8.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ 1 ≤ d"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "15.8.2.6",
+                    "prevs": [
+                        "15.8.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ d ≤ n DIV p ^ j"
+                },
+                {
+                    "args": "disjI1, {A: ¬(p = 0), B: ¬¬(j = 0)}",
+                    "id": "15.8.2.7",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(p = 0) ∨ ¬¬(j = 0)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(p = 0 ∧ ¬(j = 0))",
+                    "id": "15.8.2.8",
+                    "prevs": [
+                        "15.8.2.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(p = 0 ∧ ¬(j = 0))"
+                },
+                {
+                    "args": "exp_eq_0, ¬(p ^ j = 0)",
+                    "id": "15.8.2.9",
+                    "prevs": [
+                        "15.8.2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(p ^ j = 0)"
+                },
+                {
+                    "args": "¬(d = 0)",
+                    "id": "15.8.2.10",
+                    "prevs": [
+                        "15.8.2.5"
+                    ],
+                    "rule": "z3",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ ¬(d = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15.8.2.11",
+                    "prevs": [
+                        "15.8.2.9",
+                        "15.8.2.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(p ^ j = 0) ∧ ¬(d = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(p ^ j = 0 ∨ d = 0)",
+                    "id": "15.8.2.12",
+                    "prevs": [
+                        "15.8.2.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(p ^ j = 0 ∨ d = 0)"
+                },
+                {
+                    "args": "mult_eq_0, ¬(p ^ j * d = 0)",
+                    "id": "15.8.2.13",
+                    "prevs": [
+                        "15.8.2.12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(p ^ j * d = 0)"
+                },
+                {
+                    "args": "¬(x = 0)",
+                    "id": "15.8.2.14",
+                    "prevs": [
+                        "15.8.2.3",
+                        "15.8.2.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "15.8.2.15",
+                    "prevs": [
+                        "15.8.2.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ 1 ≤ x"
+                },
+                {
+                    "args": "le_rdiv_eq, {b: n, n: d}",
+                    "id": "15.8.2.16",
+                    "prevs": [
+                        "15.8.2.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ d ≤ n DIV p ^ j ⟷ p ^ j * d ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "15.8.2.17",
+                    "prevs": [
+                        "15.8.2.16",
+                        "15.8.2.6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ p ^ j * d ≤ n"
+                },
+                {
+                    "args": "x ≤ n",
+                    "id": "15.8.2.18",
+                    "prevs": [
+                        "15.8.2.3",
+                        "15.8.2.17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ x ≤ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15.8.2.19",
+                    "prevs": [
+                        "15.8.2.15",
+                        "15.8.2.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ 1 ≤ x ∧ x ≤ n"
+                },
+                {
+                    "args": "exI, {P: λa1. x = p ^ j * a1, a: d}",
+                    "id": "15.8.2.20",
+                    "prevs": [
+                        "15.8.2.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j ⊢ ∃a1. x = p ^ j * a1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "15.8.2.21",
+                    "prevs": [
+                        "15.8.2.19",
+                        "15.8.2.20"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n}, x = p ^ j * d ∧ 1 ≤ d ∧ d ≤ n DIV p ^ j, ∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j ⊢ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k)"
+                },
+                {
+                    "args": "∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j",
+                    "id": "15.8.2.22",
+                    "prevs": [
+                        "15.8.2.0",
+                        "15.8.2.0",
+                        "15.8.2.1",
+                        "15.8.2.2",
+                        "15.8.2.21"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j) ⟶ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "15.8.3",
+                    "prevs": [
+                        "15.8.1",
+                        "15.8.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ (1 ≤ x ∧ x ≤ n) ∧ (∃k. x = p ^ j * k) ⟷ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j)"
+                },
+                {
+                    "args": "divides_def, (1 ≤ x ∧ x ≤ n) ∧ divides (p ^ j) x ⟷ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j)",
+                    "id": "15.8.4",
+                    "prevs": [
+                        "15.8.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ (1 ≤ x ∧ x ≤ n) ∧ divides (p ^ j) x ⟷ (∃x1. x = p ^ j * x1 ∧ 1 ≤ x1 ∧ x1 ≤ n DIV p ^ j)"
+                },
+                {
+                    "args": "member_natseg, x ∈ {1..n} ∧ divides (p ^ j) x ⟷ (∃x1. x = p ^ j * x1 ∧ x1 ∈ {1..n DIV p ^ j})",
+                    "id": "15.8.5",
+                    "prevs": [
+                        "15.8.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ x ∈ {1..n} ∧ divides (p ^ j) x ⟷ (∃x1. x = p ^ j * x1 ∧ x1 ∈ {1..n DIV p ^ j})"
+                },
+                {
+                    "args": "in_image, x ∈ {1..n} ∧ divides (p ^ j) x ⟷ x ∈ image (λq. p ^ j * q) ({1..n DIV p ^ j})",
+                    "id": "15.8.6",
+                    "prevs": [
+                        "15.8.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ x ∈ {1..n} ∧ divides (p ^ j) x ⟷ x ∈ image (λq. p ^ j * q) ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "member_collect, x ∈ {x1. x1 ∈ {1..n} ∧ divides (p ^ j) x1} ⟷ x ∈ image (λq. p ^ j * q) ({1..n DIV p ^ j})",
+                    "id": "15.8.7",
+                    "prevs": [
+                        "15.8.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ x ∈ {x1. x1 ∈ {1..n} ∧ divides (p ^ j) x1} ⟷ x ∈ image (λq. p ^ j * q) ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "",
+                    "id": "15.8.8",
+                    "prevs": [
+                        "15.8.0",
+                        "15.8.7"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ ∀x. x ∈ {x1. x1 ∈ {1..n} ∧ divides (p ^ j) x1} ⟷ x ∈ image (λq. p ^ j * q) ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "15.9",
+                    "prevs": [
+                        "15.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ {x. x ∈ {1..n} ∧ divides (p ^ j) x} = image (λq. p ^ j * q) ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "",
+                    "id": "15.10",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ ∀x. ∀y. x ∈ {1..n DIV p ^ j} ⟶ y ∈ {1..n DIV p ^ j} ⟶ p ^ j * x = p ^ j * y ⟶ x = y"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "15.10.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "15.10.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ {1..n DIV p ^ j}",
+                    "id": "15.10.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ {1..n DIV p ^ j} ⊢ x ∈ {1..n DIV p ^ j}"
+                },
+                {
+                    "args": "y ∈ {1..n DIV p ^ j}",
+                    "id": "15.10.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ {1..n DIV p ^ j} ⊢ y ∈ {1..n DIV p ^ j}"
+                },
+                {
+                    "args": "p ^ j * x = p ^ j * y",
+                    "id": "15.10.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ^ j * x = p ^ j * y ⊢ p ^ j * x = p ^ j * y"
+                },
+                {
+                    "args": "eq_mult_lcancel",
+                    "id": "15.10.5",
+                    "prevs": [
+                        "15.10.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "p ^ j * x = p ^ j * y ⊢ p ^ j = 0 ∨ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "15.10.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, x ∈ {1..n DIV p ^ j}, y ∈ {1..n DIV p ^ j}, p ^ j * x = p ^ j * y, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ p ^ j = 0 ⟶ x = y"
+                },
+                {
+                    "args": "p ^ j = 0",
+                    "id": "15.10.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p ^ j = 0 ⊢ p ^ j = 0"
+                },
+                {
+                    "args": "exp_eq_0",
+                    "id": "15.10.6.1",
+                    "prevs": [
+                        "15.10.6.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "p ^ j = 0 ⊢ p = 0 ∧ ¬(j = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "15.10.6.2",
+                    "prevs": [
+                        "15.10.6.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p ^ j = 0 ⊢ p = 0"
+                },
+                {
+                    "args": "negE_gen, {A: p = 0, C: x = y}",
+                    "id": "15.10.6.3",
+                    "prevs": [
+                        "2",
+                        "15.10.6.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, p ^ j = 0 ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "15.10.6.4",
+                    "prevs": [
+                        "15.10.6.0",
+                        "15.10.6.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, x ∈ {1..n DIV p ^ j}, y ∈ {1..n DIV p ^ j}, p ^ j * x = p ^ j * y, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ p ^ j = 0 ⟶ x = y"
+                },
+                {
+                    "args": "x = y ⟶ x = y",
+                    "id": "15.10.7",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ x = y ⟶ x = y"
+                },
+                {
+                    "args": "disjE",
+                    "id": "15.10.8",
+                    "prevs": [
+                        "15.10.5",
+                        "15.10.6",
+                        "15.10.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, x ∈ {1..n DIV p ^ j}, y ∈ {1..n DIV p ^ j}, p ^ j * x = p ^ j * y, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "15.10.9",
+                    "prevs": [
+                        "15.10.0",
+                        "15.10.1",
+                        "15.10.2",
+                        "15.10.3",
+                        "15.10.4",
+                        "15.10.8"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ ∀x. ∀y. x ∈ {1..n DIV p ^ j} ⟶ y ∈ {1..n DIV p ^ j} ⟶ p ^ j * x = p ^ j * y ⟶ x = y"
+                },
+                {
+                    "args": "finite_natseg, {m: (1::nat), n: n DIV p ^ j}",
+                    "id": "15.11",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ finite ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "card_image_inj",
+                    "id": "15.12",
+                    "prevs": [
+                        "15.10",
+                        "15.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ card (image (λx. p ^ j * x) ({1..n DIV p ^ j})) = card ({1..n DIV p ^ j})"
+                },
+                {
+                    "args": "card_natseg_1",
+                    "id": "15.13",
+                    "prevs": [
+                        "15.12"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ card (image (λx. p ^ j * x) ({1..n DIV p ^ j})) = n DIV p ^ j"
+                },
+                {
+                    "args": "card ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) = n DIV p ^ j",
+                    "id": "15.14",
+                    "prevs": [
+                        "15.9",
+                        "15.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ card ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) = n DIV p ^ j"
+                },
+                {
+                    "args": "nsum ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) (λx. 1) = n DIV p ^ j",
+                    "id": "15.15",
+                    "prevs": [
+                        "15.7",
+                        "15.14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ nsum ({x. x ∈ {1..n} ∧ divides (p ^ j) x}) (λn1. 1) = n DIV p ^ j"
+                },
+                {
+                    "args": "nsum_restrict_set, nsum ({1..n}) (λi. if divides (p ^ j) i then 1 else 0) = n DIV p ^ j",
+                    "id": "15.16",
+                    "prevs": [
+                        "15.15"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "prime p, j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⊢ nsum ({1..n}) (λi. if divides (p ^ j) i then 1 else 0) = n DIV p ^ j"
+                },
+                {
+                    "args": "",
+                    "id": "15.17",
+                    "prevs": [
+                        "15.0",
+                        "15.1",
+                        "15.16"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ∀j::nat. j ∈ {j1. 1 ≤ j1 ∧ p ^ j1 ≤ n} ⟶ nsum ({1..n}) (λi. if divides (p ^ j) i then 1 else 0) = n DIV p ^ j"
+                },
+                {
+                    "args": "nsum_eq",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. nsum ({1..n}) (λi. if divides (p ^ x) i then 1 else 0)) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. n DIV p ^ x)"
+                },
+                {
+                    "args": "nsum ({1..n}) (λi. nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. if divides (p ^ j) i then 1 else 0)) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
+                    "id": "17",
+                    "prevs": [
+                        "14",
+                        "16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p ⊢ nsum ({1..n}) (λj. nsum ({j1::nat. 1 ≤ j1 ∧ p ^ j1 ≤ n}) (λi. if divides (p ^ i) j then 1 else 0)) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
                 },
                 {
                     "args": "nsum ({1..n}) (λm. if p ≤ 1 ∨ m = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) m})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
-                    "id": "10",
+                    "id": "18",
                     "prevs": [
                         "8",
-                        "9"
+                        "17"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "prime p ⊢ nsum ({1..n}) (λi. if p ≤ 1 ∨ i = 0 then 0 else card ({j::nat. 1 ≤ j ∧ divides (p ^ j) i})) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
                 },
                 {
                     "args": "index_def, nsum ({1..n}) (λm. index p m) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
-                    "id": "11",
+                    "id": "19",
                     "prevs": [
-                        "10"
+                        "18"
                     ],
                     "rule": "rewrite_goal",
                     "th": "prime p ⊢ nsum ({1..n}) (λm. index p m) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
                 },
                 {
                     "args": "index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)",
-                    "id": "12",
+                    "id": "20",
                     "prevs": [
                         "1",
-                        "11"
+                        "19"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "prime p ⊢ index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
                 },
                 {
                     "args": "",
-                    "id": "13",
+                    "id": "21",
                     "prevs": [
                         "0",
-                        "12"
+                        "20"
                     ],
                     "rule": "intros",
                     "th": "⊢ prime p ⟶ index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
@@ -52569,6 +53414,1051 @@
                     ],
                     "goal_id": "9",
                     "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "param_f": "(λj::nat. %i. if divides (p ^ j) i then (1::nat) else 0)",
+                    "param_s": "{j::nat. 1 ≤ j ∧ p ^ j ≤ n}",
+                    "param_t": "{1..n}",
+                    "theorem": "nsum_swap"
+                },
+                {
+                    "goal": "finite ({j::nat. 1 ≤ j ∧ p ^ j ≤ n})",
+                    "goal_id": "10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_exp_le"
+                },
+                {
+                    "fact_ids": [
+                        "9",
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal": "finite ({1..n})",
+                    "goal_id": "12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "11",
+                        "12"
+                    ],
+                    "goal_id": "13",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "13"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "14"
+                    ],
+                    "goal_id": "15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_eq"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "introduction",
+                    "names": "j"
+                },
+                {
+                    "fact_ids": [
+                        "15.1"
+                    ],
+                    "goal_id": "15.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "15.2"
+                    ],
+                    "goal_id": "15.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "15.2"
+                    ],
+                    "goal_id": "15.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "15.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "nsum_restrict_set"
+                },
+                {
+                    "goal": "finite {x. x ∈ {1..n} ∧ divides (p ^ j) x}",
+                    "goal_id": "15.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "15.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_restrict"
+                },
+                {
+                    "fact_ids": [
+                        "15.5"
+                    ],
+                    "goal_id": "15.6",
+                    "method_name": "apply_forward_step",
+                    "param_c": "(1::nat)",
+                    "theorem": "nsum_const"
+                },
+                {
+                    "fact_ids": [
+                        "15.6"
+                    ],
+                    "goal_id": "15.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "15.7"
+                    ],
+                    "goal_id": "15.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "{x. x ∈ {1..n} ∧ divides (p ^ j) x} =\n                  image (%q. (p ^ j) * q) ({1..(n DIV (p ^ j))})",
+                    "goal_id": "15.8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "15.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "15.8",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "15.8.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "15.8.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_image"
+                },
+                {
+                    "goal_id": "15.8.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_natseg"
+                },
+                {
+                    "goal_id": "15.8.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "goal_id": "15.8.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "15.8.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.0"
+                    ],
+                    "goal_id": "15.8.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.0"
+                    ],
+                    "goal_id": "15.8.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.2"
+                    ],
+                    "goal_id": "15.8.1.3",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "goal_id": "15.8.1.5",
+                    "method_name": "inst_exists_goal",
+                    "s": "d"
+                },
+                {
+                    "goal_id": "15.8.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "15.8.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "15.8.1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.1"
+                    ],
+                    "goal_id": "15.8.1.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal": "~(x=0)",
+                    "goal_id": "15.8.1.6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.5"
+                    ],
+                    "goal_id": "15.8.1.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.4",
+                        "15.8.1.6"
+                    ],
+                    "goal_id": "15.8.1.7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.7"
+                    ],
+                    "goal_id": "15.8.1.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.8"
+                    ],
+                    "goal_id": "15.8.1.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.9"
+                    ],
+                    "goal_id": "15.8.1.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.9"
+                    ],
+                    "goal_id": "15.8.1.12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.12"
+                    ],
+                    "goal_id": "15.8.1.13",
+                    "method_name": "apply_forward_step",
+                    "param_b": "n",
+                    "param_n": "d",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.13"
+                    ],
+                    "goal_id": "15.8.1.14",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.4"
+                    ],
+                    "goal_id": "15.8.1.14",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.14"
+                    ],
+                    "goal_id": "15.8.1.15",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.1.1"
+                    ],
+                    "goal_id": "15.8.1.15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "15.8.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.0"
+                    ],
+                    "goal_id": "15.8.2.1",
+                    "method_name": "exists_elim",
+                    "names": "d"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.2"
+                    ],
+                    "goal_id": "15.8.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.2"
+                    ],
+                    "goal_id": "15.8.2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.4"
+                    ],
+                    "goal_id": "15.8.2.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.4"
+                    ],
+                    "goal_id": "15.8.2.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.3"
+                    ],
+                    "goal_id": "15.8.2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_eq_0"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "15.8.2.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.5"
+                    ],
+                    "goal_id": "15.8.2.10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.9"
+                    ],
+                    "goal_id": "15.8.2.16",
+                    "method_name": "apply_forward_step",
+                    "param_b": "n",
+                    "param_n": "d",
+                    "theorem": "le_rdiv_eq"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.16",
+                        "15.8.2.6"
+                    ],
+                    "goal_id": "15.8.2.17",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.3"
+                    ],
+                    "goal_id": "15.8.2.18",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "15.8.2.3"
+                    ],
+                    "goal_id": "15.8.2.20",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "fact_ids": [
+                        "15.9"
+                    ],
+                    "goal_id": "15.10",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "card (image (λq. p ^ j * q) ({1..n DIV p ^ j})) = card ({1..n DIV p ^ j})",
+                    "goal_id": "15.10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "15.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "card_image_inj"
+                },
+                {
+                    "goal_id": "15.10",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "15.10.4"
+                    ],
+                    "goal_id": "15.10.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_mult_lcancel"
+                },
+                {
+                    "fact_ids": [
+                        "15.10.5"
+                    ],
+                    "goal_id": "15.10.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "15.10.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "15.10.6.0"
+                    ],
+                    "goal_id": "15.10.6.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "exp_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "15.10.6.1"
+                    ],
+                    "goal_id": "15.10.6.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "15.10.6.2"
+                    ],
+                    "goal_id": "15.10.6.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "15.11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_natseg"
+                },
+                {
+                    "fact_ids": [
+                        "15.12"
+                    ],
+                    "goal_id": "15.13",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "card_natseg_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "index_fact_unbound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "index_fact_alt, {n: n}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ⊢ index p (fact n) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ∀x::nat. 1 ≤ x ∧ p ^ x ≤ n ⟶ 1 ≤ x"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "1 ≤ x ∧ p ^ x ≤ n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 ≤ x ∧ p ^ x ≤ n ⊢ 1 ≤ x ∧ p ^ x ≤ n"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "1 ≤ x ∧ p ^ x ≤ n ⊢ 1 ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ∀x::nat. 1 ≤ x ∧ p ^ x ≤ n ⟶ 1 ≤ x"
+                },
+                {
+                    "args": "member_collect, ∀x::nat. x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n} ⟶ x ∈ {j. 1 ≤ j}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ ∀x::nat. x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n} ⟶ x ∈ {j. 1 ≤ j}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ {j::nat. 1 ≤ j ∧ p ^ j ≤ n} ⊆ {j. 1 ≤ j}"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ∀x::nat. x ∈ {j. 1 ≤ j} ⟶ ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⟶ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ {j. 1 ≤ j}",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ {j. 1 ≤ j} ⊢ x ∈ {j. 1 ≤ j}"
+                },
+                {
+                    "args": "¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n})",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n})"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ {j. 1 ≤ j} ⊢ 1 ≤ x"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(1 ≤ x ∧ p ^ x ≤ n)"
+                },
+                {
+                    "args": "de_morgan_thm1",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(1 ≤ x) ∨ ¬(p ^ x ≤ n)"
+                },
+                {
+                    "args": "",
+                    "id": "5.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(1 ≤ x) ⟶ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "¬(1 ≤ x)",
+                    "id": "5.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(1 ≤ x) ⊢ ¬(1 ≤ x)"
+                },
+                {
+                    "args": "negE_gen, {A: 1 ≤ x, C: n DIV p ^ x = 0}",
+                    "id": "5.6.1",
+                    "prevs": [
+                        "5.6.0",
+                        "5.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(1 ≤ x), x ∈ {j. 1 ≤ j} ⊢ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5.6.2",
+                    "prevs": [
+                        "5.6.0",
+                        "5.6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(1 ≤ x) ⟶ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(p ^ x ≤ n) ⟶ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "¬(p ^ x ≤ n)",
+                    "id": "5.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(p ^ x ≤ n) ⊢ ¬(p ^ x ≤ n)"
+                },
+                {
+                    "args": "prime_imp_nz",
+                    "id": "5.7.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(p ^ x ≤ n), x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(p = 0)"
+                },
+                {
+                    "args": "disjI1, {A: ¬(p = 0), B: ¬¬(x = 0)}",
+                    "id": "5.7.2",
+                    "prevs": [
+                        "5.7.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, ¬(p ^ x ≤ n), x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(p = 0) ∨ ¬¬(x = 0)"
+                },
+                {
+                    "args": "de_morgan_thm1, ¬(p = 0 ∧ ¬(x = 0))",
+                    "id": "5.7.3",
+                    "prevs": [
+                        "5.7.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(p ^ x ≤ n), x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(p = 0 ∧ ¬(x = 0))"
+                },
+                {
+                    "args": "exp_eq_0, ¬(p ^ x = 0)",
+                    "id": "5.7.4",
+                    "prevs": [
+                        "5.7.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(p ^ x ≤ n), x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(p ^ x = 0)"
+                },
+                {
+                    "args": "div_eq_0, {m: n}",
+                    "id": "5.7.5",
+                    "prevs": [
+                        "5.7.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, ¬(p ^ x ≤ n), x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ n DIV p ^ x = 0 ⟷ n < p ^ x"
+                },
+                {
+                    "args": "not_le",
+                    "id": "5.7.6",
+                    "prevs": [
+                        "5.7.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(p ^ x ≤ n) ⊢ n < p ^ x"
+                },
+                {
+                    "args": "n DIV p ^ x = 0",
+                    "id": "5.7.7",
+                    "prevs": [
+                        "5.7.5",
+                        "5.7.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(p ^ x ≤ n), x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5.7.8",
+                    "prevs": [
+                        "5.7.0",
+                        "5.7.7"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ ¬(p ^ x ≤ n) ⟶ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "5.8",
+                    "prevs": [
+                        "5.5",
+                        "5.6",
+                        "5.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, x ∈ {j. 1 ≤ j}, ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⊢ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "5.9",
+                    "prevs": [
+                        "5.0",
+                        "5.1",
+                        "5.2",
+                        "5.8"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ∀x::nat. x ∈ {j. 1 ≤ j} ⟶ ¬(x ∈ {j. 1 ≤ j ∧ p ^ j ≤ n}) ⟶ n DIV p ^ x = 0"
+                },
+                {
+                    "args": "nsum_superset",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ nsum ({j::nat. 1 ≤ j}) (λx. n DIV p ^ x) = nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λx. n DIV p ^ x)"
+                },
+                {
+                    "args": "eq_sym_eq, nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j) = nsum ({j::nat. 1 ≤ j}) (λj. n DIV p ^ j)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p ⊢ nsum ({j::nat. 1 ≤ j ∧ p ^ j ≤ n}) (λj. n DIV p ^ j) = nsum ({j::nat. 1 ≤ j}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "index p (fact n) = nsum ({j::nat. 1 ≤ j}) (λj. n DIV p ^ j)",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p ⊢ index p (fact n) = nsum ({j::nat. 1 ≤ j}) (λj. n DIV p ^ j)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ index p (fact n) = nsum ({j::nat. 1 ≤ j}) (λj. n DIV p ^ j)"
+                }
+            ],
+            "prop": "prime p ⟶ index p (fact n) = nsum ({j::nat. 1 ≤ j}) (λj. n DIV p ^ j)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "index_fact_alt"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "nsum_superset"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "5.4"
+                    ],
+                    "goal_id": "5.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "fact_ids": [
+                        "5.5"
+                    ],
+                    "goal_id": "5.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "5.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.6.0",
+                        "5.3"
+                    ],
+                    "goal_id": "5.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "5.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "¬(p ^ x = 0)",
+                    "goal_id": "5.7.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_eq_0"
+                },
+                {
+                    "goal_id": "5.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "goal_id": "5.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "5.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "prime_imp_nz"
+                },
+                {
+                    "fact_ids": [
+                        "5.7.4"
+                    ],
+                    "goal_id": "5.7.5",
+                    "method_name": "apply_forward_step",
+                    "param_m": "n",
+                    "theorem": "div_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "5.7.5"
+                    ],
+                    "goal_id": "5.7.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.7.0"
+                    ],
+                    "goal_id": "5.7.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
                 }
             ],
             "ty": "thm",
