@@ -1,0 +1,1291 @@
+{
+    "content": [
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "lcm",
+            "prop": "lcm m n = (if m * n = 0 then 0 else m * n DIV gcd m n)",
+            "ty": "def",
+            "type": "nat ⇒ nat ⇒ nat"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "lcm_divides",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m * n = 0 ⟶ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "m * n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m * n = 0 ⊢ m * n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m * n = 0 ⊢ divides 0 d ⟶ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "divides 0 d",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides 0 d ⊢ divides 0 d"
+                },
+                {
+                    "args": "divides_0",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides 0 d ⊢ d = 0"
+                },
+                {
+                    "args": "divides_zero, {n: m}",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides m 0"
+                },
+                {
+                    "args": "divides_zero, {n: n}",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.2",
+                        "0.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides 0 d, m * n = 0 ⊢ divides m 0 ∧ divides n 0"
+                },
+                {
+                    "args": "divides m d ∧ divides n d",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides 0 d, m * n = 0 ⊢ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "m * n = 0 ⊢ divides 0 d ⟶ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m * n = 0 ⊢ divides m d ∧ divides n d ⟶ divides 0 d"
+                },
+                {
+                    "args": "divides m d ∧ divides n d",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides m d ∧ divides n d ⊢ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m d ∧ divides n d ⊢ divides m d"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m d ∧ divides n d ⊢ divides n d"
+                },
+                {
+                    "args": "mult_eq_0",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m * n = 0 ⊢ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m * n = 0, divides m d ∧ divides n d ⊢ m = 0 ⟶ d = 0"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "0.2.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4.1",
+                    "prevs": [
+                        "0.2.4.0",
+                        "0.2.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = 0, divides m d ∧ divides n d ⊢ divides 0 d"
+                },
+                {
+                    "args": "divides_0",
+                    "id": "0.2.4.2",
+                    "prevs": [
+                        "0.2.4.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m = 0, divides m d ∧ divides n d ⊢ d = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.4.3",
+                    "prevs": [
+                        "0.2.4.0",
+                        "0.2.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m * n = 0, divides m d ∧ divides n d ⊢ m = 0 ⟶ d = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m * n = 0, divides m d ∧ divides n d ⊢ n = 0 ⟶ d = 0"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.5.1",
+                    "prevs": [
+                        "0.2.5.0",
+                        "0.2.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = 0, divides m d ∧ divides n d ⊢ divides 0 d"
+                },
+                {
+                    "args": "divides_0",
+                    "id": "0.2.5.2",
+                    "prevs": [
+                        "0.2.5.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "n = 0, divides m d ∧ divides n d ⊢ d = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.5.3",
+                    "prevs": [
+                        "0.2.5.0",
+                        "0.2.5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m * n = 0, divides m d ∧ divides n d ⊢ n = 0 ⟶ d = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.2.6",
+                    "prevs": [
+                        "0.2.3",
+                        "0.2.4",
+                        "0.2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m * n = 0, divides m d ∧ divides n d ⊢ d = 0"
+                },
+                {
+                    "args": "divides_0, divides 0 d",
+                    "id": "0.2.7",
+                    "prevs": [
+                        "0.2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m * n = 0, divides m d ∧ divides n d ⊢ divides 0 d"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.8",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.7"
+                    ],
+                    "rule": "intros",
+                    "th": "m * n = 0 ⊢ divides m d ∧ divides n d ⟶ divides 0 d"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m * n = 0 ⊢ divides 0 d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "if_P, divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m * n = 0 ⊢ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m * n = 0 ⟶ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(m * n = 0) ⟶ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "¬(m * n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m * n = 0) ⊢ ¬(m * n = 0)"
+                },
+                {
+                    "args": "gcd_divides2, {m: m, n: n}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd m n) n"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∃k. n = gcd m n * k"
+                },
+                {
+                    "args": "k1, nat",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k1"
+                },
+                {
+                    "args": "n = gcd m n * k1",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = gcd m n * k1 ⊢ n = gcd m n * k1"
+                },
+                {
+                    "args": "mult_comm, n = k1 * gcd m n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ n = k1 * gcd m n"
+                },
+                {
+                    "args": "disjI2, {A: m = 0, B: n = k1 * gcd m n}",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ m = 0 ∨ n = k1 * gcd m n"
+                },
+                {
+                    "args": "eq_mult_lcancel, m * n = m * (k1 * gcd m n)",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ m * n = m * (k1 * gcd m n)"
+                },
+                {
+                    "args": "mult_assoc, m * n = m * k1 * gcd m n",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ m * n = m * k1 * gcd m n"
+                },
+                {
+                    "args": "add_0_right, m * n = m * k1 * gcd m n + 0",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ m * n = m * k1 * gcd m n + 0"
+                },
+                {
+                    "args": "m = 0 ∧ n = 0 ⟶ m * n = 0",
+                    "id": "1.10",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ m = 0 ∧ n = 0 ⟶ m * n = 0"
+                },
+                {
+                    "args": "double_neg, ¬¬(m = 0 ∧ n = 0) ⟶ ¬¬(m * n = 0)",
+                    "id": "1.11",
+                    "prevs": [
+                        "1.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ ¬¬(m = 0 ∧ n = 0) ⟶ ¬¬(m * n = 0)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.12",
+                    "prevs": [
+                        "1.0",
+                        "1.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ ¬(m = 0 ∧ n = 0)"
+                },
+                {
+                    "args": "gcd_zero, ¬(gcd m n = 0)",
+                    "id": "1.13",
+                    "prevs": [
+                        "1.12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ ¬(gcd m n = 0)"
+                },
+                {
+                    "args": "le_1_1",
+                    "id": "1.14",
+                    "prevs": [
+                        "1.13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ 0 < gcd m n"
+                },
+                {
+                    "args": "div_uniq",
+                    "id": "1.15",
+                    "prevs": [
+                        "1.9",
+                        "1.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m * n = 0), n = gcd m n * k1 ⊢ m * n DIV gcd m n = m * k1"
+                },
+                {
+                    "args": "gcd_divide1, {m: m, n: n}",
+                    "id": "1.16",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd m n) m"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "1.17",
+                    "prevs": [
+                        "1.16"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ ∃k. m = gcd m n * k"
+                },
+                {
+                    "args": "k2, nat",
+                    "id": "1.18",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k2"
+                },
+                {
+                    "args": "m = gcd m n * k2",
+                    "id": "1.19",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = gcd m n * k2 ⊢ m = gcd m n * k2"
+                },
+                {
+                    "args": "mult_comm, m = k2 * gcd m n",
+                    "id": "1.20",
+                    "prevs": [
+                        "1.19"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ m = k2 * gcd m n"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: m = k2 * gcd m n}",
+                    "id": "1.21",
+                    "prevs": [
+                        "1.20"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ n = 0 ∨ m = k2 * gcd m n"
+                },
+                {
+                    "args": "eq_mult_lcancel, n * m = n * (k2 * gcd m n)",
+                    "id": "1.22",
+                    "prevs": [
+                        "1.21"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ n * m = n * (k2 * gcd m n)"
+                },
+                {
+                    "args": "mult_assoc, n * m = n * k2 * gcd m n",
+                    "id": "1.23",
+                    "prevs": [
+                        "1.22"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ n * m = n * k2 * gcd m n"
+                },
+                {
+                    "args": "add_0_right, n * m = n * k2 * gcd m n + 0",
+                    "id": "1.24",
+                    "prevs": [
+                        "1.23"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ n * m = n * k2 * gcd m n + 0"
+                },
+                {
+                    "args": "div_uniq",
+                    "id": "1.25",
+                    "prevs": [
+                        "1.24",
+                        "1.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ n * m DIV gcd m n = n * k2"
+                },
+                {
+                    "args": "mult_comm, m * n DIV gcd m n = k2 * n",
+                    "id": "1.26",
+                    "prevs": [
+                        "1.25"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ m * n DIV gcd m n = k2 * n"
+                },
+                {
+                    "args": "",
+                    "id": "1.27",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ divides (m * n DIV gcd m n) d ⟶ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "divides (m * n DIV gcd m n) d",
+                    "id": "1.27.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides (m * n DIV gcd m n) d ⊢ divides (m * n DIV gcd m n) d"
+                },
+                {
+                    "args": "divides_def",
+                    "id": "1.27.1",
+                    "prevs": [
+                        "1.27.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides (m * n DIV gcd m n) d ⊢ ∃k. d = m * n DIV gcd m n * k"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "1.27.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "d = m * n DIV gcd m n * k",
+                    "id": "1.27.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = m * n DIV gcd m n * k ⊢ d = m * n DIV gcd m n * k"
+                },
+                {
+                    "args": "divides_self, {n: m}",
+                    "id": "1.27.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides m m"
+                },
+                {
+                    "args": "divides_rmul, {a: m, d: m, x: k1}",
+                    "id": "1.27.5",
+                    "prevs": [
+                        "1.27.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides m (m * k1)"
+                },
+                {
+                    "args": "divides m (m * n DIV gcd m n)",
+                    "id": "1.27.6",
+                    "prevs": [
+                        "1.15",
+                        "1.27.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides m (m * n DIV gcd m n)"
+                },
+                {
+                    "args": "divides_rmul, {a: m * n DIV gcd m n, d: m, x: k}",
+                    "id": "1.27.7",
+                    "prevs": [
+                        "1.27.6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides m (m * n DIV gcd m n * k)"
+                },
+                {
+                    "args": "divides_self, {n: n}",
+                    "id": "1.27.8",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n n"
+                },
+                {
+                    "args": "divides_lmul, {a: n, d: n, x: k2}",
+                    "id": "1.27.9",
+                    "prevs": [
+                        "1.27.8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides n (k2 * n)"
+                },
+                {
+                    "args": "divides n (m * n DIV gcd m n)",
+                    "id": "1.27.10",
+                    "prevs": [
+                        "1.26",
+                        "1.27.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides n (m * n DIV gcd m n)"
+                },
+                {
+                    "args": "divides_rmul, {a: m * n DIV gcd m n, d: n, x: k}",
+                    "id": "1.27.11",
+                    "prevs": [
+                        "1.27.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides n (m * n DIV gcd m n * k)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.27.12",
+                    "prevs": [
+                        "1.27.7",
+                        "1.27.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides m (m * n DIV gcd m n * k) ∧ divides n (m * n DIV gcd m n * k)"
+                },
+                {
+                    "args": "divides m d ∧ divides n d",
+                    "id": "1.27.13",
+                    "prevs": [
+                        "1.27.3",
+                        "1.27.12"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides (m * n DIV gcd m n) d, d = m * n DIV gcd m n * k ⊢ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "∃k. d = m * n DIV gcd m n * k",
+                    "id": "1.27.14",
+                    "prevs": [
+                        "1.27.0",
+                        "1.27.1",
+                        "1.27.2",
+                        "1.27.3",
+                        "1.27.13"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ divides (m * n DIV gcd m n) d ⟶ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "1.28",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ divides m d ∧ divides n d ⟶ divides (m * n DIV gcd m n) d"
+                },
+                {
+                    "args": "divides m d ∧ divides n d",
+                    "id": "1.28.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides m d ∧ divides n d ⊢ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.28.1",
+                    "prevs": [
+                        "1.28.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m d ∧ divides n d ⊢ divides m d"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.28.2",
+                    "prevs": [
+                        "1.28.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides m d ∧ divides n d ⊢ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "1.28.3",
+                    "prevs": [
+                        "1.4",
+                        "1.28.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "n = gcd m n * k1, divides m d ∧ divides n d ⊢ divides (gcd m n * k1) d"
+                },
+                {
+                    "args": "",
+                    "id": "1.28.4",
+                    "prevs": [
+                        "1.19",
+                        "1.28.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = gcd m n * k2, divides m d ∧ divides n d ⊢ divides (gcd m n * k2) d"
+                },
+                {
+                    "args": "",
+                    "id": "1.28.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides m d ∧ divides n d ⊢ divides (gcd m n * k2 * k1) d"
+                },
+                {
+                    "args": "divides (m * k1) d",
+                    "id": "1.28.6",
+                    "prevs": [
+                        "1.19",
+                        "1.28.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides m d ∧ divides n d ⊢ divides (m * k1) d"
+                },
+                {
+                    "args": "divides (m * n DIV gcd m n) d",
+                    "id": "1.28.7",
+                    "prevs": [
+                        "1.15",
+                        "1.28.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1, divides m d ∧ divides n d ⊢ divides (m * n DIV gcd m n) d"
+                },
+                {
+                    "args": "",
+                    "id": "1.28.8",
+                    "prevs": [
+                        "1.28.0",
+                        "1.28.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ divides m d ∧ divides n d ⟶ divides (m * n DIV gcd m n) d"
+                },
+                {
+                    "args": "iffI",
+                    "id": "1.29",
+                    "prevs": [
+                        "1.27",
+                        "1.28"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ divides (m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "if_not_P, divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d",
+                    "id": "1.30",
+                    "prevs": [
+                        "1.29",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(m * n = 0), m = gcd m n * k2, n = gcd m n * k1 ⊢ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "∃k. m = gcd m n * k, ∃k. n = gcd m n * k",
+                    "id": "1.31",
+                    "prevs": [
+                        "1.0",
+                        "1.2",
+                        "1.3",
+                        "1.4",
+                        "1.17",
+                        "1.18",
+                        "1.19",
+                        "1.30"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(m * n = 0) ⟶ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides (if m * n = 0 then 0 else m * n DIV gcd m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "lcm_def, divides (lcm m n) d ⟷ divides m d ∧ divides n d",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ divides (lcm m n) d ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides (lcm m n) d ⟷ divides m d ∧ divides n d"
+                }
+            ],
+            "prop": "divides (lcm m n) d ⟷ divides m d ∧ divides n d",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lcm_def"
+                },
+                {
+                    "case": "m * n = 0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1"
+                    ],
+                    "goal_id": "0.1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_zero"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_zero"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.3"
+                    ],
+                    "goal_id": "0.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.2.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.4.0",
+                        "0.2.1"
+                    ],
+                    "goal_id": "0.2.4.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.4.1"
+                    ],
+                    "goal_id": "0.2.4.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "goal_id": "0.2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.5.0",
+                        "0.2.2"
+                    ],
+                    "goal_id": "0.2.5.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.5.1"
+                    ],
+                    "goal_id": "0.2.5.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd_divides2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "exists_elim",
+                    "names": "k1"
+                },
+                {
+                    "goal": "m * n DIV gcd m n = m * k1",
+                    "goal_id": "1.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "param_r": "(0::nat)",
+                    "theorem": "div_uniq"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_mult_lcancel"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_1"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_zero"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "contrapositive"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "1.10",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1.16",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd_divide1"
+                },
+                {
+                    "fact_ids": [
+                        "1.16"
+                    ],
+                    "goal_id": "1.17",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.17"
+                    ],
+                    "goal_id": "1.18",
+                    "method_name": "exists_elim",
+                    "names": "k2"
+                },
+                {
+                    "goal": "m * n DIV gcd m n = k2 * n",
+                    "goal_id": "1.20",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "apply_backward_step",
+                    "param_r": "(0::nat)",
+                    "theorem": "div_uniq"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_assoc"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_mult_lcancel"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.20",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_comm"
+                },
+                {
+                    "goal_id": "1.27",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1.27",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.27.0"
+                    ],
+                    "goal_id": "1.27.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.27.1"
+                    ],
+                    "goal_id": "1.27.2",
+                    "method_name": "exists_elim",
+                    "names": "k"
+                },
+                {
+                    "fact_ids": [
+                        "1.27.3"
+                    ],
+                    "goal_id": "1.27.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.27.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.27.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "fact_ids": [
+                        "1.15"
+                    ],
+                    "goal_id": "1.27.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.27.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "1.27.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "goal_id": "1.27.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "fact_ids": [
+                        "1.26"
+                    ],
+                    "goal_id": "1.27.8",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.27.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_lmul"
+                },
+                {
+                    "goal_id": "1.27.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "goal_id": "1.28",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.28.0"
+                    ],
+                    "goal_id": "1.28.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.28.0"
+                    ],
+                    "goal_id": "1.28.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.15"
+                    ],
+                    "goal_id": "1.28.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.4",
+                        "1.28.2"
+                    ],
+                    "goal_id": "1.28.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.19"
+                    ],
+                    "goal_id": "1.28.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.19",
+                        "1.28.1"
+                    ],
+                    "goal_id": "1.28.4",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        }
+    ],
+    "description": "Least common multiples.",
+    "imports": [
+        "prime"
+    ],
+    "name": "lcm"
+}
