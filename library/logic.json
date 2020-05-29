@@ -2390,6 +2390,498 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "disj_conj_distribL1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A ∨ B ∧ C ⟶ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "A ∨ B ∧ C",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ∨ B ∧ C ⊢ A ∨ B ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A ∨ B ∧ C ⊢ A ⟶ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "A",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "disjI1, {A: A, B: B}",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A, A ∨ B ∧ C ⊢ A ∨ B"
+                },
+                {
+                    "args": "disjI1, {A: A, B: C}",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A, A ∨ B ∧ C ⊢ A ∨ C"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A, A ∨ B ∧ C ⊢ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "A ∨ B ∧ C ⊢ A ⟶ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A ∨ B ∧ C ⊢ B ∧ C ⟶ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "B ∧ C",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ∧ C ⊢ B ∧ C"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∧ C ⊢ B"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∧ C ⊢ C"
+                },
+                {
+                    "args": "disjI2, {A: A, B: B}",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "B ∧ C, A ∨ B ∧ C ⊢ A ∨ B"
+                },
+                {
+                    "args": "disjI2, {A: A, B: C}",
+                    "id": "0.2.4",
+                    "prevs": [
+                        "0.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "B ∧ C, A ∨ B ∧ C ⊢ A ∨ C"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.5",
+                    "prevs": [
+                        "0.2.3",
+                        "0.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B ∧ C, A ∨ B ∧ C ⊢ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.6",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "A ∨ B ∧ C ⊢ B ∧ C ⟶ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A ∨ B ∧ C ⊢ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ∨ B ∧ C ⟶ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (A ∨ B) ∧ (A ∨ C) ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "(A ∨ B) ∧ (A ∨ C)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ A ∨ B"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ A ∨ C"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ A ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "A",
+                    "id": "1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "disjI1, {A: A, B: B ∧ C}",
+                    "id": "1.3.1",
+                    "prevs": [
+                        "1.3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A, (A ∨ B) ∧ (A ∨ C) ⊢ A ∨ B ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.3.0",
+                        "1.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ A ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ B ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "B",
+                    "id": "1.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "B, (A ∨ B) ∧ (A ∨ C) ⊢ C ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "C",
+                    "id": "1.4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "C ⊢ C"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.4.1.1",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B, C, (A ∨ B) ∧ (A ∨ C) ⊢ B ∧ C"
+                },
+                {
+                    "args": "disjI2, {A: A, B: B ∧ C}",
+                    "id": "1.4.1.2",
+                    "prevs": [
+                        "1.4.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "B, C, (A ∨ B) ∧ (A ∨ C) ⊢ A ∨ B ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.1.3",
+                    "prevs": [
+                        "1.4.1.0",
+                        "1.4.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "B, (A ∨ B) ∧ (A ∨ C) ⊢ C ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.4.2",
+                    "prevs": [
+                        "1.2",
+                        "1.3",
+                        "1.4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "B, (A ∨ B) ∧ (A ∨ C) ⊢ A ∨ B ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "1.4.3",
+                    "prevs": [
+                        "1.4.0",
+                        "1.4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ B ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.1",
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(A ∨ B) ∧ (A ∨ C) ⊢ A ∨ B ∧ C"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (A ∨ B) ∧ (A ∨ C) ⟶ A ∨ B ∧ C"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ A ∨ B ∧ C ⟷ (A ∨ B) ∧ (A ∨ C)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ∨ B ∧ C ⟷ (A ∨ B) ∧ (A ∨ C)"
+                }
+            ],
+            "prop": "A ∨ B ∧ C ⟷ (A ∨ B) ∧ (A ∨ C)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "0.2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool",
+                "C": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "de_morgan_thm1",
             "prop": "¬(A ∧ B) ⟷ ¬A ∨ ¬B",
             "ty": "thm",
