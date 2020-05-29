@@ -2833,22 +2833,22 @@
                     "th": "⊢ divides (p ^ k) 0"
                 },
                 {
-                    "args": "disjI1, {A: divides (p ^ k) 0, B: divides (p ^ k) n}",
+                    "args": "divides (p ^ k) m",
                     "id": "1.1.2",
                     "prevs": [
+                        "1.1.0",
                         "1.1.1"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "prime p, m = 0, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k) 0 ∨ divides (p ^ k) n"
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, m = 0, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k) m"
                 },
                 {
-                    "args": "divides (p ^ k) m ∨ divides (p ^ k) n",
+                    "args": "disjI1, {A: divides (p ^ k) m, B: divides (p ^ k) n}",
                     "id": "1.1.3",
                     "prevs": [
-                        "1.1.0",
                         "1.1.2"
                     ],
-                    "rule": "rewrite_goal_with_prev",
+                    "rule": "apply_theorem_for",
                     "th": "prime p, m = 0, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
@@ -2897,22 +2897,22 @@
                     "th": "⊢ divides (p ^ k) 0"
                 },
                 {
-                    "args": "disjI2, {A: divides (p ^ k) m, B: divides (p ^ k) 0}",
+                    "args": "divides (p ^ k) n",
                     "id": "1.2.1.2",
                     "prevs": [
+                        "1.2.1.0",
                         "1.2.1.1"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "prime p, n = 0, ¬(m = 0), divides (p ^ k) (lcm m n) ⊢ divides (p ^ k) m ∨ divides (p ^ k) 0"
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, n = 0, ¬(m = 0), divides (p ^ k) (lcm m n) ⊢ divides (p ^ k) n"
                 },
                 {
-                    "args": "divides (p ^ k) m ∨ divides (p ^ k) n",
+                    "args": "disjI2, {A: divides (p ^ k) m, B: divides (p ^ k) n}",
                     "id": "1.2.1.3",
                     "prevs": [
-                        "1.2.1.0",
                         "1.2.1.2"
                     ],
-                    "rule": "rewrite_goal_with_prev",
+                    "rule": "apply_theorem_for",
                     "th": "prime p, n = 0, ¬(m = 0), divides (p ^ k) (lcm m n) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
@@ -2940,42 +2940,8 @@
                     "th": "¬(n = 0) ⊢ ¬(n = 0)"
                 },
                 {
-                    "args": "factorization_index, {n: n, p: p}",
-                    "id": "1.2.2.1",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ ¬(n = 0) ⟶ 2 ≤ p ⟶ (∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n)))"
-                },
-                {
-                    "args": "factorization_index, {n: m, p: p}",
-                    "id": "1.2.2.2",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ ¬(m = 0) ⟶ 2 ≤ p ⟶ (∃k::nat. divides (p ^ k) m ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) m)))"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.3",
-                    "prevs": [
-                        "1.2.2.1",
-                        "1.2.2.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "¬(n = 0) ⊢ 2 ≤ p ⟶ (∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n)))"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.4",
-                    "prevs": [
-                        "1.2.2.2",
-                        "1.2.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "¬(m = 0) ⊢ 2 ≤ p ⟶ (∃k::nat. divides (p ^ k) m ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) m)))"
-                },
-                {
                     "args": "prime_ge_2",
-                    "id": "1.2.2.5",
+                    "id": "1.2.2.1",
                     "prevs": [
                         "0"
                     ],
@@ -2983,138 +2949,138 @@
                     "th": "prime p ⊢ 2 ≤ p"
                 },
                 {
-                    "args": "",
-                    "id": "1.2.2.6",
+                    "args": "factorization_index",
+                    "id": "1.2.2.2",
                     "prevs": [
-                        "1.2.2.3",
-                        "1.2.2.5"
+                        "1.2.0",
+                        "1.2.2.1"
                     ],
-                    "rule": "apply_fact",
-                    "th": "prime p, ¬(n = 0) ⊢ ∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n))"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.7",
-                    "prevs": [
-                        "1.2.2.4",
-                        "1.2.2.5"
-                    ],
-                    "rule": "apply_fact",
+                    "rule": "apply_theorem",
                     "th": "prime p, ¬(m = 0) ⊢ ∃k::nat. divides (p ^ k) m ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) m))"
                 },
                 {
+                    "args": "factorization_index",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(n = 0) ⊢ ∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n))"
+                },
+                {
                     "args": "a, nat",
-                    "id": "1.2.2.8",
+                    "id": "1.2.2.4",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR a"
                 },
                 {
-                    "args": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n))",
-                    "id": "1.2.2.9",
+                    "args": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m))",
+                    "id": "1.2.2.5",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n))"
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m))"
                 },
                 {
                     "args": "conjD1",
-                    "id": "1.2.2.10",
+                    "id": "1.2.2.6",
                     "prevs": [
-                        "1.2.2.9"
+                        "1.2.2.5"
                     ],
                     "rule": "apply_theorem",
-                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ a) n"
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ a) m"
                 },
                 {
                     "args": "conjD2",
-                    "id": "1.2.2.11",
+                    "id": "1.2.2.7",
                     "prevs": [
-                        "1.2.2.9"
+                        "1.2.2.5"
                     ],
                     "rule": "apply_theorem",
-                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∀l. a < l ⟶ ¬(divides (p ^ l) n)"
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ ∀l. a < l ⟶ ¬(divides (p ^ l) m)"
                 },
                 {
                     "args": "divides_def",
-                    "id": "1.2.2.12",
+                    "id": "1.2.2.8",
                     "prevs": [
-                        "1.2.2.10"
+                        "1.2.2.6"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∃k. n = p ^ a * k"
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ ∃k. m = p ^ a * k"
                 },
                 {
                     "args": "q, nat",
-                    "id": "1.2.2.13",
+                    "id": "1.2.2.9",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR q"
                 },
                 {
-                    "args": "n = p ^ a * q",
-                    "id": "1.2.2.14",
+                    "args": "m = p ^ a * q",
+                    "id": "1.2.2.10",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "n = p ^ a * q ⊢ n = p ^ a * q"
+                    "th": "m = p ^ a * q ⊢ m = p ^ a * q"
                 },
                 {
                     "args": "b, nat",
-                    "id": "1.2.2.15",
+                    "id": "1.2.2.11",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR b"
                 },
                 {
-                    "args": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m))",
-                    "id": "1.2.2.16",
+                    "args": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n))",
+                    "id": "1.2.2.12",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m))"
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n))"
                 },
                 {
                     "args": "conjD1",
-                    "id": "1.2.2.17",
+                    "id": "1.2.2.13",
                     "prevs": [
-                        "1.2.2.16"
+                        "1.2.2.12"
                     ],
                     "rule": "apply_theorem",
-                    "th": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ b) m"
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ b) n"
                 },
                 {
                     "args": "conjD2",
-                    "id": "1.2.2.18",
+                    "id": "1.2.2.14",
                     "prevs": [
-                        "1.2.2.16"
+                        "1.2.2.12"
                     ],
                     "rule": "apply_theorem",
-                    "th": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ∀l. b < l ⟶ ¬(divides (p ^ l) m)"
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∀l. b < l ⟶ ¬(divides (p ^ l) n)"
                 },
                 {
                     "args": "divides_def",
-                    "id": "1.2.2.19",
+                    "id": "1.2.2.15",
                     "prevs": [
-                        "1.2.2.17"
+                        "1.2.2.13"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ∃k. m = p ^ b * k"
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ∃k. n = p ^ b * k"
                 },
                 {
                     "args": "r, nat",
-                    "id": "1.2.2.20",
+                    "id": "1.2.2.16",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR r"
                 },
                 {
-                    "args": "m = p ^ b * r",
-                    "id": "1.2.2.21",
+                    "args": "n = p ^ b * r",
+                    "id": "1.2.2.17",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "m = p ^ b * r ⊢ m = p ^ b * r"
+                    "th": "n = p ^ b * r ⊢ n = p ^ b * r"
                 },
                 {
                     "args": "divides_lcm_gcd",
-                    "id": "1.2.2.22",
+                    "id": "1.2.2.18",
                     "prevs": [
                         "1.0"
                     ],
@@ -3123,710 +3089,595 @@
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.23",
+                    "id": "1.2.2.19",
                     "prevs": [
-                        "1.2.2.21",
-                        "1.2.2.22"
+                        "1.2.2.10",
+                        "1.2.2.18"
                     ],
                     "rule": "rewrite_fact_with_prev",
-                    "th": "m = p ^ b * r, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k * gcd (p ^ b * r) n) (p ^ b * r * n)"
+                    "th": "m = p ^ a * q, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k * gcd (p ^ a * q) n) (p ^ a * q * n)"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.24",
+                    "id": "1.2.2.20",
                     "prevs": [
-                        "1.2.2.14",
-                        "1.2.2.23"
+                        "1.2.2.17",
+                        "1.2.2.19"
                     ],
                     "rule": "rewrite_fact_with_prev",
-                    "th": "m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k * gcd (p ^ b * r) (p ^ a * q)) (p ^ b * r * (p ^ a * q))"
+                    "th": "m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k * gcd (p ^ a * q) (p ^ b * r)) (p ^ a * q * (p ^ b * r))"
                 },
                 {
                     "args": "min a b + (a - min a b) = a",
-                    "id": "1.2.2.25",
+                    "id": "1.2.2.21",
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ min a b + (a - min a b) = a"
                 },
                 {
                     "args": "min a b + (b - min a b) = b",
-                    "id": "1.2.2.26",
+                    "id": "1.2.2.22",
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ min a b + (b - min a b) = b"
                 },
                 {
                     "args": "gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ a * q) (p ^ (min a b + (b - min a b)) * r)",
-                    "id": "1.2.2.27",
+                    "id": "1.2.2.23",
                     "prevs": [
-                        "1.2.2.26"
+                        "1.2.2.22"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ a * q) (p ^ (min a b + (b - min a b)) * r)"
                 },
                 {
                     "args": "gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ (min a b + (a - min a b)) * q) (p ^ (min a b + (b - min a b)) * r)",
-                    "id": "1.2.2.28",
+                    "id": "1.2.2.24",
                     "prevs": [
-                        "1.2.2.25",
-                        "1.2.2.27"
+                        "1.2.2.21",
+                        "1.2.2.23"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ (min a b + (a - min a b)) * q) (p ^ (min a b + (b - min a b)) * r)"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ (min a b + (a - min a b)) * q) (p ^ (min a b + (b - min a b)) * r)"
                 },
                 {
                     "args": "nat_power_add, gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * p ^ (a - min a b) * q) (p ^ min a b * p ^ (b - min a b) * r)",
+                    "id": "1.2.2.25",
+                    "prevs": [
+                        "1.2.2.24"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * p ^ (a - min a b) * q) (p ^ min a b * p ^ (b - min a b) * r)"
+                },
+                {
+                    "args": "mult_assoc, gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * (p ^ (a - min a b) * q)) (p ^ min a b * (p ^ (b - min a b) * r))",
+                    "id": "1.2.2.26",
+                    "prevs": [
+                        "1.2.2.25"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * (p ^ (a - min a b) * q)) (p ^ min a b * (p ^ (b - min a b) * r))"
+                },
+                {
+                    "args": "gcd_mult_left, gcd (p ^ a * q) (p ^ b * r) = p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)",
+                    "id": "1.2.2.27",
+                    "prevs": [
+                        "1.2.2.26"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ gcd (p ^ a * q) (p ^ b * r) = p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.28",
+                    "prevs": [
+                        "1.2.2.27",
+                        "1.2.2.20"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k * (p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r))) (p ^ a * q * (p ^ b * r))"
+                },
+                {
+                    "args": "mult_assoc",
                     "id": "1.2.2.29",
                     "prevs": [
                         "1.2.2.28"
                     ],
-                    "rule": "rewrite_goal_sym",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * p ^ (a - min a b) * q) (p ^ min a b * p ^ (b - min a b) * r)"
+                    "rule": "rewrite_fact_sym",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k * p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)) (p ^ a * q * p ^ b * r)"
                 },
                 {
-                    "args": "mult_assoc, gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * (p ^ (a - min a b) * q)) (p ^ min a b * (p ^ (b - min a b) * r))",
+                    "args": "nat_power_add",
                     "id": "1.2.2.30",
                     "prevs": [
                         "1.2.2.29"
                     ],
-                    "rule": "rewrite_goal_sym",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ gcd (p ^ a * q) (p ^ b * r) = gcd (p ^ min a b * (p ^ (a - min a b) * q)) (p ^ min a b * (p ^ (b - min a b) * r))"
+                    "rule": "rewrite_fact_sym",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ (k + min a b) * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)) (p ^ a * q * p ^ b * r)"
                 },
                 {
-                    "args": "gcd_mult_left, gcd (p ^ a * q) (p ^ b * r) = p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)",
+                    "args": "divides_rmul2",
                     "id": "1.2.2.31",
                     "prevs": [
                         "1.2.2.30"
                     ],
-                    "rule": "rewrite_goal_sym",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ gcd (p ^ a * q) (p ^ b * r) = p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)"
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ (k + min a b)) (p ^ a * q * p ^ b * r)"
                 },
                 {
-                    "args": "gcd_comm",
+                    "args": "p ^ a * q * p ^ b * r = q * r * (p ^ a * p ^ b)",
                     "id": "1.2.2.32",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ p ^ a * q * p ^ b * r = q * r * (p ^ a * p ^ b)"
+                },
+                {
+                    "args": "nat_power_add, p ^ a * q * p ^ b * r = q * r * p ^ (a + b)",
+                    "id": "1.2.2.33",
                     "prevs": [
-                        "1.2.2.24"
+                        "1.2.2.32"
                     ],
-                    "rule": "rewrite_fact",
-                    "th": "m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n) ⊢ divides (p ^ k * gcd (p ^ a * q) (p ^ b * r)) (p ^ b * r * (p ^ a * q))"
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ p ^ a * q * p ^ b * r = q * r * p ^ (a + b)"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.33",
-                    "prevs": [
-                        "1.2.2.31",
-                        "1.2.2.32"
-                    ],
-                    "rule": "rewrite_fact_with_prev",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k * (p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r))) (p ^ b * r * (p ^ a * q))"
-                },
-                {
-                    "args": "mult_assoc",
                     "id": "1.2.2.34",
                     "prevs": [
-                        "1.2.2.33"
+                        "1.2.2.33",
+                        "1.2.2.31"
                     ],
-                    "rule": "rewrite_fact_sym",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k * p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)) (p ^ b * r * p ^ a * q)"
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ (k + min a b)) (q * r * p ^ (a + b))"
                 },
                 {
-                    "args": "nat_power_add",
+                    "args": "coprime_exp_divprod",
                     "id": "1.2.2.35",
                     "prevs": [
                         "1.2.2.34"
                     ],
-                    "rule": "rewrite_fact_sym",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ (k + min a b) * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)) (p ^ b * r * p ^ a * q)"
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ coprime p (q * r) ⟶ divides (p ^ (k + min a b)) (p ^ (a + b))"
                 },
                 {
-                    "args": "divides_rmul2",
+                    "args": "prime_coprime_eq_nondivisiable",
                     "id": "1.2.2.36",
-                    "prevs": [
-                        "1.2.2.35"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ (k + min a b)) (p ^ b * r * p ^ a * q)"
-                },
-                {
-                    "args": "p ^ b * r * p ^ a * q = p ^ a * p ^ b * r * q",
-                    "id": "1.2.2.37",
-                    "prevs": [],
-                    "rule": "nat_norm",
-                    "th": "⊢ p ^ b * r * p ^ a * q = p ^ a * p ^ b * r * q"
-                },
-                {
-                    "args": "nat_power_add, p ^ b * r * p ^ a * q = p ^ (a + b) * r * q",
-                    "id": "1.2.2.38",
-                    "prevs": [
-                        "1.2.2.37"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ p ^ b * r * p ^ a * q = p ^ (a + b) * r * q"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.39",
-                    "prevs": [
-                        "1.2.2.38",
-                        "1.2.2.36"
-                    ],
-                    "rule": "rewrite_fact_with_prev",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ (k + min a b)) (p ^ (a + b) * r * q)"
-                },
-                {
-                    "args": "mult_assoc",
-                    "id": "1.2.2.40",
-                    "prevs": [
-                        "1.2.2.39"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ (k + min a b)) (p ^ (a + b) * (r * q))"
-                },
-                {
-                    "args": "mult_comm",
-                    "id": "1.2.2.41",
-                    "prevs": [
-                        "1.2.2.40"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ (k + min a b)) (r * q * p ^ (a + b))"
-                },
-                {
-                    "args": "coprime_exp_divprod",
-                    "id": "1.2.2.42",
-                    "prevs": [
-                        "1.2.2.41"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ coprime p (r * q) ⟶ divides (p ^ (k + min a b)) (p ^ (a + b))"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.43",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ∀n. prime p ⟶ ¬(divides p n) ⟶ coprime p n"
-                },
-                {
-                    "args": "c, nat",
-                    "id": "1.2.2.43.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR c"
-                },
-                {
-                    "args": "¬(divides p c)",
-                    "id": "1.2.2.43.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬(divides p c) ⊢ ¬(divides p c)"
-                },
-                {
-                    "args": "prime_coprime_strong, {n: c}",
-                    "id": "1.2.2.43.2",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "prime p ⊢ divides p c ∨ coprime p c"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.43.3",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "prime p, ¬(divides p c), ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p c ⟶ coprime p c"
-                },
-                {
-                    "args": "divides p c",
-                    "id": "1.2.2.43.3.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "divides p c ⊢ divides p c"
-                },
-                {
-                    "args": "negE_gen, {A: divides p c, C: coprime p c}",
-                    "id": "1.2.2.43.3.1",
-                    "prevs": [
-                        "1.2.2.43.1",
-                        "1.2.2.43.3.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "divides p c, ¬(divides p c) ⊢ coprime p c"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.43.3.2",
-                    "prevs": [
-                        "1.2.2.43.3.0",
-                        "1.2.2.43.3.1"
-                    ],
-                    "rule": "intros",
-                    "th": "prime p, ¬(divides p c), ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p c ⟶ coprime p c"
-                },
-                {
-                    "args": "coprime p c ⟶ coprime p c",
-                    "id": "1.2.2.43.4",
-                    "prevs": [],
-                    "rule": "trivial",
-                    "th": "⊢ coprime p c ⟶ coprime p c"
-                },
-                {
-                    "args": "disjE",
-                    "id": "1.2.2.43.5",
-                    "prevs": [
-                        "1.2.2.43.2",
-                        "1.2.2.43.3",
-                        "1.2.2.43.4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "prime p, ¬(divides p c), ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ coprime p c"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.43.6",
-                    "prevs": [
-                        "1.2.2.43.0",
-                        "0",
-                        "1.2.2.43.1",
-                        "1.2.2.43.5"
-                    ],
-                    "rule": "intros",
-                    "th": "¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ∀c. prime p ⟶ ¬(divides p c) ⟶ coprime p c"
-                },
-                {
-                    "args": "b + 1",
-                    "id": "1.2.2.44",
-                    "prevs": [
-                        "1.2.2.18"
-                    ],
-                    "rule": "forall_elim_gen",
-                    "th": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ b < b + 1 ⟶ ¬(divides (p ^ (b + 1)) m)"
-                },
-                {
-                    "args": "b < b + 1",
-                    "id": "1.2.2.45",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ b < b + 1"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.46",
-                    "prevs": [
-                        "1.2.2.44",
-                        "1.2.2.45"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides (p ^ (b + 1)) m)"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.47",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p r ⟶ divides (p ^ b * p) (p ^ b * r)"
-                },
-                {
-                    "args": "divides p r",
-                    "id": "1.2.2.47.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "divides p r ⊢ divides p r"
-                },
-                {
-                    "args": "divides_mult_left, {k: p ^ b, m: p, n: r}",
-                    "id": "1.2.2.47.1",
-                    "prevs": [
-                        "1.2.2.47.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "prime p, divides p r, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ b * p) (p ^ b * r)"
-                },
-                {
-                    "args": "",
-                    "id": "1.2.2.47.2",
-                    "prevs": [
-                        "1.2.2.47.0",
-                        "1.2.2.47.1"
-                    ],
-                    "rule": "intros",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p r ⟶ divides (p ^ b * p) (p ^ b * r)"
-                },
-                {
-                    "args": "exp_1, divides p r ⟶ divides (p ^ b * p ^ (1::nat)) (p ^ b * r)",
-                    "id": "1.2.2.48",
-                    "prevs": [
-                        "1.2.2.47"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p r ⟶ divides (p ^ b * p ^ (1::nat)) (p ^ b * r)"
-                },
-                {
-                    "args": "nat_power_add, divides p r ⟶ divides (p ^ (b + 1)) (p ^ b * r)",
-                    "id": "1.2.2.49",
-                    "prevs": [
-                        "1.2.2.48"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p r ⟶ divides (p ^ (b + 1)) (p ^ b * r)"
-                },
-                {
-                    "args": "divides p r ⟶ divides (p ^ (b + 1)) m",
-                    "id": "1.2.2.50",
-                    "prevs": [
-                        "1.2.2.21",
-                        "1.2.2.49"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p r ⟶ divides (p ^ (b + 1)) m"
-                },
-                {
-                    "args": "double_neg, ¬¬(divides p r) ⟶ ¬¬(divides (p ^ (b + 1)) m)",
-                    "id": "1.2.2.51",
-                    "prevs": [
-                        "1.2.2.50"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬¬(divides p r) ⟶ ¬¬(divides (p ^ (b + 1)) m)"
-                },
-                {
-                    "args": "contrapositive",
-                    "id": "1.2.2.52",
-                    "prevs": [
-                        "1.2.2.46",
-                        "1.2.2.51"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides p r)"
-                },
-                {
-                    "args": "r",
-                    "id": "1.2.2.53",
-                    "prevs": [
-                        "1.2.2.43",
-                        "0",
-                        "1.2.2.52"
-                    ],
-                    "rule": "apply_fact_for",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ coprime p r"
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ ∀n. coprime p n ⟷ ¬(divides p n)"
                 },
                 {
                     "args": "a + 1",
-                    "id": "1.2.2.54",
+                    "id": "1.2.2.37",
                     "prevs": [
-                        "1.2.2.11"
+                        "1.2.2.7"
                     ],
                     "rule": "forall_elim_gen",
-                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ a < a + 1 ⟶ ¬(divides (p ^ (a + 1)) n)"
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ a < a + 1 ⟶ ¬(divides (p ^ (a + 1)) m)"
                 },
                 {
                     "args": "a < a + 1",
-                    "id": "1.2.2.55",
+                    "id": "1.2.2.38",
                     "prevs": [],
                     "rule": "z3",
                     "th": "⊢ a < a + 1"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.56",
+                    "id": "1.2.2.39",
                     "prevs": [
-                        "1.2.2.54",
-                        "1.2.2.55"
+                        "1.2.2.37",
+                        "1.2.2.38"
                     ],
                     "rule": "apply_fact",
-                    "th": "divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides (p ^ (a + 1)) n)"
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides (p ^ (a + 1)) m)"
+                },
+                {
+                    "args": "nat_power_add",
+                    "id": "1.2.2.40",
+                    "prevs": [
+                        "1.2.2.39"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides (p ^ a * p ^ (1::nat)) m)"
+                },
+                {
+                    "args": "exp_1",
+                    "id": "1.2.2.41",
+                    "prevs": [
+                        "1.2.2.40"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides (p ^ a * p) m)"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.57",
+                    "id": "1.2.2.42",
+                    "prevs": [
+                        "1.2.2.10",
+                        "1.2.2.41"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "m = p ^ a * q, divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides (p ^ a * p) (p ^ a * q))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.43",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p q ⟶ divides (p ^ a * p) (p ^ a * q)"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides p q ⟶ divides (p ^ a * p) (p ^ a * q)"
                 },
                 {
                     "args": "divides p q",
-                    "id": "1.2.2.57.0",
+                    "id": "1.2.2.43.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "divides p q ⊢ divides p q"
                 },
                 {
                     "args": "divides_mult_left, {k: p ^ a, m: p, n: q}",
-                    "id": "1.2.2.57.1",
+                    "id": "1.2.2.43.1",
                     "prevs": [
-                        "1.2.2.57.0"
+                        "1.2.2.43.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, divides p q, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ a * p) (p ^ a * q)"
+                    "th": "divides p q ⊢ divides (p ^ a * p) (p ^ a * q)"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.57.2",
+                    "id": "1.2.2.43.2",
                     "prevs": [
-                        "1.2.2.57.0",
-                        "1.2.2.57.1"
+                        "1.2.2.43.0",
+                        "1.2.2.43.1"
                     ],
                     "rule": "intros",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p q ⟶ divides (p ^ a * p) (p ^ a * q)"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides p q ⟶ divides (p ^ a * p) (p ^ a * q)"
                 },
                 {
-                    "args": "exp_1, divides p q ⟶ divides (p ^ a * p ^ (1::nat)) (p ^ a * q)",
-                    "id": "1.2.2.58",
+                    "args": "double_neg, ¬¬(divides p q) ⟶ ¬¬(divides (p ^ a * p) (p ^ a * q))",
+                    "id": "1.2.2.44",
                     "prevs": [
-                        "1.2.2.57"
+                        "1.2.2.43"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p q ⟶ divides (p ^ a * p ^ (1::nat)) (p ^ a * q)"
-                },
-                {
-                    "args": "nat_power_add, divides p q ⟶ divides (p ^ (a + 1)) (p ^ a * q)",
-                    "id": "1.2.2.59",
-                    "prevs": [
-                        "1.2.2.58"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p q ⟶ divides (p ^ (a + 1)) (p ^ a * q)"
-                },
-                {
-                    "args": "divides p q ⟶ divides (p ^ (a + 1)) n",
-                    "id": "1.2.2.60",
-                    "prevs": [
-                        "1.2.2.14",
-                        "1.2.2.59"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides p q ⟶ divides (p ^ (a + 1)) n"
-                },
-                {
-                    "args": "double_neg, ¬¬(divides p q) ⟶ ¬¬(divides (p ^ (a + 1)) n)",
-                    "id": "1.2.2.61",
-                    "prevs": [
-                        "1.2.2.60"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬¬(divides p q) ⟶ ¬¬(divides (p ^ (a + 1)) n)"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬¬(divides p q) ⟶ ¬¬(divides (p ^ a * p) (p ^ a * q))"
                 },
                 {
                     "args": "contrapositive",
-                    "id": "1.2.2.62",
+                    "id": "1.2.2.45",
                     "prevs": [
-                        "1.2.2.56",
-                        "1.2.2.61"
+                        "1.2.2.42",
+                        "1.2.2.44"
                     ],
                     "rule": "apply_theorem",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ ¬(divides p q)"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides p q)"
                 },
                 {
-                    "args": "q",
-                    "id": "1.2.2.63",
+                    "args": "b + 1",
+                    "id": "1.2.2.46",
                     "prevs": [
-                        "1.2.2.43",
-                        "0",
-                        "1.2.2.62"
+                        "1.2.2.14"
                     ],
-                    "rule": "apply_fact_for",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ coprime p q"
+                    "rule": "forall_elim_gen",
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ b < b + 1 ⟶ ¬(divides (p ^ (b + 1)) n)"
                 },
                 {
-                    "args": "coprime_mul",
-                    "id": "1.2.2.64",
-                    "prevs": [
-                        "1.2.2.53",
-                        "1.2.2.63"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ coprime p (r * q)"
+                    "args": "b < b + 1",
+                    "id": "1.2.2.47",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ b < b + 1"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.65",
+                    "id": "1.2.2.48",
                     "prevs": [
-                        "1.2.2.42",
-                        "1.2.2.64"
+                        "1.2.2.46",
+                        "1.2.2.47"
                     ],
                     "rule": "apply_fact",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ (k + min a b)) (p ^ (a + b))"
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides (p ^ (b + 1)) n)"
+                },
+                {
+                    "args": "nat_power_add",
+                    "id": "1.2.2.49",
+                    "prevs": [
+                        "1.2.2.48"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides (p ^ b * p ^ (1::nat)) n)"
+                },
+                {
+                    "args": "exp_1",
+                    "id": "1.2.2.50",
+                    "prevs": [
+                        "1.2.2.49"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides (p ^ b * p) n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.51",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides p r ⟶ divides (p ^ b * p) n"
+                },
+                {
+                    "args": "divides p r",
+                    "id": "1.2.2.51.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides p r ⊢ divides p r"
+                },
+                {
+                    "args": "divides_mult_left, {k: p ^ b, m: p, n: r}",
+                    "id": "1.2.2.51.1",
+                    "prevs": [
+                        "1.2.2.51.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides p r ⊢ divides (p ^ b * p) (p ^ b * r)"
+                },
+                {
+                    "args": "divides (p ^ b * p) n",
+                    "id": "1.2.2.51.2",
+                    "prevs": [
+                        "1.2.2.17",
+                        "1.2.2.51.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, divides p r, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ b * p) n"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.51.3",
+                    "prevs": [
+                        "1.2.2.51.0",
+                        "1.2.2.51.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides p r ⟶ divides (p ^ b * p) n"
+                },
+                {
+                    "args": "double_neg, ¬¬(divides p r) ⟶ ¬¬(divides (p ^ b * p) n)",
+                    "id": "1.2.2.52",
+                    "prevs": [
+                        "1.2.2.51"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬¬(divides p r) ⟶ ¬¬(divides (p ^ b * p) n)"
+                },
+                {
+                    "args": "contrapositive",
+                    "id": "1.2.2.53",
+                    "prevs": [
+                        "1.2.2.50",
+                        "1.2.2.52"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides p r)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.2.2.54",
+                    "prevs": [
+                        "1.2.2.45",
+                        "1.2.2.53"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ ¬(divides p q) ∧ ¬(divides p r)"
+                },
+                {
+                    "args": "coprime p q ∧ coprime p r",
+                    "id": "1.2.2.55",
+                    "prevs": [
+                        "1.2.2.36",
+                        "1.2.2.54"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ coprime p q ∧ coprime p r"
+                },
+                {
+                    "args": "coprime_rmul, coprime p (q * r)",
+                    "id": "1.2.2.56",
+                    "prevs": [
+                        "1.2.2.55"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ coprime p (q * r)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.57",
+                    "prevs": [
+                        "1.2.2.35",
+                        "1.2.2.56"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ (k + min a b)) (p ^ (a + b))"
                 },
                 {
                     "args": "divides_exp_le, {m: k + min a b, n: a + b}",
-                    "id": "1.2.2.66",
+                    "id": "1.2.2.58",
                     "prevs": [
-                        "1.2.2.5"
+                        "1.2.2.1"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "prime p ⊢ divides (p ^ (k + min a b)) (p ^ (a + b)) ⟷ k + min a b ≤ a + b"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.67",
+                    "id": "1.2.2.59",
                     "prevs": [
-                        "1.2.2.66",
-                        "1.2.2.65"
+                        "1.2.2.58",
+                        "1.2.2.57"
                     ],
                     "rule": "rewrite_fact_with_prev",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ k + min a b ≤ a + b"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ k + min a b ≤ a + b"
                 },
                 {
                     "args": "k ≤ a ∨ k ≤ b",
-                    "id": "1.2.2.68",
+                    "id": "1.2.2.60",
                     "prevs": [
-                        "1.2.2.67"
+                        "1.2.2.59"
                     ],
                     "rule": "z3",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ k ≤ a ∨ k ≤ b"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ∨ k ≤ b"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.69",
+                    "id": "1.2.2.61",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ k ≤ a ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
                     "args": "k ≤ a",
-                    "id": "1.2.2.69.0",
+                    "id": "1.2.2.61.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "k ≤ a ⊢ k ≤ a"
                 },
                 {
                     "args": "divides_exp_le_imp, {m: k, n: a, p: p}",
-                    "id": "1.2.2.69.1",
+                    "id": "1.2.2.61.1",
                     "prevs": [
-                        "1.2.2.69.0"
+                        "1.2.2.61.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) (p ^ a)"
+                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) (p ^ a)"
                 },
                 {
                     "args": "divides_rmul, {a: p ^ a, d: p ^ k, x: q}",
-                    "id": "1.2.2.69.2",
+                    "id": "1.2.2.61.2",
                     "prevs": [
-                        "1.2.2.69.1"
+                        "1.2.2.61.1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) (p ^ a * q)"
+                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) (p ^ a * q)"
                 },
                 {
-                    "args": "divides (p ^ k) n",
-                    "id": "1.2.2.69.3",
+                    "args": "divides (p ^ k) m",
+                    "id": "1.2.2.61.3",
                     "prevs": [
-                        "1.2.2.14",
-                        "1.2.2.69.2"
+                        "1.2.2.10",
+                        "1.2.2.61.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) n"
+                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) m"
                 },
                 {
-                    "args": "disjI2, {A: divides (p ^ k) m, B: divides (p ^ k) n}",
-                    "id": "1.2.2.69.4",
+                    "args": "disjI1, {A: divides (p ^ k) m, B: divides (p ^ k) n}",
+                    "id": "1.2.2.61.4",
                     "prevs": [
-                        "1.2.2.69.3"
+                        "1.2.2.61.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, k ≤ a, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.69.5",
+                    "id": "1.2.2.61.5",
                     "prevs": [
-                        "1.2.2.69.0",
-                        "1.2.2.69.4"
+                        "1.2.2.61.0",
+                        "1.2.2.61.4"
                     ],
                     "rule": "intros",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ k ≤ a ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ a ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.70",
+                    "id": "1.2.2.62",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ k ≤ b ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ b ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
                     "args": "k ≤ b",
-                    "id": "1.2.2.70.0",
+                    "id": "1.2.2.62.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "k ≤ b ⊢ k ≤ b"
                 },
                 {
                     "args": "divides_exp_le_imp, {m: k, n: b, p: p}",
-                    "id": "1.2.2.70.1",
+                    "id": "1.2.2.62.1",
                     "prevs": [
-                        "1.2.2.70.0"
+                        "1.2.2.62.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) (p ^ b)"
+                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) (p ^ b)"
                 },
                 {
                     "args": "divides_rmul, {a: p ^ b, d: p ^ k, x: r}",
-                    "id": "1.2.2.70.2",
+                    "id": "1.2.2.62.2",
                     "prevs": [
-                        "1.2.2.70.1"
+                        "1.2.2.62.1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) (p ^ b * r)"
+                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) (p ^ b * r)"
                 },
                 {
-                    "args": "divides (p ^ k) m",
-                    "id": "1.2.2.70.3",
+                    "args": "divides (p ^ k) n",
+                    "id": "1.2.2.62.3",
                     "prevs": [
-                        "1.2.2.21",
-                        "1.2.2.70.2"
+                        "1.2.2.17",
+                        "1.2.2.62.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) m"
+                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) n"
                 },
                 {
-                    "args": "disjI1, {A: divides (p ^ k) m, B: divides (p ^ k) n}",
-                    "id": "1.2.2.70.4",
+                    "args": "disjI2, {A: divides (p ^ k) m, B: divides (p ^ k) n}",
+                    "id": "1.2.2.62.4",
                     "prevs": [
-                        "1.2.2.70.3"
+                        "1.2.2.62.3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, k ≤ b, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
                     "args": "",
-                    "id": "1.2.2.70.5",
+                    "id": "1.2.2.62.5",
                     "prevs": [
-                        "1.2.2.70.0",
-                        "1.2.2.70.4"
+                        "1.2.2.62.0",
+                        "1.2.2.62.4"
                     ],
                     "rule": "intros",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ k ≤ b ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ k ≤ b ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
                     "args": "disjE",
-                    "id": "1.2.2.71",
+                    "id": "1.2.2.63",
                     "prevs": [
-                        "1.2.2.68",
-                        "1.2.2.69",
-                        "1.2.2.70"
+                        "1.2.2.60",
+                        "1.2.2.61",
+                        "1.2.2.62"
                     ],
                     "rule": "apply_theorem",
-                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ b * r, n = p ^ a * q, divides (p ^ k) (lcm m n), divides (p ^ a) n ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) n)), divides (p ^ b) m ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) m)) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
+                    "th": "prime p, ¬(m = 0), ¬(n = 0), m = p ^ a * q, n = p ^ b * r, divides (p ^ k) (lcm m n), divides (p ^ a) m ∧ (∀l. a < l ⟶ ¬(divides (p ^ l) m)), divides (p ^ b) n ∧ (∀l. b < l ⟶ ¬(divides (p ^ l) n)) ⊢ divides (p ^ k) m ∨ divides (p ^ k) n"
                 },
                 {
-                    "args": "∃k. m = p ^ b * k, ∃k::nat. divides (p ^ k) m ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) m)), ∃k. n = p ^ a * k, ∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n))",
-                    "id": "1.2.2.72",
+                    "args": "∃k. n = p ^ b * k, ∃k::nat. divides (p ^ k) n ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) n)), ∃k. m = p ^ a * k, ∃k::nat. divides (p ^ k) m ∧ (∀l. k < l ⟶ ¬(divides (p ^ l) m))",
+                    "id": "1.2.2.64",
                     "prevs": [
                         "1.2.2.0",
-                        "1.2.2.6",
+                        "1.2.2.2",
+                        "1.2.2.4",
+                        "1.2.2.5",
                         "1.2.2.8",
                         "1.2.2.9",
+                        "1.2.2.10",
+                        "1.2.2.3",
+                        "1.2.2.11",
                         "1.2.2.12",
-                        "1.2.2.13",
-                        "1.2.2.14",
-                        "1.2.2.7",
                         "1.2.2.15",
                         "1.2.2.16",
-                        "1.2.2.19",
-                        "1.2.2.20",
-                        "1.2.2.21",
-                        "1.2.2.71"
+                        "1.2.2.17",
+                        "1.2.2.63"
                     ],
                     "rule": "intros",
                     "th": "prime p, ¬(m = 0), divides (p ^ k) (lcm m n) ⊢ ¬(n = 0) ⟶ divides (p ^ k) m ∨ divides (p ^ k) n"
@@ -3892,7 +3743,7 @@
                         "2.0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "prime p, divides (p ^ k) m ∨ divides (p ^ k) n ⊢ divides (p ^ k) (lcm m n)"
+                    "th": "divides (p ^ k) m ∨ divides (p ^ k) n ⊢ divides (p ^ k) (lcm m n)"
                 },
                 {
                     "args": "",
@@ -3946,16 +3797,16 @@
                     "method_name": "introduction"
                 },
                 {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
                     "fact_ids": [
                         "1.1.0"
                     ],
                     "goal_id": "1.1.1",
                     "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "1.1.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI1"
                 },
                 {
                     "goal_id": "1.1.1",
@@ -3976,16 +3827,16 @@
                     "method_name": "introduction"
                 },
                 {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
                     "fact_ids": [
                         "1.2.1.0"
                     ],
                     "goal_id": "1.2.1.1",
                     "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "1.2.1.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI2"
                 },
                 {
                     "goal_id": "1.2.1.1",
@@ -3997,138 +3848,110 @@
                     "method_name": "introduction"
                 },
                 {
-                    "goal_id": "1.2.2.1",
-                    "method_name": "apply_forward_step",
-                    "param_n": "n",
-                    "param_p": "p",
-                    "theorem": "factorization_index"
-                },
-                {
-                    "goal_id": "1.2.2.2",
-                    "method_name": "apply_forward_step",
-                    "param_n": "m",
-                    "param_p": "p",
-                    "theorem": "factorization_index"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.1",
-                        "1.2.2.0"
-                    ],
-                    "goal_id": "1.2.2.3",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.2",
-                        "1.2.0"
-                    ],
-                    "goal_id": "1.2.2.4",
-                    "method_name": "apply_fact"
-                },
-                {
                     "fact_ids": [
                         "0"
                     ],
-                    "goal_id": "1.2.2.5",
+                    "goal_id": "1.2.2.1",
                     "method_name": "apply_forward_step",
                     "theorem": "prime_ge_2"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.3",
-                        "1.2.2.5"
+                        "1.2.0",
+                        "1.2.2.1"
                     ],
-                    "goal_id": "1.2.2.6",
-                    "method_name": "apply_fact"
+                    "goal_id": "1.2.2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "factorization_index"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.4",
+                        "1.2.2.0",
+                        "1.2.2.1"
+                    ],
+                    "goal_id": "1.2.2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "factorization_index"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.2"
+                    ],
+                    "goal_id": "1.2.2.4",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.5"
+                    ],
+                    "goal_id": "1.2.2.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
                         "1.2.2.5"
                     ],
                     "goal_id": "1.2.2.7",
-                    "method_name": "apply_fact"
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
                         "1.2.2.6"
                     ],
                     "goal_id": "1.2.2.8",
-                    "method_name": "exists_elim",
-                    "names": "a"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.9"
-                    ],
-                    "goal_id": "1.2.2.10",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.9"
-                    ],
-                    "goal_id": "1.2.2.11",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.10"
-                    ],
-                    "goal_id": "1.2.2.12",
                     "method_name": "rewrite_fact",
                     "sym": "false",
                     "theorem": "divides_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.8"
+                    ],
+                    "goal_id": "1.2.2.9",
+                    "method_name": "exists_elim",
+                    "names": "q"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.3"
+                    ],
+                    "goal_id": "1.2.2.11",
+                    "method_name": "exists_elim",
+                    "names": "b"
                 },
                 {
                     "fact_ids": [
                         "1.2.2.12"
                     ],
                     "goal_id": "1.2.2.13",
-                    "method_name": "exists_elim",
-                    "names": "q"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.7"
-                    ],
-                    "goal_id": "1.2.2.15",
-                    "method_name": "exists_elim",
-                    "names": "b"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.16"
-                    ],
-                    "goal_id": "1.2.2.17",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.16"
+                        "1.2.2.12"
                     ],
-                    "goal_id": "1.2.2.18",
+                    "goal_id": "1.2.2.14",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.17"
+                        "1.2.2.13"
                     ],
-                    "goal_id": "1.2.2.19",
+                    "goal_id": "1.2.2.15",
                     "method_name": "rewrite_fact",
                     "sym": "false",
                     "theorem": "divides_def"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.19"
+                        "1.2.2.15"
                     ],
-                    "goal_id": "1.2.2.20",
+                    "goal_id": "1.2.2.16",
                     "method_name": "exists_elim",
                     "names": "r"
                 },
@@ -4136,150 +3959,203 @@
                     "fact_ids": [
                         "1.0"
                     ],
-                    "goal_id": "1.2.2.22",
+                    "goal_id": "1.2.2.18",
                     "method_name": "rewrite_fact",
                     "sym": "false",
                     "theorem": "divides_lcm_gcd"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.21",
-                        "1.2.2.22"
+                        "1.2.2.10",
+                        "1.2.2.18"
                     ],
-                    "goal_id": "1.2.2.23",
+                    "goal_id": "1.2.2.19",
                     "method_name": "rewrite_fact_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.14",
-                        "1.2.2.23"
+                        "1.2.2.17",
+                        "1.2.2.19"
                     ],
-                    "goal_id": "1.2.2.24",
+                    "goal_id": "1.2.2.20",
                     "method_name": "rewrite_fact_with_prev"
                 },
                 {
-                    "goal": "gcd (p ^ a * q) (p ^ b * r) = p ^ min a b * gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r)",
-                    "goal_id": "1.2.2.25",
+                    "goal": "gcd (p ^ a * q) (p ^ b * r) =\n    p ^ (min a b) * (gcd (p ^ (a - min a b) * q) (p ^ (b - min a b) * r))",
+                    "goal_id": "1.2.2.21",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.2.2.25",
+                    "goal_id": "1.2.2.21",
                     "method_name": "rewrite_goal",
                     "sym": "true",
                     "theorem": "gcd_mult_left"
                 },
                 {
-                    "goal_id": "1.2.2.25",
+                    "goal_id": "1.2.2.21",
                     "method_name": "rewrite_goal",
                     "sym": "true",
                     "theorem": "mult_assoc"
                 },
                 {
-                    "goal_id": "1.2.2.25",
+                    "goal_id": "1.2.2.21",
                     "method_name": "rewrite_goal",
                     "sym": "true",
                     "theorem": "nat_power_add"
                 },
                 {
                     "goal": "min a b + (a - min a b) = a",
-                    "goal_id": "1.2.2.25",
+                    "goal_id": "1.2.2.21",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.2.2.25",
+                    "goal_id": "1.2.2.21",
                     "method_name": "z3"
                 },
                 {
                     "goal": "min a b + (b - min a b) = b",
-                    "goal_id": "1.2.2.26",
+                    "goal_id": "1.2.2.22",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.2.2.26",
+                    "goal_id": "1.2.2.22",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.25"
+                        "1.2.2.21"
                     ],
-                    "goal_id": "1.2.2.27",
+                    "goal_id": "1.2.2.23",
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.26"
+                        "1.2.2.22"
                     ],
-                    "goal_id": "1.2.2.27",
+                    "goal_id": "1.2.2.23",
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.24"
+                        "1.2.2.27",
+                        "1.2.2.20"
                     ],
-                    "goal_id": "1.2.2.32",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "gcd_comm"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.31",
-                        "1.2.2.32"
-                    ],
-                    "goal_id": "1.2.2.33",
+                    "goal_id": "1.2.2.28",
                     "method_name": "rewrite_fact_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.33"
+                        "1.2.2.28"
                     ],
-                    "goal_id": "1.2.2.34",
+                    "goal_id": "1.2.2.29",
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "mult_assoc"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.34"
+                        "1.2.2.29"
                     ],
-                    "goal_id": "1.2.2.35",
+                    "goal_id": "1.2.2.30",
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "nat_power_add"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.35"
+                        "1.2.2.30"
                     ],
-                    "goal_id": "1.2.2.36",
+                    "goal_id": "1.2.2.31",
                     "method_name": "apply_forward_step",
                     "theorem": "divides_rmul2"
                 },
                 {
-                    "fact_ids": [
-                        "1.2.2.36"
-                    ],
-                    "goal": "p ^ b * r * p ^ a * q = p ^ (a + b) * r * q",
-                    "goal_id": "1.2.2.37",
+                    "goal": "p ^ a * q * p ^ b * r = (q * r) * p ^ (a + b) ",
+                    "goal_id": "1.2.2.32",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.2.2.37",
+                    "goal_id": "1.2.2.32",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "nat_power_add"
                 },
                 {
-                    "goal_id": "1.2.2.37",
+                    "goal_id": "1.2.2.32",
                     "method_name": "nat_norm"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.38",
+                        "1.2.2.33",
+                        "1.2.2.31"
+                    ],
+                    "goal_id": "1.2.2.34",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.34"
+                    ],
+                    "goal_id": "1.2.2.35",
+                    "method_name": "apply_forward_step",
+                    "theorem": "coprime_exp_divprod"
+                },
+                {
+                    "goal": "coprime p (q * r)",
+                    "goal_id": "1.2.2.36",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.36",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "coprime_rmul"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2.2.36",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "prime_coprime_eq_nondivisiable"
+                },
+                {
+                    "fact_ids": [
                         "1.2.2.36"
                     ],
+                    "goal_id": "1.2.2.37",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.37",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.7"
+                    ],
+                    "goal_id": "1.2.2.37",
+                    "method_name": "forall_elim",
+                    "s": "a+1"
+                },
+                {
+                    "goal": "a < a + 1",
+                    "goal_id": "1.2.2.38",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.2.38",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.37",
+                        "1.2.2.38"
+                    ],
                     "goal_id": "1.2.2.39",
-                    "method_name": "rewrite_fact_with_prev"
+                    "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
@@ -4288,7 +4164,7 @@
                     "goal_id": "1.2.2.40",
                     "method_name": "rewrite_fact",
                     "sym": "false",
-                    "theorem": "mult_assoc"
+                    "theorem": "nat_power_add"
                 },
                 {
                     "fact_ids": [
@@ -4297,312 +4173,213 @@
                     "goal_id": "1.2.2.41",
                     "method_name": "rewrite_fact",
                     "sym": "false",
-                    "theorem": "mult_comm"
+                    "theorem": "exp_1"
                 },
                 {
                     "fact_ids": [
+                        "1.2.2.10",
                         "1.2.2.41"
                     ],
                     "goal_id": "1.2.2.42",
-                    "method_name": "apply_forward_step",
-                    "theorem": "coprime_exp_divprod"
-                },
-                {
-                    "goal": "coprime p (r * q)",
-                    "goal_id": "1.2.2.43",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "1.2.2.43",
-                    "method_name": "apply_backward_step",
-                    "theorem": "coprime_mul"
-                },
-                {
-                    "goal": "!n. prime p --> ~(divides p n) --> coprime p n",
-                    "goal_id": "1.2.2.43",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "1.2.2.43",
-                    "method_name": "introduction",
-                    "names": "c"
+                    "method_name": "rewrite_fact_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "1.2.2.42"
                     ],
-                    "goal_id": "1.2.2.43.2",
-                    "method_name": "apply_forward_step",
-                    "param_n": "c",
-                    "theorem": "prime_coprime_strong"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.43.2"
-                    ],
-                    "goal_id": "1.2.2.43.3",
+                    "goal_id": "1.2.2.43",
                     "method_name": "apply_backward_step",
-                    "theorem": "disjE"
+                    "theorem": "contrapositive"
                 },
                 {
-                    "goal_id": "1.2.2.43.3",
+                    "goal_id": "1.2.2.43",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "goal_id": "1.2.2.43",
                     "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.43.1",
-                        "1.2.2.43.3.0"
+                        "1.2.2.43.0"
                     ],
-                    "goal_id": "1.2.2.43.3.1",
+                    "goal_id": "1.2.2.43.1",
                     "method_name": "apply_backward_step",
-                    "theorem": "negE_gen"
+                    "theorem": "divides_mult_left"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.43"
+                        "1.2.2.14"
                     ],
-                    "goal_id": "1.2.2.44",
-                    "method_name": "apply_prev"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.18"
-                    ],
-                    "goal_id": "1.2.2.44",
+                    "goal_id": "1.2.2.46",
                     "method_name": "forall_elim",
                     "s": "b+1"
                 },
                 {
-                    "goal": " b < b + 1",
-                    "goal_id": "1.2.2.45",
+                    "goal": "b < b + 1",
+                    "goal_id": "1.2.2.47",
                     "method_name": "cut"
                 },
                 {
-                    "goal_id": "1.2.2.45",
+                    "goal_id": "1.2.2.47",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.44",
-                        "1.2.2.45"
+                        "1.2.2.46",
+                        "1.2.2.47"
                     ],
-                    "goal_id": "1.2.2.46",
+                    "goal_id": "1.2.2.48",
                     "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.46"
+                        "1.2.2.48"
                     ],
-                    "goal_id": "1.2.2.47",
+                    "goal_id": "1.2.2.49",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "nat_power_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.49"
+                    ],
+                    "goal_id": "1.2.2.50",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "exp_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.50"
+                    ],
+                    "goal_id": "1.2.2.51",
                     "method_name": "apply_backward_step",
                     "theorem": "contrapositive"
                 },
                 {
-                    "goal_id": "1.2.2.47",
+                    "goal_id": "1.2.2.51",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "double_neg"
                 },
                 {
-                    "fact_ids": [
-                        "1.2.2.21"
-                    ],
-                    "goal_id": "1.2.2.47",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "1.2.2.47",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "nat_power_add"
-                },
-                {
-                    "goal_id": "1.2.2.47",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "exp_1"
-                },
-                {
-                    "goal_id": "1.2.2.47",
+                    "goal_id": "1.2.2.51",
                     "method_name": "introduction"
                 },
                 {
-                    "goal_id": "1.2.2.47.1",
+                    "fact_ids": [
+                        "1.2.2.17"
+                    ],
+                    "goal_id": "1.2.2.51.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.51.0"
+                    ],
+                    "goal_id": "1.2.2.51.1",
                     "method_name": "apply_backward_step",
                     "theorem": "divides_mult_left"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.43"
-                    ],
-                    "goal_id": "1.2.2.54",
-                    "method_name": "apply_prev"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.11"
-                    ],
-                    "goal_id": "1.2.2.54",
-                    "method_name": "forall_elim",
-                    "s": "a+1"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.54"
-                    ],
-                    "goal": "a < a + 1",
-                    "goal_id": "1.2.2.55",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "1.2.2.55",
-                    "method_name": "z3"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.54",
-                        "1.2.2.55"
-                    ],
-                    "goal_id": "1.2.2.56",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
+                        "1.2.2.35",
                         "1.2.2.56"
                     ],
                     "goal_id": "1.2.2.57",
-                    "method_name": "apply_backward_step",
-                    "theorem": "contrapositive"
-                },
-                {
-                    "goal_id": "1.2.2.57",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "double_neg"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.14"
-                    ],
-                    "goal_id": "1.2.2.57",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "1.2.2.57",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "nat_power_add"
-                },
-                {
-                    "goal_id": "1.2.2.57",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "exp_1"
-                },
-                {
-                    "goal_id": "1.2.2.57",
-                    "method_name": "introduction"
-                },
-                {
-                    "goal_id": "1.2.2.57.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "divides_mult_left"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.42",
-                        "1.2.2.64"
-                    ],
-                    "goal_id": "1.2.2.65",
                     "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.5"
+                        "1.2.2.1"
                     ],
-                    "goal_id": "1.2.2.66",
+                    "goal_id": "1.2.2.58",
                     "method_name": "apply_forward_step",
-                    "param_m": "k+min a b",
-                    "param_n": "a+b",
+                    "param_m": "k + min a b",
+                    "param_n": "a + b",
                     "theorem": "divides_exp_le"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.66",
-                        "1.2.2.65"
+                        "1.2.2.58",
+                        "1.2.2.57"
                     ],
-                    "goal_id": "1.2.2.67",
+                    "goal_id": "1.2.2.59",
                     "method_name": "rewrite_fact_with_prev"
                 },
                 {
-                    "goal": "k<=a|k<=b",
-                    "goal_id": "1.2.2.68",
+                    "goal": "k<=a | k<=b",
+                    "goal_id": "1.2.2.60",
                     "method_name": "cut"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.67"
+                        "1.2.2.59"
                     ],
-                    "goal_id": "1.2.2.68",
+                    "goal_id": "1.2.2.60",
                     "method_name": "z3"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.68"
+                        "1.2.2.60"
                     ],
-                    "goal_id": "1.2.2.69",
+                    "goal_id": "1.2.2.61",
                     "method_name": "apply_backward_step",
                     "theorem": "disjE"
                 },
                 {
-                    "goal_id": "1.2.2.69",
+                    "goal_id": "1.2.2.61",
                     "method_name": "introduction"
                 },
                 {
-                    "goal_id": "1.2.2.69.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI2"
-                },
-                {
-                    "fact_ids": [
-                        "1.2.2.14"
-                    ],
-                    "goal_id": "1.2.2.69.1",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "1.2.2.69.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "divides_rmul"
-                },
-                {
-                    "goal_id": "1.2.2.69.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "divides_exp_le_imp"
-                },
-                {
-                    "goal_id": "1.2.2.70",
-                    "method_name": "introduction"
-                },
-                {
-                    "goal_id": "1.2.2.70.1",
+                    "goal_id": "1.2.2.61.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI1"
                 },
                 {
                     "fact_ids": [
-                        "1.2.2.21"
+                        "1.2.2.10"
                     ],
-                    "goal_id": "1.2.2.70.1",
+                    "goal_id": "1.2.2.61.1",
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
-                    "goal_id": "1.2.2.70.1",
+                    "goal_id": "1.2.2.61.1",
                     "method_name": "apply_backward_step",
                     "theorem": "divides_rmul"
                 },
                 {
-                    "goal_id": "1.2.2.70.1",
+                    "goal_id": "1.2.2.61.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_exp_le_imp"
+                },
+                {
+                    "goal_id": "1.2.2.62",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.2.2.62.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2.17"
+                    ],
+                    "goal_id": "1.2.2.62.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.2.62.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "1.2.2.62.1",
                     "method_name": "apply_backward_step",
                     "theorem": "divides_exp_le_imp"
                 },
@@ -4611,6 +4388,9 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "2.0"
+                    ],
                     "goal_id": "2.1",
                     "method_name": "apply_backward_step",
                     "theorem": "divides_lcm"
@@ -4622,6 +4402,2150 @@
                 "m": "nat",
                 "n": "nat",
                 "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "lcm_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ lcm m n = 0 ⟶ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "lcm m n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "lcm m n = 0 ⊢ lcm m n = 0"
+                },
+                {
+                    "args": "multiples_eq",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "lcm m n = 0 ⊢ ∀d. divides (lcm m n) d ⟷ divides 0 d"
+                },
+                {
+                    "args": "lcm_divides",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "lcm m n = 0 ⊢ ∀d. divides m d ∧ divides n d ⟷ divides 0 d"
+                },
+                {
+                    "args": "divides_0",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "lcm m n = 0 ⊢ ∀d. divides m d ∧ divides n d ⟷ d = 0"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "lcm m n = 0 ⊢ ∀d. d = 0 ⟷ divides m d ∧ divides n d"
+                },
+                {
+                    "args": "divides_self, {n: m}",
+                    "id": "0.5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides m m"
+                },
+                {
+                    "args": "divides_rmul, {a: m, d: m, x: n}",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "lcm m n = 0 ⊢ divides m (m * n)"
+                },
+                {
+                    "args": "divides_self, {n: n}",
+                    "id": "0.7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides n n"
+                },
+                {
+                    "args": "divides_lmul, {a: n, d: n, x: m}",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "lcm m n = 0 ⊢ divides n (m * n)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.9",
+                    "prevs": [
+                        "0.6",
+                        "0.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "lcm m n = 0 ⊢ divides m (m * n) ∧ divides n (m * n)"
+                },
+                {
+                    "args": "m * n = 0",
+                    "id": "0.10",
+                    "prevs": [
+                        "0.4",
+                        "0.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "lcm m n = 0 ⊢ m * n = 0"
+                },
+                {
+                    "args": "mult_nonzero",
+                    "id": "0.11",
+                    "prevs": [
+                        "0.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "lcm m n = 0 ⊢ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.12",
+                    "prevs": [
+                        "0.0",
+                        "0.11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ lcm m n = 0 ⟶ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ m = 0 ∨ n = 0 ⟶ lcm m n = 0"
+                },
+                {
+                    "args": "m = 0 ∨ n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ∨ n = 0 ⊢ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = 0 ∨ n = 0 ⊢ m = 0 ⟶ lcm m n = 0"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "lcm_0, {n: n}",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ lcm 0 n = 0"
+                },
+                {
+                    "args": "lcm m n = 0",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = 0, m = 0 ∨ n = 0 ⊢ lcm m n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "m = 0 ∨ n = 0 ⊢ m = 0 ⟶ lcm m n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "m = 0 ∨ n = 0 ⊢ n = 0 ⟶ lcm m n = 0"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "lcm_0, {n: m}",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ lcm 0 m = 0"
+                },
+                {
+                    "args": "lcm_sym, lcm m 0 = 0",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0, m = 0 ∨ n = 0 ⊢ lcm m 0 = 0"
+                },
+                {
+                    "args": "lcm m n = 0",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, m = 0 ∨ n = 0 ⊢ lcm m n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "m = 0 ∨ n = 0 ⊢ n = 0 ⟶ lcm m n = 0"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m = 0 ∨ n = 0 ⊢ lcm m n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m = 0 ∨ n = 0 ⟶ lcm m n = 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ lcm m n = 0 ⟷ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ lcm m n = 0 ⟷ m = 0 ∨ n = 0"
+                }
+            ],
+            "prop": "lcm m n = 0 ⟷ m = 0 ∨ n = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "",
+                    "theorem": "multiples_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "lcm_divides"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "divides_0"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "mult_nonzero"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "0.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_lmul"
+                },
+                {
+                    "goal_id": "0.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_self"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lcm_0"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.0"
+                    ],
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lcm_sym"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lcm_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "index_lcm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "prime p",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "prime p ⊢ prime p"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ m = 0 ∨ n = 0 ⟶ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "m = 0 ∨ n = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ∨ n = 0 ⊢ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "lcm_zero, lcm m n = 0",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, m = 0 ∨ n = 0 ⊢ lcm m n = 0"
+                },
+                {
+                    "args": "disjI1, {A: lcm m n = 0, B: p = 1 ∨ ¬(divides p (lcm m n))}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, m = 0 ∨ n = 0 ⊢ lcm m n = 0 ∨ p = 1 ∨ ¬(divides p (lcm m n))"
+                },
+                {
+                    "args": "index_eq_0, index p (lcm m n) = 0",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, m = 0 ∨ n = 0 ⊢ index p (lcm m n) = 0"
+                },
+                {
+                    "args": "if_P, index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, m = 0 ∨ n = 0 ⊢ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ m = 0 ∨ n = 0 ⟶ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p ⊢ ¬(m = 0 ∨ n = 0) ⟶ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "¬(m = 0 ∨ n = 0)",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0 ∨ n = 0) ⊢ ¬(m = 0 ∨ n = 0)"
+                },
+                {
+                    "args": "primepow_divides_lcm, {m: m, n: n}",
+                    "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p ⊢ ∀k::nat. divides (p ^ k) (lcm m n) ⟷ divides (p ^ k) m ∨ divides (p ^ k) n"
+                },
+                {
+                    "args": "primepow_divides_index",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ ∀k. lcm m n = 0 ∨ p = 1 ∨ k ≤ index p (lcm m n) ⟷ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀m::nat. ∀n. (∀k. k ≤ m ⟷ k ≤ n) ⟶ m = n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ ∀k. k ≤ index p (lcm m n) ⟷ k ≤ max (index p m) (index p n)"
+                },
+                {
+                    "args": "k, nat",
+                    "id": "2.4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR k"
+                },
+                {
+                    "args": "∀m. ∀n. k ≤ max m n ⟷ k ≤ m ∨ k ≤ n",
+                    "id": "2.4.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀m. ∀n. k ≤ max m n ⟷ k ≤ m ∨ k ≤ n"
+                },
+                {
+                    "args": "de_morgan_thm2",
+                    "id": "2.4.2",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(m = 0 ∨ n = 0) ⊢ ¬(m = 0) ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.4.3",
+                    "prevs": [
+                        "2.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0 ∨ n = 0) ⊢ ¬(m = 0)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.4.4",
+                    "prevs": [
+                        "2.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(m = 0 ∨ n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "prime_def",
+                    "id": "2.4.5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "prime p ⊢ ¬(p = 1) ∧ (∀x. divides x p ⟶ x = 1 ∨ x = p)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.4.6",
+                    "prevs": [
+                        "2.4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ ¬(p = 1)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p (lcm m n) ⟶ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p (lcm m n)",
+                    "id": "2.4.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ index p (lcm m n) ⊢ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k ≤ index p (lcm m n)}",
+                    "id": "2.4.7.1",
+                    "prevs": [
+                        "2.4.7.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ p = 1 ∨ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "disjI2, {A: lcm m n = 0, B: p = 1 ∨ k ≤ index p (lcm m n)}",
+                    "id": "2.4.7.2",
+                    "prevs": [
+                        "2.4.7.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ lcm m n = 0 ∨ p = 1 ∨ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.3",
+                    "prevs": [
+                        "2.2",
+                        "2.4.7.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ m = 0 ∨ p = 1 ∨ k ≤ index p m ⟶ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "m = 0 ∨ p = 1 ∨ k ≤ index p m",
+                    "id": "2.4.7.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ m = 0 ∨ p = 1 ∨ k ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ m = 0 ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "m = 0",
+                    "id": "2.4.7.4.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = 0 ⊢ m = 0"
+                },
+                {
+                    "args": "negE_gen, {A: m = 0, C: k ≤ index p m}",
+                    "id": "2.4.7.4.1.1",
+                    "prevs": [
+                        "2.4.3",
+                        "2.4.7.4.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "m = 0, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.1.2",
+                    "prevs": [
+                        "2.4.7.4.1.0",
+                        "2.4.7.4.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ m = 0 ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ p = 1 ∨ k ≤ index p m ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "p = 1 ∨ k ≤ index p m",
+                    "id": "2.4.7.4.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ∨ k ≤ index p m ⊢ p = 1 ∨ k ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p m, m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ p = 1 ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "2.4.7.4.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "negE_gen, {A: p = 1, C: k ≤ index p m}",
+                    "id": "2.4.7.4.2.1.1",
+                    "prevs": [
+                        "2.4.6",
+                        "2.4.7.4.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, p = 1 ⊢ k ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.2.1.2",
+                    "prevs": [
+                        "2.4.7.4.2.1.0",
+                        "2.4.7.4.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p m, m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ p = 1 ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "k ≤ index p m ⟶ k ≤ index p m",
+                    "id": "2.4.7.4.2.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k ≤ index p m ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.7.4.2.3",
+                    "prevs": [
+                        "2.4.7.4.2.0",
+                        "2.4.7.4.2.1",
+                        "2.4.7.4.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p m, m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ k ≤ index p m"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.2.4",
+                    "prevs": [
+                        "2.4.7.4.2.0",
+                        "2.4.7.4.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ p = 1 ∨ k ≤ index p m ⟶ k ≤ index p m"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.7.4.3",
+                    "prevs": [
+                        "2.4.7.4.0",
+                        "2.4.7.4.1",
+                        "2.4.7.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ k ≤ index p m"
+                },
+                {
+                    "args": "disjI1, {A: k ≤ index p m, B: k ≤ index p n}",
+                    "id": "2.4.7.4.4",
+                    "prevs": [
+                        "2.4.7.4.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), m = 0 ∨ p = 1 ∨ k ≤ index p m ⊢ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.4.5",
+                    "prevs": [
+                        "2.4.7.4.0",
+                        "2.4.7.4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ m = 0 ∨ p = 1 ∨ k ≤ index p m ⟶ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n ⟶ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "n = 0 ∨ p = 1 ∨ k ≤ index p n",
+                    "id": "2.4.7.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ n = 0 ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "2.4.7.5.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: n = 0, C: k ≤ index p n}",
+                    "id": "2.4.7.5.1.1",
+                    "prevs": [
+                        "2.4.4",
+                        "2.4.7.5.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n = 0, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.1.2",
+                    "prevs": [
+                        "2.4.7.5.1.0",
+                        "2.4.7.5.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ n = 0 ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p n ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "p = 1 ∨ k ≤ index p n",
+                    "id": "2.4.7.5.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p n, n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ p = 1 ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "2.4.7.5.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "negE_gen, {A: p = 1, C: k ≤ index p n}",
+                    "id": "2.4.7.5.2.1.1",
+                    "prevs": [
+                        "2.4.6",
+                        "2.4.7.5.2.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, p = 1 ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.2.1.2",
+                    "prevs": [
+                        "2.4.7.5.2.1.0",
+                        "2.4.7.5.2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p n, n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ p = 1 ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p n ⟶ k ≤ index p n",
+                    "id": "2.4.7.5.2.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k ≤ index p n ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.7.5.2.3",
+                    "prevs": [
+                        "2.4.7.5.2.0",
+                        "2.4.7.5.2.1",
+                        "2.4.7.5.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p n, n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.2.4",
+                    "prevs": [
+                        "2.4.7.5.2.0",
+                        "2.4.7.5.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p n ⟶ k ≤ index p n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.7.5.3",
+                    "prevs": [
+                        "2.4.7.5.0",
+                        "2.4.7.5.1",
+                        "2.4.7.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "disjI2, {A: k ≤ index p m, B: k ≤ index p n}",
+                    "id": "2.4.7.5.4",
+                    "prevs": [
+                        "2.4.7.5.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0), n = 0 ∨ p = 1 ∨ k ≤ index p n ⊢ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.5.5",
+                    "prevs": [
+                        "2.4.7.5.0",
+                        "2.4.7.5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n ⟶ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.7.6",
+                    "prevs": [
+                        "2.4.7.3",
+                        "2.4.7.4",
+                        "2.4.7.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, k ≤ index p (lcm m n), ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.7.7",
+                    "prevs": [
+                        "2.4.7.0",
+                        "2.4.7.6"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p (lcm m n) ⟶ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p m ∨ k ≤ index p n ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "k ≤ index p m ∨ k ≤ index p n",
+                    "id": "2.4.8.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p m ⟶ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p m",
+                    "id": "2.4.8.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ index p m ⊢ k ≤ index p m"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k ≤ index p m}",
+                    "id": "2.4.8.1.1",
+                    "prevs": [
+                        "2.4.8.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p m, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p m"
+                },
+                {
+                    "args": "disjI2, {A: m = 0, B: p = 1 ∨ k ≤ index p m}",
+                    "id": "2.4.8.1.2",
+                    "prevs": [
+                        "2.4.8.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p m, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ m = 0 ∨ p = 1 ∨ k ≤ index p m"
+                },
+                {
+                    "args": "disjI1, {A: m = 0 ∨ p = 1 ∨ k ≤ index p m, B: n = 0 ∨ p = 1 ∨ k ≤ index p n}",
+                    "id": "2.4.8.1.3",
+                    "prevs": [
+                        "2.4.8.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p m, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.1.4",
+                    "prevs": [
+                        "2.4.8.1.0",
+                        "2.4.8.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p m ⟶ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p n ⟶ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p n",
+                    "id": "2.4.8.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ index p n ⊢ k ≤ index p n"
+                },
+                {
+                    "args": "disjI2, {A: p = 1, B: k ≤ index p n}",
+                    "id": "2.4.8.2.1",
+                    "prevs": [
+                        "2.4.8.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p n, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disjI2, {A: n = 0, B: p = 1 ∨ k ≤ index p n}",
+                    "id": "2.4.8.2.2",
+                    "prevs": [
+                        "2.4.8.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p n, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disjI2, {A: m = 0 ∨ p = 1 ∨ k ≤ index p m, B: n = 0 ∨ p = 1 ∨ k ≤ index p n}",
+                    "id": "2.4.8.2.3",
+                    "prevs": [
+                        "2.4.8.2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, k ≤ index p n, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.2.4",
+                    "prevs": [
+                        "2.4.8.2.0",
+                        "2.4.8.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p n ⟶ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.8.3",
+                    "prevs": [
+                        "2.4.8.0",
+                        "2.4.8.1",
+                        "2.4.8.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ (m = 0 ∨ p = 1 ∨ k ≤ index p m) ∨ n = 0 ∨ p = 1 ∨ k ≤ index p n"
+                },
+                {
+                    "args": "lcm m n = 0 ∨ p = 1 ∨ k ≤ index p (lcm m n)",
+                    "id": "2.4.8.4",
+                    "prevs": [
+                        "2.2",
+                        "2.4.8.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ lcm m n = 0 ∨ p = 1 ∨ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ lcm m n = 0 ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "lcm m n = 0",
+                    "id": "2.4.8.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "lcm m n = 0 ⊢ lcm m n = 0"
+                },
+                {
+                    "args": "lcm_zero",
+                    "id": "2.4.8.5.1",
+                    "prevs": [
+                        "2.4.8.5.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "lcm m n = 0 ⊢ m = 0 ∨ n = 0"
+                },
+                {
+                    "args": "negE_gen, {A: m = 0 ∨ n = 0, C: k ≤ index p (lcm m n)}",
+                    "id": "2.4.8.5.2",
+                    "prevs": [
+                        "2.0",
+                        "2.4.8.5.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "lcm m n = 0, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.5.3",
+                    "prevs": [
+                        "2.4.8.5.0",
+                        "2.4.8.5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ lcm m n = 0 ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p (lcm m n) ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "p = 1 ∨ k ≤ index p (lcm m n)",
+                    "id": "2.4.8.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ∨ k ≤ index p (lcm m n) ⊢ p = 1 ∨ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.6.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p (lcm m n), k ≤ index p m ∨ k ≤ index p n ⊢ p = 1 ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "p = 1",
+                    "id": "2.4.8.6.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p = 1 ⊢ p = 1"
+                },
+                {
+                    "args": "negE_gen, {A: p = 1, C: k ≤ index p (lcm m n)}",
+                    "id": "2.4.8.6.1.1",
+                    "prevs": [
+                        "2.4.6",
+                        "2.4.8.6.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "prime p, p = 1 ⊢ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.6.1.2",
+                    "prevs": [
+                        "2.4.8.6.1.0",
+                        "2.4.8.6.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p (lcm m n), k ≤ index p m ∨ k ≤ index p n ⊢ p = 1 ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "k ≤ index p (lcm m n) ⟶ k ≤ index p (lcm m n)",
+                    "id": "2.4.8.6.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ k ≤ index p (lcm m n) ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.8.6.3",
+                    "prevs": [
+                        "2.4.8.6.0",
+                        "2.4.8.6.1",
+                        "2.4.8.6.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), p = 1 ∨ k ≤ index p (lcm m n), k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.6.4",
+                    "prevs": [
+                        "2.4.8.6.0",
+                        "2.4.8.6.3"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ p = 1 ∨ k ≤ index p (lcm m n) ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "2.4.8.7",
+                    "prevs": [
+                        "2.4.8.4",
+                        "2.4.8.5",
+                        "2.4.8.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0), k ≤ index p m ∨ k ≤ index p n ⊢ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.8.8",
+                    "prevs": [
+                        "2.4.8.0",
+                        "2.4.8.7"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p m ∨ k ≤ index p n ⟶ k ≤ index p (lcm m n)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2.4.9",
+                    "prevs": [
+                        "2.4.7",
+                        "2.4.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p (lcm m n) ⟷ k ≤ index p m ∨ k ≤ index p n"
+                },
+                {
+                    "args": "k ≤ index p (lcm m n) ⟷ k ≤ max (index p m) (index p n)",
+                    "id": "2.4.10",
+                    "prevs": [
+                        "2.4.1",
+                        "2.4.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ k ≤ index p (lcm m n) ⟷ k ≤ max (index p m) (index p n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4.11",
+                    "prevs": [
+                        "2.4.0",
+                        "2.4.10"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ ∀k. k ≤ index p (lcm m n) ⟷ k ≤ max (index p m) (index p n)"
+                },
+                {
+                    "args": "index p (lcm m n), max (index p m) (index p n)",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.3",
+                        "2.4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ index p (lcm m n) = max (index p m) (index p n)"
+                },
+                {
+                    "args": "if_not_P, index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "prime p, ¬(m = 0 ∨ n = 0) ⊢ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "prime p ⊢ ¬(m = 0 ∨ n = 0) ⟶ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "prime p ⊢ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ prime p ⟶ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+                }
+            ],
+            "prop": [
+                "prime p ",
+                "⟶ index p (lcm m n) = (if m = 0 ∨ n = 0 then 0 else max (index p m) (index p n))"
+            ],
+            "steps": [
+                {
+                    "case": "m = 0 ∨ n = 0",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "index_eq_0"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lcm_zero"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "param_k": "",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "primepow_divides_lcm"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "primepow_divides_index"
+                },
+                {
+                    "goal": "!m. !n. (!k::nat. k <= m <--> k <= n) --> m = n ",
+                    "goal_id": "2.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "introduction",
+                    "names": "k"
+                },
+                {
+                    "goal": "!m. !n. k <= max m n <--> k <= m | k <= n",
+                    "goal_id": "2.4.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.4.1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.1"
+                    ],
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.4.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.2"
+                    ],
+                    "goal_id": "2.4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.2"
+                    ],
+                    "goal_id": "2.4.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.4.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "prime_def"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.5"
+                    ],
+                    "goal_id": "2.4.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2.4.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2.4.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "lcm m n = 0 ∨ p = 1 ∨ k ≤ index p (lcm m n)",
+                    "goal_id": "2.4.7.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.4.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.4.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.2",
+                        "2.4.7.2"
+                    ],
+                    "goal_id": "2.4.7.3",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.7.3"
+                    ],
+                    "goal_id": "2.4.7.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.7.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.4.7.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.7.4.0"
+                    ],
+                    "goal_id": "2.4.7.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.7.4.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.3",
+                        "2.4.7.4.1.0"
+                    ],
+                    "goal_id": "2.4.7.4.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2.4.7.4.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.7.4.2.0"
+                    ],
+                    "goal_id": "2.4.7.4.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.7.4.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.6",
+                        "2.4.7.4.2.1.0"
+                    ],
+                    "goal_id": "2.4.7.4.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2.4.7.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.4.7.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.7.5.0"
+                    ],
+                    "goal_id": "2.4.7.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.7.5.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.4",
+                        "2.4.7.5.1.0"
+                    ],
+                    "goal_id": "2.4.7.5.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2.4.7.5.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.7.5.2.0"
+                    ],
+                    "goal_id": "2.4.7.5.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.7.5.2.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.6",
+                        "2.4.7.5.2.1.0"
+                    ],
+                    "goal_id": "2.4.7.5.2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2.4.8",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "lcm m n = 0 ∨ p = 1 ∨ k ≤ index p (lcm m n)",
+                    "goal_id": "2.4.8.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.4.8.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.8.0"
+                    ],
+                    "goal_id": "2.4.8.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.8.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.4.8.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                },
+                {
+                    "goal_id": "2.4.8.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.4.8.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.4.8.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.4.8.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.4.8.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "2.4.8.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.8.4"
+                    ],
+                    "goal_id": "2.4.8.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.8.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.8.5.0"
+                    ],
+                    "goal_id": "2.4.8.5.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "lcm_zero"
+                },
+                {
+                    "fact_ids": [
+                        "2.0",
+                        "2.4.8.5.1"
+                    ],
+                    "goal_id": "2.4.8.5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2.4.8.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.8.6.0"
+                    ],
+                    "goal_id": "2.4.8.6.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2.4.8.6.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.4.6",
+                        "2.4.8.6.1.0"
+                    ],
+                    "goal_id": "2.4.8.6.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "lcm_assoc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀d. divides m d ∧ divides n d ∧ divides p d ⟷ (divides m d ∧ divides n d) ∧ divides p d"
+                },
+                {
+                    "args": "q, nat",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR q"
+                },
+                {
+                    "args": "conj_assoc, divides m q ∧ divides n q ∧ divides p q ⟷ (divides m q ∧ divides n q) ∧ divides p q",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ divides m q ∧ divides n q ∧ divides p q ⟷ (divides m q ∧ divides n q) ∧ divides p q"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀q. divides m q ∧ divides n q ∧ divides p q ⟷ (divides m q ∧ divides n q) ∧ divides p q"
+                },
+                {
+                    "args": "lcm_divides, ∀d. divides m d ∧ divides (lcm n p) d ⟷ divides (lcm m n) d ∧ divides p d",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀d. divides m d ∧ divides (lcm n p) d ⟷ divides (lcm m n) d ∧ divides p d"
+                },
+                {
+                    "args": "lcm_divides, ∀d. divides (lcm m (lcm n p)) d ⟷ divides (lcm (lcm m n) p) d",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∀d. divides (lcm m (lcm n p)) d ⟷ divides (lcm (lcm m n) p) d"
+                },
+                {
+                    "args": "multiples_eq, lcm m (lcm n p) = lcm (lcm m n) p",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ lcm m (lcm n p) = lcm (lcm m n) p"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ lcm m (lcm n p) = lcm (lcm m n) p"
+                }
+            ],
+            "prop": "lcm m (lcm n p) = lcm (lcm m n) p",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "multiples_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lcm_divides"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lcm_divides"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "q"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "lcm_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ n = 0 ⟶ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "mult_0_right, (0::nat) * 0 = 0",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::nat) * 0 = 0"
+                },
+                {
+                    "args": "n * n = 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0 ⊢ n * n = 0"
+                },
+                {
+                    "args": "eq_sym_eq, 0 = n",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ 0 = n"
+                },
+                {
+                    "args": "if_P, (if n * n = 0 then 0 else n * n DIV gcd n n) = n",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n = 0 ⊢ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n = 0 ⟶ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(n = 0) ⟶ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0) ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "de_morgan_thm2, ¬(n = 0 ∨ n = 0)",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0 ∨ n = 0)"
+                },
+                {
+                    "args": "mult_eq_0, ¬(n * n = 0)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ ¬(n * n = 0)"
+                },
+                {
+                    "args": "div_mult, {m: n, n: n}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ⊢ n * n DIV n = n"
+                },
+                {
+                    "args": "gcd_refl, n * n DIV gcd n n = n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ n * n DIV gcd n n = n"
+                },
+                {
+                    "args": "if_not_P, (if n * n = 0 then 0 else n * n DIV gcd n n) = n",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5",
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n = 0) ⊢ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(n = 0) ⟶ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (if n * n = 0 then 0 else n * n DIV gcd n n) = n"
+                },
+                {
+                    "args": "lcm_def, lcm n n = n",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ lcm n n = n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ lcm n n = n"
+                }
+            ],
+            "prop": "lcm n n = n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "lcm_def"
+                },
+                {
+                    "case": "n=0",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "n * n = 0",
+                    "goal_id": "0.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "~(n * n = 0)",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_eq_0"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm2"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_refl"
+                },
+                {
+                    "goal_id": "1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "div_mult"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
             }
         }
     ],
