@@ -12,7 +12,7 @@ import copy
 from sympy.simplify.fu import *
 from sympy import solveset, Interval, Eq, Union, EmptySet, apart
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS = range(8)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
@@ -193,7 +193,7 @@ class Expr:
             raise NotImplementedError
 
     def priority(self):
-        if self.ty == VAR:
+        if self.ty in (VAR, SYMBOL):
             return 100
         elif self.ty == CONST:
             if isinstance(self.val, Fraction):
@@ -559,6 +559,25 @@ class Expr:
         """Normalizes an expression."""
         return from_poly(self.to_poly(0))
 
+    def little_to_poly(self):
+        """Convert an expression to multiplication between polynomials."""
+        if self.ty == OP and self.op == "*":
+            arg1, arg2 = self.args
+            return arg1.little_to_poly() * arg2.little_to_poly()
+        elif self.ty == OP and self.op == "/":
+            arg1, arg2 = self.args
+            if arg2.ty == OP and arg2.op == "^":
+                arg2_inv = Op("^", arg2.arg1, Op("-", arg2.arg2).normalize())
+            else:
+                arg2_inv = Op("^", arg2, Const(-1))
+            return arg1.little_to_poly() * arg2_inv.little_to_poly()
+        elif self.ty == OP and self.op == "^" and self.args[1].ty == CONST:
+            arg1, arg2 = self.args
+            return poly.Polynomial([poly.Monomial(Const(1), [(arg1.normalize(), arg2.val)])])
+        else:
+            return poly.singleton(self)
+            
+
     def replace_trig(self, trig_old, trig_new):
         """Replace the old trig to its identity trig in e."""
         assert isinstance(trig_new, Expr)
@@ -696,6 +715,19 @@ class Expr:
         abs_collect(self)
         return abs_value
 
+    def pre_order_pat(self):
+        """Traverse the tree node in preorder and return its pattern."""
+        pat = []
+        def preorder(e):
+            pat.append(e.ty)
+            if e.ty in (OP, FUN):
+                for arg in e.args:
+                    preorder(arg)
+            elif e.ty in (INTEGRAL, EVAL_AT):
+                preorder(e.body)
+        preorder(self)
+        return pat
+
 def sympy_style(s):
         """Transform expr to sympy object.
         """
@@ -727,6 +759,43 @@ def trig_transform(trig, var):
             poss_expr.add(j)
     poss.add((holpy_style(i), "Unchanged"))
     return poss
+
+def match(exp, pattern):
+    d = dict()
+    def rec(exp, pattern):
+        if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
+            return False
+        if exp.ty == VAR:
+            if not isinstance(pattern, Symbol) or pattern.pat != VAR:
+                return False
+            if pattern.name in d.keys():
+                return exp == d[pattern.name]
+            else:
+                d[pattern.name] = exp
+                return True
+        elif exp.ty == CONST:
+            if pattern.ty == CONST and pattern.val == exp.val:
+                return True
+            if not isinstance(pattern, Symbol) or pattern.pat != CONST:
+                return False
+            if pattern.name in d.keys():
+                return exp == d[pattern.name]
+            else:
+                d[pattern.name] = exp
+                return True
+        elif exp.ty == OP:
+            if exp.op != pattern.op or len(exp.args) != len(pattern.args):
+                return False
+            table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
+            return functools.reduce(lambda x, y: x and y, table)    
+        elif exp.ty == FUN:
+            if exp.func_name != pattern.func_name or len(exp.args) != len(pattern.args):
+                return False
+            table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
+            return functools.reduce(lambda x, y: x and y, table)  
+        elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
+            return rec(exp.body, pattern.body) 
+    return rec(exp, pattern)         
 
 def getReciprocalTrig(factor, pow):
     dic =  {
@@ -1209,6 +1278,26 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+
+class Symbol(Expr):
+    def __init__(self, name, ty):
+        self.name = name
+        self.ty = SYMBOL
+        self.pat = ty
+    
+    def __eq__(self, other):
+        if not isinstance(other, Symbol):
+            return False
+        return self.name == other.name and self.pat == other.pat
+
+    def __hash__(self):
+        return hash((SYMBOL, self.name, self.ty, self.pat))
+    
+    def __str__(self):
+        return "%s" % (self.name)
+    
+    def __repr__(self):
+        return "Symbol(%s, %s)" % (self.name, self.pat)
 
 trigFun = {     
     TR1: "sec-csc to cos-sin",
