@@ -555,9 +555,9 @@ class Oracle(Rule):
         poly_3 = expr.find_pattern(e, is_sqrt, sin(Var(v)))
         poly_4 = expr.find_pattern(e, is_sqrt, cos(Var(v)))
         poly_5 = expr.find_pattern(e, is_more_than_power)
+        itg = integrals[0][0]
         if len(poly_1) == 1 and len(poly_5) == 0:
             letter = random.choices(string.ascii_lowercase.replace(v, ''))[0]
-            print("letter, ", letter)
             rule = Substitution1(letter, poly_1[0][0])
             rule.eval(copy.deepcopy(e))
             return rule.eval(copy.deepcopy(e)), poly_1[0], letter, "degree_one"
@@ -584,5 +584,20 @@ class Oracle(Rule):
             from sympy.simplify.fu import TR7
             new_e = e.body.replace_trig(e.body,holpy_style(TR7(sympy_style(e.body))))
             return Integral(e.var, e.lower, e.upper, new_e), holpy_style(TR7(sympy_style(e.body))), "reduce cos power"
+        # elif itg.body.ty == OP and itg.body.op in ("*", "/"):
+        #     arg1, arg2 = itg.body.args
+        #     if itg.body.op == "*":
+        #         if deriv(arg1, Var(v)).normalize() == arg2.normalize():
+        #             letter = random.choices(string.ascii_lowercase.replace(v, ''))[0]
+        #             rule = Substitution1(letter, arg2)
+        #             new_int = rule.eval(copy.deepcopy(itg))
+        #             return e.replace_trig(itg, new_int)
+        #         elif deriv(arg2, Var(v)).normalize() == arg1.normalize():
+        #             letter = random.choices(string.ascii_lowercase.replace(v, ''))[0]
+        #             rule = Substitution1(letter, arg1)
+        #             new_int = rule.eval(copy.deepcopy(itg))
+        #             return e.replace_trig(itg, new_int)
+        #         else:
+        #             return e, "no change" 
         else:
             return e, "no change"
