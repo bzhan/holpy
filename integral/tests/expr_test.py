@@ -7,7 +7,7 @@ import copy
 
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
-    VAR, CONST, match
+    VAR, CONST, OP, FUN, match
 from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
@@ -340,9 +340,10 @@ class ExprTest(unittest.TestCase):
             self.assertEqual(s.get_location(), s1)
 
     def testMatching(self):
-        a = Symbol('a', CONST)
-        b = Symbol('b', CONST)
-        x = Symbol('x', VAR)
+        a = Symbol('a', [CONST])
+        b = Symbol('b', [CONST])
+        x = Symbol('x', [VAR])
+        y = Symbol('y', [VAR, OP, FUN])
 
         test_data = [
             ('x - 1', x - a, True),
@@ -358,7 +359,9 @@ class ExprTest(unittest.TestCase):
             ('cos(x) ^ 2', cos(x) ^ Const(2), True),
             ('(1 - x ^ 2) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), True),
             ('(1 - x ^ 3) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), False),
-            ('(1 - 2 * sin(x) ^ 2) ^ (1/2)', (b - a * (sin(x) ^ Const(2)))^Const(Fraction(1/2)), True)
+            ('(1 - 2 * sin(x) ^ 2) ^ (1/2)', (b - a * (sin(x) ^ Const(2)))^Const(Fraction(1/2)), True),
+            ('sin(x) ^ 2 + cos(y)^2', (sin(x)^Const(2))+(cos(x)^Const(2)), False),
+            ('sin(2*x+1)^2 + cos(2*x+1) ^ 2', (sin(y)^Const(2))+(cos(y)^Const(2)), True),
         ]
 
         for r1, r2, r3 in test_data:
