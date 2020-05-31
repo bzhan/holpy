@@ -766,7 +766,7 @@ def match(exp, pattern):
         if not isinstance(pattern, Symbol) and exp.ty != pattern.ty:
             return False
         if exp.ty == VAR:
-            if not isinstance(pattern, Symbol) or pattern.pat != VAR:
+            if not isinstance(pattern, Symbol) or VAR not in pattern.pat:
                 return False
             if pattern.name in d.keys():
                 return exp == d[pattern.name]
@@ -776,7 +776,7 @@ def match(exp, pattern):
         elif exp.ty == CONST:
             if pattern.ty == CONST and pattern.val == exp.val:
                 return True
-            if not isinstance(pattern, Symbol) or pattern.pat != CONST:
+            if not isinstance(pattern, Symbol) or CONST not in pattern.pat:
                 return False
             if pattern.name in d.keys():
                 return exp == d[pattern.name]
@@ -784,13 +784,33 @@ def match(exp, pattern):
                 d[pattern.name] = exp
                 return True
         elif exp.ty == OP:
+            if isinstance(pattern, Symbol):
+                if OP in pattern.pat:
+                    if pattern.name in d.keys():
+                        return d[pattern.name] == exp
+                    else:
+                        d[pattern.name] = exp
+                        return True
+                else:
+                    return False
             if exp.op != pattern.op or len(exp.args) != len(pattern.args):
                 return False
+            
             table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
             return functools.reduce(lambda x, y: x and y, table)    
         elif exp.ty == FUN:
+            if isinstance(pattern, Symbol):
+                if FUN in pattern.pat:
+                    if pattern.name in d.keys():
+                        return d[pattern.name] == exp
+                    else:
+                        d[pattern.name] = exp
+                        return True
+                else:
+                    return False
             if exp.func_name != pattern.func_name or len(exp.args) != len(pattern.args):
                 return False
+            
             table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
             return functools.reduce(lambda x, y: x and y, table)  
         elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
