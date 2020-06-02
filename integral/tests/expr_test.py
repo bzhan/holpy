@@ -6,7 +6,8 @@ from fractions import Fraction
 import copy
 
 from integral import expr
-from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt
+from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt, Symbol,\
+    VAR, CONST, OP, FUN, match
 from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
@@ -337,6 +338,34 @@ class ExprTest(unittest.TestCase):
         for s, s1 in test_data:
             s = parse_expr(s)
             self.assertEqual(s.get_location(), s1)
+
+    def testMatching(self):
+        a = Symbol('a', [CONST])
+        b = Symbol('b', [CONST])
+        x = Symbol('x', [VAR])
+        y = Symbol('y', [VAR, OP, FUN])
+
+        test_data = [
+            ('x - 1', x - a, True),
+            ('x - 2', x - Const(2), True),
+            ('x + 3', x - b, False),
+            ('x', x + a, False),
+            ('3*x', a * x, True),
+            ('3 * x + 5', a * x + b, True),
+            ('2 * x + 3', a * x + a, False),
+            ('x ^ 2', x ^ Const(2), True),
+            ('x ^ 3 - 2', x ^ Const(3), False),
+            ('1 - x ^ 2', a - (x ^ Const(2)), True),
+            ('cos(x) ^ 2', cos(x) ^ Const(2), True),
+            ('(1 - x ^ 2) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), True),
+            ('(1 - x ^ 3) ^ (1/2)', (Const(1) - (x ^ Const(2)))^(Const(Fraction(1/2))), False),
+            ('(1 - 2 * sin(x) ^ 2) ^ (1/2)', (b - a * (sin(x) ^ Const(2)))^Const(Fraction(1/2)), True),
+            ('sin(x) ^ 2 + cos(y)^2', (sin(x)^Const(2))+(cos(x)^Const(2)), False),
+            ('sin(2*x+1)^2 + cos(2*x+1) ^ 2', (sin(y)^Const(2))+(cos(y)^Const(2)), True),
+        ]
+
+        for r1, r2, r3 in test_data:
+            self.assertEqual(match(parse_expr(r1), r2), r3)
 
 if __name__ == "__main__":
     unittest.main()
