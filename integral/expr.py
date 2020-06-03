@@ -843,10 +843,21 @@ def find_pattern1(expr, pat):
     rec(expr, pat)
     return c
 
-def collect_func_body(expr):
-    f = Symbol('f', [FUN])
-    c = [p.args[0] for p in find_pattern1(expr, f)]
+def collect_spec_expr(expr, symb):
+    c = [p.args[0] for p in find_pattern1(expr, symb)]
     return c   
+
+def decompose_expr_factor(e):
+    factors = []
+    def f(e):
+        if e.ty == OP and e.op == '*':
+            f(e.args[0])
+            f(e.args[1])
+        else:
+            factors.append(e)
+
+    f(e)
+    return factors
 
 def getReciprocalTrig(factor, pow):
     dic =  {
