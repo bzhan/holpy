@@ -659,6 +659,19 @@ class Expr:
         findv(self, v)
         return v
 
+    @property
+    def depth(self):
+        def d(expr):
+            if expr.ty in (VAR, CONST):
+                return 0
+            elif expr.ty in (OP, FUN):
+                return 1 + max([d(expr.args[i]) for i in range(len(expr.args))])
+            elif expr.ty in (EVAL_AT, INTEGRAL, DERIV):
+                return d(expr.body)
+            elif expr.ty == SYMBOL:
+                raise TypeError
+        return d(self)
+
     def ranges(self, var, lower, upper):
         """Find expression where greater and smaller than zero in the interval: lower, upper"""
         e = sympy_style(self)
@@ -815,7 +828,25 @@ def match(exp, pattern):
             return functools.reduce(lambda x, y: x and y, table)  
         elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
             return rec(exp.body, pattern.body) 
-    return rec(exp, pattern)         
+    return rec(exp, pattern)  
+
+def find_pattern1(expr, pat):
+    c = []
+    def rec(e, pat):
+        if match(e, pat):
+            c.append(e)
+        elif e.ty in (OP, FUN):
+            for arg in e.args:
+                rec(arg, pat)
+        elif e.ty in (INTEGRAL, DERIV, EVAL_AT):
+            rec(e.body, pat)
+    rec(expr, pat)
+    return c
+
+def collect_func_body(expr):
+    f = Symbol('f', [FUN])
+    c = [p.args[0] for p in find_pattern1(expr, f)]
+    return c   
 
 def getReciprocalTrig(factor, pow):
     dic =  {
