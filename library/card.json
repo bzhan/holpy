@@ -686,7 +686,7 @@
     ],
     "description": "Basic notions of cardinal arithmetic. Refer to card.ml from HOL Light.",
     "imports": [
-        "iterate"
+        "products"
     ],
     "name": "card"
 }
