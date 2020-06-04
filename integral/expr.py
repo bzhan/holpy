@@ -10,7 +10,7 @@ from integral import parser
 from sympy.parsing import sympy_parser
 import copy
 from sympy.simplify.fu import *
-from sympy import solveset, Interval, Eq, Union, EmptySet, apart
+from sympy import solveset, Interval, Eq, Union, EmptySet, apart, pexquo
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT, ABS, SYMBOL = range(9)
 
@@ -741,6 +741,27 @@ class Expr:
         preorder(self)
         return pat
 
+    def nonlinear_subexpr(self):
+        """Return nonlinear & nonconstant subexpression."""
+        subs = set()
+        a = Symbol('a', [CONST])
+        b = Symbol('b', [CONST])
+        x = Symbol('x', [VAR])
+        patterns = [a * x, a*x +b, x]
+        def traverse(exp):
+            table = [match(exp, p) for p in patterns]
+            is_linear = functools.reduce(lambda x, y: x or y, table)
+            if not exp.is_constant() and not is_linear:
+                subs.add(exp)
+            if exp.ty in (OP, FUN):
+                for arg in exp.args:
+                    traverse(arg)
+            elif exp.ty in (INTEGRAL, EVAL_AT, DERIV):
+                traverse(exp.body)
+        traverse(self)
+        subs.discard(self)
+        return tuple(subs)
+
 def sympy_style(s):
         """Transform expr to sympy object.
         """
@@ -858,6 +879,13 @@ def decompose_expr_factor(e):
 
     f(e)
     return factors
+
+def is_divisible(f, g):
+    try:
+        pexquo(f, g)
+        return True
+    except:
+        return False
 
 def getReciprocalTrig(factor, pow):
     dic =  {
