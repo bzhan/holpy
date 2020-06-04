@@ -613,13 +613,13 @@ class Expr:
             else:
                 return self
 
-    def identity_trig_expr(self, trigs):
+    def identity_trig_expr(self, trigs, var, rule_list=None):
         """Input: A list contains the trigs expected to transform in trig_identity.
            Output: A list contains all possible transformation and it's rule occurs in self.
         """
         n = []
         for t in trigs:
-            s = trig_transform(t) #transformation set
+            s = trig_transform(t, var, rule_list) #transformation set
             for item in s:
                 c = copy.deepcopy(self)
                 c = c.replace_trig(t, parser.parse_expr(str(item[0]).replace("**", "^")))
@@ -778,7 +778,7 @@ def valid_expr(s):
         return False
     return True
 
-def trig_transform(trig, var):
+def trig_transform(trig, var, rule_list=None):
     """Compute all possible trig function equal to trig"""
     poss = set()
     poss_expr = set()
@@ -787,6 +787,8 @@ def trig_transform(trig, var):
         return poss
     i = sympy_parser.parse_expr(str(trig).replace("^", "**"))
     for f, rule in trigFun.items():
+        if rule_list is not None and f not in rule_list:
+            continue
         j = f(sympy_parser.parse_expr(str(trig).replace("^", "**")))
         if i != j and j not in poss_expr:
             poss.add((holpy_style(j), f.__name__))
@@ -848,7 +850,7 @@ def match(exp, pattern):
             table = [rec(exp.args[i], pattern.args[i]) for i  in range(len(exp.args))]
             return functools.reduce(lambda x, y: x and y, table)  
         elif exp.ty in (DERIV, EVAL_AT, INTEGRAL):
-            return rec(exp.body, pattern.body) 
+            return rec(exp.body, pattern) 
     return rec(exp, pattern)  
 
 def find_pattern1(expr, pat):

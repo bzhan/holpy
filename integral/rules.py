@@ -221,11 +221,25 @@ class Substitution1(Rule):
     """Apply substitution u = g(x) x = y(u)  f(x) = x+5  u=>x+1   (x+1)+4 """
     """INT x:[a, b]. f(g(x))*g(x)' = INT u:[g(a), g(b)].f(u)"""
     def __init__(self, var_name, var_subst):
+        """
+        var_name: string, name of the new variable.
+        var_subst: Expr, expression in the original integral to be substituted.
+    
+        """
         self.name = "Substitution"
         self.var_name = var_name
         self.var_subst = var_subst
 
     def eval(self, e):
+        """
+        Parameters:
+        e: Expr, the integral on which to perform substitution.
+
+        Returns:
+        A pair of expressions (e', f), where e' is the new integral, and
+        f is one of the parameter used to specify the substitution.
+
+        """
         var_name = parser.parse_expr(self.var_name)
         var_subst = self.var_subst
         dfx = expr.deriv(e.var, var_subst)
@@ -295,9 +309,9 @@ class Equation(Rule):
 
 class TrigSubstitution(Rule):
     """Apply trig identities transformation on expression."""
-    def eval(self, e):
-        exprs =  e.body.identity_trig_expr(trig_identity)
-        n_expr = [] #exprs in a tuple        
+    def eval(self, e, rule_list=None):
+        exprs =  e.body.identity_trig_expr(trig_identity, e.var, rule_list)
+        n_expr = [] #exprs in a tuple
         for i in range(len(exprs)):
             n_expr.append((Integral(e.var, e.lower, e.upper, exprs[i][0]),exprs[i][1]))
         return n_expr
