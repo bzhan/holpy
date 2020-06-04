@@ -13623,6 +13623,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "sin_cos_combine2",
             "num_gaps": 0,
             "proof": [
@@ -73786,6 +73789,691 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "rpow_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < x ⊢ 0 < x"
+                },
+                {
+                    "args": "x < pi / 4",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < pi / 4 ⊢ x < pi / 4"
+                },
+                {
+                    "args": "-(sin x) + cos x = -(sin x - cos x)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -(sin x) + cos x = -(sin x - cos x)"
+                },
+                {
+                    "args": "real_pos, {n: bit0 1}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 2"
+                },
+                {
+                    "args": "sqrt_pos_le",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ sqrt 2"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "∀p. 0 < x ⟶ x < p / 4 ⟶ 0 < p ⟶ -(p / 2) ≤ x + p / 4",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < x ⟶ x < p / 4 ⟶ 0 < p ⟶ -(p / 2) ≤ x + p / 4"
+                },
+                {
+                    "args": "pi",
+                    "id": "7",
+                    "prevs": [
+                        "6",
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < x, x < pi / 4 ⊢ -(pi / 2) ≤ x + pi / 4"
+                },
+                {
+                    "args": "∀p. 0 < x ⟶ x < p / 4 ⟶ 0 < p ⟶ x + p / 4 ≤ p / 2",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. 0 < x ⟶ x < p / 4 ⟶ 0 < p ⟶ x + p / 4 ≤ p / 2"
+                },
+                {
+                    "args": "pi",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "0 < x, x < pi / 4 ⊢ x + pi / 4 ≤ pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi_le",
+                    "id": "10",
+                    "prevs": [
+                        "7",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ cos (x + pi / 4)"
+                },
+                {
+                    "args": "real_le_mul",
+                    "id": "11",
+                    "prevs": [
+                        "4",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ sqrt 2 * cos (x + pi / 4)"
+                },
+                {
+                    "args": "real_neg_neg, 0 ≤ --(sqrt 2 * cos (x + pi / 4))",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ --(sqrt 2 * cos (x + pi / 4))"
+                },
+                {
+                    "args": "real_mul_lneg, 0 ≤ -(-(sqrt 2) * cos (x + pi / 4))",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ -(-(sqrt 2) * cos (x + pi / 4))"
+                },
+                {
+                    "args": "sin_cos_combine2, 0 ≤ -(sin x - cos x)",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ -(sin x - cos x)"
+                },
+                {
+                    "args": "0 ≤ -(sin x) + cos x",
+                    "id": "15",
+                    "prevs": [
+                        "2",
+                        "14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "0 < x, x < pi / 4 ⊢ 0 ≤ -(sin x) + cos x"
+                },
+                {
+                    "args": "greater_eq_def, -(sin x) + cos x ≥ 0",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 < x, x < pi / 4 ⊢ -(sin x) + cos x ≥ 0"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < x ⟶ x < pi / 4 ⟶ -(sin x) + cos x ≥ 0"
+                }
+            ],
+            "prop": "0 < x ⟶ x < pi / 4 ⟶ -(sin x) + cos x ≥ 0",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_eq_def"
+                },
+                {
+                    "goal": "-(sin x) + cos x = -(sin x - cos x)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_cos_combine2"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_neg_neg"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_pos_le"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pos"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi_le"
+                },
+                {
+                    "goal": "0 < pi",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal": "!p::real. 0 < x --> x < p /4 --> 0 < p --> -(p/2) <= x + p/4",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "∀p. 0 < x ⟶ x < p / 4 ⟶ 0 < p ⟶ x + p / 4 ≤ (p / 2)",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "test2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "-3 * pi / 4 ≤ x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-3 * pi / 4 ≤ x ⊢ -3 * pi / 4 ≤ x"
+                },
+                {
+                    "args": "x ≤ pi / 4",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ pi / 4 ⊢ x ≤ pi / 4"
+                },
+                {
+                    "args": "-(sin x) + cos x = -(sin x - cos x)",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ -(sin x) + cos x = -(sin x - cos x)"
+                },
+                {
+                    "args": "real_pos, {n: bit0 1}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 2"
+                },
+                {
+                    "args": "sqrt_pos_le",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ sqrt 2"
+                },
+                {
+                    "args": "pi_pos",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "∀p. -3 * p / 4 ≤ x ⟶ x ≤ p / 4 ⟶ 0 < p ⟶ -(p / 2) ≤ x + p / 4",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. -3 * p / 4 ≤ x ⟶ x ≤ p / 4 ⟶ 0 < p ⟶ -(p / 2) ≤ x + p / 4"
+                },
+                {
+                    "args": "pi",
+                    "id": "7",
+                    "prevs": [
+                        "6",
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ -(pi / 2) ≤ x + pi / 4"
+                },
+                {
+                    "args": "∀p. -3 * p / 4 ≤ x ⟶ x ≤ p / 4 ⟶ 0 < p ⟶ x + p / 4 ≤ p / 2",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀p. -3 * p / 4 ≤ x ⟶ x ≤ p / 4 ⟶ 0 < p ⟶ x + p / 4 ≤ p / 2"
+                },
+                {
+                    "args": "pi",
+                    "id": "9",
+                    "prevs": [
+                        "8",
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ x + pi / 4 ≤ pi / 2"
+                },
+                {
+                    "args": "cos_pos_pi_le",
+                    "id": "10",
+                    "prevs": [
+                        "7",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ cos (x + pi / 4)"
+                },
+                {
+                    "args": "real_le_mul",
+                    "id": "11",
+                    "prevs": [
+                        "4",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ sqrt 2 * cos (x + pi / 4)"
+                },
+                {
+                    "args": "real_neg_neg, 0 ≤ --(sqrt 2) * cos (x + pi / 4)",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ --(sqrt 2) * cos (x + pi / 4)"
+                },
+                {
+                    "args": "real_mul_lneg, 0 ≤ -(-(sqrt 2) * cos (x + pi / 4))",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ -(-(sqrt 2) * cos (x + pi / 4))"
+                },
+                {
+                    "args": "sin_cos_combine2, 0 ≤ -(sin x - cos x)",
+                    "id": "14",
+                    "prevs": [
+                        "13"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ -(sin x - cos x)"
+                },
+                {
+                    "args": "0 ≤ -(sin x) + cos x",
+                    "id": "15",
+                    "prevs": [
+                        "2",
+                        "14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ 0 ≤ -(sin x) + cos x"
+                },
+                {
+                    "args": "greater_eq_def, -(sin x) + cos x ≥ 0",
+                    "id": "16",
+                    "prevs": [
+                        "15"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ pi / 4, -3 * pi / 4 ≤ x ⊢ -(sin x) + cos x ≥ 0"
+                },
+                {
+                    "args": "",
+                    "id": "17",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "16"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -3 * pi / 4 ≤ x ⟶ x ≤ pi / 4 ⟶ -(sin x) + cos x ≥ 0"
+                }
+            ],
+            "prop": "-3 * pi / 4 ≤ x ⟶ x ≤ pi / 4 ⟶ -(sin x) + cos x ≥ 0",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "greater_eq_def"
+                },
+                {
+                    "goal": "-(sin x) + cos x = -(sin x - cos x)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sin_cos_combine2"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mul_lneg"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_neg_neg"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_mul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sqrt_pos_le"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pos"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "cos_pos_pi_le"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "pi_pos"
+                },
+                {
+                    "goal": "!p::real. -3 * p / 4 ≤ x --> x ≤ p / 4 --> 0 < p --> -(p / 2) ≤ x + p / 4",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal": "∀p. -3 * p / 4 ≤ x ⟶ x ≤ p / 4 ⟶ 0 < p ⟶ x + p / 4 ≤ (p / 2)",
+                    "goal_id": "8",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
+            "name": "test3",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "1 < x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "1 < x ⊢ 1 < x"
+                },
+                {
+                    "args": "x < 2",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < 2 ⊢ x < 2"
+                },
+                {
+                    "args": "(4::nat) = 2 * 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ (4::nat) = 2 * 2"
+                },
+                {
+                    "args": "x * x * (x * x) > 0",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "z3",
+                    "th": "1 < x, x < 2 ⊢ x * x * (x * x) > 0"
+                },
+                {
+                    "args": "real_pow_2, x ^ (2::nat) * x ^ (2::nat) > 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < x, x < 2 ⊢ x ^ (2::nat) * x ^ (2::nat) > 0"
+                },
+                {
+                    "args": "real_pow_add, x ^ ((2::nat) + 2) > 0",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < x, x < 2 ⊢ x ^ ((2::nat) + 2) > 0"
+                },
+                {
+                    "args": "mult_2, x ^ ((2::nat) * 2) > 0",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "1 < x, x < 2 ⊢ x ^ ((2::nat) * 2) > 0"
+                },
+                {
+                    "args": "x ^ (4::nat) > 0",
+                    "id": "7",
+                    "prevs": [
+                        "2",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "1 < x, x < 2 ⊢ x ^ (4::nat) > 0"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 1 < x ⟶ x < 2 ⟶ x ^ (4::nat) > 0"
+                }
+            ],
+            "prop": "1 < x ⟶ x < 2 ⟶ x ^ (4::nat) > 0",
+            "steps": [
+                {
+                    "goal": "(4::nat) = ((2::nat) * 2)",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "nat_norm"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_2"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_add"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_2"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
