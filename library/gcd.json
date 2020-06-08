@@ -15363,7 +15363,7 @@
             "name": "gcd",
             "prop": [
                 "gcd m n = ",
-                "(THE k. divides k m ∧ divides k n ∧ (∀a. divides a m ∧ divides a n ⟶ divides a k))"
+                "(THE k. divides k m ∧ divides k n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a k))"
             ],
             "ty": "def",
             "type": "nat ⇒ nat ⇒ nat"
@@ -15372,23 +15372,666 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": "gcd_divide1",
-            "num_gaps": 1,
+            "name": "gcd",
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "bezout, {a: m, b: n}",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ divides (THE k. divides k m ∧ divides k n ∧ (∀a. a divides m ∧ a divides n ⟶ a divides k)) m"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃d. ∃x. ∃y. (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d)"
                 },
                 {
-                    "args": "gcd_def, divides (gcd m n) m",
+                    "args": "d, nat",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR d"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides d m ∧ divides d n"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ m * x - n * y = d ∨ n * x - m * y = d"
+                },
+                {
+                    "args": "theI, {P: λk. divides k m ∧ divides k n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a k), a: d}",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides d m ∧ divides d n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a d) ⟶ (∀x. divides x m ∧ divides x n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a x) ⟶ x = d) ⟶ divides (THE x. divides x m ∧ divides x n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a x)) m ∧ divides (THE x. divides x m ∧ divides x n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a x)) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (THE x. divides x m ∧ divides x n ∧ (∀a1. divides a1 m ⟶ divides a1 n ⟶ divides a1 x)))"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ ∀a. divides a m ⟶ divides a n ⟶ divides a d"
+                },
+                {
+                    "args": "a, nat",
+                    "id": "8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "divides a m",
+                    "id": "8.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides a m ⊢ divides a m"
+                },
+                {
+                    "args": "divides a n",
+                    "id": "8.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides a n ⊢ divides a n"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "8.3",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ d = m * x - n * y ∨ d = n * x - m * y"
+                },
+                {
+                    "args": "",
+                    "id": "8.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides a m, divides a n, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ d = m * x - n * y ⟶ divides a d"
+                },
+                {
+                    "args": "d = m * x - n * y",
+                    "id": "8.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = m * x - n * y ⊢ d = m * x - n * y"
+                },
+                {
+                    "args": "divides_rmul, {a: m, d: a, x: x}",
+                    "id": "8.4.1",
+                    "prevs": [
+                        "8.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides a m, divides a n, d = m * x - n * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a (m * x)"
+                },
+                {
+                    "args": "divides_rmul, {a: n, d: a, x: y}",
+                    "id": "8.4.2",
+                    "prevs": [
+                        "8.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides a m, divides a n, d = m * x - n * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a (n * y)"
+                },
+                {
+                    "args": "divides_sub",
+                    "id": "8.4.3",
+                    "prevs": [
+                        "8.4.1",
+                        "8.4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides a m, divides a n, d = m * x - n * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a (m * x - n * y)"
+                },
+                {
+                    "args": "divides a d",
+                    "id": "8.4.4",
+                    "prevs": [
+                        "8.4.0",
+                        "8.4.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides a m, divides a n, d = m * x - n * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a d"
+                },
+                {
+                    "args": "",
+                    "id": "8.4.5",
+                    "prevs": [
+                        "8.4.0",
+                        "8.4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "divides a m, divides a n, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ d = m * x - n * y ⟶ divides a d"
+                },
+                {
+                    "args": "",
+                    "id": "8.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "divides a m, divides a n, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ d = n * x - m * y ⟶ divides a d"
+                },
+                {
+                    "args": "d = n * x - m * y",
+                    "id": "8.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "d = n * x - m * y ⊢ d = n * x - m * y"
+                },
+                {
+                    "args": "divides_rmul, {a: n, d: a, x: x}",
+                    "id": "8.5.1",
+                    "prevs": [
+                        "8.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides a m, divides a n, d = n * x - m * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a (n * x)"
+                },
+                {
+                    "args": "divides_rmul, {a: m, d: a, x: y}",
+                    "id": "8.5.2",
+                    "prevs": [
+                        "8.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "divides a m, divides a n, d = n * x - m * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a (m * y)"
+                },
+                {
+                    "args": "divides_sub",
+                    "id": "8.5.3",
+                    "prevs": [
+                        "8.5.1",
+                        "8.5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides a m, divides a n, d = n * x - m * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a (n * x - m * y)"
+                },
+                {
+                    "args": "divides a d",
+                    "id": "8.5.4",
+                    "prevs": [
+                        "8.5.0",
+                        "8.5.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "divides a m, divides a n, d = n * x - m * y, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a d"
+                },
+                {
+                    "args": "",
+                    "id": "8.5.5",
+                    "prevs": [
+                        "8.5.0",
+                        "8.5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "divides a m, divides a n, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ d = n * x - m * y ⟶ divides a d"
+                },
+                {
+                    "args": "disjE",
+                    "id": "8.6",
+                    "prevs": [
+                        "8.3",
+                        "8.4",
+                        "8.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides a m, divides a n, (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides a d"
+                },
+                {
+                    "args": "",
+                    "id": "8.7",
+                    "prevs": [
+                        "8.0",
+                        "8.1",
+                        "8.2",
+                        "8.6"
+                    ],
+                    "rule": "intros",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ ∀a. divides a m ⟶ divides a n ⟶ divides a d"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "5",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ (divides d m ∧ divides d n) ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a d)"
+                },
+                {
+                    "args": "conj_assoc, divides d m ∧ divides d n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a d)",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides d m ∧ divides d n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a d)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ ∀x. divides x m ∧ divides x n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a x) ⟶ x = d"
+                },
+                {
+                    "args": "e, nat",
+                    "id": "11.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e)",
+                    "id": "11.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e) ⊢ divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "11.2",
+                    "prevs": [
+                        "11.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e) ⊢ divides e m"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11.3",
+                    "prevs": [
+                        "11.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e) ⊢ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11.4",
+                    "prevs": [
+                        "11.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e) ⊢ ∀a. divides a m ⟶ divides a n ⟶ divides a e"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "11.5",
+                    "prevs": [
+                        "11.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e) ⊢ divides e n"
+                },
+                {
+                    "args": "e",
+                    "id": "11.6",
+                    "prevs": [
+                        "8",
+                        "11.2",
+                        "11.5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e), (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides e d"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "11.7",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides d m"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "11.8",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides d n"
+                },
+                {
+                    "args": "d",
+                    "id": "11.9",
+                    "prevs": [
+                        "11.4",
+                        "11.7",
+                        "11.8"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e), (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides d e"
+                },
+                {
+                    "args": "divides_antisym",
+                    "id": "11.10",
+                    "prevs": [
+                        "11.6",
+                        "11.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e), (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ e = d"
+                },
+                {
+                    "args": "",
+                    "id": "11.11",
+                    "prevs": [
+                        "11.0",
+                        "11.1",
+                        "11.10"
+                    ],
+                    "rule": "intros",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ ∀e. divides e m ∧ divides e n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a e) ⟶ e = d"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "7",
+                        "10",
+                        "11"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides (THE x. divides x m ∧ divides x n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a x)) m ∧ divides (THE x. divides x m ∧ divides x n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a x)) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (THE x. divides x m ∧ divides x n ∧ (∀a1. divides a1 m ⟶ divides a1 n ⟶ divides a1 x)))"
+                },
+                {
+                    "args": "gcd_def, divides (gcd m n) m ∧ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d) ⊢ divides (gcd m n) m ∧ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                },
+                {
+                    "args": "∃d. ∃x. ∃y. (divides d m ∧ divides d n) ∧ (m * x - n * y = d ∨ n * x - m * y = d)",
+                    "id": "14",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "13"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides (gcd m n) m ∧ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                }
+            ],
+            "prop": [
+                "divides (gcd m n) m ∧ ",
+                "divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_a": "m",
+                    "param_b": "n",
+                    "theorem": "bezout"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "exists_elim",
+                    "names": "d,x,y"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "gcd_def"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "param_P": "(%k. divides k m ∧ divides k n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a k))",
+                    "param_a": "d",
+                    "theorem": "theI"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "introduction",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "8.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "8.3"
+                    ],
+                    "goal_id": "8.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "8.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.4.0"
+                    ],
+                    "goal_id": "8.4.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_sub"
+                },
+                {
+                    "goal_id": "8.4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "8.4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "8.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "8.5.0"
+                    ],
+                    "goal_id": "8.5.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "8.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_sub"
+                },
+                {
+                    "goal_id": "8.5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "8.5.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_rmul"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "fact_ids": [
+                        "11.1"
+                    ],
+                    "goal_id": "11.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "11.1"
+                    ],
+                    "goal_id": "11.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "11.3"
+                    ],
+                    "goal_id": "11.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "11.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "divides_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "11.5",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "11.3"
+                    ],
+                    "goal_id": "11.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "11.4"
+                    ],
+                    "goal_id": "11.7",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "11.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "11.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "gcd_divide1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "gcd, {m: m, n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd m n) m ∧ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                },
+                {
+                    "args": "conjD1",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "apply_theorem",
                     "th": "⊢ divides (gcd m n) m"
                 },
                 {
@@ -15405,9 +16048,18 @@
             "steps": [
                 {
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "gcd_def"
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
                 }
             ],
             "ty": "thm",
@@ -15421,7 +16073,69 @@
                 "hint_backward"
             ],
             "name": "gcd_divides2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "gcd, {m: m, n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd m n) m ∧ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides (gcd m n) n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides (gcd m n) n"
+                }
+            ],
             "prop": "divides (gcd m n) n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -15433,7 +16147,103 @@
                 "hint_backward"
             ],
             "name": "gcd_is_max",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "divides a m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides a m ⊢ divides a m"
+                },
+                {
+                    "args": "divides a n",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "divides a n ⊢ divides a n"
+                },
+                {
+                    "args": "gcd, {m: m, n: n}",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ divides (gcd m n) m ∧ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ divides (gcd m n) n ∧ (∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n))"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ∀a. divides a m ⟶ divides a n ⟶ divides a (gcd m n)"
+                },
+                {
+                    "args": "a",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "divides a m, divides a n ⊢ divides a (gcd m n)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ divides a m ⟶ divides a n ⟶ divides a (gcd m n)"
+                }
+            ],
             "prop": "divides a m ⟶ divides a n ⟶ divides a (gcd m n)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "gcd"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "a": "nat",

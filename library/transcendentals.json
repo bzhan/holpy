@@ -20,7 +20,43 @@
                 "hint_rewrite_sym"
             ],
             "name": "real_exp_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ infsum (from 0) (λn. (x + y) ^ n / of_nat (fact n)) = infsum (from 0) (λn. x ^ n / of_nat (fact n)) * infsum (from 0) (λn. y ^ n / of_nat (fact n))"
+                },
+                {
+                    "args": "exp_def, exp (x + y) = exp x * exp y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp (x + y) = exp x * exp y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exp (x + y) = exp x * exp y"
+                }
+            ],
             "prop": "exp (x + y) = exp x * exp y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_def"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -32,7 +68,58 @@
                 "hint_rewrite"
             ],
             "name": "real_exp_0",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ infsum (from 0) (λn. (if n = 0 then 1 else 0) / of_nat (fact n)) = 1"
+                },
+                {
+                    "args": "real_pow_zero, infsum (from 0) (λn. 0 ^ n / of_nat (fact n)) = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ infsum (from 0) (λn. 0 ^ n / of_nat (fact n)) = 1"
+                },
+                {
+                    "args": "exp_def, exp 0 = 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp 0 = 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exp 0 = 1"
+                }
+            ],
             "prop": "exp 0 = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exp_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_zero"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -9885,7 +9972,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": "pi_pos",
+            "name": "pi_works",
             "num_gaps": 0,
             "proof": [
                 {
@@ -9910,399 +9997,339 @@
                     "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
                 },
                 {
-                    "args": "theI, {P: λp. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), a: p}",
+                    "args": "conj_assoc",
                     "id": "3",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⟶ (∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p) ⟶ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "",
-                    "id": "4",
                     "prevs": [
-                        "3",
                         "2"
                     ],
-                    "rule": "apply_fact",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ (∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p) ⟶ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "",
-                    "id": "5",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p"
-                },
-                {
-                    "args": "x, real",
-                    "id": "5.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))",
-                    "id": "5.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))"
+                    "rule": "rewrite_fact",
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ (0 < p ∧ sin p = 0) ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
                 },
                 {
                     "args": "conjD1",
-                    "id": "5.2",
+                    "id": "4",
                     "prevs": [
-                        "2"
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < p ∧ sin p = 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "5",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "4"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < p"
                 },
                 {
                     "args": "conjD2",
-                    "id": "5.3",
+                    "id": "7",
                     "prevs": [
-                        "2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "5.4",
-                    "prevs": [
-                        "5.3"
+                        "4"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin p = 0"
                 },
                 {
-                    "args": "conjD2",
-                    "id": "5.5",
-                    "prevs": [
-                        "5.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)"
+                    "args": "theI, {P: λp. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), a: p}",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⟶ (∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p) ⟶ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
                 },
                 {
                     "args": "",
-                    "id": "5.6",
+                    "id": "9",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(x = p) ⟶ ¬(∀x1. 0 < x1 ⟶ x1 < p ⟶ ¬(sin x1 = 0))"
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p"
                 },
                 {
-                    "args": "¬(x = p)",
-                    "id": "5.6.0",
+                    "args": "x, real",
+                    "id": "9.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))",
+                    "id": "9.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬(x = p) ⊢ ¬(x = p)"
+                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))"
                 },
                 {
                     "args": "conjD1",
-                    "id": "5.6.1",
+                    "id": "9.2",
                     "prevs": [
-                        "5.1"
+                        "9.1"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < x"
                 },
                 {
                     "args": "conjD2",
-                    "id": "5.6.2",
+                    "id": "9.3",
                     "prevs": [
-                        "5.1"
+                        "9.1"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))"
                 },
                 {
                     "args": "conjD1",
-                    "id": "5.6.3",
+                    "id": "9.4",
                     "prevs": [
-                        "5.6.2"
+                        "9.3"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ sin x = 0"
                 },
                 {
                     "args": "conjD2",
-                    "id": "5.6.4",
+                    "id": "9.5",
                     "prevs": [
-                        "5.6.2"
+                        "9.3"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)"
                 },
                 {
+                    "args": "",
+                    "id": "9.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(x = p) ⟶ false"
+                },
+                {
+                    "args": "¬(x = p)",
+                    "id": "9.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = p) ⊢ ¬(x = p)"
+                },
+                {
                     "args": "real_le_antisym",
-                    "id": "5.6.5",
+                    "id": "9.6.1",
                     "prevs": [
-                        "5.6.0"
+                        "9.6.0"
                     ],
                     "rule": "rewrite_fact_sym",
                     "th": "¬(x = p) ⊢ ¬(x ≤ p ∧ p ≤ x)"
                 },
                 {
                     "args": "de_morgan_thm1",
-                    "id": "5.6.6",
+                    "id": "9.6.2",
                     "prevs": [
-                        "5.6.5"
+                        "9.6.1"
                     ],
                     "rule": "rewrite_fact",
                     "th": "¬(x = p) ⊢ ¬(x ≤ p) ∨ ¬(p ≤ x)"
                 },
                 {
                     "args": "real_not_lt",
-                    "id": "5.6.7",
+                    "id": "9.6.3",
                     "prevs": [
-                        "5.6.6"
+                        "9.6.2"
                     ],
                     "rule": "rewrite_fact_sym",
                     "th": "¬(x = p) ⊢ ¬¬(p < x) ∨ ¬¬(x < p)"
                 },
                 {
                     "args": "double_neg",
-                    "id": "5.6.8",
+                    "id": "9.6.4",
                     "prevs": [
-                        "5.6.7"
+                        "9.6.3"
                     ],
                     "rule": "rewrite_fact",
                     "th": "¬(x = p) ⊢ p < x ∨ x < p"
                 },
                 {
                     "args": "",
-                    "id": "5.6.9",
+                    "id": "9.6.5",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ p < x ⟶ (∃x1. 0 < x1 ∧ x1 < p ∧ sin x1 = 0)"
+                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ p < x ⟶ false"
                 },
                 {
                     "args": "p < x",
-                    "id": "5.6.9.0",
+                    "id": "9.6.5.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "p < x ⊢ p < x"
                 },
                 {
-                    "args": "p",
-                    "id": "5.6.9.1",
-                    "prevs": [
-                        "5.6.4"
-                    ],
-                    "rule": "forall_elim_gen",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < p ⟶ p < x ⟶ ¬(sin p = 0)"
-                },
-                {
                     "args": "",
-                    "id": "5.6.9.2",
+                    "id": "9.6.5.1",
                     "prevs": [
-                        "5.6.9.1",
-                        "5.2",
-                        "5.6.9.0"
+                        "9.5",
+                        "6",
+                        "9.6.5.0"
                     ],
                     "rule": "apply_fact",
                     "th": "p < x, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(sin p = 0)"
                 },
                 {
-                    "args": "negE_gen, {A: sin p = 0, C: ∃x. 0 < x ∧ x < p ∧ sin x = 0}",
-                    "id": "5.6.9.3",
+                    "args": "negE_gen, {A: sin p = 0, C: false}",
+                    "id": "9.6.5.2",
                     "prevs": [
-                        "5.6.9.2",
-                        "5.4"
+                        "9.6.5.1",
+                        "7"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "p < x, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∃x. 0 < x ∧ x < p ∧ sin x = 0"
+                    "th": "p < x, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "5.6.9.4",
+                    "id": "9.6.5.3",
                     "prevs": [
-                        "5.6.9.0",
-                        "5.6.9.3"
+                        "9.6.5.0",
+                        "9.6.5.2"
                     ],
                     "rule": "intros",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ p < x ⟶ (∃x1. 0 < x1 ∧ x1 < p ∧ sin x1 = 0)"
+                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ p < x ⟶ false"
                 },
                 {
                     "args": "",
-                    "id": "5.6.10",
+                    "id": "9.6.6",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ⟶ (∃x1. 0 < x1 ∧ x1 < p ∧ sin x1 = 0)"
+                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ⟶ false"
                 },
                 {
                     "args": "x < p",
-                    "id": "5.6.10.0",
+                    "id": "9.6.6.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "x < p ⊢ x < p"
                 },
                 {
-                    "args": "conjI",
-                    "id": "5.6.10.1",
+                    "args": "",
+                    "id": "9.6.6.1",
                     "prevs": [
-                        "5.6.10.0",
-                        "5.6.3"
+                        "5",
+                        "9.2",
+                        "9.6.6.0"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "x < p, ¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ∧ sin x = 0"
+                    "rule": "apply_fact",
+                    "th": "x < p, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(sin x = 0)"
                 },
                 {
-                    "args": "conjI",
-                    "id": "5.6.10.2",
+                    "args": "negE_gen, {A: sin x = 0, C: false}",
+                    "id": "9.6.6.2",
                     "prevs": [
-                        "5.6.1",
-                        "5.6.10.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x < p, ¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < x ∧ x < p ∧ sin x = 0"
-                },
-                {
-                    "args": "exI, {P: λx. 0 < x ∧ x < p ∧ sin x = 0, a: x}",
-                    "id": "5.6.10.3",
-                    "prevs": [
-                        "5.6.10.2"
+                        "9.6.6.1",
+                        "9.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "x < p, ¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∃a1. 0 < a1 ∧ a1 < p ∧ sin a1 = 0"
+                    "th": "x < p, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "5.6.10.4",
+                    "id": "9.6.6.3",
                     "prevs": [
-                        "5.6.10.0",
-                        "5.6.10.3"
+                        "9.6.6.0",
+                        "9.6.6.2"
                     ],
                     "rule": "intros",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ⟶ (∃x1. 0 < x1 ∧ x1 < p ∧ sin x1 = 0)"
+                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ⟶ false"
                 },
                 {
                     "args": "disjE",
-                    "id": "5.6.11",
+                    "id": "9.6.7",
                     "prevs": [
-                        "5.6.8",
-                        "5.6.9",
-                        "5.6.10"
+                        "9.6.4",
+                        "9.6.5",
+                        "9.6.6"
                     ],
                     "rule": "apply_theorem",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∃x. 0 < x ∧ x < p ∧ sin x = 0"
-                },
-                {
-                    "args": "double_neg, ∃x. 0 < x ∧ x < p ∧ ¬¬(sin x = 0)",
-                    "id": "5.6.12",
-                    "prevs": [
-                        "5.6.11"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∃x. 0 < x ∧ x < p ∧ ¬¬(sin x = 0)"
-                },
-                {
-                    "args": "not_imp, ∃x. 0 < x ∧ ¬(x < p ⟶ ¬(sin x = 0))",
-                    "id": "5.6.13",
-                    "prevs": [
-                        "5.6.12"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∃x. 0 < x ∧ ¬(x < p ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "not_imp, ∃x. ¬(0 < x ⟶ x < p ⟶ ¬(sin x = 0))",
-                    "id": "5.6.14",
-                    "prevs": [
-                        "5.6.13"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∃x. ¬(0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "not_all, ¬(∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))",
-                    "id": "5.6.15",
-                    "prevs": [
-                        "5.6.14"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
+                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "5.6.16",
+                    "id": "9.6.8",
                     "prevs": [
-                        "5.6.0",
-                        "5.6.15"
+                        "9.6.0",
+                        "9.6.7"
                     ],
                     "rule": "intros",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(x = p) ⟶ ¬(∀x1. 0 < x1 ⟶ x1 < p ⟶ ¬(sin x1 = 0))"
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(x = p) ⟶ false"
                 },
                 {
-                    "args": "contrapositive",
-                    "id": "5.7",
+                    "args": "negI",
+                    "id": "9.7",
                     "prevs": [
-                        "5.5",
-                        "5.6"
+                        "9.6"
                     ],
                     "rule": "apply_theorem",
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬¬(x = p)"
+                },
+                {
+                    "args": "double_neg, x = p",
+                    "id": "9.8",
+                    "prevs": [
+                        "9.7"
+                    ],
+                    "rule": "rewrite_goal_sym",
                     "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x = p"
                 },
                 {
                     "args": "",
-                    "id": "5.8",
+                    "id": "9.9",
                     "prevs": [
-                        "5.0",
-                        "5.1",
-                        "5.7"
+                        "9.0",
+                        "9.1",
+                        "9.8"
                     ],
                     "rule": "intros",
                     "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "10",
                     "prevs": [
-                        "4",
-                        "5"
+                        "8",
+                        "2",
+                        "9"
                     ],
                     "rule": "apply_fact",
                     "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
                 },
                 {
-                    "args": "conjD1",
-                    "id": "7",
+                    "args": "pi_def, 0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))",
+                    "id": "11",
                     "prevs": [
-                        "6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)))"
-                },
-                {
-                    "args": "pi_def, 0 < pi",
-                    "id": "8",
-                    "prevs": [
-                        "7"
+                        "10"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < pi"
+                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))"
                 },
                 {
                     "args": "∃p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))",
-                    "id": "9",
+                    "id": "12",
                     "prevs": [
                         "0",
                         "1",
                         "2",
-                        "8"
+                        "11"
                     ],
                     "rule": "intros",
-                    "th": "⊢ 0 < pi"
+                    "th": "⊢ 0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))"
                 }
             ],
-            "prop": "0 < pi",
+            "prop": "0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))",
             "steps": [
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "pi_def"
-                },
                 {
                     "goal_id": "0",
                     "method_name": "apply_forward_step",
@@ -10317,7 +10344,54 @@
                     "names": "p"
                 },
                 {
+                    "fact_ids": [
+                        "2"
+                    ],
                     "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "pi_def"
+                },
+                {
+                    "goal_id": "8",
                     "method_name": "apply_forward_step",
                     "param_P": "(%p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)))",
                     "param_a": "p",
@@ -10325,228 +10399,200 @@
                 },
                 {
                     "fact_ids": [
-                        "3",
-                        "2"
+                        "8"
                     ],
-                    "goal_id": "4",
-                    "method_name": "apply_fact"
+                    "goal_id": "9",
+                    "method_name": "apply_prev"
                 },
                 {
-                    "goal": "(∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p)",
-                    "goal_id": "5",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "5",
+                    "goal_id": "9",
                     "method_name": "introduction",
                     "names": "x"
                 },
                 {
                     "fact_ids": [
-                        "2"
+                        "9.1"
                     ],
-                    "goal_id": "5.2",
+                    "goal_id": "9.2",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
                 },
                 {
                     "fact_ids": [
-                        "2"
+                        "9.1"
                     ],
-                    "goal_id": "5.3",
+                    "goal_id": "9.3",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "5.3"
+                        "9.3"
                     ],
-                    "goal_id": "5.4",
+                    "goal_id": "9.4",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
                 },
                 {
                     "fact_ids": [
-                        "5.3"
+                        "9.3"
                     ],
-                    "goal_id": "5.5",
+                    "goal_id": "9.5",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
-                    "fact_ids": [
-                        "5.5"
-                    ],
-                    "goal_id": "5.6",
-                    "method_name": "apply_backward_step",
-                    "theorem": "contrapositive"
-                },
-                {
-                    "goal_id": "5.6",
-                    "method_name": "introduction"
-                },
-                {
-                    "goal_id": "5.6.1",
+                    "goal_id": "9.6",
                     "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "not_all"
-                },
-                {
-                    "goal_id": "5.6.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "not_imp"
-                },
-                {
-                    "goal_id": "5.6.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "not_imp"
-                },
-                {
-                    "goal_id": "5.6.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
+                    "sym": "true",
                     "theorem": "double_neg"
                 },
                 {
-                    "fact_ids": [
-                        "5.1"
-                    ],
-                    "goal_id": "5.6.1",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
+                    "goal_id": "9.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "9.6",
+                    "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
-                        "5.1"
+                        "9.6.0"
                     ],
-                    "goal_id": "5.6.2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "5.6.2"
-                    ],
-                    "goal_id": "5.6.3",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "5.6.2"
-                    ],
-                    "goal_id": "5.6.4",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "5.6.0"
-                    ],
-                    "goal_id": "5.6.5",
+                    "goal_id": "9.6.1",
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "real_le_antisym"
                 },
                 {
                     "fact_ids": [
-                        "5.6.5"
+                        "9.6.1"
                     ],
-                    "goal_id": "5.6.6",
+                    "goal_id": "9.6.2",
                     "method_name": "rewrite_fact",
                     "sym": "false",
                     "theorem": "de_morgan_thm1"
                 },
                 {
                     "fact_ids": [
-                        "5.6.6"
+                        "9.6.2"
                     ],
-                    "goal_id": "5.6.7",
+                    "goal_id": "9.6.3",
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "real_not_lt"
                 },
                 {
                     "fact_ids": [
-                        "5.6.7"
+                        "9.6.3"
                     ],
-                    "goal_id": "5.6.8",
+                    "goal_id": "9.6.4",
                     "method_name": "rewrite_fact",
                     "sym": "false",
                     "theorem": "double_neg"
                 },
                 {
                     "fact_ids": [
-                        "5.6.8"
+                        "9.6.4"
                     ],
-                    "goal_id": "5.6.9",
+                    "goal_id": "9.6.5",
                     "method_name": "apply_backward_step",
                     "theorem": "disjE"
                 },
                 {
-                    "goal_id": "5.6.9",
+                    "goal_id": "9.6.5",
                     "method_name": "introduction"
                 },
                 {
                     "fact_ids": [
-                        "5.6.4"
+                        "9.5",
+                        "6",
+                        "9.6.5.0"
                     ],
-                    "goal_id": "5.6.9.1",
-                    "method_name": "forall_elim",
-                    "s": "p"
-                },
-                {
-                    "fact_ids": [
-                        "5.6.9.1",
-                        "5.2",
-                        "5.6.9.0"
-                    ],
-                    "goal_id": "5.6.9.2",
+                    "goal_id": "9.6.5.1",
                     "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "5.6.9.2",
-                        "5.4"
+                        "9.6.5.1",
+                        "7"
                     ],
-                    "goal_id": "5.6.9.3",
+                    "goal_id": "9.6.5.2",
                     "method_name": "apply_backward_step",
                     "theorem": "negE_gen"
                 },
                 {
-                    "goal_id": "5.6.10",
+                    "goal_id": "9.6.6",
                     "method_name": "introduction"
                 },
                 {
-                    "goal_id": "5.6.10.1",
-                    "method_name": "inst_exists_goal",
-                    "s": "x"
-                },
-                {
-                    "goal_id": "5.6.10.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "5.6.10.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
                     "fact_ids": [
-                        "4",
-                        "5"
+                        "5",
+                        "9.2",
+                        "9.6.6.0"
                     ],
-                    "goal_id": "6",
+                    "goal_id": "9.6.6.1",
                     "method_name": "apply_fact"
                 },
                 {
                     "fact_ids": [
-                        "6"
+                        "9.6.6.1",
+                        "9.4"
                     ],
-                    "goal_id": "7",
+                    "goal_id": "9.6.6.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "pi_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "pi_works",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 < pi"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < pi"
+                }
+            ],
+            "prop": "0 < pi",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "theorem": "pi_works"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD1"
                 }
@@ -10562,371 +10608,35 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "sin_haszero_minimal",
+                    "args": "pi_works",
                     "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem",
-                    "th": "⊢ ∃p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
+                    "th": "⊢ 0 < pi ∧ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))"
                 },
                 {
-                    "args": "p, real",
+                    "args": "conjD2",
                     "id": "1",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR p"
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sin pi = 0 ∧ (∀x. 0 < x ⟶ x < pi ⟶ ¬(sin x = 0))"
                 },
                 {
-                    "args": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))",
+                    "args": "conjD1",
                     "id": "2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sin pi = 0"
                 },
                 {
-                    "args": "theI, {P: λp. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), a: p}",
+                    "args": "",
                     "id": "3",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⟶ (∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p) ⟶ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "",
-                    "id": "4",
-                    "prevs": [
-                        "3",
-                        "2"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ (∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p) ⟶ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "",
-                    "id": "5",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p"
-                },
-                {
-                    "args": "x, real",
-                    "id": "5.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))",
-                    "id": "5.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "5.2",
                     "prevs": [
                         "2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < p"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "5.3",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "5.4",
-                    "prevs": [
-                        "5.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin p = 0"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "5.5",
-                    "prevs": [
-                        "5.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "5.6",
-                    "prevs": [
-                        "5.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ 0 < x"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "5.7",
-                    "prevs": [
-                        "5.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "5.8",
-                    "prevs": [
-                        "5.7"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ sin x = 0"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "5.9",
-                    "prevs": [
-                        "5.7"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "5.10",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(x = p) ⟶ false"
-                },
-                {
-                    "args": "¬(x = p)",
-                    "id": "5.10.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬(x = p) ⊢ ¬(x = p)"
-                },
-                {
-                    "args": "real_le_antisym",
-                    "id": "5.10.1",
-                    "prevs": [
-                        "5.10.0"
-                    ],
-                    "rule": "rewrite_fact_sym",
-                    "th": "¬(x = p) ⊢ ¬(x ≤ p ∧ p ≤ x)"
-                },
-                {
-                    "args": "de_morgan_thm1",
-                    "id": "5.10.2",
-                    "prevs": [
-                        "5.10.1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "¬(x = p) ⊢ ¬(x ≤ p) ∨ ¬(p ≤ x)"
-                },
-                {
-                    "args": "real_not_lt",
-                    "id": "5.10.3",
-                    "prevs": [
-                        "5.10.2"
-                    ],
-                    "rule": "rewrite_fact_sym",
-                    "th": "¬(x = p) ⊢ ¬¬(p < x) ∨ ¬¬(x < p)"
-                },
-                {
-                    "args": "double_neg",
-                    "id": "5.10.4",
-                    "prevs": [
-                        "5.10.3"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "¬(x = p) ⊢ p < x ∨ x < p"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.5",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ p < x ⟶ false"
-                },
-                {
-                    "args": "p < x",
-                    "id": "5.10.5.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "p < x ⊢ p < x"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.5.1",
-                    "prevs": [
-                        "5.9",
-                        "5.2",
-                        "5.10.5.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "p < x, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(sin p = 0)"
-                },
-                {
-                    "args": "negE_gen, {A: sin p = 0, C: false}",
-                    "id": "5.10.5.2",
-                    "prevs": [
-                        "5.10.5.1",
-                        "5.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "p < x, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ false"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.5.3",
-                    "prevs": [
-                        "5.10.5.0",
-                        "5.10.5.2"
-                    ],
-                    "rule": "intros",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ p < x ⟶ false"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.6",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ⟶ false"
-                },
-                {
-                    "args": "x < p",
-                    "id": "5.10.6.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x < p ⊢ x < p"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.6.1",
-                    "prevs": [
-                        "5.5",
-                        "5.6",
-                        "5.10.6.0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "x < p, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(sin x = 0)"
-                },
-                {
-                    "args": "negE_gen, {A: sin x = 0, C: false}",
-                    "id": "5.10.6.2",
-                    "prevs": [
-                        "5.10.6.1",
-                        "5.8"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x < p, 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ false"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.6.3",
-                    "prevs": [
-                        "5.10.6.0",
-                        "5.10.6.2"
-                    ],
-                    "rule": "intros",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x < p ⟶ false"
-                },
-                {
-                    "args": "disjE",
-                    "id": "5.10.7",
-                    "prevs": [
-                        "5.10.4",
-                        "5.10.5",
-                        "5.10.6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬(x = p), 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ false"
-                },
-                {
-                    "args": "",
-                    "id": "5.10.8",
-                    "prevs": [
-                        "5.10.0",
-                        "5.10.7"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬(x = p) ⟶ false"
-                },
-                {
-                    "args": "negI",
-                    "id": "5.11",
-                    "prevs": [
-                        "5.10"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ ¬¬(x = p)"
-                },
-                {
-                    "args": "double_neg, x = p",
-                    "id": "5.12",
-                    "prevs": [
-                        "5.11"
-                    ],
-                    "rule": "rewrite_goal_sym",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)), 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⊢ x = p"
-                },
-                {
-                    "args": "",
-                    "id": "5.13",
-                    "prevs": [
-                        "5.0",
-                        "5.1",
-                        "5.12"
-                    ],
-                    "rule": "intros",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ ∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p"
-                },
-                {
-                    "args": "",
-                    "id": "6",
-                    "prevs": [
-                        "4",
-                        "5"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ 0 < (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) ∧ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "7",
-                    "prevs": [
-                        "6"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0 ∧ (∀x. 0 < x ⟶ x < (THE x1. 0 < x1 ∧ sin x1 = 0 ∧ (∀x2. 0 < x2 ⟶ x2 < x1 ⟶ ¬(sin x2 = 0))) ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "conjD1",
-                    "id": "8",
-                    "prevs": [
-                        "7"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin (THE x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0))) = 0"
-                },
-                {
-                    "args": "pi_def, sin pi = 0",
-                    "id": "9",
-                    "prevs": [
-                        "8"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)) ⊢ sin pi = 0"
-                },
-                {
-                    "args": "∃p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))",
-                    "id": "10",
-                    "prevs": [
-                        "0",
-                        "1",
-                        "2",
-                        "9"
                     ],
                     "rule": "intros",
                     "th": "⊢ sin pi = 0"
@@ -10936,236 +10646,22 @@
             "steps": [
                 {
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "pi_def"
-                },
-                {
-                    "goal_id": "0",
                     "method_name": "apply_forward_step",
-                    "theorem": "sin_haszero_minimal"
+                    "theorem": "pi_works"
                 },
                 {
                     "fact_ids": [
                         "0"
                     ],
                     "goal_id": "1",
-                    "method_name": "exists_elim",
-                    "names": "p"
-                },
-                {
-                    "goal_id": "3",
-                    "method_name": "apply_forward_step",
-                    "param_P": "(%p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0)))",
-                    "param_a": "p",
-                    "theorem": "theI"
-                },
-                {
-                    "fact_ids": [
-                        "3",
-                        "2"
-                    ],
-                    "goal_id": "4",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "goal": "(∀x. 0 < x ∧ sin x = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < x ⟶ ¬(sin x1 = 0)) ⟶ x = p)",
-                    "goal_id": "5",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "5",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "5.2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "5.3",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
-                        "5.3"
+                        "1"
                     ],
-                    "goal_id": "5.4",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "5.3"
-                    ],
-                    "goal_id": "5.5",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "5.1"
-                    ],
-                    "goal_id": "5.6",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "5.1"
-                    ],
-                    "goal_id": "5.7",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "5.7"
-                    ],
-                    "goal_id": "5.8",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "5.7"
-                    ],
-                    "goal_id": "5.9",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "goal_id": "5.10",
-                    "method_name": "rewrite_goal",
-                    "sym": "true",
-                    "theorem": "double_neg"
-                },
-                {
-                    "goal_id": "5.10",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negI"
-                },
-                {
-                    "goal_id": "5.10",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.0"
-                    ],
-                    "goal_id": "5.10.1",
-                    "method_name": "rewrite_fact",
-                    "sym": "true",
-                    "theorem": "real_le_antisym"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.1"
-                    ],
-                    "goal_id": "5.10.2",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "de_morgan_thm1"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.2"
-                    ],
-                    "goal_id": "5.10.3",
-                    "method_name": "rewrite_fact",
-                    "sym": "true",
-                    "theorem": "real_not_lt"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.3"
-                    ],
-                    "goal_id": "5.10.4",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "double_neg"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.4"
-                    ],
-                    "goal_id": "5.10.5",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "5.10.5",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "5.9",
-                        "5.2",
-                        "5.10.5.0"
-                    ],
-                    "goal_id": "5.10.5.1",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.5.1",
-                        "5.4"
-                    ],
-                    "goal_id": "5.10.5.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negE_gen"
-                },
-                {
-                    "goal_id": "5.10.6",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "5.5",
-                        "5.6",
-                        "5.10.6.0"
-                    ],
-                    "goal_id": "5.10.6.1",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "5.10.6.1",
-                        "5.8"
-                    ],
-                    "goal_id": "5.10.6.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negE_gen"
-                },
-                {
-                    "fact_ids": [
-                        "4",
-                        "5"
-                    ],
-                    "goal_id": "6",
-                    "method_name": "apply_fact"
-                },
-                {
-                    "fact_ids": [
-                        "6"
-                    ],
-                    "goal_id": "7",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "7"
-                    ],
-                    "goal_id": "8",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD1"
                 }
@@ -11179,74 +10675,7 @@
                 "hint_backward1"
             ],
             "name": "sin_pos_pi",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "0 < x",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "0 < x ⊢ 0 < x"
-                },
-                {
-                    "args": "x < pi",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x < pi ⊢ x < pi"
-                },
-                {
-                    "args": "pi_def",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x < pi ⊢ x < (THE p. 0 < p ∧ sin p = 0 ∧ (∀x1. 0 < x1 ⟶ x1 < p ⟶ ¬(sin x1 = 0)))"
-                },
-                {
-                    "args": "sin_haszero_minimal",
-                    "id": "3",
-                    "prevs": [],
-                    "rule": "apply_theorem",
-                    "th": "⊢ ∃p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ⟶ x < p ⟶ ¬(sin x = 0))"
-                },
-                {
-                    "args": "",
-                    "id": "4",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "x < pi, 0 < x ⊢ 0 < sin x"
-                },
-                {
-                    "args": "",
-                    "id": "5",
-                    "prevs": [
-                        "0",
-                        "1",
-                        "4"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ 0 < x ⟶ x < pi ⟶ 0 < sin x"
-                }
-            ],
             "prop": "0 < x ⟶ x < pi ⟶ 0 < sin x",
-            "steps": [
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "pi_def"
-                },
-                {
-                    "goal_id": "3",
-                    "method_name": "apply_forward_step",
-                    "theorem": "sin_haszero_minimal"
-                }
-            ],
             "ty": "thm",
             "vars": {
                 "x": "real"
